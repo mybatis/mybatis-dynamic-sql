@@ -22,7 +22,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render(true);
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -35,7 +35,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render(false);
         assertThat(rc.getWhereClause(), is(" a.id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -48,7 +48,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render(true);
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -61,7 +61,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render(false);
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -74,7 +74,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Date> condition = IsEqualToCondition.of(new Date());
         Criterion<Date> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        MyBatis3CriterionRenderer<Date> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render(false);
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"));
@@ -87,7 +87,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render(false);
         assertThat(rc.getWhereClause(), is(" a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"));
@@ -101,9 +101,9 @@ public class MyBatis3CriterionRendererTest {
                 .withAlias("a");
         
         IsLikeCondition condition = IsLikeCaseInsensitiveCondition.of("fred");
-        Criterion<String> criterion = Criterion.of(field.withCustomRenderer(this::handleName), condition);
+        Criterion<String> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        MyBatis3CriterionRenderer<String> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render(false);
         assertThat(rc.getWhereClause(), is(" upper(a.description) like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
@@ -121,20 +121,6 @@ public class MyBatis3CriterionRendererTest {
         assertThat(rc.getParameters().get("p1"), is("fred"));
     }
     
-    private String handleName(Field<?> field, boolean ignoreAlias) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("upper(");
-        if (!ignoreAlias) {
-            field.alias().ifPresent(a -> {
-                sb.append(a);
-                sb.append('.');
-            });
-        }
-        sb.append(field.name());
-        sb.append(')');
-        return sb.toString();
-    }
-    
     public static class IsLikeCaseInsensitiveCondition extends IsLikeCondition {
         private IsLikeCaseInsensitiveCondition(String value) {
             super(value);
@@ -143,7 +129,30 @@ public class MyBatis3CriterionRendererTest {
         public static IsLikeCaseInsensitiveCondition of(String value) {
             return new IsLikeCaseInsensitiveCondition(value);
         }
+        
+        @Override
+        public String renderFieldName(Field<String> field) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("upper(");
+            field.alias().ifPresent(a -> {
+                sb.append(a);
+                sb.append('.');
+            });
+            sb.append(field.name());
+            sb.append(')');
+            return sb.toString();
+            
+        }
 
+        @Override
+        public String renderFieldNameWithoutAlias(Field<String> field) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("upper(");
+            sb.append(field.name());
+            sb.append(')');
+            return sb.toString();
+        }
+        
         @Override
         public String value() {
             return super.value().toUpperCase();

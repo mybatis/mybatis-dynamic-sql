@@ -1,14 +1,23 @@
 package org.mybatis.qbe.condition;
 
-/**
- * 
- * @author Jeff Butler
- *
- * @param <T> - even though the type is not directly used in this class,
- *  it is used by the compiler to match fields with conditions so it should
- *  not be removed.
- */
+import org.mybatis.qbe.field.Field;
+
 @FunctionalInterface
 public interface Condition<T> {
     void accept(ConditionVisitor visitor);
+    
+    default String renderFieldName(Field<T> field) {
+        StringBuilder sb = new StringBuilder();
+        field.alias().ifPresent(a -> {
+            sb.append(a);
+            sb.append('.');
+        });
+        sb.append(field.name());
+        return sb.toString();
+        
+    }
+
+    default String renderFieldNameWithoutAlias(Field<T> field) {
+        return field.name();
+    }
 }

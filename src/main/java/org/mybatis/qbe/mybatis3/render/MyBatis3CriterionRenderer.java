@@ -3,7 +3,6 @@ package org.mybatis.qbe.mybatis3.render;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
 
 import org.mybatis.qbe.Criterion;
 import org.mybatis.qbe.condition.ConditionVisitor;
@@ -14,11 +13,11 @@ import org.mybatis.qbe.condition.TwoValueCondition;
 import org.mybatis.qbe.field.Field;
 import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
 
-public class MyBatis3CriterionRenderer extends BaseMyBatis3Renderer implements ConditionVisitor {
-    private Criterion<?> criterion;
+public class MyBatis3CriterionRenderer<T> extends BaseMyBatis3Renderer implements ConditionVisitor {
+    private Criterion<T> criterion;
     private AtomicInteger sequence;
     
-    private MyBatis3CriterionRenderer(Criterion<?> criterion, AtomicInteger sequence) {
+    private MyBatis3CriterionRenderer(Criterion<T> criterion, AtomicInteger sequence) {
         this.criterion = criterion;
         this.sequence = sequence;
     }
@@ -26,49 +25,40 @@ public class MyBatis3CriterionRenderer extends BaseMyBatis3Renderer implements C
     public WhereClauseAndParameters render(boolean ignoreAlias) {
         buffer.append(' ');
         
-        handleConnector();
+        renderConnector();
 
         if (criterion.hasCriteria()) {
-            handleEmbeddedCriteria(ignoreAlias);
+            renderEmbeddedCriteria(ignoreAlias);
         } else {
-            handleTopLevelCriterion(ignoreAlias);
+            renderTopLevelCriterion(ignoreAlias);
         }
         
         return WhereClauseAndParameters.of(buffer.toString(), parameters);
     }
     
-    private void handleConnector() {
+    private void renderConnector() {
         criterion.connector().ifPresent(c -> {
             buffer.append(c);
             buffer.append(' ');
         });
     }
     
-    private void handleEmbeddedCriteria(boolean ignoreAlias) {
+    private void renderEmbeddedCriteria(boolean ignoreAlias) {
         buffer.append('(');
-        handleTopLevelCriterion(ignoreAlias);
+        renderTopLevelCriterion(ignoreAlias);
         criterion.visitCriteria(c -> handleCriterion(c, sequence, ignoreAlias));
         buffer.append(')');
     }
 
-    private void handleTopLevelCriterion(boolean ignoreAlias) {
-        Field<?> field = criterion.field();
-        BiFunction<Field<?>, Boolean, String> nameRenderer = field.customRenderer().orElse(MyBatis3CriterionRenderer::defaultNameRenderer);
-        buffer.append(nameRenderer.apply(field, ignoreAlias));
+    private void renderTopLevelCriterion(boolean ignoreAlias) {
+        if (ignoreAlias) {
+            buffer.append(criterion.renderFieldNameWithoutAlias());
+        } else {
+            buffer.append(criterion.renderFieldName());
+        }
+
         buffer.append(' ');
         criterion.condition().accept(this);
-    }
-
-    private static String defaultNameRenderer(Field<?> field, boolean ignoreAlias) {
-        StringBuilder sb = new StringBuilder();
-        if (!ignoreAlias) {
-            field.alias().ifPresent(alias -> {
-                sb.append(alias);
-                sb.append('.');
-            });
-        }
-        sb.append(field.name());
-        return sb.toString();
     }
 
     @Override
@@ -106,8 +96,8 @@ public class MyBatis3CriterionRenderer extends BaseMyBatis3Renderer implements C
         buffer.append(condition.apply(values.stream()));
     }
 
-    public static MyBatis3CriterionRenderer of(Criterion<?> criterion, AtomicInteger sequence) {
-        return new MyBatis3CriterionRenderer(criterion, sequence);
+    public static <T> MyBatis3CriterionRenderer<T> of(Criterion<T> criterion, AtomicInteger sequence) {
+        return new MyBatis3CriterionRenderer<>(criterion, sequence);
     }
     
     private static String formatMyBatis3Parameter(int number, Field<?> field) {

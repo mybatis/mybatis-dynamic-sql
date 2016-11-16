@@ -35,6 +35,14 @@ public class Criterion<T> {
         return condition;
     }
     
+    public String renderFieldName() {
+        return condition.renderFieldName(field);
+    }
+    
+    public String renderFieldNameWithoutAlias() {
+        return condition.renderFieldNameWithoutAlias(field);
+    }
+    
     public void visitCriteria(Consumer<Criterion<?>> consumer) {
         criteria.stream().forEach(consumer::accept);
     }
