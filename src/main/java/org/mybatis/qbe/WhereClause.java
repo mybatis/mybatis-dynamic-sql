@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class CriterionContainer {
+public class WhereClause {
     private List<Criterion<?>> criteria = new ArrayList<>();
 
-    private CriterionContainer(Stream<Criterion<?>> criteria) {
+    private WhereClause(Stream<Criterion<?>> criteria) {
         criteria.forEach(this.criteria::add);
     }
     
@@ -16,7 +16,7 @@ public class CriterionContainer {
         criteria.stream().forEach(consumer);
     }
     
-    public static CriterionContainer of(Stream<Criterion<?>> criteria) {
-        return new CriterionContainer(criteria);
+    public static WhereClause of(Stream<Criterion<?>> criteria) {
+        return new WhereClause(criteria);
     }
 }

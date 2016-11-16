@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mybatis.qbe.Criterion;
-import org.mybatis.qbe.CriterionContainer;
+import org.mybatis.qbe.WhereClause;
 import org.mybatis.qbe.condition.Condition;
 import org.mybatis.qbe.condition.Conditions;
 import org.mybatis.qbe.field.Field;
@@ -66,7 +66,7 @@ public class WhereClauseAndParameters {
         }
         
         private MyBatis3Renderer buildRenderer() {
-            return MyBatis3Renderer.of(CriterionContainer.of(criteria.stream()));
+            return MyBatis3Renderer.of(WhereClause.of(criteria.stream()));
         }
     }
 }
