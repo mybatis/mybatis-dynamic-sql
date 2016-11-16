@@ -27,6 +27,16 @@ public class Field<T> {
         return name;
     }
     
+    public String aliasedName() {
+        StringBuilder sb = new StringBuilder();
+        alias().ifPresent(a -> {
+            sb.append(a);
+            sb.append('.');
+        });
+        sb.append(name);
+        return sb.toString();
+    }
+    
     public JDBCType jdbcType() {
         return jdbcType;
     }

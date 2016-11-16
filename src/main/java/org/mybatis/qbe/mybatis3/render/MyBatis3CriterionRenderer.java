@@ -72,13 +72,13 @@ public class MyBatis3CriterionRenderer<T> extends BaseMyBatis3Renderer implement
     }
     
     private void renderTopLevelCriterion() {
-        buffer.append(criterion.renderFieldName());
+        buffer.append(criterion.fieldName());
         buffer.append(' ');
         criterion.condition().accept(this);
     }
 
     private void renderTopLevelCriterionWithoutTableAlias() {
-        buffer.append(criterion.renderFieldNameWithoutAlias());
+        buffer.append(criterion.fieldNameWithoutAlias());
         buffer.append(' ');
         criterion.condition().accept(this);
     }

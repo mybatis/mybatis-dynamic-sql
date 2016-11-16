@@ -131,7 +131,7 @@ public class MyBatis3CriterionRendererTest {
         }
         
         @Override
-        public String renderFieldName(Field<String> field) {
+        public String fieldName(Field<String> field) {
             StringBuilder sb = new StringBuilder();
             sb.append("upper(");
             field.alias().ifPresent(a -> {
@@ -145,7 +145,7 @@ public class MyBatis3CriterionRendererTest {
         }
 
         @Override
-        public String renderFieldNameWithoutAlias(Field<String> field) {
+        public String fieldNameWithoutAlias(Field<String> field) {
             StringBuilder sb = new StringBuilder();
             sb.append("upper(");
             sb.append(field.name());

@@ -35,12 +35,12 @@ public class Criterion<T> {
         return condition;
     }
     
-    public String renderFieldName() {
-        return condition.renderFieldName(field);
+    public String fieldName() {
+        return condition.fieldName(field);
     }
     
-    public String renderFieldNameWithoutAlias() {
-        return condition.renderFieldNameWithoutAlias(field);
+    public String fieldNameWithoutAlias() {
+        return condition.fieldNameWithoutAlias(field);
     }
     
     public void visitCriteria(Consumer<Criterion<?>> consumer) {
