@@ -2,7 +2,7 @@ package org.mybatis.qbe.condition;
 
 public class IsLessThanOrEqualToCondition<T> extends BaseSingleValueCondition<T> {
 
-    private IsLessThanOrEqualToCondition(T value) {
+    protected IsLessThanOrEqualToCondition(T value) {
         super(value);
     }
     

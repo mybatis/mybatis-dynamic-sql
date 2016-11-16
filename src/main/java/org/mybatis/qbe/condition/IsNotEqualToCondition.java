@@ -2,7 +2,7 @@ package org.mybatis.qbe.condition;
 
 public class IsNotEqualToCondition<T> extends BaseSingleValueCondition<T> {
 
-    private IsNotEqualToCondition(T value) {
+    protected IsNotEqualToCondition(T value) {
         super(value);
     }
 

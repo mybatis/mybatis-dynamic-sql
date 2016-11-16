@@ -2,6 +2,7 @@ package org.mybatis.qbe.field;
 
 import java.sql.JDBCType;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 /**
  * 
@@ -17,6 +18,7 @@ public class Field<T> {
     private JDBCType jdbcType;
     private String alias;
     private String typeHandler;
+    private BiFunction<Field<?>, Boolean, String> customRenderer;
     
     private Field(String name, JDBCType jdbcType) {
         this.name = name;
@@ -39,10 +41,15 @@ public class Field<T> {
         return Optional.ofNullable(typeHandler);
     }
     
+    public Optional<BiFunction<Field<?>, Boolean, String>> customRenderer() {
+        return Optional.ofNullable(customRenderer);
+    }
+    
     public <S> Field<S> withAlias(String alias) {
         Field<S> answer = new Field<>(name, jdbcType);
         answer.alias = alias;
         answer.typeHandler = typeHandler;
+        answer.customRenderer = customRenderer;
         return answer;
     }
 
@@ -50,6 +57,15 @@ public class Field<T> {
         Field<S> answer = new Field<>(name, jdbcType);
         answer.alias = alias;
         answer.typeHandler = typeHandler;
+        answer.customRenderer = customRenderer;
+        return answer;
+    }
+    
+    public <S> Field<S> withCustomRenderer(BiFunction<Field<?>, Boolean, String> customRenderer) {
+        Field<S> answer = new Field<>(name, jdbcType);
+        answer.alias = alias;
+        answer.typeHandler = typeHandler;
+        answer.customRenderer = customRenderer;
         return answer;
     }
     

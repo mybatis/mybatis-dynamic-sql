@@ -3,6 +3,7 @@ package org.mybatis.qbe.mybatis3.render;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 
 import org.mybatis.qbe.Criterion;
 import org.mybatis.qbe.condition.ConditionVisitor;
@@ -51,16 +52,23 @@ public class MyBatis3CriterionRenderer extends BaseMyBatis3Renderer implements C
     }
 
     private void handleTopLevelCriterion(boolean ignoreAlias) {
-        if (!ignoreAlias) {
-            criterion.field().alias().ifPresent(alias -> {
-                buffer.append(alias);
-                buffer.append('.');
-            });
-        }
-        
-        buffer.append(criterion.field().name());
+        Field<?> field = criterion.field();
+        BiFunction<Field<?>, Boolean, String> nameRenderer = field.customRenderer().orElse(MyBatis3CriterionRenderer::defaultNameRenderer);
+        buffer.append(nameRenderer.apply(field, ignoreAlias));
         buffer.append(' ');
         criterion.condition().accept(this);
+    }
+
+    private static String defaultNameRenderer(Field<?> field, boolean ignoreAlias) {
+        StringBuilder sb = new StringBuilder();
+        if (!ignoreAlias) {
+            field.alias().ifPresent(alias -> {
+                sb.append(alias);
+                sb.append('.');
+            });
+        }
+        sb.append(field.name());
+        return sb.toString();
     }
 
     @Override

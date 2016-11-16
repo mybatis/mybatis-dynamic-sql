@@ -2,7 +2,7 @@ package org.mybatis.qbe.condition;
 
 public class IsLikeCondition extends BaseSingleValueCondition<String> {
 
-    private IsLikeCondition(String value) {
+    protected IsLikeCondition(String value) {
         super(value);
     }
 

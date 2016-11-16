@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 public class IsInCondition<T> extends BaseListValueCondition<T> {
 
-    private IsInCondition(Stream<T> values) {
+    protected IsInCondition(Stream<T> values) {
         super(values);
     }
     

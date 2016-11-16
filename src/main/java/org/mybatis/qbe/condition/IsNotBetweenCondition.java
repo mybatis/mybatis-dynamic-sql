@@ -2,7 +2,7 @@ package org.mybatis.qbe.condition;
 
 public class IsNotBetweenCondition<T> extends BaseTwoValueCondition<T> {
 
-    private IsNotBetweenCondition(T value1, T value2) {
+    protected IsNotBetweenCondition(T value1, T value2) {
         super(value1, value2);
     }
     

@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 import org.mybatis.qbe.Criterion;
 import org.mybatis.qbe.condition.IsEqualToCondition;
+import org.mybatis.qbe.condition.IsLikeCondition;
 import org.mybatis.qbe.field.Field;
 import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
 
@@ -91,5 +92,52 @@ public class MyBatis3CriterionRendererTest {
         WhereClauseAndParameters rc = renderer.render(false);
         assertThat(rc.getWhereClause(), is(" a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));
+    }
+    
+    @Test
+    public void testCustomCallbacks() {
+        Field<String> field = Field.of("description", JDBCType.VARCHAR)
+                .withTypeHandler("foo.Bar")
+                .withAlias("a")
+                .withCustomRenderer(this::handleName);
+        
+        IsLikeCondition condition = IsLikeCaseInsensitiveCondition.of("fred");
+        Criterion<String> criterion = Criterion.of(field, condition);
+        AtomicInteger sequence = new AtomicInteger(1);
+        MyBatis3CriterionRenderer renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        
+        WhereClauseAndParameters rc = renderer.render(false);
+        assertThat(rc.getWhereClause(), is(" upper(a.description) like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
+        assertThat(rc.getParameters().size(), is(1));
+        assertThat(rc.getParameters().get("p1"), is("FRED"));
+    }
+    
+    private String handleName(Field<?> field, boolean ignoreAlias) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("upper(");
+        if (!ignoreAlias) {
+            field.alias().ifPresent(a -> {
+                sb.append(a);
+                sb.append('.');
+            });
+        }
+        sb.append(field.name());
+        sb.append(')');
+        return sb.toString();
+    }
+    
+    public static class IsLikeCaseInsensitiveCondition extends IsLikeCondition {
+        private IsLikeCaseInsensitiveCondition(String value) {
+            super(value);
+        }
+        
+        public static IsLikeCaseInsensitiveCondition of(String value) {
+            return new IsLikeCaseInsensitiveCondition(value);
+        }
+
+        @Override
+        public String value() {
+            return super.value().toUpperCase();
+        }
     }
 }

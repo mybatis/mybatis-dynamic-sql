@@ -2,7 +2,7 @@ package org.mybatis.qbe.condition;
 
 public class IsNotNullCondition<T> implements NoValueCondition<T> {
 
-    private IsNotNullCondition() {
+    protected IsNotNullCondition() {
         super();
     }
     
