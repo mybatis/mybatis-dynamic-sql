@@ -98,11 +98,10 @@ public class MyBatis3CriterionRendererTest {
     public void testCustomCallbacks() {
         Field<String> field = Field.of("description", JDBCType.VARCHAR)
                 .withTypeHandler("foo.Bar")
-                .withAlias("a")
-                .withCustomRenderer(this::handleName);
+                .withAlias("a");
         
         IsLikeCondition condition = IsLikeCaseInsensitiveCondition.of("fred");
-        Criterion<String> criterion = Criterion.of(field, condition);
+        Criterion<String> criterion = Criterion.of(field.withCustomRenderer(this::handleName), condition);
         AtomicInteger sequence = new AtomicInteger(1);
         MyBatis3CriterionRenderer renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
@@ -110,6 +109,16 @@ public class MyBatis3CriterionRendererTest {
         assertThat(rc.getWhereClause(), is(" upper(a.description) like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));
         assertThat(rc.getParameters().get("p1"), is("FRED"));
+        
+        // make sure that we didn't destroy the field definition with our custom renderer above
+        condition = IsLikeCondition.of("fred");
+        criterion = Criterion.of(field, condition);
+        sequence = new AtomicInteger(1);
+        renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        rc = renderer.render(false);
+        assertThat(rc.getWhereClause(), is(" a.description like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
+        assertThat(rc.getParameters().size(), is(1));
+        assertThat(rc.getParameters().get("p1"), is("fred"));
     }
     
     private String handleName(Field<?> field, boolean ignoreAlias) {
