@@ -12,9 +12,15 @@ public abstract class BaseMyBatis3Renderer {
     protected Map<String, Object> parameters = new HashMap<>();
     protected StringBuilder buffer = new StringBuilder();
     
-    protected <T> void handleCriterion(Criterion<T> criterion, AtomicInteger sequence, boolean ignoreAlias) {
-        MyBatis3CriterionRenderer<T> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
-        WhereClauseAndParameters rc = renderer.render(ignoreAlias);
+    protected <T> void handleCriterion(Criterion<T> criterion, AtomicInteger sequence) {
+        WhereClauseAndParameters rc = MyBatis3CriterionRenderer.of(criterion, sequence).render();
+        buffer.append(rc.getWhereClause());
+        parameters.putAll(rc.getParameters());
+    }
+
+    protected <T> void handleCriterionWithoutTableAlias(Criterion<T> criterion, AtomicInteger sequence) {
+        WhereClauseAndParameters rc = MyBatis3CriterionRenderer.of(criterion, sequence)
+                .renderWithoutTableAlias();
         buffer.append(rc.getWhereClause());
         parameters.putAll(rc.getParameters());
     }

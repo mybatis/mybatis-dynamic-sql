@@ -16,13 +16,13 @@ public class MyBatis3Renderer {
     public WhereClauseAndParameters render() {
         // we do this so the render method can be called multiple times
         // and return the same result
-        return new Renderer().render(criteria, false);
+        return new Renderer().render(criteria);
     }
     
     public WhereClauseAndParameters renderWithoutTableAlias() {
         // we do this so the render method can be called multiple times
         // and return the same result
-        return new Renderer().render(criteria, true);
+        return new Renderer().renderWithoutTableAlias(criteria);
     }
     
     public static MyBatis3Renderer of(CriterionContainer criteria) {
@@ -30,10 +30,19 @@ public class MyBatis3Renderer {
     }
 
     private static class Renderer extends BaseMyBatis3Renderer {
-        public WhereClauseAndParameters render(CriterionContainer criteria, boolean ignoreAlias) {
-            AtomicInteger sequence = new AtomicInteger(1);
+        private AtomicInteger sequence = new AtomicInteger(1);
+
+        public Renderer() {
             buffer.append("where"); //$NON-NLS-1$
-            criteria.visitCriteria(c -> handleCriterion(c, sequence, ignoreAlias));
+        }
+        
+        public WhereClauseAndParameters render(CriterionContainer criteria) {
+            criteria.visitCriteria(c -> handleCriterion(c, sequence));
+            return WhereClauseAndParameters.of(buffer.toString(), parameters);
+        }
+
+        public WhereClauseAndParameters renderWithoutTableAlias(CriterionContainer criteria) {
+            criteria.visitCriteria(c -> handleCriterionWithoutTableAlias(c, sequence));
             return WhereClauseAndParameters.of(buffer.toString(), parameters);
         }
     }

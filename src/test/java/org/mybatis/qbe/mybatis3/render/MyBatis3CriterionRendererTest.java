@@ -24,7 +24,7 @@ public class MyBatis3CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render(true);
+        WhereClauseAndParameters rc = renderer.renderWithoutTableAlias();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -37,7 +37,7 @@ public class MyBatis3CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render(false);
+        WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" a.id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -50,7 +50,7 @@ public class MyBatis3CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render(true);
+        WhereClauseAndParameters rc = renderer.renderWithoutTableAlias();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -63,7 +63,7 @@ public class MyBatis3CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render(false);
+        WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -76,7 +76,7 @@ public class MyBatis3CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         MyBatis3CriterionRenderer<Date> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render(false);
+        WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -89,7 +89,7 @@ public class MyBatis3CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render(false);
+        WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -105,7 +105,7 @@ public class MyBatis3CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         MyBatis3CriterionRenderer<String> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render(false);
+        WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" upper(a.description) like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));
         assertThat(rc.getParameters().get("p1"), is("FRED"));
@@ -115,7 +115,7 @@ public class MyBatis3CriterionRendererTest {
         criterion = Criterion.of(field, condition);
         sequence = new AtomicInteger(1);
         renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
-        rc = renderer.render(false);
+        rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" a.description like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));
         assertThat(rc.getParameters().get("p1"), is("fred"));

@@ -22,20 +22,34 @@ public class MyBatis3CriterionRenderer<T> extends BaseMyBatis3Renderer implement
         this.sequence = sequence;
     }
     
-    public WhereClauseAndParameters render(boolean ignoreAlias) {
+    public WhereClauseAndParameters render() {
         buffer.append(' ');
         
         renderConnector();
 
         if (criterion.hasCriteria()) {
-            renderEmbeddedCriteria(ignoreAlias);
+            renderEmbeddedCriteria();
         } else {
-            renderTopLevelCriterion(ignoreAlias);
+            renderTopLevelCriterion();
         }
         
         return WhereClauseAndParameters.of(buffer.toString(), parameters);
     }
     
+    public WhereClauseAndParameters renderWithoutTableAlias() {
+        buffer.append(' ');
+        
+        renderConnector();
+
+        if (criterion.hasCriteria()) {
+            renderEmbeddedCriteriaWithoutTableAlias();
+        } else {
+            renderTopLevelCriterionWithoutTableAlias();
+        }
+        
+        return WhereClauseAndParameters.of(buffer.toString(), parameters);
+    }
+
     private void renderConnector() {
         criterion.connector().ifPresent(c -> {
             buffer.append(c);
@@ -43,20 +57,28 @@ public class MyBatis3CriterionRenderer<T> extends BaseMyBatis3Renderer implement
         });
     }
     
-    private void renderEmbeddedCriteria(boolean ignoreAlias) {
+    private void renderEmbeddedCriteria() {
         buffer.append('(');
-        renderTopLevelCriterion(ignoreAlias);
-        criterion.visitCriteria(c -> handleCriterion(c, sequence, ignoreAlias));
+        renderTopLevelCriterion();
+        criterion.visitCriteria(c -> handleCriterion(c, sequence));
         buffer.append(')');
     }
 
-    private void renderTopLevelCriterion(boolean ignoreAlias) {
-        if (ignoreAlias) {
-            buffer.append(criterion.renderFieldNameWithoutAlias());
-        } else {
-            buffer.append(criterion.renderFieldName());
-        }
+    private void renderEmbeddedCriteriaWithoutTableAlias() {
+        buffer.append('(');
+        renderTopLevelCriterionWithoutTableAlias();
+        criterion.visitCriteria(c -> handleCriterionWithoutTableAlias(c, sequence));
+        buffer.append(')');
+    }
+    
+    private void renderTopLevelCriterion() {
+        buffer.append(criterion.renderFieldName());
+        buffer.append(' ');
+        criterion.condition().accept(this);
+    }
 
+    private void renderTopLevelCriterionWithoutTableAlias() {
+        buffer.append(criterion.renderFieldNameWithoutAlias());
         buffer.append(' ');
         criterion.condition().accept(this);
     }

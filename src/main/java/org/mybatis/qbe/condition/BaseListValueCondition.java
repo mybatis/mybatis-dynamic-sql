@@ -8,11 +8,11 @@ import java.util.stream.Stream;
 public abstract class BaseListValueCondition<T> implements ListValueCondition<T> {
 
     private List<T> values = new ArrayList<>();
-    
+
     protected BaseListValueCondition(Stream<T> values) {
         values.forEach(this.values::add);
     }
-    
+
     @Override
     public void visitValues(Consumer<T> consumer) {
         values.stream().forEach(consumer);
