@@ -5,11 +5,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mybatis.qbe.WhereClause;
 import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
 
-public class MyBatis3Renderer {
+public class WhereClauseRenderer {
     
     private WhereClause whereClause;
     
-    private MyBatis3Renderer(WhereClause whereClause) {
+    private WhereClauseRenderer(WhereClause whereClause) {
         this.whereClause = whereClause;
     }
     
@@ -25,11 +25,11 @@ public class MyBatis3Renderer {
         return new Renderer().renderWithoutTableAlias(whereClause);
     }
     
-    public static MyBatis3Renderer of(WhereClause whereClause) {
-        return new MyBatis3Renderer(whereClause);
+    public static WhereClauseRenderer of(WhereClause whereClause) {
+        return new WhereClauseRenderer(whereClause);
     }
 
-    private static class Renderer extends BaseMyBatis3Renderer {
+    private static class Renderer extends AbstractRenderer {
         private AtomicInteger sequence = new AtomicInteger(1);
 
         public Renderer() {

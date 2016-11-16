@@ -14,7 +14,7 @@ import org.mybatis.qbe.condition.IsLikeCondition;
 import org.mybatis.qbe.field.Field;
 import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
 
-public class MyBatis3CriterionRendererTest {
+public class CriterionRendererTest {
 
     @Test
     public void testAliasWithIgnore() {
@@ -22,7 +22,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.renderWithoutTableAlias();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -35,7 +35,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" a.id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -48,7 +48,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.renderWithoutTableAlias();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -61,7 +61,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -74,7 +74,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Date> condition = IsEqualToCondition.of(new Date());
         Criterion<Date> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer<Date> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        CriterionRenderer<Date> renderer = CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"));
@@ -87,7 +87,7 @@ public class MyBatis3CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer<Integer> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"));
@@ -103,7 +103,7 @@ public class MyBatis3CriterionRendererTest {
         IsLikeCondition condition = IsLikeCaseInsensitiveCondition.of("fred");
         Criterion<String> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        MyBatis3CriterionRenderer<String> renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        CriterionRenderer<String> renderer = CriterionRenderer.of(criterion, sequence);
         
         WhereClauseAndParameters rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" upper(a.description) like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
@@ -114,7 +114,7 @@ public class MyBatis3CriterionRendererTest {
         condition = IsLikeCondition.of("fred");
         criterion = Criterion.of(field, condition);
         sequence = new AtomicInteger(1);
-        renderer = MyBatis3CriterionRenderer.of(criterion, sequence);
+        renderer = CriterionRenderer.of(criterion, sequence);
         rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" a.description like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));

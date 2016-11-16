@@ -13,11 +13,11 @@ import org.mybatis.qbe.condition.TwoValueCondition;
 import org.mybatis.qbe.field.Field;
 import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
 
-public class MyBatis3CriterionRenderer<T> extends BaseMyBatis3Renderer implements ConditionVisitor {
+public class CriterionRenderer<T> extends AbstractRenderer implements ConditionVisitor {
     private Criterion<T> criterion;
     private AtomicInteger sequence;
     
-    private MyBatis3CriterionRenderer(Criterion<T> criterion, AtomicInteger sequence) {
+    private CriterionRenderer(Criterion<T> criterion, AtomicInteger sequence) {
         this.criterion = criterion;
         this.sequence = sequence;
     }
@@ -118,8 +118,8 @@ public class MyBatis3CriterionRenderer<T> extends BaseMyBatis3Renderer implement
         buffer.append(condition.apply(values.stream()));
     }
 
-    public static <T> MyBatis3CriterionRenderer<T> of(Criterion<T> criterion, AtomicInteger sequence) {
-        return new MyBatis3CriterionRenderer<>(criterion, sequence);
+    public static <T> CriterionRenderer<T> of(Criterion<T> criterion, AtomicInteger sequence) {
+        return new CriterionRenderer<>(criterion, sequence);
     }
     
     private static String formatMyBatis3Parameter(int number, Field<?> field) {

@@ -11,7 +11,7 @@ import org.mybatis.qbe.WhereClause;
 import org.mybatis.qbe.condition.Condition;
 import org.mybatis.qbe.condition.Conditions;
 import org.mybatis.qbe.field.Field;
-import org.mybatis.qbe.mybatis3.render.MyBatis3Renderer;
+import org.mybatis.qbe.mybatis3.render.WhereClauseRenderer;
 
 public class WhereClauseAndParameters {
 
@@ -65,8 +65,8 @@ public class WhereClauseAndParameters {
             return buildRenderer().renderWithoutTableAlias();
         }
         
-        private MyBatis3Renderer buildRenderer() {
-            return MyBatis3Renderer.of(WhereClause.of(criteria.stream()));
+        private WhereClauseRenderer buildRenderer() {
+            return WhereClauseRenderer.of(WhereClause.of(criteria.stream()));
         }
     }
 }

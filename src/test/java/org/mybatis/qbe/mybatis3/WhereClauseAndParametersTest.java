@@ -15,7 +15,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.mybatis.qbe.field.Field;
 
-public class WhereClauseAndParametersBuilderTest {
+public class WhereClauseAndParametersTest {
     public static final Field<Date> field1 = Field.of("field1", JDBCType.DATE);
     public static final Field<Integer> field2 = Field.of("field2", JDBCType.INTEGER);
 
