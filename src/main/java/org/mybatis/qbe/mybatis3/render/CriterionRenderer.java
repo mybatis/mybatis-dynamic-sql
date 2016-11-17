@@ -11,7 +11,6 @@ import org.mybatis.qbe.condition.NoValueCondition;
 import org.mybatis.qbe.condition.SingleValueCondition;
 import org.mybatis.qbe.condition.TwoValueCondition;
 import org.mybatis.qbe.field.Field;
-import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public class CriterionRenderer<T> extends AbstractRenderer implements ConditionVisitor {
     private Criterion<T> criterion;
@@ -22,7 +21,7 @@ public class CriterionRenderer<T> extends AbstractRenderer implements ConditionV
         this.sequence = sequence;
     }
     
-    public RenderedWhereClause render() {
+    public RenderedCriterion render() {
         buffer.append(' ');
         
         renderConnector();
@@ -33,10 +32,10 @@ public class CriterionRenderer<T> extends AbstractRenderer implements ConditionV
             renderTopLevelCriterion();
         }
         
-        return RenderedWhereClause.of(buffer.toString(), parameters);
+        return RenderedCriterion.of(buffer.toString(), parameters);
     }
     
-    public RenderedWhereClause renderWithoutTableAlias() {
+    public RenderedCriterion renderWithoutTableAlias() {
         buffer.append(' ');
         
         renderConnector();
@@ -47,7 +46,7 @@ public class CriterionRenderer<T> extends AbstractRenderer implements ConditionV
             renderTopLevelCriterionWithoutTableAlias();
         }
         
-        return RenderedWhereClause.of(buffer.toString(), parameters);
+        return RenderedCriterion.of(buffer.toString(), parameters);
     }
 
     private void renderConnector() {
