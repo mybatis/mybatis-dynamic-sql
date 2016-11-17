@@ -4,7 +4,7 @@ import static animal.data.AnimalDataFields.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.condition.Conditions.*;
-import static org.mybatis.qbe.mybatis3.RenderedWhereClause.where;
+import static org.mybatis.qbe.mybatis3.RenderingShortcut.where;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;

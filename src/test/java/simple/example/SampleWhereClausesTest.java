@@ -3,7 +3,7 @@ package simple.example;
 import static org.hamcrest.core.Is.*;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.condition.Conditions.*;
-import static org.mybatis.qbe.mybatis3.RenderedWhereClause.where;
+import static org.mybatis.qbe.mybatis3.RenderingShortcut.where;
 import static simple.example.SimpleTableFields.*;
 
 import org.junit.Test;

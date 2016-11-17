@@ -6,7 +6,7 @@ import static org.mybatis.qbe.condition.Conditions.and;
 import static org.mybatis.qbe.condition.Conditions.isEqualTo;
 import static org.mybatis.qbe.condition.Conditions.isLessThan;
 import static org.mybatis.qbe.condition.Conditions.or;
-import static org.mybatis.qbe.mybatis3.RenderedWhereClause.where;
+import static org.mybatis.qbe.mybatis3.RenderingShortcut.where;
 
 import java.sql.JDBCType;
 import java.util.Date;

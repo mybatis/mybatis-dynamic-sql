@@ -220,7 +220,7 @@ All of these statements rely on a set of static methods to make them look expres
 ```java
 // import all conditions and the where clause builder
 import static org.mybatis.qbe.condition.Conditions.*;
-import static org.mybatis.qbe.mybatis3.RenderedWhereClause.where;
+import static org.mybatis.qbe.mybatis3.RenderingShortcut.where;
 
 // import all field definitions for your table
 import static simple.example.SimpleTableFields.*;
