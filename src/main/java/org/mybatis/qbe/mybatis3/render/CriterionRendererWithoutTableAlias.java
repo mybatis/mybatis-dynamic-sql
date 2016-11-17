@@ -16,7 +16,7 @@ public class CriterionRendererWithoutTableAlias<T> extends AbstractCriterionRend
     }
 
     @Override
-    protected String fieldName(Criterion<?> criterion) {
+    protected String fieldName(Criterion<T> criterion) {
         return criterion.fieldNameWithoutAlias();
     }
 

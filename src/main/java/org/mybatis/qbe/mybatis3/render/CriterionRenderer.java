@@ -16,7 +16,7 @@ public class CriterionRenderer<T> extends AbstractCriterionRenderer<T> {
     }
 
     @Override
-    protected String fieldName(Criterion<?> criterion) {
+    protected String fieldName(Criterion<T> criterion) {
         return criterion.fieldName();
     }
 

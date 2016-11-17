@@ -65,5 +65,5 @@ public abstract class AbstractCriterionRenderer<T> {
     }
 
     protected abstract <S> AbstractCriterionRenderer<S> newRenderer(Criterion<S> criterion, AtomicInteger sequence);
-    protected abstract String fieldName(Criterion<?> criterion);
+    protected abstract String fieldName(Criterion<T> criterion);
 }
