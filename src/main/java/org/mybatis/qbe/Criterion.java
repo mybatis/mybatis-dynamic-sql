@@ -13,7 +13,7 @@ public class Criterion<T> {
     private Field<T> field;
     private Condition<T> condition;
     private String connector;
-    private List<Criterion<?>> criteria = new ArrayList<>();
+    private List<Criterion<?>> subCriteria = new ArrayList<>();
     
     private Criterion() {
         super();
@@ -23,8 +23,8 @@ public class Criterion<T> {
         return Optional.ofNullable(connector);
     }
     
-    public boolean hasCriteria() {
-        return !criteria.isEmpty();
+    public boolean hasSubCriteria() {
+        return !subCriteria.isEmpty();
     }
     
     public Field<T> field() {
@@ -43,20 +43,20 @@ public class Criterion<T> {
         return condition.fieldNameWithoutAlias(field);
     }
     
-    public void visitCriteria(Consumer<Criterion<?>> consumer) {
-        criteria.stream().forEach(consumer::accept);
+    public void visitSubCriteria(Consumer<Criterion<?>> consumer) {
+        subCriteria.stream().forEach(consumer::accept);
     }
 
-    public static <T> Criterion<T> of(Field<T> field, Condition<T> condition, Criterion<?>...criteria) {
-        return Criterion.of(null,  field, condition, criteria);
+    public static <T> Criterion<T> of(Field<T> field, Condition<T> condition, Criterion<?>...subCriteria) {
+        return Criterion.of(null,  field, condition, subCriteria);
     }
     
-    public static <T> Criterion<T> of(String connector, Field<T> field, Condition<T> condition, Criterion<?>...criteria) {
+    public static <T> Criterion<T> of(String connector, Field<T> field, Condition<T> condition, Criterion<?>...subCriteria) {
         Criterion<T> criterion = new Criterion<>();
         criterion.field = field;
         criterion.condition = condition;
         criterion.connector = connector;
-        Arrays.stream(criteria).forEach(criterion.criteria::add);
+        Arrays.stream(subCriteria).forEach(criterion.subCriteria::add);
         return criterion;
     }
 }

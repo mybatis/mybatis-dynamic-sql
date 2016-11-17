@@ -94,7 +94,7 @@ public class CriterionRendererTest {
     }
     
     @Test
-    public void testCustomCallbacks() {
+    public void testCustomCondition() {
         Field<String> field = Field.of("description", JDBCType.VARCHAR)
                 .withTypeHandler("foo.Bar")
                 .withAlias("a");
@@ -108,16 +108,6 @@ public class CriterionRendererTest {
         assertThat(rc.whereClauseFragment(), is(" upper(a.description) like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
         assertThat(rc.fragmentParameters().size(), is(1));
         assertThat(rc.fragmentParameters().get("p1"), is("FRED"));
-        
-        // make sure that we didn't destroy the field definition with our custom renderer above
-        condition = IsLikeCondition.of("fred");
-        criterion = Criterion.of(field, condition);
-        sequence = new AtomicInteger(1);
-        renderer = CriterionRenderer.of(criterion, sequence);
-        rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" a.description like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
-        assertThat(rc.fragmentParameters().get("p1"), is("fred"));
     }
     
     public static class IsLikeCaseInsensitiveCondition extends IsLikeCondition {

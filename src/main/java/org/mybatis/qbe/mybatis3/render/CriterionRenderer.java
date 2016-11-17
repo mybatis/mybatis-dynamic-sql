@@ -1,18 +1,10 @@
 package org.mybatis.qbe.mybatis3.render;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.qbe.Criterion;
-import org.mybatis.qbe.condition.ConditionVisitor;
-import org.mybatis.qbe.condition.ListValueCondition;
-import org.mybatis.qbe.condition.NoValueCondition;
-import org.mybatis.qbe.condition.Renderable;
-import org.mybatis.qbe.condition.SingleValueCondition;
-import org.mybatis.qbe.condition.TwoValueCondition;
 
-public class CriterionRenderer<T> extends AbstractRenderer implements ConditionVisitor {
+public class CriterionRenderer<T> extends AbstractRenderer {
     private Criterion<T> criterion;
     private AtomicInteger sequence;
     
@@ -26,8 +18,8 @@ public class CriterionRenderer<T> extends AbstractRenderer implements ConditionV
         
         renderConnector();
 
-        if (criterion.hasCriteria()) {
-            renderEmbeddedCriteria();
+        if (criterion.hasSubCriteria()) {
+            renderTopLevelAndSubCriteria();
         } else {
             renderTopLevelCriterion();
         }
@@ -40,8 +32,8 @@ public class CriterionRenderer<T> extends AbstractRenderer implements ConditionV
         
         renderConnector();
 
-        if (criterion.hasCriteria()) {
-            renderEmbeddedCriteriaWithoutTableAlias();
+        if (criterion.hasSubCriteria()) {
+            renderTopLevelAndSubCriteriaWithoutTableAlias();
         } else {
             renderTopLevelCriterionWithoutTableAlias();
         }
@@ -56,72 +48,40 @@ public class CriterionRenderer<T> extends AbstractRenderer implements ConditionV
         });
     }
     
-    private void renderEmbeddedCriteria() {
+    private void renderTopLevelAndSubCriteria() {
         buffer.append('(');
         renderTopLevelCriterion();
-        criterion.visitCriteria(c -> handleCriterion(c, sequence));
+        criterion.visitSubCriteria(c -> handleCriterion(c, sequence));
         buffer.append(')');
     }
 
-    private void renderEmbeddedCriteriaWithoutTableAlias() {
+    private void renderTopLevelAndSubCriteriaWithoutTableAlias() {
         buffer.append('(');
         renderTopLevelCriterionWithoutTableAlias();
-        criterion.visitCriteria(c -> handleCriterionWithoutTableAlias(c, sequence));
+        criterion.visitSubCriteria(c -> handleCriterionWithoutTableAlias(c, sequence));
         buffer.append(')');
     }
     
     private void renderTopLevelCriterion() {
         buffer.append(criterion.fieldName());
         buffer.append(' ');
-        criterion.condition().accept(this);
+        visitCondition();
     }
 
     private void renderTopLevelCriterionWithoutTableAlias() {
         buffer.append(criterion.fieldNameWithoutAlias());
         buffer.append(' ');
-        criterion.condition().accept(this);
+        visitCondition();
     }
 
-    @Override
-    public void visit(NoValueCondition<?> condition) {
-        buffer.append(condition.apply());
-    }
-
-    @Override
-    public void visit(SingleValueCondition<?> condition) {
-        int number = sequence.getAndIncrement();
-        buffer.append(condition.apply(ParameterModel.of(number, criterion.field())));
-        parameters.put(formatParameterName(number), condition.value());
-    }
-
-    @Override
-    public void visit(TwoValueCondition<?> condition) {
-        int number1 = sequence.getAndIncrement();
-        int number2 = sequence.getAndIncrement();
-        buffer.append(condition.apply(ParameterModel.of(number1, criterion.field()),
-                ParameterModel.of(number2, criterion.field())));
-        parameters.put(formatParameterName(number1), condition.value1());
-        parameters.put(formatParameterName(number2), condition.value2());
-    }
-    
-    @Override
-    public void visit(ListValueCondition<?> condition) {
-        List<Renderable> values = new ArrayList<>();
-        
-        condition.visitValues(v -> {
-            int number = sequence.getAndIncrement();
-            values.add(ParameterModel.of(number, criterion.field()));
-            parameters.put(formatParameterName(number), v);
-        });
-        
-        buffer.append(condition.apply(values.stream()));
+    private void visitCondition() {
+        ConditionRenderer visitor = ConditionRenderer.of(sequence, criterion.field());
+        criterion.condition().accept(visitor);
+        buffer.append(visitor.fragment());
+        parameters.putAll(visitor.parameters());
     }
 
     public static <T> CriterionRenderer<T> of(Criterion<T> criterion, AtomicInteger sequence) {
         return new CriterionRenderer<>(criterion, sequence);
-    }
-    
-    private static String formatParameterName(int number) {
-        return String.format("p%s", number); //$NON-NLS-1$
     }
 }
