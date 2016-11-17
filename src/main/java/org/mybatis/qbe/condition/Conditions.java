@@ -17,11 +17,11 @@ public interface Conditions {
 
     // for all data types
     static <T> IsNullCondition<T> isNull() {
-        return IsNullCondition.newInstance();
+        return new IsNullCondition<>();
     }
 
     static <T> IsNotNullCondition<T> isNotNull() {
-        return IsNotNullCondition.newInstance();
+        return new IsNotNullCondition<>();
     }
 
     static <T> IsEqualToCondition<T> isEqualTo(T value) {

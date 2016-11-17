@@ -16,7 +16,7 @@ public class WhereClauseTest {
     public void testWhereClauseBuilder() {
         Field<Integer> field = Field.of("id", JDBCType.INTEGER);
         IsLessThanCondition<Integer> isLessThanCondition = IsLessThanCondition.of(3);
-        IsNullCondition<Integer> isNullCondition = IsNullCondition.newInstance();
+        IsNullCondition<Integer> isNullCondition = new IsNullCondition<>();
         
         WhereClause whereClause = WhereClause.of(field, isLessThanCondition)
                 .or(field, isNullCondition)
