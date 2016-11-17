@@ -7,13 +7,13 @@ import org.mybatis.qbe.field.Field;
 import org.mybatis.qbe.mybatis3.render.WhereClauseRenderer;
 
 /**
- * This class combines the operations of building the where clause
+ * This interface combines the operations of building the where clause
  * and rendering it.  It is a shortcut to make the client code easier.
  * 
  * @author Jeff Butler
  *
  */
-public class RenderingShortcut {
+public interface RenderingShortcut {
 
     public static <T> Builder where(Field<T> field, Condition<T> condition, Criterion<?>...criteria) {
         return new Builder(field, condition, criteria);
