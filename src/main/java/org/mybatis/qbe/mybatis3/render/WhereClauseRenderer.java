@@ -1,5 +1,7 @@
 package org.mybatis.qbe.mybatis3.render;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.qbe.WhereClause;
@@ -29,20 +31,30 @@ public class WhereClauseRenderer {
         return new WhereClauseRenderer(whereClause);
     }
 
-    private static class Renderer extends AbstractRenderer {
+    private static class Renderer {
         private AtomicInteger sequence = new AtomicInteger(1);
+        private StringBuilder buffer = new StringBuilder();
+        private Map<String, Object> parameters = new HashMap<>();
 
         public Renderer() {
             buffer.append("where"); //$NON-NLS-1$
         }
         
         public RenderedWhereClause render(WhereClause whereClause) {
-            whereClause.visitCriteria(c -> handleCriterion(c, sequence));
+            whereClause.visitCriteria(c -> {
+                RenderedCriterion rc = CriterionRenderer.of(c, sequence).render();
+                buffer.append(rc.whereClauseFragment());
+                parameters.putAll(rc.fragmentParameters());
+            });
             return RenderedWhereClause.of(buffer.toString(), parameters);
         }
 
         public RenderedWhereClause renderWithoutTableAlias(WhereClause whereClause) {
-            whereClause.visitCriteria(c -> handleCriterionWithoutTableAlias(c, sequence));
+            whereClause.visitCriteria(c -> {
+                RenderedCriterion rc = CriterionRenderer.of(c, sequence).renderWithoutTableAlias();
+                buffer.append(rc.whereClauseFragment());
+                parameters.putAll(rc.fragmentParameters());
+            });
             return RenderedWhereClause.of(buffer.toString(), parameters);
         }
     }

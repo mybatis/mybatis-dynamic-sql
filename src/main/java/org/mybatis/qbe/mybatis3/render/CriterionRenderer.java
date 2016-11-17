@@ -1,10 +1,14 @@
 package org.mybatis.qbe.mybatis3.render;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.qbe.Criterion;
 
-public class CriterionRenderer<T> extends AbstractRenderer {
+public class CriterionRenderer<T> {
+    private StringBuilder buffer = new StringBuilder();
+    private Map<String, Object> parameters = new HashMap<>();
     private Criterion<T> criterion;
     private AtomicInteger sequence;
     
@@ -81,6 +85,19 @@ public class CriterionRenderer<T> extends AbstractRenderer {
         parameters.putAll(visitor.parameters());
     }
 
+    private <S> void handleCriterion(Criterion<S> criterion, AtomicInteger sequence) {
+        RenderedCriterion rc = CriterionRenderer.of(criterion, sequence).render();
+        buffer.append(rc.whereClauseFragment());
+        parameters.putAll(rc.fragmentParameters());
+    }
+
+    private <S> void handleCriterionWithoutTableAlias(Criterion<S> criterion, AtomicInteger sequence) {
+        RenderedCriterion rc = CriterionRenderer.of(criterion, sequence)
+                .renderWithoutTableAlias();
+        buffer.append(rc.whereClauseFragment());
+        parameters.putAll(rc.fragmentParameters());
+    }
+    
     public static <T> CriterionRenderer<T> of(Criterion<T> criterion, AtomicInteger sequence) {
         return new CriterionRenderer<>(criterion, sequence);
     }
