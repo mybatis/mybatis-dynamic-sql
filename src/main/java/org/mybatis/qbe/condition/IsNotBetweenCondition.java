@@ -7,8 +7,8 @@ public class IsNotBetweenCondition<T> extends BaseTwoValueCondition<T> {
     }
     
     @Override
-    public String apply(String value1, String value2) {
-        return String.format("not between %s and %s", value1, value2); //$NON-NLS-1$
+    public String apply(Renderable renderable1, Renderable renderable2) {
+        return String.format("not between %s and %s", renderable1.render(), renderable2.render()); //$NON-NLS-1$
     }
 
     public static class Builder<T> {

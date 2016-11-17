@@ -7,8 +7,8 @@ public class IsLikeCondition extends BaseSingleValueCondition<String> {
     }
 
     @Override
-    public String apply(String value) {
-        return String.format("like %s", value); //$NON-NLS-1$
+    public String apply(Renderable renderable) {
+        return String.format("like %s", renderable.render()); //$NON-NLS-1$
     }
     
     public static IsLikeCondition of(String value) {

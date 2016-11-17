@@ -7,8 +7,8 @@ public class IsNotEqualToCondition<T> extends BaseSingleValueCondition<T> {
     }
 
     @Override
-    public String apply(String value) {
-        return String.format("<> %s", value); //$NON-NLS-1$
+    public String apply(Renderable renderable) {
+        return String.format("<> %s", renderable.render()); //$NON-NLS-1$
     }
     
     public static <T> IsNotEqualToCondition<T> of(T value) {

@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 public interface ListValueCondition<T> extends Condition<T> {
     void visitValues(Consumer<T> consumer);
-    String apply(Stream<String> values);
+    String apply(Stream<Renderable> renderables);
 
     @Override
     default void accept(ConditionVisitor visitor) {

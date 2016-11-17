@@ -8,9 +8,9 @@ import org.mybatis.qbe.Criterion;
 import org.mybatis.qbe.condition.ConditionVisitor;
 import org.mybatis.qbe.condition.ListValueCondition;
 import org.mybatis.qbe.condition.NoValueCondition;
+import org.mybatis.qbe.condition.Renderable;
 import org.mybatis.qbe.condition.SingleValueCondition;
 import org.mybatis.qbe.condition.TwoValueCondition;
-import org.mybatis.qbe.field.Field;
 
 public class CriterionRenderer<T> extends AbstractRenderer implements ConditionVisitor {
     private Criterion<T> criterion;
@@ -90,7 +90,7 @@ public class CriterionRenderer<T> extends AbstractRenderer implements ConditionV
     @Override
     public void visit(SingleValueCondition<?> condition) {
         int number = sequence.getAndIncrement();
-        buffer.append(condition.apply(formatMyBatis3Parameter(number, criterion.field())));
+        buffer.append(condition.apply(ParameterModel.of(number, criterion.field())));
         parameters.put(formatParameterName(number), condition.value());
     }
 
@@ -98,19 +98,19 @@ public class CriterionRenderer<T> extends AbstractRenderer implements ConditionV
     public void visit(TwoValueCondition<?> condition) {
         int number1 = sequence.getAndIncrement();
         int number2 = sequence.getAndIncrement();
-        buffer.append(condition.apply(formatMyBatis3Parameter(number1, criterion.field()),
-                formatMyBatis3Parameter(number2, criterion.field())));
+        buffer.append(condition.apply(ParameterModel.of(number1, criterion.field()),
+                ParameterModel.of(number2, criterion.field())));
         parameters.put(formatParameterName(number1), condition.value1());
         parameters.put(formatParameterName(number2), condition.value2());
     }
     
     @Override
     public void visit(ListValueCondition<?> condition) {
-        List<String> values = new ArrayList<>();
+        List<Renderable> values = new ArrayList<>();
         
         condition.visitValues(v -> {
             int number = sequence.getAndIncrement();
-            values.add(formatMyBatis3Parameter(number, criterion.field()));
+            values.add(ParameterModel.of(number, criterion.field()));
             parameters.put(formatParameterName(number), v);
         });
         
@@ -119,22 +119,6 @@ public class CriterionRenderer<T> extends AbstractRenderer implements ConditionV
 
     public static <T> CriterionRenderer<T> of(Criterion<T> criterion, AtomicInteger sequence) {
         return new CriterionRenderer<>(criterion, sequence);
-    }
-    
-    private static String formatMyBatis3Parameter(int number, Field<?> field) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("#{parameters.p"); //$NON-NLS-1$
-        buffer.append(number);
-        buffer.append(",jdbcType="); //$NON-NLS-1$
-        buffer.append(field.jdbcType().getName());
-        
-        field.typeHandler().ifPresent(th -> {
-            buffer.append(",typeHandler="); //$NON-NLS-1$
-            buffer.append(th);
-        });
-        
-        buffer.append('}');
-        return buffer.toString();
     }
     
     private static String formatParameterName(int number) {
