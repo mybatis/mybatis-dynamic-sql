@@ -132,25 +132,12 @@ public class CriterionRendererTest {
         
         @Override
         public String fieldName(Field<String> field) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("upper(");
-            field.alias().ifPresent(a -> {
-                sb.append(a);
-                sb.append('.');
-            });
-            sb.append(field.name());
-            sb.append(')');
-            return sb.toString();
-            
+            return String.format("upper(%s)", field.aliasedName());
         }
 
         @Override
         public String fieldNameWithoutAlias(Field<String> field) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("upper(");
-            sb.append(field.name());
-            sb.append(')');
-            return sb.toString();
+            return String.format("upper(%s)", field.name());
         }
         
         @Override
