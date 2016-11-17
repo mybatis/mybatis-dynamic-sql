@@ -51,7 +51,7 @@ public class WhereClauseRenderer {
 
         public RenderedWhereClause renderWithoutTableAlias(WhereClause whereClause) {
             whereClause.visitCriteria(c -> {
-                RenderedCriterion rc = CriterionRenderer.of(c, sequence).renderWithoutTableAlias();
+                RenderedCriterion rc = CriterionRendererWithoutTableAlias.of(c, sequence).render();
                 buffer.append(rc.whereClauseFragment());
                 parameters.putAll(rc.fragmentParameters());
             });

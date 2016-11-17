@@ -21,9 +21,9 @@ public class CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
+        CriterionRendererWithoutTableAlias<Integer> renderer = CriterionRendererWithoutTableAlias.of(criterion, sequence);
         
-        RenderedCriterion rc = renderer.renderWithoutTableAlias();
+        RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.fragmentParameters().size(), is(1));
     }
@@ -47,9 +47,9 @@ public class CriterionRendererTest {
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         Criterion<Integer> criterion = Criterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
+        CriterionRendererWithoutTableAlias<Integer> renderer = CriterionRendererWithoutTableAlias.of(criterion, sequence);
         
-        RenderedCriterion rc = renderer.renderWithoutTableAlias();
+        RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.fragmentParameters().size(), is(1));
     }
