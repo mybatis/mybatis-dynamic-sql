@@ -7,11 +7,11 @@ import java.util.Map;
 public class RenderedWhereClause {
 
     private String whereClause;
-    private Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> parameters;
     
     private RenderedWhereClause(String whereClause, Map<String, Object> parameters) {
         this.whereClause = whereClause;
-        this.parameters.putAll(parameters);
+        this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
     }
 
     public String getWhereClause() {
@@ -19,7 +19,7 @@ public class RenderedWhereClause {
     }
 
     public Map<String, Object> getParameters() {
-        return Collections.unmodifiableMap(parameters);
+        return parameters;
     }
     
     public static RenderedWhereClause of(String whereClause, Map<String, Object> parameters) {

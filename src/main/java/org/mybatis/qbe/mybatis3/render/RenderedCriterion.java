@@ -7,11 +7,11 @@ import java.util.Map;
 public class RenderedCriterion {
 
     private String whereClauseFragment;
-    private Map<String, Object> fragmentParameters = new HashMap<>();
+    private Map<String, Object> fragmentParameters;
     
     private RenderedCriterion(String whereClauseFragment, Map<String, Object> fragmentParameters) {
         this.whereClauseFragment = whereClauseFragment;
-        this.fragmentParameters.putAll(fragmentParameters);
+        this.fragmentParameters = Collections.unmodifiableMap(new HashMap<>(fragmentParameters));
     }
 
     public String whereClauseFragment() {
@@ -19,7 +19,7 @@ public class RenderedCriterion {
     }
 
     public Map<String, Object> fragmentParameters() {
-        return Collections.unmodifiableMap(fragmentParameters);
+        return fragmentParameters;
     }
     
     public static RenderedCriterion of(String whereClauseFragment, Map<String, Object> fragmentParameters) {
