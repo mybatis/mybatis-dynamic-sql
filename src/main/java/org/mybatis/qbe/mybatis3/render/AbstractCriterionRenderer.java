@@ -23,9 +23,11 @@ public abstract class AbstractCriterionRenderer<T> {
         renderConnector();
 
         if (criterion.hasSubCriteria()) {
-            renderTopLevelAndSubCriteria();
+            buffer.append('(');
+            renderCriteria();
+            buffer.append(')');
         } else {
-            renderTopLevelCriterion();
+            renderCriteria();
         }
         
         return RenderedCriterion.of(buffer.toString(), parameters);
@@ -38,17 +40,11 @@ public abstract class AbstractCriterionRenderer<T> {
         });
     }
     
-    private void renderTopLevelAndSubCriteria() {
-        buffer.append('(');
-        renderTopLevelCriterion();
-        criterion.visitSubCriteria(c -> handleCriterion(c, sequence));
-        buffer.append(')');
-    }
-
-    private void renderTopLevelCriterion() {
+    private void renderCriteria() {
         buffer.append(fieldName(criterion));
         buffer.append(' ');
         visitCondition();
+        criterion.visitSubCriteria(c -> handleCriterion(c, sequence));
     }
 
     private void visitCondition() {
