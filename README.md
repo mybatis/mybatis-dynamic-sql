@@ -1,5 +1,8 @@
 # MyBatis Query by Example
 
+[![Build Status](https://travis-ci.org/jeffgbutler/mybatis-qbe.svg?branch=master)](https://travis-ci.org/jeffgbutler/mybatis-qbe)
+[![Coverage Status](https://coveralls.io/repos/jeffgbutler/mybatis-qbe/badge.svg?branch=master&service=github)](https://coveralls.io/github/jeffgbutler/mybatis-qbe?branch=master)
+
 ## What Is This?
 This library provides a framework for creating dynamic where clauses for SQL statements.
 The primary goals of the library are:
