@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.qbe.Criterion;
-import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
+import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public abstract class AbstractRenderer {
 
@@ -13,13 +13,13 @@ public abstract class AbstractRenderer {
     protected StringBuilder buffer = new StringBuilder();
     
     protected <T> void handleCriterion(Criterion<T> criterion, AtomicInteger sequence) {
-        WhereClauseAndParameters rc = CriterionRenderer.of(criterion, sequence).render();
+        RenderedWhereClause rc = CriterionRenderer.of(criterion, sequence).render();
         buffer.append(rc.getWhereClause());
         parameters.putAll(rc.getParameters());
     }
 
     protected <T> void handleCriterionWithoutTableAlias(Criterion<T> criterion, AtomicInteger sequence) {
-        WhereClauseAndParameters rc = CriterionRenderer.of(criterion, sequence)
+        RenderedWhereClause rc = CriterionRenderer.of(criterion, sequence)
                 .renderWithoutTableAlias();
         buffer.append(rc.getWhereClause());
         parameters.putAll(rc.getParameters());

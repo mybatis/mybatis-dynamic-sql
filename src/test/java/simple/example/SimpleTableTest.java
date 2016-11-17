@@ -11,7 +11,7 @@ import java.sql.DriverManager;
 import java.util.List;
 
 import static org.mybatis.qbe.condition.Conditions.*;
-import static org.mybatis.qbe.mybatis3.WhereClauseAndParameters.where;
+import static org.mybatis.qbe.mybatis3.RenderedWhereClause.where;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
@@ -19,7 +19,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
+import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public class SimpleTableTest {
 
@@ -48,11 +48,11 @@ public class SimpleTableTest {
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isEqualTo(1))
+            RenderedWhereClause renderedWhereClause = where(id, isEqualTo(1))
                     .or(occupation, isNull())
-                    .build();
+                    .render();
             
-            List<SimpleTable> rows = mapper.selectByExample(whereClauseAndParameters);
+            List<SimpleTable> rows = mapper.selectByExample(renderedWhereClause);
             
             assertThat(rows.size(), is(3));
         } finally {
@@ -66,10 +66,10 @@ public class SimpleTableTest {
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(firstName, isIn("Fred", "Barney"))
-                    .build();
+            RenderedWhereClause renderedWhereClause = where(firstName, isIn("Fred", "Barney"))
+                    .render();
             
-            List<SimpleTable> rows = mapper.selectByExample(whereClauseAndParameters);
+            List<SimpleTable> rows = mapper.selectByExample(renderedWhereClause);
             
             assertThat(rows.size(), is(2));
         } finally {
@@ -82,8 +82,8 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            WhereClauseAndParameters whereClauseAndParameters = where(occupation, isNull()).buildWithoutTableAlias();
-            int rows = mapper.deleteByExample(whereClauseAndParameters);
+            RenderedWhereClause renderedWhereClause = where(occupation, isNull()).renderWithoutTableAlias();
+            int rows = mapper.deleteByExample(renderedWhereClause);
             
             assertThat(rows, is(2));
         } finally {
@@ -96,8 +96,8 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isEqualTo(1)).build();
-            List<SimpleTable> rows = mapper.selectByExampleWithProvider(whereClauseAndParameters);
+            RenderedWhereClause renderedWhereClause = where(id, isEqualTo(1)).render();
+            List<SimpleTable> rows = mapper.selectByExampleWithProvider(renderedWhereClause);
             
             assertThat(rows.size(), is(1));
         } finally {
@@ -110,8 +110,8 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            WhereClauseAndParameters whereClauseAndParameters = where(occupation, isNull()).buildWithoutTableAlias();
-            int rows = mapper.deleteByExampleWithProvider(whereClauseAndParameters);
+            RenderedWhereClause renderedWhereClause = where(occupation, isNull()).renderWithoutTableAlias();
+            int rows = mapper.deleteByExampleWithProvider(renderedWhereClause);
             
             assertThat(rows, is(2));
         } finally {

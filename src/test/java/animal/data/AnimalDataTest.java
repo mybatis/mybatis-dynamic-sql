@@ -4,7 +4,7 @@ import static animal.data.AnimalDataFields.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.condition.Conditions.*;
-import static org.mybatis.qbe.mybatis3.WhereClauseAndParameters.where;
+import static org.mybatis.qbe.mybatis3.RenderedWhereClause.where;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -21,7 +21,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
+import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public class AnimalDataTest {
 
@@ -65,9 +65,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isLessThan(20)).build();
+            RenderedWhereClause renderedWhereClause = where(id, isLessThan(20)).render();
             
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(19));
         } finally {
             sqlSession.close();
@@ -80,9 +80,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isBetween(30).and(40)).build();
+            RenderedWhereClause renderedWhereClause = where(id, isBetween(30).and(40)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(11));
         } finally {
             sqlSession.close();
@@ -95,9 +95,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isNotBetween(10).and(60)).build();
+            RenderedWhereClause renderedWhereClause = where(id, isNotBetween(10).and(60)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(14));
         } finally {
             sqlSession.close();
@@ -110,9 +110,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isEqualTo(5)).build();
+            RenderedWhereClause renderedWhereClause = where(id, isEqualTo(5)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(1));
         } finally {
             sqlSession.close();
@@ -125,9 +125,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isNotEqualTo(5)).build();
+            RenderedWhereClause renderedWhereClause = where(id, isNotEqualTo(5)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(64));
         } finally {
             sqlSession.close();
@@ -140,9 +140,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isGreaterThanOrEqualTo(60)).build();
+            RenderedWhereClause renderedWhereClause = where(id, isGreaterThanOrEqualTo(60)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(6));
         } finally {
             sqlSession.close();
@@ -155,9 +155,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isLessThanOrEqualTo(10)).build();
+            RenderedWhereClause renderedWhereClause = where(id, isLessThanOrEqualTo(10)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(10));
         } finally {
             sqlSession.close();
@@ -170,9 +170,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isIn(5, 8, 10)).build();
+            RenderedWhereClause renderedWhereClause = where(id, isIn(5, 8, 10)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(3));
         } finally {
             sqlSession.close();
@@ -185,9 +185,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isNotIn(5, 8, 10)).build();
+            RenderedWhereClause renderedWhereClause = where(id, isNotIn(5, 8, 10)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(62));
         } finally {
             sqlSession.close();
@@ -200,9 +200,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(animalName, isLike("%squirrel")).build();
+            RenderedWhereClause renderedWhereClause = where(animalName, isLike("%squirrel")).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(2));
         } finally {
             sqlSession.close();
@@ -215,9 +215,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(animalName, isNotLike("%squirrel")).build();
+            RenderedWhereClause renderedWhereClause = where(animalName, isNotLike("%squirrel")).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(63));
         } finally {
             sqlSession.close();
@@ -230,7 +230,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters myExample = where(id, isIn(5, 8, 10)).buildWithoutTableAlias();
+            RenderedWhereClause myExample = where(id, isIn(5, 8, 10)).renderWithoutTableAlias();
 
             int rowCount = mapper.deleteByExample(myExample);
             assertThat(rowCount, is(3));
@@ -245,9 +245,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isNull()).build();
+            RenderedWhereClause renderedWhereClause = where(id, isNull()).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(0));
         } finally {
             sqlSession.close();
@@ -260,9 +260,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isNotNull()).build();
+            RenderedWhereClause renderedWhereClause = where(id, isNotNull()).render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(65));
         } finally {
             sqlSession.close();
@@ -275,13 +275,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isIn(1, 5, 7))
+            RenderedWhereClause renderedWhereClause = where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
-                    .build();
+                    .render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(4));
         } finally {
             sqlSession.close();

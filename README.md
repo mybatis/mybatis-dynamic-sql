@@ -32,13 +32,13 @@ The goal is to enable very expressive dynamic queries in MyBatis.  Here's an exa
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isIn(1, 5, 7))
+            RenderedWhereClause renderedWhereClause = where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
-                    .build();
+                    .render();
 
-            List<AnimalData> animals = mapper.selectByExample(whereClauseAndParameters);
+            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
             assertThat(animals.size(), is(4));
         } finally {
             sqlSession.close();
@@ -93,32 +93,32 @@ public interface SimpleTableFields {
 ```
 
 ### Second - Write XML or SQL Providers That Will Use the Generated Where Clause
-The library will create an object of class ```org.mybatis.qbe.mybatis3.WhereClauseAndParameters``` that will be used as input to an SQL provider or an XML mapper.  This object includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that this object be the one and only parameter to a MyBatis method.  Both SQL providers and XML mappers will make use of the generated where clause.
+The library will create an object of class ```org.mybatis.qbe.mybatis3.RenderedWhereClause``` that will be used as input to an SQL provider or an XML mapper.  This object includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that this object be the one and only parameter to a MyBatis method.  Both SQL providers and XML mappers will make use of the generated where clause.
 
 For example, a SQL provider might look like this:
 
 ```java
 package simple.example;
 
-import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
+import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public class SimpleTableSqlProvider {
     
-    public String selectByExample(WhereClauseAndParameters whereClauseAndParameters) {
+    public String selectByExample(RenderedWhereClause renderedWhereClause) {
         StringBuilder sb = new StringBuilder();
         
         sb.append("select a.id, a.first_name as firstName, a.last_name as lastName, a.birth_date as birthDate, a.occupation ");
         sb.append("from SimpleTable a ");
-        sb.append(whereClauseAndParameters.getWhereClause());
+        sb.append(renderedWhereClause.getWhereClause());
         
         return sb.toString();
     }
 
-    public String deleteByExample(WhereClauseAndParameters whereClauseAndParameters) {
+    public String deleteByExample(RenderedWhereClause renderedWhereClause) {
         StringBuilder sb = new StringBuilder();
         
         sb.append("delete from SimpleTable ");
-        sb.append(whereClauseAndParameters.getWhereClause());
+        sb.append(renderedWhereClause.getWhereClause());
         
         return sb.toString();
     }
@@ -164,19 +164,19 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
+import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public interface SimpleTableMapper {
     // methods in XML
-    List<SimpleTable> selectByExample(WhereClauseAndParameters whereClauseAndParameters);
-    int deleteByExample(WhereClauseAndParameters whereClauseAndParameters);
+    List<SimpleTable> selectByExample(RenderedWhereClause renderedWhereClause);
+    int deleteByExample(RenderedWhereClause renderedWhereClause);
     
     // methods in select providers
     @SelectProvider(type=SimpleTableSqlProvider.class, method="selectByExample")
-    List<SimpleTable> selectByExampleWithProvider(WhereClauseAndParameters whereClauseAndParameters);
+    List<SimpleTable> selectByExampleWithProvider(RenderedWhereClause renderedWhereClause);
 
     @DeleteProvider(type=SimpleTableSqlProvider.class, method="deleteByExample")
-    int deleteByExampleWithProvider(WhereClauseAndParameters whereClauseAndParameters);
+    int deleteByExampleWithProvider(RenderedWhereClause renderedWhereClause);
 }
 ```
 ### Fourth - Create Where Clauses for your Queries
@@ -186,30 +186,30 @@ All conditions can be accessed through expressive static methods in the ```org.m
 For example, a very simple condition can be defined like this:
 
 ```java
-        WhereClauseAndParameters whereClauseAndParameters = where(id, isEqualTo(3))
-                .build();
+        RenderedWhereClause renderedWhereClause = where(id, isEqualTo(3))
+                .render();
 ```
 
 Or this:
 
 ```java
-        WhereClauseAndParameters whereClauseAndParameters = where(id, isNull())
-                .build();
+        RenderedWhereClause renderedWhereClause = where(id, isNull())
+                .render();
 ```
 
 The "between" condition is also expressive:
 
 ```java
-        WhereClauseAndParameters whereClauseAndParameters = where(id, isBetween(1).and(4))
-                .build();
+        RenderedWhereClause renderedWhereClause = where(id, isBetween(1).and(4))
+                .render();
 ```
 
 More complex expressions can be built using the "and" and "or" conditions as follows:
 
 ```java
-        WhereClauseAndParameters whereClauseAndParameters = where(id, isGreaterThan(2))
+        RenderedWhereClause renderedWhereClause = where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .buildWithoutTableAlias();
+                .renderWithoutTableAlias();
 ```
 
 Notice that this last where clause will be built without the table alias.  This is useful for some databases that
@@ -220,7 +220,7 @@ All of these statements rely on a set of static methods to make them look expres
 ```java
 // import all conditions and the where clause builder
 import static org.mybatis.qbe.condition.Conditions.*;
-import static org.mybatis.qbe.mybatis3.WhereClauseAndParameters.where;
+import static org.mybatis.qbe.mybatis3.RenderedWhereClause.where;
 
 // import all field definitions for your table
 import static simple.example.SimpleTableFields.*;
@@ -237,11 +237,11 @@ an example from ```simple.example.SimpleTableTest```:
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
             
-            WhereClauseAndParameters whereClauseAndParameters = where(id, isEqualTo(1))
+            RenderedWhereClause renderedWhereClause = where(id, isEqualTo(1))
                     .or(occupation, isNull())
-                    .build();
+                    .render();
             
-            List<SimpleTable> rows = mapper.selectByExample(whereClauseAndParameters);
+            List<SimpleTable> rows = mapper.selectByExample(renderedWhereClause);
             
             assertThat(rows.size(), is(3));
         } finally {

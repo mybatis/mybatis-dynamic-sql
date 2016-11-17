@@ -12,7 +12,7 @@ import org.mybatis.qbe.Criterion;
 import org.mybatis.qbe.condition.IsEqualToCondition;
 import org.mybatis.qbe.condition.IsLikeCondition;
 import org.mybatis.qbe.field.Field;
-import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
+import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public class CriterionRendererTest {
 
@@ -24,7 +24,7 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.renderWithoutTableAlias();
+        RenderedWhereClause rc = renderer.renderWithoutTableAlias();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -37,7 +37,7 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render();
+        RenderedWhereClause rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" a.id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -50,7 +50,7 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.renderWithoutTableAlias();
+        RenderedWhereClause rc = renderer.renderWithoutTableAlias();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -63,7 +63,7 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render();
+        RenderedWhereClause rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -76,7 +76,7 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Date> renderer = CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render();
+        RenderedWhereClause rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -89,7 +89,7 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render();
+        RenderedWhereClause rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));
     }
@@ -105,7 +105,7 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<String> renderer = CriterionRenderer.of(criterion, sequence);
         
-        WhereClauseAndParameters rc = renderer.render();
+        RenderedWhereClause rc = renderer.render();
         assertThat(rc.getWhereClause(), is(" upper(a.description) like #{parameters.p1,jdbcType=VARCHAR,typeHandler=foo.Bar}"));
         assertThat(rc.getParameters().size(), is(1));
         assertThat(rc.getParameters().get("p1"), is("FRED"));

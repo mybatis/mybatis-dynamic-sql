@@ -3,7 +3,7 @@ package org.mybatis.qbe.mybatis3.render;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.qbe.WhereClause;
-import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
+import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public class WhereClauseRenderer {
     
@@ -13,13 +13,13 @@ public class WhereClauseRenderer {
         this.whereClause = whereClause;
     }
     
-    public WhereClauseAndParameters render() {
+    public RenderedWhereClause render() {
         // we do this so the render method can be called multiple times
         // and return the same result
         return new Renderer().render(whereClause);
     }
     
-    public WhereClauseAndParameters renderWithoutTableAlias() {
+    public RenderedWhereClause renderWithoutTableAlias() {
         // we do this so the render method can be called multiple times
         // and return the same result
         return new Renderer().renderWithoutTableAlias(whereClause);
@@ -36,14 +36,14 @@ public class WhereClauseRenderer {
             buffer.append("where"); //$NON-NLS-1$
         }
         
-        public WhereClauseAndParameters render(WhereClause whereClause) {
+        public RenderedWhereClause render(WhereClause whereClause) {
             whereClause.visitCriteria(c -> handleCriterion(c, sequence));
-            return WhereClauseAndParameters.of(buffer.toString(), parameters);
+            return RenderedWhereClause.of(buffer.toString(), parameters);
         }
 
-        public WhereClauseAndParameters renderWithoutTableAlias(WhereClause whereClause) {
+        public RenderedWhereClause renderWithoutTableAlias(WhereClause whereClause) {
             whereClause.visitCriteria(c -> handleCriterionWithoutTableAlias(c, sequence));
-            return WhereClauseAndParameters.of(buffer.toString(), parameters);
+            return RenderedWhereClause.of(buffer.toString(), parameters);
         }
     }
 }

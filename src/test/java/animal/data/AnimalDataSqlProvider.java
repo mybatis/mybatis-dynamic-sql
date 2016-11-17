@@ -1,30 +1,30 @@
 package animal.data;
 
-import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
+import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public class AnimalDataSqlProvider {
 
-    public String selectByExample(WhereClauseAndParameters whereClauseAndParameters) {
+    public String selectByExample(RenderedWhereClause renderedWhereClause) {
         StringBuilder buffer = new StringBuilder();
         
         buffer.append("select a.id, a.animal_name as animalName, a.brain_weight as brainWeight, a.body_weight as bodyWeight");
         buffer.append(" from AnimalData a");
-        if (whereClauseAndParameters != null) {
+        if (renderedWhereClause != null) {
             buffer.append(' ');
-            buffer.append(whereClauseAndParameters.getWhereClause());
+            buffer.append(renderedWhereClause.getWhereClause());
         }
         buffer.append(" order by a.id");
         
         return buffer.toString();
     }
 
-    public String deleteByExample(WhereClauseAndParameters whereClauseAndParameters) {
+    public String deleteByExample(RenderedWhereClause renderedWhereClause) {
         StringBuilder buffer = new StringBuilder();
         
         buffer.append("delete from AnimalData");
-        if (whereClauseAndParameters != null) {
+        if (renderedWhereClause != null) {
             buffer.append(' ');
-            buffer.append(whereClauseAndParameters.getWhereClause());
+            buffer.append(renderedWhereClause.getWhereClause());
         }
         
         return buffer.toString();

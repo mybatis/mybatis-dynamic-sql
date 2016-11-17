@@ -1,24 +1,24 @@
 package simple.example;
 
-import org.mybatis.qbe.mybatis3.WhereClauseAndParameters;
+import org.mybatis.qbe.mybatis3.RenderedWhereClause;
 
 public class SimpleTableSqlProvider {
     
-    public String selectByExample(WhereClauseAndParameters whereClauseAndParameters) {
+    public String selectByExample(RenderedWhereClause renderedWhereClause) {
         StringBuilder sb = new StringBuilder();
         
         sb.append("select a.id, a.first_name as firstName, a.last_name as lastName, a.birth_date as birthDate, a.occupation ");
         sb.append("from SimpleTable a ");
-        sb.append(whereClauseAndParameters.getWhereClause());
+        sb.append(renderedWhereClause.getWhereClause());
         
         return sb.toString();
     }
 
-    public String deleteByExample(WhereClauseAndParameters whereClauseAndParameters) {
+    public String deleteByExample(RenderedWhereClause renderedWhereClause) {
         StringBuilder sb = new StringBuilder();
         
         sb.append("delete from SimpleTable ");
-        sb.append(whereClauseAndParameters.getWhereClause());
+        sb.append(renderedWhereClause.getWhereClause());
         
         return sb.toString();
     }
