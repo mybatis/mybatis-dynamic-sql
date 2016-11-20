@@ -51,7 +51,7 @@ The goal is to enable very expressive dynamic queries in MyBatis.  Here's an exa
 
 ## How Do I Use It?
 The following discussion will walk through an example of using the library.  The full source code
-for this example is in ```src/test/java/simple/example``` in this repo.
+for this example is in ```src/test/java/examples/simple``` in this repo.
 
 The database table used in the example is defined as follows:
 
@@ -67,7 +67,7 @@ create table SimpleTable (
 ```
  
 ### First - Define Database Fields
-The class ```org.mybatis.qbe.field.Field``` is used to define fields for use in the where clause.
+The class ```org.mybatis.qbe.mybatis3.MyBatis3Field``` is used to define fields for use in the where clause.
 Typically these should be defined as public static variables in a class or interface.  This will help make the where clause more expressive.  A field definition includes:
 
 1. The field name
@@ -79,31 +79,31 @@ Typically these should be defined as public static variables in a class or inter
 For example:
 
 ```java
-package simple.example;
+package examples.simple;
 
 import java.sql.JDBCType;
 import java.util.Date;
 
-import org.mybatis.qbe.field.Field;
+import org.mybatis.qbe.mybatis3.MyBatis3Field;
 
 public interface SimpleTableFields {
-    Field<Integer> id = Field.of("id", JDBCType.INTEGER).withAlias("a");
-    Field<String> firstName = Field.of("first_name", JDBCType.VARCHAR).withAlias("a");
-    Field<String> lastName = Field.of("last_name", JDBCType.VARCHAR).withAlias("a");
-    Field<Date> birthDate = Field.of("birth_date", JDBCType.DATE).withAlias("a");
-    Field<String> occupation = Field.of("occupation", JDBCType.VARCHAR).withAlias("a");
+    Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER, "a");
+    Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR, "a");
+    Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR, "a");
+    Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE, "a");
+    Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR, "a");
 }
 ```
 
 ### Second - Write XML or SQL Providers That Will Use the Generated Where Clause
-The library will create an object of class ```org.mybatis.qbe.mybatis3.RenderedWhereClause``` that will be used as input to an SQL provider or an XML mapper.  This object includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that this object be the one and only parameter to a MyBatis method.  Both SQL providers and XML mappers will make use of the generated where clause.
+The library will create an object of class ```org.mybatis.qbe.sql.render.RenderedWhereClause``` that will be used as input to an SQL provider or an XML mapper.  This object includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that this object be the one and only parameter to a MyBatis method.  Both SQL providers and XML mappers will make use of the rendered where clause.
 
 For example, a SQL provider might look like this:
 
 ```java
-package simple.example;
+package examples.simple;
 
-import org.mybatis.qbe.mybatis3.RenderedWhereClause;
+import org.mybatis.qbe.sql.render.RenderedWhereClause;
 
 public class SimpleTableSqlProvider {
     
@@ -132,9 +132,9 @@ An XML mapper might look like this:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="simple.example.SimpleTableMapper">
+<mapper namespace="examples.simple.SimpleTableMapper">
 
-  <resultMap id="SimpleTableResult" type="simple.example.SimpleTable">
+  <resultMap id="SimpleTableResult" type="examples.simple.SimpleTable">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="first_name" jdbcType="VARCHAR" property="firstName" />
     <result column="last_name" jdbcType="VARCHAR" property="lastName" />
@@ -161,13 +161,13 @@ Notice in both examples that the select uses a table alias and the delete does n
 This is a simple and typical MyBatis mapper.  The example is as follows:
 
 ```java
-package simple.example;
+package examples.simple;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.mybatis.qbe.mybatis3.RenderedWhereClause;
+import org.mybatis.qbe.sql.render.RenderedWhereClause;
 
 public interface SimpleTableMapper {
     // methods in XML
@@ -210,9 +210,9 @@ The "between" condition is also expressive:
 More complex expressions can be built using the "and" and "or" conditions as follows:
 
 ```java
-        RenderedWhereClause renderedWhereClause = where(id, isGreaterThan(2))
+        RenderedWhereClause renderedWhereClause = whereIgnoringAlias(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .renderWithoutTableAlias();
+                .render();
 ```
 
 Notice that this last where clause will be built without the table alias.  This is useful for some databases that
@@ -222,16 +222,16 @@ All of these statements rely on a set of static methods to make them look expres
 
 ```java
 // import all conditions and the where clause builder
-import static org.mybatis.qbe.condition.Conditions.*;
-import static org.mybatis.qbe.mybatis3.RenderingShortcut.where;
+import static org.mybatis.qbe.sql.SqlConditions.*;
+import static org.mybatis.qbe.sql.render.RenderingShortcut.*;
 
 // import all field definitions for your table
-import static simple.example.SimpleTableFields.*;
+import static examples.simple.SimpleTableFields.*;
 ```
 
 ### Fifth - Use Your Where Clauses
 In a DAO or service class, you can use the generated where clause as input to your mapper methods.  Here's
-an example from ```simple.example.SimpleTableTest```:
+an example from ```examples.simple.SimpleTableTest```:
 
 ```java
     @Test

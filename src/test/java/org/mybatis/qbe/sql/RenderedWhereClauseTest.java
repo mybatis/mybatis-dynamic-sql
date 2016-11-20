@@ -1,4 +1,4 @@
-package org.mybatis.qbe.mybatis3;
+package org.mybatis.qbe.sql;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -16,8 +16,8 @@ import org.junit.Test;
 import org.mybatis.qbe.sql.render.RenderedWhereClause;
 
 public class RenderedWhereClauseTest {
-    public static final MyBatis3Field<Date> field1 = MyBatis3Field.of("field1", JDBCType.DATE, "a");
-    public static final MyBatis3Field<Integer> field2 = MyBatis3Field.of("field2", JDBCType.INTEGER, "a");
+    public static final SqlField<Date> field1 = SqlField.of("field1", JDBCType.DATE, "a");
+    public static final SqlField<Integer> field2 = SqlField.of("field2", JDBCType.INTEGER, "a");
 
     @Test
     public void testSimpleCriteriaWithoutAlias() {
@@ -28,7 +28,7 @@ public class RenderedWhereClauseTest {
                 .and(field2, isLessThan(3))
                 .render();
 
-        assertThat(renderedWhereClause.getWhereClause(), is("where field1 = #{parameters.p1,jdbcType=DATE} or field2 = #{parameters.p2,jdbcType=INTEGER} and field2 < #{parameters.p3,jdbcType=INTEGER}"));
+        assertThat(renderedWhereClause.getWhereClause(), is("where field1 = ? or field2 = ? and field2 < ?"));
         
         Map<String, Object> parameters = renderedWhereClause.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -48,11 +48,11 @@ public class RenderedWhereClauseTest {
                 .render();
         
 
-        String expected = "where field1 = #{parameters.p1,jdbcType=DATE}" +
-                " or field2 = #{parameters.p2,jdbcType=INTEGER}" +
-                " and field2 < #{parameters.p3,jdbcType=INTEGER}" +
-                " or (field2 = #{parameters.p4,jdbcType=INTEGER} and field2 = #{parameters.p5,jdbcType=INTEGER})" +
-                " and (field2 < #{parameters.p6,jdbcType=INTEGER} or field1 = #{parameters.p7,jdbcType=DATE})";
+        String expected = "where field1 = ?" +
+                " or field2 = ?" +
+                " and field2 < ?" +
+                " or (field2 = ? and field2 = ?)" +
+                " and (field2 < ? or field1 = ?)";
         
         assertThat(renderedWhereClause.getWhereClause(), is(expected));
         
@@ -75,7 +75,7 @@ public class RenderedWhereClauseTest {
                 .and(field2, isLessThan(3))
                 .render();
 
-        assertThat(renderedWhereClause.getWhereClause(), is("where a.field1 = #{parameters.p1,jdbcType=DATE} or a.field2 = #{parameters.p2,jdbcType=INTEGER} and a.field2 < #{parameters.p3,jdbcType=INTEGER}"));
+        assertThat(renderedWhereClause.getWhereClause(), is("where a.field1 = ? or a.field2 = ? and a.field2 < ?"));
         
         Map<String, Object> parameters = renderedWhereClause.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -95,11 +95,11 @@ public class RenderedWhereClauseTest {
                 .render();
         
 
-        String expected = "where a.field1 = #{parameters.p1,jdbcType=DATE}" +
-                " or a.field2 = #{parameters.p2,jdbcType=INTEGER}" +
-                " and a.field2 < #{parameters.p3,jdbcType=INTEGER}" +
-                " or (a.field2 = #{parameters.p4,jdbcType=INTEGER} and a.field2 = #{parameters.p5,jdbcType=INTEGER})" +
-                " and (a.field2 < #{parameters.p6,jdbcType=INTEGER} or a.field1 = #{parameters.p7,jdbcType=DATE})";
+        String expected = "where a.field1 = ?" +
+                " or a.field2 = ?" +
+                " and a.field2 < ?" +
+                " or (a.field2 = ? and a.field2 = ?)" +
+                " and (a.field2 < ? or a.field1 = ?)";
         
         assertThat(renderedWhereClause.getWhereClause(), is(expected));
         

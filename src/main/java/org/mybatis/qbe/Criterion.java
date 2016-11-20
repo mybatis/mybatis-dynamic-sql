@@ -1,21 +1,17 @@
 package org.mybatis.qbe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.mybatis.qbe.condition.Condition;
-import org.mybatis.qbe.field.Field;
-
-public class Criterion<T> {
-    private Field<T> field;
-    private Condition<T> condition;
-    private String connector;
-    private List<Criterion<?>> subCriteria = new ArrayList<>();
+public abstract class Criterion<T, S extends Field<T>, R extends Criterion<?, ?, ?>> {
+    protected S field;
+    protected Condition<T> condition;
+    protected String connector;
+    protected List<R> subCriteria = new ArrayList<>();
     
-    private Criterion() {
+    protected Criterion() {
         super();
     }
     
@@ -23,11 +19,7 @@ public class Criterion<T> {
         return Optional.ofNullable(connector);
     }
     
-    public boolean hasSubCriteria() {
-        return !subCriteria.isEmpty();
-    }
-    
-    public Field<T> field() {
+    public S field() {
         return field;
     }
     
@@ -35,28 +27,15 @@ public class Criterion<T> {
         return condition;
     }
     
-    public String fieldName() {
-        return condition.fieldName(field);
+    public boolean hasSubCriteria() {
+        return !subCriteria.isEmpty();
     }
-    
-    public String fieldNameWithoutAlias() {
-        return condition.fieldNameWithoutAlias(field);
-    }
-    
-    public void visitSubCriteria(Consumer<Criterion<?>> consumer) {
+ 
+    public void visitSubCriteria(Consumer<R> consumer) {
         subCriteria.stream().forEach(consumer::accept);
     }
-
-    public static <T> Criterion<T> of(Field<T> field, Condition<T> condition, Criterion<?>...subCriteria) {
-        return Criterion.of(null,  field, condition, subCriteria);
-    }
     
-    public static <T> Criterion<T> of(String connector, Field<T> field, Condition<T> condition, Criterion<?>...subCriteria) {
-        Criterion<T> criterion = new Criterion<>();
-        criterion.field = field;
-        criterion.condition = condition;
-        criterion.connector = connector;
-        Arrays.stream(subCriteria).forEach(criterion.subCriteria::add);
-        return criterion;
+    public String renderField() {
+        return condition.renderField(field);
     }
 }
