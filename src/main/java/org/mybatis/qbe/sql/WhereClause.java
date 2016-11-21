@@ -1,7 +1,6 @@
 package org.mybatis.qbe.sql;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -40,6 +39,10 @@ public class WhereClause {
             return new WhereClause(criteria.stream());
         }
         
+        public WhereClause buildIgnoringAlias() {
+            return new WhereClause(criteria.stream().map(SqlCriterion::ignoringAlias));
+        }
+        
         public abstract T getThis();
     }
     
@@ -50,44 +53,6 @@ public class WhereClause {
         
         @Override
         public Builder getThis() {
-            return this;
-        }
-    }
-
-    public abstract static class AbstractAliasIgnoringBuilder<T extends AbstractAliasIgnoringBuilder<T>> {
-        private List<SqlCriterion<?>> criteria = new ArrayList<>();
-        
-        public <S> AbstractAliasIgnoringBuilder(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...criteria) {
-            this.criteria.add(SqlCriterion.of(null, field.ignoringAlias(), condition,
-                    Arrays.stream(criteria).map(SqlCriterion::ignoringAlias)));
-        }
-        
-        public <S> T and(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...criteria) {
-            this.criteria.add(SqlCriterion.of("and", field.ignoringAlias(), condition,
-                    Arrays.stream(criteria).map(SqlCriterion::ignoringAlias)));
-            return getThis();
-        }
-        
-        public <S> T or(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...criteria) {
-            this.criteria.add(SqlCriterion.of("or", field.ignoringAlias(), condition,
-                    Arrays.stream(criteria).map(SqlCriterion::ignoringAlias)));
-            return getThis();
-        }
-        
-        public WhereClause build() {
-            return new WhereClause(criteria.stream());
-        }
-        
-        public abstract T getThis();
-    }
-
-    public static class AliasIgnoringBuilder extends AbstractAliasIgnoringBuilder<AliasIgnoringBuilder> {
-        public <T> AliasIgnoringBuilder(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-            super(field, condition, criteria);
-        }
-        
-        @Override
-        public AliasIgnoringBuilder getThis() {
             return this;
         }
     }

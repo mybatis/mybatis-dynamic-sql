@@ -18,10 +18,6 @@ public interface RenderingShortcut {
         return new Builder(field, condition, criteria);
     }
     
-    static <T> AliasIgnoringBuilder whereIgnoringAlias(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-        return new AliasIgnoringBuilder(field, condition, criteria);
-    }
-    
     static class Builder extends WhereClause.AbstractBuilder<Builder> {
 
         public <T> Builder(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
@@ -29,27 +25,15 @@ public interface RenderingShortcut {
         }
         
         public RenderedWhereClause render() {
-            return WhereClauseRenderer.of(super.build()).render();
+            return WhereClauseRenderer.of(build()).render();
+        }
+
+        public RenderedWhereClause renderIgnoringAlias() {
+            return WhereClauseRenderer.of(buildIgnoringAlias()).render();
         }
 
         @Override
         public Builder getThis() {
-            return this;
-        }
-    }
-
-    static class AliasIgnoringBuilder extends WhereClause.AbstractAliasIgnoringBuilder<AliasIgnoringBuilder> {
-
-        public <T> AliasIgnoringBuilder(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-            super(field, condition, criteria);
-        }
-        
-        public RenderedWhereClause render() {
-            return WhereClauseRenderer.of(super.build()).render();
-        }
-
-        @Override
-        public AliasIgnoringBuilder getThis() {
             return this;
         }
     }

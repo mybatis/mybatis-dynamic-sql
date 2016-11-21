@@ -40,9 +40,9 @@ public class SampleWhereClausesTest {
 
     @Test
     public void complexClause() {
-        RenderedWhereClause renderedWhereClause = whereIgnoringAlias(id, isGreaterThan(2))
+        RenderedWhereClause renderedWhereClause = where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .render();
+                .renderIgnoringAlias();
         
         assertThat(renderedWhereClause.getWhereClause(),
                 is("where id > #{parameters.p1,jdbcType=INTEGER} or (occupation is null and id < #{parameters.p2,jdbcType=INTEGER})"));

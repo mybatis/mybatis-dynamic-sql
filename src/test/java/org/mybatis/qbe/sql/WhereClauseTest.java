@@ -39,9 +39,9 @@ public class WhereClauseTest {
         IsLessThanCondition<Integer> isLessThanCondition = IsLessThanCondition.of(3);
         IsNullCondition<Integer> isNullCondition = new IsNullCondition<>();
         
-        WhereClause whereClause = new WhereClause.AliasIgnoringBuilder(field, isLessThanCondition)
+        WhereClause whereClause = new WhereClause.Builder(field, isLessThanCondition)
                 .or(field, isNullCondition)
-                .build();
+                .buildIgnoringAlias();
         
         // kind of a silly test - just makes sure there are two criteria
         StringBuilder sb = new StringBuilder();

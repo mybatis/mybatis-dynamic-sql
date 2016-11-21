@@ -210,9 +210,9 @@ The "between" condition is also expressive:
 More complex expressions can be built using the "and" and "or" conditions as follows:
 
 ```java
-        RenderedWhereClause renderedWhereClause = whereIgnoringAlias(id, isGreaterThan(2))
+        RenderedWhereClause renderedWhereClause = where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .render();
+                .renderIgnoringAlias();
 ```
 
 Notice that this last where clause will be built without the table alias.  This is useful for some databases that
@@ -223,7 +223,7 @@ All of these statements rely on a set of static methods to make them look expres
 ```java
 // import all conditions and the where clause builder
 import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.render.RenderingShortcut.*;
+import static org.mybatis.qbe.sql.render.RenderingShortcut.where;
 
 // import all field definitions for your table
 import static examples.simple.SimpleTableFields.*;

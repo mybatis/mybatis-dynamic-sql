@@ -23,10 +23,10 @@ public class RenderedWhereClauseTest {
     public void testSimpleCriteriaWithoutAlias() {
         Date d = new Date();
 
-        RenderedWhereClause renderedWhereClause = whereIgnoringAlias(field1, isEqualTo(d))
+        RenderedWhereClause renderedWhereClause = where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
-                .render();
+                .renderIgnoringAlias();
 
         assertThat(renderedWhereClause.getWhereClause(), is("where field1 = ? or field2 = ? and field2 < ?"));
         
@@ -40,12 +40,12 @@ public class RenderedWhereClauseTest {
     public void testComplexCriteriaWithoutAlias() {
         Date d = new Date();
 
-        RenderedWhereClause renderedWhereClause = whereIgnoringAlias(field1, isEqualTo(d))
+        RenderedWhereClause renderedWhereClause = where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
                 .or(field2, isEqualTo(4), and(field2, isEqualTo(6)))
                 .and(field2, isLessThan(3), or(field1, isEqualTo(d)))
-                .render();
+                .renderIgnoringAlias();
         
 
         String expected = "where field1 = ?" +

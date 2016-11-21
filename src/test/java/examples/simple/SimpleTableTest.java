@@ -85,7 +85,7 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            RenderedWhereClause renderedWhereClause = whereIgnoringAlias(occupation, isNull()).render();
+            RenderedWhereClause renderedWhereClause = where(occupation, isNull()).renderIgnoringAlias();
             int rows = mapper.deleteByExample(renderedWhereClause);
             
             assertThat(rows, is(2));
@@ -113,7 +113,7 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            RenderedWhereClause renderedWhereClause = whereIgnoringAlias(occupation, isNull()).render();
+            RenderedWhereClause renderedWhereClause = where(occupation, isNull()).renderIgnoringAlias();
             int rows = mapper.deleteByExampleWithProvider(renderedWhereClause);
             
             assertThat(rows, is(2));
