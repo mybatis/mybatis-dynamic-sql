@@ -5,6 +5,6 @@ public interface Condition<T> {
     void accept(ConditionVisitor visitor);
     
     default String renderField(Field<T> field) {
-        return field.fullName();
+        return field.render();
     }
 }

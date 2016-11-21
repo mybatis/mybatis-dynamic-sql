@@ -23,7 +23,7 @@ public class SqlField<T> extends Field<T> {
     }
     
     @Override
-    public String fullName() {
+    public String render() {
         StringBuilder sb = new StringBuilder();
         alias().ifPresent(a -> {
             sb.append(a);

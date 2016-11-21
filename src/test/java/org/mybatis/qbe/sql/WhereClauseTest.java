@@ -26,7 +26,7 @@ public class WhereClauseTest {
         // kind of a silly test - just makes sure there are two criteria
         StringBuilder sb = new StringBuilder();
         whereClause.visitCriteria(c -> {
-            sb.append(c.field().fullName());
+            sb.append(c.field().render());
             sb.append(',');
         });
         
@@ -46,7 +46,7 @@ public class WhereClauseTest {
         // kind of a silly test - just makes sure there are two criteria
         StringBuilder sb = new StringBuilder();
         whereClause.visitCriteria(c -> {
-            sb.append(c.field().fullName());
+            sb.append(c.field().render());
             sb.append(',');
         });
         

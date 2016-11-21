@@ -123,7 +123,7 @@ public class CriterionRendererTest {
         
         @Override
         public String renderField(Field<String> field) {
-            return String.format("upper(%s)", field.fullName());
+            return String.format("upper(%s)", field.render());
         }
         
         @Override
