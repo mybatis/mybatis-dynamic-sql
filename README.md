@@ -12,7 +12,7 @@ The primary goals of the library are:
 2. Expressive - where clauses are built in a way that clearly communicates their meaning
    (thanks to Hamcrest for some inspiration)
 3. Flexible - clauses can be built using any combination of and, or, and nested conditions
-4. Extensible - the library will render where clauses for MyBatis3, but could be extended to
+4. Extensible - the library will render where clauses for MyBatis3 or plain JDBC.  It can be extended to
    generate clauses for other frameworks as well.  Custom conditions can be added easily
    if none of the built in conditions are sufficient for your needs. 
 5. Small - the library does one thing only and is a very small dependency to add.  It has no transitive
@@ -70,11 +70,11 @@ create table SimpleTable (
 The class ```org.mybatis.qbe.mybatis3.MyBatis3Field``` is used to define fields for use in the where clause.
 Typically these should be defined as public static variables in a class or interface.  This will help make the where clause more expressive.  A field definition includes:
 
-1. The field name
-2. The Java type
+1. The Java type
+2. The field name
 3. The JDBC type
 4. (optional) An alias if used in a query that aliases the table
-4. (optional) The name of a type handler to use in MyBatis if the default type handler is not desired
+5. (optional) The name of a type handler to use in MyBatis if the default type handler is not desired
 
 For example:
 
@@ -87,11 +87,11 @@ import java.util.Date;
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
 
 public interface SimpleTableFields {
-    Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER, "a");
-    Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR, "a");
-    Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR, "a");
-    Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE, "a");
-    Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR, "a");
+    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER, "a");
+    MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR, "a");
+    MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR, "a");
+    MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE, "a");
+    MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR, "a");
 }
 ```
 
@@ -158,7 +158,7 @@ An XML mapper might look like this:
 Notice in both examples that the select uses a table alias and the delete does not.
 
 ### Third - Write a Mapper Interface for the Providers and/or XML
-This is a simple and typical MyBatis mapper.  The example is as follows:
+This is a typical MyBatis mapper.  The example is as follows:
 
 ```java
 package examples.simple;
@@ -184,7 +184,7 @@ public interface SimpleTableMapper {
 ```
 ### Fourth - Create Where Clauses for your Queries
 Where clauses are created by combining your field definition (from the first step above) with a condition for the field.  This library includes a large number of type safe conditions.
-All conditions can be accessed through expressive static methods in the ```org.mybatis.qbe.condition.Conditions``` interface.
+All conditions can be accessed through expressive static methods in the ```org.mybatis.qbe.sql.SqlConditions``` interface.
 
 For example, a very simple condition can be defined like this:
 
@@ -218,7 +218,7 @@ More complex expressions can be built using the "and" and "or" conditions as fol
 Notice that this last where clause will be built without the table alias.  This is useful for some databases that
 do not allow table aliases in delete statements.
 
-All of these statements rely on a set of static methods to make them look expressive.  It is typical to import the following:
+All of these statements rely on a set of expressive static methods.  It is typical to import the following:
 
 ```java
 // import all conditions and the where clause builder
