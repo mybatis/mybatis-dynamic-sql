@@ -32,7 +32,7 @@ public class SetClauseTest {
         
         List<Object> values = new ArrayList<>();
         List<String> phrases = new ArrayList<>();
-        sc.visitPhrases(p -> {
+        sc.visitFieldValuePairs(p -> {
             values.add(p.getValue());
             phrases.add(p.getField().render());
         });

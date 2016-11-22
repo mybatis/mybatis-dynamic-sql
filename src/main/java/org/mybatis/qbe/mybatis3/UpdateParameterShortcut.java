@@ -57,6 +57,13 @@ public interface UpdateParameterShortcut {
             return UpdateParameter.of(rsc, wwc);
         }
 
+        public UpdateParameter renderIgnoringAlias() {
+            AtomicInteger sequence = new AtomicInteger(1);
+            RenderedSetClause rsc = SetClauseRenderer.of(setBuilder.buildIgnoringAlias()).render(sequence);
+            RenderedWhereClause wwc = WhereClauseRenderer.of(buildIgnoringAlias()).render(sequence);
+            return UpdateParameter.of(rsc, wwc);
+        }
+        
         @Override
         public WhereBuilder getThis() {
             return this;

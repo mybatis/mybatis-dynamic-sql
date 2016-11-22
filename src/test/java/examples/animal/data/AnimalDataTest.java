@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.where.SqlConditions.*;
 import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.where;
 import static org.mybatis.qbe.mybatis3.UpdateParameterShortcut.set;
+import static org.mybatis.qbe.sql.insert.render.InsertSupportShortcut.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,6 +25,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mybatis.qbe.mybatis3.UpdateParameter;
+import org.mybatis.qbe.sql.insert.render.RenderedInsertSupport;
 import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
 
 public class AnimalDataTest {
@@ -318,10 +320,29 @@ public class AnimalDataTest {
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
-                    .render();
+                    .renderIgnoringAlias();
 
             int rows = mapper.updateByExample(parameter);
             assertThat(rows, is(4));
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testInsert() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            RenderedInsertSupport insertSupport = insertValue(id, 100)
+                    .andValue(animalName, "Old Shep")
+                    .andValue(bodyWeight, 22.5)
+                    .andValue(brainWeight, 1.2)
+                    .renderIgnoringAlias();
+            
+            int rows = mapper.insert(insertSupport);
+            assertThat(rows, is(1));
         } finally {
             sqlSession.close();
         }

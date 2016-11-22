@@ -46,13 +46,13 @@ public class SetClauseRenderer {
         public RenderedSetClause render(SetClause setClause) {
             List<String> phrases = new ArrayList<>();
             
-            setClause.visitPhrases(p -> {
+            setClause.visitFieldValuePairs(p -> {
                 int number = sequence.getAndIncrement();
                 SqlField<?> field = p.getField();
                 String phrase = String.format("%s = %s", field.render(),
                         field.getParameterRenderer(number).render());
                 phrases.add(phrase);
-                parameters.put("p" + number, p.getValue());
+                parameters.put(String.format("p%s", number), p.getValue());
             });
             
             String phrase = phrases.stream().collect(Collectors.joining(", ", "set ", ""));
