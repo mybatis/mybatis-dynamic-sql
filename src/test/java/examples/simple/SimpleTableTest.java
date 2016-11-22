@@ -5,10 +5,10 @@ import static examples.simple.SimpleTableFields.id;
 import static examples.simple.SimpleTableFields.occupation;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
-import static org.mybatis.qbe.sql.SqlConditions.isIn;
-import static org.mybatis.qbe.sql.SqlConditions.isNull;
-import static org.mybatis.qbe.sql.render.RenderingShortcut.*;
+import static org.mybatis.qbe.sql.where.SqlConditions.isEqualTo;
+import static org.mybatis.qbe.sql.where.SqlConditions.isIn;
+import static org.mybatis.qbe.sql.where.SqlConditions.isNull;
+import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,7 +22,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
 
 public class SimpleTableTest {
 

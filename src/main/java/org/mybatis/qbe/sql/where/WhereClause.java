@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql;
+package org.mybatis.qbe.sql.where;
 
 import java.util.ArrayList;
 import java.util.List;

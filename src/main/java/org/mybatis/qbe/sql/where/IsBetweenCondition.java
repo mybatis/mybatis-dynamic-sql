@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql;
+package org.mybatis.qbe.sql.where;
 
 import org.mybatis.qbe.BaseTwoValueCondition;
 import org.mybatis.qbe.Renderer;

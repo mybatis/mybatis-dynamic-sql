@@ -8,8 +8,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 import org.mybatis.qbe.Field;
-import org.mybatis.qbe.sql.render.CriterionRenderer;
-import org.mybatis.qbe.sql.render.RenderedCriterion;
+import org.mybatis.qbe.sql.where.IsEqualToCondition;
+import org.mybatis.qbe.sql.where.IsLikeCondition;
+import org.mybatis.qbe.sql.where.SqlCriterion;
+import org.mybatis.qbe.sql.where.SqlField;
+import org.mybatis.qbe.sql.where.render.CriterionRenderer;
+import org.mybatis.qbe.sql.where.render.RenderedCriterion;
 
 public class CriterionRendererTest {
 

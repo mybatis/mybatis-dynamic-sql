@@ -96,14 +96,14 @@ public interface SimpleTableFields {
 ```
 
 ### Second - Write XML or SQL Providers That Will Use the Generated Where Clause
-The library will create an object of class ```org.mybatis.qbe.sql.render.RenderedWhereClause``` that will be used as input to an SQL provider or an XML mapper.  This object includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that this object be the one and only parameter to a MyBatis method.  Both SQL providers and XML mappers will make use of the rendered where clause.
+The library will create an object of class ```org.mybatis.qbe.sql.where.render.RenderedWhereClause``` that will be used as input to an SQL provider or an XML mapper.  This object includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that this object be the one and only parameter to a MyBatis method.  Both SQL providers and XML mappers will make use of the rendered where clause.
 
 For example, a SQL provider might look like this:
 
 ```java
 package examples.simple;
 
-import org.mybatis.qbe.sql.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
 
 public class SimpleTableSqlProvider {
     
@@ -167,7 +167,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.mybatis.qbe.sql.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
 
 public interface SimpleTableMapper {
     // methods in XML
@@ -184,7 +184,7 @@ public interface SimpleTableMapper {
 ```
 ### Fourth - Create Where Clauses for your Queries
 Where clauses are created by combining your field definition (from the first step above) with a condition for the field.  This library includes a large number of type safe conditions.
-All conditions can be accessed through expressive static methods in the ```org.mybatis.qbe.sql.SqlConditions``` interface.
+All conditions can be accessed through expressive static methods in the ```org.mybatis.qbe.sql.where.SqlConditions``` interface.
 
 For example, a very simple condition can be defined like this:
 
@@ -222,8 +222,8 @@ All of these statements rely on a set of expressive static methods.  It is typic
 
 ```java
 // import all conditions and the where clause builder
-import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.render.RenderingShortcut.where;
+import static org.mybatis.qbe.sql.where.SqlConditions.*;
+import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.where;
 
 // import all field definitions for your table
 import static examples.simple.SimpleTableFields.*;

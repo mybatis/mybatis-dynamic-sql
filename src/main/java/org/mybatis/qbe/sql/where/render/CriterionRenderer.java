@@ -1,10 +1,10 @@
-package org.mybatis.qbe.sql.render;
+package org.mybatis.qbe.sql.where.render;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.qbe.sql.SqlCriterion;
+import org.mybatis.qbe.sql.where.SqlCriterion;
 
 public class CriterionRenderer<T> {
     private StringBuilder buffer = new StringBuilder();

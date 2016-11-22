@@ -1,6 +1,6 @@
 package examples.animal.data;
 
-import org.mybatis.qbe.sql.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
 
 public class AnimalDataSqlProvider {
 

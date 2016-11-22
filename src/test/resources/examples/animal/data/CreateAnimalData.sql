@@ -2,7 +2,7 @@ drop table AnimalData if exists;
 
 create table AnimalData (
   id int not null,
-  animal_name varchar(50) not null,
+  animal_name varchar(50) null,
   brain_weight double not null,
   body_weight double not null,
   primary key(id)

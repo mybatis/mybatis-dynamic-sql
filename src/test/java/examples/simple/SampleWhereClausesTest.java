@@ -3,11 +3,11 @@ package examples.simple;
 import static examples.simple.SimpleTableFields.*;
 import static org.hamcrest.core.Is.*;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.render.RenderingShortcut.*;
+import static org.mybatis.qbe.sql.where.SqlConditions.*;
+import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.*;
 
 import org.junit.Test;
-import org.mybatis.qbe.sql.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
 
 public class SampleWhereClausesTest {
 

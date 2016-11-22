@@ -1,10 +1,10 @@
-package org.mybatis.qbe.sql.render;
+package org.mybatis.qbe.sql.where.render;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.qbe.sql.WhereClause;
+import org.mybatis.qbe.sql.where.WhereClause;
 
 public class WhereClauseRenderer {
     
@@ -17,19 +17,26 @@ public class WhereClauseRenderer {
     public RenderedWhereClause render() {
         // we do this so the render method can be called multiple times
         // and return the same result
-        return new Renderer().render(whereClause);
+        return new Renderer(new AtomicInteger(1)).render(whereClause);
     }
     
+    public RenderedWhereClause render(AtomicInteger sequence) {
+        // we do this so the render method can be called multiple times
+        // and return the same result
+        return new Renderer(sequence).render(whereClause);
+    }
+
     public static WhereClauseRenderer of(WhereClause whereClause) {
         return new WhereClauseRenderer(whereClause);
     }
 
     private static class Renderer {
-        private AtomicInteger sequence = new AtomicInteger(1);
+        private AtomicInteger sequence;
         private StringBuilder buffer = new StringBuilder();
         private Map<String, Object> parameters = new HashMap<>();
 
-        public Renderer() {
+        public Renderer(AtomicInteger sequence) {
+            this.sequence = sequence;
             buffer.append("where"); //$NON-NLS-1$
         }
         

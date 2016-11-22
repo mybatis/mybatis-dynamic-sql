@@ -3,8 +3,9 @@ package examples.animal.data;
 import static examples.animal.data.AnimalDataFields.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.render.RenderingShortcut.where;
+import static org.mybatis.qbe.sql.where.SqlConditions.*;
+import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.where;
+import static org.mybatis.qbe.mybatis3.UpdateParameterShortcut.set;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,7 +23,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.render.RenderedWhereClause;
+import org.mybatis.qbe.mybatis3.UpdateParameter;
+import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
 
 public class AnimalDataTest {
 
@@ -299,6 +301,27 @@ public class AnimalDataTest {
 
             List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(4));
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testUpdateByExample() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            UpdateParameter parameter = set(bodyWeight, 2.6)
+                    .setNull(animalName)
+                    .where(id, isIn(1, 5, 7))
+                    .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
+                    .or(id, isGreaterThan(60))
+                    .and(bodyWeight, isBetween(1.0).and(3.0))
+                    .render();
+
+            int rows = mapper.updateByExample(parameter);
+            assertThat(rows, is(4));
         } finally {
             sqlSession.close();
         }

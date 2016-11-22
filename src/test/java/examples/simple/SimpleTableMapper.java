@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.mybatis.qbe.sql.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
 
 public interface SimpleTableMapper {
     // methods in XML

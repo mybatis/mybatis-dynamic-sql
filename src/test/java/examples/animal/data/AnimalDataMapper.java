@@ -6,7 +6,9 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.mybatis.qbe.sql.render.RenderedWhereClause;
+import org.apache.ibatis.annotations.Update;
+import org.mybatis.qbe.mybatis3.UpdateParameter;
+import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
 
 public interface AnimalDataMapper {
 
@@ -23,6 +25,13 @@ public interface AnimalDataMapper {
     })
     int deleteByExample(RenderedWhereClause renderedWhereClause);
 
+    @Update({
+        "update AnimalData a",
+        "${setClause}",
+        "${whereClause}"
+    })
+    int updateByExample(UpdateParameter updateParameter);
+    
     @SelectProvider(type=AnimalDataSqlProvider.class, method="selectByExample")
     List<AnimalData> selectByExampleWithProvider(RenderedWhereClause renderedWhereClause);
 

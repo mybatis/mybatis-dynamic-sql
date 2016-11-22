@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql;
+package org.mybatis.qbe.sql.where;
 
 import java.sql.JDBCType;
 import java.util.Optional;
