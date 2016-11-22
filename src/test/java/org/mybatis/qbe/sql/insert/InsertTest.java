@@ -9,8 +9,8 @@ import java.sql.JDBCType;
 
 import org.junit.Test;
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
-import org.mybatis.qbe.sql.insert.render.InsertSupportRenderer;
-import org.mybatis.qbe.sql.insert.render.RenderedInsertSupport;
+import org.mybatis.qbe.sql.insert.render.InsertValuesRenderer;
+import org.mybatis.qbe.sql.insert.render.InsertSupport;
 import org.mybatis.qbe.sql.where.SqlField;
 
 public class InsertTest {
@@ -22,25 +22,25 @@ public class InsertTest {
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
         
-        InsertSupport insertSupport = new InsertSupport.Builder(firstName, "fred")
+        InsertValues insertValues = new InsertValues.Builder(firstName, "fred")
                 .andValue(lastName, "jones")
                 .andValue(id, 3)
                 .andValue(occupation, "dino driver")
                 .build();
         
-        RenderedInsertSupport ris = InsertSupportRenderer.of(insertSupport).render();
+        InsertSupport insertSupport = InsertValuesRenderer.of(insertValues).render();
 
         String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
-        assertThat(ris.getFieldsPhrase(), is(expectedFieldsPhrase));
+        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
         String expectedValuesPhrase = "values (?, ?, ?, ?)";
-        assertThat(ris.getValuesPhrase(), is(expectedValuesPhrase));
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
         
-        assertThat(ris.getParameters().size(), is(4));
-        assertThat(ris.getParameters().get("p1"), is("fred"));
-        assertThat(ris.getParameters().get("p2"), is("jones"));
-        assertThat(ris.getParameters().get("p3"), is(3));
-        assertThat(ris.getParameters().get("p4"), is("dino driver"));
+        assertThat(insertSupport.getParameters().size(), is(4));
+        assertThat(insertSupport.getParameters().get("p1"), is("fred"));
+        assertThat(insertSupport.getParameters().get("p2"), is("jones"));
+        assertThat(insertSupport.getParameters().get("p3"), is(3));
+        assertThat(insertSupport.getParameters().get("p4"), is("dino driver"));
     }
 
     @Test
@@ -50,25 +50,25 @@ public class InsertTest {
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
         
-        InsertSupport insertSupport = new InsertSupport.Builder(firstName)
+        InsertValues insertValues = new InsertValues.Builder(firstName)
                 .andValue(lastName, "jones")
                 .andValue(id, 3)
                 .andValue(occupation, "dino driver")
                 .build();
         
-        RenderedInsertSupport ris = InsertSupportRenderer.of(insertSupport).render();
+        InsertSupport insertSupport = InsertValuesRenderer.of(insertValues).render();
 
         String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
-        assertThat(ris.getFieldsPhrase(), is(expectedFieldsPhrase));
+        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
         String expectedValuesPhrase = "values (?, ?, ?, ?)";
-        assertThat(ris.getValuesPhrase(), is(expectedValuesPhrase));
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
         
-        assertThat(ris.getParameters().size(), is(4));
-        assertThat(ris.getParameters().get("p1"), is(nullValue()));
-        assertThat(ris.getParameters().get("p2"), is("jones"));
-        assertThat(ris.getParameters().get("p3"), is(3));
-        assertThat(ris.getParameters().get("p4"), is("dino driver"));
+        assertThat(insertSupport.getParameters().size(), is(4));
+        assertThat(insertSupport.getParameters().get("p1"), is(nullValue()));
+        assertThat(insertSupport.getParameters().get("p2"), is("jones"));
+        assertThat(insertSupport.getParameters().get("p3"), is(3));
+        assertThat(insertSupport.getParameters().get("p4"), is("dino driver"));
     }
 
     @Test
@@ -78,28 +78,28 @@ public class InsertTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
         
-        InsertSupport insertSupport = new InsertSupport.Builder(firstName, "fred")
+        InsertValues insertValues = new InsertValues.Builder(firstName, "fred")
                 .andNullValue(lastName)
                 .andValue(id, 3)
                 .andValue(occupation, "dino driver")
                 .build();
         
-        RenderedInsertSupport ris = InsertSupportRenderer.of(insertSupport).render();
+        InsertSupport insertSupport = InsertValuesRenderer.of(insertValues).render();
 
         String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
-        assertThat(ris.getFieldsPhrase(), is(expectedFieldsPhrase));
+        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
         String expectedValuesPhrase = "values (#{parameters.p1,jdbcType=VARCHAR}, "
                 + "#{parameters.p2,jdbcType=VARCHAR}, "
                 + "#{parameters.p3,jdbcType=INTEGER}, "
                 + "#{parameters.p4,jdbcType=VARCHAR})";
-        assertThat(ris.getValuesPhrase(), is(expectedValuesPhrase));
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
         
-        assertThat(ris.getParameters().size(), is(4));
-        assertThat(ris.getParameters().get("p1"), is("fred"));
-        assertThat(ris.getParameters().get("p2"), is(nullValue()));
-        assertThat(ris.getParameters().get("p3"), is(3));
-        assertThat(ris.getParameters().get("p4"), is("dino driver"));
+        assertThat(insertSupport.getParameters().size(), is(4));
+        assertThat(insertSupport.getParameters().get("p1"), is("fred"));
+        assertThat(insertSupport.getParameters().get("p2"), is(nullValue()));
+        assertThat(insertSupport.getParameters().get("p3"), is(3));
+        assertThat(insertSupport.getParameters().get("p4"), is("dino driver"));
     }
     
     @Test
@@ -109,26 +109,26 @@ public class InsertTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
         
-        RenderedInsertSupport ris = insertValue(firstName, "fred")
+        InsertSupport insertSupport = insertValue(firstName, "fred")
                 .andValue(lastName, "jones")
                 .andNullValue(id)
                 .andValue(occupation, "dino driver")
                 .render();
         
         String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
-        assertThat(ris.getFieldsPhrase(), is(expectedFieldsPhrase));
+        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
         String expectedValuesPhrase = "values (#{parameters.p1,jdbcType=VARCHAR}, "
                 + "#{parameters.p2,jdbcType=VARCHAR}, "
                 + "#{parameters.p3,jdbcType=INTEGER}, "
                 + "#{parameters.p4,jdbcType=VARCHAR})";
-        assertThat(ris.getValuesPhrase(), is(expectedValuesPhrase));
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
         
-        assertThat(ris.getParameters().size(), is(4));
-        assertThat(ris.getParameters().get("p1"), is("fred"));
-        assertThat(ris.getParameters().get("p2"), is("jones"));
-        assertThat(ris.getParameters().get("p3"), is(nullValue()));
-        assertThat(ris.getParameters().get("p4"), is("dino driver"));
+        assertThat(insertSupport.getParameters().size(), is(4));
+        assertThat(insertSupport.getParameters().get("p1"), is("fred"));
+        assertThat(insertSupport.getParameters().get("p2"), is("jones"));
+        assertThat(insertSupport.getParameters().get("p3"), is(nullValue()));
+        assertThat(insertSupport.getParameters().get("p4"), is("dino driver"));
     }
 
     @Test
@@ -138,25 +138,25 @@ public class InsertTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
         
-        RenderedInsertSupport ris = insertNullValue(firstName)
+        InsertSupport insertSupport = insertNullValue(firstName)
                 .andValue(lastName, "jones")
                 .andNullValue(id)
                 .andValue(occupation, "dino driver")
                 .render();
         
         String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
-        assertThat(ris.getFieldsPhrase(), is(expectedFieldsPhrase));
+        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
         String expectedValuesPhrase = "values (#{parameters.p1,jdbcType=VARCHAR}, "
                 + "#{parameters.p2,jdbcType=VARCHAR}, "
                 + "#{parameters.p3,jdbcType=INTEGER}, "
                 + "#{parameters.p4,jdbcType=VARCHAR})";
-        assertThat(ris.getValuesPhrase(), is(expectedValuesPhrase));
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
         
-        assertThat(ris.getParameters().size(), is(4));
-        assertThat(ris.getParameters().get("p1"), is(nullValue()));
-        assertThat(ris.getParameters().get("p2"), is("jones"));
-        assertThat(ris.getParameters().get("p3"), is(nullValue()));
-        assertThat(ris.getParameters().get("p4"), is("dino driver"));
+        assertThat(insertSupport.getParameters().size(), is(4));
+        assertThat(insertSupport.getParameters().get("p1"), is(nullValue()));
+        assertThat(insertSupport.getParameters().get("p2"), is("jones"));
+        assertThat(insertSupport.getParameters().get("p3"), is(nullValue()));
+        assertThat(insertSupport.getParameters().get("p4"), is("dino driver"));
     }
 }

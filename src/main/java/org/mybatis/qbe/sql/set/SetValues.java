@@ -8,10 +8,10 @@ import java.util.stream.Stream;
 import org.mybatis.qbe.sql.FieldValuePair;
 import org.mybatis.qbe.sql.where.SqlField;
 
-public class SetClause {
+public class SetValues {
     private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
 
-    private SetClause(Stream<FieldValuePair<?>> fieldValuePairs) {
+    private SetValues(Stream<FieldValuePair<?>> fieldValuePairs) {
         fieldValuePairs.forEach(this.fieldValuePairs::add);
     }
     
@@ -30,22 +30,22 @@ public class SetClause {
             fieldValuePairs.add(FieldValuePair.of(field, value));
         }
         
-        public <S> T set(SqlField<S> field, S value) {
+        public <S> T andSet(SqlField<S> field, S value) {
             fieldValuePairs.add(FieldValuePair.of(field, value));
             return getThis();
         }
         
-        public <S> T setNull(SqlField<S> field) {
+        public <S> T andSetNull(SqlField<S> field) {
             fieldValuePairs.add(FieldValuePair.of(field));
             return getThis();
         }
         
-        public SetClause build() {
-            return new SetClause(fieldValuePairs.stream());
+        public SetValues build() {
+            return new SetValues(fieldValuePairs.stream());
         }
         
-        public SetClause buildIgnoringAlias() {
-            return new SetClause(fieldValuePairs.stream().map(FieldValuePair::ignoringAlias));
+        public SetValues buildIgnoringAlias() {
+            return new SetValues(fieldValuePairs.stream().map(FieldValuePair::ignoringAlias));
         }
         
         public abstract T getThis();

@@ -8,10 +8,10 @@ import java.util.stream.Stream;
 import org.mybatis.qbe.sql.FieldValuePair;
 import org.mybatis.qbe.sql.where.SqlField;
 
-public class InsertSupport {
+public class InsertValues {
     private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
 
-    private InsertSupport(Stream<FieldValuePair<?>> fieldValuePairs) {
+    private InsertValues(Stream<FieldValuePair<?>> fieldValuePairs) {
         fieldValuePairs.forEach(this.fieldValuePairs::add);
     }
 
@@ -40,12 +40,12 @@ public class InsertSupport {
             return getThis();
         }
         
-        public InsertSupport build() {
-            return new InsertSupport(fieldValuePairs.stream());
+        public InsertValues build() {
+            return new InsertValues(fieldValuePairs.stream());
         }
         
-        public InsertSupport buildIgnoringAlias() {
-            return new InsertSupport(fieldValuePairs.stream().map(FieldValuePair::ignoringAlias));
+        public InsertValues buildIgnoringAlias() {
+            return new InsertValues(fieldValuePairs.stream().map(FieldValuePair::ignoringAlias));
         }
         
         public abstract T getThis();

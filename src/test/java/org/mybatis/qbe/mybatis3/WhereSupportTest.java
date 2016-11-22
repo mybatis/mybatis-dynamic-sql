@@ -13,9 +13,9 @@ import java.util.Date;
 import java.util.Map;
 
 import org.junit.Test;
-import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.WhereSupport;
 
-public class RenderedWhereClauseTest {
+public class WhereSupportTest {
     public static final MyBatis3Field<Date> field1 = MyBatis3Field.of("field1", JDBCType.DATE, "a");
     public static final MyBatis3Field<Integer> field2 = MyBatis3Field.of("field2", JDBCType.INTEGER).withAlias("a");
 
@@ -23,14 +23,14 @@ public class RenderedWhereClauseTest {
     public void testSimpleCriteriaWithoutAlias() {
         Date d = new Date();
 
-        RenderedWhereClause renderedWhereClause = where(field1, isEqualTo(d))
+        WhereSupport whereSupport = where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
                 .renderIgnoringAlias();
 
-        assertThat(renderedWhereClause.getWhereClause(), is("where field1 = #{parameters.p1,jdbcType=DATE} or field2 = #{parameters.p2,jdbcType=INTEGER} and field2 < #{parameters.p3,jdbcType=INTEGER}"));
+        assertThat(whereSupport.getWhereClause(), is("where field1 = #{parameters.p1,jdbcType=DATE} or field2 = #{parameters.p2,jdbcType=INTEGER} and field2 < #{parameters.p3,jdbcType=INTEGER}"));
         
-        Map<String, Object> parameters = renderedWhereClause.getParameters();
+        Map<String, Object> parameters = whereSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
         assertThat(parameters.get("p2"), is(4));
         assertThat(parameters.get("p3"), is(3));
@@ -40,7 +40,7 @@ public class RenderedWhereClauseTest {
     public void testComplexCriteriaWithoutAlias() {
         Date d = new Date();
 
-        RenderedWhereClause renderedWhereClause = where(field1, isEqualTo(d))
+        WhereSupport whereSupport = where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
                 .or(field2, isEqualTo(4), and(field2, isEqualTo(6)))
@@ -54,9 +54,9 @@ public class RenderedWhereClauseTest {
                 " or (field2 = #{parameters.p4,jdbcType=INTEGER} and field2 = #{parameters.p5,jdbcType=INTEGER})" +
                 " and (field2 < #{parameters.p6,jdbcType=INTEGER} or field1 = #{parameters.p7,jdbcType=DATE})";
         
-        assertThat(renderedWhereClause.getWhereClause(), is(expected));
+        assertThat(whereSupport.getWhereClause(), is(expected));
         
-        Map<String, Object> parameters = renderedWhereClause.getParameters();
+        Map<String, Object> parameters = whereSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
         assertThat(parameters.get("p2"), is(4));
         assertThat(parameters.get("p3"), is(3));
@@ -70,14 +70,14 @@ public class RenderedWhereClauseTest {
     public void testSimpleCriteriaWithAlias() {
         Date d = new Date();
 
-        RenderedWhereClause renderedWhereClause = where(field1, isEqualTo(d))
+        WhereSupport whereSupport = where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
                 .render();
 
-        assertThat(renderedWhereClause.getWhereClause(), is("where a.field1 = #{parameters.p1,jdbcType=DATE} or a.field2 = #{parameters.p2,jdbcType=INTEGER} and a.field2 < #{parameters.p3,jdbcType=INTEGER}"));
+        assertThat(whereSupport.getWhereClause(), is("where a.field1 = #{parameters.p1,jdbcType=DATE} or a.field2 = #{parameters.p2,jdbcType=INTEGER} and a.field2 < #{parameters.p3,jdbcType=INTEGER}"));
         
-        Map<String, Object> parameters = renderedWhereClause.getParameters();
+        Map<String, Object> parameters = whereSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
         assertThat(parameters.get("p2"), is(4));
         assertThat(parameters.get("p3"), is(3));
@@ -87,7 +87,7 @@ public class RenderedWhereClauseTest {
     public void testComplexCriteriaWithAlias() {
         Date d = new Date();
 
-        RenderedWhereClause renderedWhereClause = where(field1, isEqualTo(d))
+        WhereSupport whereSupport = where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
                 .or(field2, isEqualTo(4), and(field2, isEqualTo(6)))
@@ -101,9 +101,9 @@ public class RenderedWhereClauseTest {
                 " or (a.field2 = #{parameters.p4,jdbcType=INTEGER} and a.field2 = #{parameters.p5,jdbcType=INTEGER})" +
                 " and (a.field2 < #{parameters.p6,jdbcType=INTEGER} or a.field1 = #{parameters.p7,jdbcType=DATE})";
         
-        assertThat(renderedWhereClause.getWhereClause(), is(expected));
+        assertThat(whereSupport.getWhereClause(), is(expected));
         
-        Map<String, Object> parameters = renderedWhereClause.getParameters();
+        Map<String, Object> parameters = whereSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
         assertThat(parameters.get("p2"), is(4));
         assertThat(parameters.get("p3"), is(3));

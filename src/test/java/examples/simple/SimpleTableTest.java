@@ -22,7 +22,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.WhereSupport;
 
 public class SimpleTableTest {
 
@@ -51,11 +51,11 @@ public class SimpleTableTest {
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
             
-            RenderedWhereClause renderedWhereClause = where(id, isEqualTo(1))
+            WhereSupport whereSupport = where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .render();
             
-            List<SimpleTable> rows = mapper.selectByExample(renderedWhereClause);
+            List<SimpleTable> rows = mapper.selectByExample(whereSupport);
             
             assertThat(rows.size(), is(3));
         } finally {
@@ -69,10 +69,10 @@ public class SimpleTableTest {
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
             
-            RenderedWhereClause renderedWhereClause = where(firstName, isIn("Fred", "Barney"))
+            WhereSupport whereSupport = where(firstName, isIn("Fred", "Barney"))
                     .render();
             
-            List<SimpleTable> rows = mapper.selectByExample(renderedWhereClause);
+            List<SimpleTable> rows = mapper.selectByExample(whereSupport);
             
             assertThat(rows.size(), is(2));
         } finally {
@@ -85,8 +85,8 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            RenderedWhereClause renderedWhereClause = where(occupation, isNull()).renderIgnoringAlias();
-            int rows = mapper.deleteByExample(renderedWhereClause);
+            WhereSupport whereSupport = where(occupation, isNull()).renderIgnoringAlias();
+            int rows = mapper.deleteByExample(whereSupport);
             
             assertThat(rows, is(2));
         } finally {
@@ -99,8 +99,8 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            RenderedWhereClause renderedWhereClause = where(id, isEqualTo(1)).render();
-            List<SimpleTable> rows = mapper.selectByExampleWithProvider(renderedWhereClause);
+            WhereSupport whereSupport = where(id, isEqualTo(1)).render();
+            List<SimpleTable> rows = mapper.selectByExampleWithProvider(whereSupport);
             
             assertThat(rows.size(), is(1));
         } finally {
@@ -113,8 +113,8 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            RenderedWhereClause renderedWhereClause = where(occupation, isNull()).renderIgnoringAlias();
-            int rows = mapper.deleteByExampleWithProvider(renderedWhereClause);
+            WhereSupport whereSupport = where(occupation, isNull()).renderIgnoringAlias();
+            int rows = mapper.deleteByExampleWithProvider(whereSupport);
             
             assertThat(rows, is(2));
         } finally {

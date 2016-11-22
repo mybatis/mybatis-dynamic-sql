@@ -24,11 +24,11 @@ public interface WhereClauseShortcut {
             super(field, condition, criteria);
         }
         
-        public RenderedWhereClause render() {
+        public WhereSupport render() {
             return WhereClauseRenderer.of(build()).render();
         }
 
-        public RenderedWhereClause renderIgnoringAlias() {
+        public WhereSupport renderIgnoringAlias() {
             return WhereClauseRenderer.of(buildIgnoringAlias()).render();
         }
 

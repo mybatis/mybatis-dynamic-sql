@@ -4,13 +4,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderedInsertSupport {
+public class InsertSupport {
 
     private String fieldsPhrase;
     private String valuesPhrase;
     private Map<String, Object> parameters;
     
-    private RenderedInsertSupport(String fieldsPhrase, String valuesPhrase, Map<String, Object> parameters) {
+    private InsertSupport(String fieldsPhrase, String valuesPhrase, Map<String, Object> parameters) {
         this.fieldsPhrase = fieldsPhrase;
         this.valuesPhrase = valuesPhrase;
         this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
@@ -28,7 +28,7 @@ public class RenderedInsertSupport {
         return parameters;
     }
 
-    public static RenderedInsertSupport of(String fieldsPhrase, String valuesPhrase, Map<String, Object> parameters) {
-        return new RenderedInsertSupport(fieldsPhrase, valuesPhrase, parameters);
+    public static InsertSupport of(String fieldsPhrase, String valuesPhrase, Map<String, Object> parameters) {
+        return new InsertSupport(fieldsPhrase, valuesPhrase, parameters);
     }
 }

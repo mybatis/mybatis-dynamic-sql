@@ -7,31 +7,31 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.qbe.sql.set.SetClause;
+import org.mybatis.qbe.sql.set.SetValues;
 import org.mybatis.qbe.sql.where.SqlField;
 
-public class SetClauseRenderer {
+public class SetValuesRenderer {
     
-    private SetClause setClause;
+    private SetValues setValues;
     
-    private SetClauseRenderer(SetClause setClause) {
-        this.setClause = setClause;
+    private SetValuesRenderer(SetValues setValues) {
+        this.setValues = setValues;
     }
     
-    public RenderedSetClause render() {
+    public SetSupport render() {
         // we do this so the render method can be called multiple times
         // and return the same result
-        return new Renderer(new AtomicInteger(1)).render(setClause);
+        return new Renderer(new AtomicInteger(1)).render(setValues);
     }
     
-    public RenderedSetClause render(AtomicInteger sequence) {
+    public SetSupport render(AtomicInteger sequence) {
         // we do this so the render method can be called multiple times
         // and return the same result
-        return new Renderer(sequence).render(setClause);
+        return new Renderer(sequence).render(setValues);
     }
 
-    public static SetClauseRenderer of(SetClause setClause) {
-        return new SetClauseRenderer(setClause);
+    public static SetValuesRenderer of(SetValues setValues) {
+        return new SetValuesRenderer(setValues);
     }
 
     private static class Renderer {
@@ -43,7 +43,7 @@ public class SetClauseRenderer {
             this.sequence = sequence;
         }
         
-        public RenderedSetClause render(SetClause setClause) {
+        public SetSupport render(SetValues setClause) {
             List<String> phrases = new ArrayList<>();
             
             setClause.visitFieldValuePairs(p -> {
@@ -56,7 +56,7 @@ public class SetClauseRenderer {
             });
             
             String phrase = phrases.stream().collect(Collectors.joining(", ", "set ", ""));
-            return RenderedSetClause.of(phrase, parameters);
+            return SetSupport.of(phrase, parameters);
         }
     }
 }

@@ -7,24 +7,24 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.qbe.sql.insert.InsertSupport;
+import org.mybatis.qbe.sql.insert.InsertValues;
 import org.mybatis.qbe.sql.where.SqlField;
 
-public class InsertSupportRenderer {
-    private InsertSupport insertSupport;
+public class InsertValuesRenderer {
+    private InsertValues insertValues;
     
-    private InsertSupportRenderer(InsertSupport insertSupport) {
-        this.insertSupport = insertSupport;
+    private InsertValuesRenderer(InsertValues insertValues) {
+        this.insertValues = insertValues;
     }
     
-    public RenderedInsertSupport render() {
+    public InsertSupport render() {
         // we do this so the render method can be called multiple times
         // and return the same result
-        return new Renderer(new AtomicInteger(1)).render(insertSupport);
+        return new Renderer(new AtomicInteger(1)).render(insertValues);
     }
     
-    public static InsertSupportRenderer of(InsertSupport insertSupport) {
-        return new InsertSupportRenderer(insertSupport);
+    public static InsertValuesRenderer of(InsertValues insertValues) {
+        return new InsertValuesRenderer(insertValues);
     }
 
     private static class Renderer {
@@ -36,11 +36,11 @@ public class InsertSupportRenderer {
             this.sequence = sequence;
         }
         
-        public RenderedInsertSupport render(InsertSupport insertClause) {
+        public InsertSupport render(InsertValues insertValues) {
             List<String> fieldPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             
-            insertClause.visitFieldValuePairs(p -> {
+            insertValues.visitFieldValuePairs(p -> {
                 int number = sequence.getAndIncrement();
                 SqlField<?> field = p.getField();
                 fieldPhrases.add(field.render());
@@ -50,7 +50,7 @@ public class InsertSupportRenderer {
             
             String fieldsPhrase = fieldPhrases.stream().collect(Collectors.joining(", ", "(", ")"));
             String valuesPhrase = valuePhrases.stream().collect(Collectors.joining(", ", "values (", ")"));
-            return RenderedInsertSupport.of(fieldsPhrase, valuesPhrase, parameters);
+            return InsertSupport.of(fieldsPhrase, valuesPhrase, parameters);
         }
     }
 }

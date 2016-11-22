@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderedWhereClause {
+public class WhereSupport {
 
     private String whereClause;
     private Map<String, Object> parameters;
     
-    private RenderedWhereClause(String whereClause, Map<String, Object> parameters) {
+    private WhereSupport(String whereClause, Map<String, Object> parameters) {
         this.whereClause = whereClause;
         this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
     }
@@ -22,7 +22,7 @@ public class RenderedWhereClause {
         return parameters;
     }
     
-    public static RenderedWhereClause of(String whereClause, Map<String, Object> parameters) {
-        return new RenderedWhereClause(whereClause, parameters);
+    public static WhereSupport of(String whereClause, Map<String, Object> parameters) {
+        return new WhereSupport(whereClause, parameters);
     }
 }

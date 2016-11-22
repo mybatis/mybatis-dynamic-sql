@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderedSetClause {
+public class SetSupport {
 
     private String setClause;
     private Map<String, Object> parameters;
     
-    private RenderedSetClause(String setClause, Map<String, Object> parameters) {
+    private SetSupport(String setClause, Map<String, Object> parameters) {
         this.setClause = setClause;
         this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
     }
@@ -22,7 +22,7 @@ public class RenderedSetClause {
         return parameters;
     }
     
-    public static RenderedSetClause of(String setClause, Map<String, Object> parameters) {
-        return new RenderedSetClause(setClause, parameters);
+    public static SetSupport of(String setClause, Map<String, Object> parameters) {
+        return new SetSupport(setClause, parameters);
     }
 }

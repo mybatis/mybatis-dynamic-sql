@@ -1,18 +1,19 @@
-package org.mybatis.qbe.mybatis3;
+package org.mybatis.qbe.sql.update;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.qbe.Condition;
-import org.mybatis.qbe.sql.set.SetClause;
-import org.mybatis.qbe.sql.set.render.RenderedSetClause;
-import org.mybatis.qbe.sql.set.render.SetClauseRenderer;
+import org.mybatis.qbe.mybatis3.MyBatis3Field;
+import org.mybatis.qbe.sql.set.SetValues;
+import org.mybatis.qbe.sql.set.render.SetSupport;
+import org.mybatis.qbe.sql.set.render.SetValuesRenderer;
 import org.mybatis.qbe.sql.where.SqlCriterion;
 import org.mybatis.qbe.sql.where.SqlField;
 import org.mybatis.qbe.sql.where.WhereClause;
-import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.WhereSupport;
 import org.mybatis.qbe.sql.where.render.WhereClauseRenderer;
 
-public interface UpdateParameterShortcut {
+public interface UpdateSupportShortcut {
 
     static <T> SetBuilder set(MyBatis3Field<T> field, T value) {
         return new SetBuilder(field, value);
@@ -22,7 +23,7 @@ public interface UpdateParameterShortcut {
         return new SetBuilder(field);
     }
     
-    static class SetBuilder extends SetClause.AbstractBuilder<SetBuilder> {
+    static class SetBuilder extends SetValues.AbstractBuilder<SetBuilder> {
         public <T> SetBuilder(MyBatis3Field<T> field, T value) {
             super(field, value);
         }
@@ -50,18 +51,18 @@ public interface UpdateParameterShortcut {
             this.setBuilder = setBuilder;
         }
         
-        public UpdateParameter render() {
+        public UpdateSupport render() {
             AtomicInteger sequence = new AtomicInteger(1);
-            RenderedSetClause rsc = SetClauseRenderer.of(setBuilder.build()).render(sequence);
-            RenderedWhereClause wwc = WhereClauseRenderer.of(build()).render(sequence);
-            return UpdateParameter.of(rsc, wwc);
+            SetSupport setSupport = SetValuesRenderer.of(setBuilder.build()).render(sequence);
+            WhereSupport wwc = WhereClauseRenderer.of(build()).render(sequence);
+            return UpdateSupport.of(setSupport, wwc);
         }
 
-        public UpdateParameter renderIgnoringAlias() {
+        public UpdateSupport renderIgnoringAlias() {
             AtomicInteger sequence = new AtomicInteger(1);
-            RenderedSetClause rsc = SetClauseRenderer.of(setBuilder.buildIgnoringAlias()).render(sequence);
-            RenderedWhereClause wwc = WhereClauseRenderer.of(buildIgnoringAlias()).render(sequence);
-            return UpdateParameter.of(rsc, wwc);
+            SetSupport setSupport = SetValuesRenderer.of(setBuilder.buildIgnoringAlias()).render(sequence);
+            WhereSupport wwc = WhereClauseRenderer.of(buildIgnoringAlias()).render(sequence);
+            return UpdateSupport.of(setSupport, wwc);
         }
         
         @Override

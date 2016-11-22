@@ -1,6 +1,6 @@
 package org.mybatis.qbe.sql.insert.render;
 
-import org.mybatis.qbe.sql.insert.InsertSupport;
+import org.mybatis.qbe.sql.insert.InsertValues;
 import org.mybatis.qbe.sql.where.SqlField;
 
 public interface InsertSupportShortcut {
@@ -13,7 +13,7 @@ public interface InsertSupportShortcut {
         return new Builder(field);
     }
     
-    static class Builder extends InsertSupport.AbstractBuilder<Builder> {
+    static class Builder extends InsertValues.AbstractBuilder<Builder> {
 
         public <T> Builder(SqlField<T> field, T value) {
             super(field, value);
@@ -23,12 +23,12 @@ public interface InsertSupportShortcut {
             super(field);
         }
 
-        public RenderedInsertSupport render() {
-            return InsertSupportRenderer.of(build()).render();
+        public InsertSupport render() {
+            return InsertValuesRenderer.of(build()).render();
         }
 
-        public RenderedInsertSupport renderIgnoringAlias() {
-            return InsertSupportRenderer.of(buildIgnoringAlias()).render();
+        public InsertSupport renderIgnoringAlias() {
+            return InsertValuesRenderer.of(buildIgnoringAlias()).render();
         }
         
         @Override

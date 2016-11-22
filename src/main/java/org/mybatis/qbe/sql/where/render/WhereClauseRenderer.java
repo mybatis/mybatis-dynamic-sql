@@ -14,13 +14,13 @@ public class WhereClauseRenderer {
         this.whereClause = whereClause;
     }
     
-    public RenderedWhereClause render() {
+    public WhereSupport render() {
         // we do this so the render method can be called multiple times
         // and return the same result
         return new Renderer(new AtomicInteger(1)).render(whereClause);
     }
     
-    public RenderedWhereClause render(AtomicInteger sequence) {
+    public WhereSupport render(AtomicInteger sequence) {
         // we do this so the render method can be called multiple times
         // and return the same result
         return new Renderer(sequence).render(whereClause);
@@ -40,13 +40,13 @@ public class WhereClauseRenderer {
             buffer.append("where"); //$NON-NLS-1$
         }
         
-        public RenderedWhereClause render(WhereClause whereClause) {
+        public WhereSupport render(WhereClause whereClause) {
             whereClause.visitCriteria(c -> {
                 RenderedCriterion rc = CriterionRenderer.of(c, sequence).render();
                 buffer.append(rc.whereClauseFragment());
                 parameters.putAll(rc.fragmentParameters());
             });
-            return RenderedWhereClause.of(buffer.toString(), parameters);
+            return WhereSupport.of(buffer.toString(), parameters);
         }
 
     }

@@ -7,44 +7,44 @@ import static org.mybatis.qbe.sql.where.SqlConditions.*;
 import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.*;
 
 import org.junit.Test;
-import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.where.render.WhereSupport;
 
 public class SampleWhereClausesTest {
 
     @Test
     public void simpleClause1() {
-        RenderedWhereClause renderedWhereClause = where(id, isEqualTo(3))
+        WhereSupport whereSupport = where(id, isEqualTo(3))
                 .render();
         
-        assertThat(renderedWhereClause.getWhereClause(),
+        assertThat(whereSupport.getWhereClause(),
                 is("where a.id = #{parameters.p1,jdbcType=INTEGER}"));
     }
     
     @Test
     public void simpleClause2() {
-        RenderedWhereClause renderedWhereClause = where(id, isNull())
+        WhereSupport whereSupport = where(id, isNull())
                 .render();
         
-        assertThat(renderedWhereClause.getWhereClause(),
+        assertThat(whereSupport.getWhereClause(),
                 is("where a.id is null"));
     }
     
     @Test
     public void betweenClause() {
-        RenderedWhereClause renderedWhereClause = where(id, isBetween(1).and(4))
+        WhereSupport whereSupport = where(id, isBetween(1).and(4))
                 .render();
         
-        assertThat(renderedWhereClause.getWhereClause(),
+        assertThat(whereSupport.getWhereClause(),
                 is("where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}"));
     }
 
     @Test
     public void complexClause() {
-        RenderedWhereClause renderedWhereClause = where(id, isGreaterThan(2))
+        WhereSupport whereSupport = where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
                 .renderIgnoringAlias();
         
-        assertThat(renderedWhereClause.getWhereClause(),
+        assertThat(whereSupport.getWhereClause(),
                 is("where id > #{parameters.p1,jdbcType=INTEGER} or (occupation is null and id < #{parameters.p2,jdbcType=INTEGER})"));
     }
 }

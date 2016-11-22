@@ -10,12 +10,12 @@ import java.util.List;
 
 import org.junit.Test;
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
-import org.mybatis.qbe.sql.set.SetClause;
-import org.mybatis.qbe.sql.set.render.RenderedSetClause;
-import org.mybatis.qbe.sql.set.render.SetClauseRenderer;
+import org.mybatis.qbe.sql.set.SetValues;
+import org.mybatis.qbe.sql.set.render.SetSupport;
+import org.mybatis.qbe.sql.set.render.SetValuesRenderer;
 import org.mybatis.qbe.sql.where.SqlField;
 
-public class SetClauseTest {
+public class SetTest {
 
     @Test
     public void testBasicSetClause() {
@@ -24,15 +24,15 @@ public class SetClauseTest {
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
         
-        SetClause sc = new SetClause.Builder(firstName, "fred")
-                .set(lastName, "jones")
-                .setNull(occupation)
-                .set(id, 3)
+        SetValues setValues = new SetValues.Builder(firstName, "fred")
+                .andSet(lastName, "jones")
+                .andSetNull(occupation)
+                .andSet(id, 3)
                 .build();
         
         List<Object> values = new ArrayList<>();
         List<String> phrases = new ArrayList<>();
-        sc.visitFieldValuePairs(p -> {
+        setValues.visitFieldValuePairs(p -> {
             values.add(p.getValue());
             phrases.add(p.getField().render());
         });
@@ -57,23 +57,23 @@ public class SetClauseTest {
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
         
-        SetClause sc = new SetClause.Builder(firstName, "fred")
-                .set(lastName, "jones")
-                .setNull(occupation)
-                .set(id, 3)
+        SetValues setValues = new SetValues.Builder(firstName, "fred")
+                .andSet(lastName, "jones")
+                .andSetNull(occupation)
+                .andSet(id, 3)
                 .build();
         
-        RenderedSetClause rsc = SetClauseRenderer.of(sc).render();
+        SetSupport setSupport = SetValuesRenderer.of(setValues).render();
 
         String expectedSetClause = "set firstName = ?, lastName = ?, occupation = ?, id = ?";
         
-        assertThat(rsc.getSetClause(), is(expectedSetClause));
+        assertThat(setSupport.getSetClause(), is(expectedSetClause));
 
-        assertThat(rsc.getParameters().size(), is(4));
-        assertThat(rsc.getParameters().get("p1"), is("fred"));
-        assertThat(rsc.getParameters().get("p2"), is("jones"));
-        assertThat(rsc.getParameters().get("p3"), is(nullValue()));
-        assertThat(rsc.getParameters().get("p4"), is(3));
+        assertThat(setSupport.getParameters().size(), is(4));
+        assertThat(setSupport.getParameters().get("p1"), is("fred"));
+        assertThat(setSupport.getParameters().get("p2"), is("jones"));
+        assertThat(setSupport.getParameters().get("p3"), is(nullValue()));
+        assertThat(setSupport.getParameters().get("p4"), is(3));
     }
 
     @Test
@@ -83,23 +83,23 @@ public class SetClauseTest {
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
         
-        SetClause sc = new SetClause.Builder(occupation)
-                .set(firstName, "fred")
-                .set(lastName, "jones")
-                .set(id, 3)
+        SetValues setValues = new SetValues.Builder(occupation)
+                .andSet(firstName, "fred")
+                .andSet(lastName, "jones")
+                .andSet(id, 3)
                 .build();
         
-        RenderedSetClause rsc = SetClauseRenderer.of(sc).render();
+        SetSupport setSupport = SetValuesRenderer.of(setValues).render();
 
         String expectedSetClause = "set occupation = ?, firstName = ?, lastName = ?, id = ?";
         
-        assertThat(rsc.getSetClause(), is(expectedSetClause));
+        assertThat(setSupport.getSetClause(), is(expectedSetClause));
 
-        assertThat(rsc.getParameters().size(), is(4));
-        assertThat(rsc.getParameters().get("p1"), is(nullValue()));
-        assertThat(rsc.getParameters().get("p2"), is("fred"));
-        assertThat(rsc.getParameters().get("p3"), is("jones"));
-        assertThat(rsc.getParameters().get("p4"), is(3));
+        assertThat(setSupport.getParameters().size(), is(4));
+        assertThat(setSupport.getParameters().get("p1"), is(nullValue()));
+        assertThat(setSupport.getParameters().get("p2"), is("fred"));
+        assertThat(setSupport.getParameters().get("p3"), is("jones"));
+        assertThat(setSupport.getParameters().get("p4"), is(3));
     }
 
     @Test
@@ -109,25 +109,25 @@ public class SetClauseTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
         
-        SetClause sc = new SetClause.Builder(firstName, "fred")
-                .set(lastName, "jones")
-                .setNull(occupation)
-                .set(id, 3)
+        SetValues setValues = new SetValues.Builder(firstName, "fred")
+                .andSet(lastName, "jones")
+                .andSetNull(occupation)
+                .andSet(id, 3)
                 .build();
         
-        RenderedSetClause rsc = SetClauseRenderer.of(sc).render();
+        SetSupport setSupport = SetValuesRenderer.of(setValues).render();
 
         String expectedSetClause = "set firstName = #{parameters.p1,jdbcType=VARCHAR}, " 
                 + "lastName = #{parameters.p2,jdbcType=VARCHAR}, "
                 + "occupation = #{parameters.p3,jdbcType=VARCHAR}, "
                 + "id = #{parameters.p4,jdbcType=INTEGER}";
         
-        assertThat(rsc.getSetClause(), is(expectedSetClause));
+        assertThat(setSupport.getSetClause(), is(expectedSetClause));
 
-        assertThat(rsc.getParameters().size(), is(4));
-        assertThat(rsc.getParameters().get("p1"), is("fred"));
-        assertThat(rsc.getParameters().get("p2"), is("jones"));
-        assertThat(rsc.getParameters().get("p3"), is(nullValue()));
-        assertThat(rsc.getParameters().get("p4"), is(3));
+        assertThat(setSupport.getParameters().size(), is(4));
+        assertThat(setSupport.getParameters().get("p1"), is("fred"));
+        assertThat(setSupport.getParameters().get("p2"), is("jones"));
+        assertThat(setSupport.getParameters().get("p3"), is(nullValue()));
+        assertThat(setSupport.getParameters().get("p4"), is(3));
     }
 }

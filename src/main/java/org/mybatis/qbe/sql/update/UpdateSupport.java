@@ -1,11 +1,11 @@
-package org.mybatis.qbe.mybatis3;
+package org.mybatis.qbe.sql.update;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mybatis.qbe.sql.set.render.RenderedSetClause;
-import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.set.render.SetSupport;
+import org.mybatis.qbe.sql.where.render.WhereSupport;
 
 /**
  * This class combines a "set" clause and a "where" clause into one parameter object
@@ -14,12 +14,12 @@ import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
  * @author Jeff Butler
  *
  */
-public class UpdateParameter {
+public class UpdateSupport {
     private String setClause;
     private String whereClause;
     private Map<String, Object> parameters;
 
-    private UpdateParameter (String setClause, String whereClause, Map<String, Object> parameters) {
+    private UpdateSupport (String setClause, String whereClause, Map<String, Object> parameters) {
         this.setClause = setClause;
         this.whereClause = whereClause;
         this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
@@ -37,10 +37,10 @@ public class UpdateParameter {
         return parameters;
     }
 
-    public static UpdateParameter of(RenderedSetClause setClause, RenderedWhereClause whereClause) {
+    public static UpdateSupport of(SetSupport setSupport, WhereSupport whereSupport) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.putAll(setClause.getParameters());
-        parameters.putAll(whereClause.getParameters());
-        return new UpdateParameter(setClause.getSetClause(), whereClause.getWhereClause(), parameters);
+        parameters.putAll(setSupport.getParameters());
+        parameters.putAll(whereSupport.getParameters());
+        return new UpdateSupport(setSupport.getSetClause(), whereSupport.getWhereClause(), parameters);
     }
 }

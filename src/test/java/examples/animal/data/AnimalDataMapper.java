@@ -8,9 +8,9 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
-import org.mybatis.qbe.mybatis3.UpdateParameter;
-import org.mybatis.qbe.sql.insert.render.RenderedInsertSupport;
-import org.mybatis.qbe.sql.where.render.RenderedWhereClause;
+import org.mybatis.qbe.sql.insert.render.InsertSupport;
+import org.mybatis.qbe.sql.update.UpdateSupport;
+import org.mybatis.qbe.sql.where.render.WhereSupport;
 
 public interface AnimalDataMapper {
 
@@ -19,31 +19,31 @@ public interface AnimalDataMapper {
         "from AnimalData a",
         "${whereClause}"
     })
-    List<AnimalData> selectByExample(RenderedWhereClause renderedWhereClause);
+    List<AnimalData> selectByExample(WhereSupport whereSupport);
 
     @Delete({
         "delete from AnimalData",
         "${whereClause}"
     })
-    int deleteByExample(RenderedWhereClause renderedWhereClause);
+    int deleteByExample(WhereSupport whereSupport);
 
     @Update({
         "update AnimalData",
         "${setClause}",
         "${whereClause}"
     })
-    int updateByExample(UpdateParameter updateParameter);
+    int updateByExample(UpdateSupport updateSupport);
     
     @Insert({
         "insert into AnimalData",
         "${fieldsPhrase}",
         "${valuesPhrase}"
     })
-    int insert(RenderedInsertSupport insertSupport);
+    int insert(InsertSupport insertSupport);
     
     @SelectProvider(type=AnimalDataSqlProvider.class, method="selectByExample")
-    List<AnimalData> selectByExampleWithProvider(RenderedWhereClause renderedWhereClause);
+    List<AnimalData> selectByExampleWithProvider(WhereSupport whereSupport);
 
     @DeleteProvider(type=AnimalDataSqlProvider.class, method="deleteByExample")
-    int deleteByExampleWithProvider(RenderedWhereClause renderedWhereClause);
+    int deleteByExampleWithProvider(WhereSupport whereSupport);
 }
