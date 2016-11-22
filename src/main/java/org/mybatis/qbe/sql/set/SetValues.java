@@ -19,25 +19,25 @@ public class SetValues {
         fieldValuePairs.stream().forEach(consumer);
     }
     
-    public abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
+    public static class Builder {
         private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
         
-        public <S> AbstractBuilder(SqlField<S> field) {
+        public <T> Builder(SqlField<T> field) {
             fieldValuePairs.add(FieldValuePair.of(field));
         }
-        
-        public <S> AbstractBuilder(SqlField<S> field, S value) {
+
+        public <T> Builder(SqlField<T> field, T value) {
             fieldValuePairs.add(FieldValuePair.of(field, value));
         }
         
-        public <S> T andSet(SqlField<S> field, S value) {
+        public <T> Builder andSet(SqlField<T> field, T value) {
             fieldValuePairs.add(FieldValuePair.of(field, value));
-            return getThis();
+            return this;
         }
         
-        public <S> T andSetNull(SqlField<S> field) {
+        public <T> Builder andSetNull(SqlField<T> field) {
             fieldValuePairs.add(FieldValuePair.of(field));
-            return getThis();
+            return this;
         }
         
         public SetValues build() {
@@ -46,23 +46,6 @@ public class SetValues {
         
         public SetValues buildIgnoringAlias() {
             return new SetValues(fieldValuePairs.stream().map(FieldValuePair::ignoringAlias));
-        }
-        
-        public abstract T getThis();
-    }
-    
-    public static class Builder extends AbstractBuilder<Builder> {
-        public <T> Builder(SqlField<T> field) {
-            super(field);
-        }
-
-        public <T> Builder(SqlField<T> field, T value) {
-            super(field, value);
-        }
-        
-        @Override
-        public Builder getThis() {
-            return this;
         }
     }
 }

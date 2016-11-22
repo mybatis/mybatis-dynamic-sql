@@ -25,7 +25,7 @@ public class UpdateSupportTest {
                 .andSet(lastName, "jones")
                 .andSetNull(occupation)
                 .where(id, isEqualTo(3))
-                .render();
+                .build();
         
         String expectedSetClause = "set firstName = #{parameters.p1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.p2,jdbcType=VARCHAR}, "
@@ -56,7 +56,7 @@ public class UpdateSupportTest {
                 .andSet(lastName, "jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
-                .render();
+                .build();
         
         String expectedSetClause = "set occupation = #{parameters.p1,jdbcType=VARCHAR}, "
                 + "firstName = #{parameters.p2,jdbcType=VARCHAR}, "

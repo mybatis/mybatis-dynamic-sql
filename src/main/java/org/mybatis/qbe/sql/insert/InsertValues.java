@@ -19,25 +19,25 @@ public class InsertValues {
         fieldValuePairs.stream().forEach(consumer);
     }
 
-    public abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
+    public static class Builder {
         private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
         
-        public <S> AbstractBuilder(SqlField<S> field, S value) {
-            fieldValuePairs.add(FieldValuePair.of(field, value));
-        }
-        
-        public <S> AbstractBuilder(SqlField<S> field) {
+        public <T> Builder(SqlField<T> field) {
             fieldValuePairs.add(FieldValuePair.of(field));
         }
         
-        public <S> T andValue(SqlField<S> field, S value) {
+        public <T> Builder(SqlField<T> field, T value) {
             fieldValuePairs.add(FieldValuePair.of(field, value));
-            return getThis();
         }
         
-        public <S> T andNullValue(SqlField<S> field) {
+        public <T> Builder andValue(SqlField<T> field, T value) {
+            fieldValuePairs.add(FieldValuePair.of(field, value));
+            return this;
+        }
+        
+        public <T> Builder andNullValue(SqlField<T> field) {
             fieldValuePairs.add(FieldValuePair.of(field));
-            return getThis();
+            return this;
         }
         
         public InsertValues build() {
@@ -46,23 +46,6 @@ public class InsertValues {
         
         public InsertValues buildIgnoringAlias() {
             return new InsertValues(fieldValuePairs.stream().map(FieldValuePair::ignoringAlias));
-        }
-        
-        public abstract T getThis();
-    }
-    
-    public static class Builder extends AbstractBuilder<Builder> {
-        public <T> Builder(SqlField<T> field) {
-            super(field);
-        }
-        
-        public <T> Builder(SqlField<T> field, T value) {
-            super(field, value);
-        }
-        
-        @Override
-        public Builder getThis() {
-            return this;
         }
     }
 }

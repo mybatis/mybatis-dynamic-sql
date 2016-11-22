@@ -113,7 +113,7 @@ public class InsertTest {
                 .andValue(lastName, "jones")
                 .andNullValue(id)
                 .andValue(occupation, "dino driver")
-                .render();
+                .build();
         
         String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
         assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
@@ -142,7 +142,7 @@ public class InsertTest {
                 .andValue(lastName, "jones")
                 .andNullValue(id)
                 .andValue(occupation, "dino driver")
-                .render();
+                .build();
         
         String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
         assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));

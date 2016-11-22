@@ -320,7 +320,7 @@ public class AnimalDataTest {
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
-                    .renderIgnoringAlias();
+                    .buildIgnoringAlias();
 
             int rows = mapper.updateByExample(updateSupport);
             assertThat(rows, is(4));
@@ -339,7 +339,7 @@ public class AnimalDataTest {
                     .andValue(animalName, "Old Shep")
                     .andValue(bodyWeight, 22.5)
                     .andValue(brainWeight, 1.2)
-                    .renderIgnoringAlias();
+                    .buildIgnoringAlias();
             
             int rows = mapper.insert(insertSupport);
             assertThat(rows, is(1));

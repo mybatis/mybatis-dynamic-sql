@@ -18,23 +18,30 @@ public interface WhereClauseShortcut {
         return new Builder(field, condition, criteria);
     }
     
-    static class Builder extends WhereClause.AbstractBuilder<Builder> {
+    static class Builder {
+        
+        private WhereClause.Builder whereClauseBuilder;
 
         public <T> Builder(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-            super(field, condition, criteria);
+            whereClauseBuilder = new WhereClause.Builder(field, condition, criteria);
+        }
+        
+        public <T> Builder and(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
+            whereClauseBuilder.and(field, condition, criteria);
+            return this;
+        }
+        
+        public <T> Builder or(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
+            whereClauseBuilder.or(field, condition, criteria);
+            return this;
         }
         
         public WhereSupport render() {
-            return WhereClauseRenderer.of(build()).render();
+            return WhereClauseRenderer.of(whereClauseBuilder.build()).render();
         }
 
         public WhereSupport renderIgnoringAlias() {
-            return WhereClauseRenderer.of(buildIgnoringAlias()).render();
-        }
-
-        @Override
-        public Builder getThis() {
-            return this;
+            return WhereClauseRenderer.of(whereClauseBuilder.buildIgnoringAlias()).render();
         }
     }
 }

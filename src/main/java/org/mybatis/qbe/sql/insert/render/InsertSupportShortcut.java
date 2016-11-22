@@ -13,27 +13,34 @@ public interface InsertSupportShortcut {
         return new Builder(field);
     }
     
-    static class Builder extends InsertValues.AbstractBuilder<Builder> {
-
-        public <T> Builder(SqlField<T> field, T value) {
-            super(field, value);
-        }
+    static class Builder {
         
+        private InsertValues.Builder insertValuesBuilder;
+
         public <T> Builder(SqlField<T> field) {
-            super(field);
-        }
-
-        public InsertSupport render() {
-            return InsertValuesRenderer.of(build()).render();
-        }
-
-        public InsertSupport renderIgnoringAlias() {
-            return InsertValuesRenderer.of(buildIgnoringAlias()).render();
+            insertValuesBuilder = new InsertValues.Builder(field);
         }
         
-        @Override
-        public Builder getThis() {
+        public <T> Builder(SqlField<T> field, T value) {
+            insertValuesBuilder = new InsertValues.Builder(field, value);
+        }
+        
+        public <T> Builder andValue(SqlField<T> field, T value) {
+            insertValuesBuilder.andValue(field, value);
             return this;
+        }
+
+        public <T> Builder andNullValue(SqlField<T> field) {
+            insertValuesBuilder.andNullValue(field);
+            return this;
+        }
+
+        public InsertSupport build() {
+            return InsertValuesRenderer.of(insertValuesBuilder.build()).render();
+        }
+
+        public InsertSupport buildIgnoringAlias() {
+            return InsertValuesRenderer.of(insertValuesBuilder.buildIgnoringAlias()).render();
         }
     }
 }

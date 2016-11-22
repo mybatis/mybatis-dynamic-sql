@@ -18,42 +18,29 @@ public class WhereClause {
         criteria.stream().forEach(consumer);
     }
     
-    public abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
+    public static class Builder {
         private List<SqlCriterion<?>> criteria = new ArrayList<>();
-        
-        public <S> AbstractBuilder(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...criteria) {
+
+        public <T> Builder(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
             this.criteria.add(SqlCriterion.of(field, condition, criteria));
         }
         
-        public <S> T and(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...criteria) {
+        public <T> Builder and(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
             this.criteria.add(SqlCriterion.of("and", field, condition, criteria));
-            return getThis();
+            return this;
         }
         
-        public <S> T or(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...criteria) {
+        public <T> Builder or(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
             this.criteria.add(SqlCriterion.of("or", field, condition, criteria));
-            return getThis();
+            return this;
         }
-        
+
         public WhereClause build() {
             return new WhereClause(criteria.stream());
         }
         
         public WhereClause buildIgnoringAlias() {
             return new WhereClause(criteria.stream().map(SqlCriterion::ignoringAlias));
-        }
-        
-        public abstract T getThis();
-    }
-    
-    public static class Builder extends AbstractBuilder<Builder> {
-        public <T> Builder(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-            super(field, condition, criteria);
-        }
-        
-        @Override
-        public Builder getThis() {
-            return this;
         }
     }
 }

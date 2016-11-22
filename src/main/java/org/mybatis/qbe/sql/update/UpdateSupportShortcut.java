@@ -10,8 +10,8 @@ import org.mybatis.qbe.sql.set.render.SetValuesRenderer;
 import org.mybatis.qbe.sql.where.SqlCriterion;
 import org.mybatis.qbe.sql.where.SqlField;
 import org.mybatis.qbe.sql.where.WhereClause;
-import org.mybatis.qbe.sql.where.render.WhereSupport;
 import org.mybatis.qbe.sql.where.render.WhereClauseRenderer;
+import org.mybatis.qbe.sql.where.render.WhereSupport;
 
 public interface UpdateSupportShortcut {
 
@@ -23,51 +23,63 @@ public interface UpdateSupportShortcut {
         return new SetBuilder(field);
     }
     
-    static class SetBuilder extends SetValues.AbstractBuilder<SetBuilder> {
-        public <T> SetBuilder(MyBatis3Field<T> field, T value) {
-            super(field, value);
-        }
-
+    static class SetBuilder {
+        private SetValues.Builder setValuesBuilder;
+        
         public <T> SetBuilder(MyBatis3Field<T> field) {
-            super(field);
+            setValuesBuilder = new SetValues.Builder(field);
         }
 
-        @Override
-        public SetBuilder getThis() {
+        public <T> SetBuilder(MyBatis3Field<T> field, T value) {
+            setValuesBuilder = new SetValues.Builder(field, value);
+        }
+
+        public <T> SetBuilder andSet(SqlField<T> field, T value) {
+            setValuesBuilder.andSet(field, value);
+            return this;
+        }
+        
+        public <T> SetBuilder andSetNull(SqlField<T> field) {
+            setValuesBuilder.andSetNull(field);
             return this;
         }
         
         public <T> WhereBuilder where(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-            return new WhereBuilder(this, field, condition, criteria);
+            return new WhereBuilder(setValuesBuilder, field, condition, criteria);
         }
     }
     
-    static class WhereBuilder extends WhereClause.AbstractBuilder<WhereBuilder> {
+    static class WhereBuilder {
+        private SetValues.Builder setValuesBuilder;
+        private WhereClause.Builder whereClauseBuilder;
         
-        private SetBuilder setBuilder;
-        
-        public <T> WhereBuilder(SetBuilder setBuilder, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-            super(field, condition, criteria);
-            this.setBuilder = setBuilder;
+        public <T> WhereBuilder(SetValues.Builder setValuesBuilder, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
+            whereClauseBuilder = new WhereClause.Builder(field, condition, criteria);
+            this.setValuesBuilder = setValuesBuilder;
         }
         
-        public UpdateSupport render() {
+        public <T> WhereBuilder and(SqlField<T> field, Condition<T> condition, SqlCriterion<?>... criteria) {
+            whereClauseBuilder.and(field, condition, criteria);
+            return this;
+        }
+
+        public <T> WhereBuilder or(SqlField<T> field, Condition<T> condition, SqlCriterion<?>... criteria) {
+            whereClauseBuilder.or(field, condition, criteria);
+            return this;
+        }
+        
+        public UpdateSupport build() {
             AtomicInteger sequence = new AtomicInteger(1);
-            SetSupport setSupport = SetValuesRenderer.of(setBuilder.build()).render(sequence);
-            WhereSupport wwc = WhereClauseRenderer.of(build()).render(sequence);
+            SetSupport setSupport = SetValuesRenderer.of(setValuesBuilder.build()).render(sequence);
+            WhereSupport wwc = WhereClauseRenderer.of(whereClauseBuilder.build()).render(sequence);
             return UpdateSupport.of(setSupport, wwc);
         }
 
-        public UpdateSupport renderIgnoringAlias() {
+        public UpdateSupport buildIgnoringAlias() {
             AtomicInteger sequence = new AtomicInteger(1);
-            SetSupport setSupport = SetValuesRenderer.of(setBuilder.buildIgnoringAlias()).render(sequence);
-            WhereSupport wwc = WhereClauseRenderer.of(buildIgnoringAlias()).render(sequence);
+            SetSupport setSupport = SetValuesRenderer.of(setValuesBuilder.buildIgnoringAlias()).render(sequence);
+            WhereSupport wwc = WhereClauseRenderer.of(whereClauseBuilder.buildIgnoringAlias()).render(sequence);
             return UpdateSupport.of(setSupport, wwc);
-        }
-        
-        @Override
-        public WhereBuilder getThis() {
-            return this;
         }
     }
 }
