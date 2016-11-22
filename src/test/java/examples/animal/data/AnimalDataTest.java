@@ -53,7 +53,7 @@ public class AnimalDataTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            List<AnimalData> animals = mapper.selectByExample(null);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(null);
             assertThat(animals.size(), is(65));
         } finally {
             sqlSession.close();
@@ -68,7 +68,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isLessThan(20)).render();
             
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(19));
         } finally {
             sqlSession.close();
@@ -83,13 +83,28 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isBetween(30).and(40)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(11));
         } finally {
             sqlSession.close();
         }
     }
 
+    @Test
+    public void testSelectRowsNotBetweenWithProvider() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            RenderedWhereClause renderedWhereClause = where(id, isNotBetween(10).and(60)).render();
+
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
+            assertThat(animals.size(), is(14));
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
     @Test
     public void testSelectRowsNotBetween() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
@@ -104,7 +119,7 @@ public class AnimalDataTest {
             sqlSession.close();
         }
     }
-    
+
     @Test
     public void testIsEqualCondition() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
@@ -113,7 +128,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isEqualTo(5)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(1));
         } finally {
             sqlSession.close();
@@ -128,7 +143,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isNotEqualTo(5)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(64));
         } finally {
             sqlSession.close();
@@ -143,7 +158,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isGreaterThanOrEqualTo(60)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(6));
         } finally {
             sqlSession.close();
@@ -158,7 +173,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isLessThanOrEqualTo(10)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(10));
         } finally {
             sqlSession.close();
@@ -173,7 +188,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isIn(5, 8, 10)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(3));
         } finally {
             sqlSession.close();
@@ -188,7 +203,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isNotIn(5, 8, 10)).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(62));
         } finally {
             sqlSession.close();
@@ -203,7 +218,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(animalName, isLike("%squirrel")).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(2));
         } finally {
             sqlSession.close();
@@ -218,27 +233,27 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(animalName, isNotLike("%squirrel")).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(63));
         } finally {
             sqlSession.close();
         }
     }
 
-//    @Test
-//    public void testDeleteThreeRows() {
-//        SqlSession sqlSession = sqlSessionFactory.openSession();
-//        try {
-//            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-//            
-//            RenderedWhereClause myExample = where(id, isIn(5, 8, 10)).renderWithoutTableAlias();
-//
-//            int rowCount = mapper.deleteByExample(myExample);
-//            assertThat(rowCount, is(3));
-//        } finally {
-//            sqlSession.close();
-//        }
-//    }
+    @Test
+    public void testDeleteThreeRows() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            RenderedWhereClause myExample = where(id, isIn(5, 8, 10)).renderIgnoringAlias();
+
+            int rowCount = mapper.deleteByExample(myExample);
+            assertThat(rowCount, is(3));
+        } finally {
+            sqlSession.close();
+        }
+    }
     
     @Test
     public void testIsNullCondition() {
@@ -248,7 +263,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isNull()).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(0));
         } finally {
             sqlSession.close();
@@ -263,7 +278,7 @@ public class AnimalDataTest {
             
             RenderedWhereClause renderedWhereClause = where(id, isNotNull()).render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(65));
         } finally {
             sqlSession.close();
@@ -282,7 +297,7 @@ public class AnimalDataTest {
                     .and(bodyWeight, isBetween(1.0).and(3.0))
                     .render();
 
-            List<AnimalData> animals = mapper.selectByExample(renderedWhereClause);
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(renderedWhereClause);
             assertThat(animals.size(), is(4));
         } finally {
             sqlSession.close();
