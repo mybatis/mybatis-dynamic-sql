@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql;
+package org.mybatis.qbe.sql.where;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
