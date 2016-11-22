@@ -45,6 +45,10 @@ public class SqlField<T> extends Field<T> {
         return SqlField.of(name, jdbcType);
     }
     
+    public <S> SqlField<S> withAlias(String alias) {
+        return SqlField.of(name, jdbcType, alias);
+    }
+    
     @Override
     public Renderer getParameterRenderer(int parameterNumber) {
         return () -> "?";

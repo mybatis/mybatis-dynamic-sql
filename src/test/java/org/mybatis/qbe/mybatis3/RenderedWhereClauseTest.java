@@ -17,7 +17,7 @@ import org.mybatis.qbe.sql.render.RenderedWhereClause;
 
 public class RenderedWhereClauseTest {
     public static final MyBatis3Field<Date> field1 = MyBatis3Field.of("field1", JDBCType.DATE, "a");
-    public static final MyBatis3Field<Integer> field2 = MyBatis3Field.of("field2", JDBCType.INTEGER, "a");
+    public static final MyBatis3Field<Integer> field2 = MyBatis3Field.of("field2", JDBCType.INTEGER).withAlias("a");
 
     @Test
     public void testSimpleCriteriaWithoutAlias() {

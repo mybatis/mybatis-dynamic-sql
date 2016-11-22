@@ -36,6 +36,13 @@ public class MyBatis3Field<T> extends SqlField<T> {
         return field;
     }
     
+    @Override
+    public <S> MyBatis3Field<S> withAlias(String alias) {
+        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType, alias);
+        field.typeHandler = typeHandler;
+        return field;
+    }
+    
     public static <T> MyBatis3Field<T> of(String name, JDBCType jdbcType) {
         return MyBatis3Field.of(name, jdbcType, null);
     }

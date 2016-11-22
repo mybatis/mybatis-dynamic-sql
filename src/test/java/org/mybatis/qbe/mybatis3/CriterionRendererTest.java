@@ -86,7 +86,7 @@ public class CriterionRendererTest {
 
     @Test
     public void testTypeHandlerAndAlias() {
-        MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER, "a").withTypeHandler("foo.Bar");
+        MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER).withTypeHandler("foo.Bar").withAlias("a");
         IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
@@ -99,7 +99,7 @@ public class CriterionRendererTest {
     
     @Test
     public void testCustomCondition() {
-        MyBatis3Field<String> field = MyBatis3Field.of("description", JDBCType.VARCHAR, "a").withTypeHandler("foo.Bar");
+        MyBatis3Field<String> field = MyBatis3Field.of("description", JDBCType.VARCHAR).withAlias("a").withTypeHandler("foo.Bar");
         
         IsLikeCondition condition = IsLikeCaseInsensitiveCondition.of("fred");
         SqlCriterion<String> criterion = SqlCriterion.of(field, condition);
