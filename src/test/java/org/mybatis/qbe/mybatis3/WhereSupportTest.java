@@ -26,7 +26,7 @@ public class WhereSupportTest {
         WhereSupport whereSupport = where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
-                .renderIgnoringAlias();
+                .buildIgnoringAlias();
 
         assertThat(whereSupport.getWhereClause(), is("where field1 = #{parameters.p1,jdbcType=DATE} or field2 = #{parameters.p2,jdbcType=INTEGER} and field2 < #{parameters.p3,jdbcType=INTEGER}"));
         
@@ -45,7 +45,7 @@ public class WhereSupportTest {
                 .and(field2, isLessThan(3))
                 .or(field2, isEqualTo(4), and(field2, isEqualTo(6)))
                 .and(field2, isLessThan(3), or(field1, isEqualTo(d)))
-                .renderIgnoringAlias();
+                .buildIgnoringAlias();
         
 
         String expected = "where field1 = #{parameters.p1,jdbcType=DATE}" +
@@ -73,7 +73,7 @@ public class WhereSupportTest {
         WhereSupport whereSupport = where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
-                .render();
+                .build();
 
         assertThat(whereSupport.getWhereClause(), is("where a.field1 = #{parameters.p1,jdbcType=DATE} or a.field2 = #{parameters.p2,jdbcType=INTEGER} and a.field2 < #{parameters.p3,jdbcType=INTEGER}"));
         
@@ -92,7 +92,7 @@ public class WhereSupportTest {
                 .and(field2, isLessThan(3))
                 .or(field2, isEqualTo(4), and(field2, isEqualTo(6)))
                 .and(field2, isLessThan(3), or(field1, isEqualTo(d)))
-                .render();
+                .build();
         
 
         String expected = "where a.field1 = #{parameters.p1,jdbcType=DATE}" +

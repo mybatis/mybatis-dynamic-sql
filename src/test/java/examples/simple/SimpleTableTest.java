@@ -53,7 +53,7 @@ public class SimpleTableTest {
             
             WhereSupport whereSupport = where(id, isEqualTo(1))
                     .or(occupation, isNull())
-                    .render();
+                    .build();
             
             List<SimpleTable> rows = mapper.selectByExample(whereSupport);
             
@@ -70,7 +70,7 @@ public class SimpleTableTest {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
             
             WhereSupport whereSupport = where(firstName, isIn("Fred", "Barney"))
-                    .render();
+                    .build();
             
             List<SimpleTable> rows = mapper.selectByExample(whereSupport);
             
@@ -85,7 +85,7 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            WhereSupport whereSupport = where(occupation, isNull()).renderIgnoringAlias();
+            WhereSupport whereSupport = where(occupation, isNull()).buildIgnoringAlias();
             int rows = mapper.deleteByExample(whereSupport);
             
             assertThat(rows, is(2));
@@ -99,7 +99,7 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            WhereSupport whereSupport = where(id, isEqualTo(1)).render();
+            WhereSupport whereSupport = where(id, isEqualTo(1)).build();
             List<SimpleTable> rows = mapper.selectByExampleWithProvider(whereSupport);
             
             assertThat(rows.size(), is(1));
@@ -113,7 +113,7 @@ public class SimpleTableTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
-            WhereSupport whereSupport = where(occupation, isNull()).renderIgnoringAlias();
+            WhereSupport whereSupport = where(occupation, isNull()).buildIgnoringAlias();
             int rows = mapper.deleteByExampleWithProvider(whereSupport);
             
             assertThat(rows, is(2));

@@ -36,11 +36,11 @@ public interface WhereClauseShortcut {
             return this;
         }
         
-        public WhereSupport render() {
+        public WhereSupport build() {
             return WhereClauseRenderer.of(whereClauseBuilder.build()).render();
         }
 
-        public WhereSupport renderIgnoringAlias() {
+        public WhereSupport buildIgnoringAlias() {
             return WhereClauseRenderer.of(whereClauseBuilder.buildIgnoringAlias()).render();
         }
     }

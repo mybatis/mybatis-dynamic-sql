@@ -14,7 +14,7 @@ public class SampleWhereClausesTest {
     @Test
     public void simpleClause1() {
         WhereSupport whereSupport = where(id, isEqualTo(3))
-                .render();
+                .build();
         
         assertThat(whereSupport.getWhereClause(),
                 is("where a.id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -23,7 +23,7 @@ public class SampleWhereClausesTest {
     @Test
     public void simpleClause2() {
         WhereSupport whereSupport = where(id, isNull())
-                .render();
+                .build();
         
         assertThat(whereSupport.getWhereClause(),
                 is("where a.id is null"));
@@ -32,7 +32,7 @@ public class SampleWhereClausesTest {
     @Test
     public void betweenClause() {
         WhereSupport whereSupport = where(id, isBetween(1).and(4))
-                .render();
+                .build();
         
         assertThat(whereSupport.getWhereClause(),
                 is("where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}"));
@@ -42,7 +42,7 @@ public class SampleWhereClausesTest {
     public void complexClause() {
         WhereSupport whereSupport = where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .renderIgnoringAlias();
+                .buildIgnoringAlias();
         
         assertThat(whereSupport.getWhereClause(),
                 is("where id > #{parameters.p1,jdbcType=INTEGER} or (occupation is null and id < #{parameters.p2,jdbcType=INTEGER})"));
