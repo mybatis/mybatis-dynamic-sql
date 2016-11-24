@@ -10,7 +10,8 @@ import java.util.List;
 
 import org.junit.Test;
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
-import org.mybatis.qbe.sql.set.SetValues;
+import org.mybatis.qbe.sql.FieldValuePair;
+import org.mybatis.qbe.sql.FieldValuePairList;
 import org.mybatis.qbe.sql.set.render.SetSupport;
 import org.mybatis.qbe.sql.set.render.SetValuesRenderer;
 import org.mybatis.qbe.sql.where.SqlField;
@@ -24,10 +25,14 @@ public class SetTest {
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
         
-        SetValues setValues = new SetValues.Builder(firstName, "fred")
-                .andSet(lastName, "jones")
-                .andSetNull(occupation)
-                .andSet(id, 3)
+        List<FieldValuePair<?>> pairs = new ArrayList<>();
+        pairs.add(FieldValuePair.of(firstName, "fred"));
+        pairs.add(FieldValuePair.of(lastName, "jones"));
+        pairs.add(FieldValuePair.of(occupation));
+        pairs.add(FieldValuePair.of(id, 3));
+        
+        FieldValuePairList setValues = new FieldValuePairList.Builder()
+                .withFieldValuePairs(pairs.stream())
                 .build();
         
         List<Object> values = new ArrayList<>();
@@ -57,10 +62,14 @@ public class SetTest {
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
         
-        SetValues setValues = new SetValues.Builder(firstName, "fred")
-                .andSet(lastName, "jones")
-                .andSetNull(occupation)
-                .andSet(id, 3)
+        List<FieldValuePair<?>> pairs = new ArrayList<>();
+        pairs.add(FieldValuePair.of(firstName, "fred"));
+        pairs.add(FieldValuePair.of(lastName, "jones"));
+        pairs.add(FieldValuePair.of(occupation));
+        pairs.add(FieldValuePair.of(id, 3));
+        
+        FieldValuePairList setValues = new FieldValuePairList.Builder()
+                .withFieldValuePairs(pairs.stream())
                 .build();
         
         SetSupport setSupport = SetValuesRenderer.of(setValues).render();
@@ -83,10 +92,14 @@ public class SetTest {
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
         
-        SetValues setValues = new SetValues.Builder(occupation)
-                .andSet(firstName, "fred")
-                .andSet(lastName, "jones")
-                .andSet(id, 3)
+        List<FieldValuePair<?>> pairs = new ArrayList<>();
+        pairs.add(FieldValuePair.of(occupation));
+        pairs.add(FieldValuePair.of(firstName, "fred"));
+        pairs.add(FieldValuePair.of(lastName, "jones"));
+        pairs.add(FieldValuePair.of(id, 3));
+
+        FieldValuePairList setValues = new FieldValuePairList.Builder()
+                .withFieldValuePairs(pairs.stream())
                 .build();
         
         SetSupport setSupport = SetValuesRenderer.of(setValues).render();
@@ -109,10 +122,14 @@ public class SetTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
         
-        SetValues setValues = new SetValues.Builder(firstName, "fred")
-                .andSet(lastName, "jones")
-                .andSetNull(occupation)
-                .andSet(id, 3)
+        List<FieldValuePair<?>> pairs = new ArrayList<>();
+        pairs.add(FieldValuePair.of(firstName, "fred"));
+        pairs.add(FieldValuePair.of(lastName, "jones"));
+        pairs.add(FieldValuePair.of(occupation));
+        pairs.add(FieldValuePair.of(id, 3));
+
+        FieldValuePairList setValues = new FieldValuePairList.Builder()
+                .withFieldValuePairs(pairs.stream())
                 .build();
         
         SetSupport setSupport = SetValuesRenderer.of(setValues).render();

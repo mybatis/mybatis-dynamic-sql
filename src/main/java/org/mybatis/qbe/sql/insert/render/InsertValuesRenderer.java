@@ -7,13 +7,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.qbe.sql.insert.InsertValues;
+import org.mybatis.qbe.sql.FieldValuePairList;
 import org.mybatis.qbe.sql.where.SqlField;
 
 public class InsertValuesRenderer {
-    private InsertValues insertValues;
+    private FieldValuePairList insertValues;
     
-    private InsertValuesRenderer(InsertValues insertValues) {
+    private InsertValuesRenderer(FieldValuePairList insertValues) {
         this.insertValues = insertValues;
     }
     
@@ -23,7 +23,7 @@ public class InsertValuesRenderer {
         return new Renderer(new AtomicInteger(1)).render(insertValues);
     }
     
-    public static InsertValuesRenderer of(InsertValues insertValues) {
+    public static InsertValuesRenderer of(FieldValuePairList insertValues) {
         return new InsertValuesRenderer(insertValues);
     }
 
@@ -36,7 +36,7 @@ public class InsertValuesRenderer {
             this.sequence = sequence;
         }
         
-        public InsertSupport render(InsertValues insertValues) {
+        public InsertSupport render(FieldValuePairList insertValues) {
             List<String> fieldPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             

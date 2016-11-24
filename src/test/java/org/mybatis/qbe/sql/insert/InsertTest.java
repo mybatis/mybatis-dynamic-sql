@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
 import org.mybatis.qbe.sql.insert.render.InsertValuesRenderer;
 import org.mybatis.qbe.sql.FieldValuePair;
+import org.mybatis.qbe.sql.FieldValuePairList;
 import org.mybatis.qbe.sql.insert.render.InsertSupport;
 import org.mybatis.qbe.sql.where.SqlField;
 
@@ -31,7 +32,7 @@ public class InsertTest {
         pairs.add(FieldValuePair.of(id, 3));
         pairs.add(FieldValuePair.of(occupation, "dino driver"));
         
-        InsertValues insertValues = new InsertValues.Builder()
+        FieldValuePairList insertValues = new FieldValuePairList.Builder()
                 .withFieldValuePairs(pairs.stream())
                 .build();
         
@@ -63,7 +64,7 @@ public class InsertTest {
         pairs.add(FieldValuePair.of(id, 3));
         pairs.add(FieldValuePair.of(occupation, "dino driver"));
         
-        InsertValues insertValues = new InsertValues.Builder()
+        FieldValuePairList insertValues = new FieldValuePairList.Builder()
                 .withFieldValuePairs(pairs.stream())
                 .build();
         
@@ -95,7 +96,7 @@ public class InsertTest {
         pairs.add(FieldValuePair.of(id, 3));
         pairs.add(FieldValuePair.of(occupation, "dino driver"));
 
-        InsertValues insertValues = new InsertValues.Builder()
+        FieldValuePairList insertValues = new FieldValuePairList.Builder()
                 .withFieldValuePairs(pairs.stream())
                 .build();
         

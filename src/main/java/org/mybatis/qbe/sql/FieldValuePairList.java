@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql.insert;
+package org.mybatis.qbe.sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,17 +7,17 @@ import java.util.stream.Stream;
 
 import org.mybatis.qbe.sql.FieldValuePair;
 
-public class InsertValues {
+public class FieldValuePairList {
     private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
 
-    private InsertValues(Stream<FieldValuePair<?>> fieldValuePairs) {
+    private FieldValuePairList(Stream<FieldValuePair<?>> fieldValuePairs) {
         fieldValuePairs.forEach(this.fieldValuePairs::add);
     }
-
+    
     public void visitFieldValuePairs(Consumer<FieldValuePair<?>> consumer) {
         fieldValuePairs.stream().forEach(consumer);
     }
-
+    
     public static class Builder {
         private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
         
@@ -30,12 +30,12 @@ public class InsertValues {
             return this;
         }
         
-        public InsertValues build() {
-            return new InsertValues(fieldValuePairs.stream());
+        public FieldValuePairList build() {
+            return new FieldValuePairList(fieldValuePairs.stream());
         }
         
-        public InsertValues buildIgnoringAlias() {
-            return new InsertValues(fieldValuePairs.stream().map(FieldValuePair::ignoringAlias));
+        public FieldValuePairList buildIgnoringAlias() {
+            return new FieldValuePairList(fieldValuePairs.stream().map(FieldValuePair::ignoringAlias));
         }
     }
 }

@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.qbe.sql.set.SetValues;
+import org.mybatis.qbe.sql.FieldValuePairList;
 import org.mybatis.qbe.sql.where.SqlField;
 
 public class SetValuesRenderer {
     
-    private SetValues setValues;
+    private FieldValuePairList setValues;
     
-    private SetValuesRenderer(SetValues setValues) {
+    private SetValuesRenderer(FieldValuePairList setValues) {
         this.setValues = setValues;
     }
     
@@ -30,7 +30,7 @@ public class SetValuesRenderer {
         return new Renderer(sequence).render(setValues);
     }
 
-    public static SetValuesRenderer of(SetValues setValues) {
+    public static SetValuesRenderer of(FieldValuePairList setValues) {
         return new SetValuesRenderer(setValues);
     }
 
@@ -43,7 +43,7 @@ public class SetValuesRenderer {
             this.sequence = sequence;
         }
         
-        public SetSupport render(SetValues setClause) {
+        public SetSupport render(FieldValuePairList setClause) {
             List<String> phrases = new ArrayList<>();
             
             setClause.visitFieldValuePairs(p -> {

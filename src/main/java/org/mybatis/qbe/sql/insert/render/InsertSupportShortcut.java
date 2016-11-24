@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mybatis.qbe.sql.FieldValuePair;
-import org.mybatis.qbe.sql.insert.InsertValues;
+import org.mybatis.qbe.sql.FieldValuePairList;
 import org.mybatis.qbe.sql.where.SqlField;
 
 public interface InsertSupportShortcut {
@@ -38,7 +38,7 @@ public interface InsertSupportShortcut {
         
         public <T> Builder withValueIfPresent(SqlField<T> field, T value) {
             if (value != null) {
-                fieldValuePairs.add(FieldValuePair.of(field, value));
+                andValue(field, value);
             }
             return this;
         }
@@ -54,17 +54,17 @@ public interface InsertSupportShortcut {
         }
 
         public InsertSupport build() {
-            InsertValues iv = new InsertValues.Builder()
+            FieldValuePairList fvp = new FieldValuePairList.Builder()
                 .withFieldValuePairs(fieldValuePairs.stream())
                 .build();
-            return InsertValuesRenderer.of(iv).render();
+            return InsertValuesRenderer.of(fvp).render();
         }
 
         public InsertSupport buildIgnoringAlias() {
-            InsertValues iv = new InsertValues.Builder()
+            FieldValuePairList fvp = new FieldValuePairList.Builder()
                     .withFieldValuePairs(fieldValuePairs.stream())
                     .buildIgnoringAlias();
-            return InsertValuesRenderer.of(iv).render();
+            return InsertValuesRenderer.of(fvp).render();
         }
     }
 }
