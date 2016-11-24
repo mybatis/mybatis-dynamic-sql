@@ -132,4 +132,61 @@ public class SimpleTableAnnotatedMapperTest {
             session.close();
         }
     }
+
+    @Test
+    public void testUpdateByPrimaryKey() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            SimpleTableRecord record = new SimpleTableRecord();
+            record.setId(100);
+            record.setFirstName("Joe");
+            record.setLastName("Jones");
+            record.setBirthDate(new Date());
+            record.setOccupation("Developer");
+            
+            int rows = mapper.insert(buildInsert(record));
+            assertThat(rows, is(1));
+            
+            record.setOccupation("Programmer");
+            rows = mapper.update(buildUpdateByPrimaryKey(record));
+            assertThat(rows, is(1));
+            
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.getOccupation(), is("Programmer"));
+            
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testUpdateByPrimaryKeySelective() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            SimpleTableRecord record = new SimpleTableRecord();
+            record.setId(100);
+            record.setFirstName("Joe");
+            record.setLastName("Jones");
+            record.setBirthDate(new Date());
+            record.setOccupation("Developer");
+            
+            int rows = mapper.insert(buildInsert(record));
+            assertThat(rows, is(1));
+
+            SimpleTableRecord updateRecord = new SimpleTableRecord();
+            updateRecord.setId(100);
+            updateRecord.setOccupation("Programmer");
+            rows = mapper.update(buildUpdateByPrimaryKeySelective(updateRecord));
+            assertThat(rows, is(1));
+            
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.getOccupation(), is("Programmer"));
+            assertThat(newRecord.getFirstName(), is("Joe"));
+            
+        } finally {
+            session.close();
+        }
+    }
 }

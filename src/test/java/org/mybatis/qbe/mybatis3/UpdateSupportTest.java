@@ -20,10 +20,10 @@ public class UpdateSupportTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
 
-        UpdateSupport updateSupport = 
-                set(firstName, "fred")
-                .andSet(lastName, "jones")
-                .andSetNull(occupation)
+        UpdateSupport updateSupport = update()
+                .set(firstName, "fred")
+                .set(lastName, "jones")
+                .setNull(occupation)
                 .where(id, isEqualTo(3))
                 .build();
         
@@ -50,10 +50,10 @@ public class UpdateSupportTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
 
-        UpdateSupport updateSupport = 
-                setNull(occupation)
-                .andSet(firstName, "fred")
-                .andSet(lastName, "jones")
+        UpdateSupport updateSupport = update()
+                .setNull(occupation)
+                .set(firstName, "fred")
+                .set(lastName, "jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
                 .build();

@@ -22,8 +22,20 @@
     ${whereClause}
   </select>
 
+  <select id="selectByPrimaryKey" resultMap="SimpleTableResult">
+    select a.id, a.first_name, a.last_name, a.birth_date, a.occupation
+    from SimpleTable a
+    where id = #{value}
+  </select>
+  
   <delete id="deleteByExample">
     delete from SimpleTable
     ${whereClause}
-  </delete>  
+  </delete>
+
+  <update id="update">
+    update SimpleTable
+    ${setClause}
+    ${whereClause}
+  </update>
 </mapper>

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.where.SqlConditions.*;
 import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.where;
 import static org.mybatis.qbe.sql.insert.render.InsertSupportShortcut.*;
-import static org.mybatis.qbe.sql.update.UpdateSupportShortcut.set;
+import static org.mybatis.qbe.sql.update.UpdateSupportShortcut.update;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -314,8 +314,9 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            UpdateSupport updateSupport = set(bodyWeight, 2.6)
-                    .andSetNull(animalName)
+            UpdateSupport updateSupport = update()
+                    .set(bodyWeight, 2.6)
+                    .setNull(animalName)
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
@@ -335,10 +336,11 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            InsertSupport insertSupport = insertValue(id, 100)
-                    .andValue(animalName, "Old Shep")
-                    .andValue(bodyWeight, 22.5)
-                    .andValue(brainWeight, 1.2)
+            InsertSupport insertSupport = insert() 
+                    .withValue(id, 100)
+                    .withValue(animalName, "Old Shep")
+                    .withValue(bodyWeight, 22.5)
+                    .withValue(brainWeight, 1.2)
                     .buildIgnoringAlias();
             
             int rows = mapper.insert(insertSupport);

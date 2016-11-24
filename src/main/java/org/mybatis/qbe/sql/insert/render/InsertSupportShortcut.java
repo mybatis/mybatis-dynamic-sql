@@ -9,16 +9,8 @@ import org.mybatis.qbe.sql.where.SqlField;
 
 public interface InsertSupportShortcut {
 
-    static Builder insertSelective() {
+    static Builder insert() {
         return new Builder();
-    }
-    
-    static <T> Builder insertValue(SqlField<T> field, T value) {
-        return new Builder(field, value);
-    }
-
-    static <T> Builder insertNullValue(SqlField<T> field) {
-        return new Builder(field);
     }
     
     static class Builder {
@@ -28,28 +20,20 @@ public interface InsertSupportShortcut {
             super();
         }
         
-        public <T> Builder(SqlField<T> field) {
-            andNullValue(field);
-        }
-        
-        public <T> Builder(SqlField<T> field, T value) {
-            andValue(field, value);
-        }
-        
         public <T> Builder withValueIfPresent(SqlField<T> field, T value) {
             if (value != null) {
-                andValue(field, value);
+                withValue(field, value);
             }
             return this;
         }
         
-        public <T> Builder andValue(SqlField<T> field, T value) {
+        public <T> Builder withValue(SqlField<T> field, T value) {
             fieldValuePairs.add(FieldValuePair.of(field, value));
             return this;
         }
 
-        public <T> Builder andNullValue(SqlField<T> field) {
-            andValue(field, null);
+        public <T> Builder withNullValue(SqlField<T> field) {
+            withValue(field, null);
             return this;
         }
 

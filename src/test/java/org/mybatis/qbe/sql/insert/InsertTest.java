@@ -125,10 +125,11 @@ public class InsertTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
         
-        InsertSupport insertSupport = insertValue(firstName, "fred")
-                .andValue(lastName, "jones")
-                .andNullValue(id)
-                .andValue(occupation, "dino driver")
+        InsertSupport insertSupport = insert() 
+                .withValue(firstName, "fred")
+                .withValue(lastName, "jones")
+                .withNullValue(id)
+                .withValue(occupation, "dino driver")
                 .build();
         
         String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
@@ -154,10 +155,11 @@ public class InsertTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
         
-        InsertSupport insertSupport = insertNullValue(firstName)
-                .andValue(lastName, "jones")
-                .andNullValue(id)
-                .andValue(occupation, "dino driver")
+        InsertSupport insertSupport = insert() 
+                .withNullValue(firstName)
+                .withValue(lastName, "jones")
+                .withNullValue(id)
+                .withValue(occupation, "dino driver")
                 .build();
         
         String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";

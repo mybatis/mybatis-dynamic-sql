@@ -5,10 +5,13 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.qbe.sql.insert.render.InsertSupport;
+import org.mybatis.qbe.sql.update.UpdateSupport;
 import org.mybatis.qbe.sql.where.render.WhereSupport;
 
 public interface SimpleTableAnnotatedMapper {
@@ -20,10 +23,25 @@ public interface SimpleTableAnnotatedMapper {
     })
     int insert(InsertSupport insertSupport);
 
+    @Update({
+        "update simpletable",
+        "${setClause}",
+        "${whereClause}"
+    })
+    int update(UpdateSupport updateSupport);
+    
     @Select({
         "select a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
         "from simpletable a",
         "${whereClause}"
+    })
+    @ResultMap("SimpleTableResult")
+    List<SimpleTableRecord> selectByExample(WhereSupport whereSupport);
+    
+    @Select({
+        "select a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
+        "from simpletable a",
+        "where a.id = #{value}"
     })
     @Results(id="SimpleTableResult", value={
             @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
@@ -32,7 +50,7 @@ public interface SimpleTableAnnotatedMapper {
             @Result(column="birth_date", property="birthDate", jdbcType=JdbcType.DATE),
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
     })
-    List<SimpleTableRecord> selectByExample(WhereSupport whereSupport);
+    SimpleTableRecord selectByPrimaryKey(int id);
     
     @Delete({
         "delete from simpletable",

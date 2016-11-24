@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.qbe.Condition;
-import org.mybatis.qbe.mybatis3.MyBatis3Field;
 import org.mybatis.qbe.sql.FieldValuePair;
 import org.mybatis.qbe.sql.FieldValuePairList;
 import org.mybatis.qbe.sql.set.render.SetSupport;
@@ -18,32 +17,31 @@ import org.mybatis.qbe.sql.where.render.WhereSupport;
 
 public interface UpdateSupportShortcut {
 
-    static <T> SetBuilder set(MyBatis3Field<T> field, T value) {
-        return new SetBuilder(field, value);
-    }
-    
-    static <T> SetBuilder setNull(MyBatis3Field<T> field) {
-        return new SetBuilder(field);
+    static SetBuilder update() {
+        return new SetBuilder();
     }
     
     static class SetBuilder {
         private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
         
-        public <T> SetBuilder(MyBatis3Field<T> field) {
-            andSetNull(field);
+        public SetBuilder() {
+            super();
         }
-
-        public <T> SetBuilder(MyBatis3Field<T> field, T value) {
-            andSet(field, value);
+        
+        public <T> SetBuilder setIfPresent(SqlField<T> field, T value) {
+            if (value != null) {
+                set(field, value);
+            }
+            return this;
         }
-
-        public <T> SetBuilder andSet(SqlField<T> field, T value) {
+        
+        public <T> SetBuilder set(SqlField<T> field, T value) {
             fieldValuePairs.add(FieldValuePair.of(field, value));
             return this;
         }
         
-        public <T> SetBuilder andSetNull(SqlField<T> field) {
-            andSet(field, null);
+        public <T> SetBuilder setNull(SqlField<T> field) {
+            set(field, null);
             return this;
         }
         
