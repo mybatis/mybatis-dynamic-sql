@@ -2,7 +2,7 @@ package examples.simple;
 
 import java.util.Date;
 
-public class SimpleTable {
+public class SimpleTableRecord {
     private Integer id;
     private String firstName;
     private String lastName;

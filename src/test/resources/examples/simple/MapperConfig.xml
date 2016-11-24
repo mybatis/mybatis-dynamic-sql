@@ -42,7 +42,7 @@
   </environments>
 
   <mappers>
-    <mapper resource="examples/simple/SimpleTableMapper.xml" />
+    <mapper resource="examples/simple/SimpleTableXmlMapper.xml" />
   </mappers>
 
 </configuration>
