@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.mybatis.qbe.sql.FieldValuePair;
-import org.mybatis.qbe.sql.where.SqlField;
 
 public class InsertValues {
     private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
@@ -22,21 +21,17 @@ public class InsertValues {
     public static class Builder {
         private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
         
-        public <T> Builder(SqlField<T> field) {
-            fieldValuePairs.add(FieldValuePair.of(field));
+        public Builder() {
+            super();
         }
         
-        public <T> Builder(SqlField<T> field, T value) {
-            fieldValuePairs.add(FieldValuePair.of(field, value));
-        }
-        
-        public <T> Builder andValue(SqlField<T> field, T value) {
-            fieldValuePairs.add(FieldValuePair.of(field, value));
+        public Builder withFieldValuePair(FieldValuePair<?> fieldValuePair) {
+            fieldValuePairs.add(fieldValuePair);
             return this;
         }
-        
-        public <T> Builder andNullValue(SqlField<T> field) {
-            fieldValuePairs.add(FieldValuePair.of(field));
+
+        public Builder withFieldValuePairs(Stream<FieldValuePair<?>> fieldValuePairs) {
+            fieldValuePairs.forEach(this.fieldValuePairs::add);
             return this;
         }
         

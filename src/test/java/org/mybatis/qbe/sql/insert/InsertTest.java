@@ -6,10 +6,13 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import java.sql.JDBCType;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
 import org.mybatis.qbe.sql.insert.render.InsertValuesRenderer;
+import org.mybatis.qbe.sql.FieldValuePair;
 import org.mybatis.qbe.sql.insert.render.InsertSupport;
 import org.mybatis.qbe.sql.where.SqlField;
 
@@ -21,11 +24,15 @@ public class InsertTest {
         SqlField<String> firstName = SqlField.of("firstName", JDBCType.VARCHAR);
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
+
+        List<FieldValuePair<?>> pairs = new ArrayList<>();
+        pairs.add(FieldValuePair.of(firstName, "fred"));
+        pairs.add(FieldValuePair.of(lastName, "jones"));
+        pairs.add(FieldValuePair.of(id, 3));
+        pairs.add(FieldValuePair.of(occupation, "dino driver"));
         
-        InsertValues insertValues = new InsertValues.Builder(firstName, "fred")
-                .andValue(lastName, "jones")
-                .andValue(id, 3)
-                .andValue(occupation, "dino driver")
+        InsertValues insertValues = new InsertValues.Builder()
+                .withFieldValuePairs(pairs.stream())
                 .build();
         
         InsertSupport insertSupport = InsertValuesRenderer.of(insertValues).render();
@@ -50,10 +57,14 @@ public class InsertTest {
         SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
         
-        InsertValues insertValues = new InsertValues.Builder(firstName)
-                .andValue(lastName, "jones")
-                .andValue(id, 3)
-                .andValue(occupation, "dino driver")
+        List<FieldValuePair<?>> pairs = new ArrayList<>();
+        pairs.add(FieldValuePair.of(firstName));
+        pairs.add(FieldValuePair.of(lastName, "jones"));
+        pairs.add(FieldValuePair.of(id, 3));
+        pairs.add(FieldValuePair.of(occupation, "dino driver"));
+        
+        InsertValues insertValues = new InsertValues.Builder()
+                .withFieldValuePairs(pairs.stream())
                 .build();
         
         InsertSupport insertSupport = InsertValuesRenderer.of(insertValues).render();
@@ -78,10 +89,14 @@ public class InsertTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
         
-        InsertValues insertValues = new InsertValues.Builder(firstName, "fred")
-                .andNullValue(lastName)
-                .andValue(id, 3)
-                .andValue(occupation, "dino driver")
+        List<FieldValuePair<?>> pairs = new ArrayList<>();
+        pairs.add(FieldValuePair.of(firstName, "fred"));
+        pairs.add(FieldValuePair.of(lastName));
+        pairs.add(FieldValuePair.of(id, 3));
+        pairs.add(FieldValuePair.of(occupation, "dino driver"));
+
+        InsertValues insertValues = new InsertValues.Builder()
+                .withFieldValuePairs(pairs.stream())
                 .build();
         
         InsertSupport insertSupport = InsertValuesRenderer.of(insertValues).render();

@@ -3,13 +3,22 @@ package examples.simple;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.type.JdbcType;
+import org.mybatis.qbe.sql.insert.render.InsertSupport;
 import org.mybatis.qbe.sql.where.render.WhereSupport;
 
 public interface SimpleTableAnnotatedMapper {
+    
+    @Insert({
+        "insert into simpletable",
+        "${fieldsPhrase}",
+        "${valuesPhrase}"
+    })
+    int insert(InsertSupport insertSupport);
 
     @Select({
         "select a.id, a.first_name, a.last_name, a.birth_date, a.occupation",

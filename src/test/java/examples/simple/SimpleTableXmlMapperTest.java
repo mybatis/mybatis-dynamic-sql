@@ -1,8 +1,6 @@
 package examples.simple;
 
-import static examples.simple.SimpleTableFields.firstName;
-import static examples.simple.SimpleTableFields.id;
-import static examples.simple.SimpleTableFields.occupation;
+import static examples.simple.SimpleTableFields.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.where.SqlConditions.isEqualTo;
@@ -14,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -89,6 +88,45 @@ public class SimpleTableXmlMapperTest {
             int rows = mapper.deleteByExample(whereSupport);
             
             assertThat(rows, is(2));
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testInsert() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
+            SimpleTableRecord record = new SimpleTableRecord();
+            record.setId(100);
+            record.setFirstName("Joe");
+            record.setLastName("Jones");
+            record.setBirthDate(new Date());
+            record.setOccupation("Developer");
+            
+            int rows = mapper.insert(buildInsert(record));
+            
+            assertThat(rows, is(1));
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testInsertSelective() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
+            SimpleTableRecord record = new SimpleTableRecord();
+            record.setId(100);
+            record.setFirstName("Joe");
+            record.setLastName("Jones");
+            record.setBirthDate(new Date());
+            
+            int rows = mapper.insert(buildInsertSelective(record));
+            
+            assertThat(rows, is(1));
         } finally {
             session.close();
         }

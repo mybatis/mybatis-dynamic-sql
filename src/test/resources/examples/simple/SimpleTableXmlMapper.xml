@@ -10,6 +10,12 @@
     <result column="occupation" jdbcType="VARCHAR" property="occupation" />
   </resultMap>
 
+  <insert id="insert">
+    insert into simpletable
+    ${fieldsPhrase}
+    ${valuesPhrase}
+  </insert>
+  
   <select id="selectByExample" resultMap="SimpleTableResult">
     select a.id, a.first_name, a.last_name, a.birth_date, a.occupation
     from SimpleTable a

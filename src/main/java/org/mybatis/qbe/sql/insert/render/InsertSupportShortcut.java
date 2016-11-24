@@ -1,10 +1,18 @@
 package org.mybatis.qbe.sql.insert.render;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mybatis.qbe.sql.FieldValuePair;
 import org.mybatis.qbe.sql.insert.InsertValues;
 import org.mybatis.qbe.sql.where.SqlField;
 
 public interface InsertSupportShortcut {
 
+    static Builder insertSelective() {
+        return new Builder();
+    }
+    
     static <T> Builder insertValue(SqlField<T> field, T value) {
         return new Builder(field, value);
     }
@@ -14,33 +22,49 @@ public interface InsertSupportShortcut {
     }
     
     static class Builder {
-        
-        private InsertValues.Builder insertValuesBuilder;
+        private List<FieldValuePair<?>> fieldValuePairs = new ArrayList<>();
 
+        public Builder() {
+            super();
+        }
+        
         public <T> Builder(SqlField<T> field) {
-            insertValuesBuilder = new InsertValues.Builder(field);
+            andNullValue(field);
         }
         
         public <T> Builder(SqlField<T> field, T value) {
-            insertValuesBuilder = new InsertValues.Builder(field, value);
+            andValue(field, value);
+        }
+        
+        public <T> Builder withValueIfPresent(SqlField<T> field, T value) {
+            if (value != null) {
+                fieldValuePairs.add(FieldValuePair.of(field, value));
+            }
+            return this;
         }
         
         public <T> Builder andValue(SqlField<T> field, T value) {
-            insertValuesBuilder.andValue(field, value);
+            fieldValuePairs.add(FieldValuePair.of(field, value));
             return this;
         }
 
         public <T> Builder andNullValue(SqlField<T> field) {
-            insertValuesBuilder.andNullValue(field);
+            andValue(field, null);
             return this;
         }
 
         public InsertSupport build() {
-            return InsertValuesRenderer.of(insertValuesBuilder.build()).render();
+            InsertValues iv = new InsertValues.Builder()
+                .withFieldValuePairs(fieldValuePairs.stream())
+                .build();
+            return InsertValuesRenderer.of(iv).render();
         }
 
         public InsertSupport buildIgnoringAlias() {
-            return InsertValuesRenderer.of(insertValuesBuilder.buildIgnoringAlias()).render();
+            InsertValues iv = new InsertValues.Builder()
+                    .withFieldValuePairs(fieldValuePairs.stream())
+                    .buildIgnoringAlias();
+            return InsertValuesRenderer.of(iv).render();
         }
     }
 }
