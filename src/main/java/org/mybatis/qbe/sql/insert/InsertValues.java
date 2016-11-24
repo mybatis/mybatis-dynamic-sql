@@ -25,11 +25,6 @@ public class InsertValues {
             super();
         }
         
-        public Builder withFieldValuePair(FieldValuePair<?> fieldValuePair) {
-            fieldValuePairs.add(fieldValuePair);
-            return this;
-        }
-
         public Builder withFieldValuePairs(Stream<FieldValuePair<?>> fieldValuePairs) {
             fieldValuePairs.forEach(this.fieldValuePairs::add);
             return this;
