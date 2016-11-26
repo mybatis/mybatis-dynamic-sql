@@ -23,7 +23,8 @@ public class WhereSupportTest {
     public void testSimpleCriteriaWithoutAlias() {
         Date d = new Date();
 
-        WhereSupport whereSupport = where(field1, isEqualTo(d))
+        WhereSupport whereSupport = whereSupport()
+                .where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
                 .buildIgnoringAlias();
@@ -40,7 +41,8 @@ public class WhereSupportTest {
     public void testComplexCriteriaWithoutAlias() {
         Date d = new Date();
 
-        WhereSupport whereSupport = where(field1, isEqualTo(d))
+        WhereSupport whereSupport = whereSupport()
+                .where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
                 .or(field2, isEqualTo(4), and(field2, isEqualTo(6)))
@@ -70,7 +72,8 @@ public class WhereSupportTest {
     public void testSimpleCriteriaWithAlias() {
         Date d = new Date();
 
-        WhereSupport whereSupport = where(field1, isEqualTo(d))
+        WhereSupport whereSupport = whereSupport()
+                .where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
                 .build();
@@ -87,7 +90,8 @@ public class WhereSupportTest {
     public void testComplexCriteriaWithAlias() {
         Date d = new Date();
 
-        WhereSupport whereSupport = where(field1, isEqualTo(d))
+        WhereSupport whereSupport = whereSupport()
+                .where(field1, isEqualTo(d))
                 .or(field2, isEqualTo(4))
                 .and(field2, isLessThan(3))
                 .or(field2, isEqualTo(4), and(field2, isEqualTo(6)))

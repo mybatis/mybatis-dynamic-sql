@@ -50,7 +50,8 @@ public class SimpleTableXmlMapperTest {
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            WhereSupport whereSupport = where(id, isEqualTo(1))
+            WhereSupport whereSupport = whereSupport()
+                    .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build();
             
@@ -68,7 +69,8 @@ public class SimpleTableXmlMapperTest {
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            WhereSupport whereSupport = where(firstName, isIn("Fred", "Barney"))
+            WhereSupport whereSupport = whereSupport()
+                    .where(firstName, isIn("Fred", "Barney"))
                     .build();
             
             List<SimpleTableRecord> rows = mapper.selectByExample(whereSupport);
@@ -84,7 +86,9 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            WhereSupport whereSupport = where(occupation, isNull()).buildIgnoringAlias();
+            WhereSupport whereSupport = whereSupport()
+                    .where(occupation, isNull())
+                    .buildIgnoringAlias();
             int rows = mapper.deleteByExample(whereSupport);
             
             assertThat(rows, is(2));

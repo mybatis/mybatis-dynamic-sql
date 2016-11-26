@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
 import static org.mybatis.qbe.sql.SqlConditions.isIn;
 import static org.mybatis.qbe.sql.SqlConditions.isNull;
-import static org.mybatis.qbe.sql.where.WhereSupportBuilder.where;
+import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,7 +52,8 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
-            WhereSupport whereSupport = where(id, isEqualTo(1))
+            WhereSupport whereSupport = whereSupport()
+                    .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build();
             
@@ -70,7 +71,8 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
-            WhereSupport whereSupport = where(firstName, isIn("Fred", "Barney"))
+            WhereSupport whereSupport = whereSupport()
+                    .where(firstName, isIn("Fred", "Barney"))
                     .build();
             
             List<SimpleTableRecord> rows = mapper.selectByExample(whereSupport);
@@ -86,7 +88,8 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            WhereSupport whereSupport = where(occupation, isNull()).buildIgnoringAlias();
+            WhereSupport whereSupport = whereSupport()
+                    .where(occupation, isNull()).buildIgnoringAlias();
             int rows = mapper.deleteByExample(whereSupport);
             
             assertThat(rows, is(2));

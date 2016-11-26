@@ -1,47 +1,49 @@
 package org.mybatis.qbe.sql.where;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.SqlField;
-import org.mybatis.qbe.sql.where.render.WhereClauseRenderer;
+import org.mybatis.qbe.sql.where.render.CriteriaRenderer;
 
-/**
- * This interface combines the operations of building the where clause
- * and rendering it.  It is a shortcut to make the client code easier.
- * 
- * @author Jeff Butler
- *
- */
 public interface WhereSupportBuilder {
 
-    static <T> Builder where(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-        return new Builder(field, condition, criteria);
+    static Builder whereSupport() {
+        return new Builder();
     }
     
     static class Builder {
+        public <T> WhereBuilder where(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            return new WhereBuilder(field, condition, subCriteria);
+        }
+    }
+    
+    static class WhereBuilder {
         
-        private WhereClause.Builder whereClauseBuilder;
+        private List<SqlCriterion<?>> criteria = new ArrayList<>();
 
-        public <T> Builder(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-            whereClauseBuilder = new WhereClause.Builder(field, condition, criteria);
+        public <T> WhereBuilder(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            criteria.add(SqlCriterion.of(field, condition, subCriteria));
         }
         
-        public <T> Builder and(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-            whereClauseBuilder.and(field, condition, criteria);
+        public <T> WhereBuilder and(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            criteria.add(SqlCriterion.of("and", field, condition, subCriteria));
             return this;
         }
         
-        public <T> Builder or(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
-            whereClauseBuilder.or(field, condition, criteria);
+        public <T> WhereBuilder or(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            criteria.add(SqlCriterion.of("or", field, condition, subCriteria));
             return this;
         }
         
         public WhereSupport build() {
-            return WhereClauseRenderer.of(whereClauseBuilder.build()).render();
+            return CriteriaRenderer.of(criteria.stream()).render();
         }
 
         public WhereSupport buildIgnoringAlias() {
-            return WhereClauseRenderer.of(whereClauseBuilder.buildIgnoringAlias()).render();
+            return CriteriaRenderer.of(criteria.stream().map(SqlCriterion::ignoringAlias)).render();
         }
     }
 }

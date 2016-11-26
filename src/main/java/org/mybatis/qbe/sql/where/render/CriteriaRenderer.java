@@ -1,34 +1,37 @@
 package org.mybatis.qbe.sql.where.render;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
-import org.mybatis.qbe.sql.where.WhereClause;
+import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.where.WhereSupport;
 
-public class WhereClauseRenderer {
+public class CriteriaRenderer {
     
-    private WhereClause whereClause;
+    private List<SqlCriterion<?>> criteria = new ArrayList<>();
     
-    private WhereClauseRenderer(WhereClause whereClause) {
-        this.whereClause = whereClause;
+    private CriteriaRenderer(Stream<SqlCriterion<?>> criteria) {
+        criteria.forEach(this.criteria::add);
     }
     
     public WhereSupport render() {
         // we do this so the render method can be called multiple times
         // and return the same result
-        return new Renderer(new AtomicInteger(1)).render(whereClause);
+        return new Renderer(new AtomicInteger(1)).render(criteria.stream());
     }
     
     public WhereSupport render(AtomicInteger sequence) {
         // we do this so the render method can be called multiple times
         // and return the same result
-        return new Renderer(sequence).render(whereClause);
+        return new Renderer(sequence).render(criteria.stream());
     }
 
-    public static WhereClauseRenderer of(WhereClause whereClause) {
-        return new WhereClauseRenderer(whereClause);
+    public static CriteriaRenderer of(Stream<SqlCriterion<?>> criteria) {
+        return new CriteriaRenderer(criteria);
     }
 
     private static class Renderer {
@@ -41,14 +44,13 @@ public class WhereClauseRenderer {
             buffer.append("where"); //$NON-NLS-1$
         }
         
-        public WhereSupport render(WhereClause whereClause) {
-            whereClause.visitCriteria(c -> {
+        public WhereSupport render(Stream<SqlCriterion<?>> criteria) {
+            criteria.forEach(c -> {
                 RenderedCriterion rc = CriterionRenderer.of(c, sequence).render();
                 buffer.append(rc.whereClauseFragment());
                 parameters.putAll(rc.fragmentParameters());
             });
             return WhereSupport.of(buffer.toString(), parameters);
         }
-
     }
 }

@@ -13,7 +13,8 @@ public class SampleWhereClausesTest {
 
     @Test
     public void simpleClause1() {
-        WhereSupport whereSupport = where(id, isEqualTo(3))
+        WhereSupport whereSupport = whereSupport()
+                .where(id, isEqualTo(3))
                 .build();
         
         assertThat(whereSupport.getWhereClause(),
@@ -22,7 +23,8 @@ public class SampleWhereClausesTest {
     
     @Test
     public void simpleClause2() {
-        WhereSupport whereSupport = where(id, isNull())
+        WhereSupport whereSupport = whereSupport()
+                .where(id, isNull())
                 .build();
         
         assertThat(whereSupport.getWhereClause(),
@@ -31,7 +33,8 @@ public class SampleWhereClausesTest {
     
     @Test
     public void betweenClause() {
-        WhereSupport whereSupport = where(id, isBetween(1).and(4))
+        WhereSupport whereSupport = whereSupport()
+                .where(id, isBetween(1).and(4))
                 .build();
         
         assertThat(whereSupport.getWhereClause(),
@@ -40,7 +43,8 @@ public class SampleWhereClausesTest {
 
     @Test
     public void complexClause() {
-        WhereSupport whereSupport = where(id, isGreaterThan(2))
+        WhereSupport whereSupport = whereSupport()
+                .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
                 .buildIgnoringAlias();
         
