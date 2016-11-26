@@ -40,10 +40,4 @@ public class FieldAndValue<T> {
         phrase.field = field;
         return phrase;
     }
-
-    public static <S> FieldAndValue<S> of(SqlField<S> field) {
-        FieldAndValue<S> phrase = new FieldAndValue<>();
-        phrase.field = field;
-        return phrase;
-    }
 }

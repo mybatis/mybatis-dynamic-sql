@@ -12,8 +12,7 @@ import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.FieldAndValue;
 import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.SqlField;
-import org.mybatis.qbe.sql.where.WhereSupport;
-import org.mybatis.qbe.sql.where.render.CriteriaRenderer;
+import org.mybatis.qbe.sql.where.WhereSupportBuilder;
 
 public interface UpdateSupportBuilder {
 
@@ -50,44 +49,31 @@ public interface UpdateSupportBuilder {
         }
     }
     
-    static class WhereBuilder {
+    static class WhereBuilder extends WhereSupportBuilder.AbstractWhereBuilder<WhereBuilder> {
         private List<FieldAndValue<?>> setFieldsAndValues;
-        private List<SqlCriterion<?>> criteria = new ArrayList<>();
         
         public <T> WhereBuilder(List<FieldAndValue<?>> setFieldsAndValues, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             this.setFieldsAndValues = setFieldsAndValues;
-            criteria.add(SqlCriterion.of(field, condition, subCriteria));
-        }
-        
-        public <T> WhereBuilder and(SqlField<T> field, Condition<T> condition, SqlCriterion<?>... subCriteria) {
-            criteria.add(SqlCriterion.of("and", field, condition, subCriteria));
-            return this;
-        }
-
-        public <T> WhereBuilder or(SqlField<T> field, Condition<T> condition, SqlCriterion<?>... subCriteria) {
-            criteria.add(SqlCriterion.of("or", field, condition, subCriteria));
-            return this;
+            addCriterion(SqlCriterion.of(field, condition, subCriteria));
         }
         
         public UpdateSupport build() {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
             String setClause = renderSetValues(setFieldsAndValues.stream(), sequence, parameters);
-            WhereSupport wwc = CriteriaRenderer.of(criteria.stream()).render(sequence);
-            parameters.putAll(wwc.getParameters());
-            return UpdateSupport.of(setClause, wwc.getWhereClause(), parameters);
+            String whereClause = renderCriteria(sequence, parameters);
+            return UpdateSupport.of(setClause, whereClause, parameters);
         }
 
         public UpdateSupport buildIgnoringAlias() {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
             String setClause = renderSetValues(setFieldsAndValues.stream().map(FieldAndValue::ignoringAlias), sequence, parameters);
-            WhereSupport wwc = CriteriaRenderer.of(criteria.stream().map(SqlCriterion::ignoringAlias)).render(sequence);
-            parameters.putAll(wwc.getParameters());
-            return UpdateSupport.of(setClause, wwc.getWhereClause(), parameters);
+            String whereClause = renderCriteriaIgnoringAlias(sequence, parameters);
+            return UpdateSupport.of(setClause, whereClause, parameters);
         }
 
-        private String renderSetValues(Stream<FieldAndValue<?>> setFieldsAndValues, AtomicInteger sequence, Map<String, Object> parameters) {
+        private static String renderSetValues(Stream<FieldAndValue<?>> setFieldsAndValues, AtomicInteger sequence, Map<String, Object> parameters) {
             List<String> phrases = new ArrayList<>();
             
             setFieldsAndValues.forEach(fv -> {
@@ -100,6 +86,11 @@ public interface UpdateSupportBuilder {
             });
             
             return phrases.stream().collect(Collectors.joining(", ", "set ", ""));
+        }
+
+        @Override
+        public WhereBuilder getThis() {
+            return this;
         }
     }
 }
