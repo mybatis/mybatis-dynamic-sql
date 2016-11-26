@@ -15,6 +15,6 @@ public abstract class BaseListValueCondition<T> implements ListValueCondition<T>
 
     @Override
     public void visitValues(Consumer<T> consumer) {
-        values.stream().forEach(consumer);
+        values.forEach(consumer);
     }
 }

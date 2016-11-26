@@ -2,9 +2,9 @@ package org.mybatis.qbe.sql.where.condition;
 
 import org.mybatis.qbe.NoValueCondition;
 
-public class IsNullCondition<T> implements NoValueCondition<T> {
+public class IsNull<T> implements NoValueCondition<T> {
 
-    public IsNullCondition() {
+    public IsNull() {
         super();
     }
     

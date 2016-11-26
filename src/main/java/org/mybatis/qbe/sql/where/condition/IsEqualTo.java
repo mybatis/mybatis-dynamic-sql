@@ -3,9 +3,9 @@ package org.mybatis.qbe.sql.where.condition;
 import org.mybatis.qbe.BaseSingleValueCondition;
 import org.mybatis.qbe.Renderer;
 
-public class IsEqualToCondition<T> extends BaseSingleValueCondition<T> {
+public class IsEqualTo<T> extends BaseSingleValueCondition<T> {
 
-    protected IsEqualToCondition(T value) {
+    protected IsEqualTo(T value) {
         super(value);
     }
 
@@ -14,7 +14,7 @@ public class IsEqualToCondition<T> extends BaseSingleValueCondition<T> {
         return String.format("= %s", parameterRenderer.render()); //$NON-NLS-1$
     }
     
-    public static <T> IsEqualToCondition<T> of(T value) {
-        return new IsEqualToCondition<>(value);
+    public static <T> IsEqualTo<T> of(T value) {
+        return new IsEqualTo<>(value);
     }
 }

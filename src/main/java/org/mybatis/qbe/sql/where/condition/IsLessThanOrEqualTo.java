@@ -3,9 +3,9 @@ package org.mybatis.qbe.sql.where.condition;
 import org.mybatis.qbe.BaseSingleValueCondition;
 import org.mybatis.qbe.Renderer;
 
-public class IsLessThanOrEqualToCondition<T> extends BaseSingleValueCondition<T> {
+public class IsLessThanOrEqualTo<T> extends BaseSingleValueCondition<T> {
 
-    protected IsLessThanOrEqualToCondition(T value) {
+    protected IsLessThanOrEqualTo(T value) {
         super(value);
     }
     
@@ -14,7 +14,7 @@ public class IsLessThanOrEqualToCondition<T> extends BaseSingleValueCondition<T>
         return String.format("<= %s", parameterRenderer.render()); //$NON-NLS-1$
     }
 
-    public static <T> IsLessThanOrEqualToCondition<T> of(T value) {
-        return new IsLessThanOrEqualToCondition<>(value);
+    public static <T> IsLessThanOrEqualTo<T> of(T value) {
+        return new IsLessThanOrEqualTo<>(value);
     }
 }

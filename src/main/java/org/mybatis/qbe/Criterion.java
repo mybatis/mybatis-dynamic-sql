@@ -32,7 +32,7 @@ public abstract class Criterion<T, S extends Field<T>, R extends Criterion<?, ?,
     }
  
     public void visitSubCriteria(Consumer<R> consumer) {
-        subCriteria.stream().forEach(consumer::accept);
+        subCriteria.forEach(consumer::accept);
     }
     
     public String renderField() {

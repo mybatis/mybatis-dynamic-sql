@@ -11,8 +11,8 @@ import org.junit.Test;
 import org.mybatis.qbe.Field;
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
 import org.mybatis.qbe.sql.SqlCriterion;
-import org.mybatis.qbe.sql.where.condition.IsEqualToCondition;
-import org.mybatis.qbe.sql.where.condition.IsLikeCondition;
+import org.mybatis.qbe.sql.where.condition.IsEqualTo;
+import org.mybatis.qbe.sql.where.condition.IsLike;
 import org.mybatis.qbe.sql.where.render.CriterionRenderer;
 import org.mybatis.qbe.sql.where.render.RenderedCriterion;
 
@@ -22,7 +22,7 @@ public class CriterionRendererTest {
     public void testAliasWithIgnore() {
         MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER, "a").ignoringAlias();
         
-        IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
@@ -35,7 +35,7 @@ public class CriterionRendererTest {
     @Test
     public void testAliasWithoutIgnore() {
         MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER, "a");
-        IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
@@ -48,7 +48,7 @@ public class CriterionRendererTest {
     @Test
     public void testNoAliasWithIgnore() {
         MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER);
-        IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
@@ -61,7 +61,7 @@ public class CriterionRendererTest {
     @Test
     public void testNoAliasWithoutIgnore() {
         MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER);
-        IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
@@ -74,7 +74,7 @@ public class CriterionRendererTest {
     @Test
     public void testTypeHandler() {
         MyBatis3Field<Date> field = MyBatis3Field.of("id", JDBCType.DATE).withTypeHandler("foo.Bar");
-        IsEqualToCondition<Date> condition = IsEqualToCondition.of(new Date());
+        IsEqualTo<Date> condition = IsEqualTo.of(new Date());
         SqlCriterion<Date> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Date> renderer = CriterionRenderer.of(criterion, sequence);
@@ -87,7 +87,7 @@ public class CriterionRendererTest {
     @Test
     public void testTypeHandlerAndAlias() {
         MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER).withTypeHandler("foo.Bar").withAlias("a");
-        IsEqualToCondition<Integer> condition = IsEqualToCondition.of(3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence);
@@ -101,7 +101,7 @@ public class CriterionRendererTest {
     public void testCustomCondition() {
         MyBatis3Field<String> field = MyBatis3Field.of("description", JDBCType.VARCHAR).withAlias("a").withTypeHandler("foo.Bar");
         
-        IsLikeCondition condition = IsLikeCaseInsensitiveCondition.of("fred");
+        IsLike condition = IsLikeCaseInsensitive.of("fred");
         SqlCriterion<String> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<String> renderer = CriterionRenderer.of(criterion, sequence);
@@ -112,13 +112,13 @@ public class CriterionRendererTest {
         assertThat(rc.fragmentParameters().get("p1"), is("FRED"));
     }
     
-    public static class IsLikeCaseInsensitiveCondition extends IsLikeCondition {
-        private IsLikeCaseInsensitiveCondition(String value) {
+    public static class IsLikeCaseInsensitive extends IsLike {
+        private IsLikeCaseInsensitive(String value) {
             super(value);
         }
         
-        public static IsLikeCaseInsensitiveCondition of(String value) {
-            return new IsLikeCaseInsensitiveCondition(value);
+        public static IsLikeCaseInsensitive of(String value) {
+            return new IsLikeCaseInsensitive(value);
         }
         
         @Override

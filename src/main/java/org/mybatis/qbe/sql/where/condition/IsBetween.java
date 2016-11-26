@@ -3,15 +3,15 @@ package org.mybatis.qbe.sql.where.condition;
 import org.mybatis.qbe.BaseTwoValueCondition;
 import org.mybatis.qbe.Renderer;
 
-public class IsNotBetweenCondition<T> extends BaseTwoValueCondition<T> {
+public class IsBetween<T> extends BaseTwoValueCondition<T> {
 
-    protected IsNotBetweenCondition(T value1, T value2) {
+    protected IsBetween(T value1, T value2) {
         super(value1, value2);
     }
     
     @Override
     public String render(Renderer parameterRenderer1, Renderer parameterRenderer2) {
-        return String.format("not between %s and %s", //$NON-NLS-1$
+        return String.format("between %s and %s", //$NON-NLS-1$
                 parameterRenderer1.render(),
                 parameterRenderer2.render());
     }
@@ -23,8 +23,8 @@ public class IsNotBetweenCondition<T> extends BaseTwoValueCondition<T> {
             this.value1 = value1;
         }
         
-        public IsNotBetweenCondition<T> and(T value2) {
-            return new IsNotBetweenCondition<>(value1, value2);
+        public IsBetween<T> and(T value2) {
+            return new IsBetween<>(value1, value2);
         }
         
         public static <T> Builder<T> of(T value1) {

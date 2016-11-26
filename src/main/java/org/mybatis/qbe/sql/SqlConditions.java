@@ -3,20 +3,20 @@ package org.mybatis.qbe.sql;
 import java.util.stream.Stream;
 
 import org.mybatis.qbe.Condition;
-import org.mybatis.qbe.sql.where.condition.IsBetweenCondition;
-import org.mybatis.qbe.sql.where.condition.IsEqualToCondition;
-import org.mybatis.qbe.sql.where.condition.IsGreaterThanCondition;
-import org.mybatis.qbe.sql.where.condition.IsGreaterThanOrEqualToCondition;
-import org.mybatis.qbe.sql.where.condition.IsInCondition;
-import org.mybatis.qbe.sql.where.condition.IsLessThanCondition;
-import org.mybatis.qbe.sql.where.condition.IsLessThanOrEqualToCondition;
-import org.mybatis.qbe.sql.where.condition.IsLikeCondition;
-import org.mybatis.qbe.sql.where.condition.IsNotBetweenCondition;
-import org.mybatis.qbe.sql.where.condition.IsNotEqualToCondition;
-import org.mybatis.qbe.sql.where.condition.IsNotInCondition;
-import org.mybatis.qbe.sql.where.condition.IsNotLikeCondition;
-import org.mybatis.qbe.sql.where.condition.IsNotNullCondition;
-import org.mybatis.qbe.sql.where.condition.IsNullCondition;
+import org.mybatis.qbe.sql.where.condition.IsBetween;
+import org.mybatis.qbe.sql.where.condition.IsEqualTo;
+import org.mybatis.qbe.sql.where.condition.IsGreaterThan;
+import org.mybatis.qbe.sql.where.condition.IsGreaterThanOrEqualTo;
+import org.mybatis.qbe.sql.where.condition.IsIn;
+import org.mybatis.qbe.sql.where.condition.IsLessThan;
+import org.mybatis.qbe.sql.where.condition.IsLessThanOrEqualTo;
+import org.mybatis.qbe.sql.where.condition.IsLike;
+import org.mybatis.qbe.sql.where.condition.IsNotBetween;
+import org.mybatis.qbe.sql.where.condition.IsNotEqualTo;
+import org.mybatis.qbe.sql.where.condition.IsNotIn;
+import org.mybatis.qbe.sql.where.condition.IsNotLike;
+import org.mybatis.qbe.sql.where.condition.IsNotNull;
+import org.mybatis.qbe.sql.where.condition.IsNull;
 
 public interface SqlConditions {
     // connectors
@@ -29,70 +29,70 @@ public interface SqlConditions {
     }
 
     // for all data types
-    static <T> IsNullCondition<T> isNull() {
-        return new IsNullCondition<>();
+    static <T> IsNull<T> isNull() {
+        return new IsNull<>();
     }
 
-    static <T> IsNotNullCondition<T> isNotNull() {
-        return new IsNotNullCondition<>();
+    static <T> IsNotNull<T> isNotNull() {
+        return new IsNotNull<>();
     }
 
-    static <T> IsEqualToCondition<T> isEqualTo(T value) {
-        return IsEqualToCondition.of(value);
+    static <T> IsEqualTo<T> isEqualTo(T value) {
+        return IsEqualTo.of(value);
     }
 
-    static <T> IsNotEqualToCondition<T> isNotEqualTo(T value) {
-        return IsNotEqualToCondition.of(value);
+    static <T> IsNotEqualTo<T> isNotEqualTo(T value) {
+        return IsNotEqualTo.of(value);
     }
 
-    static <T> IsGreaterThanCondition<T> isGreaterThan(T value) {
-        return IsGreaterThanCondition.of(value);
+    static <T> IsGreaterThan<T> isGreaterThan(T value) {
+        return IsGreaterThan.of(value);
     }
     
-    static <T> IsGreaterThanOrEqualToCondition<T> isGreaterThanOrEqualTo(T value) {
-        return IsGreaterThanOrEqualToCondition.of(value);
+    static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(T value) {
+        return IsGreaterThanOrEqualTo.of(value);
     }
     
-    static <T> IsLessThanCondition<T> isLessThan(T value) {
-        return IsLessThanCondition.of(value);
+    static <T> IsLessThan<T> isLessThan(T value) {
+        return IsLessThan.of(value);
     }
     
-    static <T> IsLessThanOrEqualToCondition<T> isLessThanOrEqualTo(T value) {
-        return IsLessThanOrEqualToCondition.of(value);
+    static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(T value) {
+        return IsLessThanOrEqualTo.of(value);
     }
     
     @SafeVarargs
-    static <T> IsInCondition<T> isIn(T...values) {
+    static <T> IsIn<T> isIn(T...values) {
         return isIn(Stream.of(values));
     }
 
     @SafeVarargs
-    static <T> IsNotInCondition<T> isNotIn(T...values) {
+    static <T> IsNotIn<T> isNotIn(T...values) {
         return isNotIn(Stream.of(values));
     }
     
-    static <T> IsInCondition<T> isIn(Stream<T> values) {
-        return IsInCondition.of(values);
+    static <T> IsIn<T> isIn(Stream<T> values) {
+        return IsIn.of(values);
     }
 
-    static <T> IsNotInCondition<T> isNotIn(Stream<T> values) {
-        return IsNotInCondition.of(values);
+    static <T> IsNotIn<T> isNotIn(Stream<T> values) {
+        return IsNotIn.of(values);
     }
     
-    static <T> IsBetweenCondition.Builder<T> isBetween(T value1) {
-        return IsBetweenCondition.Builder.of(value1);
+    static <T> IsBetween.Builder<T> isBetween(T value1) {
+        return IsBetween.Builder.of(value1);
     }
     
-    static <T> IsNotBetweenCondition.Builder<T> isNotBetween(T value1) {
-        return IsNotBetweenCondition.Builder.of(value1);
+    static <T> IsNotBetween.Builder<T> isNotBetween(T value1) {
+        return IsNotBetween.Builder.of(value1);
     }
     
     // for strings only
-    static IsLikeCondition isLike(String value) {
-        return IsLikeCondition.of(value);
+    static IsLike isLike(String value) {
+        return IsLike.of(value);
     }
     
-    static IsNotLikeCondition isNotLike(String value) {
-        return IsNotLikeCondition.of(value);
+    static IsNotLike isNotLike(String value) {
+        return IsNotLike.of(value);
     }
 }

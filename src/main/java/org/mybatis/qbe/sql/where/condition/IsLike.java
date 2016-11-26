@@ -3,9 +3,9 @@ package org.mybatis.qbe.sql.where.condition;
 import org.mybatis.qbe.BaseSingleValueCondition;
 import org.mybatis.qbe.Renderer;
 
-public class IsLikeCondition extends BaseSingleValueCondition<String> {
+public class IsLike extends BaseSingleValueCondition<String> {
 
-    protected IsLikeCondition(String value) {
+    protected IsLike(String value) {
         super(value);
     }
 
@@ -14,7 +14,7 @@ public class IsLikeCondition extends BaseSingleValueCondition<String> {
         return String.format("like %s", parameterRenderer.render()); //$NON-NLS-1$
     }
     
-    public static IsLikeCondition of(String value) {
-        return new IsLikeCondition(value);
+    public static IsLike of(String value) {
+        return new IsLike(value);
     }
 }
