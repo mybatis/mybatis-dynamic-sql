@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql.where;
+package org.mybatis.qbe.sql;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class WhereSupportTest {
     public static final SqlField<Date> field1 = SqlField.of("field1", JDBCType.DATE, "a");
