@@ -10,9 +10,9 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
-import org.mybatis.qbe.sql.insert.render.InsertSupport;
+import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.where.render.WhereSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface SimpleTableAnnotatedMapper {
     
@@ -43,7 +43,7 @@ public interface SimpleTableAnnotatedMapper {
         "from simpletable a",
         "where a.id = #{value}"
     })
-    @Results(id="SimpleTableResult", value={
+    @Results(id="SimpleTableResult", value= {
             @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
             @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR),

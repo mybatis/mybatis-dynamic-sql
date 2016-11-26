@@ -1,9 +1,7 @@
 package org.mybatis.qbe.sql;
 
-import org.mybatis.qbe.sql.where.SqlField;
-
 /**
- * A field value pair is used to render insert and update statements.
+ * A field value pair used to render insert and update statements.
  * 
  * In an insert statement it is used in the field list and value clauses.  For
  * example:
@@ -16,11 +14,11 @@ import org.mybatis.qbe.sql.where.SqlField;
  *
  * @param <T>
  */
-public class FieldValuePair<T> {
+public class FieldAndValue<T> {
     private T value;
     private SqlField<T> field;
     
-    private FieldValuePair() {
+    private FieldAndValue() {
         super();
     }
     
@@ -32,19 +30,19 @@ public class FieldValuePair<T> {
         return field;
     }
     
-    public FieldValuePair<T> ignoringAlias() {
-        return FieldValuePair.of(field.ignoringAlias(), value);
+    public FieldAndValue<T> ignoringAlias() {
+        return FieldAndValue.of(field.ignoringAlias(), value);
     }
     
-    public static <S> FieldValuePair<S> of(SqlField<S> field, S value) {
-        FieldValuePair<S> phrase = new FieldValuePair<>();
+    public static <S> FieldAndValue<S> of(SqlField<S> field, S value) {
+        FieldAndValue<S> phrase = new FieldAndValue<>();
         phrase.value = value;
         phrase.field = field;
         return phrase;
     }
 
-    public static <S> FieldValuePair<S> of(SqlField<S> field) {
-        FieldValuePair<S> phrase = new FieldValuePair<>();
+    public static <S> FieldAndValue<S> of(SqlField<S> field) {
+        FieldAndValue<S> phrase = new FieldAndValue<>();
         phrase.field = field;
         return phrase;
     }

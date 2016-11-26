@@ -1,6 +1,6 @@
 package examples.simple;
 
-import org.mybatis.qbe.sql.where.render.WhereSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class SimpleTableSqlProvider {
     

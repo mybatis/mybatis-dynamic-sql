@@ -1,9 +1,9 @@
-package org.mybatis.qbe.sql.where.render;
+package org.mybatis.qbe.sql.where;
 
 import org.mybatis.qbe.Condition;
-import org.mybatis.qbe.sql.where.SqlCriterion;
-import org.mybatis.qbe.sql.where.SqlField;
-import org.mybatis.qbe.sql.where.WhereClause;
+import org.mybatis.qbe.sql.SqlCriterion;
+import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.where.render.WhereClauseRenderer;
 
 /**
  * This interface combines the operations of building the where clause
@@ -12,7 +12,7 @@ import org.mybatis.qbe.sql.where.WhereClause;
  * @author Jeff Butler
  *
  */
-public interface WhereClauseShortcut {
+public interface WhereSupportBuilder {
 
     static <T> Builder where(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...criteria) {
         return new Builder(field, condition, criteria);

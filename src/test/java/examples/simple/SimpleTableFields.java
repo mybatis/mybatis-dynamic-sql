@@ -1,15 +1,16 @@
 package examples.simple;
 
-import static org.mybatis.qbe.sql.insert.render.InsertSupportShortcut.insert;
-import static org.mybatis.qbe.sql.update.UpdateSupportShortcut.*;
-import static org.mybatis.qbe.sql.where.SqlConditions.*;
+import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
+import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
+import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.updateSupport;
 
 import java.sql.JDBCType;
 import java.util.Date;
 
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
-import org.mybatis.qbe.sql.insert.render.InsertSupport;
+import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
+import org.mybatis.qbe.sql.update.UpdateSupportBuilder.SetBuilder;
 
 public interface SimpleTableFields {
     MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).withAlias("a");
@@ -18,8 +19,8 @@ public interface SimpleTableFields {
     MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE).withAlias("a");
     MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR).withAlias("a");
     
-    static InsertSupport buildInsert(SimpleTableRecord record) {
-        return insert()
+    static InsertSupport buildInsertSupport(SimpleTableRecord record) {
+        return insertSupport()
                 .withValue(id, record.getId())
                 .withValue(firstName, record.getFirstName())
                 .withValue(lastName, record.getLastName())
@@ -28,8 +29,8 @@ public interface SimpleTableFields {
                 .buildIgnoringAlias();
     }
 
-    static InsertSupport buildInsertSelective(SimpleTableRecord record) {
-        return insert()
+    static InsertSupport buildInsertSelectiveSupport(SimpleTableRecord record) {
+        return insertSupport()
                 .withValueIfPresent(id, record.getId())
                 .withValueIfPresent(firstName, record.getFirstName())
                 .withValueIfPresent(lastName, record.getLastName())
@@ -38,8 +39,8 @@ public interface SimpleTableFields {
                 .buildIgnoringAlias();
     }
     
-    static UpdateSupport buildUpdateByPrimaryKey(SimpleTableRecord record) {
-        return update()
+    static UpdateSupport buildUpdateByPrimaryKeySupport(SimpleTableRecord record) {
+        return updateSupport()
                 .set(firstName, record.getFirstName())
                 .set(lastName, record.getLastName())
                 .set(birthDate, record.getBirthDate())
@@ -48,13 +49,31 @@ public interface SimpleTableFields {
                 .buildIgnoringAlias();
     }
 
-    static UpdateSupport buildUpdateByPrimaryKeySelective(SimpleTableRecord record) {
-        return update()
+    static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(SimpleTableRecord record) {
+        return updateSupport()
                 .setIfPresent(firstName, record.getFirstName())
                 .setIfPresent(lastName, record.getLastName())
                 .setIfPresent(birthDate, record.getBirthDate())
                 .setIfPresent(occupation, record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
                 .buildIgnoringAlias();
+    }
+
+    static SetBuilder updateByExample(SimpleTableRecord record) {
+        return updateSupport()
+                .set(id, record.getId())
+                .set(firstName, record.getFirstName())
+                .set(lastName, record.getLastName())
+                .set(birthDate, record.getBirthDate())
+                .set(occupation, record.getOccupation());
+    }
+
+    static SetBuilder updateByExampleSelective(SimpleTableRecord record) {
+        return updateSupport()
+                .setIfPresent(id, record.getId())
+                .setIfPresent(firstName, record.getFirstName())
+                .setIfPresent(lastName, record.getLastName())
+                .setIfPresent(birthDate, record.getBirthDate())
+                .setIfPresent(occupation, record.getOccupation());
     }
 }

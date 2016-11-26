@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql.insert.render;
+package org.mybatis.qbe.sql.insert;
 
 import java.util.Collections;
 import java.util.HashMap;

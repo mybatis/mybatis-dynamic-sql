@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql.where;
+package org.mybatis.qbe.sql;
 
 import java.util.Arrays;
 import java.util.stream.Stream;

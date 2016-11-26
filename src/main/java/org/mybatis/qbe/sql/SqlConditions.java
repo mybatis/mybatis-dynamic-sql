@@ -1,8 +1,22 @@
-package org.mybatis.qbe.sql.where;
+package org.mybatis.qbe.sql;
 
 import java.util.stream.Stream;
 
 import org.mybatis.qbe.Condition;
+import org.mybatis.qbe.sql.where.condition.IsBetweenCondition;
+import org.mybatis.qbe.sql.where.condition.IsEqualToCondition;
+import org.mybatis.qbe.sql.where.condition.IsGreaterThanCondition;
+import org.mybatis.qbe.sql.where.condition.IsGreaterThanOrEqualToCondition;
+import org.mybatis.qbe.sql.where.condition.IsInCondition;
+import org.mybatis.qbe.sql.where.condition.IsLessThanCondition;
+import org.mybatis.qbe.sql.where.condition.IsLessThanOrEqualToCondition;
+import org.mybatis.qbe.sql.where.condition.IsLikeCondition;
+import org.mybatis.qbe.sql.where.condition.IsNotBetweenCondition;
+import org.mybatis.qbe.sql.where.condition.IsNotEqualToCondition;
+import org.mybatis.qbe.sql.where.condition.IsNotInCondition;
+import org.mybatis.qbe.sql.where.condition.IsNotLikeCondition;
+import org.mybatis.qbe.sql.where.condition.IsNotNullCondition;
+import org.mybatis.qbe.sql.where.condition.IsNullCondition;
 
 public interface SqlConditions {
     // connectors

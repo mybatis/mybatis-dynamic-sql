@@ -3,8 +3,8 @@ package org.mybatis.qbe.mybatis3;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.*;
-import static org.mybatis.qbe.sql.update.UpdateSupportShortcut.*;
-import static org.mybatis.qbe.sql.where.SqlConditions.*;
+import static org.mybatis.qbe.sql.SqlConditions.*;
+import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.*;
 
 import java.sql.JDBCType;
 
@@ -20,7 +20,7 @@ public class UpdateSupportTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
 
-        UpdateSupport updateSupport = update()
+        UpdateSupport updateSupport = updateSupport()
                 .set(firstName, "fred")
                 .set(lastName, "jones")
                 .setNull(occupation)
@@ -50,7 +50,7 @@ public class UpdateSupportTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
 
-        UpdateSupport updateSupport = update()
+        UpdateSupport updateSupport = updateSupport()
                 .setNull(occupation)
                 .set(firstName, "fred")
                 .set(lastName, "jones")

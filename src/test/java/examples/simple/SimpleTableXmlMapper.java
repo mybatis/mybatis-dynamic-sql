@@ -2,9 +2,9 @@ package examples.simple;
 
 import java.util.List;
 
-import org.mybatis.qbe.sql.insert.render.InsertSupport;
+import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.where.render.WhereSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface SimpleTableXmlMapper {
     List<SimpleTableRecord> selectByExample(WhereSupport whereSupport);

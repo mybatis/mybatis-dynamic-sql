@@ -2,19 +2,18 @@ package org.mybatis.qbe.sql.where;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.where.SqlConditions.and;
-import static org.mybatis.qbe.sql.where.SqlConditions.isEqualTo;
-import static org.mybatis.qbe.sql.where.SqlConditions.isLessThan;
-import static org.mybatis.qbe.sql.where.SqlConditions.or;
-import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.*;
+import static org.mybatis.qbe.sql.SqlConditions.and;
+import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
+import static org.mybatis.qbe.sql.SqlConditions.isLessThan;
+import static org.mybatis.qbe.sql.SqlConditions.or;
+import static org.mybatis.qbe.sql.where.WhereSupportBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.Date;
 import java.util.Map;
 
 import org.junit.Test;
-import org.mybatis.qbe.sql.where.SqlField;
-import org.mybatis.qbe.sql.where.render.WhereSupport;
+import org.mybatis.qbe.sql.SqlField;
 
 public class WhereSupportTest {
     public static final SqlField<Date> field1 = SqlField.of("field1", JDBCType.DATE, "a");

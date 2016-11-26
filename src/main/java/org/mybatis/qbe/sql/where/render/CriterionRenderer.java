@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.qbe.sql.where.SqlCriterion;
+import org.mybatis.qbe.sql.SqlCriterion;
 
 public class CriterionRenderer<T> {
     private StringBuilder buffer = new StringBuilder();

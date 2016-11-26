@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql.where.render;
+package org.mybatis.qbe.sql.where;
 
 import java.util.Collections;
 import java.util.HashMap;

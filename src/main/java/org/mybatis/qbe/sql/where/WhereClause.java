@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.mybatis.qbe.Condition;
+import org.mybatis.qbe.sql.SqlCriterion;
+import org.mybatis.qbe.sql.SqlField;
 
 public class WhereClause {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();

@@ -4,9 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mybatis.qbe.sql.set.render.SetSupport;
-import org.mybatis.qbe.sql.where.render.WhereSupport;
-
 /**
  * This class combines a "set" clause and a "where" clause into one parameter object
  * that can be sent to a MyBatis3 mapper method.
@@ -37,10 +34,7 @@ public class UpdateSupport {
         return parameters;
     }
 
-    public static UpdateSupport of(SetSupport setSupport, WhereSupport whereSupport) {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.putAll(setSupport.getParameters());
-        parameters.putAll(whereSupport.getParameters());
-        return new UpdateSupport(setSupport.getSetClause(), whereSupport.getWhereClause(), parameters);
+    public static UpdateSupport of(String setClause, String whereClause, Map<String, Object> parameters) {
+        return new UpdateSupport(setClause, whereClause, parameters);
     }
 }

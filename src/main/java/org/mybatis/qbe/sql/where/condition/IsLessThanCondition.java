@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql.where;
+package org.mybatis.qbe.sql.where.condition;
 
 import org.mybatis.qbe.BaseSingleValueCondition;
 import org.mybatis.qbe.Renderer;

@@ -3,10 +3,10 @@ package examples.animal.data;
 import static examples.animal.data.AnimalDataFields.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.where.SqlConditions.*;
-import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.where;
-import static org.mybatis.qbe.sql.insert.render.InsertSupportShortcut.*;
-import static org.mybatis.qbe.sql.update.UpdateSupportShortcut.update;
+import static org.mybatis.qbe.sql.SqlConditions.*;
+import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.*;
+import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.updateSupport;
+import static org.mybatis.qbe.sql.where.WhereSupportBuilder.where;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,9 +24,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.insert.render.InsertSupport;
+import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.where.render.WhereSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class AnimalDataTest {
 
@@ -314,7 +314,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            UpdateSupport updateSupport = update()
+            UpdateSupport updateSupport = updateSupport()
                     .set(bodyWeight, 2.6)
                     .setNull(animalName)
                     .where(id, isIn(1, 5, 7))
@@ -336,7 +336,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            InsertSupport insertSupport = insert() 
+            InsertSupport insertSupport = insertSupport() 
                     .withValue(id, 100)
                     .withValue(animalName, "Old Shep")
                     .withValue(bodyWeight, 22.5)

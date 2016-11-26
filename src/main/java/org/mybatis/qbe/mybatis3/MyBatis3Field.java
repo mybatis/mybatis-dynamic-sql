@@ -4,7 +4,7 @@ import java.sql.JDBCType;
 import java.util.Optional;
 
 import org.mybatis.qbe.Renderer;
-import org.mybatis.qbe.sql.where.SqlField;
+import org.mybatis.qbe.sql.SqlField;
 
 /**
  * 

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.qbe.sql.where.WhereClause;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class WhereClauseRenderer {
     

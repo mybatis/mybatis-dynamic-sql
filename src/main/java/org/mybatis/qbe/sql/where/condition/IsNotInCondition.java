@@ -1,4 +1,4 @@
-package org.mybatis.qbe.sql.where;
+package org.mybatis.qbe.sql.where.condition;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

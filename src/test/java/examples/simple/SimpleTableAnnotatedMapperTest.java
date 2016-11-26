@@ -3,10 +3,10 @@ package examples.simple;
 import static examples.simple.SimpleTableFields.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.where.SqlConditions.isEqualTo;
-import static org.mybatis.qbe.sql.where.SqlConditions.isIn;
-import static org.mybatis.qbe.sql.where.SqlConditions.isNull;
-import static org.mybatis.qbe.sql.where.render.WhereClauseShortcut.*;
+import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
+import static org.mybatis.qbe.sql.SqlConditions.isIn;
+import static org.mybatis.qbe.sql.SqlConditions.isNull;
+import static org.mybatis.qbe.sql.where.WhereSupportBuilder.where;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,7 +21,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.where.render.WhereSupport;
+import org.mybatis.qbe.sql.update.UpdateSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class SimpleTableAnnotatedMapperTest {
 
@@ -106,7 +107,7 @@ public class SimpleTableAnnotatedMapperTest {
             record.setBirthDate(new Date());
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildInsert(record));
+            int rows = mapper.insert(buildInsertSupport(record));
             
             assertThat(rows, is(1));
         } finally {
@@ -125,7 +126,7 @@ public class SimpleTableAnnotatedMapperTest {
             record.setLastName("Jones");
             record.setBirthDate(new Date());
             
-            int rows = mapper.insert(buildInsertSelective(record));
+            int rows = mapper.insert(buildInsertSelectiveSupport(record));
             
             assertThat(rows, is(1));
         } finally {
@@ -145,11 +146,11 @@ public class SimpleTableAnnotatedMapperTest {
             record.setBirthDate(new Date());
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildInsert(record));
+            int rows = mapper.insert(buildInsertSupport(record));
             assertThat(rows, is(1));
             
             record.setOccupation("Programmer");
-            rows = mapper.update(buildUpdateByPrimaryKey(record));
+            rows = mapper.update(buildUpdateByPrimaryKeySupport(record));
             assertThat(rows, is(1));
             
             SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
@@ -172,18 +173,50 @@ public class SimpleTableAnnotatedMapperTest {
             record.setBirthDate(new Date());
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildInsert(record));
+            int rows = mapper.insert(buildInsertSupport(record));
             assertThat(rows, is(1));
 
             SimpleTableRecord updateRecord = new SimpleTableRecord();
             updateRecord.setId(100);
             updateRecord.setOccupation("Programmer");
-            rows = mapper.update(buildUpdateByPrimaryKeySelective(updateRecord));
+            rows = mapper.update(buildUpdateByPrimaryKeySelectiveSupport(updateRecord));
             assertThat(rows, is(1));
             
             SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
             assertThat(newRecord.getOccupation(), is("Programmer"));
             assertThat(newRecord.getFirstName(), is("Joe"));
+            
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testUpdateByExample() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            SimpleTableRecord record = new SimpleTableRecord();
+            record.setId(100);
+            record.setFirstName("Joe");
+            record.setLastName("Jones");
+            record.setBirthDate(new Date());
+            record.setOccupation("Developer");
+            
+            int rows = mapper.insert(buildInsertSupport(record));
+            assertThat(rows, is(1));
+            
+            record.setOccupation("Programmer");
+            UpdateSupport updateSupport = updateByExample(record)
+                .where(id, isEqualTo(100))
+                .and(firstName, isEqualTo("Joe"))
+                .buildIgnoringAlias();
+            
+            rows = mapper.update(updateSupport);
+            assertThat(rows, is(1));
+            
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.getOccupation(), is("Programmer"));
             
         } finally {
             session.close();

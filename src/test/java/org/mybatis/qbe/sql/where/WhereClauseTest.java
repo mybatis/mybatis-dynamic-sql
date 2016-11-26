@@ -7,9 +7,9 @@ import java.sql.JDBCType;
 
 import org.junit.Test;
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
-import org.mybatis.qbe.sql.where.IsLessThanCondition;
-import org.mybatis.qbe.sql.where.IsNullCondition;
 import org.mybatis.qbe.sql.where.WhereClause;
+import org.mybatis.qbe.sql.where.condition.IsLessThanCondition;
+import org.mybatis.qbe.sql.where.condition.IsNullCondition;
 
 public class WhereClauseTest {
 
