@@ -60,11 +60,11 @@ public interface InsertSupportBuilder {
                 SqlField<?> field = fv.getField();
                 fieldPhrases.add(field.render());
                 valuePhrases.add(field.getParameterRenderer(number).render());
-                parameters.put(String.format("p%s", number), fv.getValue());
+                parameters.put(String.format("p%s", number), fv.getValue()); //$NON-NLS-1$
             });
             
-            String fieldsPhrase = fieldPhrases.stream().collect(Collectors.joining(", ", "(", ")"));
-            String valuesPhrase = valuePhrases.stream().collect(Collectors.joining(", ", "values (", ")"));
+            String fieldsPhrase = fieldPhrases.stream().collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String valuesPhrase = valuePhrases.stream().collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return InsertSupport.of(fieldsPhrase, valuesPhrase, parameters);
         }
     }

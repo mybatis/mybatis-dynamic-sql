@@ -51,7 +51,7 @@ public class SqlField<T> extends Field<T> {
     
     @Override
     public Renderer getParameterRenderer(int parameterNumber) {
-        return () -> "?";
+        return () -> "?"; //$NON-NLS-1$
     }
     
     public static <T> SqlField<T> of(String name, JDBCType jdbcType) {

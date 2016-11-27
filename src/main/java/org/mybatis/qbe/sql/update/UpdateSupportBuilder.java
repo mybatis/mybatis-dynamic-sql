@@ -80,13 +80,13 @@ public interface UpdateSupportBuilder {
             setFieldsAndValues.stream().map(mapper).forEach(fv -> {
                 int number = sequence.getAndIncrement();
                 SqlField<?> field = fv.getField();
-                String phrase = String.format("%s = %s", field.render(),
+                String phrase = String.format("%s = %s", field.render(), //$NON-NLS-1$
                         field.getParameterRenderer(number).render());
                 phrases.add(phrase);
-                parameters.put(String.format("p%s", number), fv.getValue());
+                parameters.put(String.format("p%s", number), fv.getValue()); //$NON-NLS-1$
             });
             
-            return phrases.stream().collect(Collectors.joining(", ", "set ", ""));
+            return phrases.stream().collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         @Override

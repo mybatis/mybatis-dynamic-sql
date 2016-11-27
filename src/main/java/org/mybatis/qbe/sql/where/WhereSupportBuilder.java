@@ -33,17 +33,17 @@ public interface WhereSupportBuilder {
         }
         
         public <S> T and(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-            criteria.add(SqlCriterion.of("and", field, condition, subCriteria));
+            criteria.add(SqlCriterion.of("and", field, condition, subCriteria)); //$NON-NLS-1$
             return getThis();
         }
         
         public <S> T or(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-            criteria.add(SqlCriterion.of("or", field, condition, subCriteria));
+            criteria.add(SqlCriterion.of("or", field, condition, subCriteria)); //$NON-NLS-1$
             return getThis();
         }
         
         protected String renderCriteria(Function<SqlCriterion<?>, SqlCriterion<?>> mapper, AtomicInteger sequence, Map<String, Object> parameters) {
-            StringBuilder buffer = new StringBuilder("where");
+            StringBuilder buffer = new StringBuilder("where"); //$NON-NLS-1$
             
             criteria.stream().map(mapper).forEach(c -> {
                 RenderedCriterion rc = CriterionRenderer.of(c, sequence).render();
