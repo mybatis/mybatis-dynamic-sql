@@ -72,7 +72,7 @@ create table SimpleTable (
 );
 ```
  
-### First - Define Database Fields
+### First - Define database fields
 The class ```org.mybatis.qbe.mybatis3.MyBatis3Field``` is used to define fields for use in the library.
 Typically these should be defined as public static variables in a class or interface.  A field definition includes:
 
@@ -101,10 +101,10 @@ public interface SimpleTableFields {
 }
 ```
 
-### Second - Write XML or annotated mappers that will Use the generated where clause
-The library will create an object of class ```org.mybatis.qbe.sql.where.render.RenderedWhereClause``` that will be used as input to an SQL provider or an XML mapper.  This object includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that this object be the one and only parameter to a MyBatis method.  Both SQL providers and XML mappers will make use of the rendered where clause.
+### Second - Write XML or annotated mappers that will use the generated where clause
+The library will create an object of class ```org.mybatis.qbe.sql.where.WhereSupport``` that will be used as input to an annotated or XML mapper.  This object includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that this object be the one and only parameter to a MyBatis method.  Mappers will make use of the rendered where clause.
 
-For example, an Annotated mapper might look like this:
+For example, an annotated mapper might look like this:
 
 ```java
 package examples.simple;
@@ -161,7 +161,7 @@ An XML mapper might look like this:
 
 Notice in both examples that the select uses a table alias and the delete does not.
 
-### Third - Create Where Clauses for your Queries
+### Third - Create where clauses for your queries
 Where clauses are created by combining your field definition (from the first step above) with a condition for the field.  This library includes a large number of type safe conditions.
 All conditions can be accessed through expressive static methods in the ```org.mybatis.qbe.sql.SqlConditions``` interface.
 
@@ -212,7 +212,7 @@ import static org.mybatis.qbe.sql.SqlConditions.*;
 import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
 ```
 
-### Fourth - Use Your Where Clauses
+### Fourth - Use your where clauses
 In a DAO or service class, you can use the generated where clause as input to your mapper methods.  Here's
 an example from ```examples.simple.SimpleTableXmlMapperTest```:
 
@@ -236,5 +236,9 @@ an example from ```examples.simple.SimpleTableXmlMapperTest```:
         }
     }
 ```
+The code in the folder ```src/test/java/examples/simple``` shows how to use the library for INSERT and
+UPDATE statements in addition to the examples shown here.  It shows a suggested usage of the library
+to enable a complete range of CRUD operations on a database table.  Lastly, it is an example of the code that
+could be created by a future version of MyBatis Generator.
 
 That's it!  Let us know what you think.
