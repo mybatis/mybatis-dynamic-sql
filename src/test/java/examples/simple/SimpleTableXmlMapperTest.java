@@ -3,10 +3,8 @@ package examples.simple;
 import static examples.simple.SimpleTableFields.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
-import static org.mybatis.qbe.sql.SqlConditions.isIn;
-import static org.mybatis.qbe.sql.SqlConditions.isNull;
-import static org.mybatis.qbe.sql.where.WhereSupportBuilder.*;
+import static org.mybatis.qbe.sql.SqlConditions.*;
+import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
