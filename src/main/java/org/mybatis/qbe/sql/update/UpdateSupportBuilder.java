@@ -53,8 +53,8 @@ public interface UpdateSupportBuilder {
         private List<FieldAndValue<?>> setFieldsAndValues;
         
         public <T> WhereBuilder(List<FieldAndValue<?>> setFieldsAndValues, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            super(field, condition, subCriteria);
             this.setFieldsAndValues = setFieldsAndValues;
-            addCriterion(SqlCriterion.of(field, condition, subCriteria));
         }
         
         public UpdateSupport build() {

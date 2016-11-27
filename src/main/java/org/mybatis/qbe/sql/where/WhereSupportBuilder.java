@@ -28,6 +28,10 @@ public interface WhereSupportBuilder {
     abstract static class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         private List<SqlCriterion<?>> criteria = new ArrayList<>();
         
+        protected <S> AbstractWhereBuilder(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+            criteria.add(SqlCriterion.of(field, condition, subCriteria));
+        }
+        
         public <S> T and(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
             criteria.add(SqlCriterion.of("and", field, condition, subCriteria));
             return getThis();
@@ -36,10 +40,6 @@ public interface WhereSupportBuilder {
         public <S> T or(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
             criteria.add(SqlCriterion.of("or", field, condition, subCriteria));
             return getThis();
-        }
-        
-        protected void addCriterion(SqlCriterion<?> criterion) {
-            criteria.add(criterion);
         }
         
         protected String renderCriteria(Function<SqlCriterion<?>, SqlCriterion<?>> mapper, AtomicInteger sequence, Map<String, Object> parameters) {
@@ -58,7 +58,7 @@ public interface WhereSupportBuilder {
     
     static class WhereBuilder extends AbstractWhereBuilder<WhereBuilder> {
         public <T> WhereBuilder(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            addCriterion(SqlCriterion.of(field, condition, subCriteria));
+            super(field, condition, subCriteria);
         }
         
         public WhereSupport build() {
