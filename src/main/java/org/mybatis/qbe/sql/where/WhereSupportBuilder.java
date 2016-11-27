@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
@@ -42,18 +42,10 @@ public interface WhereSupportBuilder {
             criteria.add(criterion);
         }
         
-        protected String renderCriteria(AtomicInteger sequence, Map<String, Object> parameters) {
-            return renderCriteria(criteria.stream(), sequence, parameters);
-        }
-        
-        protected String renderCriteriaIgnoringAlias(AtomicInteger sequence, Map<String, Object> parameters) {
-            return renderCriteria(criteria.stream().map(SqlCriterion::ignoringAlias), sequence, parameters);
-        }
-        
-        private static String renderCriteria(Stream<SqlCriterion<?>> criteria, AtomicInteger sequence, Map<String, Object> parameters) {
+        protected String renderCriteria(Function<SqlCriterion<?>, SqlCriterion<?>> mapper, AtomicInteger sequence, Map<String, Object> parameters) {
             StringBuilder buffer = new StringBuilder("where");
             
-            criteria.forEach(c -> {
+            criteria.stream().map(mapper).forEach(c -> {
                 RenderedCriterion rc = CriterionRenderer.of(c, sequence).render();
                 buffer.append(rc.whereClauseFragment());
                 parameters.putAll(rc.fragmentParameters());
@@ -70,16 +62,17 @@ public interface WhereSupportBuilder {
         }
         
         public WhereSupport build() {
-            AtomicInteger sequence = new AtomicInteger(1);
-            Map<String, Object> parameters = new HashMap<>();
-            String whereClause = renderCriteria(sequence, parameters);
-            return WhereSupport.of(whereClause, parameters);
+            return build(Function.identity());
         }
 
         public WhereSupport buildIgnoringAlias() {
+            return build(SqlCriterion::ignoringAlias);
+        }
+        
+        private WhereSupport build(Function<SqlCriterion<?>, SqlCriterion<?>> mapper) {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
-            String whereClause = renderCriteriaIgnoringAlias(sequence, parameters);
+            String whereClause = renderCriteria(mapper, sequence, parameters);
             return WhereSupport.of(whereClause, parameters);
         }
         

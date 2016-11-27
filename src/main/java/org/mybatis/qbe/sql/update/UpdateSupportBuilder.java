@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.FieldAndValue;
@@ -58,25 +58,26 @@ public interface UpdateSupportBuilder {
         }
         
         public UpdateSupport build() {
-            AtomicInteger sequence = new AtomicInteger(1);
-            Map<String, Object> parameters = new HashMap<>();
-            String setClause = renderSetValues(setFieldsAndValues.stream(), sequence, parameters);
-            String whereClause = renderCriteria(sequence, parameters);
-            return UpdateSupport.of(setClause, whereClause, parameters);
+            return build(Function.identity(), Function.identity());
         }
 
         public UpdateSupport buildIgnoringAlias() {
-            AtomicInteger sequence = new AtomicInteger(1);
-            Map<String, Object> parameters = new HashMap<>();
-            String setClause = renderSetValues(setFieldsAndValues.stream().map(FieldAndValue::ignoringAlias), sequence, parameters);
-            String whereClause = renderCriteriaIgnoringAlias(sequence, parameters);
-            return UpdateSupport.of(setClause, whereClause, parameters);
+            return build(SqlCriterion::ignoringAlias, FieldAndValue::ignoringAlias);
         }
 
-        private static String renderSetValues(Stream<FieldAndValue<?>> setFieldsAndValues, AtomicInteger sequence, Map<String, Object> parameters) {
+        private UpdateSupport build(Function<SqlCriterion<?>, SqlCriterion<?>> criterionMapper,
+                Function<FieldAndValue<?>, FieldAndValue<?>> fvMapper) {
+            AtomicInteger sequence = new AtomicInteger(1);
+            Map<String, Object> parameters = new HashMap<>();
+            String setClause = renderSetValues(fvMapper, sequence, parameters);
+            String whereClause = renderCriteria(criterionMapper, sequence, parameters);
+            return UpdateSupport.of(setClause, whereClause, parameters);
+        }
+        
+        private String renderSetValues(Function<FieldAndValue<?>, FieldAndValue<?>> mapper, AtomicInteger sequence, Map<String, Object> parameters) {
             List<String> phrases = new ArrayList<>();
             
-            setFieldsAndValues.forEach(fv -> {
+            setFieldsAndValues.stream().map(mapper).forEach(fv -> {
                 int number = sequence.getAndIncrement();
                 SqlField<?> field = fv.getField();
                 String phrase = String.format("%s = %s", field.render(),

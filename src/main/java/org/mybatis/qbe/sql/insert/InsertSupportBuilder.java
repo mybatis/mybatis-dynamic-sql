@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.qbe.sql.FieldAndValue;
 import org.mybatis.qbe.sql.SqlField;
@@ -42,20 +42,20 @@ public interface InsertSupportBuilder {
         }
 
         public InsertSupport build() {
-            return render(fieldsAndValues.stream());
+            return build(Function.identity());
         }
 
         public InsertSupport buildIgnoringAlias() {
-            return render(fieldsAndValues.stream().map(FieldAndValue::ignoringAlias));
+            return build(FieldAndValue::ignoringAlias);
         }
 
-        private InsertSupport render(Stream<FieldAndValue<?>> fieldsAndValues) {
+        private InsertSupport build(Function<FieldAndValue<?>, FieldAndValue<?>> mapper) {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
             List<String> fieldPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             
-            fieldsAndValues.forEach(fv -> {
+            fieldsAndValues.stream().map(mapper).forEach(fv -> {
                 int number = sequence.getAndIncrement();
                 SqlField<?> field = fv.getField();
                 fieldPhrases.add(field.render());
