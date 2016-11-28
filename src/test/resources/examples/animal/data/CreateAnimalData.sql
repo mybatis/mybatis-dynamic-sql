@@ -1,3 +1,19 @@
+--
+--    Copyright 2016 the original author or authors.
+--
+--    Licensed under the Apache License, Version 2.0 (the "License");
+--    you may not use this file except in compliance with the License.
+--    You may obtain a copy of the License at
+--
+--       http://www.apache.org/licenses/LICENSE-2.0
+--
+--    Unless required by applicable law or agreed to in writing, software
+--    distributed under the License is distributed on an "AS IS" BASIS,
+--    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+--    See the License for the specific language governing permissions and
+--    limitations under the License.
+--
+
 drop table AnimalData if exists;
 
 create table AnimalData (
@@ -8,6 +24,10 @@ create table AnimalData (
   primary key(id)
 );
 
+--
+-- the following records originally came from the Animals2 dataset hosted here:
+-- https://vincentarelbundock.github.io/Rdatasets/datasets.html
+--
 insert into AnimalData values(1, 'Lesser short-tailed shrew', 0.005, 0.14);
 insert into AnimalData values(2,'Little brown bat',0.01,0.25);
 insert into AnimalData values(3,'Big brown bat',0.023,0.3);
