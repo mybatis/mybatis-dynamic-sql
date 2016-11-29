@@ -37,15 +37,18 @@ public class SqlField<T> extends Field<T> {
         this.alias = alias;
     }
     
-    @Override
-    public String render() {
+    public String nameWithTableAlias() {
         StringBuilder sb = new StringBuilder();
         alias().ifPresent(a -> {
             sb.append(a);
             sb.append('.');
         });
-        sb.append(super.name());
+        sb.append(name());
         return sb.toString();
+    }
+    
+    public String nameWithoutTableAlias() {
+        return name();
     }
     
     public JDBCType jdbcType() {
@@ -54,10 +57,6 @@ public class SqlField<T> extends Field<T> {
     
     public Optional<String> alias() {
         return Optional.ofNullable(alias);
-    }
-    
-    public <S> SqlField<S> ignoringAlias() {
-        return SqlField.of(name, jdbcType);
     }
     
     public <S> SqlField<S> withAlias(String alias) {

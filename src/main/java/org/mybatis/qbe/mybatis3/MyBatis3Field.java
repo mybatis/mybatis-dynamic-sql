@@ -45,13 +45,6 @@ public class MyBatis3Field<T> extends SqlField<T> {
     }
     
     @Override
-    public <S> MyBatis3Field<S> ignoringAlias() {
-        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType);
-        field.typeHandler = typeHandler;
-        return field;
-    }
-    
-    @Override
     public <S> MyBatis3Field<S> withAlias(String alias) {
         MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType, alias);
         field.typeHandler = typeHandler;

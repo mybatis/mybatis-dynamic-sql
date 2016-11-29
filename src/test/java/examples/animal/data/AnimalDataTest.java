@@ -267,6 +267,23 @@ public class AnimalDataTest {
     }
 
     @Test
+    public void testLikeCaseInsensitive() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            WhereSupport whereSupport = whereSupport()
+                    .where(animalName, isLikeCaseInsensitive("%squirrel"))
+                    .build();
+
+            List<AnimalData> animals = mapper.selectByExampleWithProvider(whereSupport);
+            assertThat(animals.size(), is(2));
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
     public void testNotLikeCondition() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {

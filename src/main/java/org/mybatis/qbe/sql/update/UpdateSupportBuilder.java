@@ -73,29 +73,28 @@ public interface UpdateSupportBuilder {
         }
         
         public UpdateSupport build() {
-            return build(Function.identity(), Function.identity());
+            return build(SqlField::nameWithTableAlias);
         }
 
         public UpdateSupport buildIgnoringAlias() {
-            return build(SqlCriterion::ignoringAlias, FieldAndValue::ignoringAlias);
+            return build(SqlField::nameWithoutTableAlias);
         }
 
-        private UpdateSupport build(Function<SqlCriterion<?>, SqlCriterion<?>> criterionMapper,
-                Function<FieldAndValue<?>, FieldAndValue<?>> fvMapper) {
+        private UpdateSupport build(Function<SqlField<?>, String> nameFunction) {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
-            String setClause = renderSetValues(fvMapper, sequence, parameters);
-            String whereClause = renderCriteria(criterionMapper, sequence, parameters);
+            String setClause = renderSetValues(nameFunction, sequence, parameters);
+            String whereClause = renderCriteria(nameFunction, sequence, parameters);
             return UpdateSupport.of(setClause, whereClause, parameters);
         }
         
-        private String renderSetValues(Function<FieldAndValue<?>, FieldAndValue<?>> mapper, AtomicInteger sequence, Map<String, Object> parameters) {
+        private String renderSetValues(Function<SqlField<?>, String> nameFunction, AtomicInteger sequence, Map<String, Object> parameters) {
             List<String> phrases = new ArrayList<>();
             
-            setFieldsAndValues.stream().map(mapper).forEach(fv -> {
+            setFieldsAndValues.forEach(fv -> {
                 int number = sequence.getAndIncrement();
                 SqlField<?> field = fv.getField();
-                String phrase = String.format("%s = %s", field.render(), //$NON-NLS-1$
+                String phrase = String.format("%s = %s", nameFunction.apply(field), //$NON-NLS-1$
                         field.getParameterRenderer(number).render());
                 phrases.add(phrase);
                 parameters.put(String.format("p%s", number), fv.getValue()); //$NON-NLS-1$

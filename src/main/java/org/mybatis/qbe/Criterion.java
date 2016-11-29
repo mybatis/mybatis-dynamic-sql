@@ -49,8 +49,4 @@ public abstract class Criterion<T, S extends Field<T>, R extends Criterion<?, ?,
     public void visitSubCriteria(Consumer<R> consumer) {
         subCriteria.forEach(consumer::accept);
     }
-    
-    public String renderField() {
-        return condition.renderField(field);
-    }
 }

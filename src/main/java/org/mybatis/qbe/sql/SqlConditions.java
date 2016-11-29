@@ -26,6 +26,7 @@ import org.mybatis.qbe.sql.where.condition.IsIn;
 import org.mybatis.qbe.sql.where.condition.IsLessThan;
 import org.mybatis.qbe.sql.where.condition.IsLessThanOrEqualTo;
 import org.mybatis.qbe.sql.where.condition.IsLike;
+import org.mybatis.qbe.sql.where.condition.IsLikeCaseInsensitive;
 import org.mybatis.qbe.sql.where.condition.IsNotBetween;
 import org.mybatis.qbe.sql.where.condition.IsNotEqualTo;
 import org.mybatis.qbe.sql.where.condition.IsNotIn;
@@ -105,6 +106,10 @@ public interface SqlConditions {
     // for strings only
     static IsLike isLike(String value) {
         return IsLike.of(value);
+    }
+    
+    static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
+        return IsLikeCaseInsensitive.of(value);
     }
     
     static IsNotLike isNotLike(String value) {

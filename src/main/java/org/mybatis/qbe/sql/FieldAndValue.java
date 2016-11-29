@@ -45,10 +45,6 @@ public class FieldAndValue<T> {
         return field;
     }
     
-    public FieldAndValue<T> ignoringAlias() {
-        return FieldAndValue.of(field.ignoringAlias(), value);
-    }
-    
     public static <S> FieldAndValue<S> of(SqlField<S> field, S value) {
         FieldAndValue<S> phrase = new FieldAndValue<>();
         phrase.value = value;

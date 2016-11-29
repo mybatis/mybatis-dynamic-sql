@@ -16,6 +16,7 @@
 package org.mybatis.qbe.sql;
 
 import java.util.Arrays;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.qbe.Condition;
@@ -27,11 +28,10 @@ public class SqlCriterion<T> extends Criterion<T, SqlField<T>, SqlCriterion<?>> 
         super();
     }
     
-    public SqlCriterion<T> ignoringAlias() {
-        return SqlCriterion.of(connector, field.ignoringAlias(), condition,
-                subCriteria.stream().map(SqlCriterion::ignoringAlias));
+    public String renderField(Function<SqlField<?>, String> nameFunction) {
+        return condition.composeLeftSide(nameFunction.apply(field));
     }
-
+    
     public static <T> SqlCriterion<T> of(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
         return SqlCriterion.of(null,  field, condition, subCriteria);
     }

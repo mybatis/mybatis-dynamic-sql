@@ -13,33 +13,24 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.qbe;
+package org.mybatis.qbe.sql.where.condition;
 
-/**
- * 
- * @author Jeff Butler
- *
- * @param <T> - even though the type is not directly used in this class,
- *  it is used by the compiler to match fields with conditions so it should
- *  not be removed.
- */
-public abstract class Field<T> {
-
-    protected String name;
-    
-    protected Field(String name) {
-        this.name = name;
+public class IsLikeCaseInsensitive extends IsLike {
+    private IsLikeCaseInsensitive(String value) {
+        super(value);
     }
     
-    public String name() {
-        return name;
+    public static IsLikeCaseInsensitive of(String value) {
+        return new IsLikeCaseInsensitive(value);
     }
-
-    /**
-     * This returns the value on the "right side" of the expression.
-     * 
-     * @param parameterNumber
-     * @return
-     */
-    public abstract Renderer getParameterRenderer(int parameterNumber);
+    
+    @Override
+    public String composeLeftSide(String fieldName) {
+        return String.format("upper(%s)", fieldName);
+    }
+    
+    @Override
+    public String value() {
+        return super.value().toUpperCase();
+    }
 }

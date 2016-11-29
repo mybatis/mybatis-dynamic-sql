@@ -57,23 +57,23 @@ public interface InsertSupportBuilder {
         }
 
         public InsertSupport build() {
-            return build(Function.identity());
+            return build(SqlField::nameWithTableAlias);
         }
 
         public InsertSupport buildIgnoringAlias() {
-            return build(FieldAndValue::ignoringAlias);
+            return build(SqlField::nameWithoutTableAlias);
         }
 
-        private InsertSupport build(Function<FieldAndValue<?>, FieldAndValue<?>> mapper) {
+        private InsertSupport build(Function<SqlField<?>, String> nameFunction) {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
             List<String> fieldPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             
-            fieldsAndValues.stream().map(mapper).forEach(fv -> {
+            fieldsAndValues.forEach(fv -> {
                 int number = sequence.getAndIncrement();
                 SqlField<?> field = fv.getField();
-                fieldPhrases.add(field.render());
+                fieldPhrases.add(nameFunction.apply(field));
                 valuePhrases.add(field.getParameterRenderer(number).render());
                 parameters.put(String.format("p%s", number), fv.getValue()); //$NON-NLS-1$
             });

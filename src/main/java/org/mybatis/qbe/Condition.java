@@ -19,7 +19,7 @@ package org.mybatis.qbe;
 public interface Condition<T> {
     void accept(ConditionVisitor visitor);
     
-    default String renderField(Field<T> field) {
-        return field.render();
+    default String composeLeftSide(String fieldName) {
+        return fieldName;
     }
 }

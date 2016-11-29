@@ -18,18 +18,22 @@ package org.mybatis.qbe.sql.where.render;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import org.mybatis.qbe.sql.SqlCriterion;
+import org.mybatis.qbe.sql.SqlField;
 
 public class CriterionRenderer<T> {
     private StringBuilder buffer = new StringBuilder();
     private Map<String, Object> parameters = new HashMap<>();
     private SqlCriterion<T> criterion;
     private AtomicInteger sequence;
+    private Function<SqlField<?>, String> nameFunction;
     
-    protected CriterionRenderer(SqlCriterion<T> criterion, AtomicInteger sequence) {
+    protected CriterionRenderer(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlField<?>, String> nameFunction) {
         this.criterion = criterion;
         this.sequence = sequence;
+        this.nameFunction = nameFunction;
     }
     
     public RenderedCriterion render() {
@@ -56,7 +60,7 @@ public class CriterionRenderer<T> {
     }
     
     private void renderCriteria() {
-        buffer.append(criterion.renderField());
+        buffer.append(criterion.renderField(nameFunction));
         buffer.append(' ');
         renderCondition();
         criterion.visitSubCriteria(c -> handleSubCriterion(c, sequence));
@@ -70,12 +74,12 @@ public class CriterionRenderer<T> {
     }
 
     private void handleSubCriterion(SqlCriterion<?> subCriterion, AtomicInteger sequence) {
-        RenderedCriterion rc = new CriterionRenderer<>(subCriterion, sequence).render();
+        RenderedCriterion rc = new CriterionRenderer<>(subCriterion, sequence, nameFunction).render();
         buffer.append(rc.whereClauseFragment());
         parameters.putAll(rc.fragmentParameters());
     }
     
-    public static <T> CriterionRenderer<T> of(SqlCriterion<T> criterion, AtomicInteger sequence) {
-        return new CriterionRenderer<>(criterion, sequence);
+    public static <T> CriterionRenderer<T> of(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlField<?>, String> nameFunction) {
+        return new CriterionRenderer<>(criterion, sequence, nameFunction);
     }
 }

@@ -57,11 +57,11 @@ public interface WhereSupportBuilder {
             return getThis();
         }
         
-        protected String renderCriteria(Function<SqlCriterion<?>, SqlCriterion<?>> mapper, AtomicInteger sequence, Map<String, Object> parameters) {
+        protected String renderCriteria(Function<SqlField<?>, String> nameFunction, AtomicInteger sequence, Map<String, Object> parameters) {
             StringBuilder buffer = new StringBuilder("where"); //$NON-NLS-1$
             
-            criteria.stream().map(mapper).forEach(c -> {
-                RenderedCriterion rc = CriterionRenderer.of(c, sequence).render();
+            criteria.forEach(c -> {
+                RenderedCriterion rc = CriterionRenderer.of(c, sequence, nameFunction).render();
                 buffer.append(rc.whereClauseFragment());
                 parameters.putAll(rc.fragmentParameters());
             });
@@ -77,17 +77,17 @@ public interface WhereSupportBuilder {
         }
         
         public WhereSupport build() {
-            return build(Function.identity());
+            return build(SqlField::nameWithTableAlias);
         }
 
         public WhereSupport buildIgnoringAlias() {
-            return build(SqlCriterion::ignoringAlias);
+            return build(SqlField::nameWithoutTableAlias);
         }
         
-        private WhereSupport build(Function<SqlCriterion<?>, SqlCriterion<?>> mapper) {
+        private WhereSupport build(Function<SqlField<?>, String> nameFunction) {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
-            String whereClause = renderCriteria(mapper, sequence, parameters);
+            String whereClause = renderCriteria(nameFunction, sequence, parameters);
             return WhereSupport.of(whereClause, parameters);
         }
         
