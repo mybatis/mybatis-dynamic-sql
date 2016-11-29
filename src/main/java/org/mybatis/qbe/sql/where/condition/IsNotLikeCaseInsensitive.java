@@ -26,7 +26,7 @@ public class IsNotLikeCaseInsensitive extends IsNotLike {
     
     @Override
     public String composeLeftSide(String fieldName) {
-        return String.format("upper(%s)", fieldName);
+        return String.format("upper(%s)", fieldName); //$NON-NLS-1$
     }
     
     @Override
