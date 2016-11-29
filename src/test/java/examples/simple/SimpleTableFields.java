@@ -21,6 +21,7 @@ import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.updateSupport;
 
 import java.sql.JDBCType;
 import java.util.Date;
+import java.util.Optional;
 
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
 import org.mybatis.qbe.sql.insert.InsertSupport;
@@ -46,11 +47,11 @@ public interface SimpleTableFields {
 
     static InsertSupport buildInsertSelectiveSupport(SimpleTableRecord record) {
         return insertSupport()
-                .withValueIfPresent(id, record.getId())
-                .withValueIfPresent(firstName, record.getFirstName())
-                .withValueIfPresent(lastName, record.getLastName())
-                .withValueIfPresent(birthDate, record.getBirthDate())
-                .withValueIfPresent(occupation, record.getOccupation())
+                .withValue(id, Optional.ofNullable(record.getId()))
+                .withValue(firstName, Optional.ofNullable(record.getFirstName()))
+                .withValue(lastName, Optional.ofNullable(record.getLastName()))
+                .withValue(birthDate, Optional.ofNullable(record.getBirthDate()))
+                .withValue(occupation, Optional.ofNullable(record.getOccupation()))
                 .buildIgnoringAlias();
     }
     
@@ -66,10 +67,10 @@ public interface SimpleTableFields {
 
     static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(SimpleTableRecord record) {
         return updateSupport()
-                .setIfPresent(firstName, record.getFirstName())
-                .setIfPresent(lastName, record.getLastName())
-                .setIfPresent(birthDate, record.getBirthDate())
-                .setIfPresent(occupation, record.getOccupation())
+                .set(firstName, Optional.ofNullable(record.getFirstName()))
+                .set(lastName, Optional.ofNullable(record.getLastName()))
+                .set(birthDate, Optional.ofNullable(record.getBirthDate()))
+                .set(occupation, Optional.ofNullable(record.getOccupation()))
                 .where(id, isEqualTo(record.getId()))
                 .buildIgnoringAlias();
     }
@@ -85,10 +86,10 @@ public interface SimpleTableFields {
 
     static SetBuilder updateByExampleSelective(SimpleTableRecord record) {
         return updateSupport()
-                .setIfPresent(id, record.getId())
-                .setIfPresent(firstName, record.getFirstName())
-                .setIfPresent(lastName, record.getLastName())
-                .setIfPresent(birthDate, record.getBirthDate())
-                .setIfPresent(occupation, record.getOccupation());
+                .set(id, Optional.ofNullable(record.getId()))
+                .set(firstName, Optional.ofNullable(record.getFirstName()))
+                .set(lastName, Optional.ofNullable(record.getLastName()))
+                .set(birthDate, Optional.ofNullable(record.getBirthDate()))
+                .set(occupation, Optional.ofNullable(record.getOccupation()));
     }
 }

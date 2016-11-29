@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -42,10 +43,8 @@ public interface UpdateSupportBuilder {
             super();
         }
         
-        public <T> SetBuilder setIfPresent(SqlField<T> field, T value) {
-            if (value != null) {
-                set(field, value);
-            }
+        public <T> SetBuilder set(SqlField<T> field, Optional<T> value) {
+            value.ifPresent(v -> set(field, v));
             return this;
         }
         
@@ -55,7 +54,7 @@ public interface UpdateSupportBuilder {
         }
         
         public <T> SetBuilder setNull(SqlField<T> field) {
-            set(field, null);
+            fieldsAndValues.add(FieldAndValue.of(field));
             return this;
         }
         
@@ -97,7 +96,7 @@ public interface UpdateSupportBuilder {
                 String phrase = String.format("%s = %s", nameFunction.apply(field), //$NON-NLS-1$
                         field.getParameterRenderer(number).render());
                 phrases.add(phrase);
-                parameters.put(String.format("p%s", number), fv.getValue()); //$NON-NLS-1$
+                parameters.put(String.format("p%s", number), fv.getValue().orElse(null)); //$NON-NLS-1$
             });
             
             return phrases.stream().collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

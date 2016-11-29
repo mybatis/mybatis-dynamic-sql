@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,10 +40,8 @@ public interface InsertSupportBuilder {
             super();
         }
         
-        public <T> Builder withValueIfPresent(SqlField<T> field, T value) {
-            if (value != null) {
-                withValue(field, value);
-            }
+        public <T> Builder withValue(SqlField<T> field, Optional<T> value) {
+            value.ifPresent(v -> withValue(field, v));
             return this;
         }
         
@@ -52,7 +51,7 @@ public interface InsertSupportBuilder {
         }
 
         public <T> Builder withNullValue(SqlField<T> field) {
-            withValue(field, null);
+            fieldsAndValues.add(FieldAndValue.of(field));
             return this;
         }
 
@@ -75,7 +74,7 @@ public interface InsertSupportBuilder {
                 SqlField<?> field = fv.getField();
                 fieldPhrases.add(nameFunction.apply(field));
                 valuePhrases.add(field.getParameterRenderer(number).render());
-                parameters.put(String.format("p%s", number), fv.getValue()); //$NON-NLS-1$
+                parameters.put(String.format("p%s", number), fv.getValue().orElse(null)); //$NON-NLS-1$
             });
             
             String fieldsPhrase = fieldPhrases.stream().collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

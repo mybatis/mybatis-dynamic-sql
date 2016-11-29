@@ -15,6 +15,8 @@
  */
 package org.mybatis.qbe.sql;
 
+import java.util.Optional;
+
 /**
  * A field value pair used to render insert and update statements.
  * 
@@ -37,8 +39,8 @@ public class FieldAndValue<T> {
         super();
     }
     
-    public T getValue() {
-        return value;
+    public Optional<T> getValue() {
+        return Optional.ofNullable(value);
     }
 
     public SqlField<T> getField() {
@@ -48,6 +50,12 @@ public class FieldAndValue<T> {
     public static <S> FieldAndValue<S> of(SqlField<S> field, S value) {
         FieldAndValue<S> phrase = new FieldAndValue<>();
         phrase.value = value;
+        phrase.field = field;
+        return phrase;
+    }
+
+    public static <S> FieldAndValue<S> of(SqlField<S> field) {
+        FieldAndValue<S> phrase = new FieldAndValue<>();
         phrase.field = field;
         return phrase;
     }
