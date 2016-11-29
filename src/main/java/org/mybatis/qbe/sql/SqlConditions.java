@@ -31,6 +31,7 @@ import org.mybatis.qbe.sql.where.condition.IsNotBetween;
 import org.mybatis.qbe.sql.where.condition.IsNotEqualTo;
 import org.mybatis.qbe.sql.where.condition.IsNotIn;
 import org.mybatis.qbe.sql.where.condition.IsNotLike;
+import org.mybatis.qbe.sql.where.condition.IsNotLikeCaseInsensitive;
 import org.mybatis.qbe.sql.where.condition.IsNotNull;
 import org.mybatis.qbe.sql.where.condition.IsNull;
 
@@ -114,5 +115,9 @@ public interface SqlConditions {
     
     static IsNotLike isNotLike(String value) {
         return IsNotLike.of(value);
+    }
+    
+    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
+        return IsNotLikeCaseInsensitive.of(value);
     }
 }
