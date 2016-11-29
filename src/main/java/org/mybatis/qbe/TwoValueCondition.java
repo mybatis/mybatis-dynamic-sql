@@ -21,7 +21,7 @@ public interface TwoValueCondition<T> extends Condition<T> {
     String render(Renderer parameterRenderer1, Renderer parameterRenderer2);
 
     @Override
-    default void accept(ConditionVisitor visitor) {
+    default void accept(ConditionVisitor<T> visitor) {
         visitor.visit(this);
     }
 }

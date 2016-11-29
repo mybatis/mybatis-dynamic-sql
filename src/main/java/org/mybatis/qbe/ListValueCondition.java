@@ -23,7 +23,7 @@ public interface ListValueCondition<T> extends Condition<T> {
     String render(Stream<Renderer> parameterRenderers);
 
     @Override
-    default void accept(ConditionVisitor visitor) {
+    default void accept(ConditionVisitor<T> visitor) {
         visitor.visit(this);
     }
 }

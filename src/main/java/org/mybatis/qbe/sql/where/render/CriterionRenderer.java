@@ -67,7 +67,7 @@ public class CriterionRenderer<T> {
     }
 
     private void renderCondition() {
-        ConditionRenderer visitor = ConditionRenderer.of(sequence, criterion.field());
+        ConditionRenderer<T> visitor = ConditionRenderer.of(sequence, criterion.field());
         criterion.condition().accept(visitor);
         buffer.append(visitor.fragment());
         parameters.putAll(visitor.parameters());

@@ -17,7 +17,7 @@ package org.mybatis.qbe;
 
 @FunctionalInterface
 public interface Condition<T> {
-    void accept(ConditionVisitor visitor);
+    void accept(ConditionVisitor<T> visitor);
     
     default String composeLeftSide(String fieldName) {
         return fieldName;

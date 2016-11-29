@@ -30,7 +30,7 @@ import org.mybatis.qbe.Renderer;
 import org.mybatis.qbe.SingleValueCondition;
 import org.mybatis.qbe.TwoValueCondition;
 
-public class ConditionRenderer implements ConditionVisitor {
+public class ConditionRenderer<T> implements ConditionVisitor<T> {
     
     private StringBuilder buffer = new StringBuilder();
     private Map<String, Object> parameters = new HashMap<>();
@@ -51,19 +51,19 @@ public class ConditionRenderer implements ConditionVisitor {
     }
 
     @Override
-    public void visit(NoValueCondition<?> condition) {
+    public void visit(NoValueCondition<T> condition) {
         buffer.append(condition.render());
     }
 
     @Override
-    public void visit(SingleValueCondition<?> condition) {
+    public void visit(SingleValueCondition<T> condition) {
         int number = sequence.getAndIncrement();
         buffer.append(condition.render(field.getParameterRenderer(number)));
         parameters.put(formatParameterName(number), condition.value());
     }
 
     @Override
-    public void visit(TwoValueCondition<?> condition) {
+    public void visit(TwoValueCondition<T> condition) {
         int number1 = sequence.getAndIncrement();
         int number2 = sequence.getAndIncrement();
         buffer.append(condition.render(field.getParameterRenderer(number1),
@@ -73,7 +73,7 @@ public class ConditionRenderer implements ConditionVisitor {
     }
 
     @Override
-    public void visit(ListValueCondition<?> condition) {
+    public void visit(ListValueCondition<T> condition) {
         List<Renderer> parameterRenderers = new ArrayList<>();
         
         condition.visitValues(v -> {
@@ -89,7 +89,7 @@ public class ConditionRenderer implements ConditionVisitor {
         return String.format("p%s", number); //$NON-NLS-1$
     }
 
-    public static ConditionRenderer of(AtomicInteger sequence, Field<?> field) {
-        return new ConditionRenderer(sequence, field);
+    public static <T> ConditionRenderer<T> of(AtomicInteger sequence, Field<T> field) {
+        return new ConditionRenderer<>(sequence, field);
     }
 }

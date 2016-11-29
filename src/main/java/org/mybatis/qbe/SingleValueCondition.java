@@ -20,7 +20,7 @@ public interface SingleValueCondition<T> extends Condition<T> {
     String render(Renderer parameterRenderer);
 
     @Override
-    default void accept(ConditionVisitor visitor) {
+    default void accept(ConditionVisitor<T> visitor) {
         visitor.visit(this);
     }
 }

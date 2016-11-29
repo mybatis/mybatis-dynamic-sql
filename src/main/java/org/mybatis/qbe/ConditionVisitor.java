@@ -15,9 +15,9 @@
  */
 package org.mybatis.qbe;
 
-public interface ConditionVisitor {
-    void visit(NoValueCondition<?> condition);
-    void visit(SingleValueCondition<?> condition);
-    void visit(TwoValueCondition<?> condition);
-    void visit(ListValueCondition<?> condition);
+public interface ConditionVisitor<T> {
+    void visit(NoValueCondition<T> condition);
+    void visit(SingleValueCondition<T> condition);
+    void visit(TwoValueCondition<T> condition);
+    void visit(ListValueCondition<T> condition);
 }
