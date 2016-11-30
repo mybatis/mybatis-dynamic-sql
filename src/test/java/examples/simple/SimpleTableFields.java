@@ -24,16 +24,18 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
+import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
 import org.mybatis.qbe.sql.update.UpdateSupportBuilder.SetBuilder;
 
 public interface SimpleTableFields {
-    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).withAlias("a");
-    MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR).withAlias("a");
-    MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR).withAlias("a");
-    MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE).withAlias("a");
-    MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR).withAlias("a");
+    SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
+    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(simpleTable);
+    MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE).inTable(simpleTable);
+    MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
     
     static InsertSupport buildInsertSupport(SimpleTableRecord record) {
         return insertSupport()

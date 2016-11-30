@@ -27,14 +27,15 @@ import org.mybatis.qbe.Renderer;
  *
  */
 public class SqlField<T> extends Field<T> {
-
-    protected JDBCType jdbcType;
-    protected String alias;
     
-    protected SqlField(String name, JDBCType jdbcType, String alias) {
+    private static final SqlTable NULL_TABLE = SqlTable.of(""); //$NON-NLS-1$
+
+    protected SqlTable table;
+    protected JDBCType jdbcType;
+    
+    protected SqlField(String name, JDBCType jdbcType) {
         super(name);
         this.jdbcType = jdbcType;
-        this.alias = alias;
     }
     
     public String nameIncludingTableAlias() {
@@ -54,13 +55,19 @@ public class SqlField<T> extends Field<T> {
     public JDBCType jdbcType() {
         return jdbcType;
     }
-    
-    public Optional<String> alias() {
-        return Optional.ofNullable(alias);
+
+    public Optional<SqlTable> table() {
+        return Optional.ofNullable(table);
     }
     
-    public <S> SqlField<S> withAlias(String alias) {
-        return SqlField.of(name, jdbcType, alias);
+    public Optional<String> alias() {
+        return table().orElse(NULL_TABLE).alias();
+    }
+    
+    public <S> SqlField<S> inTable(SqlTable table) {
+        SqlField<S> field = SqlField.of(name, jdbcType);
+        field.table = table;
+        return field;
     }
     
     @Override
@@ -69,10 +76,6 @@ public class SqlField<T> extends Field<T> {
     }
     
     public static <T> SqlField<T> of(String name, JDBCType jdbcType) {
-        return SqlField.of(name, jdbcType, null);
-    }
-    
-    public static <T> SqlField<T> of(String name, JDBCType jdbcType, String alias) {
-        return new SqlField<>(name, jdbcType, alias);
+        return new SqlField<>(name, jdbcType);
     }
 }

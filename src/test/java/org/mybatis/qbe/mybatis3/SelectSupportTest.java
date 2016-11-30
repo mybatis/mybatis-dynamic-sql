@@ -28,11 +28,13 @@ import java.util.Date;
 import java.util.Map;
 
 import org.junit.Test;
+import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.select.SelectSupport;
 
 public class SelectSupportTest {
-    public static final MyBatis3Field<Date> field1 = MyBatis3Field.of("field1", JDBCType.DATE, "a");
-    public static final MyBatis3Field<Integer> field2 = MyBatis3Field.of("field2", JDBCType.INTEGER).withAlias("a");
+    public static final SqlTable table = SqlTable.of("foo").withAlias("a");
+    public static final MyBatis3Field<Date> field1 = MyBatis3Field.of("field1", JDBCType.DATE).inTable(table);
+    public static final MyBatis3Field<Integer> field2 = MyBatis3Field.of("field2", JDBCType.INTEGER).inTable(table);
 
     @Test
     public void testSimpleCriteriaWithoutAlias() {

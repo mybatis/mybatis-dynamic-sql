@@ -30,7 +30,8 @@ public class CriterionRendererTest {
 
     @Test
     public void testAliasWithIgnore() {
-        SqlField<Integer> field = SqlField.of("id", JDBCType.INTEGER, "a");
+        SqlTable table = SqlTable.of("foo").withAlias("a");
+        SqlField<Integer> field = SqlField.of("id", JDBCType.INTEGER).inTable(table);
         
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
@@ -44,7 +45,8 @@ public class CriterionRendererTest {
 
     @Test
     public void testAliasWithoutIgnore() {
-        SqlField<Integer> field = SqlField.of("id", JDBCType.INTEGER, "a");
+        SqlTable table = SqlTable.of("foo").withAlias("a");
+        SqlField<Integer> field = SqlField.of("id", JDBCType.INTEGER).inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);

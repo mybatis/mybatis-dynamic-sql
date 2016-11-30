@@ -31,8 +31,9 @@ import org.junit.Test;
 import org.mybatis.qbe.sql.select.SelectSupport;
 
 public class SelectSupportTest {
-    public static final SqlField<Date> field1 = SqlField.of("field1", JDBCType.DATE, "a");
-    public static final SqlField<Integer> field2 = SqlField.of("field2", JDBCType.INTEGER).withAlias("a");
+    public static final SqlTable table = SqlTable.of("foo").withAlias("a");
+    public static final SqlField<Date> field1 = SqlField.of("field1", JDBCType.DATE).inTable(table);
+    public static final SqlField<Integer> field2 = SqlField.of("field2", JDBCType.INTEGER).inTable(table);
 
     @Test
     public void testSimpleCriteriaWithoutAlias() {

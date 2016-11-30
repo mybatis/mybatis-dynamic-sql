@@ -79,10 +79,9 @@ The class ```org.mybatis.qbe.mybatis3.MyBatis3Field``` is used to define fields 
 Typically these should be defined as public static variables in a class or interface.  A field definition includes:
 
 1. The Java type
-2. The field name
+2. The table's actual column name
 3. The JDBC type
-4. (optional) An alias if used in a query that aliases the table
-5. (optional) The name of a type handler to use in MyBatis if the default type handler is not desired
+4. (optional) The name of a type handler to use in MyBatis if the default type handler is not desired
 
 For example:
 
@@ -93,18 +92,24 @@ import java.sql.JDBCType;
 import java.util.Date;
 
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
+import org.mybatis.qbe.sql.SqlTable;
 
 public interface SimpleTableFields {
-    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).withAlias("a");
-    MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR).withAlias("a");
-    MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR).withAlias("a");
-    MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE).withAlias("a");
-    MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR).withAlias("a");
+    SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
+    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(simpleTable);
+    MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE).inTable(simpleTable);
+    MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
 }
 ```
 
+Note that the table definition is not required unless you want to give an alias to the table in the
+SQL.  In that case, the table definition allows you to specify a table alias.  The library will ignore
+the alias for DELETE, INSERT, and UPDATE statements, but will honor the alias for SELECT statements. 
+
 ### Second - Write XML or annotated mappers that will use the generated where clause
-The library will create support classes that will be used as input to an annotated or XML mapper.  These classes includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that these objects be the one and only parameter to a MyBatis method.
+The library will create support classes that will be used as input to an annotated or XML mapper.  These classes include the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that these objects be the one and only parameter to a MyBatis method.
 
 For example, an annotated mapper might look like this:
 

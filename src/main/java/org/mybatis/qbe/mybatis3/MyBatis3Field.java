@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.mybatis.qbe.Renderer;
 import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlTable;
 
 /**
  * 
@@ -30,8 +31,8 @@ public class MyBatis3Field<T> extends SqlField<T> {
 
     protected String typeHandler;
     
-    protected MyBatis3Field(String name, JDBCType jdbcType, String alias) {
-        super(name, jdbcType, alias);
+    protected MyBatis3Field(String name, JDBCType jdbcType) {
+        super(name, jdbcType);
     }
     
     public Optional<String> typeHandler() {
@@ -39,38 +40,34 @@ public class MyBatis3Field<T> extends SqlField<T> {
     }
     
     public <S> MyBatis3Field<S> withTypeHandler(String typeHandler) {
-        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType, alias);
+        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType);
+        field.table = table;
         field.typeHandler = typeHandler;
         return field;
     }
     
     @Override
-    public <S> MyBatis3Field<S> withAlias(String alias) {
-        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType, alias);
+    public <S> MyBatis3Field<S> inTable(SqlTable table) {
+        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType);
+        field.table = table;
         field.typeHandler = typeHandler;
         return field;
     }
     
     public static <T> MyBatis3Field<T> of(String name, JDBCType jdbcType) {
-        return MyBatis3Field.of(name, jdbcType, null);
-    }
-    
-    public static <T> MyBatis3Field<T> of(String name, JDBCType jdbcType, String alias) {
-        return new MyBatis3Field<>(name, jdbcType, alias);
+        return new MyBatis3Field<>(name, jdbcType);
     }
     
     @Override
     public Renderer getParameterRenderer(int parameterNumber) {
-        return new DefaultRenderer(this, parameterNumber);
+        return new DefaultRenderer(parameterNumber);
     }
     
-    public static class DefaultRenderer implements Renderer {
+    public class DefaultRenderer implements Renderer {
         
-        private MyBatis3Field<?> field;
         private int parameterNumber;
 
-        public DefaultRenderer(MyBatis3Field<?> field, int parameterNumber) {
-            this.field = field;
+        public DefaultRenderer(int parameterNumber) {
             this.parameterNumber = parameterNumber;
         }
         
@@ -80,9 +77,9 @@ public class MyBatis3Field<T> extends SqlField<T> {
             buffer.append("#{parameters.p"); //$NON-NLS-1$
             buffer.append(parameterNumber);
             buffer.append(",jdbcType="); //$NON-NLS-1$
-            buffer.append(field.jdbcType().getName());
+            buffer.append(jdbcType().getName());
             
-            field.typeHandler().ifPresent(th -> {
+            typeHandler().ifPresent(th -> {
                 buffer.append(",typeHandler="); //$NON-NLS-1$
                 buffer.append(th);
             });

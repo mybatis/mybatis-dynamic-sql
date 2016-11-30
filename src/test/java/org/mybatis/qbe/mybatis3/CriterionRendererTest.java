@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.where.condition.IsEqualTo;
 import org.mybatis.qbe.sql.where.render.CriterionRenderer;
 import org.mybatis.qbe.sql.where.render.RenderedCriterion;
@@ -33,7 +34,10 @@ public class CriterionRendererTest {
 
     @Test
     public void testAliasWithIgnore() {
-        MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER, "a");
+        SqlTable table = SqlTable.of("foo").withAlias("a");
+        assertThat(table.name(), is("foo"));
+        
+        MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(table);
         
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
@@ -47,7 +51,8 @@ public class CriterionRendererTest {
 
     @Test
     public void testAliasWithoutIgnore() {
-        MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER, "a");
+        SqlTable table = SqlTable.of("foo").withAlias("a");
+        MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
@@ -99,7 +104,8 @@ public class CriterionRendererTest {
 
     @Test
     public void testTypeHandlerAndAlias() {
-        MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER).withTypeHandler("foo.Bar").withAlias("a");
+        SqlTable table = SqlTable.of("foo").withAlias("a");
+        MyBatis3Field<Integer> field = MyBatis3Field.of("id", JDBCType.INTEGER).withTypeHandler("foo.Bar").inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);

@@ -18,10 +18,12 @@ package examples.animal.data;
 import java.sql.JDBCType;
 
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
+import org.mybatis.qbe.sql.SqlTable;
 
 public interface AnimalDataFields {
-    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER, "a"); 
-    MyBatis3Field<String> animalName = MyBatis3Field.of("animal_name", JDBCType.VARCHAR, "a");
-    MyBatis3Field<Double> bodyWeight = MyBatis3Field.of("body_weight", JDBCType.DOUBLE, "a");
-    MyBatis3Field<Double> brainWeight = MyBatis3Field.of("brain_weight", JDBCType.DOUBLE, "a");
+    SqlTable animalData = SqlTable.of("AnimalData").withAlias("a");
+    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(animalData); 
+    MyBatis3Field<String> animalName = MyBatis3Field.of("animal_name", JDBCType.VARCHAR).inTable(animalData);
+    MyBatis3Field<Double> bodyWeight = MyBatis3Field.of("body_weight", JDBCType.DOUBLE).inTable(animalData);
+    MyBatis3Field<Double> brainWeight = MyBatis3Field.of("brain_weight", JDBCType.DOUBLE).inTable(animalData);
 }
