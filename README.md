@@ -104,7 +104,7 @@ public interface SimpleTableFields {
 ```
 
 ### Second - Write XML or annotated mappers that will use the generated where clause
-The library will create an object of class ```org.mybatis.qbe.sql.where.WhereSupport``` that will be used as input to an annotated or XML mapper.  This object includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that this object be the one and only parameter to a MyBatis method.  Mappers will make use of the rendered where clause.
+The library will create support classes that will be used as input to an annotated or XML mapper.  These classes includes the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that these objects be the one and only parameter to a MyBatis method.
 
 For example, an annotated mapper might look like this:
 
