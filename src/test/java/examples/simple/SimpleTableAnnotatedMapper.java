@@ -25,9 +25,10 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
+import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.insert.InsertSupport;
+import org.mybatis.qbe.sql.select.SelectSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface SimpleTableAnnotatedMapper {
     
@@ -46,12 +47,13 @@ public interface SimpleTableAnnotatedMapper {
     int update(UpdateSupport updateSupport);
     
     @Select({
-        "select a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
+        "select ${distinct} a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
         "from simpletable a",
-        "${whereClause}"
+        "${whereClause}",
+        "${orderByClause}"
     })
     @ResultMap("SimpleTableResult")
-    List<SimpleTableRecord> selectByExample(WhereSupport whereSupport);
+    List<SimpleTableRecord> selectByExample(SelectSupport selectSupport);
     
     @Select({
         "select a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
@@ -71,5 +73,5 @@ public interface SimpleTableAnnotatedMapper {
         "delete from simpletable",
         "${whereClause}"
     })
-    int deleteByExample(WhereSupport whereSupport);
+    int deleteByExample(DeleteSupport deleteSupport);
 }

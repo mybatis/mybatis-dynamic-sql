@@ -6,8 +6,10 @@
 ## What Is This?
 This library is a framework for creating dynamic clauses for SQL statements.
 
-- In support of DELETE and SELECT statements, the library will generate a WHERE clause
+- In support of DELETE statements, the library will generate a WHERE clause
 - In support of INSERT statements, the library will generate a field list and matching VALUES clause
+- In support of SELECT statements, the library will generate a WHERE clause and supports "distinct" and
+  "order by" attributes
 - In support of UPDATE statements, the library will generate SET and WHERE clauses
 
 The primary goals of the library are:
@@ -39,14 +41,14 @@ One capability is that very expressive dynamic queries can be generated.  Here's
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereSupport whereSupport = whereSupport()
+            SelectSupport selectSupport = selectSupport()
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(whereSupport);
+            List<AnimalData> animals = mapper.selectByExample(selectSupport);
             assertThat(animals.size(), is(4));
         } finally {
             sqlSession.close();
@@ -112,23 +114,25 @@ package examples.simple;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
-import org.mybatis.qbe.sql.where.WhereSupport;
+import org.mybatis.qbe.sql.delete.DeleteSupport;
+import org.mybatis.qbe.sql.select.SelectSupport;
 
 public class SimpleTableAnnotatedMapper {
     
     @Select({
-        "select a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
+        "select ${distinct} a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
         "from simpletable a",
-        "${whereClause}"
+        "${whereClause}",
+        "${orderByClause}"
     })
     @ResultMap("SimpleTableResult")
-    List<SimpleTableRecord> selectByExample(WhereSupport whereSupport);
+    List<SimpleTableRecord> selectByExample(SelectSupport selectSupport);
 
     @Delete({
         "delete from simpletable",
         "${whereClause}"
     })
-    int deleteByExample(WhereSupport whereSupport);
+    int deleteByExample(DeleteSupport deleteSupport);
 }
 ```
 An XML mapper might look like this:
@@ -147,9 +151,10 @@ An XML mapper might look like this:
   </resultMap>
 
   <select id="selectByExample" resultMap="SimpleTableResult">
-    select a.id, a.first_name, a.last_name, a.birth_date, a.occupation
+    select ${distinct} a.id, a.first_name, a.last_name, a.birth_date, a.occupation
     from SimpleTable a
     ${whereClause}
+    ${orderByClause}
   </select>
 
   <delete id="deleteByExample">
@@ -159,7 +164,8 @@ An XML mapper might look like this:
 </mapper>
 ```
 
-Notice in both examples that the select uses a table alias and the delete does not.
+Notice in both examples that the select uses a table alias and the delete does not.  If you specify an alias
+for fields, it will only be used for select statements.
 
 ### Third - Create where clauses for your queries
 Where clauses are created by combining your field definition (from the first step above) with a condition for the field.  This library includes a large number of type safe conditions.
@@ -168,7 +174,7 @@ All conditions can be accessed through expressive static methods in the ```org.m
 For example, a very simple condition can be defined like this:
 
 ```java
-        WhereSupport whereSupport = whereSupport()
+        SelectSupport selectSupport = selectSupport()
                 .where(id, isEqualTo(3))
                 .build();
 ```
@@ -176,7 +182,7 @@ For example, a very simple condition can be defined like this:
 Or this:
 
 ```java
-        WhereSupport whereSupport = whereSupport()
+        SelectSupport selectSupport = selectSupport()
                 .where(id, isNull())
                 .build();
 ```
@@ -184,7 +190,7 @@ Or this:
 The "between" condition is also expressive:
 
 ```java
-        WhereSupport whereSupport = whereSupport()
+        SelectSupport selectSupport = selectSupport()
                 .where(id, isBetween(1).and(4))
                 .build();
 ```
@@ -192,14 +198,11 @@ The "between" condition is also expressive:
 More complex expressions can be built using the "and" and "or" conditions as follows:
 
 ```java
-        WhereSupport whereSupport = whereSupport()
+        SelectSupport selectSupport = selectSupport()
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .buildIgnoringAlias();
+                .build();
 ```
-
-Notice that this last where clause will be built without the table alias.  This is useful for some databases that
-do not allow table aliases in delete statements.
 
 All of these statements rely on a set of expressive static methods.  It is typical to import the following:
 
@@ -209,7 +212,7 @@ import static examples.simple.SimpleTableFields.*;
 
 // import all conditions and the where support builder
 import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
+import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
 ```
 
 ### Fourth - Use your where clauses
@@ -223,12 +226,12 @@ an example from ```examples.simple.SimpleTableXmlMapperTest```:
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            WhereSupport whereSupport = whereSupport()
+            SelectSupport selectSupport = selectSupport()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build();
             
-            List<SimpleTableRecord> rows = mapper.selectByExample(whereSupport);
+            List<SimpleTableRecord> rows = mapper.selectByExample(selectSupport);
             
             assertThat(rows.size(), is(3));
         } finally {
@@ -240,5 +243,3 @@ The code in the folder ```src/test/java/examples/simple``` shows how to use the 
 UPDATE statements in addition to the examples shown here.  It shows a suggested usage of the library
 to enable a complete range of CRUD operations on a database table.  Lastly, it is an example of the code that
 could be created by a future version of MyBatis Generator.
-
-That's it!  Let us know what you think.

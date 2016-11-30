@@ -37,7 +37,7 @@ public class SqlField<T> extends Field<T> {
         this.alias = alias;
     }
     
-    public String nameWithTableAlias() {
+    public String nameIncludingTableAlias() {
         StringBuilder sb = new StringBuilder();
         alias().ifPresent(a -> {
             sb.append(a);
@@ -47,7 +47,7 @@ public class SqlField<T> extends Field<T> {
         return sb.toString();
     }
     
-    public String nameWithoutTableAlias() {
+    public String nameIgnoringTableAlias() {
         return name();
     }
     

@@ -42,7 +42,7 @@ public interface SimpleTableFields {
                 .withValue(lastName, record.getLastName())
                 .withValue(birthDate, record.getBirthDate())
                 .withValue(occupation, record.getOccupation())
-                .buildIgnoringAlias();
+                .build();
     }
 
     static InsertSupport buildInsertSelectiveSupport(SimpleTableRecord record) {
@@ -52,7 +52,7 @@ public interface SimpleTableFields {
                 .withValue(lastName, Optional.ofNullable(record.getLastName()))
                 .withValue(birthDate, Optional.ofNullable(record.getBirthDate()))
                 .withValue(occupation, Optional.ofNullable(record.getOccupation()))
-                .buildIgnoringAlias();
+                .build();
     }
     
     static UpdateSupport buildUpdateByPrimaryKeySupport(SimpleTableRecord record) {
@@ -62,7 +62,7 @@ public interface SimpleTableFields {
                 .set(birthDate, record.getBirthDate())
                 .set(occupation, record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
-                .buildIgnoringAlias();
+                .build();
     }
 
     static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(SimpleTableRecord record) {
@@ -72,7 +72,7 @@ public interface SimpleTableFields {
                 .set(birthDate, Optional.ofNullable(record.getBirthDate()))
                 .set(occupation, Optional.ofNullable(record.getOccupation()))
                 .where(id, isEqualTo(record.getId()))
-                .buildIgnoringAlias();
+                .build();
     }
 
     static SetBuilder updateByExample(SimpleTableRecord record) {

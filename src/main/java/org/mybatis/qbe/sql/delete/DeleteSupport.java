@@ -13,18 +13,18 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.qbe.sql.where;
+package org.mybatis.qbe.sql.delete;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WhereSupport {
+public class DeleteSupport {
 
     private String whereClause;
     private Map<String, Object> parameters;
     
-    private WhereSupport(String whereClause, Map<String, Object> parameters) {
+    private DeleteSupport(String whereClause, Map<String, Object> parameters) {
         this.whereClause = whereClause;
         this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
     }
@@ -37,7 +37,7 @@ public class WhereSupport {
         return parameters;
     }
     
-    public static WhereSupport of(String whereClause, Map<String, Object> parameters) {
-        return new WhereSupport(whereClause, parameters);
+    public static DeleteSupport of(String whereClause, Map<String, Object> parameters) {
+        return new DeleteSupport(whereClause, parameters);
     }
 }

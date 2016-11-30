@@ -28,7 +28,7 @@ import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.FieldAndValue;
 import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.SqlField;
-import org.mybatis.qbe.sql.where.WhereSupportBuilder;
+import org.mybatis.qbe.sql.where.AbstractWhereBuilder;
 
 public interface UpdateSupportBuilder {
 
@@ -63,7 +63,7 @@ public interface UpdateSupportBuilder {
         }
     }
     
-    static class WhereBuilder extends WhereSupportBuilder.AbstractWhereBuilder<WhereBuilder> {
+    static class WhereBuilder extends AbstractWhereBuilder<WhereBuilder> {
         private List<FieldAndValue<?>> setFieldsAndValues;
         
         public <T> WhereBuilder(List<FieldAndValue<?>> setFieldsAndValues, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
@@ -72,11 +72,7 @@ public interface UpdateSupportBuilder {
         }
         
         public UpdateSupport build() {
-            return build(SqlField::nameWithTableAlias);
-        }
-
-        public UpdateSupport buildIgnoringAlias() {
-            return build(SqlField::nameWithoutTableAlias);
+            return build(SqlField::nameIgnoringTableAlias);
         }
 
         private UpdateSupport build(Function<SqlField<?>, String> nameFunction) {

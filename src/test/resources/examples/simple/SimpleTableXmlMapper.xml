@@ -34,9 +34,10 @@
   </insert>
   
   <select id="selectByExample" resultMap="SimpleTableResult">
-    select a.id, a.first_name, a.last_name, a.birth_date, a.occupation
+    select ${distinct} a.id, a.first_name, a.last_name, a.birth_date, a.occupation
     from SimpleTable a
     ${whereClause}
+    ${orderByClause}
   </select>
 
   <select id="selectByPrimaryKey" resultMap="SimpleTableResult">

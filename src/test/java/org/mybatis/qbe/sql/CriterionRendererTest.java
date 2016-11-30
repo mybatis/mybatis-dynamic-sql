@@ -35,7 +35,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameWithoutTableAlias);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIgnoringTableAlias);
         
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = ?"));
@@ -48,7 +48,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameWithTableAlias);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIncludingTableAlias);
         
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" a.id = ?"));
@@ -61,7 +61,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameWithoutTableAlias);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIgnoringTableAlias);
         
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = ?"));
@@ -74,7 +74,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameWithTableAlias);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIncludingTableAlias);
         
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = ?"));

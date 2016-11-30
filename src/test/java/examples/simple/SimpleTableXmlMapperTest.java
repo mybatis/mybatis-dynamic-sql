@@ -19,7 +19,8 @@ import static examples.simple.SimpleTableFields.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
+import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
+import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteSupport;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,7 +35,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.where.WhereSupport;
+import org.mybatis.qbe.sql.delete.DeleteSupport;
+import org.mybatis.qbe.sql.select.SelectSupport;
 
 public class SimpleTableXmlMapperTest {
 
@@ -63,12 +65,12 @@ public class SimpleTableXmlMapperTest {
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            WhereSupport whereSupport = whereSupport()
+            SelectSupport selectSupport = selectSupport()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build();
             
-            List<SimpleTableRecord> rows = mapper.selectByExample(whereSupport);
+            List<SimpleTableRecord> rows = mapper.selectByExample(selectSupport);
             
             assertThat(rows.size(), is(3));
         } finally {
@@ -82,11 +84,11 @@ public class SimpleTableXmlMapperTest {
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            WhereSupport whereSupport = whereSupport()
+            SelectSupport selectSupport = selectSupport()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build();
             
-            List<SimpleTableRecord> rows = mapper.selectByExample(whereSupport);
+            List<SimpleTableRecord> rows = mapper.selectByExample(selectSupport);
             
             assertThat(rows.size(), is(2));
         } finally {
@@ -99,10 +101,10 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            WhereSupport whereSupport = whereSupport()
+            DeleteSupport deleteSupport = deleteSupport()
                     .where(occupation, isNull())
-                    .buildIgnoringAlias();
-            int rows = mapper.deleteByExample(whereSupport);
+                    .build();
+            int rows = mapper.deleteByExample(deleteSupport);
             
             assertThat(rows, is(2));
         } finally {

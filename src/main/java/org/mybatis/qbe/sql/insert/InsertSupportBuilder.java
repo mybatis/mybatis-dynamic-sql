@@ -56,11 +56,7 @@ public interface InsertSupportBuilder {
         }
 
         public InsertSupport build() {
-            return build(SqlField::nameWithTableAlias);
-        }
-
-        public InsertSupport buildIgnoringAlias() {
-            return build(SqlField::nameWithoutTableAlias);
+            return build(SqlField::nameIgnoringTableAlias);
         }
 
         private InsertSupport build(Function<SqlField<?>, String> nameFunction) {
