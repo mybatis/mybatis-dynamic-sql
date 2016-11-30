@@ -29,7 +29,7 @@ public class SqlCriterion<T> extends Criterion<T, SqlField<T>, SqlCriterion<?>> 
     }
     
     public String renderField(Function<SqlField<?>, String> nameFunction) {
-        return condition.composeLeftSide(nameFunction.apply(field));
+        return condition.renderCriterionField(nameFunction.apply(field));
     }
     
     public static <T> SqlCriterion<T> of(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
