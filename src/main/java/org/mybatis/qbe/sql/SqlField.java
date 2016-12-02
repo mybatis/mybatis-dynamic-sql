@@ -71,7 +71,7 @@ public class SqlField<T> extends Field<T> {
     }
     
     @Override
-    public Renderer getParameterRenderer(int parameterNumber) {
+    public Renderer getParameterRenderer(String parameterName) {
         return () -> "?"; //$NON-NLS-1$
     }
     

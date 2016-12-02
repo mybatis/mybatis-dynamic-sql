@@ -59,23 +59,23 @@ public class MyBatis3Field<T> extends SqlField<T> {
     }
     
     @Override
-    public Renderer getParameterRenderer(int parameterNumber) {
-        return new DefaultRenderer(parameterNumber);
+    public Renderer getParameterRenderer(String parameterName) {
+        return new DefaultRenderer(parameterName);
     }
     
     public class DefaultRenderer implements Renderer {
         
-        private int parameterNumber;
+        private String parameterName;
 
-        public DefaultRenderer(int parameterNumber) {
-            this.parameterNumber = parameterNumber;
+        public DefaultRenderer(String parameterName) {
+            this.parameterName = parameterName;
         }
         
         @Override
         public String render() {
             StringBuilder buffer = new StringBuilder();
-            buffer.append("#{parameters.p"); //$NON-NLS-1$
-            buffer.append(parameterNumber);
+            buffer.append("#{"); //$NON-NLS-1$
+            buffer.append(parameterName);
             buffer.append(",jdbcType="); //$NON-NLS-1$
             buffer.append(jdbcType().getName());
             

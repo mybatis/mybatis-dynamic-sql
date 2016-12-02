@@ -25,7 +25,7 @@ import org.mybatis.qbe.sql.update.UpdateSupport;
 public interface SimpleTableXmlMapper {
     List<SimpleTableRecord> selectByExample(SelectSupport selectSupport);
     int deleteByExample(DeleteSupport deleteSupport);
-    int insert(InsertSupport insertSupport);
+    int insert(InsertSupport<SimpleTableRecord> insertSupport);
     int update(UpdateSupport updateSupport);
     SimpleTableRecord selectByPrimaryKey(int id);
 }

@@ -416,9 +416,11 @@ public class AnimalDataTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            AnimalData record = new AnimalData();
+            record.setBodyWeight(2.6);
             
             UpdateSupport updateSupport = updateSupport()
-                    .set(bodyWeight, 2.6)
+                    .set(bodyWeight, record.getBodyWeight())
                     .setNull(animalName)
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
@@ -438,13 +440,18 @@ public class AnimalDataTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            AnimalData record = new AnimalData();
+            record.setId(100);
+            record.setAnimalName("Old Shep");
+            record.setBodyWeight(22.5);
+            record.setBrainWeight(1.2);
             
-            InsertSupport insertSupport = insertSupport() 
-                    .withValue(id, 100)
-                    .withValue(animalName, "Old Shep")
-                    .withValue(bodyWeight, 22.5)
-                    .withValue(brainWeight, 1.2)
-                    .build();
+            InsertSupport<AnimalData> insertSupport = insertSupport(record) 
+                    .withFieldMapping(id, "id", AnimalData::getId)
+                    .withFieldMapping(animalName, "animalName", AnimalData::getAnimalName)
+                    .withFieldMapping(bodyWeight, "bodyWeight", AnimalData::getBodyWeight)
+                    .withFieldMapping(brainWeight, "brainWeight", AnimalData::getBrainWeight)
+                    .buildFullInsert();
             
             int rows = mapper.insert(insertSupport);
             assertThat(rows, is(1));

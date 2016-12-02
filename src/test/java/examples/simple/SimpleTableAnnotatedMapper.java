@@ -37,7 +37,7 @@ public interface SimpleTableAnnotatedMapper {
         "${fieldsPhrase}",
         "${valuesPhrase}"
     })
-    int insert(InsertSupport insertSupport);
+    int insert(InsertSupport<SimpleTableRecord> insertSupport);
 
     @Update({
         "update simpletable",

@@ -13,16 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.qbe.sql;
+package org.mybatis.qbe.sql.update;
 
 import java.util.Optional;
 
+import org.mybatis.qbe.sql.SqlField;
+
 /**
- * A field value pair used to render insert and update statements.
- * 
- * In an insert statement it is used in the field list and value clauses.  For
- * example:
- *   insert into Bar (foo) values(?)
+ * A field value pair used to render update statements.
  * 
  * In an update statement it is used to render the set clause.  For example: 
  *   set foo = ?

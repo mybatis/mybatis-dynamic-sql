@@ -54,5 +54,5 @@ public interface AnimalDataMapper {
         "${fieldsPhrase}",
         "${valuesPhrase}"
     })
-    int insert(InsertSupport insertSupport);
+    int insert(InsertSupport<AnimalData> insertSupport);
 }

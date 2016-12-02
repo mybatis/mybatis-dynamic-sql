@@ -37,24 +37,24 @@ public interface SimpleTableFields {
     MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE).inTable(simpleTable);
     MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
     
-    static InsertSupport buildInsertSupport(SimpleTableRecord record) {
-        return insertSupport()
-                .withValue(id, record.getId())
-                .withValue(firstName, record.getFirstName())
-                .withValue(lastName, record.getLastName())
-                .withValue(birthDate, record.getBirthDate())
-                .withValue(occupation, record.getOccupation())
-                .build();
+    static InsertSupport<SimpleTableRecord> buildInsertSupport(SimpleTableRecord record) {
+        return insertSupport(record)
+                .withFieldMapping(id, "id", SimpleTableRecord::getId)
+                .withFieldMapping(firstName, "firstName", SimpleTableRecord::getFirstName)
+                .withFieldMapping(lastName, "lastName", SimpleTableRecord::getLastName)
+                .withFieldMapping(birthDate, "birthDate", SimpleTableRecord::getBirthDate)
+                .withFieldMapping(occupation, "occupation", SimpleTableRecord::getOccupation)
+                .buildFullInsert();
     }
 
-    static InsertSupport buildInsertSelectiveSupport(SimpleTableRecord record) {
-        return insertSupport()
-                .withValue(id, Optional.ofNullable(record.getId()))
-                .withValue(firstName, Optional.ofNullable(record.getFirstName()))
-                .withValue(lastName, Optional.ofNullable(record.getLastName()))
-                .withValue(birthDate, Optional.ofNullable(record.getBirthDate()))
-                .withValue(occupation, Optional.ofNullable(record.getOccupation()))
-                .build();
+    static InsertSupport<SimpleTableRecord> buildInsertSelectiveSupport(SimpleTableRecord record) {
+        return insertSupport(record)
+                .withFieldMapping(id, "id", SimpleTableRecord::getId)
+                .withFieldMapping(firstName, "firstName", SimpleTableRecord::getFirstName)
+                .withFieldMapping(lastName, "lastName", SimpleTableRecord::getLastName)
+                .withFieldMapping(birthDate, "birthDate", SimpleTableRecord::getBirthDate)
+                .withFieldMapping(occupation, "occupation", SimpleTableRecord::getOccupation)
+                .buildSelectiveInsert();
     }
     
     static UpdateSupport buildUpdateByPrimaryKeySupport(SimpleTableRecord record) {

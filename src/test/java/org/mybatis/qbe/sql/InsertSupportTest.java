@@ -16,42 +16,102 @@
 package org.mybatis.qbe.sql;
 
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
 
 import java.sql.JDBCType;
 
 import org.junit.Test;
-import org.mybatis.qbe.sql.SqlField;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 
 public class InsertSupportTest {
     
     @Test
-    public void testInsertSupportBuilderSql() {
+    public void testFullInsertSupportBuilder() {
         SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
-        SqlField<String> firstName = SqlField.of("firstName", JDBCType.VARCHAR);
-        SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
+        SqlField<String> firstName = SqlField.of("first_name", JDBCType.VARCHAR);
+        SqlField<String> lastName = SqlField.of("last_name", JDBCType.VARCHAR);
         SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
+
+        TestRecord testRecord = new TestRecord();
+        testRecord.setLastName("jones");
+        testRecord.setOccupation("dino driver");
         
-        InsertSupport insertSupport = insertSupport() 
-                .withValue(firstName, "fred")
-                .withValue(lastName, "jones")
-                .withNullValue(id)
-                .withValue(occupation, "dino driver")
-                .build();
-        
-        String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
+        InsertSupport<?> insertSupport = insertSupport(testRecord)
+                .withFieldMapping(id, "id", TestRecord::getId)
+                .withFieldMapping(firstName, "firstName", TestRecord::getFirstName)
+                .withFieldMapping(lastName, "lastName", TestRecord::getLastName)
+                .withFieldMapping(occupation, "occupation", TestRecord::getOccupation)
+                .buildFullInsert();
+
+        String expectedFieldsPhrase = "(id, first_name, last_name, occupation)";
         assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
         String expectedValuesPhrase = "values (?, ?, ?, ?)";
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+    }
+
+    @Test
+    public void testSelectiveInsertSupportBuilder() {
+        SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
+        SqlField<String> firstName = SqlField.of("first_name", JDBCType.VARCHAR);
+        SqlField<String> lastName = SqlField.of("last_name", JDBCType.VARCHAR);
+        SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
+
+        TestRecord testRecord = new TestRecord();
+        testRecord.setLastName("jones");
+        testRecord.setOccupation("dino driver");
         
-        assertThat(insertSupport.getParameters().size(), is(4));
-        assertThat(insertSupport.getParameters().get("p1"), is("fred"));
-        assertThat(insertSupport.getParameters().get("p2"), is("jones"));
-        assertThat(insertSupport.getParameters().get("p3"), is(nullValue()));
-        assertThat(insertSupport.getParameters().get("p4"), is("dino driver"));
+        InsertSupport<?> insertSupport = insertSupport(testRecord)
+                .withFieldMapping(id, "id", TestRecord::getId)
+                .withFieldMapping(firstName, "firstName", TestRecord::getFirstName)
+                .withFieldMapping(lastName, "lastName", TestRecord::getLastName)
+                .withFieldMapping(occupation, "occupation", TestRecord::getOccupation)
+                .buildSelectiveInsert();
+
+        String expectedFieldsPhrase = "(last_name, occupation)";
+        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
+
+        String expectedValuesPhrase = "values (?, ?)";
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+    }
+
+    public static class TestRecord {
+        private Integer id;
+        private String firstName;
+        private String lastName;
+        private String occupation;
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public String getOccupation() {
+            return occupation;
+        }
+
+        public void setOccupation(String occupation) {
+            this.occupation = occupation;
+        }
     }
 }

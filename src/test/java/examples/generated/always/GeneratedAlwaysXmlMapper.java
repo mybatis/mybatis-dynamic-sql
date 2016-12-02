@@ -13,33 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.qbe;
+package examples.generated.always;
 
-/**
- * 
- * @author Jeff Butler
- *
- * @param <T> - even though the type is not directly used in this class,
- *  it is used by the compiler to match fields with conditions so it should
- *  not be removed.
- */
-public abstract class Field<T> {
+import java.util.List;
 
-    protected String name;
-    
-    protected Field(String name) {
-        this.name = name;
-    }
-    
-    public String name() {
-        return name;
-    }
+import org.mybatis.qbe.sql.insert.InsertSupport;
+import org.mybatis.qbe.sql.select.SelectSupport;
+import org.mybatis.qbe.sql.update.UpdateSupport;
 
-    /**
-     * This returns the value on the "right side" of the expression.
-     * 
-     * @param parameterName
-     * @return
-     */
-    public abstract Renderer getParameterRenderer(String parameterName);
+public interface GeneratedAlwaysXmlMapper {
+    List<GeneratedAlwaysRecord> selectByExample(SelectSupport selectSupport);
+    GeneratedAlwaysRecord selectByPrimaryKey(int id);
+    int insert(InsertSupport<GeneratedAlwaysRecord> insertSupport);
+    int update(UpdateSupport updateSupport);
 }

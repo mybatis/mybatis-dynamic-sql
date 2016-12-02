@@ -25,7 +25,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.qbe.Condition;
-import org.mybatis.qbe.sql.FieldAndValue;
 import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.SqlField;
 import org.mybatis.qbe.sql.where.AbstractWhereBuilder;
@@ -90,7 +89,7 @@ public interface UpdateSupportBuilder {
                 int number = sequence.getAndIncrement();
                 SqlField<?> field = fv.getField();
                 String phrase = String.format("%s = %s", nameFunction.apply(field), //$NON-NLS-1$
-                        field.getParameterRenderer(number).render());
+                        field.getParameterRenderer(String.format("parameters.p%s",  number)).render());
                 phrases.add(phrase);
                 parameters.put(String.format("p%s", number), fv.getValue().orElse(null)); //$NON-NLS-1$
             });

@@ -16,66 +16,54 @@
 package org.mybatis.qbe.sql.insert;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.mybatis.qbe.sql.FieldAndValue;
 import org.mybatis.qbe.sql.SqlField;
 
 public interface InsertSupportBuilder {
 
-    static Builder insertSupport() {
-        return new Builder();
+    static <T> Builder<T> insertSupport(T record) {
+        return new Builder<>(record);
     }
     
-    static class Builder {
-        private List<FieldAndValue<?>> fieldsAndValues = new ArrayList<>();
+    static class Builder<T> {
+        private T record;
+        private List<InsertFieldMapping<T, ?>> fieldMappings = new ArrayList<>();
 
-        public Builder() {
+        public Builder(T record) {
             super();
+            this.record = record;
         }
         
-        public <T> Builder withValue(SqlField<T> field, Optional<T> value) {
-            value.ifPresent(v -> withValue(field, v));
+        public <S> Builder<T> withFieldMapping(SqlField<S> field, String property, Function<T, S> getterFunction) {
+            fieldMappings.add(InsertFieldMapping.of(field, property, getterFunction));
             return this;
         }
         
-        public <T> Builder withValue(SqlField<T> field, T value) {
-            fieldsAndValues.add(FieldAndValue.of(field, value));
-            return this;
+        public InsertSupport<T> buildFullInsert() {
+            return build(t -> true);
         }
 
-        public <T> Builder withNullValue(SqlField<T> field) {
-            fieldsAndValues.add(FieldAndValue.of(field));
-            return this;
+        public InsertSupport<T> buildSelectiveInsert() {
+            return build(fm -> fm.getGetterFunction().apply(record) != null);
         }
-
-        public InsertSupport build() {
-            return build(SqlField::nameIgnoringTableAlias);
-        }
-
-        private InsertSupport build(Function<SqlField<?>, String> nameFunction) {
-            AtomicInteger sequence = new AtomicInteger(1);
-            Map<String, Object> parameters = new HashMap<>();
+        
+        private InsertSupport<T> build(Predicate<InsertFieldMapping<T, ?>> filter) {
             List<String> fieldPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             
-            fieldsAndValues.forEach(fv -> {
-                int number = sequence.getAndIncrement();
-                SqlField<?> field = fv.getField();
-                fieldPhrases.add(nameFunction.apply(field));
-                valuePhrases.add(field.getParameterRenderer(number).render());
-                parameters.put(String.format("p%s", number), fv.getValue().orElse(null)); //$NON-NLS-1$
+            fieldMappings.stream().filter(filter).forEach(fm -> {
+                SqlField<?> field = fm.getField();
+                fieldPhrases.add(field.nameIgnoringTableAlias());
+                valuePhrases.add(field.getParameterRenderer(String.format("record.%s", fm.getProperty())).render());
             });
             
             String fieldsPhrase = fieldPhrases.stream().collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             String valuesPhrase = valuePhrases.stream().collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            return InsertSupport.of(fieldsPhrase, valuesPhrase, parameters);
+            return InsertSupport.of(fieldsPhrase, valuesPhrase, record);
         }
     }
 }

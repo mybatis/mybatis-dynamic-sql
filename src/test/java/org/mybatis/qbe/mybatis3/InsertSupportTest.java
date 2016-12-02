@@ -16,7 +16,6 @@
 package org.mybatis.qbe.mybatis3;
 
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
 
@@ -26,34 +25,97 @@ import org.junit.Test;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 
 public class InsertSupportTest {
-    
+
     @Test
-    public void testInsertSupportBuilder() {
+    public void testFullInsertSupportBuilder() {
         MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER);
-        MyBatis3Field<String> firstName = MyBatis3Field.of("firstName", JDBCType.VARCHAR);
-        MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
+        MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR);
+        MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
+
+        TestRecord testRecord = new TestRecord();
+        testRecord.setLastName("jones");
+        testRecord.setOccupation("dino driver");
         
-        InsertSupport insertSupport = insertSupport() 
-                .withNullValue(firstName)
-                .withValue(lastName, "jones")
-                .withNullValue(id)
-                .withValue(occupation, "dino driver")
-                .build();
-        
-        String expectedFieldsPhrase = "(firstName, lastName, id, occupation)";
+        InsertSupport<?> insertSupport = insertSupport(testRecord)
+                .withFieldMapping(id, "id", TestRecord::getId)
+                .withFieldMapping(firstName, "firstName", TestRecord::getFirstName)
+                .withFieldMapping(lastName, "lastName", TestRecord::getLastName)
+                .withFieldMapping(occupation, "occupation", TestRecord::getOccupation)
+                .buildFullInsert();
+
+        String expectedFieldsPhrase = "(id, first_name, last_name, occupation)";
         assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
-        String expectedValuesPhrase = "values (#{parameters.p1,jdbcType=VARCHAR}, "
-                + "#{parameters.p2,jdbcType=VARCHAR}, "
-                + "#{parameters.p3,jdbcType=INTEGER}, "
-                + "#{parameters.p4,jdbcType=VARCHAR})";
+        String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, "
+                + "#{record.firstName,jdbcType=VARCHAR}, "
+                + "#{record.lastName,jdbcType=VARCHAR}, "
+                + "#{record.occupation,jdbcType=VARCHAR})";
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+    }
+
+    @Test
+    public void testSelectiveInsertSupportBuilder() {
+        MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER);
+        MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR);
+        MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR);
+        MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
+
+        TestRecord testRecord = new TestRecord();
+        testRecord.setLastName("jones");
+        testRecord.setOccupation("dino driver");
         
-        assertThat(insertSupport.getParameters().size(), is(4));
-        assertThat(insertSupport.getParameters().get("p1"), is(nullValue()));
-        assertThat(insertSupport.getParameters().get("p2"), is("jones"));
-        assertThat(insertSupport.getParameters().get("p3"), is(nullValue()));
-        assertThat(insertSupport.getParameters().get("p4"), is("dino driver"));
+        InsertSupport<?> insertSupport = insertSupport(testRecord)
+                .withFieldMapping(id, "id", TestRecord::getId)
+                .withFieldMapping(firstName, "firstName", TestRecord::getFirstName)
+                .withFieldMapping(lastName, "lastName", TestRecord::getLastName)
+                .withFieldMapping(occupation, "occupation", TestRecord::getOccupation)
+                .buildSelectiveInsert();
+
+        String expectedFieldsPhrase = "(last_name, occupation)";
+        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
+
+        String expectedValuesPhrase = "values (#{record.lastName,jdbcType=VARCHAR}, "
+                + "#{record.occupation,jdbcType=VARCHAR})";
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+    }
+
+    public static class TestRecord {
+        private Integer id;
+        private String firstName;
+        private String lastName;
+        private String occupation;
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public String getOccupation() {
+            return occupation;
+        }
+
+        public void setOccupation(String occupation) {
+            this.occupation = occupation;
+        }
     }
 }

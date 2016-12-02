@@ -15,20 +15,16 @@
  */
 package org.mybatis.qbe.sql.insert;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-public class InsertSupport {
+public class InsertSupport<T> {
 
     private String fieldsPhrase;
     private String valuesPhrase;
-    private Map<String, Object> parameters;
+    private T record;
     
-    private InsertSupport(String fieldsPhrase, String valuesPhrase, Map<String, Object> parameters) {
+    private InsertSupport(String fieldsPhrase, String valuesPhrase, T record) {
         this.fieldsPhrase = fieldsPhrase;
         this.valuesPhrase = valuesPhrase;
-        this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
+        this.record = record;
     }
     
     public String getFieldsPhrase() {
@@ -39,11 +35,11 @@ public class InsertSupport {
         return valuesPhrase;
     }
 
-    public Map<String, Object> getParameters() {
-        return parameters;
+    public T getRecord() {
+        return record;
     }
 
-    public static InsertSupport of(String fieldsPhrase, String valuesPhrase, Map<String, Object> parameters) {
-        return new InsertSupport(fieldsPhrase, valuesPhrase, parameters);
+    public static <T> InsertSupport<T> of(String fieldsPhrase, String valuesPhrase, T record) {
+        return new InsertSupport<>(fieldsPhrase, valuesPhrase, record);
     }
 }

@@ -58,18 +58,18 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
     @Override
     public void visit(SingleValueCondition<T> condition) {
         int number = sequence.getAndIncrement();
-        buffer.append(condition.render(field.getParameterRenderer(number)));
-        parameters.put(formatParameterName(number), condition.value());
+        buffer.append(condition.render(field.getParameterRenderer(formatParameterName(number))));
+        parameters.put(formatParameterMapKey(number), condition.value());
     }
 
     @Override
     public void visit(TwoValueCondition<T> condition) {
         int number1 = sequence.getAndIncrement();
         int number2 = sequence.getAndIncrement();
-        buffer.append(condition.render(field.getParameterRenderer(number1),
-                field.getParameterRenderer(number2)));
-        parameters.put(formatParameterName(number1), condition.value1());
-        parameters.put(formatParameterName(number2), condition.value2());
+        buffer.append(condition.render(field.getParameterRenderer(formatParameterName(number1)),
+                field.getParameterRenderer(formatParameterName(number2))));
+        parameters.put(formatParameterMapKey(number1), condition.value1());
+        parameters.put(formatParameterMapKey(number2), condition.value2());
     }
 
     @Override
@@ -78,17 +78,21 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
         
         condition.visitValues(v -> {
             int number = sequence.getAndIncrement();
-            parameterRenderers.add(field.getParameterRenderer(number));
-            parameters.put(formatParameterName(number), v);
+            parameterRenderers.add(field.getParameterRenderer(formatParameterName(number)));
+            parameters.put(formatParameterMapKey(number), v);
         });
         
         buffer.append(condition.render(parameterRenderers.stream()));
     }
 
-    private String formatParameterName(int number) {
+    private String formatParameterMapKey(int number) {
         return String.format("p%s", number); //$NON-NLS-1$
     }
 
+    private String formatParameterName(int number) {
+        return String.format("parameters.p%s", number); //$NON-NLS-1$
+    }
+    
     public static <T> ConditionRenderer<T> of(AtomicInteger sequence, Field<T> field) {
         return new ConditionRenderer<>(sequence, field);
     }
