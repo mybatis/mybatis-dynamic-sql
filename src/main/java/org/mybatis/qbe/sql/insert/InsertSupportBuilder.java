@@ -31,7 +31,7 @@ public interface InsertSupportBuilder {
     
     static class Builder<T> {
         private T record;
-        private List<InsertFieldMapping<T, ?>> fieldMappings = new ArrayList<>();
+        private List<FieldMapping<T, ?>> fieldMappings = new ArrayList<>();
 
         public Builder(T record) {
             super();
@@ -39,7 +39,7 @@ public interface InsertSupportBuilder {
         }
         
         public <S> Builder<T> withFieldMapping(SqlField<S> field, String property, Function<T, S> getterFunction) {
-            fieldMappings.add(InsertFieldMapping.of(field, property, getterFunction));
+            fieldMappings.add(FieldMapping.of(field, property, getterFunction));
             return this;
         }
         
@@ -48,22 +48,46 @@ public interface InsertSupportBuilder {
         }
 
         public InsertSupport<T> buildSelectiveInsert() {
-            return build(fm -> fm.getGetterFunction().apply(record) != null);
+            return build(fm -> fm.getterFunction.apply(record) != null);
         }
         
-        private InsertSupport<T> build(Predicate<InsertFieldMapping<T, ?>> filter) {
+        private InsertSupport<T> build(Predicate<FieldMapping<T, ?>> filter) {
             List<String> fieldPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             
             fieldMappings.stream().filter(filter).forEach(fm -> {
-                SqlField<?> field = fm.getField();
+                SqlField<?> field = fm.field;
                 fieldPhrases.add(field.nameIgnoringTableAlias());
-                valuePhrases.add(field.getParameterRenderer(String.format("record.%s", fm.getProperty())).render());
+                valuePhrases.add(field.getParameterRenderer(String.format("record.%s", fm.property)).render());
             });
             
             String fieldsPhrase = fieldPhrases.stream().collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             String valuesPhrase = valuePhrases.stream().collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return InsertSupport.of(fieldsPhrase, valuesPhrase, record);
+        }
+
+        /**
+         * A little triplet to hold the field mapping.  Only intended for use in this builder. 
+         *  
+         * @param <R> the record type associated with this insert
+         * @param <F> the field type of this mapping
+         */
+        private static class FieldMapping<R, F> {
+            private SqlField<F> field;
+            private String property;
+            private Function<R, F> getterFunction;
+            
+            private FieldMapping() {
+                super();
+            }
+            
+            private static <R, F> FieldMapping<R, F> of(SqlField<F> field, String property, Function<R, F> getterFunction) {
+                FieldMapping<R, F> mapping = new FieldMapping<>();
+                mapping.field = field;
+                mapping.property = property;
+                mapping.getterFunction = getterFunction;
+                return mapping;
+            }
         }
     }
 }

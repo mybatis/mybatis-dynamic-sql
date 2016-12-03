@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.qbe.Condition;
@@ -71,27 +70,23 @@ public interface UpdateSupportBuilder {
         }
         
         public UpdateSupport build() {
-            return build(SqlField::nameIgnoringTableAlias);
-        }
-
-        private UpdateSupport build(Function<SqlField<?>, String> nameFunction) {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
-            String setClause = renderSetValues(nameFunction, sequence, parameters);
-            String whereClause = renderCriteria(nameFunction, sequence, parameters);
+            String setClause = renderSetValues(sequence, parameters);
+            String whereClause = renderCriteria(SqlField::nameIgnoringTableAlias, sequence, parameters);
             return UpdateSupport.of(setClause, whereClause, parameters);
         }
         
-        private String renderSetValues(Function<SqlField<?>, String> nameFunction, AtomicInteger sequence, Map<String, Object> parameters) {
+        private String renderSetValues(AtomicInteger sequence, Map<String, Object> parameters) {
             List<String> phrases = new ArrayList<>();
             
             setFieldsAndValues.forEach(fv -> {
                 int number = sequence.getAndIncrement();
-                SqlField<?> field = fv.getField();
-                String phrase = String.format("%s = %s", nameFunction.apply(field), //$NON-NLS-1$
+                SqlField<?> field = fv.field;
+                String phrase = String.format("%s = %s", field.nameIgnoringTableAlias(), //$NON-NLS-1$
                         field.getParameterRenderer(String.format("parameters.p%s",  number)).render());
                 phrases.add(phrase);
-                parameters.put(String.format("p%s", number), fv.getValue().orElse(null)); //$NON-NLS-1$
+                parameters.put(String.format("p%s", number), fv.value); //$NON-NLS-1$
             });
             
             return phrases.stream().collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -100,6 +95,29 @@ public interface UpdateSupportBuilder {
         @Override
         public WhereBuilder getThis() {
             return this;
+        }
+    }
+    
+    /**
+     * A little pair that holds the field and value.  Only intended for use by the builders.
+     * 
+     * @param <T> the field type
+     */
+    static class FieldAndValue<T> {
+        private T value;
+        private SqlField<T> field;
+        
+        private static <T> FieldAndValue<T> of(SqlField<T> field, T value) {
+            FieldAndValue<T> phrase = new FieldAndValue<>();
+            phrase.value = value;
+            phrase.field = field;
+            return phrase;
+        }
+
+        private static <T> FieldAndValue<T> of(SqlField<T> field) {
+            FieldAndValue<T> phrase = new FieldAndValue<>();
+            phrase.field = field;
+            return phrase;
         }
     }
 }

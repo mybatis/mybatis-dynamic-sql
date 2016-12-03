@@ -18,7 +18,6 @@ package org.mybatis.qbe.sql.select;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
@@ -62,13 +61,9 @@ public interface SelectSupportBuilder {
         }
         
         public SelectSupport build() {
-            return build(SqlField::nameIncludingTableAlias);
-        }
-
-        private SelectSupport build(Function<SqlField<?>, String> nameFunction) {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
-            String whereClause = renderCriteria(nameFunction, sequence, parameters);
+            String whereClause = renderCriteria(SqlField::nameIncludingTableAlias, sequence, parameters);
             return SelectSupport.of(isDistinct, whereClause, parameters, orderByClause);
         }
         

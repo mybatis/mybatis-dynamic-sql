@@ -18,7 +18,6 @@ package org.mybatis.qbe.sql.delete;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
@@ -43,13 +42,9 @@ public interface DeleteSupportBuilder {
         }
         
         public DeleteSupport build() {
-            return build(SqlField::nameIgnoringTableAlias);
-        }
-        
-        private DeleteSupport build(Function<SqlField<?>, String> nameFunction) {
             AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
-            String whereClause = renderCriteria(nameFunction, sequence, parameters);
+            String whereClause = renderCriteria(SqlField::nameIgnoringTableAlias, sequence, parameters);
             return DeleteSupport.of(whereClause, parameters);
         }
         
