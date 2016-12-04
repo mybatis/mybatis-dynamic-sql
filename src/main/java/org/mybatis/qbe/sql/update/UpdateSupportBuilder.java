@@ -84,7 +84,7 @@ public interface UpdateSupportBuilder {
                 int number = sequence.getAndIncrement();
                 SqlField<?> field = fv.field;
                 String phrase = String.format("%s = %s", field.nameIgnoringTableAlias(), //$NON-NLS-1$
-                        field.getParameterRenderer(String.format("parameters.p%s",  number)).render());
+                        field.getFormattedJdbcPlaceholder(String.format("parameters.p%s",  number)));
                 phrases.add(phrase);
                 parameters.put(String.format("p%s", number), fv.value); //$NON-NLS-1$
             });

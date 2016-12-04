@@ -58,7 +58,7 @@ public interface InsertSupportBuilder {
             fieldMappings.stream().filter(filter).forEach(fm -> {
                 SqlField<?> field = fm.field;
                 fieldPhrases.add(field.nameIgnoringTableAlias());
-                valuePhrases.add(field.getParameterRenderer(String.format("record.%s", fm.property)).render());
+                valuePhrases.add(field.getFormattedJdbcPlaceholder(String.format("record.%s", fm.property)));
             });
             
             String fieldsPhrase = fieldPhrases.stream().collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

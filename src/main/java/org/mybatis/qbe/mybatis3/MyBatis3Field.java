@@ -18,7 +18,6 @@ package org.mybatis.qbe.mybatis3;
 import java.sql.JDBCType;
 import java.util.Optional;
 
-import org.mybatis.qbe.Renderer;
 import org.mybatis.qbe.sql.SqlField;
 import org.mybatis.qbe.sql.SqlTable;
 
@@ -54,38 +53,24 @@ public class MyBatis3Field<T> extends SqlField<T> {
         return field;
     }
     
+    @Override
+    public String getFormattedJdbcPlaceholder(String parameterName) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("#{"); //$NON-NLS-1$
+        buffer.append(parameterName);
+        buffer.append(",jdbcType="); //$NON-NLS-1$
+        buffer.append(jdbcType().getName());
+        
+        typeHandler().ifPresent(th -> {
+            buffer.append(",typeHandler="); //$NON-NLS-1$
+            buffer.append(th);
+        });
+        
+        buffer.append('}');
+        return buffer.toString();
+    }
+
     public static <T> MyBatis3Field<T> of(String name, JDBCType jdbcType) {
         return new MyBatis3Field<>(name, jdbcType);
-    }
-    
-    @Override
-    public Renderer getParameterRenderer(String parameterName) {
-        return new DefaultRenderer(parameterName);
-    }
-    
-    public class DefaultRenderer implements Renderer {
-        
-        private String parameterName;
-
-        public DefaultRenderer(String parameterName) {
-            this.parameterName = parameterName;
-        }
-        
-        @Override
-        public String render() {
-            StringBuilder buffer = new StringBuilder();
-            buffer.append("#{"); //$NON-NLS-1$
-            buffer.append(parameterName);
-            buffer.append(",jdbcType="); //$NON-NLS-1$
-            buffer.append(jdbcType().getName());
-            
-            typeHandler().ifPresent(th -> {
-                buffer.append(",typeHandler="); //$NON-NLS-1$
-                buffer.append(th);
-            });
-            
-            buffer.append('}');
-            return buffer.toString();
-        }
     }
 }

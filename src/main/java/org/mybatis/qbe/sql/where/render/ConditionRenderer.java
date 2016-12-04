@@ -23,21 +23,20 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.qbe.ConditionVisitor;
-import org.mybatis.qbe.Field;
 import org.mybatis.qbe.ListValueCondition;
 import org.mybatis.qbe.NoValueCondition;
-import org.mybatis.qbe.Renderer;
 import org.mybatis.qbe.SingleValueCondition;
 import org.mybatis.qbe.TwoValueCondition;
+import org.mybatis.qbe.sql.SqlField;
 
 public class ConditionRenderer<T> implements ConditionVisitor<T> {
     
     private StringBuilder buffer = new StringBuilder();
     private Map<String, Object> parameters = new HashMap<>();
     private AtomicInteger sequence;
-    private Field<?> field;
+    private SqlField<?> field;
     
-    private ConditionRenderer(AtomicInteger sequence, Field<?> field) {
+    private ConditionRenderer(AtomicInteger sequence, SqlField<?> field) {
         this.sequence = sequence;
         this.field = field;
     }
@@ -58,7 +57,7 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
     @Override
     public void visit(SingleValueCondition<T> condition) {
         int number = sequence.getAndIncrement();
-        buffer.append(condition.render(field.getParameterRenderer(formatParameterName(number))));
+        buffer.append(condition.render(field.getFormattedJdbcPlaceholder(formatParameterName(number))));
         parameters.put(formatParameterMapKey(number), condition.value());
     }
 
@@ -66,23 +65,23 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
     public void visit(TwoValueCondition<T> condition) {
         int number1 = sequence.getAndIncrement();
         int number2 = sequence.getAndIncrement();
-        buffer.append(condition.render(field.getParameterRenderer(formatParameterName(number1)),
-                field.getParameterRenderer(formatParameterName(number2))));
+        buffer.append(condition.render(field.getFormattedJdbcPlaceholder(formatParameterName(number1)),
+                field.getFormattedJdbcPlaceholder(formatParameterName(number2))));
         parameters.put(formatParameterMapKey(number1), condition.value1());
         parameters.put(formatParameterMapKey(number2), condition.value2());
     }
 
     @Override
     public void visit(ListValueCondition<T> condition) {
-        List<Renderer> parameterRenderers = new ArrayList<>();
+        List<String> placeholders = new ArrayList<>();
         
         condition.visitValues(v -> {
             int number = sequence.getAndIncrement();
-            parameterRenderers.add(field.getParameterRenderer(formatParameterName(number)));
+            placeholders.add(field.getFormattedJdbcPlaceholder(formatParameterName(number)));
             parameters.put(formatParameterMapKey(number), v);
         });
         
-        buffer.append(condition.render(parameterRenderers.stream()));
+        buffer.append(condition.render(placeholders.stream()));
     }
 
     private String formatParameterMapKey(int number) {
@@ -93,7 +92,7 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
         return String.format("parameters.p%s", number); //$NON-NLS-1$
     }
     
-    public static <T> ConditionRenderer<T> of(AtomicInteger sequence, Field<T> field) {
+    public static <T> ConditionRenderer<T> of(AtomicInteger sequence, SqlField<T> field) {
         return new ConditionRenderer<>(sequence, field);
     }
 }

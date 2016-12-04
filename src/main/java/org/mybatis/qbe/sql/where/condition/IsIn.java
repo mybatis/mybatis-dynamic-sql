@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.qbe.BaseListValueCondition;
-import org.mybatis.qbe.Renderer;
 
 public class IsIn<T> extends BaseListValueCondition<T> {
 
@@ -28,9 +27,8 @@ public class IsIn<T> extends BaseListValueCondition<T> {
     }
     
     @Override
-    public String render(Stream<Renderer> parameterRenderers) {
-        return parameterRenderers
-                .map(Renderer::render)
+    public String render(Stream<String> placeholders) {
+        return placeholders
                 .collect(Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 

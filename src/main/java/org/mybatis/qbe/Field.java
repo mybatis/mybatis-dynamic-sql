@@ -34,12 +34,4 @@ public abstract class Field<T> {
     public String name() {
         return name;
     }
-
-    /**
-     * This returns the value on the "right side" of the expression.
-     * 
-     * @param parameterName
-     * @return
-     */
-    public abstract Renderer getParameterRenderer(String parameterName);
 }

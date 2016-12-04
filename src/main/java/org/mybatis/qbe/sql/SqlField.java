@@ -19,7 +19,6 @@ import java.sql.JDBCType;
 import java.util.Optional;
 
 import org.mybatis.qbe.Field;
-import org.mybatis.qbe.Renderer;
 
 /**
  * 
@@ -70,9 +69,8 @@ public class SqlField<T> extends Field<T> {
         return field;
     }
     
-    @Override
-    public Renderer getParameterRenderer(String parameterName) {
-        return () -> "?"; //$NON-NLS-1$
+    public String getFormattedJdbcPlaceholder(String parameterName) {
+        return "?"; //$NON-NLS-1$
     }
     
     public static <T> SqlField<T> of(String name, JDBCType jdbcType) {

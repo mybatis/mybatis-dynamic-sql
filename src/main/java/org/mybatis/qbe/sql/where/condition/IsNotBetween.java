@@ -16,7 +16,6 @@
 package org.mybatis.qbe.sql.where.condition;
 
 import org.mybatis.qbe.BaseTwoValueCondition;
-import org.mybatis.qbe.Renderer;
 
 public class IsNotBetween<T> extends BaseTwoValueCondition<T> {
 
@@ -25,10 +24,10 @@ public class IsNotBetween<T> extends BaseTwoValueCondition<T> {
     }
     
     @Override
-    public String render(Renderer parameterRenderer1, Renderer parameterRenderer2) {
+    public String render(String placeholder1, String placeholder2) {
         return String.format("not between %s and %s", //$NON-NLS-1$
-                parameterRenderer1.render(),
-                parameterRenderer2.render());
+                placeholder1,
+                placeholder2);
     }
 
     public static class Builder<T> {
