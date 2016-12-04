@@ -15,8 +15,8 @@
  */
 package examples.simple;
 
-import static examples.simple.SimpleTableFields.id;
-import static examples.simple.SimpleTableFields.occupation;
+import static examples.simple.SimpleTableQBESupport.id;
+import static examples.simple.SimpleTableQBESupport.occupation;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.*;

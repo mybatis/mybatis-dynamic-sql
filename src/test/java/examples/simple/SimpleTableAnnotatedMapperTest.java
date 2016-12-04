@@ -15,7 +15,7 @@
  */
 package examples.simple;
 
-import static examples.simple.SimpleTableFields.*;
+import static examples.simple.SimpleTableQBESupport.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
@@ -107,9 +107,23 @@ public class SimpleTableAnnotatedMapperTest {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             DeleteSupport deleteSupport = deleteSupport()
                     .where(occupation, isNull()).build();
-            int rows = mapper.deleteByExample(deleteSupport);
+            int rows = mapper.delete(deleteSupport);
             
             assertThat(rows, is(2));
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Test
+    public void testDeleteByPrimaryKey() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            DeleteSupport deleteSupport = buildDeleteByPrimaryKeySupport(2);
+            int rows = mapper.delete(deleteSupport);
+            
+            assertThat(rows, is(1));
         } finally {
             session.close();
         }
@@ -127,7 +141,7 @@ public class SimpleTableAnnotatedMapperTest {
             record.setBirthDate(new Date());
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildInsertSupport(record));
+            int rows = mapper.insert(buildFullInsertSupport(record));
             
             assertThat(rows, is(1));
         } finally {
@@ -146,7 +160,7 @@ public class SimpleTableAnnotatedMapperTest {
             record.setLastName("Jones");
             record.setBirthDate(new Date());
             
-            int rows = mapper.insert(buildInsertSelectiveSupport(record));
+            int rows = mapper.insert(buildSelectiveInsertSupport(record));
             
             assertThat(rows, is(1));
         } finally {
@@ -166,11 +180,11 @@ public class SimpleTableAnnotatedMapperTest {
             record.setBirthDate(new Date());
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildInsertSupport(record));
+            int rows = mapper.insert(buildFullInsertSupport(record));
             assertThat(rows, is(1));
             
             record.setOccupation("Programmer");
-            rows = mapper.update(buildUpdateByPrimaryKeySupport(record));
+            rows = mapper.update(buildFullUpdateByPrimaryKeySupport(record));
             assertThat(rows, is(1));
             
             SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
@@ -193,13 +207,13 @@ public class SimpleTableAnnotatedMapperTest {
             record.setBirthDate(new Date());
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildInsertSupport(record));
+            int rows = mapper.insert(buildFullInsertSupport(record));
             assertThat(rows, is(1));
 
             SimpleTableRecord updateRecord = new SimpleTableRecord();
             updateRecord.setId(100);
             updateRecord.setOccupation("Programmer");
-            rows = mapper.update(buildUpdateByPrimaryKeySelectiveSupport(updateRecord));
+            rows = mapper.update(buildSelectiveUpdateByPrimaryKeySupport(updateRecord));
             assertThat(rows, is(1));
             
             SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
@@ -223,7 +237,7 @@ public class SimpleTableAnnotatedMapperTest {
             record.setBirthDate(new Date());
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildInsertSupport(record));
+            int rows = mapper.insert(buildFullInsertSupport(record));
             assertThat(rows, is(1));
             
             record.setOccupation("Programmer");

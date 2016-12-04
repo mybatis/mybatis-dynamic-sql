@@ -15,7 +15,8 @@
  */
 package examples.simple;
 
-import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
+import static org.mybatis.qbe.sql.SqlConditions.*;
+import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteSupport;
 import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
 import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.updateSupport;
 
@@ -25,11 +26,12 @@ import java.util.Optional;
 
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
 import org.mybatis.qbe.sql.SqlTable;
+import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
 import org.mybatis.qbe.sql.update.UpdateSupportBuilder.SetBuilder;
 
-public interface SimpleTableFields {
+public interface SimpleTableQBESupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
     MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(simpleTable);
     MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
@@ -37,7 +39,7 @@ public interface SimpleTableFields {
     MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE).inTable(simpleTable);
     MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
     
-    static InsertSupport<SimpleTableRecord> buildInsertSupport(SimpleTableRecord record) {
+    static InsertSupport<SimpleTableRecord> buildFullInsertSupport(SimpleTableRecord record) {
         return insertSupport(record)
                 .withFieldMapping(id, "id", record::getId)
                 .withFieldMapping(firstName, "firstName", record::getFirstName)
@@ -47,7 +49,7 @@ public interface SimpleTableFields {
                 .buildFullInsert();
     }
 
-    static InsertSupport<SimpleTableRecord> buildInsertSelectiveSupport(SimpleTableRecord record) {
+    static InsertSupport<SimpleTableRecord> buildSelectiveInsertSupport(SimpleTableRecord record) {
         return insertSupport(record)
                 .withFieldMapping(id, "id", record::getId)
                 .withFieldMapping(firstName, "firstName", record::getFirstName)
@@ -57,7 +59,7 @@ public interface SimpleTableFields {
                 .buildSelectiveInsert();
     }
     
-    static UpdateSupport buildUpdateByPrimaryKeySupport(SimpleTableRecord record) {
+    static UpdateSupport buildFullUpdateByPrimaryKeySupport(SimpleTableRecord record) {
         return updateSupport()
                 .set(firstName, record.getFirstName())
                 .set(lastName, record.getLastName())
@@ -67,7 +69,7 @@ public interface SimpleTableFields {
                 .build();
     }
 
-    static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(SimpleTableRecord record) {
+    static UpdateSupport buildSelectiveUpdateByPrimaryKeySupport(SimpleTableRecord record) {
         return updateSupport()
                 .set(firstName, Optional.ofNullable(record.getFirstName()))
                 .set(lastName, Optional.ofNullable(record.getLastName()))
@@ -93,5 +95,11 @@ public interface SimpleTableFields {
                 .set(lastName, Optional.ofNullable(record.getLastName()))
                 .set(birthDate, Optional.ofNullable(record.getBirthDate()))
                 .set(occupation, Optional.ofNullable(record.getOccupation()));
+    }
+
+    static DeleteSupport buildDeleteByPrimaryKeySupport(Integer id_) {
+        return deleteSupport()
+                .where(id, isEqualTo(id_))
+                .build();
     }
 }

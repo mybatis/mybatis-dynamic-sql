@@ -46,7 +46,7 @@
     where id = #{value}
   </select>
   
-  <delete id="deleteByExample">
+  <delete id="delete">
     delete from SimpleTable
     ${whereClause}
   </delete>

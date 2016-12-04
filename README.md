@@ -94,7 +94,7 @@ import java.util.Date;
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
 import org.mybatis.qbe.sql.SqlTable;
 
-public interface SimpleTableFields {
+public interface SimpleTableQBESupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
     MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(simpleTable);
     MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
@@ -213,7 +213,7 @@ All of these statements rely on a set of expressive static methods.  It is typic
 
 ```java
 // import all field definitions for your table
-import static examples.simple.SimpleTableFields.*;
+import static examples.simple.SimpleTableQBESupport.*;
 
 // import all conditions and the where support builder
 import static org.mybatis.qbe.sql.SqlConditions.*;

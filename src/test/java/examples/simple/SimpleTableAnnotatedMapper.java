@@ -73,5 +73,5 @@ public interface SimpleTableAnnotatedMapper {
         "delete from simpletable",
         "${whereClause}"
     })
-    int deleteByExample(DeleteSupport deleteSupport);
+    int delete(DeleteSupport deleteSupport);
 }
