@@ -15,12 +15,12 @@
  */
 package org.mybatis.qbe;
 
-public interface NoValueCondition <T> extends Condition<T> {
-
-    String render(String fieldName);
+public abstract class NoValueCondition <T> implements Condition<T> {
 
     @Override
-    default void accept(ConditionVisitor<T> visitor) {
+    public void accept(ConditionVisitor<T> visitor) {
         visitor.visit(this);
     }
+
+    public abstract String render(String fieldName);
 }

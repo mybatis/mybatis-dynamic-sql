@@ -78,7 +78,7 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
     public void visit(ListValueCondition<T> condition) {
         List<String> placeholders = new ArrayList<>();
         
-        condition.visitValues(v -> {
+        condition.values().forEach(v -> {
             int number = sequence.getAndIncrement();
             placeholders.add(field.getFormattedJdbcPlaceholder(formatParameterName(number)));
             parameters.put(formatParameterMapKey(number), v);

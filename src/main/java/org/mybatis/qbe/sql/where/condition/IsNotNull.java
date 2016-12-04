@@ -17,7 +17,7 @@ package org.mybatis.qbe.sql.where.condition;
 
 import org.mybatis.qbe.NoValueCondition;
 
-public class IsNotNull<T> implements NoValueCondition<T> {
+public class IsNotNull<T> extends NoValueCondition<T> {
 
     public IsNotNull() {
         super();

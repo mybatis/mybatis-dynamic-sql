@@ -18,9 +18,9 @@ package org.mybatis.qbe.sql.where.condition;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.mybatis.qbe.BaseListValueCondition;
+import org.mybatis.qbe.ListValueCondition;
 
-public class IsNotIn<T> extends BaseListValueCondition<T> {
+public class IsNotIn<T> extends ListValueCondition<T> {
 
     protected IsNotIn(Stream<T> values) {
         super(values);

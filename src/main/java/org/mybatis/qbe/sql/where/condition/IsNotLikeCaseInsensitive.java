@@ -15,9 +15,9 @@
  */
 package org.mybatis.qbe.sql.where.condition;
 
-import org.mybatis.qbe.BaseSingleValueCondition;
+import org.mybatis.qbe.SingleValueCondition;
 
-public class IsNotLikeCaseInsensitive extends BaseSingleValueCondition<String> {
+public class IsNotLikeCaseInsensitive extends SingleValueCondition<String> {
     private IsNotLikeCaseInsensitive(String value) {
         super(value);
     }

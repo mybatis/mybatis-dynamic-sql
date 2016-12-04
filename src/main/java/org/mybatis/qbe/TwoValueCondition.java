@@ -15,13 +15,27 @@
  */
 package org.mybatis.qbe;
 
-public interface TwoValueCondition<T> extends Condition<T> {
-    T value1();
-    T value2();
-    String render(String fieldName, String placeholder1, String placeholder2);
+public abstract class TwoValueCondition<T> implements Condition<T> {
+    private T value1;
+    private T value2;
+    
+    protected TwoValueCondition(T value1, T value2) {
+        this.value1 = value1;
+        this.value2 = value2;
+    }
+
+    public T value1() {
+        return value1;
+    }
+
+    public T value2() {
+        return value2;
+    }
 
     @Override
-    default void accept(ConditionVisitor<T> visitor) {
+    public void accept(ConditionVisitor<T> visitor) {
         visitor.visit(this);
     }
+
+    public abstract String render(String fieldName, String placeholder1, String placeholder2);
 }

@@ -18,7 +18,7 @@ package org.mybatis.qbe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public abstract class Criterion<T, S extends Field<T>, R extends Criterion<?, ?, ?>> {
     protected S field;
@@ -46,7 +46,7 @@ public abstract class Criterion<T, S extends Field<T>, R extends Criterion<?, ?,
         return !subCriteria.isEmpty();
     }
  
-    public void visitSubCriteria(Consumer<R> consumer) {
-        subCriteria.forEach(consumer::accept);
+    public Stream<R> subCriteria() {
+        return subCriteria.stream();
     }
 }

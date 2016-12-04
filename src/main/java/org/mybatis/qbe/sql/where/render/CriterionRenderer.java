@@ -61,7 +61,7 @@ public class CriterionRenderer<T> {
     
     private void renderCriteria() {
         renderCondition();
-        criterion.visitSubCriteria(c -> handleSubCriterion(c, sequence));
+        criterion.subCriteria().forEach(c -> handleSubCriterion(c, sequence));
     }
 
     private void renderCondition() {

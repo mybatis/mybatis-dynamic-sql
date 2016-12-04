@@ -15,12 +15,21 @@
  */
 package org.mybatis.qbe;
 
-public interface SingleValueCondition<T> extends Condition<T> {
-    T value();
-    String render(String fieldName, String placeholder);
-
+public abstract class SingleValueCondition<T> implements Condition<T> {
+    private T value;
+    
+    protected SingleValueCondition(T value) {
+        this.value = value;
+    }
+    
+    public T value() {
+        return value;
+    }
+    
     @Override
-    default void accept(ConditionVisitor<T> visitor) {
+    public void accept(ConditionVisitor<T> visitor) {
         visitor.visit(this);
     }
+
+    public abstract String render(String fieldName, String placeholder);
 }

@@ -15,9 +15,9 @@
  */
 package org.mybatis.qbe.sql.where.condition;
 
-import org.mybatis.qbe.BaseSingleValueCondition;
+import org.mybatis.qbe.SingleValueCondition;
 
-public class IsLessThan<T> extends BaseSingleValueCondition<T> {
+public class IsLessThan<T> extends SingleValueCondition<T> {
 
     protected IsLessThan(T value) {
         super(value);

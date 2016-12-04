@@ -15,9 +15,9 @@
  */
 package org.mybatis.qbe.sql.where.condition;
 
-import org.mybatis.qbe.BaseTwoValueCondition;
+import org.mybatis.qbe.TwoValueCondition;
 
-public class IsNotBetween<T> extends BaseTwoValueCondition<T> {
+public class IsNotBetween<T> extends TwoValueCondition<T> {
 
     protected IsNotBetween(T value1, T value2) {
         super(value1, value2);

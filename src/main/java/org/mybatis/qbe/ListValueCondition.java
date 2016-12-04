@@ -15,15 +15,25 @@
  */
 package org.mybatis.qbe;
 
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
-public interface ListValueCondition<T> extends Condition<T> {
-    void visitValues(Consumer<T> consumer);
-    String render(String fieldName, Stream<String> placeholders);
+public abstract class ListValueCondition<T> implements Condition<T> {
+    private List<T> values = new ArrayList<>();
+
+    protected ListValueCondition(Stream<T> values) {
+        values.forEach(this.values::add);
+    }
+    
+    public Stream<T> values() {
+        return values.stream();
+    }
 
     @Override
-    default void accept(ConditionVisitor<T> visitor) {
+    public void accept(ConditionVisitor<T> visitor) {
         visitor.visit(this);
     }
+
+    public abstract String render(String fieldName, Stream<String> placeholders);
 }

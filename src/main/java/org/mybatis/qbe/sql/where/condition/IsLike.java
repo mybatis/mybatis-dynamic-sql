@@ -15,9 +15,9 @@
  */
 package org.mybatis.qbe.sql.where.condition;
 
-import org.mybatis.qbe.BaseSingleValueCondition;
+import org.mybatis.qbe.SingleValueCondition;
 
-public class IsLike extends BaseSingleValueCondition<String> {
+public class IsLike extends SingleValueCondition<String> {
 
     protected IsLike(String value) {
         super(value);
