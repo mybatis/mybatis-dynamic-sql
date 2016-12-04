@@ -24,8 +24,8 @@ public class IsLessThan<T> extends BaseSingleValueCondition<T> {
     }
     
     @Override
-    public String render(String placeholder) {
-        return String.format("< %s", placeholder); //$NON-NLS-1$
+    public String render(String fieldName, String placeholder) {
+        return String.format("%s < %s", fieldName, placeholder); //$NON-NLS-1$
     }
 
     public static <T> IsLessThan<T> of(T value) {

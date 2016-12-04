@@ -60,14 +60,12 @@ public class CriterionRenderer<T> {
     }
     
     private void renderCriteria() {
-        buffer.append(criterion.renderField(nameFunction));
-        buffer.append(' ');
         renderCondition();
         criterion.visitSubCriteria(c -> handleSubCriterion(c, sequence));
     }
 
     private void renderCondition() {
-        ConditionRenderer<T> visitor = ConditionRenderer.of(sequence, criterion.field());
+        ConditionRenderer<T> visitor = ConditionRenderer.of(sequence, criterion.field(), nameFunction);
         criterion.condition().accept(visitor);
         buffer.append(visitor.fragment());
         parameters.putAll(visitor.parameters());

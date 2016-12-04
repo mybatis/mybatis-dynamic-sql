@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 public interface ListValueCondition<T> extends Condition<T> {
     void visitValues(Consumer<T> consumer);
-    String render(Stream<String> placeholders);
+    String render(String fieldName, Stream<String> placeholders);
 
     @Override
     default void accept(ConditionVisitor<T> visitor) {

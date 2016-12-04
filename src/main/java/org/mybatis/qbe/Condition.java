@@ -15,25 +15,7 @@
  */
 package org.mybatis.qbe;
 
-import org.mybatis.qbe.sql.where.condition.IsLikeCaseInsensitive;
-import org.mybatis.qbe.sql.where.render.CriterionRenderer;
-
 @FunctionalInterface
 public interface Condition<T> {
     void accept(ConditionVisitor<T> visitor);
-    
-    /**
-     * This method allows a {@link Condition} to alter the field name before it
-     * is rendered by the {@link CriterionRenderer}. In the vast majority of cases, the
-     * field name should be returned as is back to the renderer.  However, some conditions
-     * (like the {@link IsLikeCaseInsensitive} condition) need to alter the field name
-     * before it is finally rendered.  This method allows a criterion to be written that effects
-     * both the field and the condition.
-     *    
-     * @param fieldName the field name as calculated by the enclosing {@link Criterion}
-     * @return the field name, possibly altered, as it should be finally rendered
-     */
-    default String renderCriterionField(String fieldName) {
-        return fieldName;
-    }
 }

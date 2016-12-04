@@ -24,8 +24,9 @@ public class IsBetween<T> extends BaseTwoValueCondition<T> {
     }
     
     @Override
-    public String render(String placeholder1, String placeholder2) {
-        return String.format("between %s and %s", //$NON-NLS-1$
+    public String render(String fieldName, String placeholder1, String placeholder2) {
+        return String.format("%s between %s and %s", //$NON-NLS-1$
+                fieldName,
                 placeholder1,
                 placeholder2);
     }

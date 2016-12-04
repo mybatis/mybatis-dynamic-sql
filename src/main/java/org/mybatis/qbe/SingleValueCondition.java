@@ -17,7 +17,7 @@ package org.mybatis.qbe;
 
 public interface SingleValueCondition<T> extends Condition<T> {
     T value();
-    String render(String placeholder);
+    String render(String fieldName, String placeholder);
 
     @Override
     default void accept(ConditionVisitor<T> visitor) {

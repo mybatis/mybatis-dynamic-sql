@@ -15,7 +15,9 @@
  */
 package org.mybatis.qbe.sql.where.condition;
 
-public class IsLikeCaseInsensitive extends IsLike {
+import org.mybatis.qbe.BaseSingleValueCondition;
+
+public class IsLikeCaseInsensitive extends BaseSingleValueCondition<String> {
     private IsLikeCaseInsensitive(String value) {
         super(value);
     }
@@ -25,10 +27,10 @@ public class IsLikeCaseInsensitive extends IsLike {
     }
     
     @Override
-    public String renderCriterionField(String fieldName) {
-        return String.format("upper(%s)", fieldName); //$NON-NLS-1$
+    public String render(String fieldName, String placeholder) {
+        return String.format("upper(%s) like %s", fieldName, placeholder); //$NON-NLS-1$
     }
-    
+
     @Override
     public String value() {
         return super.value().toUpperCase();

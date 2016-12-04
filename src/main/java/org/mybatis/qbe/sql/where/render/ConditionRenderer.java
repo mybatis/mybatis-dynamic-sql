@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import org.mybatis.qbe.ConditionVisitor;
 import org.mybatis.qbe.ListValueCondition;
@@ -35,10 +36,12 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
     private Map<String, Object> parameters = new HashMap<>();
     private AtomicInteger sequence;
     private SqlField<?> field;
+    private Function<SqlField<?>, String> nameFunction;
     
-    private ConditionRenderer(AtomicInteger sequence, SqlField<?> field) {
+    private ConditionRenderer(AtomicInteger sequence, SqlField<?> field, Function<SqlField<?>, String> nameFunction) {
         this.sequence = sequence;
         this.field = field;
+        this.nameFunction = nameFunction;
     }
     
     public String fragment() {
@@ -51,13 +54,13 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
 
     @Override
     public void visit(NoValueCondition<T> condition) {
-        buffer.append(condition.render());
+        buffer.append(condition.render(calculateFieldName()));
     }
 
     @Override
     public void visit(SingleValueCondition<T> condition) {
         int number = sequence.getAndIncrement();
-        buffer.append(condition.render(field.getFormattedJdbcPlaceholder(formatParameterName(number))));
+        buffer.append(condition.render(calculateFieldName(), field.getFormattedJdbcPlaceholder(formatParameterName(number))));
         parameters.put(formatParameterMapKey(number), condition.value());
     }
 
@@ -65,7 +68,7 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
     public void visit(TwoValueCondition<T> condition) {
         int number1 = sequence.getAndIncrement();
         int number2 = sequence.getAndIncrement();
-        buffer.append(condition.render(field.getFormattedJdbcPlaceholder(formatParameterName(number1)),
+        buffer.append(condition.render(calculateFieldName(), field.getFormattedJdbcPlaceholder(formatParameterName(number1)),
                 field.getFormattedJdbcPlaceholder(formatParameterName(number2))));
         parameters.put(formatParameterMapKey(number1), condition.value1());
         parameters.put(formatParameterMapKey(number2), condition.value2());
@@ -81,7 +84,7 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
             parameters.put(formatParameterMapKey(number), v);
         });
         
-        buffer.append(condition.render(placeholders.stream()));
+        buffer.append(condition.render(calculateFieldName(), placeholders.stream()));
     }
 
     private String formatParameterMapKey(int number) {
@@ -92,7 +95,11 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
         return String.format("parameters.p%s", number); //$NON-NLS-1$
     }
     
-    public static <T> ConditionRenderer<T> of(AtomicInteger sequence, SqlField<T> field) {
-        return new ConditionRenderer<>(sequence, field);
+    private String calculateFieldName() {
+        return nameFunction.apply(field);
+    }
+    
+    public static <T> ConditionRenderer<T> of(AtomicInteger sequence, SqlField<T> field, Function<SqlField<?>, String> nameFunction) {
+        return new ConditionRenderer<>(sequence, field, nameFunction);
     }
 }

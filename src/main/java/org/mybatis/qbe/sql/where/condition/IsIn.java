@@ -27,9 +27,10 @@ public class IsIn<T> extends BaseListValueCondition<T> {
     }
     
     @Override
-    public String render(Stream<String> placeholders) {
-        return placeholders
-                .collect(Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public String render(String fieldName, Stream<String> placeholders) {
+        return String.format("%s %s", fieldName,
+                placeholders
+                .collect(Collectors.joining(",", "in (", ")"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public static <T> IsIn<T> of(Stream<T> values) {

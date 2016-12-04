@@ -17,7 +17,7 @@ package org.mybatis.qbe;
 
 public interface NoValueCondition <T> extends Condition<T> {
 
-    String render();
+    String render(String fieldName);
 
     @Override
     default void accept(ConditionVisitor<T> visitor) {

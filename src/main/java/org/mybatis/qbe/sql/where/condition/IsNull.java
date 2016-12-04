@@ -24,7 +24,7 @@ public class IsNull<T> implements NoValueCondition<T> {
     }
     
     @Override
-    public String render() {
-        return "is null"; //$NON-NLS-1$
+    public String render(String fieldName) {
+        return String.format("%s is null", fieldName); //$NON-NLS-1$
     }
 }

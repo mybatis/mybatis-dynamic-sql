@@ -24,8 +24,8 @@ public class IsNotLike extends BaseSingleValueCondition<String> {
     }
 
     @Override
-    public String render(String placeholder) {
-        return String.format("not like %s", placeholder); //$NON-NLS-1$
+    public String render(String fieldName, String placeholder) {
+        return String.format("%s not like %s", fieldName, placeholder); //$NON-NLS-1$
     }
     
     public static IsNotLike of(String value) {
