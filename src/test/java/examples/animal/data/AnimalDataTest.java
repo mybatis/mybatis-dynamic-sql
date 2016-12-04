@@ -447,10 +447,10 @@ public class AnimalDataTest {
             record.setBrainWeight(1.2);
             
             InsertSupport<AnimalData> insertSupport = insertSupport(record) 
-                    .withFieldMapping(id, "id", AnimalData::getId)
-                    .withFieldMapping(animalName, "animalName", AnimalData::getAnimalName)
-                    .withFieldMapping(bodyWeight, "bodyWeight", AnimalData::getBodyWeight)
-                    .withFieldMapping(brainWeight, "brainWeight", AnimalData::getBrainWeight)
+                    .withFieldMapping(id, "id", record::getId)
+                    .withFieldMapping(animalName, "animalName", record::getAnimalName)
+                    .withFieldMapping(bodyWeight, "bodyWeight", record::getBodyWeight)
+                    .withFieldMapping(brainWeight, "brainWeight", record::getBrainWeight)
                     .buildFullInsert();
             
             int rows = mapper.insert(insertSupport);

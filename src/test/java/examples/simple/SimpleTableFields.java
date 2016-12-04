@@ -39,21 +39,21 @@ public interface SimpleTableFields {
     
     static InsertSupport<SimpleTableRecord> buildInsertSupport(SimpleTableRecord record) {
         return insertSupport(record)
-                .withFieldMapping(id, "id", SimpleTableRecord::getId)
-                .withFieldMapping(firstName, "firstName", SimpleTableRecord::getFirstName)
-                .withFieldMapping(lastName, "lastName", SimpleTableRecord::getLastName)
-                .withFieldMapping(birthDate, "birthDate", SimpleTableRecord::getBirthDate)
-                .withFieldMapping(occupation, "occupation", SimpleTableRecord::getOccupation)
+                .withFieldMapping(id, "id", record::getId)
+                .withFieldMapping(firstName, "firstName", record::getFirstName)
+                .withFieldMapping(lastName, "lastName", record::getLastName)
+                .withFieldMapping(birthDate, "birthDate", record::getBirthDate)
+                .withFieldMapping(occupation, "occupation", record::getOccupation)
                 .buildFullInsert();
     }
 
     static InsertSupport<SimpleTableRecord> buildInsertSelectiveSupport(SimpleTableRecord record) {
         return insertSupport(record)
-                .withFieldMapping(id, "id", SimpleTableRecord::getId)
-                .withFieldMapping(firstName, "firstName", SimpleTableRecord::getFirstName)
-                .withFieldMapping(lastName, "lastName", SimpleTableRecord::getLastName)
-                .withFieldMapping(birthDate, "birthDate", SimpleTableRecord::getBirthDate)
-                .withFieldMapping(occupation, "occupation", SimpleTableRecord::getOccupation)
+                .withFieldMapping(id, "id", record::getId)
+                .withFieldMapping(firstName, "firstName", record::getFirstName)
+                .withFieldMapping(lastName, "lastName", record::getLastName)
+                .withFieldMapping(birthDate, "birthDate", record::getBirthDate)
+                .withFieldMapping(occupation, "occupation", record::getOccupation)
                 .buildSelectiveInsert();
     }
     

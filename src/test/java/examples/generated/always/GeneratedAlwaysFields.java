@@ -37,17 +37,17 @@ public interface GeneratedAlwaysFields {
     
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSupport(GeneratedAlwaysRecord record) {
         return insertSupport(record)
-                .withFieldMapping(id, "id", GeneratedAlwaysRecord::getId)
-                .withFieldMapping(firstName, "firstName", GeneratedAlwaysRecord::getFirstName)
-                .withFieldMapping(lastName, "lastName", GeneratedAlwaysRecord::getLastName)
+                .withFieldMapping(id, "id", record::getId)
+                .withFieldMapping(firstName, "firstName", record::getFirstName)
+                .withFieldMapping(lastName, "lastName", record::getLastName)
                 .buildFullInsert();
     }
 
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
         return insertSupport(record)
-                .withFieldMapping(id, "id", GeneratedAlwaysRecord::getId)
-                .withFieldMapping(firstName, "firstName", GeneratedAlwaysRecord::getFirstName)
-                .withFieldMapping(lastName, "lastName", GeneratedAlwaysRecord::getLastName)
+                .withFieldMapping(id, "id", record::getId)
+                .withFieldMapping(firstName, "firstName", record::getFirstName)
+                .withFieldMapping(lastName, "lastName", record::getLastName)
                 .buildSelectiveInsert();
     }
     

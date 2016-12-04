@@ -33,15 +33,15 @@ public class InsertSupportTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
 
-        TestRecord testRecord = new TestRecord();
-        testRecord.setLastName("jones");
-        testRecord.setOccupation("dino driver");
+        TestRecord record = new TestRecord();
+        record.setLastName("jones");
+        record.setOccupation("dino driver");
         
-        InsertSupport<?> insertSupport = insertSupport(testRecord)
-                .withFieldMapping(id, "id", TestRecord::getId)
-                .withFieldMapping(firstName, "firstName", TestRecord::getFirstName)
-                .withFieldMapping(lastName, "lastName", TestRecord::getLastName)
-                .withFieldMapping(occupation, "occupation", TestRecord::getOccupation)
+        InsertSupport<?> insertSupport = insertSupport(record)
+                .withFieldMapping(id, "id", record::getId)
+                .withFieldMapping(firstName, "firstName", record::getFirstName)
+                .withFieldMapping(lastName, "lastName", record::getLastName)
+                .withFieldMapping(occupation, "occupation", record::getOccupation)
                 .buildFullInsert();
 
         String expectedFieldsPhrase = "(id, first_name, last_name, occupation)";
@@ -61,15 +61,15 @@ public class InsertSupportTest {
         MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR);
         MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
 
-        TestRecord testRecord = new TestRecord();
-        testRecord.setLastName("jones");
-        testRecord.setOccupation("dino driver");
+        TestRecord record = new TestRecord();
+        record.setLastName("jones");
+        record.setOccupation("dino driver");
         
-        InsertSupport<?> insertSupport = insertSupport(testRecord)
-                .withFieldMapping(id, "id", TestRecord::getId)
-                .withFieldMapping(firstName, "firstName", TestRecord::getFirstName)
-                .withFieldMapping(lastName, "lastName", TestRecord::getLastName)
-                .withFieldMapping(occupation, "occupation", TestRecord::getOccupation)
+        InsertSupport<?> insertSupport = insertSupport(record)
+                .withFieldMapping(id, "id", record::getId)
+                .withFieldMapping(firstName, "firstName", record::getFirstName)
+                .withFieldMapping(lastName, "lastName", record::getLastName)
+                .withFieldMapping(occupation, "occupation", record::getOccupation)
                 .buildSelectiveInsert();
 
         String expectedFieldsPhrase = "(last_name, occupation)";

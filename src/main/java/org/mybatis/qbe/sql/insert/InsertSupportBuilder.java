@@ -17,8 +17,8 @@ package org.mybatis.qbe.sql.insert;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.mybatis.qbe.sql.SqlField;
@@ -31,14 +31,14 @@ public interface InsertSupportBuilder {
     
     static class Builder<T> {
         private T record;
-        private List<FieldMapping<T, ?>> fieldMappings = new ArrayList<>();
+        private List<FieldMapping<?>> fieldMappings = new ArrayList<>();
 
         public Builder(T record) {
             super();
             this.record = record;
         }
         
-        public <S> Builder<T> withFieldMapping(SqlField<S> field, String property, Function<T, S> getterFunction) {
+        public <F> Builder<T> withFieldMapping(SqlField<F> field, String property, Supplier<F> getterFunction) {
             fieldMappings.add(FieldMapping.of(field, property, getterFunction));
             return this;
         }
@@ -48,10 +48,10 @@ public interface InsertSupportBuilder {
         }
 
         public InsertSupport<T> buildSelectiveInsert() {
-            return build(fm -> fm.getterFunction.apply(record) != null);
+            return build(fm -> fm.getterFunction.get() != null);
         }
         
-        private InsertSupport<T> build(Predicate<FieldMapping<T, ?>> filter) {
+        private InsertSupport<T> build(Predicate<FieldMapping<?>> filter) {
             List<String> fieldPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             
@@ -69,20 +69,19 @@ public interface InsertSupportBuilder {
         /**
          * A little triplet to hold the field mapping.  Only intended for use in this builder. 
          *  
-         * @param <R> the record type associated with this insert
          * @param <F> the field type of this mapping
          */
-        private static class FieldMapping<R, F> {
+        private static class FieldMapping<F> {
             private SqlField<F> field;
             private String property;
-            private Function<R, F> getterFunction;
+            private Supplier<F> getterFunction;
             
             private FieldMapping() {
                 super();
             }
             
-            private static <R, F> FieldMapping<R, F> of(SqlField<F> field, String property, Function<R, F> getterFunction) {
-                FieldMapping<R, F> mapping = new FieldMapping<>();
+            private static <F> FieldMapping<F> of(SqlField<F> field, String property, Supplier<F> getterFunction) {
+                FieldMapping<F> mapping = new FieldMapping<>();
                 mapping.field = field;
                 mapping.property = property;
                 mapping.getterFunction = getterFunction;
