@@ -17,9 +17,10 @@ package org.mybatis.qbe.sql.insert;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.mybatis.qbe.sql.SqlField;
 
@@ -44,48 +45,71 @@ public interface InsertSupportBuilder {
         }
         
         public InsertSupport<T> buildFullInsert() {
-            return build(t -> true);
+            return build(fieldMappings.stream());
         }
 
         public InsertSupport<T> buildSelectiveInsert() {
-            return build(fm -> fm.getterFunction.get() != null);
+            return build(fieldMappings.stream().filter(FieldMapping::hasValue));
         }
         
-        private InsertSupport<T> build(Predicate<FieldMapping<?>> filter) {
-            List<String> fieldPhrases = new ArrayList<>();
-            List<String> valuePhrases = new ArrayList<>();
-            
-            fieldMappings.stream().filter(filter).forEach(fm -> {
-                SqlField<?> field = fm.field;
-                fieldPhrases.add(field.nameIgnoringTableAlias());
-                valuePhrases.add(field.getFormattedJdbcPlaceholder(String.format("record.%s", fm.property)));
-            });
-            
-            String fieldsPhrase = fieldPhrases.stream().collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            String valuesPhrase = valuePhrases.stream().collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            return InsertSupport.of(fieldsPhrase, valuesPhrase, record);
+        private InsertSupport<T> build(Stream<FieldMapping<?>> mappings) {
+            return mappings.collect(Collector.of(
+                    CollectorSupport::new,
+                    CollectorSupport::add,
+                    CollectorSupport::merge,
+                    c -> c.toInsertSupport(record)));
         }
-
+        
         /**
          * A little triplet to hold the field mapping.  Only intended for use in this builder. 
          *  
          * @param <F> the field type of this mapping
          */
         private static class FieldMapping<F> {
-            private SqlField<F> field;
-            private String property;
-            private Supplier<F> getterFunction;
+            SqlField<F> field;
+            String property;
+            Supplier<F> getterFunction;
             
-            private FieldMapping() {
-                super();
+            boolean hasValue() {
+                return getterFunction.get() != null;
             }
             
-            private static <F> FieldMapping<F> of(SqlField<F> field, String property, Supplier<F> getterFunction) {
+            static <F> FieldMapping<F> of(SqlField<F> field, String property, Supplier<F> getterFunction) {
                 FieldMapping<F> mapping = new FieldMapping<>();
                 mapping.field = field;
                 mapping.property = property;
                 mapping.getterFunction = getterFunction;
                 return mapping;
+            }
+        }
+        
+        private static class CollectorSupport {
+            List<String> fieldPhrases = new ArrayList<>();
+            List<String> valuePhrases = new ArrayList<>();
+            
+            void add(FieldMapping<?> mapping) {
+                fieldPhrases.add(mapping.field.nameIgnoringTableAlias());
+                valuePhrases.add(mapping.field.getFormattedJdbcPlaceholder(String.format("record.%s", mapping.property))); //$NON-NLS-1$
+            }
+            
+            CollectorSupport merge(CollectorSupport other) {
+                fieldPhrases.addAll(other.fieldPhrases);
+                valuePhrases.addAll(other.valuePhrases);
+                return this;
+            }
+            
+            String fieldsPhrase() {
+                return fieldPhrases.stream()
+                        .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
+            }
+
+            String valuesPhrase() {
+                return valuePhrases.stream()
+                        .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            
+            <T> InsertSupport<T> toInsertSupport(T record) {
+                return InsertSupport.of(fieldsPhrase(), valuesPhrase(), record);
             }
         }
     }
