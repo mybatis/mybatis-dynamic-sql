@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.qbe.sql;
+package org.mybatis.qbe.sql.update;
 
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -22,19 +22,24 @@ import static org.mybatis.qbe.sql.SqlConditions.*;
 import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.*;
 
 import java.sql.JDBCType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collector;
 
 import org.junit.Test;
+import org.mybatis.qbe.sql.SqlField;
 import org.mybatis.qbe.sql.update.UpdateSupport;
+import org.mybatis.qbe.sql.update.UpdateSupportBuilder.WhereBuilder.SetValuesCollector;
 
 public class UpdateSupportTest {
+    private static final SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
+    private static final SqlField<String> firstName = SqlField.of("firstName", JDBCType.VARCHAR);
+    private static final SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
+    private static final SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
 
     @Test
     public void testUpdateParameter() {
-        SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
-        SqlField<String> firstName = SqlField.of("firstName", JDBCType.VARCHAR);
-        SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
-        SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
-
         UpdateSupport updateSupport = updateSupport()
                 .set(firstName, "fred")
                 .set(lastName, "jones")
@@ -58,11 +63,6 @@ public class UpdateSupportTest {
 
     @Test
     public void testUpdateParameterStartWithNull() {
-        SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
-        SqlField<String> firstName = SqlField.of("firstName", JDBCType.VARCHAR);
-        SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
-        SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
-
         UpdateSupport updateSupport = updateSupport()
                 .setNull(occupation)
                 .set(firstName, "fred")
@@ -84,5 +84,25 @@ public class UpdateSupportTest {
         assertThat(updateSupport.getParameters().get("up3"), is("jones"));
         assertThat(updateSupport.getParameters().get("p1"), is(3));
         assertThat(updateSupport.getParameters().get("p2"), is("barney"));
+    }
+    
+    @Test
+    public void testParallelStream() {
+        AtomicInteger sequence = new AtomicInteger(1);
+        List<FieldAndValue<?>> setFields = new ArrayList<>();
+        setFields.add(FieldAndValue.of(occupation, sequence.getAndIncrement()));
+        setFields.add(FieldAndValue.of(firstName, "fred", sequence.getAndIncrement()));
+        setFields.add(FieldAndValue.of(lastName, "jones", sequence.getAndIncrement()));
+        
+        SetValuesCollector collector = setFields.parallelStream().collect(Collector.of(
+                SetValuesCollector::new,
+                SetValuesCollector::add,
+                SetValuesCollector::merge));
+        
+        assertThat(collector.getSetClause(), is("set occupation = ?, firstName = ?, lastName = ?"));
+        assertThat(collector.parameters.size(), is(3));
+        assertThat(collector.parameters.get("up1"), is(nullValue()));
+        assertThat(collector.parameters.get("up2"), is("fred"));
+        assertThat(collector.parameters.get("up3"), is("jones"));
     }
 }

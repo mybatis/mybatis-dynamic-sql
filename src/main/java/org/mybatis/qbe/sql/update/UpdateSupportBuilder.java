@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.mybatis.qbe.Condition;
@@ -36,6 +37,7 @@ public interface UpdateSupportBuilder {
     }
     
     static class SetBuilder {
+        private AtomicInteger sequence = new AtomicInteger(1);
         private List<FieldAndValue<?>> fieldsAndValues = new ArrayList<>();
         
         public SetBuilder() {
@@ -43,17 +45,17 @@ public interface UpdateSupportBuilder {
         }
         
         public <T> SetBuilder set(SqlField<T> field, Optional<T> value) {
-            value.ifPresent(v -> set(field, v));
+            value.ifPresent(v -> fieldsAndValues.add(FieldAndValue.of(field, v, sequence.getAndIncrement())));
             return this;
         }
         
         public <T> SetBuilder set(SqlField<T> field, T value) {
-            fieldsAndValues.add(FieldAndValue.of(field, value));
+            fieldsAndValues.add(FieldAndValue.of(field, value, sequence.getAndIncrement()));
             return this;
         }
         
         public <T> SetBuilder setNull(SqlField<T> field) {
-            fieldsAndValues.add(FieldAndValue.of(field));
+            fieldsAndValues.add(FieldAndValue.of(field, sequence.getAndIncrement()));
             return this;
         }
         
@@ -72,17 +74,18 @@ public interface UpdateSupportBuilder {
         
         public UpdateSupport build() {
             Map<String, Object> parameters = new HashMap<>();
-            PartialSetSupport partialSetSupport = renderSetValues();
+            SetValuesCollector setValuesCollector = renderSetValues();
             WhereSupport whereSupport = renderCriteria(SqlField::nameIgnoringTableAlias);
-            parameters.putAll(partialSetSupport.parameters);
+            parameters.putAll(setValuesCollector.parameters);
             parameters.putAll(whereSupport.getParameters());
-            return UpdateSupport.of(partialSetSupport.getSetClause(), whereSupport.getWhereClause(), parameters);
+            return UpdateSupport.of(setValuesCollector.getSetClause(), whereSupport.getWhereClause(), parameters);
         }
         
-        private PartialSetSupport renderSetValues() {
-            PartialSetSupport partialSetClause = new PartialSetSupport();
-            setFieldsAndValues.forEach(partialSetClause::addFieldAndValue);
-            return partialSetClause;
+        private SetValuesCollector renderSetValues() {
+            return setFieldsAndValues.stream().collect(Collector.of(
+                    SetValuesCollector::new,
+                    SetValuesCollector::add,
+                    SetValuesCollector::merge));
         }
 
         @Override
@@ -90,46 +93,46 @@ public interface UpdateSupportBuilder {
             return this;
         }
         
-        private static class PartialSetSupport {
+        static class SetValuesCollector {
             List<String> phrases = new ArrayList<>();
-            AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
-
-            void addFieldAndValue(FieldAndValue<?> fieldAndValue) {
-                int number = sequence.getAndIncrement();
-                SqlField<?> field = fieldAndValue.field;
-                String phrase = String.format("%s = %s", field.nameIgnoringTableAlias(), //$NON-NLS-1$
-                        field.getFormattedJdbcPlaceholder(String.format("parameters.up%s",  number))); //$NON-NLS-1$
-                phrases.add(phrase);
-                parameters.put(String.format("up%s", number), fieldAndValue.value); //$NON-NLS-1$
+            
+            void add(FieldAndValue<?> fieldAndValue) {
+                phrases.add(fieldAndValue.setPhrase);
+                parameters.put(fieldAndValue.mapKey, fieldAndValue.value);
             }
             
+            SetValuesCollector merge(SetValuesCollector other) {
+                phrases.addAll(other.phrases);
+                parameters.putAll(other.parameters);
+                return this;
+            }
+
             String getSetClause() {
                 return phrases.stream().collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         }
     }
     
-    /**
-     * A little pair that holds the field and value.  Only intended for use by the builders.
-     * 
-     * @param <T> the field type
-     */
     static class FieldAndValue<T> {
         private T value;
-        private SqlField<T> field;
+        private String setPhrase;
+        private String mapKey;
         
-        private static <T> FieldAndValue<T> of(SqlField<T> field, T value) {
-            FieldAndValue<T> phrase = new FieldAndValue<>();
-            phrase.value = value;
-            phrase.field = field;
-            return phrase;
+        private FieldAndValue(SqlField<T> field, T value, int uniqueId) {
+            this.value = value;
+            String jdbcPlaceholder = field.getFormattedJdbcPlaceholder(String.format("parameters.up%s", uniqueId)); //$NON-NLS-1$
+            setPhrase = String.format("%s = %s", field.nameIgnoringTableAlias(), //$NON-NLS-1$
+                    jdbcPlaceholder);
+            mapKey = String.format("up%s", uniqueId); //$NON-NLS-1$
+        }
+        
+        static <T> FieldAndValue<T> of(SqlField<T> field, T value, int uniqueId) {
+            return new FieldAndValue<>(field, value, uniqueId);
         }
 
-        private static <T> FieldAndValue<T> of(SqlField<T> field) {
-            FieldAndValue<T> phrase = new FieldAndValue<>();
-            phrase.field = field;
-            return phrase;
+        static <T> FieldAndValue<T> of(SqlField<T> field, int uniqueId) {
+            return new FieldAndValue<>(field, null, uniqueId);
         }
     }
 }
