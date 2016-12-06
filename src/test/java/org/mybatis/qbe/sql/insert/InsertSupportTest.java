@@ -13,31 +13,37 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.qbe.sql;
+package org.mybatis.qbe.sql.insert;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
 
 import java.sql.JDBCType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collector;
 
 import org.junit.Test;
+import org.mybatis.qbe.sql.SqlField;
 import org.mybatis.qbe.sql.insert.InsertSupport;
+import org.mybatis.qbe.sql.insert.InsertSupportBuilder.Builder.CollectorSupport;
+import org.mybatis.qbe.sql.insert.InsertSupportBuilder.Builder.FieldMapping;
 
 public class InsertSupportTest {
+    private static final SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
+    private static final SqlField<String> firstName = SqlField.of("first_name", JDBCType.VARCHAR);
+    private static final SqlField<String> lastName = SqlField.of("last_name", JDBCType.VARCHAR);
+    private static final SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
     
     @Test
     public void testFullInsertSupportBuilder() {
-        SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
-        SqlField<String> firstName = SqlField.of("first_name", JDBCType.VARCHAR);
-        SqlField<String> lastName = SqlField.of("last_name", JDBCType.VARCHAR);
-        SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
 
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertSupport<?> insertSupport = insertSupport(record)
+        InsertSupport<TestRecord> insertSupport = insertSupport(record)
                 .withFieldMapping(id, "id", record::getId)
                 .withFieldMapping(firstName, "firstName", record::getFirstName)
                 .withFieldMapping(lastName, "lastName", record::getLastName)
@@ -53,16 +59,11 @@ public class InsertSupportTest {
 
     @Test
     public void testSelectiveInsertSupportBuilder() {
-        SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
-        SqlField<String> firstName = SqlField.of("first_name", JDBCType.VARCHAR);
-        SqlField<String> lastName = SqlField.of("last_name", JDBCType.VARCHAR);
-        SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
-
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertSupport<?> insertSupport = insertSupport(record)
+        InsertSupport<TestRecord> insertSupport = insertSupport(record)
                 .withFieldMapping(id, "id", record::getId)
                 .withFieldMapping(firstName, "firstName", record::getFirstName)
                 .withFieldMapping(lastName, "lastName", record::getLastName)
@@ -76,6 +77,34 @@ public class InsertSupportTest {
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
     }
 
+    @Test
+    public void testParallelStream() {
+
+        TestRecord record = new TestRecord();
+        record.setLastName("jones");
+        record.setOccupation("dino driver");
+        
+        List<FieldMapping<?>> mappings = new ArrayList<>();
+        
+        mappings.add(FieldMapping.of(id, "id", record::getId));
+        mappings.add(FieldMapping.of(firstName, "first_name", record::getFirstName));
+        mappings.add(FieldMapping.of(lastName, "last_name", record::getLastName));
+        mappings.add(FieldMapping.of(occupation, "occupation", record::getOccupation));
+        
+        InsertSupport<TestRecord> insertSupport = 
+                mappings.parallelStream().collect(Collector.of(
+                        CollectorSupport::new,
+                        CollectorSupport::add,
+                        CollectorSupport::merge,
+                        c -> c.toInsertSupport(record)));
+                
+        String expectedFieldsPhrase = "(id, first_name, last_name, occupation)";
+        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
+
+        String expectedValuesPhrase = "values (?, ?, ?, ?)";
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+    }
+    
     public static class TestRecord {
         private Integer id;
         private String firstName;

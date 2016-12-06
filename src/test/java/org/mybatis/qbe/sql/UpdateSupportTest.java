@@ -50,10 +50,10 @@ public class UpdateSupportTest {
         assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
         
         assertThat(updateSupport.getParameters().size(), is(4));
-        assertThat(updateSupport.getParameters().get("p1"), is("fred"));
-        assertThat(updateSupport.getParameters().get("p2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("p3"), is(nullValue()));
-        assertThat(updateSupport.getParameters().get("p4"), is(3));
+        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
+        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
+        assertThat(updateSupport.getParameters().get("up3"), is(nullValue()));
+        assertThat(updateSupport.getParameters().get("p1"), is(3));
     }
 
     @Test
@@ -79,10 +79,10 @@ public class UpdateSupportTest {
         assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
         
         assertThat(updateSupport.getParameters().size(), is(5));
-        assertThat(updateSupport.getParameters().get("p1"), is(nullValue()));
-        assertThat(updateSupport.getParameters().get("p2"), is("fred"));
-        assertThat(updateSupport.getParameters().get("p3"), is("jones"));
-        assertThat(updateSupport.getParameters().get("p4"), is(3));
-        assertThat(updateSupport.getParameters().get("p5"), is("barney"));
+        assertThat(updateSupport.getParameters().get("up1"), is(nullValue()));
+        assertThat(updateSupport.getParameters().get("up2"), is("fred"));
+        assertThat(updateSupport.getParameters().get("up3"), is("jones"));
+        assertThat(updateSupport.getParameters().get("p1"), is(3));
+        assertThat(updateSupport.getParameters().get("p2"), is("barney"));
     }
 }

@@ -27,6 +27,7 @@ import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.SqlField;
 import org.mybatis.qbe.sql.where.AbstractWhereBuilder;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface UpdateSupportBuilder {
 
@@ -70,31 +71,42 @@ public interface UpdateSupportBuilder {
         }
         
         public UpdateSupport build() {
-            AtomicInteger sequence = new AtomicInteger(1);
             Map<String, Object> parameters = new HashMap<>();
-            String setClause = renderSetValues(sequence, parameters);
-            String whereClause = renderCriteria(SqlField::nameIgnoringTableAlias, sequence, parameters);
-            return UpdateSupport.of(setClause, whereClause, parameters);
+            PartialSetSupport partialSetSupport = renderSetValues();
+            WhereSupport whereSupport = renderCriteria(SqlField::nameIgnoringTableAlias);
+            parameters.putAll(partialSetSupport.parameters);
+            parameters.putAll(whereSupport.getParameters());
+            return UpdateSupport.of(partialSetSupport.getSetClause(), whereSupport.getWhereClause(), parameters);
         }
         
-        private String renderSetValues(AtomicInteger sequence, Map<String, Object> parameters) {
-            List<String> phrases = new ArrayList<>();
-            
-            setFieldsAndValues.forEach(fv -> {
-                int number = sequence.getAndIncrement();
-                SqlField<?> field = fv.field;
-                String phrase = String.format("%s = %s", field.nameIgnoringTableAlias(), //$NON-NLS-1$
-                        field.getFormattedJdbcPlaceholder(String.format("parameters.p%s",  number)));
-                phrases.add(phrase);
-                parameters.put(String.format("p%s", number), fv.value); //$NON-NLS-1$
-            });
-            
-            return phrases.stream().collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        private PartialSetSupport renderSetValues() {
+            PartialSetSupport partialSetClause = new PartialSetSupport();
+            setFieldsAndValues.forEach(partialSetClause::addFieldAndValue);
+            return partialSetClause;
         }
 
         @Override
         public WhereBuilder getThis() {
             return this;
+        }
+        
+        private static class PartialSetSupport {
+            List<String> phrases = new ArrayList<>();
+            AtomicInteger sequence = new AtomicInteger(1);
+            Map<String, Object> parameters = new HashMap<>();
+
+            void addFieldAndValue(FieldAndValue<?> fieldAndValue) {
+                int number = sequence.getAndIncrement();
+                SqlField<?> field = fieldAndValue.field;
+                String phrase = String.format("%s = %s", field.nameIgnoringTableAlias(), //$NON-NLS-1$
+                        field.getFormattedJdbcPlaceholder(String.format("parameters.up%s",  number))); //$NON-NLS-1$
+                phrases.add(phrase);
+                parameters.put(String.format("up%s", number), fieldAndValue.value); //$NON-NLS-1$
+            }
+            
+            String getSetClause() {
+                return phrases.stream().collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
         }
     }
     

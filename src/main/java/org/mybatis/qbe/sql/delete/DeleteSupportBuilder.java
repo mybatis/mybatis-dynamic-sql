@@ -15,14 +15,11 @@
  */
 package org.mybatis.qbe.sql.delete;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.SqlField;
 import org.mybatis.qbe.sql.where.AbstractWhereBuilder;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface DeleteSupportBuilder {
 
@@ -42,10 +39,8 @@ public interface DeleteSupportBuilder {
         }
         
         public DeleteSupport build() {
-            AtomicInteger sequence = new AtomicInteger(1);
-            Map<String, Object> parameters = new HashMap<>();
-            String whereClause = renderCriteria(SqlField::nameIgnoringTableAlias, sequence, parameters);
-            return DeleteSupport.of(whereClause, parameters);
+            WhereSupport whereSupport = renderCriteria(SqlField::nameIgnoringTableAlias);
+            return DeleteSupport.of(whereSupport.getWhereClause(), whereSupport.getParameters());
         }
         
         @Override

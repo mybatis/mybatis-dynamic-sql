@@ -65,7 +65,7 @@ public interface InsertSupportBuilder {
          *  
          * @param <F> the field type of this mapping
          */
-        private static class FieldMapping<F> {
+        static class FieldMapping<F> {
             SqlField<F> field;
             String property;
             Supplier<F> getterFunction;
@@ -83,7 +83,7 @@ public interface InsertSupportBuilder {
             }
         }
         
-        private static class CollectorSupport {
+        static class CollectorSupport {
             List<String> fieldPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             

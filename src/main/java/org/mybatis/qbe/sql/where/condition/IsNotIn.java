@@ -28,7 +28,7 @@ public class IsNotIn<T> extends ListValueCondition<T> {
 
     @Override
     public String render(String fieldName, Stream<String> placeholders) {
-        return String.format("%s %s", fieldName,
+        return String.format("%s %s", fieldName, //$NON-NLS-1$
                 placeholders
                 .collect(Collectors.joining(",", "not in (", ")"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }

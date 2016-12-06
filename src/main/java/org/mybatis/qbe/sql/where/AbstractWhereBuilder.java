@@ -17,15 +17,11 @@ package org.mybatis.qbe.sql.where;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.SqlField;
-import org.mybatis.qbe.sql.where.render.CriterionRenderer;
-import org.mybatis.qbe.sql.where.render.RenderedCriterion;
 
 public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();
@@ -44,15 +40,8 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         return getThis();
     }
     
-    protected String renderCriteria(Function<SqlField<?>, String> nameFunction, AtomicInteger sequence, Map<String, Object> parameters) {
-        StringBuilder buffer = new StringBuilder("where"); //$NON-NLS-1$
-        
-        criteria.forEach(c -> {
-            RenderedCriterion rc = CriterionRenderer.of(c, sequence, nameFunction).render();
-            buffer.append(rc.whereClauseFragment());
-            parameters.putAll(rc.fragmentParameters());
-        });
-        return buffer.toString();
+    protected WhereSupport renderCriteria(Function<SqlField<?>, String> nameFunction) {
+        return WhereSupport.of(nameFunction, criteria.stream());
     }
     
     public abstract T getThis();
