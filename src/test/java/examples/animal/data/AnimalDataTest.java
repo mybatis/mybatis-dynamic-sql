@@ -238,6 +238,23 @@ public class AnimalDataTest {
     }
 
     @Test
+    public void testInCaseSensitiveCondition() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = selectSupport()
+                    .where(animalName, isInCaseInsensitive("yellow-bellied marmot", "verbet"))
+                    .build();
+
+            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            assertThat(animals.size(), is(2));
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
     public void testNotInCondition() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
@@ -249,6 +266,23 @@ public class AnimalDataTest {
 
             List<AnimalData> animals = mapper.selectByExample(selectSupport);
             assertThat(animals.size(), is(62));
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testNotInCaseSensitiveCondition() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = selectSupport()
+                    .where(animalName, isNotInCaseInsensitive("yellow-bellied marmot", "verbet"))
+                    .build();
+
+            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            assertThat(animals.size(), is(63));
         } finally {
             sqlSession.close();
         }

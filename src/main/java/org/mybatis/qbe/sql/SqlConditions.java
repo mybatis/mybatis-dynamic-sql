@@ -23,6 +23,7 @@ import org.mybatis.qbe.sql.where.condition.IsEqualTo;
 import org.mybatis.qbe.sql.where.condition.IsGreaterThan;
 import org.mybatis.qbe.sql.where.condition.IsGreaterThanOrEqualTo;
 import org.mybatis.qbe.sql.where.condition.IsIn;
+import org.mybatis.qbe.sql.where.condition.IsInCaseInsensitive;
 import org.mybatis.qbe.sql.where.condition.IsLessThan;
 import org.mybatis.qbe.sql.where.condition.IsLessThanOrEqualTo;
 import org.mybatis.qbe.sql.where.condition.IsLike;
@@ -30,6 +31,7 @@ import org.mybatis.qbe.sql.where.condition.IsLikeCaseInsensitive;
 import org.mybatis.qbe.sql.where.condition.IsNotBetween;
 import org.mybatis.qbe.sql.where.condition.IsNotEqualTo;
 import org.mybatis.qbe.sql.where.condition.IsNotIn;
+import org.mybatis.qbe.sql.where.condition.IsNotInCaseInsensitive;
 import org.mybatis.qbe.sql.where.condition.IsNotLike;
 import org.mybatis.qbe.sql.where.condition.IsNotLikeCaseInsensitive;
 import org.mybatis.qbe.sql.where.condition.IsNotNull;
@@ -119,5 +121,13 @@ public interface SqlConditions {
     
     static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
         return IsNotLikeCaseInsensitive.of(value);
+    }
+
+    static IsInCaseInsensitive isInCaseInsensitive(String...values) {
+        return IsInCaseInsensitive.of(Stream.of(values));
+    }
+
+    static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
+        return IsNotInCaseInsensitive.of(Stream.of(values));
     }
 }
