@@ -47,11 +47,11 @@ public class UpdateSupportTest {
                 .where(id, isEqualTo(3))
                 .build();
         
-        String expectedSetClause = "set firstName = ?, lastName = ?, occupation = ?";
+        String expectedSetClause = "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = {parameters.up3}";
                 
         assertThat(updateSupport.getSetClause(), is(expectedSetClause));
         
-        String expectedWhereClauses = "where id = ?";
+        String expectedWhereClauses = "where id = {parameters.p1}";
         assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
         
         assertThat(updateSupport.getParameters().size(), is(4));
@@ -71,11 +71,11 @@ public class UpdateSupportTest {
                 .and(firstName, isEqualTo("barney"))
                 .build();
         
-        String expectedSetClause = "set occupation = ?, firstName = ?, lastName = ?";
+        String expectedSetClause = "set occupation = {parameters.up1}, firstName = {parameters.up2}, lastName = {parameters.up3}";
                 
         assertThat(updateSupport.getSetClause(), is(expectedSetClause));
         
-        String expectedWhereClauses = "where id = ? and firstName = ?";
+        String expectedWhereClauses = "where id = {parameters.p1} and firstName = {parameters.p2}";
         assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
         
         assertThat(updateSupport.getParameters().size(), is(5));
@@ -99,7 +99,7 @@ public class UpdateSupportTest {
                 SetValuesCollector::add,
                 SetValuesCollector::merge));
         
-        assertThat(collector.getSetClause(), is("set occupation = ?, firstName = ?, lastName = ?"));
+        assertThat(collector.getSetClause(), is("set occupation = {parameters.up1}, firstName = {parameters.up2}, lastName = {parameters.up3}"));
         assertThat(collector.parameters.size(), is(3));
         assertThat(collector.parameters.get("up1"), is(nullValue()));
         assertThat(collector.parameters.get("up2"), is("fred"));

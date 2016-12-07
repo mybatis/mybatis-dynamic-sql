@@ -39,7 +39,7 @@ public class CriterionRendererTest {
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIgnoringTableAlias);
         
         RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = ?"));
+        assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
         assertThat(rc.fragmentParameters().size(), is(1));
     }
 
@@ -53,7 +53,7 @@ public class CriterionRendererTest {
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIncludingTableAlias);
         
         RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" a.id = ?"));
+        assertThat(rc.whereClauseFragment(), is(" a.id = {parameters.p1}"));
         assertThat(rc.fragmentParameters().size(), is(1));
     }
 
@@ -66,7 +66,7 @@ public class CriterionRendererTest {
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIgnoringTableAlias);
         
         RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = ?"));
+        assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
         assertThat(rc.fragmentParameters().size(), is(1));
     }
 
@@ -79,7 +79,7 @@ public class CriterionRendererTest {
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIncludingTableAlias);
         
         RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = ?"));
+        assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
         assertThat(rc.fragmentParameters().size(), is(1));
     }
 }

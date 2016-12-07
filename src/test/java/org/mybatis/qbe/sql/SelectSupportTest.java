@@ -45,7 +45,7 @@ public class SelectSupportTest {
                 .and(field2, isLessThan(3))
                 .build();
 
-        assertThat(selectSupport.getWhereClause(), is("where a.field1 = ? or a.field2 = ? and a.field2 < ?"));
+        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1} or a.field2 = {parameters.p2} and a.field2 < {parameters.p3}"));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -66,11 +66,11 @@ public class SelectSupportTest {
                 .build();
         
 
-        String expected = "where a.field1 = ?" +
-                " or a.field2 = ?" +
-                " and a.field2 < ?" +
-                " or (a.field2 = ? and a.field2 = ?)" +
-                " and (a.field2 < ? or a.field1 = ?)";
+        String expected = "where a.field1 = {parameters.p1}" +
+                " or a.field2 = {parameters.p2}" +
+                " and a.field2 < {parameters.p3}" +
+                " or (a.field2 = {parameters.p4} and a.field2 = {parameters.p5})" +
+                " and (a.field2 < {parameters.p6} or a.field1 = {parameters.p7})";
         
         assertThat(selectSupport.getWhereClause(), is(expected));
         
@@ -94,7 +94,7 @@ public class SelectSupportTest {
                 .and(field2, isLessThan(3))
                 .build();
 
-        assertThat(selectSupport.getWhereClause(), is("where a.field1 = ? or a.field2 = ? and a.field2 < ?"));
+        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1} or a.field2 = {parameters.p2} and a.field2 < {parameters.p3}"));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -115,11 +115,11 @@ public class SelectSupportTest {
                 .build();
         
 
-        String expected = "where a.field1 = ?" +
-                " or a.field2 = ?" +
-                " and a.field2 < ?" +
-                " or (a.field2 = ? and a.field2 = ?)" +
-                " and (a.field2 < ? or a.field1 = ?)";
+        String expected = "where a.field1 = {parameters.p1}" +
+                " or a.field2 = {parameters.p2}" +
+                " and a.field2 < {parameters.p3}" +
+                " or (a.field2 = {parameters.p4} and a.field2 = {parameters.p5})" +
+                " and (a.field2 < {parameters.p6} or a.field1 = {parameters.p7})";
         
         assertThat(selectSupport.getWhereClause(), is(expected));
         

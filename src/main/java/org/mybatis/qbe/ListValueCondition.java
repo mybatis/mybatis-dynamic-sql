@@ -15,15 +15,15 @@
  */
 package org.mybatis.qbe;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class ListValueCondition<T> implements Condition<T> {
-    private List<T> values = new ArrayList<>();
+    private List<T> values;
 
     protected ListValueCondition(Stream<T> values) {
-        values.forEach(this.values::add);
+        this.values = values.collect(Collectors.toList());
     }
     
     public Stream<T> values() {

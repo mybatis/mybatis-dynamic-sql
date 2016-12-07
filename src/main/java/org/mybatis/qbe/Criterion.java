@@ -15,19 +15,19 @@
  */
 package org.mybatis.qbe;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class Criterion<T, S extends Field<T>, R extends Criterion<?, ?, ?>> {
     protected S field;
     protected Condition<T> condition;
     protected String connector;
-    protected List<R> subCriteria = new ArrayList<>();
+    protected List<R> subCriteria;
     
-    protected Criterion() {
-        super();
+    protected Criterion(Stream<R> subCriteria) {
+        this.subCriteria = subCriteria.collect(Collectors.toList());
     }
     
     public Optional<String> connector() {

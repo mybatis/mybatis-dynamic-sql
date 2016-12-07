@@ -70,7 +70,7 @@ public class SqlField<T> extends Field<T> {
     }
     
     public String getFormattedJdbcPlaceholder(String parameterName) {
-        return "?"; //$NON-NLS-1$
+        return String.format("{%s}", parameterName); //$NON-NLS-1$
     }
     
     public static <T> SqlField<T> of(String name, JDBCType jdbcType) {

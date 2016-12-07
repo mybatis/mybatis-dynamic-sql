@@ -18,29 +18,14 @@ package org.mybatis.qbe.sql.where;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
-import org.mybatis.qbe.sql.SqlCriterion;
-import org.mybatis.qbe.sql.SqlField;
-import org.mybatis.qbe.sql.where.render.CriterionRenderer;
-import org.mybatis.qbe.sql.where.render.RenderedCriterion;
 
 public class WhereSupport {
-    private AtomicInteger sequence = new AtomicInteger(1);
+    private String whereClause;
     private Map<String, Object> parameters = new HashMap<>();
-    private StringBuilder buffer = new StringBuilder("where"); //$NON-NLS-1$
-    private Function<SqlField<?>, String> nameFunction;
 
-    private WhereSupport(Function<SqlField<?>, String> nameFunction) {
-        this.nameFunction = nameFunction;
-    }
-    
-    private void addCriterion(SqlCriterion<?> criterion) {
-        RenderedCriterion rc = CriterionRenderer.of(criterion, sequence, nameFunction).render();
-        buffer.append(rc.whereClauseFragment());
-        parameters.putAll(rc.fragmentParameters());
+    private WhereSupport(String whereClause, Map<String, Object> parameters) {
+        this.whereClause = whereClause;
+        this.parameters.putAll(parameters);
     }
     
     public Map<String, Object> getParameters() {
@@ -48,12 +33,10 @@ public class WhereSupport {
     }
     
     public String getWhereClause() {
-        return buffer.toString();
+        return whereClause;
     }
     
-    public static WhereSupport of(Function<SqlField<?>, String> nameFunction, Stream<SqlCriterion<?>> criteria) {
-        WhereSupport whereSupport = new WhereSupport(nameFunction);
-        criteria.forEach(whereSupport::addCriterion);
-        return whereSupport;
+    public static WhereSupport of(String whereClause, Map<String, Object> parameters) {
+        return new WhereSupport(whereClause, parameters);
     }
 }

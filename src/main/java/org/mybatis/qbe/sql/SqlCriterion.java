@@ -23,8 +23,8 @@ import org.mybatis.qbe.Criterion;
 
 public class SqlCriterion<T> extends Criterion<T, SqlField<T>, SqlCriterion<?>> {
     
-    private SqlCriterion() {
-        super();
+    private SqlCriterion(Stream<SqlCriterion<?>> subCriteria) {
+        super(subCriteria);
     }
     
     public static <T> SqlCriterion<T> of(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
@@ -36,11 +36,10 @@ public class SqlCriterion<T> extends Criterion<T, SqlField<T>, SqlCriterion<?>> 
     }
 
     public static <T> SqlCriterion<T> of(String connector, SqlField<T> field, Condition<T> condition, Stream<SqlCriterion<?>> subCriteria) {
-        SqlCriterion<T> criterion = new SqlCriterion<>();
+        SqlCriterion<T> criterion = new SqlCriterion<>(subCriteria);
         criterion.field = field;
         criterion.condition = condition;
         criterion.connector = connector;
-        subCriteria.forEach(criterion.subCriteria::add);
         return criterion;
     }
 }

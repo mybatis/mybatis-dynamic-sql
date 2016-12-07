@@ -53,7 +53,7 @@ public class InsertSupportTest {
         String expectedFieldsPhrase = "(id, first_name, last_name, occupation)";
         assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
-        String expectedValuesPhrase = "values (?, ?, ?, ?)";
+        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
     }
 
@@ -73,7 +73,7 @@ public class InsertSupportTest {
         String expectedFieldsPhrase = "(last_name, occupation)";
         assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
-        String expectedValuesPhrase = "values (?, ?)";
+        String expectedValuesPhrase = "values ({record.lastName}, {record.occupation})";
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
     }
 
@@ -87,8 +87,8 @@ public class InsertSupportTest {
         List<FieldMapping<?>> mappings = new ArrayList<>();
         
         mappings.add(FieldMapping.of(id, "id", record::getId));
-        mappings.add(FieldMapping.of(firstName, "first_name", record::getFirstName));
-        mappings.add(FieldMapping.of(lastName, "last_name", record::getLastName));
+        mappings.add(FieldMapping.of(firstName, "firstName", record::getFirstName));
+        mappings.add(FieldMapping.of(lastName, "lastName", record::getLastName));
         mappings.add(FieldMapping.of(occupation, "occupation", record::getOccupation));
         
         InsertSupport<TestRecord> insertSupport = 
@@ -101,7 +101,7 @@ public class InsertSupportTest {
         String expectedFieldsPhrase = "(id, first_name, last_name, occupation)";
         assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
 
-        String expectedValuesPhrase = "values (?, ?, ?, ?)";
+        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
     }
     
