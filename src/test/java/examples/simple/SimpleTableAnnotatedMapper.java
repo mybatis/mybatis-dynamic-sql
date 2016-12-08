@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
@@ -30,6 +31,7 @@ import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
 
+@Mapper
 public interface SimpleTableAnnotatedMapper {
     
     @Insert({
@@ -52,14 +54,6 @@ public interface SimpleTableAnnotatedMapper {
         "${whereClause}",
         "${orderByClause}"
     })
-    @ResultMap("SimpleTableResult")
-    List<SimpleTableRecord> selectByExample(SelectSupport selectSupport);
-    
-    @Select({
-        "select a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
-        "from simpletable a",
-        "where a.id = #{value}"
-    })
     @Results(id="SimpleTableResult", value= {
             @Result(column="id", property="id", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
@@ -67,6 +61,14 @@ public interface SimpleTableAnnotatedMapper {
             @Result(column="birth_date", property="birthDate", jdbcType=JdbcType.DATE),
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
     })
+    List<SimpleTableRecord> selectByExample(SelectSupport selectSupport);
+    
+    @Select({
+        "select a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
+        "from simpletable a",
+        "where a.id = #{value}"
+    })
+    @ResultMap("SimpleTableResult")
     SimpleTableRecord selectByPrimaryKey(int id);
     
     @Delete({
