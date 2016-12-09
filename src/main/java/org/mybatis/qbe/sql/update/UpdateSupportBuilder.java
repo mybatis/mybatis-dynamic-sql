@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,7 @@ public interface UpdateSupportBuilder {
     }
     
     static class SetBuilder {
-        private AtomicInteger sequence = new AtomicInteger(1);
+        private int id = 1;
         private List<FieldAndValue<?>> fieldsAndValues = new ArrayList<>();
         
         public SetBuilder() {
@@ -45,17 +44,17 @@ public interface UpdateSupportBuilder {
         }
         
         public <T> SetBuilder set(SqlField<T> field, Optional<T> value) {
-            value.ifPresent(v -> fieldsAndValues.add(FieldAndValue.of(field, v, sequence.getAndIncrement())));
+            value.ifPresent(v -> fieldsAndValues.add(FieldAndValue.of(field, v, id++)));
             return this;
         }
         
         public <T> SetBuilder set(SqlField<T> field, T value) {
-            fieldsAndValues.add(FieldAndValue.of(field, value, sequence.getAndIncrement()));
+            fieldsAndValues.add(FieldAndValue.of(field, value, id++));
             return this;
         }
         
         public <T> SetBuilder setNull(SqlField<T> field) {
-            fieldsAndValues.add(FieldAndValue.of(field, sequence.getAndIncrement()));
+            fieldsAndValues.add(FieldAndValue.of(field, id++));
             return this;
         }
         
