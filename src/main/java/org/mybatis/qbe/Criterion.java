@@ -49,4 +49,9 @@ public abstract class Criterion<T, S extends Field<T>, R extends Criterion<?, ?,
     public Stream<R> subCriteria() {
         return subCriteria.stream();
     }
+    
+    public int valueCount() {
+        int subCriteriaCount = subCriteria.stream().mapToInt(Criterion::valueCount).sum();
+        return subCriteriaCount + condition.valueCount();
+    }
 }

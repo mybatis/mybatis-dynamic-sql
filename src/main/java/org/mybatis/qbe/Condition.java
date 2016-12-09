@@ -15,7 +15,7 @@
  */
 package org.mybatis.qbe;
 
-@FunctionalInterface
 public interface Condition<T> {
     void accept(ConditionVisitor<T> visitor);
+    int valueCount();
 }

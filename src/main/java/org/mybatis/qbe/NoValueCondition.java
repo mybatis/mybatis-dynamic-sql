@@ -22,5 +22,10 @@ public abstract class NoValueCondition <T> implements Condition<T> {
         visitor.visit(this);
     }
 
+    @Override
+    public int valueCount() {
+        return 0;
+    }
+    
     public abstract String render(String fieldName);
 }

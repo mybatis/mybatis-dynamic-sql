@@ -37,5 +37,10 @@ public abstract class TwoValueCondition<T> implements Condition<T> {
         visitor.visit(this);
     }
 
+    @Override
+    public int valueCount() {
+        return 2;
+    }
+    
     public abstract String render(String fieldName, String placeholder1, String placeholder2);
 }

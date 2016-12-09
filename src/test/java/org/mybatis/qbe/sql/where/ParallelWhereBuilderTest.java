@@ -17,17 +17,12 @@ package org.mybatis.qbe.sql.where;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.SqlConditions.and;
-import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
-import static org.mybatis.qbe.sql.SqlConditions.or;
+import static org.mybatis.qbe.sql.SqlConditions.*;
 
 import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collector;
 
 import org.junit.Test;
@@ -47,15 +42,29 @@ public class ParallelWhereBuilderTest {
 
     @Test
     public void testParallelStream() {
-        AtomicInteger sequence = new AtomicInteger(1);
+        int idStartValue = 1;
         List<CriterionWrapper> criteria = new ArrayList<>();
 
         Date currentDate = new Date();
-        criteria.add(CriterionWrapper.of(SqlCriterion.of(field1, isEqualTo(currentDate)), sequence));
-        criteria.add(CriterionWrapper.of(and(field2, isEqualTo(2)), sequence));
-        criteria.add(CriterionWrapper.of(or(field3, isEqualTo("foo")), sequence));
-        criteria.add(CriterionWrapper.of(or(field4, isEqualTo("bar")), sequence));
-        criteria.add(CriterionWrapper.of(or(field5, isEqualTo(8)), sequence));
+        CriterionWrapper wrapper = CriterionWrapper.of(SqlCriterion.of(field1, isEqualTo(currentDate)), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
+        
+        wrapper = CriterionWrapper.of(and(field2, isEqualTo(2)), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
+        
+        wrapper = CriterionWrapper.of(or(field3, isEqualTo("foo")), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
+
+        wrapper = CriterionWrapper.of(or(field4, isEqualTo("bar")), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
+
+        wrapper = CriterionWrapper.of(or(field5, isEqualTo(8)), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
         
         WhereSupport whereSupport = criteria.parallelStream().collect(Collector.of(
                 () -> new CollectorSupport(SqlField::nameIgnoringTableAlias),
@@ -63,70 +72,68 @@ public class ParallelWhereBuilderTest {
                 CollectorSupport::merge,
                 CollectorSupport::getWhereSupport));
 
+        String expected = "where field1 = {parameters.p1}"
+                + " and field2 = {parameters.p2}"
+                + " or field3 = {parameters.p3}"
+                + " or field4 = {parameters.p4}"
+                + " or field5 = {parameters.p5}";
+        
+        assertThat(whereSupport.getWhereClause(), is(expected));
+        assertThat(whereSupport.getParameters().size(), is(5));
+        assertThat(whereSupport.getParameters().get("p1"), is(currentDate));
+        assertThat(whereSupport.getParameters().get("p2"), is(2));
+        assertThat(whereSupport.getParameters().get("p3"), is("foo"));
+        assertThat(whereSupport.getParameters().get("p4"), is("bar"));
+        assertThat(whereSupport.getParameters().get("p5"), is(8));
+    }
 
-        // the where clause will be something like this:
-        //  where field1 = {parameters.p1} and field2 = {parameters.p2} or field3 = {parameters.p3} or field4 = {parameters.p4} or field5 = {parameters.p5}
-        // but the parameter numbers will vary because of the parallel stream.
-        // the field names and basic logic of the where clause should always be the same, but the parameter numbers
-        // are obtained by an AtomicInteger call in potentially different threads, so it is acceptable for them to vary
-        
-        String whereClause = whereSupport.getWhereClause();
-        String[] tokens = whereClause.split(" ");
-        
-        // make sure the generated clause has the correct number of tokens
-        assertThat(tokens.length, is(20));
-        
-        // make sure the basic structure of the generated clause is correct
-        Pattern pattern = Pattern.compile("\\{parameters.(p[1-5])\\}");
-        assertThat(tokens[0], is("where"));
+    @Test
+    public void testParallelStreamComplex() {
+        int idStartValue = 1;
+        List<CriterionWrapper> criteria = new ArrayList<>();
 
-        assertThat(tokens[1], is("field1"));
-        assertThat(tokens[2], is("="));
-        Matcher field1Matcher = pattern.matcher(tokens[3]);
-        assertThat(field1Matcher.matches(), is(true));
+        Date currentDate = new Date();
+        CriterionWrapper wrapper = CriterionWrapper.of(SqlCriterion.of(field1, isEqualTo(currentDate)), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
         
-        assertThat(tokens[4], is("and"));
-        assertThat(tokens[5], is("field2"));
-        assertThat(tokens[6], is("="));
-        Matcher field2Matcher = pattern.matcher(tokens[7]);
-        assertThat(field2Matcher.matches(), is(true));
+        wrapper = CriterionWrapper.of(and(field2, isEqualTo(2), and(field1, isNull())), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
         
-        assertThat(tokens[8], is("or"));
-        assertThat(tokens[9], is("field3"));
-        assertThat(tokens[10], is("="));
-        Matcher field3Matcher = pattern.matcher(tokens[11]);
-        assertThat(field3Matcher.matches(), is(true));
-        
-        assertThat(tokens[12], is("or"));
-        assertThat(tokens[13], is("field4"));
-        assertThat(tokens[14], is("="));
-        Matcher field4Matcher = pattern.matcher(tokens[15]);
-        assertThat(field4Matcher.matches(), is(true));
-        
-        assertThat(tokens[16], is("or"));
-        assertThat(tokens[17], is("field5"));
-        assertThat(tokens[18], is("="));
-        Matcher field5Matcher = pattern.matcher(tokens[19]);
-        assertThat(field5Matcher.matches(), is(true));
+        wrapper = CriterionWrapper.of(or(field3, isEqualTo("foo"), or(field2, isIn(2, 3, 4))), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
 
-        // check the value for field1
-        String parameter = field1Matcher.group(1);
-        assertThat(whereSupport.getParameters().get(parameter), is(currentDate));
+        wrapper = CriterionWrapper.of(or(field4, isEqualTo("bar")), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
+
+        wrapper = CriterionWrapper.of(or(field5, isEqualTo(8)), idStartValue);
+        idStartValue += wrapper.criterion.valueCount();
+        criteria.add(wrapper);
         
-        // check the value for field2
-        parameter = field2Matcher.group(1);
-        assertThat(whereSupport.getParameters().get(parameter), is(2));
+        WhereSupport whereSupport = criteria.parallelStream().collect(Collector.of(
+                () -> new CollectorSupport(SqlField::nameIgnoringTableAlias),
+                CollectorSupport::add,
+                CollectorSupport::merge,
+                CollectorSupport::getWhereSupport));
+
+        String expected = "where field1 = {parameters.p1}"
+                + " and (field2 = {parameters.p2} and field1 is null)"
+                + " or (field3 = {parameters.p3} or field2 in ({parameters.p4},{parameters.p5},{parameters.p6}))"
+                + " or field4 = {parameters.p7}"
+                + " or field5 = {parameters.p8}";
         
-        // check the value for field3
-        parameter = field3Matcher.group(1);
-        assertThat(whereSupport.getParameters().get(parameter), is("foo"));
-        
-        // check the value for field4
-        parameter = field4Matcher.group(1);
-        assertThat(whereSupport.getParameters().get(parameter), is("bar"));
-        
-        // check the value for field5
-        parameter = field5Matcher.group(1);
-        assertThat(whereSupport.getParameters().get(parameter), is(8));
+        assertThat(whereSupport.getWhereClause(), is(expected));
+        assertThat(whereSupport.getParameters().size(), is(8));
+        assertThat(whereSupport.getParameters().get("p1"), is(currentDate));
+        assertThat(whereSupport.getParameters().get("p2"), is(2));
+        assertThat(whereSupport.getParameters().get("p3"), is("foo"));
+        assertThat(whereSupport.getParameters().get("p4"), is(2));
+        assertThat(whereSupport.getParameters().get("p5"), is(3));
+        assertThat(whereSupport.getParameters().get("p6"), is(4));
+        assertThat(whereSupport.getParameters().get("p7"), is("bar"));
+        assertThat(whereSupport.getParameters().get("p8"), is(8));
     }
 }

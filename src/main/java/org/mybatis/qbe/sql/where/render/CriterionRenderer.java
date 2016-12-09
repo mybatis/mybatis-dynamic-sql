@@ -61,7 +61,7 @@ public class CriterionRenderer<T> {
     
     private void renderCriteria() {
         renderCondition();
-        criterion.subCriteria().forEach(c -> handleSubCriterion(c, sequence));
+        criterion.subCriteria().forEach(this::handleSubCriterion);
     }
 
     private void renderCondition() {
@@ -71,7 +71,7 @@ public class CriterionRenderer<T> {
         parameters.putAll(visitor.parameters());
     }
 
-    private void handleSubCriterion(SqlCriterion<?> subCriterion, AtomicInteger sequence) {
+    private void handleSubCriterion(SqlCriterion<?> subCriterion) {
         RenderedCriterion rc = new CriterionRenderer<>(subCriterion, sequence, nameFunction).render();
         buffer.append(rc.whereClauseFragment());
         parameters.putAll(rc.fragmentParameters());

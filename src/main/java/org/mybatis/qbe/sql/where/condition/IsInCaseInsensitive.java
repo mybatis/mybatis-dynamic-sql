@@ -34,8 +34,8 @@ public class IsInCaseInsensitive extends ListValueCondition<String> {
     }
 
     @Override
-    public Stream<String> values() {
-        return super.values().map(String::toUpperCase);
+    public String transform(String value) {
+        return value.toUpperCase();
     }
     
     public static IsInCaseInsensitive of(Stream<String> values) {

@@ -26,13 +26,33 @@ public abstract class ListValueCondition<T> implements Condition<T> {
         this.values = values.collect(Collectors.toList());
     }
     
-    public Stream<T> values() {
-        return values.stream();
+    public final Stream<T> values() {
+        return values.stream().map(this::transform);
     }
 
+    /**
+     * This method allows subclasses to alter the value before it is placed
+     * into the parameter map.  An example of this is when the case insensitive
+     * conditions will change a value to upper case.
+     * 
+     * We do not expose the values stream because we cannot allow subclasses
+     * to change the order or number of values.
+     *  
+     * @param value
+     * @return the transformed value - in most cases the value is not changed
+     */
+    public T transform(T value) {
+        return value;
+    }
+    
     @Override
     public void accept(ConditionVisitor<T> visitor) {
         visitor.visit(this);
+    }
+    
+    @Override
+    public int valueCount() {
+        return values.size();
     }
 
     public abstract String render(String fieldName, Stream<String> placeholders);

@@ -32,20 +32,28 @@ import org.mybatis.qbe.sql.where.render.RenderedCriterion;
 
 public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     private List<CriterionWrapper> criteria = new ArrayList<>();
-    private AtomicInteger sequence = new AtomicInteger(1);
+    private int valueCount = 1;
     
     protected <S> AbstractWhereBuilder(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        criteria.add(CriterionWrapper.of(SqlCriterion.of(field, condition, subCriteria), sequence));
+        SqlCriterion<S> criterion = SqlCriterion.of(field, condition, subCriteria);
+        addCriterion(criterion);
     }
-    
+
     public <S> T and(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        criteria.add(CriterionWrapper.of(SqlCriterion.of("and", field, condition, subCriteria), sequence)); //$NON-NLS-1$
+        SqlCriterion<S> criterion = SqlCriterion.of("and", field, condition, subCriteria); //$NON-NLS-1$
+        addCriterion(criterion);
         return getThis();
     }
     
     public <S> T or(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        criteria.add(CriterionWrapper.of(SqlCriterion.of("or", field, condition, subCriteria), sequence)); //$NON-NLS-1$
+        SqlCriterion<S> criterion = SqlCriterion.of("or", field, condition, subCriteria); //$NON-NLS-1$
+        addCriterion(criterion);
         return getThis();
+    }
+    
+    private <S> void addCriterion(SqlCriterion<S> criterion) {
+        criteria.add(CriterionWrapper.of(criterion, valueCount));
+        valueCount += criterion.valueCount();
     }
     
     protected WhereSupport renderCriteria(Function<SqlField<?>, String> nameFunction) {
@@ -62,10 +70,10 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         SqlCriterion<?> criterion;
         AtomicInteger sequence;
         
-        static CriterionWrapper of(SqlCriterion<?> criterion, AtomicInteger sequence) {
+        static CriterionWrapper of(SqlCriterion<?> criterion, int idStartValue) {
             CriterionWrapper wrapper = new CriterionWrapper();
             wrapper.criterion = criterion;
-            wrapper.sequence = sequence;
+            wrapper.sequence = new AtomicInteger(idStartValue);
             return wrapper;
         }
     }

@@ -41,6 +41,7 @@ public class CriterionRendererTest {
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
         assertThat(rc.fragmentParameters().size(), is(1));
+        assertThat(rc.fragmentParameters().get("p1"), is(3));
     }
 
     @Test
@@ -55,6 +56,7 @@ public class CriterionRendererTest {
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" a.id = {parameters.p1}"));
         assertThat(rc.fragmentParameters().size(), is(1));
+        assertThat(rc.fragmentParameters().get("p1"), is(3));
     }
 
     @Test
@@ -68,6 +70,7 @@ public class CriterionRendererTest {
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
         assertThat(rc.fragmentParameters().size(), is(1));
+        assertThat(rc.fragmentParameters().get("p1"), is(3));
     }
 
     @Test
@@ -81,5 +84,6 @@ public class CriterionRendererTest {
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
         assertThat(rc.fragmentParameters().size(), is(1));
+        assertThat(rc.fragmentParameters().get("p1"), is(3));
     }
 }
