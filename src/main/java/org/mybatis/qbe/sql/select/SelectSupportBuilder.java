@@ -24,42 +24,40 @@ import org.mybatis.qbe.sql.where.WhereSupport;
 public interface SelectSupportBuilder {
 
     static Builder selectSupport() {
-        return new Builder(false);
+        return new Builder();
     }
     
     static class Builder {
-        private boolean isDistinct;
-        
-        public Builder(boolean isDistinct) {
-            this.isDistinct = isDistinct;
-        }
+        private SelectSupport.Builder selectSupportBuilder = new SelectSupport.Builder();
         
         public Builder distinct() {
-            return new Builder(true);
+            selectSupportBuilder.isDistinct();
+            return this;
         }
         
         public <T> WhereBuilder where(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            return new WhereBuilder(isDistinct, field, condition, subCriteria);
+            return new WhereBuilder(selectSupportBuilder, field, condition, subCriteria);
         }
     }
     
     static class WhereBuilder extends AbstractWhereBuilder<WhereBuilder> {
-        private boolean isDistinct;
-        private String orderByClause;
+        private SelectSupport.Builder selectSupportBuilder = new SelectSupport.Builder();
         
-        public <T> WhereBuilder(boolean isDistinct, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        public <T> WhereBuilder(SelectSupport.Builder selectSupportBuilder, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(field, condition, subCriteria);
-            this.isDistinct = isDistinct;
+            this.selectSupportBuilder = selectSupportBuilder;
         }
         
         public WhereBuilder orderBy(String orderByClause) {
-            this.orderByClause = orderByClause;
+            selectSupportBuilder.withOrderByClause(orderByClause);
             return this;
         }
         
         public SelectSupport build() {
             WhereSupport whereSupport = renderCriteria(SqlField::nameIncludingTableAlias);
-            return SelectSupport.of(isDistinct, whereSupport.getWhereClause(), whereSupport.getParameters(), orderByClause);
+            return selectSupportBuilder.withWhereClause(whereSupport.getWhereClause())
+                .withParameters(whereSupport.getParameters())
+                .build();
         }
         
         @Override

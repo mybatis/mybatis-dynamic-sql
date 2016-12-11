@@ -15,8 +15,6 @@
  */
 package org.mybatis.qbe.sql.delete;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 public class DeleteSupport {
@@ -26,7 +24,7 @@ public class DeleteSupport {
     
     private DeleteSupport(String whereClause, Map<String, Object> parameters) {
         this.whereClause = whereClause;
-        this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
+        this.parameters = parameters;
     }
 
     public String getWhereClause() {
