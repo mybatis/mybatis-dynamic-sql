@@ -34,7 +34,7 @@ public class IsInCaseInsensitive extends ListValueCondition<String> {
     }
 
     @Override
-    public String transform(String value) {
+    public String transformValue(String value) {
         return value.toUpperCase();
     }
     

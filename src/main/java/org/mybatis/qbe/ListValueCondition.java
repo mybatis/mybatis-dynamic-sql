@@ -27,7 +27,7 @@ public abstract class ListValueCondition<T> implements Condition<T> {
     }
     
     public final Stream<T> values() {
-        return values.stream().map(this::transform);
+        return values.stream().map(this::transformValue);
     }
 
     /**
@@ -41,7 +41,7 @@ public abstract class ListValueCondition<T> implements Condition<T> {
      * @param value
      * @return the transformed value - in most cases the value is not changed
      */
-    public T transform(T value) {
+    public T transformValue(T value) {
         return value;
     }
     
