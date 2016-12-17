@@ -120,8 +120,8 @@ package examples.simple;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
-import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class SimpleTableAnnotatedMapper {
     
@@ -138,7 +138,7 @@ public class SimpleTableAnnotatedMapper {
         "delete from simpletable",
         "${whereClause}"
     })
-    int deleteByExample(DeleteSupport deleteSupport);
+    int deleteByExample(WhereSupport whereSupport);
 }
 ```
 An XML mapper might look like this:
