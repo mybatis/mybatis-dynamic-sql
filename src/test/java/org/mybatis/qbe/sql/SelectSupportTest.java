@@ -132,4 +132,52 @@ public class SelectSupportTest {
         assertThat(parameters.get("p6"), is(3));
         assertThat(parameters.get("p7"), is(d));
     }
+
+    @Test
+    public void testOrderBySingleFieldAscending() {
+        Date d = new Date();
+
+        SelectSupport selectSupport = selectSupport()
+                .where(field1, isEqualTo(d))
+                .orderBy(field1)
+                .build();
+
+        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1}"));
+        assertThat(selectSupport.getOrderByClause(), is("order by field1 ASC"));
+        
+        Map<String, Object> parameters = selectSupport.getParameters();
+        assertThat(parameters.get("p1"), is(d));
+    }
+
+    @Test
+    public void testOrderBySingleFieldDescending() {
+        Date d = new Date();
+
+        SelectSupport selectSupport = selectSupport()
+                .where(field1, isEqualTo(d))
+                .orderBy(field2.descending())
+                .build();
+
+        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1}"));
+        assertThat(selectSupport.getOrderByClause(), is("order by field2 DESC"));
+        
+        Map<String, Object> parameters = selectSupport.getParameters();
+        assertThat(parameters.get("p1"), is(d));
+    }
+
+    @Test
+    public void testOrderByMultipleFields() {
+        Date d = new Date();
+
+        SelectSupport selectSupport = selectSupport()
+                .where(field1, isEqualTo(d))
+                .orderBy(field2.descending(), field1)
+                .build();
+
+        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1}"));
+        assertThat(selectSupport.getOrderByClause(), is("order by field2 DESC, field1 ASC"));
+        
+        Map<String, Object> parameters = selectSupport.getParameters();
+        assertThat(parameters.get("p1"), is(d));
+    }
 }

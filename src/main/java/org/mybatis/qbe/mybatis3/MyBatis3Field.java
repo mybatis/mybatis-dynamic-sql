@@ -41,6 +41,7 @@ public class MyBatis3Field<T> extends SqlField<T> {
     public <S> MyBatis3Field<S> withTypeHandler(String typeHandler) {
         MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType);
         field.table = table;
+        field.sortOrder = sortOrder;
         field.typeHandler = typeHandler;
         return field;
     }
@@ -49,10 +50,20 @@ public class MyBatis3Field<T> extends SqlField<T> {
     public <S> MyBatis3Field<S> inTable(SqlTable table) {
         MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType);
         field.table = table;
+        field.sortOrder = sortOrder;
         field.typeHandler = typeHandler;
         return field;
     }
     
+    @Override
+    public <S> MyBatis3Field<S> descending() {
+        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType);
+        field.table = table;
+        field.sortOrder = DESCENDING;
+        field.typeHandler = typeHandler;
+        return field;
+    }
+
     @Override
     public String getFormattedJdbcPlaceholder(String parameterName) {
         StringBuilder buffer = new StringBuilder();

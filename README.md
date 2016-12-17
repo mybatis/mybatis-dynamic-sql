@@ -46,6 +46,7 @@ One capability is that very expressive dynamic queries can be generated.  Here's
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
+                    .orderBy(id.descending(), bodyWeight)
                     .build();
 
             List<AnimalData> animals = mapper.selectByExample(selectSupport);

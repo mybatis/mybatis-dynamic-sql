@@ -436,6 +436,7 @@ public class AnimalDataTest {
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
+                    .orderBy(id.descending(), bodyWeight)
                     .build();
 
             List<AnimalData> animals = mapper.selectByExample(selectSupport);
@@ -504,11 +505,12 @@ public class AnimalDataTest {
                     .distinct()
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))
-                    .orderBy("id desc")
+                    .orderBy(id.descending(), animalName)
                     .build();
             
             List<AnimalData> rows = mapper.selectByExample(selectSupport);
             assertThat(rows.size(), is(14));
+            assertThat(rows.get(0).getId(), is(65));
         } finally {
             sqlSession.close();
         }
@@ -523,11 +525,12 @@ public class AnimalDataTest {
             SelectSupport selectSupport = selectSupport()
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))
-                    .orderBy("order by id desc")
+                    .orderBy(id.descending())
                     .build();
             
             List<AnimalData> rows = mapper.selectByExample(selectSupport);
             assertThat(rows.size(), is(14));
+            assertThat(rows.get(0).getId(), is(65));
         } finally {
             sqlSession.close();
         }

@@ -15,6 +15,9 @@
  */
 package org.mybatis.qbe.sql.select;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
 import org.mybatis.qbe.sql.SqlField;
@@ -41,28 +44,50 @@ public interface SelectSupportBuilder {
     }
     
     static class WhereBuilder extends AbstractWhereBuilder<WhereBuilder> {
-        private SelectSupport.Builder selectSupportBuilder = new SelectSupport.Builder();
+        private SelectSupport.Builder selectSupportBuilder;
         
         public <T> WhereBuilder(SelectSupport.Builder selectSupportBuilder, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(field, condition, subCriteria);
             this.selectSupportBuilder = selectSupportBuilder;
         }
         
-        public WhereBuilder orderBy(String orderByClause) {
-            selectSupportBuilder.withOrderByClause(orderByClause);
-            return this;
+        public FinalBuilder orderBy(SqlField<?>...fields) {
+            String orderByClause = 
+                    Arrays.stream(fields)
+                    .map(SqlField::orderByPhrase)
+                    .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            buildWhereSupport();
+            SelectSupport selectSupport = selectSupportBuilder.withOrderByClause(orderByClause)
+                .build();
+            return new FinalBuilder(selectSupport);
         }
         
         public SelectSupport build() {
-            WhereSupport whereSupport = renderCriteria(SqlField::nameIncludingTableAlias);
-            return selectSupportBuilder.withWhereClause(whereSupport.getWhereClause())
-                .withParameters(whereSupport.getParameters())
-                .build();
+            buildWhereSupport();
+            return selectSupportBuilder.build();
         }
         
+        private void buildWhereSupport() {
+            WhereSupport whereSupport = renderCriteria(SqlField::nameIncludingTableAlias);
+            selectSupportBuilder.withParameters(whereSupport.getParameters())
+                .withWhereClause(whereSupport.getWhereClause());
+        }
+
         @Override
         public WhereBuilder getThis() {
             return this;
+        }
+    }
+    
+    static class FinalBuilder {
+        private SelectSupport selectSupport;
+
+        public FinalBuilder(SelectSupport selectSupport) {
+            this.selectSupport = selectSupport;
+        }
+        
+        public SelectSupport build() {
+            return selectSupport;
         }
     }
 }

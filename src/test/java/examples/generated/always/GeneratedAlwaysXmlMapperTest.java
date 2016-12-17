@@ -174,7 +174,7 @@ public class GeneratedAlwaysXmlMapperTest {
             
             SelectSupport selectSupport = selectSupport()
                     .where(lastName, isEqualTo("Jones"))
-                    .orderBy("first_name")
+                    .orderBy(firstName)
                     .build();
             
             List<GeneratedAlwaysRecord> records = mapper.selectByExample(selectSupport);

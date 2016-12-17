@@ -57,11 +57,7 @@ public class SelectSupport {
         }
         
         public Builder withOrderByClause(String orderByClause) {
-            if (orderByClause.toLowerCase().startsWith("order by")){ //$NON-NLS-1$
-                selectSupport.orderByClause = orderByClause;
-            } else {
-                selectSupport.orderByClause = String.format("order by %s", orderByClause); //$NON-NLS-1$
-            }
+            selectSupport.orderByClause = orderByClause;
             return this;
         }
         

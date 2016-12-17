@@ -27,10 +27,13 @@ import org.mybatis.qbe.Field;
  */
 public class SqlField<T> extends Field<T> {
     
+    private static final String ASCENDING = "ASC"; //$NON-NLS-1$
+    protected static final String DESCENDING = "DESC"; //$NON-NLS-1$
     private static final SqlTable NULL_TABLE = SqlTable.of(""); //$NON-NLS-1$
 
     protected SqlTable table;
     protected JDBCType jdbcType;
+    protected String sortOrder = ASCENDING;
     
     protected SqlField(String name, JDBCType jdbcType) {
         super(name);
@@ -66,11 +69,23 @@ public class SqlField<T> extends Field<T> {
     public <S> SqlField<S> inTable(SqlTable table) {
         SqlField<S> field = SqlField.of(name, jdbcType);
         field.table = table;
+        field.sortOrder = sortOrder;
+        return field;
+    }
+    
+    public <S> SqlField<S> descending() {
+        SqlField<S> field = SqlField.of(name, jdbcType);
+        field.table = table;
+        field.sortOrder = DESCENDING;
         return field;
     }
     
     public String getFormattedJdbcPlaceholder(String parameterName) {
         return String.format("{%s}", parameterName); //$NON-NLS-1$
+    }
+    
+    public String orderByPhrase() {
+        return String.format("%s %s", name, sortOrder); //$NON-NLS-1$
     }
     
     public static <T> SqlField<T> of(String name, JDBCType jdbcType) {
