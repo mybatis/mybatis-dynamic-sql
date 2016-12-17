@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.qbe.sql.delete;
+package org.mybatis.qbe.sql.where;
 
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
@@ -21,9 +21,9 @@ import org.mybatis.qbe.sql.SqlField;
 import org.mybatis.qbe.sql.where.AbstractWhereBuilder;
 import org.mybatis.qbe.sql.where.WhereSupport;
 
-public interface DeleteSupportBuilder {
+public interface WhereSupportBuilder {
 
-    static Builder deleteSupport() {
+    static Builder whereSupport() {
         return new Builder();
     }
     
@@ -38,9 +38,8 @@ public interface DeleteSupportBuilder {
             super(field, condition, subCriteria);
         }
         
-        public DeleteSupport build() {
-            WhereSupport whereSupport = renderCriteria(SqlField::nameIgnoringTableAlias);
-            return DeleteSupport.of(whereSupport.getWhereClause(), whereSupport.getParameters());
+        public WhereSupport build() {
+            return renderCriteria(SqlField::nameIgnoringTableAlias);
         }
         
         @Override

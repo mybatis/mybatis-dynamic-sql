@@ -16,9 +16,9 @@
 package examples.simple;
 
 import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteSupport;
 import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
 import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.updateSupport;
+import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
 
 import java.sql.JDBCType;
 import java.util.Date;
@@ -26,10 +26,10 @@ import java.util.Optional;
 
 import org.mybatis.qbe.mybatis3.MyBatis3Field;
 import org.mybatis.qbe.sql.SqlTable;
-import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
 import org.mybatis.qbe.sql.update.UpdateSupportBuilder.SetBuilder;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface SimpleTableQBESupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
@@ -97,8 +97,8 @@ public interface SimpleTableQBESupport {
                 .set(occupation, Optional.ofNullable(record.getOccupation()));
     }
 
-    static DeleteSupport buildDeleteByPrimaryKeySupport(Integer id_) {
-        return deleteSupport()
+    static WhereSupport buildDeleteByPrimaryKeySupport(Integer id_) {
+        return whereSupport()
                 .where(id, isEqualTo(id_))
                 .build();
     }

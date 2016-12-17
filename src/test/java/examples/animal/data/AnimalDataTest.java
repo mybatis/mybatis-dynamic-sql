@@ -22,10 +22,10 @@ import static examples.animal.data.AnimalDataFields.id;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteSupport;
 import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
 import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
 import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.updateSupport;
+import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,10 +43,10 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class AnimalDataTest {
 
@@ -362,11 +362,11 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            DeleteSupport deleteSupport = deleteSupport()
+            WhereSupport whereSupport = whereSupport()
                     .where(id, isIn(5, 8, 10))
                     .build();
 
-            int rowCount = mapper.deleteByExample(deleteSupport);
+            int rowCount = mapper.deleteByExample(whereSupport);
             assertThat(rowCount, is(3));
         } finally {
             sqlSession.close();
@@ -379,12 +379,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            DeleteSupport deleteSupport = deleteSupport()
+            WhereSupport whereSupport = whereSupport()
                     .where(id, isLessThan(10))
                     .or(id, isGreaterThan(60))
                     .build();
 
-            int rowCount = mapper.deleteByExample(deleteSupport);
+            int rowCount = mapper.deleteByExample(whereSupport);
             assertThat(rowCount, is(14));
         } finally {
             sqlSession.close();

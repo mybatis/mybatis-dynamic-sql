@@ -20,7 +20,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.*;
 import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
-import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteSupport;
+import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,8 +35,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class SimpleTableXmlMapperTest {
 
@@ -101,10 +101,10 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            DeleteSupport deleteSupport = deleteSupport()
+            WhereSupport whereSupport = whereSupport()
                     .where(occupation, isNull())
                     .build();
-            int rows = mapper.delete(deleteSupport);
+            int rows = mapper.delete(whereSupport);
             
             assertThat(rows, is(2));
         } finally {
@@ -117,8 +117,8 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            DeleteSupport deleteSupport = buildDeleteByPrimaryKeySupport(2);
-            int rows = mapper.delete(deleteSupport);
+            WhereSupport whereSupport = buildDeleteByPrimaryKeySupport(2);
+            int rows = mapper.delete(whereSupport);
             
             assertThat(rows, is(1));
         } finally {
@@ -217,6 +217,22 @@ public class SimpleTableXmlMapperTest {
             assertThat(newRecord.getOccupation(), is("Programmer"));
             assertThat(newRecord.getFirstName(), is("Joe"));
             
+        } finally {
+            session.close();
+        }
+    }
+
+
+    @Test
+    public void testCountByExample() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
+            WhereSupport whereSupport = whereSupport()
+                    .where(occupation, isNull()).build();
+            int rows = mapper.countByExample(whereSupport);
+            
+            assertThat(rows, is(2));
         } finally {
             session.close();
         }

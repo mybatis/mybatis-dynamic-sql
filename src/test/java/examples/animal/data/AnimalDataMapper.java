@@ -21,10 +21,10 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface AnimalDataMapper {
 
@@ -40,7 +40,7 @@ public interface AnimalDataMapper {
         "delete from AnimalData",
         "${whereClause}"
     })
-    int deleteByExample(DeleteSupport deleteSupport);
+    int deleteByExample(WhereSupport whereSupport);
 
     @Update({
         "update AnimalData",

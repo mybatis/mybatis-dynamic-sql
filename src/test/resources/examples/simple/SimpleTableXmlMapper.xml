@@ -56,4 +56,10 @@
     ${setClause}
     ${whereClause}
   </update>
+
+  <select id="countByExample" resultType="_int">
+    select count(*)
+    from SimpleTable
+    ${whereClause}
+  </select>
 </mapper>

@@ -26,10 +26,10 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
-import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 @Mapper
 public interface SimpleTableAnnotatedMapper {
@@ -75,5 +75,12 @@ public interface SimpleTableAnnotatedMapper {
         "delete from simpletable",
         "${whereClause}"
     })
-    int delete(DeleteSupport deleteSupport);
+    int delete(WhereSupport whereSupport);
+
+    @Select({
+        "select count(*)",
+        "from simpletable",
+        "${whereClause}"
+    })
+    int countByExample(WhereSupport whereSupport);
 }

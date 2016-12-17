@@ -21,8 +21,8 @@ import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
 import static org.mybatis.qbe.sql.SqlConditions.isIn;
 import static org.mybatis.qbe.sql.SqlConditions.isNull;
-import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteSupport;
 import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
+import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,9 +37,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
+import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class SimpleTableAnnotatedMapperTest {
 
@@ -105,9 +105,9 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            DeleteSupport deleteSupport = deleteSupport()
+            WhereSupport whereSupport = whereSupport()
                     .where(occupation, isNull()).build();
-            int rows = mapper.delete(deleteSupport);
+            int rows = mapper.delete(whereSupport);
             
             assertThat(rows, is(2));
         } finally {
@@ -120,8 +120,8 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            DeleteSupport deleteSupport = buildDeleteByPrimaryKeySupport(2);
-            int rows = mapper.delete(deleteSupport);
+            WhereSupport whereSupport = buildDeleteByPrimaryKeySupport(2);
+            int rows = mapper.delete(whereSupport);
             
             assertThat(rows, is(1));
         } finally {
@@ -252,6 +252,21 @@ public class SimpleTableAnnotatedMapperTest {
             SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
             assertThat(newRecord.getOccupation(), is("Programmer"));
             
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testCountByExample() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            WhereSupport whereSupport = whereSupport()
+                    .where(occupation, isNull()).build();
+            int rows = mapper.countByExample(whereSupport);
+            
+            assertThat(rows, is(2));
         } finally {
             session.close();
         }
