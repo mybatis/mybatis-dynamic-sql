@@ -20,8 +20,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class Criterion<T, S extends Field<T>, R extends Criterion<?, ?, ?>> {
-    protected S field;
+public abstract class Criterion<T, S extends Column<T>, R extends Criterion<?, ?, ?>> {
+    protected S column;
     protected Condition<T> condition;
     protected String connector;
     protected List<R> subCriteria;
@@ -34,8 +34,8 @@ public abstract class Criterion<T, S extends Field<T>, R extends Criterion<?, ?,
         return Optional.ofNullable(connector);
     }
     
-    public S field() {
-        return field;
+    public S column() {
+        return column;
     }
     
     public Condition<T> condition() {

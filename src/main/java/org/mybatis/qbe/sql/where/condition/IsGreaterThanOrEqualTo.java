@@ -24,8 +24,8 @@ public class IsGreaterThanOrEqualTo<T> extends SingleValueCondition<T> {
     }
     
     @Override
-    public String render(String fieldName, String placeholder) {
-        return String.format("%s >= %s", fieldName, placeholder); //$NON-NLS-1$
+    public String render(String columnName, String placeholder) {
+        return String.format("%s >= %s", columnName, placeholder); //$NON-NLS-1$
     }
 
     public static <T> IsGreaterThanOrEqualTo<T> of(T value) {

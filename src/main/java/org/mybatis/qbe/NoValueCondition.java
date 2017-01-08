@@ -27,5 +27,5 @@ public abstract class NoValueCondition <T> implements Condition<T> {
         return 0;
     }
     
-    public abstract String render(String fieldName);
+    public abstract String render(String columnName);
 }

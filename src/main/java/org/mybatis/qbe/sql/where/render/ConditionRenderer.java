@@ -28,19 +28,19 @@ import org.mybatis.qbe.ListValueCondition;
 import org.mybatis.qbe.NoValueCondition;
 import org.mybatis.qbe.SingleValueCondition;
 import org.mybatis.qbe.TwoValueCondition;
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
 
 public class ConditionRenderer<T> implements ConditionVisitor<T> {
     
     private StringBuilder buffer = new StringBuilder();
     private Map<String, Object> parameters = new HashMap<>();
     private AtomicInteger sequence;
-    private SqlField<?> field;
-    private Function<SqlField<?>, String> nameFunction;
+    private SqlColumn<?> column;
+    private Function<SqlColumn<?>, String> nameFunction;
     
-    private ConditionRenderer(AtomicInteger sequence, SqlField<?> field, Function<SqlField<?>, String> nameFunction) {
+    private ConditionRenderer(AtomicInteger sequence, SqlColumn<?> column, Function<SqlColumn<?>, String> nameFunction) {
         this.sequence = sequence;
-        this.field = field;
+        this.column = column;
         this.nameFunction = nameFunction;
     }
     
@@ -54,13 +54,13 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
 
     @Override
     public void visit(NoValueCondition<T> condition) {
-        buffer.append(condition.render(calculateFieldName()));
+        buffer.append(condition.render(calculateColumnName()));
     }
 
     @Override
     public void visit(SingleValueCondition<T> condition) {
         int number = sequence.getAndIncrement();
-        buffer.append(condition.render(calculateFieldName(), field.getFormattedJdbcPlaceholder(formatParameterName(number))));
+        buffer.append(condition.render(calculateColumnName(), column.getFormattedJdbcPlaceholder(formatParameterName(number))));
         parameters.put(formatParameterMapKey(number), condition.value());
     }
 
@@ -68,8 +68,8 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
     public void visit(TwoValueCondition<T> condition) {
         int number1 = sequence.getAndIncrement();
         int number2 = sequence.getAndIncrement();
-        buffer.append(condition.render(calculateFieldName(), field.getFormattedJdbcPlaceholder(formatParameterName(number1)),
-                field.getFormattedJdbcPlaceholder(formatParameterName(number2))));
+        buffer.append(condition.render(calculateColumnName(), column.getFormattedJdbcPlaceholder(formatParameterName(number1)),
+                column.getFormattedJdbcPlaceholder(formatParameterName(number2))));
         parameters.put(formatParameterMapKey(number1), condition.value1());
         parameters.put(formatParameterMapKey(number2), condition.value2());
     }
@@ -80,11 +80,11 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
         
         condition.values().forEach(v -> {
             int number = sequence.getAndIncrement();
-            placeholders.add(field.getFormattedJdbcPlaceholder(formatParameterName(number)));
+            placeholders.add(column.getFormattedJdbcPlaceholder(formatParameterName(number)));
             parameters.put(formatParameterMapKey(number), v);
         });
         
-        buffer.append(condition.render(calculateFieldName(), placeholders.stream()));
+        buffer.append(condition.render(calculateColumnName(), placeholders.stream()));
     }
 
     private String formatParameterMapKey(int number) {
@@ -95,11 +95,11 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
         return String.format("parameters.p%s", number); //$NON-NLS-1$
     }
     
-    private String calculateFieldName() {
-        return nameFunction.apply(field);
+    private String calculateColumnName() {
+        return nameFunction.apply(column);
     }
     
-    public static <T> ConditionRenderer<T> of(AtomicInteger sequence, SqlField<T> field, Function<SqlField<?>, String> nameFunction) {
-        return new ConditionRenderer<>(sequence, field, nameFunction);
+    public static <T> ConditionRenderer<T> of(AtomicInteger sequence, SqlColumn<T> column, Function<SqlColumn<?>, String> nameFunction) {
+        return new ConditionRenderer<>(sequence, column, nameFunction);
     }
 }

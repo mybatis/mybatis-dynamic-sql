@@ -31,12 +31,12 @@ public class CriterionRendererTest {
     @Test
     public void testAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo").withAlias("a");
-        SqlField<Integer> field = SqlField.of("id", JDBCType.INTEGER).inTable(table);
+        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
         
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
+        SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIgnoringTableAlias);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::name);
         
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
@@ -47,11 +47,11 @@ public class CriterionRendererTest {
     @Test
     public void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo").withAlias("a");
-        SqlField<Integer> field = SqlField.of("id", JDBCType.INTEGER).inTable(table);
+        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
+        SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIncludingTableAlias);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::nameIncludingTableAlias);
         
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" a.id = {parameters.p1}"));
@@ -61,11 +61,11 @@ public class CriterionRendererTest {
 
     @Test
     public void testNoAliasWithIgnore() {
-        SqlField<Integer> field = SqlField.of("id", JDBCType.INTEGER);
+        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
+        SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIgnoringTableAlias);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::name);
         
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
@@ -75,11 +75,11 @@ public class CriterionRendererTest {
 
     @Test
     public void testNoAliasWithoutIgnore() {
-        SqlField<Integer> field = SqlField.of("id", JDBCType.INTEGER);
+        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = SqlCriterion.of(field, condition);
+        SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlField::nameIncludingTableAlias);
+        CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::nameIncludingTableAlias);
         
         RenderedCriterion rc = renderer.render();
         assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));

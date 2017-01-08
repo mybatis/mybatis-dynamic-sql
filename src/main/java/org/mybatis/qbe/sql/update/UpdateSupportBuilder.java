@@ -25,70 +25,74 @@ import java.util.stream.Collectors;
 
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
+import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.where.AbstractWhereBuilder;
 import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface UpdateSupportBuilder {
 
-    static SetBuilder updateSupport() {
-        return new SetBuilder();
+    static UpdateSupportBuildStep1 update(SqlTable table) {
+        return new UpdateSupportBuildStep1(table);
     }
     
-    static class SetBuilder {
+    static class UpdateSupportBuildStep1 {
         private int id = 1;
-        private List<FieldAndValue<?>> fieldsAndValues = new ArrayList<>();
+        private List<ColumnAndValue<?>> columnsAndValues = new ArrayList<>();
+        private SqlTable table;
         
-        public SetBuilder() {
-            super();
+        public UpdateSupportBuildStep1(SqlTable table) {
+            this.table = table;
         }
         
-        public <T> SetBuilder set(SqlField<T> field, Optional<T> value) {
-            value.ifPresent(v -> fieldsAndValues.add(FieldAndValue.of(field, v, id++)));
+        public <T> UpdateSupportBuildStep1 set(SqlColumn<T> column, Optional<T> value) {
+            value.ifPresent(v -> columnsAndValues.add(ColumnAndValue.of(column, v, id++)));
             return this;
         }
         
-        public <T> SetBuilder set(SqlField<T> field, T value) {
-            fieldsAndValues.add(FieldAndValue.of(field, value, id++));
+        public <T> UpdateSupportBuildStep1 set(SqlColumn<T> column, T value) {
+            columnsAndValues.add(ColumnAndValue.of(column, value, id++));
             return this;
         }
         
-        public <T> SetBuilder setNull(SqlField<T> field) {
-            fieldsAndValues.add(FieldAndValue.of(field, id++));
+        public <T> UpdateSupportBuildStep1 setNull(SqlColumn<T> column) {
+            columnsAndValues.add(ColumnAndValue.of(column, id++));
             return this;
         }
         
-        public <T> WhereBuilder where(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            return new WhereBuilder(fieldsAndValues, field, condition, subCriteria);
+        public <T> UpdateSupportBuildStep2 where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            return new UpdateSupportBuildStep2(table, columnsAndValues, column, condition, subCriteria);
         }
     }
     
-    static class WhereBuilder extends AbstractWhereBuilder<WhereBuilder> {
-        private List<FieldAndValue<?>> setFieldsAndValues;
+    static class UpdateSupportBuildStep2 extends AbstractWhereBuilder<UpdateSupportBuildStep2> {
+        private List<ColumnAndValue<?>> setColumnsAndValues;
+        private SqlTable table;
         
-        public <T> WhereBuilder(List<FieldAndValue<?>> setFieldsAndValues, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            super(field, condition, subCriteria);
-            this.setFieldsAndValues = setFieldsAndValues;
+        public <T> UpdateSupportBuildStep2(SqlTable table, List<ColumnAndValue<?>> setColumnsAndValues, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            super(column, condition, subCriteria);
+            this.table = table;
+            this.setColumnsAndValues = setColumnsAndValues;
         }
         
         public UpdateSupport build() {
             Map<String, Object> parameters = new HashMap<>();
             SetValuesCollector setValuesCollector = renderSetValues();
-            WhereSupport whereSupport = renderCriteria(SqlField::nameIgnoringTableAlias);
+            WhereSupport whereSupport = renderCriteria(SqlColumn::name);
             parameters.putAll(setValuesCollector.parameters);
             parameters.putAll(whereSupport.getParameters());
-            return UpdateSupport.of(setValuesCollector.getSetClause(), whereSupport.getWhereClause(), parameters);
+            return UpdateSupport.of(setValuesCollector.getSetClause(), whereSupport.getWhereClause(), parameters, table);
         }
         
         private SetValuesCollector renderSetValues() {
-            return setFieldsAndValues.stream().collect(Collector.of(
+            return setColumnsAndValues.stream().collect(Collector.of(
                     SetValuesCollector::new,
                     SetValuesCollector::add,
                     SetValuesCollector::merge));
         }
 
         @Override
-        public WhereBuilder getThis() {
+        public UpdateSupportBuildStep2 getThis() {
             return this;
         }
         
@@ -96,9 +100,9 @@ public interface UpdateSupportBuilder {
             List<String> phrases = new ArrayList<>();
             Map<String, Object> parameters = new HashMap<>();
             
-            void add(FieldAndValue<?> fieldAndValue) {
-                phrases.add(fieldAndValue.setPhrase);
-                parameters.put(fieldAndValue.mapKey, fieldAndValue.value);
+            void add(ColumnAndValue<?> columnAndValue) {
+                phrases.add(columnAndValue.setPhrase);
+                parameters.put(columnAndValue.mapKey, columnAndValue.value);
             }
             
             SetValuesCollector merge(SetValuesCollector other) {
@@ -113,25 +117,25 @@ public interface UpdateSupportBuilder {
         }
     }
     
-    static class FieldAndValue<T> {
+    static class ColumnAndValue<T> {
         private T value;
         private String setPhrase;
         private String mapKey;
         
-        private FieldAndValue(SqlField<T> field, T value, int uniqueId) {
+        private ColumnAndValue(SqlColumn<T> column, T value, int uniqueId) {
             this.value = value;
-            String jdbcPlaceholder = field.getFormattedJdbcPlaceholder(String.format("parameters.up%s", uniqueId)); //$NON-NLS-1$
-            setPhrase = String.format("%s = %s", field.nameIgnoringTableAlias(), //$NON-NLS-1$
+            String jdbcPlaceholder = column.getFormattedJdbcPlaceholder(String.format("parameters.up%s", uniqueId)); //$NON-NLS-1$
+            setPhrase = String.format("%s = %s", column.name(), //$NON-NLS-1$
                     jdbcPlaceholder);
             mapKey = String.format("up%s", uniqueId); //$NON-NLS-1$
         }
         
-        static <T> FieldAndValue<T> of(SqlField<T> field, T value, int uniqueId) {
-            return new FieldAndValue<>(field, value, uniqueId);
+        static <T> ColumnAndValue<T> of(SqlColumn<T> column, T value, int uniqueId) {
+            return new ColumnAndValue<>(column, value, uniqueId);
         }
 
-        static <T> FieldAndValue<T> of(SqlField<T> field, int uniqueId) {
-            return new FieldAndValue<>(field, null, uniqueId);
+        static <T> ColumnAndValue<T> of(SqlColumn<T> column, int uniqueId) {
+            return new ColumnAndValue<>(column, null, uniqueId);
         }
     }
 }

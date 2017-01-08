@@ -27,8 +27,8 @@ public class IsIn<T> extends ListValueCondition<T> {
     }
     
     @Override
-    public String render(String fieldName, Stream<String> placeholders) {
-        return String.format("%s %s", fieldName, //$NON-NLS-1$
+    public String render(String columnName, Stream<String> placeholders) {
+        return String.format("%s %s", columnName, //$NON-NLS-1$
                 placeholders
                 .collect(Collectors.joining(",", "in (", ")"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }

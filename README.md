@@ -4,22 +4,29 @@
 [![Coverage Status](https://coveralls.io/repos/github/jeffgbutler/mybatis-dynaic-sql/badge.svg?branch=master)](https://coveralls.io/github/jeffgbutler/mybatis-dynamic-sql?branch=master)
 
 ## What Is This?
-This library is a framework for creating dynamic clauses for SQL statements.
+This library is a framework for creating dynamic SQL statements.
 
-- In support of DELETE statements, the library will generate a WHERE clause
-- In support of INSERT statements, the library will generate a field list and matching VALUES clause
-- In support of SELECT statements, the library will generate a WHERE clause and supports "distinct" and
-  "order by" attributes
-- In support of UPDATE statements, the library will generate SET and WHERE clauses
+The library will generate full DELETE, INSERT, SELECT, and UPDATE statements, or suitable statement fragments.
+The most common use case is to generate statements, and a matching set of parameters, that can be directly used
+by MyBatis.  
+
+The library will generate these types of statements:
+
+- A DELETE statement with a flexible WHERE clause
+- Two varieties of INSERT statements: one that will insert null values into columns (a "full" insert), or one that will
+  ignore null input values and their associated columns (a "selective" insert)
+- A SELECT statement with a flexible column list, a flexible WHERE clause, and support for "distinct" and "order by"
+- An UPDATE statement with a flexible WHERE clause.  Like the INSERT statement, there are two varieties of UPDATE statements:
+  a "full" update that will insert null values and a "selective" update that will ignore null input values
 
 The primary goals of the library are:
 
 1. Typesafe - to the extent possible, the library will ensure that parameter types match
-   the database field types
-2. Expressive - clauses are built in a way that clearly communicates their meaning
+   the database column types
+2. Expressive - statements are built in a way that clearly communicates their meaning
    (thanks to Hamcrest for some inspiration)
 3. Flexible - where clauses can be built using any combination of and, or, and nested conditions
-4. Extensible - the library will render clauses for MyBatis3 or plain JDBC.  It can be extended to
+4. Extensible - the library will render statements for MyBatis3 or plain JDBC.  It can be extended to
    generate clauses for other frameworks as well.  Custom where conditions can be added easily
    if none of the built in conditions are sufficient for your needs. 
 5. Small - the library is a very small dependency to add.  It has no transitive dependencies.
@@ -41,7 +48,8 @@ One capability is that very expressive dynamic queries can be generated.  Here's
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
@@ -49,7 +57,7 @@ One capability is that very expressive dynamic queries can be generated.  Here's
                     .orderBy(id.descending(), bodyWeight)
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(4));
         } finally {
             sqlSession.close();
@@ -75,9 +83,9 @@ create table SimpleTable (
 );
 ```
  
-### First - Define database fields
-The class ```org.mybatis.qbe.mybatis3.MyBatis3Field``` is used to define fields for use in the library.
-Typically these should be defined as public static variables in a class or interface.  A field definition includes:
+### First - Define database columns
+The class ```org.mybatis.qbe.mybatis3.MyBatis3Column``` is used to define columns for use in the library.
+Typically these should be defined as public static variables in a class or interface.  A column definition includes:
 
 1. The Java type
 2. The table's actual column name
@@ -92,16 +100,16 @@ package examples.simple;
 import java.sql.JDBCType;
 import java.util.Date;
 
-import org.mybatis.qbe.mybatis3.MyBatis3Field;
+import org.mybatis.qbe.mybatis3.MyBatis3Column;
 import org.mybatis.qbe.sql.SqlTable;
 
 public interface SimpleTableQBESupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
-    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(simpleTable);
-    MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
-    MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
-    MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE).inTable(simpleTable);
-    MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(simpleTable);
+    MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Column<String> lastName = MyBatis3Column.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Column<Date> birthDate = MyBatis3Column.of("birth_date", JDBCType.DATE).inTable(simpleTable);
+    MyBatis3Column<String> occupation = MyBatis3Column.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
 }
 ```
 
@@ -171,10 +179,10 @@ An XML mapper might look like this:
 ```
 
 Notice in both examples that the select uses a table alias and the delete does not.  If you specify an alias
-for fields, it will only be used for select statements.
+for columns, it will only be used for select statements.
 
 ### Third - Create where clauses for your queries
-Where clauses are created by combining your field definition (from the first step above) with a condition for the field.  This library includes a large number of type safe conditions.
+Where clauses are created by combining your column definition (from the first step above) with a condition for the column.  This library includes a large number of type safe conditions.
 All conditions can be accessed through expressive static methods in the ```org.mybatis.qbe.sql.SqlConditions``` interface.
 
 For example, a very simple condition can be defined like this:
@@ -213,7 +221,7 @@ More complex expressions can be built using the "and" and "or" conditions as fol
 All of these statements rely on a set of expressive static methods.  It is typical to import the following:
 
 ```java
-// import all field definitions for your table
+// import all column definitions for your table
 import static examples.simple.SimpleTableQBESupport.*;
 
 // import all conditions and the where support builder

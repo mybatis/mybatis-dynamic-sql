@@ -22,51 +22,65 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
+import org.mybatis.qbe.sql.SqlTable;
 
 public interface InsertSupportBuilder {
 
-    static <T> Builder<T> insertSupport(T record) {
-        return new Builder<>(record);
+    static <T> InsertSupportBuildStep1<T> insert(T record) {
+        return new InsertSupportBuildStep1<>(record);
     }
     
-    static class Builder<T> {
+    static class InsertSupportBuildStep1<T> {
         private T record;
-        private List<FieldMapping<?>> fieldMappings = new ArrayList<>();
-
-        public Builder(T record) {
-            super();
+        
+        public InsertSupportBuildStep1(T record) {
             this.record = record;
         }
         
-        public <F> Builder<T> withFieldMapping(SqlField<F> field, String property, Supplier<F> getterFunction) {
-            fieldMappings.add(FieldMapping.of(field, property, getterFunction));
+        public InsertSupportBuildStep2<T> into(SqlTable table) {
+            return new InsertSupportBuildStep2<>(record, table);
+        }
+    }
+    
+    static class InsertSupportBuildStep2<T> {
+        private T record;
+        private SqlTable table;
+        private List<ColumnMapping<?>> columnMappings = new ArrayList<>();
+
+        public InsertSupportBuildStep2(T record, SqlTable table) {
+            this.record = record;
+            this.table = table;
+        }
+        
+        public <F> InsertSupportBuildStep2<T> withColumnMapping(SqlColumn<F> column, String property, Supplier<F> getterFunction) {
+            columnMappings.add(ColumnMapping.of(column, property, getterFunction));
             return this;
         }
         
         public InsertSupport<T> buildFullInsert() {
-            return build(fieldMappings.stream());
+            return build(columnMappings.stream());
         }
 
         public InsertSupport<T> buildSelectiveInsert() {
-            return build(fieldMappings.stream().filter(FieldMapping::hasValue));
+            return build(columnMappings.stream().filter(ColumnMapping::hasValue));
         }
         
-        private InsertSupport<T> build(Stream<FieldMapping<?>> mappings) {
+        private InsertSupport<T> build(Stream<ColumnMapping<?>> mappings) {
             return mappings.collect(Collector.of(
                     CollectorSupport::new,
                     CollectorSupport::add,
                     CollectorSupport::merge,
-                    c -> c.toInsertSupport(record)));
+                    c -> c.toInsertSupport(record, table)));
         }
         
         /**
-         * A little triplet to hold the field mapping.  Only intended for use in this builder. 
+         * A little triplet to hold the column mapping.  Only intended for use in this builder. 
          *  
-         * @param <F> the field type of this mapping
+         * @param <F> the column type of this mapping
          */
-        static class FieldMapping<F> {
-            SqlField<F> field;
+        static class ColumnMapping<F> {
+            SqlColumn<F> column;
             String property;
             Supplier<F> getterFunction;
             
@@ -74,9 +88,9 @@ public interface InsertSupportBuilder {
                 return getterFunction.get() != null;
             }
             
-            static <F> FieldMapping<F> of(SqlField<F> field, String property, Supplier<F> getterFunction) {
-                FieldMapping<F> mapping = new FieldMapping<>();
-                mapping.field = field;
+            static <F> ColumnMapping<F> of(SqlColumn<F> column, String property, Supplier<F> getterFunction) {
+                ColumnMapping<F> mapping = new ColumnMapping<>();
+                mapping.column = column;
                 mapping.property = property;
                 mapping.getterFunction = getterFunction;
                 return mapping;
@@ -84,22 +98,22 @@ public interface InsertSupportBuilder {
         }
         
         static class CollectorSupport {
-            List<String> fieldPhrases = new ArrayList<>();
+            List<String> columnPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             
-            void add(FieldMapping<?> mapping) {
-                fieldPhrases.add(mapping.field.nameIgnoringTableAlias());
-                valuePhrases.add(mapping.field.getFormattedJdbcPlaceholder(String.format("record.%s", mapping.property))); //$NON-NLS-1$
+            void add(ColumnMapping<?> mapping) {
+                columnPhrases.add(mapping.column.name());
+                valuePhrases.add(mapping.column.getFormattedJdbcPlaceholder(String.format("record.%s", mapping.property))); //$NON-NLS-1$
             }
             
             CollectorSupport merge(CollectorSupport other) {
-                fieldPhrases.addAll(other.fieldPhrases);
+                columnPhrases.addAll(other.columnPhrases);
                 valuePhrases.addAll(other.valuePhrases);
                 return this;
             }
             
-            String fieldsPhrase() {
-                return fieldPhrases.stream()
+            String columnsPhrase() {
+                return columnPhrases.stream()
                         .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
             }
 
@@ -108,8 +122,8 @@ public interface InsertSupportBuilder {
                         .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             
-            <T> InsertSupport<T> toInsertSupport(T record) {
-                return InsertSupport.of(fieldsPhrase(), valuesPhrase(), record);
+            <T> InsertSupport<T> toInsertSupport(T record, SqlTable table) {
+                return InsertSupport.of(columnsPhrase(), valuesPhrase(), record, table);
             }
         }
     }

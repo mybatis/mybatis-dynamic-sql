@@ -17,19 +17,25 @@ package org.mybatis.qbe.sql.select;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class SelectSupport {
+import org.mybatis.qbe.sql.AbstractSqlSupport;
+import org.mybatis.qbe.sql.SqlTable;
+
+public class SelectSupport extends AbstractSqlSupport {
     
     private static final String DISTINCT_STRING = "distinct"; //$NON-NLS-1$
     private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
-    private String whereClause = EMPTY_STRING;
+    private String columnList;
+    private String whereClause;
     private Map<String, Object> parameters = new HashMap<>();
-    private String distinct = EMPTY_STRING;
-    private String orderByClause = EMPTY_STRING;
+    private String distinct;
+    private String orderByClause;
     
-    private SelectSupport() {
-        super();
+    private SelectSupport(SqlTable table) {
+        super(table);
     }
     
     public String getDistinct() {
@@ -48,30 +54,64 @@ public class SelectSupport {
         return orderByClause;
     }
     
+    public String getColumnList() {
+        return columnList;
+    }
+    
+    public String getFullSelectStatement() {
+        return Stream.of("select", //$NON-NLS-1$
+                distinct,
+                getColumnList(),
+                "from", //$NON-NLS-1$
+                table().orElse(UNKNOWN_TABLE).nameIncludingAlias(),
+                getWhereClause(),
+                getOrderByClause()).collect(Collectors.joining(" ")); //$NON-NLS-1$
+    }
+    
     public static class Builder {
-        private SelectSupport selectSupport = new SelectSupport();
+        private String distinctString = EMPTY_STRING;
+        private String orderByClause = EMPTY_STRING;
+        private String whereClause = EMPTY_STRING;
+        private Map<String, Object> parameters;
+        private String columnList;
+        private SqlTable table;
         
         public Builder isDistinct() {
-            selectSupport.distinct = DISTINCT_STRING;
+            distinctString = DISTINCT_STRING;
             return this;
         }
         
         public Builder withOrderByClause(String orderByClause) {
-            selectSupport.orderByClause = orderByClause;
+            this.orderByClause = orderByClause;
             return this;
         }
         
         public Builder withWhereClause(String whereClause) {
-            selectSupport.whereClause = whereClause;
+            this.whereClause = whereClause;
             return this;
         }
         
         public Builder withParameters(Map<String, Object> parameters) {
-            selectSupport.parameters = parameters;
+            this.parameters = parameters;
             return this;
         }
         
+        public Builder withColumnList(String columnList) {
+            this.columnList = columnList;
+            return this;
+        }
+        
+        public Builder withTable(SqlTable table) {
+            this.table = table;
+            return this;
+        }
         public SelectSupport build() {
+            SelectSupport selectSupport = new SelectSupport(table);
+            selectSupport.distinct = distinctString;
+            selectSupport.orderByClause = orderByClause;
+            selectSupport.whereClause = whereClause;
+            selectSupport.parameters = parameters;
+            selectSupport.columnList = columnList;
             return selectSupport;
         }
     }

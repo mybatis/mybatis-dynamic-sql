@@ -20,46 +20,95 @@ import java.util.stream.Collectors;
 
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
+import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.where.AbstractWhereBuilder;
 import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface SelectSupportBuilder {
 
-    static Builder selectSupport() {
-        return new Builder();
+    static SelectSupportBuildStep1 select(SqlColumn<?>...columns) {
+        return new SelectSupportBuildStep1(columns);
     }
     
-    static class Builder {
+    static SelectSupportBuildStep1 selectDistinct(SqlColumn<?>...columns) {
+        SelectSupportBuildStep1 buildStep = new SelectSupportBuildStep1(columns);
+        buildStep.makeDistinct();
+        return buildStep;
+    }
+    
+    static SelectSupportBuildStep1 selectCount() {
+        return new SelectSupportBuildStep1();
+    }
+    
+    static class SelectSupportBuildStep1 {
         private SelectSupport.Builder selectSupportBuilder = new SelectSupport.Builder();
-        
-        public Builder distinct() {
-            selectSupportBuilder.isDistinct();
-            return this;
+
+        public SelectSupportBuildStep1() {
+            selectSupportBuilder.withColumnList("count(*)"); //$NON-NLS-1$
         }
         
-        public <T> WhereBuilder where(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            return new WhereBuilder(selectSupportBuilder, field, condition, subCriteria);
+        public SelectSupportBuildStep1(SqlColumn<?>...columns) {
+            selectSupportBuilder.withColumnList(calculateColumnList(columns));
+        }
+        
+        public SelectSupportBuildStep2 from(SqlTable table) {
+            selectSupportBuilder.withTable(table);
+            return new SelectSupportBuildStep2(selectSupportBuilder);
+        }
+
+        private void makeDistinct() {
+            selectSupportBuilder.isDistinct();
+        }
+        
+        private String calculateColumnList(SqlColumn<?>...columns) {
+            return Arrays.stream(columns)
+                    .map(SqlColumn::nameIncludingTableAndColumnAlias)
+                    .collect(Collectors.joining(", "));
         }
     }
     
-    static class WhereBuilder extends AbstractWhereBuilder<WhereBuilder> {
+    static class SelectSupportBuildStep2 {
         private SelectSupport.Builder selectSupportBuilder;
         
-        public <T> WhereBuilder(SelectSupport.Builder selectSupportBuilder, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            super(field, condition, subCriteria);
+        public SelectSupportBuildStep2(SelectSupport.Builder selectSupportBuilder) {
             this.selectSupportBuilder = selectSupportBuilder;
         }
         
-        public FinalBuilder orderBy(SqlField<?>...fields) {
+        public <T> SelectSupportBuildStep3 where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            return new SelectSupportBuildStep3(selectSupportBuilder, column, condition, subCriteria);
+        }
+
+        public SelectSupportBuildStep4 orderBy(SqlColumn<?>...columns) {
             String orderByClause = 
-                    Arrays.stream(fields)
-                    .map(SqlField::orderByPhrase)
+                    Arrays.stream(columns)
+                    .map(SqlColumn::orderByPhrase)
+                    .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            selectSupportBuilder.withOrderByClause(orderByClause);
+            return new SelectSupportBuildStep4(selectSupportBuilder);
+        }
+        
+        public SelectSupport build() {
+            return selectSupportBuilder.build();
+        }
+    }
+    
+    static class SelectSupportBuildStep3 extends AbstractWhereBuilder<SelectSupportBuildStep3> {
+        private SelectSupport.Builder selectSupportBuilder;
+        
+        public <T> SelectSupportBuildStep3(SelectSupport.Builder selectSupportBuilder, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            super(column, condition, subCriteria);
+            this.selectSupportBuilder = selectSupportBuilder;
+        }
+        
+        public SelectSupportBuildStep4 orderBy(SqlColumn<?>...columns) {
+            String orderByClause = 
+                    Arrays.stream(columns)
+                    .map(SqlColumn::orderByPhrase)
                     .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             buildWhereSupport();
-            SelectSupport selectSupport = selectSupportBuilder.withOrderByClause(orderByClause)
-                .build();
-            return new FinalBuilder(selectSupport);
+            selectSupportBuilder.withOrderByClause(orderByClause);
+            return new SelectSupportBuildStep4(selectSupportBuilder);
         }
         
         public SelectSupport build() {
@@ -68,26 +117,26 @@ public interface SelectSupportBuilder {
         }
         
         private void buildWhereSupport() {
-            WhereSupport whereSupport = renderCriteria(SqlField::nameIncludingTableAlias);
+            WhereSupport whereSupport = renderCriteria(SqlColumn::nameIncludingTableAlias);
             selectSupportBuilder.withParameters(whereSupport.getParameters())
                 .withWhereClause(whereSupport.getWhereClause());
         }
 
         @Override
-        public WhereBuilder getThis() {
+        public SelectSupportBuildStep3 getThis() {
             return this;
         }
     }
     
-    static class FinalBuilder {
-        private SelectSupport selectSupport;
+    static class SelectSupportBuildStep4 {
+        private SelectSupport.Builder selectSupportBuilder;
 
-        public FinalBuilder(SelectSupport selectSupport) {
-            this.selectSupport = selectSupport;
+        public SelectSupportBuildStep4(SelectSupport.Builder selectSupportBuilder) {
+            this.selectSupportBuilder = selectSupportBuilder;
         }
         
         public SelectSupport build() {
-            return selectSupport;
+            return selectSupportBuilder.build();
         }
     }
 }

@@ -13,10 +13,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.qbe.sql.update;
+package org.mybatis.qbe.sql.delete;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,27 +22,15 @@ import java.util.stream.Stream;
 import org.mybatis.qbe.sql.AbstractSqlSupport;
 import org.mybatis.qbe.sql.SqlTable;
 
-/**
- * This class combines a "set" clause and a "where" clause into one parameter object
- * that can be sent to a MyBatis3 mapper method.
- * 
- * @author Jeff Butler
- *
- */
-public class UpdateSupport extends AbstractSqlSupport {
-    private String setClause;
+public class DeleteSupport extends AbstractSqlSupport {
+
     private String whereClause;
     private Map<String, Object> parameters;
-
-    private UpdateSupport (String setClause, String whereClause, Map<String, Object> parameters, SqlTable table) {
+    
+    private DeleteSupport(String whereClause, Map<String, Object> parameters, SqlTable table) {
         super(table);
-        this.setClause = setClause;
         this.whereClause = whereClause;
-        this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
-    }
-
-    public String getSetClause() {
-        return setClause;
+        this.parameters = parameters;
     }
 
     public String getWhereClause() {
@@ -54,15 +40,14 @@ public class UpdateSupport extends AbstractSqlSupport {
     public Map<String, Object> getParameters() {
         return parameters;
     }
-
-    public String getFullUpdateStatement() {
-        return Stream.of("update", //$NON-NLS-1$
+    
+    public String getFullDeleteStatement() {
+        return Stream.of("delete from", //$NON-NLS-1$
                 table().orElse(UNKNOWN_TABLE).name(),
-                getSetClause(),
                 getWhereClause()).collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
-    
-    public static UpdateSupport of(String setClause, String whereClause, Map<String, Object> parameters, SqlTable table) {
-        return new UpdateSupport(setClause, whereClause, parameters, table);
+
+    public static DeleteSupport of(String whereClause, Map<String, Object> parameters, SqlTable table) {
+        return new DeleteSupport(whereClause, parameters, table);
     }
 }

@@ -18,7 +18,7 @@ package org.mybatis.qbe.mybatis3;
 import java.sql.JDBCType;
 import java.util.Optional;
 
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
 import org.mybatis.qbe.sql.SqlTable;
 
 /**
@@ -26,11 +26,16 @@ import org.mybatis.qbe.sql.SqlTable;
  * @author Jeff Butler
  *
  */
-public class MyBatis3Field<T> extends SqlField<T> {
+public class MyBatis3Column<T> extends SqlColumn<T> {
 
     protected String typeHandler;
     
-    protected MyBatis3Field(String name, JDBCType jdbcType) {
+    protected MyBatis3Column(MyBatis3Column<?> myBatis3Column) {
+        super(myBatis3Column);
+        this.typeHandler = myBatis3Column.typeHandler;
+    }
+    
+    protected MyBatis3Column(String name, JDBCType jdbcType) {
         super(name, jdbcType);
     }
     
@@ -38,32 +43,33 @@ public class MyBatis3Field<T> extends SqlField<T> {
         return Optional.ofNullable(typeHandler);
     }
     
-    public <S> MyBatis3Field<S> withTypeHandler(String typeHandler) {
-        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType);
-        field.table = table;
-        field.sortOrder = sortOrder;
-        field.typeHandler = typeHandler;
-        return field;
+    public <S> MyBatis3Column<S> withTypeHandler(String typeHandler) {
+        MyBatis3Column<S> column = new MyBatis3Column<>(this);
+        column.typeHandler = typeHandler;
+        return column;
     }
     
     @Override
-    public <S> MyBatis3Field<S> inTable(SqlTable table) {
-        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType);
-        field.table = table;
-        field.sortOrder = sortOrder;
-        field.typeHandler = typeHandler;
-        return field;
+    public <S> MyBatis3Column<S> inTable(SqlTable table) {
+        MyBatis3Column<S> column = new MyBatis3Column<>(this);
+        column.table = table;
+        return column;
     }
     
     @Override
-    public <S> MyBatis3Field<S> descending() {
-        MyBatis3Field<S> field = MyBatis3Field.of(name, jdbcType);
-        field.table = table;
-        field.sortOrder = DESCENDING;
-        field.typeHandler = typeHandler;
-        return field;
+    public <S> MyBatis3Column<S> descending() {
+        MyBatis3Column<S> column = new MyBatis3Column<>(this);
+        column.sortOrder = DESCENDING;
+        return column;
     }
 
+    @Override
+    public <S> MyBatis3Column<S> withAlias(String alias) {
+        MyBatis3Column<S> column = new MyBatis3Column<>(this);
+        column.alias = alias;
+        return column;
+    }
+    
     @Override
     public String getFormattedJdbcPlaceholder(String parameterName) {
         StringBuilder buffer = new StringBuilder();
@@ -81,7 +87,7 @@ public class MyBatis3Field<T> extends SqlField<T> {
         return buffer.toString();
     }
 
-    public static <T> MyBatis3Field<T> of(String name, JDBCType jdbcType) {
-        return new MyBatis3Field<>(name, jdbcType);
+    public static <T> MyBatis3Column<T> of(String name, JDBCType jdbcType) {
+        return new MyBatis3Column<>(name, jdbcType);
     }
 }

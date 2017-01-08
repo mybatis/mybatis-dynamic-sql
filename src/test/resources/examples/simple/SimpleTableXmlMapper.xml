@@ -20,46 +20,35 @@
 <mapper namespace="examples.simple.SimpleTableXmlMapper">
 
   <resultMap id="SimpleTableResult" type="examples.simple.SimpleTableRecord">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="A_ID" jdbcType="INTEGER" property="id" />
     <result column="first_name" jdbcType="VARCHAR" property="firstName" />
     <result column="last_name" jdbcType="VARCHAR" property="lastName" />
     <result column="birth_date" jdbcType="DATE" property="birthDate" />
+    <result column="employed" jdbcType="VARCHAR" property="employed" typeHandler="examples.simple.YesNoTypeHandler" />
     <result column="occupation" jdbcType="VARCHAR" property="occupation" />
   </resultMap>
 
   <insert id="insert">
-    insert into simpletable
-    ${fieldsPhrase}
-    ${valuesPhrase}
+    ${fullInsertStatement}
   </insert>
   
-  <select id="selectByExample" resultMap="SimpleTableResult">
-    select ${distinct} a.id, a.first_name, a.last_name, a.birth_date, a.occupation
-    from SimpleTable a
-    ${whereClause}
-    ${orderByClause}
+  <select id="selectMany" resultMap="SimpleTableResult">
+    ${fullSelectStatement}
   </select>
 
-  <select id="selectByPrimaryKey" resultMap="SimpleTableResult">
-    select a.id, a.first_name, a.last_name, a.birth_date, a.occupation
-    from SimpleTable a
-    where id = #{value}
+  <select id="selectOne" resultMap="SimpleTableResult">
+    ${fullSelectStatement}
   </select>
   
   <delete id="delete">
-    delete from SimpleTable
-    ${whereClause}
+    ${fullDeleteStatement}
   </delete>
 
   <update id="update">
-    update SimpleTable
-    ${setClause}
-    ${whereClause}
+    ${fullUpdateStatement}
   </update>
 
-  <select id="countByExample" resultType="_int">
-    select count(*)
-    from SimpleTable
-    ${whereClause}
+  <select id="count" resultType="_long">
+    ${fullSelectStatement}
   </select>
 </mapper>

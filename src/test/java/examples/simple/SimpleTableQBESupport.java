@@ -16,90 +16,114 @@
 package examples.simple;
 
 import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
-import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.updateSupport;
-import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
+import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteFrom;
+import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insert;
+import static org.mybatis.qbe.sql.select.SelectSupportBuilder.select;
+import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.update;
 
 import java.sql.JDBCType;
 import java.util.Date;
 import java.util.Optional;
 
-import org.mybatis.qbe.mybatis3.MyBatis3Field;
+import org.mybatis.qbe.mybatis3.MyBatis3Column;
 import org.mybatis.qbe.sql.SqlTable;
+import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.insert.InsertSupport;
+import org.mybatis.qbe.sql.select.SelectSupport;
+import org.mybatis.qbe.sql.select.SelectSupportBuilder.SelectSupportBuildStep2;
 import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.update.UpdateSupportBuilder.SetBuilder;
-import org.mybatis.qbe.sql.where.WhereSupport;
+import org.mybatis.qbe.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep1;
 
 public interface SimpleTableQBESupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
-    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(simpleTable);
-    MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
-    MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
-    MyBatis3Field<Date> birthDate = MyBatis3Field.of("birth_date", JDBCType.DATE).inTable(simpleTable);
-    MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
+    MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Column<String> lastName = MyBatis3Column.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
+    MyBatis3Column<Date> birthDate = MyBatis3Column.of("birth_date", JDBCType.DATE).inTable(simpleTable);
+    MyBatis3Column<Boolean> employed = MyBatis3Column.of("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler").inTable(simpleTable);
+    MyBatis3Column<String> occupation = MyBatis3Column.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
     
     static InsertSupport<SimpleTableRecord> buildFullInsertSupport(SimpleTableRecord record) {
-        return insertSupport(record)
-                .withFieldMapping(id, "id", record::getId)
-                .withFieldMapping(firstName, "firstName", record::getFirstName)
-                .withFieldMapping(lastName, "lastName", record::getLastName)
-                .withFieldMapping(birthDate, "birthDate", record::getBirthDate)
-                .withFieldMapping(occupation, "occupation", record::getOccupation)
+        return insert(record)
+                .into(simpleTable)
+                .withColumnMapping(id, "id", record::getId)
+                .withColumnMapping(firstName, "firstName", record::getFirstName)
+                .withColumnMapping(lastName, "lastName", record::getLastName)
+                .withColumnMapping(birthDate, "birthDate", record::getBirthDate)
+                .withColumnMapping(employed, "employed", record::getEmployed)
+                .withColumnMapping(occupation, "occupation", record::getOccupation)
                 .buildFullInsert();
     }
 
     static InsertSupport<SimpleTableRecord> buildSelectiveInsertSupport(SimpleTableRecord record) {
-        return insertSupport(record)
-                .withFieldMapping(id, "id", record::getId)
-                .withFieldMapping(firstName, "firstName", record::getFirstName)
-                .withFieldMapping(lastName, "lastName", record::getLastName)
-                .withFieldMapping(birthDate, "birthDate", record::getBirthDate)
-                .withFieldMapping(occupation, "occupation", record::getOccupation)
+        return insert(record)
+                .into(simpleTable)
+                .withColumnMapping(id, "id", record::getId)
+                .withColumnMapping(firstName, "firstName", record::getFirstName)
+                .withColumnMapping(lastName, "lastName", record::getLastName)
+                .withColumnMapping(birthDate, "birthDate", record::getBirthDate)
+                .withColumnMapping(employed, "employed", record::getEmployed)
+                .withColumnMapping(occupation, "occupation", record::getOccupation)
                 .buildSelectiveInsert();
     }
     
     static UpdateSupport buildFullUpdateByPrimaryKeySupport(SimpleTableRecord record) {
-        return updateSupport()
+        return update(simpleTable)
                 .set(firstName, record.getFirstName())
                 .set(lastName, record.getLastName())
                 .set(birthDate, record.getBirthDate())
+                .set(employed, record.getEmployed())
                 .set(occupation, record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
                 .build();
     }
 
     static UpdateSupport buildSelectiveUpdateByPrimaryKeySupport(SimpleTableRecord record) {
-        return updateSupport()
+        return update(simpleTable)
                 .set(firstName, Optional.ofNullable(record.getFirstName()))
                 .set(lastName, Optional.ofNullable(record.getLastName()))
                 .set(birthDate, Optional.ofNullable(record.getBirthDate()))
+                .set(employed, Optional.ofNullable(record.getEmployed()))
                 .set(occupation, Optional.ofNullable(record.getOccupation()))
                 .where(id, isEqualTo(record.getId()))
                 .build();
     }
 
-    static SetBuilder updateByExample(SimpleTableRecord record) {
-        return updateSupport()
+    static UpdateSupportBuildStep1 updateByExample(SimpleTableRecord record) {
+        return update(simpleTable)
                 .set(id, record.getId())
                 .set(firstName, record.getFirstName())
                 .set(lastName, record.getLastName())
                 .set(birthDate, record.getBirthDate())
+                .set(employed, record.getEmployed())
                 .set(occupation, record.getOccupation());
     }
 
-    static SetBuilder updateByExampleSelective(SimpleTableRecord record) {
-        return updateSupport()
+    static UpdateSupportBuildStep1 updateByExampleSelective(SimpleTableRecord record) {
+        return update(simpleTable)
                 .set(id, Optional.ofNullable(record.getId()))
                 .set(firstName, Optional.ofNullable(record.getFirstName()))
                 .set(lastName, Optional.ofNullable(record.getLastName()))
                 .set(birthDate, Optional.ofNullable(record.getBirthDate()))
+                .set(employed, Optional.ofNullable(record.getEmployed()))
                 .set(occupation, Optional.ofNullable(record.getOccupation()));
     }
 
-    static WhereSupport buildDeleteByPrimaryKeySupport(Integer id_) {
-        return whereSupport()
+    static DeleteSupport buildDeleteByPrimaryKeySupport(Integer id_) {
+        return deleteFrom(simpleTable)
                 .where(id, isEqualTo(id_))
                 .build();
+    }
+    
+    static SelectSupportBuildStep2 selectByExample() {
+        return select(id, firstName, lastName, birthDate, employed, occupation)
+            .from(simpleTable);
+    }
+
+    static SelectSupport buildSelectByPrimaryKeySupport(int id_) {
+        return select(id, firstName, lastName, birthDate, employed, occupation)
+            .from(simpleTable)
+            .where(id, isEqualTo(id_))
+            .build();
     }
 }

@@ -28,7 +28,7 @@
 
   <insert id="insert" useGeneratedKeys="true" keyProperty="record.fullName">
     insert into GeneratedAlways
-    ${fieldsPhrase}
+    ${columnsPhrase}
     ${valuesPhrase}
   </insert>
   

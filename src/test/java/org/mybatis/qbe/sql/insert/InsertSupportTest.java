@@ -17,7 +17,7 @@ package org.mybatis.qbe.sql.insert;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
+import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.ArrayList;
@@ -25,16 +25,18 @@ import java.util.List;
 import java.util.stream.Collector;
 
 import org.junit.Test;
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
+import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.insert.InsertSupport;
-import org.mybatis.qbe.sql.insert.InsertSupportBuilder.Builder.CollectorSupport;
-import org.mybatis.qbe.sql.insert.InsertSupportBuilder.Builder.FieldMapping;
+import org.mybatis.qbe.sql.insert.InsertSupportBuilder.InsertSupportBuildStep2.CollectorSupport;
+import org.mybatis.qbe.sql.insert.InsertSupportBuilder.InsertSupportBuildStep2.ColumnMapping;
 
 public class InsertSupportTest {
-    private static final SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
-    private static final SqlField<String> firstName = SqlField.of("first_name", JDBCType.VARCHAR);
-    private static final SqlField<String> lastName = SqlField.of("last_name", JDBCType.VARCHAR);
-    private static final SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
+    private static final SqlTable foo = SqlTable.of("foo");
+    private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
+    private static final SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR);
+    private static final SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR);
+    private static final SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR);
     
     @Test
     public void testFullInsertSupportBuilder() {
@@ -43,15 +45,16 @@ public class InsertSupportTest {
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertSupport<TestRecord> insertSupport = insertSupport(record)
-                .withFieldMapping(id, "id", record::getId)
-                .withFieldMapping(firstName, "firstName", record::getFirstName)
-                .withFieldMapping(lastName, "lastName", record::getLastName)
-                .withFieldMapping(occupation, "occupation", record::getOccupation)
+        InsertSupport<TestRecord> insertSupport = insert(record)
+                .into(foo)
+                .withColumnMapping(id, "id", record::getId)
+                .withColumnMapping(firstName, "firstName", record::getFirstName)
+                .withColumnMapping(lastName, "lastName", record::getLastName)
+                .withColumnMapping(occupation, "occupation", record::getOccupation)
                 .buildFullInsert();
 
-        String expectedFieldsPhrase = "(id, first_name, last_name, occupation)";
-        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
+        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
 
         String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
@@ -63,15 +66,16 @@ public class InsertSupportTest {
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertSupport<TestRecord> insertSupport = insertSupport(record)
-                .withFieldMapping(id, "id", record::getId)
-                .withFieldMapping(firstName, "firstName", record::getFirstName)
-                .withFieldMapping(lastName, "lastName", record::getLastName)
-                .withFieldMapping(occupation, "occupation", record::getOccupation)
+        InsertSupport<TestRecord> insertSupport = insert(record)
+                .into(foo)
+                .withColumnMapping(id, "id", record::getId)
+                .withColumnMapping(firstName, "firstName", record::getFirstName)
+                .withColumnMapping(lastName, "lastName", record::getLastName)
+                .withColumnMapping(occupation, "occupation", record::getOccupation)
                 .buildSelectiveInsert();
 
-        String expectedFieldsPhrase = "(last_name, occupation)";
-        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
+        String expectedColumnsPhrase = "(last_name, occupation)";
+        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
 
         String expectedValuesPhrase = "values ({record.lastName}, {record.occupation})";
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
@@ -84,27 +88,49 @@ public class InsertSupportTest {
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        List<FieldMapping<?>> mappings = new ArrayList<>();
+        List<ColumnMapping<?>> mappings = new ArrayList<>();
         
-        mappings.add(FieldMapping.of(id, "id", record::getId));
-        mappings.add(FieldMapping.of(firstName, "firstName", record::getFirstName));
-        mappings.add(FieldMapping.of(lastName, "lastName", record::getLastName));
-        mappings.add(FieldMapping.of(occupation, "occupation", record::getOccupation));
+        mappings.add(ColumnMapping.of(id, "id", record::getId));
+        mappings.add(ColumnMapping.of(firstName, "firstName", record::getFirstName));
+        mappings.add(ColumnMapping.of(lastName, "lastName", record::getLastName));
+        mappings.add(ColumnMapping.of(occupation, "occupation", record::getOccupation));
         
         InsertSupport<TestRecord> insertSupport = 
                 mappings.parallelStream().collect(Collector.of(
                         CollectorSupport::new,
                         CollectorSupport::add,
                         CollectorSupport::merge,
-                        c -> c.toInsertSupport(record)));
+                        c -> c.toInsertSupport(record, foo)));
                 
-        String expectedFieldsPhrase = "(id, first_name, last_name, occupation)";
-        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
+        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
 
         String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
     }
     
+    @Test
+    public void testFullInsertStatementBuilder() {
+
+        TestRecord record = new TestRecord();
+        record.setLastName("jones");
+        record.setOccupation("dino driver");
+        
+        InsertSupport<TestRecord> insertSupport = insert(record)
+                .into(foo)
+                .withColumnMapping(id, "id", record::getId)
+                .withColumnMapping(firstName, "firstName", record::getFirstName)
+                .withColumnMapping(lastName, "lastName", record::getLastName)
+                .withColumnMapping(occupation, "occupation", record::getOccupation)
+                .buildFullInsert();
+
+        String expectedStatement = "insert into foo "
+                + "(id, first_name, last_name, occupation) "
+                + "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
+        
+        assertThat(insertSupport.getFullInsertStatement(), is(expectedStatement));
+    }
+
     public static class TestRecord {
         private Integer id;
         private String firstName;

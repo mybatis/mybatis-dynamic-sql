@@ -21,7 +21,7 @@ import static org.mybatis.qbe.sql.SqlConditions.and;
 import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
 import static org.mybatis.qbe.sql.SqlConditions.isLessThan;
 import static org.mybatis.qbe.sql.SqlConditions.or;
-import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
+import static org.mybatis.qbe.sql.select.SelectSupportBuilder.select;
 
 import java.sql.JDBCType;
 import java.util.Date;
@@ -32,20 +32,21 @@ import org.mybatis.qbe.sql.select.SelectSupport;
 
 public class SelectSupportTest {
     public static final SqlTable table = SqlTable.of("foo").withAlias("a");
-    public static final SqlField<Date> field1 = SqlField.of("field1", JDBCType.DATE).inTable(table);
-    public static final SqlField<Integer> field2 = SqlField.of("field2", JDBCType.INTEGER).inTable(table);
+    public static final SqlColumn<Date> column1 = SqlColumn.of("column1", JDBCType.DATE).inTable(table).withAlias("A_COLUMN1");
+    public static final SqlColumn<Integer> column2 = SqlColumn.of("column2", JDBCType.INTEGER).inTable(table);
 
     @Test
     public void testSimpleCriteriaWithoutAlias() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectSupport()
-                .where(field1, isEqualTo(d))
-                .or(field2, isEqualTo(4))
-                .and(field2, isLessThan(3))
+        SelectSupport selectSupport = select(column1, column2)
+                .from(table)
+                .where(column1, isEqualTo(d))
+                .or(column2, isEqualTo(4))
+                .and(column2, isLessThan(3))
                 .build();
 
-        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1} or a.field2 = {parameters.p2} and a.field2 < {parameters.p3}"));
+        assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1} or a.column2 = {parameters.p2} and a.column2 < {parameters.p3}"));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -57,20 +58,21 @@ public class SelectSupportTest {
     public void testComplexCriteriaWithoutAlias() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectSupport()
-                .where(field1, isEqualTo(d))
-                .or(field2, isEqualTo(4))
-                .and(field2, isLessThan(3))
-                .or(field2, isEqualTo(4), and(field2, isEqualTo(6)))
-                .and(field2, isLessThan(3), or(field1, isEqualTo(d)))
+        SelectSupport selectSupport = select(column1, column2)
+                .from(table)
+                .where(column1, isEqualTo(d))
+                .or(column2, isEqualTo(4))
+                .and(column2, isLessThan(3))
+                .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
+                .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
                 .build();
         
 
-        String expected = "where a.field1 = {parameters.p1}" +
-                " or a.field2 = {parameters.p2}" +
-                " and a.field2 < {parameters.p3}" +
-                " or (a.field2 = {parameters.p4} and a.field2 = {parameters.p5})" +
-                " and (a.field2 < {parameters.p6} or a.field1 = {parameters.p7})";
+        String expected = "where a.column1 = {parameters.p1}" +
+                " or a.column2 = {parameters.p2}" +
+                " and a.column2 < {parameters.p3}" +
+                " or (a.column2 = {parameters.p4} and a.column2 = {parameters.p5})" +
+                " and (a.column2 < {parameters.p6} or a.column1 = {parameters.p7})";
         
         assertThat(selectSupport.getWhereClause(), is(expected));
         
@@ -88,13 +90,14 @@ public class SelectSupportTest {
     public void testSimpleCriteriaWithAlias() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectSupport()
-                .where(field1, isEqualTo(d))
-                .or(field2, isEqualTo(4))
-                .and(field2, isLessThan(3))
+        SelectSupport selectSupport = select(column1, column2)
+                .from(table)
+                .where(column1, isEqualTo(d))
+                .or(column2, isEqualTo(4))
+                .and(column2, isLessThan(3))
                 .build();
 
-        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1} or a.field2 = {parameters.p2} and a.field2 < {parameters.p3}"));
+        assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1} or a.column2 = {parameters.p2} and a.column2 < {parameters.p3}"));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -106,20 +109,21 @@ public class SelectSupportTest {
     public void testComplexCriteriaWithAlias() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectSupport()
-                .where(field1, isEqualTo(d))
-                .or(field2, isEqualTo(4))
-                .and(field2, isLessThan(3))
-                .or(field2, isEqualTo(4), and(field2, isEqualTo(6)))
-                .and(field2, isLessThan(3), or(field1, isEqualTo(d)))
+        SelectSupport selectSupport = select(column1, column2)
+                .from(table)
+                .where(column1, isEqualTo(d))
+                .or(column2, isEqualTo(4))
+                .and(column2, isLessThan(3))
+                .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
+                .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
                 .build();
         
 
-        String expected = "where a.field1 = {parameters.p1}" +
-                " or a.field2 = {parameters.p2}" +
-                " and a.field2 < {parameters.p3}" +
-                " or (a.field2 = {parameters.p4} and a.field2 = {parameters.p5})" +
-                " and (a.field2 < {parameters.p6} or a.field1 = {parameters.p7})";
+        String expected = "where a.column1 = {parameters.p1}" +
+                " or a.column2 = {parameters.p2}" +
+                " and a.column2 < {parameters.p3}" +
+                " or (a.column2 = {parameters.p4} and a.column2 = {parameters.p5})" +
+                " and (a.column2 < {parameters.p6} or a.column1 = {parameters.p7})";
         
         assertThat(selectSupport.getWhereClause(), is(expected));
         
@@ -134,48 +138,52 @@ public class SelectSupportTest {
     }
 
     @Test
-    public void testOrderBySingleFieldAscending() {
+    public void testOrderBySingleColumnAscending() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectSupport()
-                .where(field1, isEqualTo(d))
-                .orderBy(field1)
+        SelectSupport selectSupport = select(column1, column2)
+                .from(table)
+                .where(column1, isEqualTo(d))
+                .orderBy(column1)
                 .build();
 
-        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1}"));
-        assertThat(selectSupport.getOrderByClause(), is("order by field1 ASC"));
+        assertThat(selectSupport.getColumnList(), is("a.column1 as A_COLUMN1, a.column2"));
+        assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1}"));
+        assertThat(selectSupport.getOrderByClause(), is("order by A_COLUMN1 ASC"));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
     }
 
     @Test
-    public void testOrderBySingleFieldDescending() {
+    public void testOrderBySingleColumnDescending() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectSupport()
-                .where(field1, isEqualTo(d))
-                .orderBy(field2.descending())
+        SelectSupport selectSupport = select(column1, column2)
+                .from(table)
+                .where(column1, isEqualTo(d))
+                .orderBy(column2.descending())
                 .build();
 
-        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1}"));
-        assertThat(selectSupport.getOrderByClause(), is("order by field2 DESC"));
+        assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1}"));
+        assertThat(selectSupport.getOrderByClause(), is("order by column2 DESC"));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
     }
 
     @Test
-    public void testOrderByMultipleFields() {
+    public void testOrderByMultipleColumns() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectSupport()
-                .where(field1, isEqualTo(d))
-                .orderBy(field2.descending(), field1)
+        SelectSupport selectSupport = select(column1, column2)
+                .from(table)
+                .where(column1, isEqualTo(d))
+                .orderBy(column2.descending(), column1)
                 .build();
 
-        assertThat(selectSupport.getWhereClause(), is("where a.field1 = {parameters.p1}"));
-        assertThat(selectSupport.getOrderByClause(), is("order by field2 DESC, field1 ASC"));
+        assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1}"));
+        assertThat(selectSupport.getOrderByClause(), is("order by column2 DESC, A_COLUMN1 ASC"));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));

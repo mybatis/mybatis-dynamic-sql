@@ -13,25 +13,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.qbe;
+package org.mybatis.qbe.sql;
 
-/**
- * 
- * @author Jeff Butler
- *
- * @param <T> - even though the type is not directly used in this class,
- *  it is used by the compiler to match fields with conditions so it should
- *  not be removed.
- */
-public abstract class Field<T> {
+import java.util.Optional;
 
-    protected String name;
-    
-    protected Field(String name) {
-        this.name = name;
+public abstract class AbstractSqlSupport {
+    public static final SqlTable UNKNOWN_TABLE = SqlTable.of("<<unknown>>"); //$NON-NLS-1$
+
+    private SqlTable table;
+
+    public AbstractSqlSupport(SqlTable table) {
+        this.table = table;
     }
-    
-    public String name() {
-        return name;
+
+    public Optional<SqlTable> table() {
+        return Optional.ofNullable(table);
     }
 }

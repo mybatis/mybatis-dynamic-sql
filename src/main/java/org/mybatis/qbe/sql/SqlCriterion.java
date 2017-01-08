@@ -21,23 +21,23 @@ import java.util.stream.Stream;
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.Criterion;
 
-public class SqlCriterion<T> extends Criterion<T, SqlField<T>, SqlCriterion<?>> {
+public class SqlCriterion<T> extends Criterion<T, SqlColumn<T>, SqlCriterion<?>> {
     
     private SqlCriterion(Stream<SqlCriterion<?>> subCriteria) {
         super(subCriteria);
     }
     
-    public static <T> SqlCriterion<T> of(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.of(null,  field, condition, subCriteria);
+    public static <T> SqlCriterion<T> of(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        return SqlCriterion.of(null,  column, condition, subCriteria);
     }
     
-    public static <T> SqlCriterion<T> of(String connector, SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.of(connector, field, condition, Arrays.stream(subCriteria));
+    public static <T> SqlCriterion<T> of(String connector, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        return SqlCriterion.of(connector, column, condition, Arrays.stream(subCriteria));
     }
 
-    public static <T> SqlCriterion<T> of(String connector, SqlField<T> field, Condition<T> condition, Stream<SqlCriterion<?>> subCriteria) {
+    public static <T> SqlCriterion<T> of(String connector, SqlColumn<T> column, Condition<T> condition, Stream<SqlCriterion<?>> subCriteria) {
         SqlCriterion<T> criterion = new SqlCriterion<>(subCriteria);
-        criterion.field = field;
+        criterion.column = column;
         criterion.condition = condition;
         criterion.connector = connector;
         return criterion;

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.qbe.Condition;
 import org.mybatis.qbe.sql.SqlCriterion;
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
 import org.mybatis.qbe.sql.where.render.CriterionRenderer;
 import org.mybatis.qbe.sql.where.render.RenderedCriterion;
 
@@ -34,19 +34,19 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     private List<CriterionWrapper> criteria = new ArrayList<>();
     private int valueCount = 1;
     
-    protected <S> AbstractWhereBuilder(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = SqlCriterion.of(field, condition, subCriteria);
+    protected <S> AbstractWhereBuilder(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+        SqlCriterion<S> criterion = SqlCriterion.of(column, condition, subCriteria);
         addCriterion(criterion);
     }
 
-    public <S> T and(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = SqlCriterion.of("and", field, condition, subCriteria); //$NON-NLS-1$
+    public <S> T and(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+        SqlCriterion<S> criterion = SqlCriterion.of("and", column, condition, subCriteria); //$NON-NLS-1$
         addCriterion(criterion);
         return getThis();
     }
     
-    public <S> T or(SqlField<S> field, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = SqlCriterion.of("or", field, condition, subCriteria); //$NON-NLS-1$
+    public <S> T or(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+        SqlCriterion<S> criterion = SqlCriterion.of("or", column, condition, subCriteria); //$NON-NLS-1$
         addCriterion(criterion);
         return getThis();
     }
@@ -56,7 +56,7 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         valueCount += criterion.valueCount();
     }
     
-    protected WhereSupport renderCriteria(Function<SqlField<?>, String> nameFunction) {
+    protected WhereSupport renderCriteria(Function<SqlColumn<?>, String> nameFunction) {
         return criteria.stream().collect(Collector.of(
                 () -> new CollectorSupport(nameFunction),
                 CollectorSupport::add,
@@ -81,9 +81,9 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     static class CollectorSupport {
         Map<String, Object> parameters = new HashMap<>();
         List<String> phrases = new ArrayList<>();
-        Function<SqlField<?>, String> nameFunction;
+        Function<SqlColumn<?>, String> nameFunction;
         
-        CollectorSupport(Function<SqlField<?>, String> nameFunction) {
+        CollectorSupport(Function<SqlColumn<?>, String> nameFunction) {
             this.nameFunction = nameFunction;
         }
         

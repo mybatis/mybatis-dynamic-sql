@@ -21,38 +21,30 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.where.WhereSupport;
 
 public interface AnimalDataMapper {
 
     @Select({
-        "select ${distinct} a.id, a.animal_name as animalName, a.brain_weight as brainWeight, a.body_weight as bodyWeight",
-        "from AnimalData a",
-        "${whereClause}",
-        "${orderByClause}"
+        "${fullSelectStatement}"
     })
-    List<AnimalData> selectByExample(SelectSupport selectSupport);
+    List<AnimalData> selectMany(SelectSupport selectSupport);
 
     @Delete({
-        "delete from AnimalData",
-        "${whereClause}"
+        "${fullDeleteStatement}"
     })
-    int deleteByExample(WhereSupport whereSupport);
+    int delete(DeleteSupport deleteSupport);
 
     @Update({
-        "update AnimalData",
-        "${setClause}",
-        "${whereClause}"
+        "${fullUpdateStatement}"
     })
-    int updateByExample(UpdateSupport updateSupport);
+    int update(UpdateSupport updateSupport);
     
     @Insert({
-        "insert into AnimalData",
-        "${fieldsPhrase}",
-        "${valuesPhrase}"
+        "${fullInsertStatement}"
     })
     int insert(InsertSupport<AnimalData> insertSupport);
 }

@@ -15,17 +15,15 @@
  */
 package examples.animal.data;
 
-import static examples.animal.data.AnimalDataFields.animalName;
-import static examples.animal.data.AnimalDataFields.bodyWeight;
-import static examples.animal.data.AnimalDataFields.brainWeight;
-import static examples.animal.data.AnimalDataFields.id;
+import static examples.animal.data.AnimalDataFields.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
-import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
-import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.updateSupport;
-import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
+import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteFrom;
+import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insert;
+import static org.mybatis.qbe.sql.select.SelectSupportBuilder.select;
+import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectDistinct;
+import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.update;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,10 +41,10 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class AnimalDataTest {
 
@@ -77,24 +75,46 @@ public class AnimalDataTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            List<AnimalData> animals = mapper.selectByExample(null);
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .build();
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(65));
+            assertThat(animals.get(0).getId(), is(1));
         } finally {
             sqlSession.close();
         }
     }
 
     @Test
+    public void testSelectAllRowsWithOrder() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .orderBy(id.descending())
+                    .build();
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            assertThat(animals.size(), is(65));
+            assertThat(animals.get(0).getId(), is(65));
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
     public void testSelectRowsLessThan20() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isLessThan(20))
                     .build();
             
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(19));
         } finally {
             sqlSession.close();
@@ -107,11 +127,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isBetween(30).and(40))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(11));
         } finally {
             sqlSession.close();
@@ -124,11 +145,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isNotBetween(10).and(60))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(14));
         } finally {
             sqlSession.close();
@@ -141,11 +163,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isNotBetween(10).and(60))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(14));
         } finally {
             sqlSession.close();
@@ -158,11 +181,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isEqualTo(5))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(1));
         } finally {
             sqlSession.close();
@@ -175,11 +199,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isNotEqualTo(5))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(64));
         } finally {
             sqlSession.close();
@@ -192,11 +217,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isGreaterThanOrEqualTo(60))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(6));
         } finally {
             sqlSession.close();
@@ -209,11 +235,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isLessThanOrEqualTo(10))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(10));
         } finally {
             sqlSession.close();
@@ -226,11 +253,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isIn(5, 8, 10))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(3));
         } finally {
             sqlSession.close();
@@ -243,11 +271,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(animalName, isInCaseInsensitive("yellow-bellied marmot", "verbet"))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(2));
         } finally {
             sqlSession.close();
@@ -260,11 +289,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isNotIn(5, 8, 10))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(62));
         } finally {
             sqlSession.close();
@@ -277,11 +307,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(animalName, isNotInCaseInsensitive("yellow-bellied marmot", "verbet"))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(63));
         } finally {
             sqlSession.close();
@@ -294,11 +325,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(animalName, isLike("%squirrel"))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(2));
         } finally {
             sqlSession.close();
@@ -311,11 +343,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(animalName, isLikeCaseInsensitive("%squirrel"))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(2));
         } finally {
             sqlSession.close();
@@ -328,11 +361,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(animalName, isNotLike("%squirrel"))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(63));
         } finally {
             sqlSession.close();
@@ -345,11 +379,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(animalName, isNotLikeCaseInsensitive("%squirrel"))
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(63));
         } finally {
             sqlSession.close();
@@ -362,11 +397,11 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereSupport whereSupport = whereSupport()
+            DeleteSupport deleteSupport = deleteFrom(animalData)
                     .where(id, isIn(5, 8, 10))
                     .build();
 
-            int rowCount = mapper.deleteByExample(whereSupport);
+            int rowCount = mapper.delete(deleteSupport);
             assertThat(rowCount, is(3));
         } finally {
             sqlSession.close();
@@ -379,12 +414,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            WhereSupport whereSupport = whereSupport()
+            DeleteSupport deleteSupport = deleteFrom(animalData)
                     .where(id, isLessThan(10))
                     .or(id, isGreaterThan(60))
                     .build();
 
-            int rowCount = mapper.deleteByExample(whereSupport);
+            int rowCount = mapper.delete(deleteSupport);
             assertThat(rowCount, is(14));
         } finally {
             sqlSession.close();
@@ -397,11 +432,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isNull())
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(0));
         } finally {
             sqlSession.close();
@@ -414,11 +450,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isNotNull())
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(65));
         } finally {
             sqlSession.close();
@@ -431,7 +468,8 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
@@ -439,7 +477,7 @@ public class AnimalDataTest {
                     .orderBy(id.descending(), bodyWeight)
                     .build();
 
-            List<AnimalData> animals = mapper.selectByExample(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(4));
         } finally {
             sqlSession.close();
@@ -454,7 +492,7 @@ public class AnimalDataTest {
             AnimalData record = new AnimalData();
             record.setBodyWeight(2.6);
             
-            UpdateSupport updateSupport = updateSupport()
+            UpdateSupport updateSupport = update(animalData)
                     .set(bodyWeight, record.getBodyWeight())
                     .setNull(animalName)
                     .where(id, isIn(1, 5, 7))
@@ -463,7 +501,7 @@ public class AnimalDataTest {
                     .and(bodyWeight, isBetween(1.0).and(3.0))
                     .build();
 
-            int rows = mapper.updateByExample(updateSupport);
+            int rows = mapper.update(updateSupport);
             assertThat(rows, is(4));
         } finally {
             sqlSession.close();
@@ -481,11 +519,12 @@ public class AnimalDataTest {
             record.setBodyWeight(22.5);
             record.setBrainWeight(1.2);
             
-            InsertSupport<AnimalData> insertSupport = insertSupport(record) 
-                    .withFieldMapping(id, "id", record::getId)
-                    .withFieldMapping(animalName, "animalName", record::getAnimalName)
-                    .withFieldMapping(bodyWeight, "bodyWeight", record::getBodyWeight)
-                    .withFieldMapping(brainWeight, "brainWeight", record::getBrainWeight)
+            InsertSupport<AnimalData> insertSupport = insert(record)
+                    .into(animalData)
+                    .withColumnMapping(id, "id", record::getId)
+                    .withColumnMapping(animalName, "animalName", record::getAnimalName)
+                    .withColumnMapping(bodyWeight, "bodyWeight", record::getBodyWeight)
+                    .withColumnMapping(brainWeight, "brainWeight", record::getBrainWeight)
                     .buildFullInsert();
             
             int rows = mapper.insert(insertSupport);
@@ -501,14 +540,14 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
-                    .distinct()
+            SelectSupport selectSupport = selectDistinct(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))
                     .orderBy(id.descending(), animalName)
                     .build();
             
-            List<AnimalData> rows = mapper.selectByExample(selectSupport);
+            List<AnimalData> rows = mapper.selectMany(selectSupport);
             assertThat(rows.size(), is(14));
             assertThat(rows.get(0).getId(), is(65));
         } finally {
@@ -522,13 +561,14 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))
                     .orderBy(id.descending())
                     .build();
             
-            List<AnimalData> rows = mapper.selectByExample(selectSupport);
+            List<AnimalData> rows = mapper.selectMany(selectSupport);
             assertThat(rows.size(), is(14));
             assertThat(rows.get(0).getId(), is(65));
         } finally {

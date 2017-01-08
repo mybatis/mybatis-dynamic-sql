@@ -28,19 +28,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 
 import org.junit.Test;
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
+import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.update.UpdateSupportBuilder.WhereBuilder.SetValuesCollector;
+import org.mybatis.qbe.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep2.SetValuesCollector;
 
 public class UpdateSupportTest {
-    private static final SqlField<Integer> id = SqlField.of("id", JDBCType.INTEGER);
-    private static final SqlField<String> firstName = SqlField.of("firstName", JDBCType.VARCHAR);
-    private static final SqlField<String> lastName = SqlField.of("lastName", JDBCType.VARCHAR);
-    private static final SqlField<String> occupation = SqlField.of("occupation", JDBCType.VARCHAR);
+    private static final SqlTable foo = SqlTable.of("foo");
+    private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
+    private static final SqlColumn<String> firstName = SqlColumn.of("firstName", JDBCType.VARCHAR);
+    private static final SqlColumn<String> lastName = SqlColumn.of("lastName", JDBCType.VARCHAR);
+    private static final SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR);
 
     @Test
     public void testUpdateParameter() {
-        UpdateSupport updateSupport = updateSupport()
+        UpdateSupport updateSupport = update(foo)
                 .set(firstName, "fred")
                 .set(lastName, "jones")
                 .setNull(occupation)
@@ -63,7 +65,7 @@ public class UpdateSupportTest {
 
     @Test
     public void testUpdateParameterStartWithNull() {
-        UpdateSupport updateSupport = updateSupport()
+        UpdateSupport updateSupport = update(foo)
                 .setNull(occupation)
                 .set(firstName, "fred")
                 .set(lastName, "jones")
@@ -89,12 +91,12 @@ public class UpdateSupportTest {
     @Test
     public void testParallelStream() {
         AtomicInteger sequence = new AtomicInteger(1);
-        List<FieldAndValue<?>> setFields = new ArrayList<>();
-        setFields.add(FieldAndValue.of(occupation, sequence.getAndIncrement()));
-        setFields.add(FieldAndValue.of(firstName, "fred", sequence.getAndIncrement()));
-        setFields.add(FieldAndValue.of(lastName, "jones", sequence.getAndIncrement()));
+        List<ColumnAndValue<?>> setColumns = new ArrayList<>();
+        setColumns.add(ColumnAndValue.of(occupation, sequence.getAndIncrement()));
+        setColumns.add(ColumnAndValue.of(firstName, "fred", sequence.getAndIncrement()));
+        setColumns.add(ColumnAndValue.of(lastName, "jones", sequence.getAndIncrement()));
         
-        SetValuesCollector collector = setFields.parallelStream().collect(Collector.of(
+        SetValuesCollector collector = setColumns.parallelStream().collect(Collector.of(
                 SetValuesCollector::new,
                 SetValuesCollector::add,
                 SetValuesCollector::merge));
@@ -104,5 +106,27 @@ public class UpdateSupportTest {
         assertThat(collector.parameters.get("up1"), is(nullValue()));
         assertThat(collector.parameters.get("up2"), is("fred"));
         assertThat(collector.parameters.get("up3"), is("jones"));
+    }
+
+    @Test
+    public void testFullUpdateStatement() {
+        UpdateSupport updateSupport = update(foo)
+                .set(firstName, "fred")
+                .set(lastName, "jones")
+                .setNull(occupation)
+                .where(id, isEqualTo(3))
+                .build();
+        
+        String expectedStatement = "update foo " 
+                + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = {parameters.up3} "
+                + "where id = {parameters.p1}";
+                
+        assertThat(updateSupport.getFullUpdateStatement(), is(expectedStatement));
+        
+        assertThat(updateSupport.getParameters().size(), is(4));
+        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
+        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
+        assertThat(updateSupport.getParameters().get("up3"), is(nullValue()));
+        assertThat(updateSupport.getParameters().get("p1"), is(3));
     }
 }

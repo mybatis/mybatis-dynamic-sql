@@ -22,6 +22,7 @@ public class SimpleTableRecord {
     private String firstName;
     private String lastName;
     private Date birthDate;
+    private Boolean employed;
     private String occupation;
 
     public Integer getId() {
@@ -62,5 +63,13 @@ public class SimpleTableRecord {
 
     public void setOccupation(String occupation) {
         this.occupation = occupation;
+    }
+
+    public Boolean getEmployed() {
+        return employed;
+    }
+
+    public void setEmployed(Boolean employed) {
+        this.employed = employed;
     }
 }

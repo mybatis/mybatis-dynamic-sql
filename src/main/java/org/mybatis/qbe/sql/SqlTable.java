@@ -30,6 +30,15 @@ public class SqlTable {
         return name;
     }
     
+    public String nameIncludingAlias() {
+        StringBuilder buffer = new StringBuilder(name);
+        alias().ifPresent(a -> {
+            buffer.append(' ');
+            buffer.append(a);
+        });
+        return buffer.toString();
+    }
+    
     public Optional<String> alias() {
         return Optional.ofNullable(alias);
     }

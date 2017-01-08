@@ -15,20 +15,27 @@
  */
 package org.mybatis.qbe.sql.insert;
 
-public class InsertSupport<T> {
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-    private String fieldsPhrase;
+import org.mybatis.qbe.sql.AbstractSqlSupport;
+import org.mybatis.qbe.sql.SqlTable;
+
+public class InsertSupport<T> extends AbstractSqlSupport {
+    
+    private String columnsPhrase;
     private String valuesPhrase;
     private T record;
     
-    private InsertSupport(String fieldsPhrase, String valuesPhrase, T record) {
-        this.fieldsPhrase = fieldsPhrase;
+    private InsertSupport(String columnsPhrase, String valuesPhrase, T record, SqlTable table) {
+        super(table);
+        this.columnsPhrase = columnsPhrase;
         this.valuesPhrase = valuesPhrase;
         this.record = record;
     }
     
-    public String getFieldsPhrase() {
-        return fieldsPhrase;
+    public String getColumnsPhrase() {
+        return columnsPhrase;
     }
 
     public String getValuesPhrase() {
@@ -38,8 +45,15 @@ public class InsertSupport<T> {
     public T getRecord() {
         return record;
     }
+    
+    public String getFullInsertStatement() {
+        return Stream.of("insert into", //$NON-NLS-1$
+                table().orElse(UNKNOWN_TABLE).name(),
+                getColumnsPhrase(),
+                getValuesPhrase()).collect(Collectors.joining(" ")); //$NON-NLS-1$
+    }
 
-    public static <T> InsertSupport<T> of(String fieldsPhrase, String valuesPhrase, T record) {
-        return new InsertSupport<>(fieldsPhrase, valuesPhrase, record);
+    public static <T> InsertSupport<T> of(String columnsPhrase, String valuesPhrase, T record, SqlTable table) {
+        return new InsertSupport<>(columnsPhrase, valuesPhrase, record, table);
     }
 }

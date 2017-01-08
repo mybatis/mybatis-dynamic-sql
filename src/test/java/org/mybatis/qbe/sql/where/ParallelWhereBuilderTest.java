@@ -27,18 +27,18 @@ import java.util.stream.Collector;
 
 import org.junit.Test;
 import org.mybatis.qbe.sql.SqlCriterion;
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
 import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.where.AbstractWhereBuilder.CollectorSupport;
 import org.mybatis.qbe.sql.where.AbstractWhereBuilder.CriterionWrapper;
 
 public class ParallelWhereBuilderTest {
     public static final SqlTable table = SqlTable.of("foo").withAlias("a");
-    public static final SqlField<Date> field1 = SqlField.of("field1", JDBCType.DATE).inTable(table);
-    public static final SqlField<Integer> field2 = SqlField.of("field2", JDBCType.INTEGER).inTable(table);
-    public static final SqlField<String> field3 = SqlField.of("field3", JDBCType.VARCHAR).inTable(table);
-    public static final SqlField<String> field4 = SqlField.of("field4", JDBCType.VARCHAR).inTable(table);
-    public static final SqlField<Integer> field5 = SqlField.of("field5", JDBCType.INTEGER).inTable(table);
+    public static final SqlColumn<Date> column1 = SqlColumn.of("column1", JDBCType.DATE).inTable(table);
+    public static final SqlColumn<Integer> column2 = SqlColumn.of("column2", JDBCType.INTEGER).inTable(table);
+    public static final SqlColumn<String> column3 = SqlColumn.of("column3", JDBCType.VARCHAR).inTable(table);
+    public static final SqlColumn<String> column4 = SqlColumn.of("column4", JDBCType.VARCHAR).inTable(table);
+    public static final SqlColumn<Integer> column5 = SqlColumn.of("column5", JDBCType.INTEGER).inTable(table);
 
     @Test
     public void testParallelStream() {
@@ -46,37 +46,37 @@ public class ParallelWhereBuilderTest {
         List<CriterionWrapper> criteria = new ArrayList<>();
 
         Date currentDate = new Date();
-        CriterionWrapper wrapper = CriterionWrapper.of(SqlCriterion.of(field1, isEqualTo(currentDate)), idStartValue);
+        CriterionWrapper wrapper = CriterionWrapper.of(SqlCriterion.of(column1, isEqualTo(currentDate)), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
         
-        wrapper = CriterionWrapper.of(and(field2, isEqualTo(2)), idStartValue);
+        wrapper = CriterionWrapper.of(and(column2, isEqualTo(2)), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
         
-        wrapper = CriterionWrapper.of(or(field3, isEqualTo("foo")), idStartValue);
+        wrapper = CriterionWrapper.of(or(column3, isEqualTo("foo")), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
 
-        wrapper = CriterionWrapper.of(or(field4, isEqualTo("bar")), idStartValue);
+        wrapper = CriterionWrapper.of(or(column4, isEqualTo("bar")), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
 
-        wrapper = CriterionWrapper.of(or(field5, isEqualTo(8)), idStartValue);
+        wrapper = CriterionWrapper.of(or(column5, isEqualTo(8)), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
         
         WhereSupport whereSupport = criteria.parallelStream().collect(Collector.of(
-                () -> new CollectorSupport(SqlField::nameIgnoringTableAlias),
+                () -> new CollectorSupport(SqlColumn::name),
                 CollectorSupport::add,
                 CollectorSupport::merge,
                 CollectorSupport::getWhereSupport));
 
-        String expected = "where field1 = {parameters.p1}"
-                + " and field2 = {parameters.p2}"
-                + " or field3 = {parameters.p3}"
-                + " or field4 = {parameters.p4}"
-                + " or field5 = {parameters.p5}";
+        String expected = "where column1 = {parameters.p1}"
+                + " and column2 = {parameters.p2}"
+                + " or column3 = {parameters.p3}"
+                + " or column4 = {parameters.p4}"
+                + " or column5 = {parameters.p5}";
         
         assertThat(whereSupport.getWhereClause(), is(expected));
         assertThat(whereSupport.getParameters().size(), is(5));
@@ -93,37 +93,37 @@ public class ParallelWhereBuilderTest {
         List<CriterionWrapper> criteria = new ArrayList<>();
 
         Date currentDate = new Date();
-        CriterionWrapper wrapper = CriterionWrapper.of(SqlCriterion.of(field1, isEqualTo(currentDate)), idStartValue);
+        CriterionWrapper wrapper = CriterionWrapper.of(SqlCriterion.of(column1, isEqualTo(currentDate)), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
         
-        wrapper = CriterionWrapper.of(and(field2, isEqualTo(2), and(field1, isNull())), idStartValue);
+        wrapper = CriterionWrapper.of(and(column2, isEqualTo(2), and(column1, isNull())), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
         
-        wrapper = CriterionWrapper.of(or(field3, isEqualTo("foo"), or(field2, isIn(2, 3, 4))), idStartValue);
+        wrapper = CriterionWrapper.of(or(column3, isEqualTo("foo"), or(column2, isIn(2, 3, 4))), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
 
-        wrapper = CriterionWrapper.of(or(field4, isEqualTo("bar")), idStartValue);
+        wrapper = CriterionWrapper.of(or(column4, isEqualTo("bar")), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
 
-        wrapper = CriterionWrapper.of(or(field5, isEqualTo(8)), idStartValue);
+        wrapper = CriterionWrapper.of(or(column5, isEqualTo(8)), idStartValue);
         idStartValue += wrapper.criterion.valueCount();
         criteria.add(wrapper);
         
         WhereSupport whereSupport = criteria.parallelStream().collect(Collector.of(
-                () -> new CollectorSupport(SqlField::nameIgnoringTableAlias),
+                () -> new CollectorSupport(SqlColumn::name),
                 CollectorSupport::add,
                 CollectorSupport::merge,
                 CollectorSupport::getWhereSupport));
 
-        String expected = "where field1 = {parameters.p1}"
-                + " and (field2 = {parameters.p2} and field1 is null)"
-                + " or (field3 = {parameters.p3} or field2 in ({parameters.p4},{parameters.p5},{parameters.p6}))"
-                + " or field4 = {parameters.p7}"
-                + " or field5 = {parameters.p8}";
+        String expected = "where column1 = {parameters.p1}"
+                + " and (column2 = {parameters.p2} and column1 is null)"
+                + " or (column3 = {parameters.p3} or column2 in ({parameters.p4},{parameters.p5},{parameters.p6}))"
+                + " or column4 = {parameters.p7}"
+                + " or column5 = {parameters.p8}";
         
         assertThat(whereSupport.getWhereClause(), is(expected));
         assertThat(whereSupport.getParameters().size(), is(8));

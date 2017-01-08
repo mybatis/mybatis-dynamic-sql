@@ -17,13 +17,13 @@ package examples.animal.data;
 
 import java.sql.JDBCType;
 
-import org.mybatis.qbe.mybatis3.MyBatis3Field;
+import org.mybatis.qbe.mybatis3.MyBatis3Column;
 import org.mybatis.qbe.sql.SqlTable;
 
 public interface AnimalDataFields {
     SqlTable animalData = SqlTable.of("AnimalData").withAlias("a");
-    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(animalData); 
-    MyBatis3Field<String> animalName = MyBatis3Field.of("animal_name", JDBCType.VARCHAR).inTable(animalData);
-    MyBatis3Field<Double> bodyWeight = MyBatis3Field.of("body_weight", JDBCType.DOUBLE).inTable(animalData);
-    MyBatis3Field<Double> brainWeight = MyBatis3Field.of("brain_weight", JDBCType.DOUBLE).inTable(animalData);
+    MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(animalData); 
+    MyBatis3Column<String> animalName = MyBatis3Column.of("animal_name", JDBCType.VARCHAR).inTable(animalData);
+    MyBatis3Column<Double> bodyWeight = MyBatis3Column.of("body_weight", JDBCType.DOUBLE).inTable(animalData);
+    MyBatis3Column<Double> brainWeight = MyBatis3Column.of("brain_weight", JDBCType.DOUBLE).inTable(animalData);
 }

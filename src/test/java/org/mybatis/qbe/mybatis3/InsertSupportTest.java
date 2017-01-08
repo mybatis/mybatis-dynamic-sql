@@ -17,35 +17,37 @@ package org.mybatis.qbe.mybatis3;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
+import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insert;
 
 import java.sql.JDBCType;
 
 import org.junit.Test;
+import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 
 public class InsertSupportTest {
+    private static final SqlTable foo = SqlTable.of("foo");
+    private static final MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER);
+    private static final MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR);
+    private static final MyBatis3Column<String> lastName = MyBatis3Column.of("last_name", JDBCType.VARCHAR);
+    private static final MyBatis3Column<String> occupation = MyBatis3Column.of("occupation", JDBCType.VARCHAR);
 
     @Test
     public void testFullInsertSupportBuilder() {
-        MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER);
-        MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR);
-        MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR);
-        MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
-
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertSupport<?> insertSupport = insertSupport(record)
-                .withFieldMapping(id, "id", record::getId)
-                .withFieldMapping(firstName, "firstName", record::getFirstName)
-                .withFieldMapping(lastName, "lastName", record::getLastName)
-                .withFieldMapping(occupation, "occupation", record::getOccupation)
+        InsertSupport<?> insertSupport = insert(record)
+                .into(foo)
+                .withColumnMapping(id, "id", record::getId)
+                .withColumnMapping(firstName, "firstName", record::getFirstName)
+                .withColumnMapping(lastName, "lastName", record::getLastName)
+                .withColumnMapping(occupation, "occupation", record::getOccupation)
                 .buildFullInsert();
 
-        String expectedFieldsPhrase = "(id, first_name, last_name, occupation)";
-        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
+        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
 
         String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, "
                 + "#{record.firstName,jdbcType=VARCHAR}, "
@@ -56,24 +58,20 @@ public class InsertSupportTest {
 
     @Test
     public void testSelectiveInsertSupportBuilder() {
-        MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER);
-        MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR);
-        MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR);
-        MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
-
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertSupport<?> insertSupport = insertSupport(record)
-                .withFieldMapping(id, "id", record::getId)
-                .withFieldMapping(firstName, "firstName", record::getFirstName)
-                .withFieldMapping(lastName, "lastName", record::getLastName)
-                .withFieldMapping(occupation, "occupation", record::getOccupation)
+        InsertSupport<?> insertSupport = insert(record)
+                .into(foo)
+                .withColumnMapping(id, "id", record::getId)
+                .withColumnMapping(firstName, "firstName", record::getFirstName)
+                .withColumnMapping(lastName, "lastName", record::getLastName)
+                .withColumnMapping(occupation, "occupation", record::getOccupation)
                 .buildSelectiveInsert();
 
-        String expectedFieldsPhrase = "(last_name, occupation)";
-        assertThat(insertSupport.getFieldsPhrase(), is(expectedFieldsPhrase));
+        String expectedColumnsPhrase = "(last_name, occupation)";
+        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
 
         String expectedValuesPhrase = "values (#{record.lastName,jdbcType=VARCHAR}, "
                 + "#{record.occupation,jdbcType=VARCHAR})";

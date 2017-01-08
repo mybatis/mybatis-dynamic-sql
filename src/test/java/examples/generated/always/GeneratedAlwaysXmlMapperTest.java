@@ -20,7 +20,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
 import static org.mybatis.qbe.sql.SqlConditions.isIn;
-import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
+import static org.mybatis.qbe.sql.select.SelectSupportBuilder.select;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,7 +64,8 @@ public class GeneratedAlwaysXmlMapperTest {
         try {
             GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, firstName, lastName, fullName)
+                    .from(generatedAlways)
                     .where(id, isEqualTo(1))
                     .build();
             
@@ -82,7 +83,8 @@ public class GeneratedAlwaysXmlMapperTest {
         try {
             GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, firstName, lastName, fullName)
+                    .from(generatedAlways)
                     .where(firstName, isIn("Fred", "Barney"))
                     .build();
             
@@ -172,7 +174,8 @@ public class GeneratedAlwaysXmlMapperTest {
             int rows = mapper.update(updateSupport);
             assertThat(rows, is(3));
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = select(id, firstName, lastName, fullName)
+                    .from(generatedAlways)
                     .where(lastName, isEqualTo("Jones"))
                     .orderBy(firstName)
                     .build();

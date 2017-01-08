@@ -21,16 +21,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.mybatis.qbe.sql.SqlCriterion;
-import org.mybatis.qbe.sql.SqlField;
+import org.mybatis.qbe.sql.SqlColumn;
 
 public class CriterionRenderer<T> {
     private StringBuilder buffer = new StringBuilder();
     private Map<String, Object> parameters = new HashMap<>();
     private SqlCriterion<T> criterion;
     private AtomicInteger sequence;
-    private Function<SqlField<?>, String> nameFunction;
+    private Function<SqlColumn<?>, String> nameFunction;
     
-    protected CriterionRenderer(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlField<?>, String> nameFunction) {
+    protected CriterionRenderer(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlColumn<?>, String> nameFunction) {
         this.criterion = criterion;
         this.sequence = sequence;
         this.nameFunction = nameFunction;
@@ -65,7 +65,7 @@ public class CriterionRenderer<T> {
     }
 
     private void renderCondition() {
-        ConditionRenderer<T> visitor = ConditionRenderer.of(sequence, criterion.field(), nameFunction);
+        ConditionRenderer<T> visitor = ConditionRenderer.of(sequence, criterion.column(), nameFunction);
         criterion.condition().accept(visitor);
         buffer.append(visitor.fragment());
         parameters.putAll(visitor.parameters());
@@ -77,7 +77,7 @@ public class CriterionRenderer<T> {
         parameters.putAll(rc.fragmentParameters());
     }
     
-    public static <T> CriterionRenderer<T> of(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlField<?>, String> nameFunction) {
+    public static <T> CriterionRenderer<T> of(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlColumn<?>, String> nameFunction) {
         return new CriterionRenderer<>(criterion, sequence, nameFunction);
     }
 }

@@ -39,12 +39,12 @@ import org.mybatis.qbe.sql.where.condition.IsNull;
 
 public interface SqlConditions {
     // connectors
-    static <T> SqlCriterion<T> or(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.of("or", field, condition, subCriteria); //$NON-NLS-1$
+    static <T> SqlCriterion<T> or(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        return SqlCriterion.of("or", column, condition, subCriteria); //$NON-NLS-1$
     }
 
-    static <T> SqlCriterion<T> and(SqlField<T> field, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.of("and", field, condition, subCriteria); //$NON-NLS-1$
+    static <T> SqlCriterion<T> and(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        return SqlCriterion.of("and", column, condition, subCriteria); //$NON-NLS-1$
     }
 
     // for all data types

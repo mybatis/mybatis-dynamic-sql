@@ -24,18 +24,19 @@ import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.*;
 import java.sql.JDBCType;
 
 import org.junit.Test;
+import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.update.UpdateSupport;
 
 public class UpdateSupportTest {
+    private static final SqlTable foo = SqlTable.of("foo");
+    private static final MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER);
+    private static final MyBatis3Column<String> firstName = MyBatis3Column.of("firstName", JDBCType.VARCHAR);
+    private static final MyBatis3Column<String> lastName = MyBatis3Column.of("lastName", JDBCType.VARCHAR);
+    private static final MyBatis3Column<String> occupation = MyBatis3Column.of("occupation", JDBCType.VARCHAR);
 
     @Test
     public void testUpdateParameter() {
-        MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER);
-        MyBatis3Field<String> firstName = MyBatis3Field.of("firstName", JDBCType.VARCHAR);
-        MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
-        MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
-
-        UpdateSupport updateSupport = updateSupport()
+        UpdateSupport updateSupport = update(foo)
                 .set(firstName, "fred")
                 .set(lastName, "jones")
                 .setNull(occupation)
@@ -60,12 +61,7 @@ public class UpdateSupportTest {
 
     @Test
     public void testUpdateParameterStartWithNull() {
-        MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER);
-        MyBatis3Field<String> firstName = MyBatis3Field.of("firstName", JDBCType.VARCHAR);
-        MyBatis3Field<String> lastName = MyBatis3Field.of("lastName", JDBCType.VARCHAR);
-        MyBatis3Field<String> occupation = MyBatis3Field.of("occupation", JDBCType.VARCHAR);
-
-        UpdateSupport updateSupport = updateSupport()
+        UpdateSupport updateSupport = update(foo)
                 .setNull(occupation)
                 .set(firstName, "fred")
                 .set(lastName, "jones")

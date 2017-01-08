@@ -15,12 +15,12 @@
  */
 package examples.simple;
 
-import static examples.simple.SimpleTableQBESupport.id;
+import static examples.simple.SimpleTableQBESupport.*;
 import static examples.simple.SimpleTableQBESupport.occupation;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
+import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectCount;
 
 import org.junit.Test;
 import org.mybatis.qbe.sql.select.SelectSupport;
@@ -29,7 +29,8 @@ public class SampleWhereClausesTest {
 
     @Test
     public void simpleClause1() {
-        SelectSupport selectSupport = selectSupport()
+        SelectSupport selectSupport = selectCount()
+                .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build();
         
@@ -39,7 +40,8 @@ public class SampleWhereClausesTest {
     
     @Test
     public void simpleClause2() {
-        SelectSupport selectSupport = selectSupport()
+        SelectSupport selectSupport = selectCount()
+                .from(simpleTable)
                 .where(id, isNull())
                 .build();
         
@@ -49,7 +51,8 @@ public class SampleWhereClausesTest {
     
     @Test
     public void betweenClause() {
-        SelectSupport selectSupport = selectSupport()
+        SelectSupport selectSupport = selectCount()
+                .from(simpleTable)
                 .where(id, isBetween(1).and(4))
                 .build();
         
@@ -59,7 +62,8 @@ public class SampleWhereClausesTest {
 
     @Test
     public void complexClause() {
-        SelectSupport selectSupport = selectSupport()
+        SelectSupport selectSupport = selectCount()
+                .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
                 .build();

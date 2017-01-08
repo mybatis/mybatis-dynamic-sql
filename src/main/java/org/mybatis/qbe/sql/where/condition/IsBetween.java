@@ -24,9 +24,9 @@ public class IsBetween<T> extends TwoValueCondition<T> {
     }
     
     @Override
-    public String render(String fieldName, String placeholder1, String placeholder2) {
+    public String render(String columnName, String placeholder1, String placeholder2) {
         return String.format("%s between %s and %s", //$NON-NLS-1$
-                fieldName,
+                columnName,
                 placeholder1,
                 placeholder2);
     }

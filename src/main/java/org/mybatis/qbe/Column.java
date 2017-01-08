@@ -13,20 +13,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.simple;
+package org.mybatis.qbe;
 
-import java.util.List;
+/**
+ * 
+ * @author Jeff Butler
+ *
+ * @param <T> - even though the type is not directly used in this class,
+ *  it is used by the compiler to match columns with conditions so it should
+ *  not be removed.
+ */
+public abstract class Column<T> {
 
-import org.mybatis.qbe.sql.delete.DeleteSupport;
-import org.mybatis.qbe.sql.insert.InsertSupport;
-import org.mybatis.qbe.sql.select.SelectSupport;
-import org.mybatis.qbe.sql.update.UpdateSupport;
-
-public interface SimpleTableXmlMapper {
-    List<SimpleTableRecord> selectMany(SelectSupport selectSupport);
-    int delete(DeleteSupport deleteSupport);
-    int insert(InsertSupport<SimpleTableRecord> insertSupport);
-    int update(UpdateSupport updateSupport);
-    SimpleTableRecord selectOne(SelectSupport selectSupport);
-    long count(SelectSupport selectSupport);
+    protected String name;
+    
+    protected Column(String name) {
+        this.name = name;
+    }
+    
+    public String name() {
+        return name;
+    }
 }

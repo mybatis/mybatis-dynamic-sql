@@ -55,5 +55,5 @@ public abstract class ListValueCondition<T> implements Condition<T> {
         return values.size();
     }
 
-    public abstract String render(String fieldName, Stream<String> placeholders);
+    public abstract String render(String columnName, Stream<String> placeholders);
 }

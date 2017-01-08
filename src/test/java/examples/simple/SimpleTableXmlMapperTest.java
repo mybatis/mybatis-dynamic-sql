@@ -17,10 +17,13 @@ package examples.simple;
 
 import static examples.simple.SimpleTableQBESupport.*;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
-import static org.mybatis.qbe.sql.where.WhereSupportBuilder.whereSupport;
+import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
+import static org.mybatis.qbe.sql.SqlConditions.isIn;
+import static org.mybatis.qbe.sql.SqlConditions.isNull;
+import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteFrom;
+import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectCount;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,8 +38,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
+import org.mybatis.qbe.sql.delete.DeleteSupport;
 import org.mybatis.qbe.sql.select.SelectSupport;
-import org.mybatis.qbe.sql.where.WhereSupport;
 
 public class SimpleTableXmlMapperTest {
 
@@ -65,14 +68,35 @@ public class SimpleTableXmlMapperTest {
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build();
             
-            List<SimpleTableRecord> rows = mapper.selectByExample(selectSupport);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
             assertThat(rows.size(), is(3));
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testSelectByExampleWithTypeHandler() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
+            
+            SelectSupport selectSupport = selectByExample()
+                    .where(employed, isEqualTo(false))
+                    .orderBy(id)
+                    .build();
+            
+            List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
+            
+            assertThat(rows.size(), is(2));
+            assertThat(rows.get(0).getId(), is(3));
+            assertThat(rows.get(1).getId(), is(6));
         } finally {
             session.close();
         }
@@ -84,11 +108,11 @@ public class SimpleTableXmlMapperTest {
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build();
             
-            List<SimpleTableRecord> rows = mapper.selectByExample(selectSupport);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
             assertThat(rows.size(), is(2));
         } finally {
@@ -101,10 +125,10 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            WhereSupport whereSupport = whereSupport()
+            DeleteSupport deleteSupport = deleteFrom(simpleTable)
                     .where(occupation, isNull())
                     .build();
-            int rows = mapper.delete(whereSupport);
+            int rows = mapper.delete(deleteSupport);
             
             assertThat(rows, is(2));
         } finally {
@@ -117,8 +141,8 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            WhereSupport whereSupport = buildDeleteByPrimaryKeySupport(2);
-            int rows = mapper.delete(whereSupport);
+            DeleteSupport deleteSupport = buildDeleteByPrimaryKeySupport(2);
+            int rows = mapper.delete(deleteSupport);
             
             assertThat(rows, is(1));
         } finally {
@@ -136,6 +160,7 @@ public class SimpleTableXmlMapperTest {
             record.setFirstName("Joe");
             record.setLastName("Jones");
             record.setBirthDate(new Date());
+            record.setEmployed(true);
             record.setOccupation("Developer");
             
             int rows = mapper.insert(buildFullInsertSupport(record));
@@ -156,10 +181,13 @@ public class SimpleTableXmlMapperTest {
             record.setFirstName("Joe");
             record.setLastName("Jones");
             record.setBirthDate(new Date());
+            record.setEmployed(false);
             
             int rows = mapper.insert(buildSelectiveInsertSupport(record));
-            
             assertThat(rows, is(1));
+            
+            SimpleTableRecord returnedRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+            assertThat(returnedRecord.getOccupation(), is(nullValue()));
         } finally {
             session.close();
         }
@@ -175,6 +203,7 @@ public class SimpleTableXmlMapperTest {
             record.setFirstName("Joe");
             record.setLastName("Jones");
             record.setBirthDate(new Date());
+            record.setEmployed(true);
             record.setOccupation("Developer");
             
             int rows = mapper.insert(buildFullInsertSupport(record));
@@ -184,7 +213,7 @@ public class SimpleTableXmlMapperTest {
             rows = mapper.update(buildFullUpdateByPrimaryKeySupport(record));
             assertThat(rows, is(1));
             
-            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
             assertThat(newRecord.getOccupation(), is("Programmer"));
             
         } finally {
@@ -202,6 +231,7 @@ public class SimpleTableXmlMapperTest {
             record.setFirstName("Joe");
             record.setLastName("Jones");
             record.setBirthDate(new Date());
+            record.setEmployed(true);
             record.setOccupation("Developer");
             
             int rows = mapper.insert(buildFullInsertSupport(record));
@@ -213,7 +243,7 @@ public class SimpleTableXmlMapperTest {
             rows = mapper.update(buildSelectiveUpdateByPrimaryKeySupport(updateRecord));
             assertThat(rows, is(1));
             
-            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
             assertThat(newRecord.getOccupation(), is("Programmer"));
             assertThat(newRecord.getFirstName(), is("Joe"));
             
@@ -228,11 +258,13 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            WhereSupport whereSupport = whereSupport()
-                    .where(occupation, isNull()).build();
-            int rows = mapper.countByExample(whereSupport);
+            SelectSupport selectSupport = selectCount()
+                    .from(simpleTable)
+                    .where(occupation, isNull())
+                    .build();
+            long rows = mapper.count(selectSupport);
             
-            assertThat(rows, is(2));
+            assertThat(rows, is(2L));
         } finally {
             session.close();
         }

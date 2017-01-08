@@ -42,5 +42,5 @@ public abstract class TwoValueCondition<T> implements Condition<T> {
         return 2;
     }
     
-    public abstract String render(String fieldName, String placeholder1, String placeholder2);
+    public abstract String render(String columnName, String placeholder1, String placeholder2);
 }

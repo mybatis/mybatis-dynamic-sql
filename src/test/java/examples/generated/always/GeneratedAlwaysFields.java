@@ -16,43 +16,45 @@
 package examples.generated.always;
 
 import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
-import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insertSupport;
-import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.updateSupport;
+import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insert;
+import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.update;
 
 import java.sql.JDBCType;
 import java.util.Optional;
 
-import org.mybatis.qbe.mybatis3.MyBatis3Field;
+import org.mybatis.qbe.mybatis3.MyBatis3Column;
 import org.mybatis.qbe.sql.SqlTable;
 import org.mybatis.qbe.sql.insert.InsertSupport;
 import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.update.UpdateSupportBuilder.SetBuilder;
+import org.mybatis.qbe.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep1;
 
 public interface GeneratedAlwaysFields {
     SqlTable generatedAlways = SqlTable.of("GeneratedAlways").withAlias("a");
-    MyBatis3Field<Integer> id = MyBatis3Field.of("id", JDBCType.INTEGER).inTable(generatedAlways);
-    MyBatis3Field<String> firstName = MyBatis3Field.of("first_name", JDBCType.VARCHAR).inTable(generatedAlways);
-    MyBatis3Field<String> lastName = MyBatis3Field.of("last_name", JDBCType.VARCHAR).inTable(generatedAlways);
-    MyBatis3Field<String> fullName = MyBatis3Field.of("full_name", JDBCType.VARCHAR).inTable(generatedAlways);
+    MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(generatedAlways);
+    MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR).inTable(generatedAlways);
+    MyBatis3Column<String> lastName = MyBatis3Column.of("last_name", JDBCType.VARCHAR).inTable(generatedAlways);
+    MyBatis3Column<String> fullName = MyBatis3Column.of("full_name", JDBCType.VARCHAR).inTable(generatedAlways);
     
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSupport(GeneratedAlwaysRecord record) {
-        return insertSupport(record)
-                .withFieldMapping(id, "id", record::getId)
-                .withFieldMapping(firstName, "firstName", record::getFirstName)
-                .withFieldMapping(lastName, "lastName", record::getLastName)
+        return insert(record)
+                .into(generatedAlways)
+                .withColumnMapping(id, "id", record::getId)
+                .withColumnMapping(firstName, "firstName", record::getFirstName)
+                .withColumnMapping(lastName, "lastName", record::getLastName)
                 .buildFullInsert();
     }
 
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
-        return insertSupport(record)
-                .withFieldMapping(id, "id", record::getId)
-                .withFieldMapping(firstName, "firstName", record::getFirstName)
-                .withFieldMapping(lastName, "lastName", record::getLastName)
+        return insert(record)
+                .into(generatedAlways)
+                .withColumnMapping(id, "id", record::getId)
+                .withColumnMapping(firstName, "firstName", record::getFirstName)
+                .withColumnMapping(lastName, "lastName", record::getLastName)
                 .buildSelectiveInsert();
     }
     
     static UpdateSupport buildUpdateByPrimaryKeySupport(GeneratedAlwaysRecord record) {
-        return updateSupport()
+        return update(generatedAlways)
                 .set(firstName, record.getFirstName())
                 .set(lastName, record.getLastName())
                 .where(id, isEqualTo(record.getId()))
@@ -60,22 +62,22 @@ public interface GeneratedAlwaysFields {
     }
 
     static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(GeneratedAlwaysRecord record) {
-        return updateSupport()
+        return update(generatedAlways)
                 .set(firstName, Optional.ofNullable(record.getFirstName()))
                 .set(lastName, Optional.ofNullable(record.getLastName()))
                 .where(id, isEqualTo(record.getId()))
                 .build();
     }
 
-    static SetBuilder updateByExample(GeneratedAlwaysRecord record) {
-        return updateSupport()
+    static UpdateSupportBuildStep1 updateByExample(GeneratedAlwaysRecord record) {
+        return update(generatedAlways)
                 .set(id, record.getId())
                 .set(firstName, record.getFirstName())
                 .set(lastName, record.getLastName());
     }
 
-    static SetBuilder updateByExampleSelective(GeneratedAlwaysRecord record) {
-        return updateSupport()
+    static UpdateSupportBuildStep1 updateByExampleSelective(GeneratedAlwaysRecord record) {
+        return update(generatedAlways)
                 .set(id, Optional.ofNullable(record.getId()))
                 .set(firstName, Optional.ofNullable(record.getFirstName()))
                 .set(lastName, Optional.ofNullable(record.getLastName()));

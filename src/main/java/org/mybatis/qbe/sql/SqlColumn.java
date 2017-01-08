@@ -18,14 +18,14 @@ package org.mybatis.qbe.sql;
 import java.sql.JDBCType;
 import java.util.Optional;
 
-import org.mybatis.qbe.Field;
+import org.mybatis.qbe.Column;
 
 /**
  * 
  * @author Jeff Butler
  *
  */
-public class SqlField<T> extends Field<T> {
+public class SqlColumn<T> extends Column<T> {
     
     private static final String ASCENDING = "ASC"; //$NON-NLS-1$
     protected static final String DESCENDING = "DESC"; //$NON-NLS-1$
@@ -34,15 +34,24 @@ public class SqlField<T> extends Field<T> {
     protected SqlTable table;
     protected JDBCType jdbcType;
     protected String sortOrder = ASCENDING;
+    protected String alias;
     
-    protected SqlField(String name, JDBCType jdbcType) {
+    protected SqlColumn(SqlColumn<?> sqlColumn) {
+        super(sqlColumn.name);
+        this.table = sqlColumn.table;
+        this.jdbcType = sqlColumn.jdbcType;
+        this.sortOrder = sqlColumn.sortOrder;
+        this.alias = sqlColumn.alias;
+    }
+    
+    protected SqlColumn(String name, JDBCType jdbcType) {
         super(name);
         this.jdbcType = jdbcType;
     }
     
     public String nameIncludingTableAlias() {
         StringBuilder sb = new StringBuilder();
-        alias().ifPresent(a -> {
+        tableAlias().ifPresent(a -> {
             sb.append(a);
             sb.append('.');
         });
@@ -50,8 +59,14 @@ public class SqlField<T> extends Field<T> {
         return sb.toString();
     }
     
-    public String nameIgnoringTableAlias() {
-        return name();
+    public String nameIncludingTableAndColumnAlias() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(nameIncludingTableAlias());
+        columnAlias().ifPresent(a -> {
+            sb.append(" as "); //$NON-NLS-1$
+            sb.append(a);
+        });
+        return sb.toString();
     }
     
     public JDBCType jdbcType() {
@@ -62,22 +77,30 @@ public class SqlField<T> extends Field<T> {
         return Optional.ofNullable(table);
     }
     
-    public Optional<String> alias() {
+    public Optional<String> tableAlias() {
         return table().orElse(NULL_TABLE).alias();
     }
     
-    public <S> SqlField<S> inTable(SqlTable table) {
-        SqlField<S> field = SqlField.of(name, jdbcType);
-        field.table = table;
-        field.sortOrder = sortOrder;
-        return field;
+    public Optional<String> columnAlias() {
+        return Optional.ofNullable(alias);
     }
     
-    public <S> SqlField<S> descending() {
-        SqlField<S> field = SqlField.of(name, jdbcType);
-        field.table = table;
-        field.sortOrder = DESCENDING;
-        return field;
+    public <S> SqlColumn<S> inTable(SqlTable table) {
+        SqlColumn<S> column = new SqlColumn<>(this);
+        column.table = table;
+        return column;
+    }
+    
+    public <S> SqlColumn<S> descending() {
+        SqlColumn<S> column = new SqlColumn<>(this);
+        column.sortOrder = DESCENDING;
+        return column;
+    }
+    
+    public <S> SqlColumn<S> withAlias(String alias) {
+        SqlColumn<S> column = new SqlColumn<>(this);
+        column.alias = alias;
+        return column;
     }
     
     public String getFormattedJdbcPlaceholder(String parameterName) {
@@ -85,10 +108,10 @@ public class SqlField<T> extends Field<T> {
     }
     
     public String orderByPhrase() {
-        return String.format("%s %s", name, sortOrder); //$NON-NLS-1$
+        return String.format("%s %s", columnAlias().orElse(name()), sortOrder); //$NON-NLS-1$
     }
     
-    public static <T> SqlField<T> of(String name, JDBCType jdbcType) {
-        return new SqlField<>(name, jdbcType);
+    public static <T> SqlColumn<T> of(String name, JDBCType jdbcType) {
+        return new SqlColumn<>(name, jdbcType);
     }
 }

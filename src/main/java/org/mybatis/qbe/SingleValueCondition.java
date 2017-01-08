@@ -36,5 +36,5 @@ public abstract class SingleValueCondition<T> implements Condition<T> {
         return 1;
     }
     
-    public abstract String render(String fieldName, String placeholder);
+    public abstract String render(String columnName, String placeholder);
 }

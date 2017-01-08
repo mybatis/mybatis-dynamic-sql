@@ -27,8 +27,8 @@ public class IsNotLikeCaseInsensitive extends SingleValueCondition<String> {
     }
     
     @Override
-    public String render(String fieldName, String placeholder) {
-        return String.format("upper(%s) not like %s", fieldName, placeholder); //$NON-NLS-1$
+    public String render(String columnName, String placeholder) {
+        return String.format("upper(%s) not like %s", columnName, placeholder); //$NON-NLS-1$
     }
     
     @Override
