@@ -1,7 +1,7 @@
-# MyBatis Query by Example
+# MyBatis Dynamic SQL
 
-[![Build Status](https://travis-ci.org/jeffgbutler/mybatis-qbe.svg?branch=master)](https://travis-ci.org/jeffgbutler/mybatis-qbe)
-[![Coverage Status](https://coveralls.io/repos/github/jeffgbutler/mybatis-qbe/badge.svg?branch=master)](https://coveralls.io/github/jeffgbutler/mybatis-qbe?branch=master)
+[![Build Status](https://travis-ci.org/jeffgbutler/mybatis-dynamic-sql.svg?branch=master)](https://travis-ci.org/jeffgbutler/mybatis-dynamic-sql)
+[![Coverage Status](https://coveralls.io/repos/github/jeffgbutler/mybatis-dynaic-sql/badge.svg?branch=master)](https://coveralls.io/github/jeffgbutler/mybatis-dynamic-sql?branch=master)
 
 ## What Is This?
 This library is a framework for creating dynamic clauses for SQL statements.
