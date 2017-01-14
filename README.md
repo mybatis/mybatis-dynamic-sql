@@ -1,7 +1,7 @@
 # MyBatis Dynamic SQL
 
 [![Build Status](https://travis-ci.org/jeffgbutler/mybatis-dynamic-sql.svg?branch=master)](https://travis-ci.org/jeffgbutler/mybatis-dynamic-sql)
-[![Coverage Status](https://coveralls.io/repos/github/jeffgbutler/mybatis-dynaic-sql/badge.svg?branch=master)](https://coveralls.io/github/jeffgbutler/mybatis-dynamic-sql?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/jeffgbutler/mybatis-dynamic-sql/badge.svg?branch=master)](https://coveralls.io/github/jeffgbutler/mybatis-dynamic-sql?branch=master)
 
 ## What Is This?
 This library is a framework for creating dynamic SQL statements.
