@@ -84,7 +84,7 @@ create table SimpleTable (
 ```
  
 ### First - Define database columns
-The class ```org.mybatis.qbe.mybatis3.MyBatis3Column``` is used to define columns for use in the library.
+The class ```org.mybatis.dynamic.sql.MyBatis3Column``` is used to define columns for use in the library.
 Typically these should be defined as public static variables in a class or interface.  A column definition includes:
 
 1. The Java type
@@ -100,8 +100,8 @@ package examples.simple;
 import java.sql.JDBCType;
 import java.util.Date;
 
-import org.mybatis.qbe.mybatis3.MyBatis3Column;
-import org.mybatis.qbe.sql.SqlTable;
+import org.mybatis.dynamic.sql.MyBatis3Column;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public interface SimpleTableQBESupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
@@ -128,8 +128,8 @@ package examples.simple;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
-import org.mybatis.qbe.sql.select.SelectSupport;
-import org.mybatis.qbe.sql.where.WhereSupport;
+import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.where.WhereSupport;
 
 public class SimpleTableAnnotatedMapper {
     

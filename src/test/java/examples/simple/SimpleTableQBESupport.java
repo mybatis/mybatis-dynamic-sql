@@ -120,7 +120,7 @@ public interface SimpleTableQBESupport {
             .from(simpleTable);
     }
 
-    static SelectSupport buildSelectByPrimaryKeySupport(int id_) {
+    static SelectSupport buildSelectByPrimaryKeySupport(Integer id_) {
         return select(id, firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)
             .where(id, isEqualTo(id_))

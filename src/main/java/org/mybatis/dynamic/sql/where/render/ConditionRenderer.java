@@ -23,12 +23,12 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
+import org.mybatis.dynamic.sql.ConditionVisitor;
+import org.mybatis.dynamic.sql.SqlColumn;
 
 public class ConditionRenderer<T> implements ConditionVisitor<T> {
     
