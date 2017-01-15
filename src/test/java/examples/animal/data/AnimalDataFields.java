@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016 the original author or authors.
+ *    Copyright 2016-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package examples.animal.data;
 
 import java.sql.JDBCType;
 
-import org.mybatis.qbe.mybatis3.MyBatis3Column;
-import org.mybatis.qbe.sql.SqlTable;
+import org.mybatis.dynamic.sql.MyBatis3Column;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public interface AnimalDataFields {
     SqlTable animalData = SqlTable.of("AnimalData").withAlias("a");

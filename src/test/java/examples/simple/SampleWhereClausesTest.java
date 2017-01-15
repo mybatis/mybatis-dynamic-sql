@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016 the original author or authors.
+ *    Copyright 2016-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ import static examples.simple.SimpleTableQBESupport.*;
 import static examples.simple.SimpleTableQBESupport.occupation;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectCount;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.selectCount;
 
 import org.junit.Test;
-import org.mybatis.qbe.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.select.SelectSupport;
 
 public class SampleWhereClausesTest {
 

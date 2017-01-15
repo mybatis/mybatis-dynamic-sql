@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016 the original author or authors.
+ *    Copyright 2016-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,24 +15,24 @@
  */
 package examples.simple;
 
-import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteFrom;
-import static org.mybatis.qbe.sql.insert.InsertSupportBuilder.insert;
-import static org.mybatis.qbe.sql.select.SelectSupportBuilder.select;
-import static org.mybatis.qbe.sql.update.UpdateSupportBuilder.update;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.delete.DeleteSupportBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.insert;
+import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.select;
+import static org.mybatis.dynamic.sql.update.UpdateSupportBuilder.update;
 
 import java.sql.JDBCType;
 import java.util.Date;
 import java.util.Optional;
 
-import org.mybatis.qbe.mybatis3.MyBatis3Column;
-import org.mybatis.qbe.sql.SqlTable;
-import org.mybatis.qbe.sql.delete.DeleteSupport;
-import org.mybatis.qbe.sql.insert.InsertSupport;
-import org.mybatis.qbe.sql.select.SelectSupport;
-import org.mybatis.qbe.sql.select.SelectSupportBuilder.SelectSupportBuildStep2;
-import org.mybatis.qbe.sql.update.UpdateSupport;
-import org.mybatis.qbe.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep1;
+import org.mybatis.dynamic.sql.MyBatis3Column;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.delete.DeleteSupport;
+import org.mybatis.dynamic.sql.insert.InsertSupport;
+import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportBuildStep2;
+import org.mybatis.dynamic.sql.update.UpdateSupport;
+import org.mybatis.dynamic.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep1;
 
 public interface SimpleTableQBESupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");

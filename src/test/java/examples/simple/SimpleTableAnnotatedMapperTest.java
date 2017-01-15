@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016 the original author or authors.
+ *    Copyright 2016-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package examples.simple;
 import static examples.simple.SimpleTableQBESupport.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.qbe.sql.SqlConditions.isEqualTo;
-import static org.mybatis.qbe.sql.SqlConditions.isIn;
-import static org.mybatis.qbe.sql.SqlConditions.isNull;
-import static org.mybatis.qbe.sql.delete.DeleteSupportBuilder.deleteFrom;
-import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectCount;
+import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isIn;
+import static org.mybatis.dynamic.sql.SqlConditions.isNull;
+import static org.mybatis.dynamic.sql.delete.DeleteSupportBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.selectCount;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,9 +37,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.qbe.sql.delete.DeleteSupport;
-import org.mybatis.qbe.sql.select.SelectSupport;
-import org.mybatis.qbe.sql.update.UpdateSupport;
+import org.mybatis.dynamic.sql.delete.DeleteSupport;
+import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.update.UpdateSupport;
 
 public class SimpleTableAnnotatedMapperTest {
 
