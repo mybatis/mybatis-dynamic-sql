@@ -57,32 +57,32 @@ public interface GeneratedAlwaysFields {
     
     static UpdateSupport buildUpdateByPrimaryKeySupport(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
-                .set(firstName, record.getFirstName())
-                .set(lastName, record.getLastName())
+                .set(firstName).equalTo(record.getFirstName())
+                .set(lastName).equalTo(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
                 .build();
     }
 
     static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
-                .set(firstName, Optional.ofNullable(record.getFirstName()))
-                .set(lastName, Optional.ofNullable(record.getLastName()))
+                .set(firstName).equalToOrIgnore(record.getFirstName())
+                .set(lastName).equalToOrIgnore(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
                 .build();
     }
 
     static UpdateSupportBuildStep1 updateByExample(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
-                .set(id, record.getId())
-                .set(firstName, record.getFirstName())
-                .set(lastName, record.getLastName());
+                .set(id).equalTo(record.getId())
+                .set(firstName).equalTo(record.getFirstName())
+                .set(lastName).equalTo(record.getLastName());
     }
 
     static UpdateSupportBuildStep1 updateByExampleSelective(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
-                .set(id, Optional.ofNullable(record.getId()))
-                .set(firstName, Optional.ofNullable(record.getFirstName()))
-                .set(lastName, Optional.ofNullable(record.getLastName()));
+                .set(id).equalToOrIgnore(record.getId())
+                .set(firstName).equalToOrIgnore(record.getFirstName())
+                .set(lastName).equalToOrIgnore(record.getLastName());
     }
 
     static SelectSupportBuildStep2 selectByExample() {

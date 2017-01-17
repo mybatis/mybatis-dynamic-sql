@@ -45,23 +45,36 @@ public interface UpdateSupportBuilder {
             this.table = table;
         }
         
-        public <T> UpdateSupportBuildStep1 set(SqlColumn<T> column, Optional<T> value) {
-            value.ifPresent(v -> columnsAndValues.add(ColumnAndValue.of(column, v, id++)));
-            return this;
-        }
-        
-        public <T> UpdateSupportBuildStep1 set(SqlColumn<T> column, T value) {
-            columnsAndValues.add(ColumnAndValue.of(column, value, id++));
-            return this;
-        }
-        
-        public <T> UpdateSupportBuildStep1 setNull(SqlColumn<T> column) {
-            columnsAndValues.add(ColumnAndValue.of(column, id++));
-            return this;
+        public <T> UpdateSupportBuildStep1Finisher<T> set(SqlColumn<T> column) {
+            return new UpdateSupportBuildStep1Finisher<>(column);
         }
         
         public <T> UpdateSupportBuildStep2 where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             return new UpdateSupportBuildStep2(table, columnsAndValues, column, condition, subCriteria);
+        }
+        
+        public class UpdateSupportBuildStep1Finisher<T> {
+            
+            private SqlColumn<T> column;
+            
+            public UpdateSupportBuildStep1Finisher(SqlColumn<T> column) {
+                this.column = column;
+            }
+            
+            public UpdateSupportBuildStep1 equalToNull() {
+                columnsAndValues.add(ColumnAndValue.of(column, id++));
+                return UpdateSupportBuildStep1.this;
+            }
+
+            public UpdateSupportBuildStep1 equalTo(T value) {
+                columnsAndValues.add(ColumnAndValue.of(column, value, id++));
+                return UpdateSupportBuildStep1.this;
+            }
+
+            public UpdateSupportBuildStep1 equalToOrIgnore(T value) {
+                Optional.ofNullable(value).ifPresent(v -> columnsAndValues.add(ColumnAndValue.of(column, v, id++)));
+                return UpdateSupportBuildStep1.this;
+            }
         }
     }
     

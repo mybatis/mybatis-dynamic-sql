@@ -43,9 +43,9 @@ public class UpdateSupportTest {
     @Test
     public void testUpdateParameter() {
         UpdateSupport updateSupport = update(foo)
-                .set(firstName, "fred")
-                .set(lastName, "jones")
-                .setNull(occupation)
+                .set(firstName).equalTo("fred")
+                .set(lastName).equalTo("jones")
+                .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
                 .build();
         
@@ -66,9 +66,9 @@ public class UpdateSupportTest {
     @Test
     public void testUpdateParameterStartWithNull() {
         UpdateSupport updateSupport = update(foo)
-                .setNull(occupation)
-                .set(firstName, "fred")
-                .set(lastName, "jones")
+                .set(occupation).equalToNull()
+                .set(firstName).equalTo("fred")
+                .set(lastName).equalTo("jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
                 .build();
@@ -111,9 +111,9 @@ public class UpdateSupportTest {
     @Test
     public void testFullUpdateStatement() {
         UpdateSupport updateSupport = update(foo)
-                .set(firstName, "fred")
-                .set(lastName, "jones")
-                .setNull(occupation)
+                .set(firstName).equalTo("fred")
+                .set(lastName).equalTo("jones")
+                .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
                 .build();
         

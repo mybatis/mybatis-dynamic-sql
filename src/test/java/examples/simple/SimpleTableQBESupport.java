@@ -69,44 +69,44 @@ public interface SimpleTableQBESupport {
     
     static UpdateSupport buildFullUpdateByPrimaryKeySupport(SimpleTableRecord record) {
         return update(simpleTable)
-                .set(firstName, record.getFirstName())
-                .set(lastName, record.getLastName())
-                .set(birthDate, record.getBirthDate())
-                .set(employed, record.getEmployed())
-                .set(occupation, record.getOccupation())
+                .set(firstName).equalTo(record.getFirstName())
+                .set(lastName).equalTo(record.getLastName())
+                .set(birthDate).equalTo(record.getBirthDate())
+                .set(employed).equalTo(record.getEmployed())
+                .set(occupation).equalTo(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
                 .build();
     }
 
     static UpdateSupport buildSelectiveUpdateByPrimaryKeySupport(SimpleTableRecord record) {
         return update(simpleTable)
-                .set(firstName, Optional.ofNullable(record.getFirstName()))
-                .set(lastName, Optional.ofNullable(record.getLastName()))
-                .set(birthDate, Optional.ofNullable(record.getBirthDate()))
-                .set(employed, Optional.ofNullable(record.getEmployed()))
-                .set(occupation, Optional.ofNullable(record.getOccupation()))
+                .set(firstName).equalToOrIgnore(record.getFirstName())
+                .set(lastName).equalToOrIgnore(record.getLastName())
+                .set(birthDate).equalToOrIgnore(record.getBirthDate())
+                .set(employed).equalToOrIgnore(record.getEmployed())
+                .set(occupation).equalToOrIgnore(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
                 .build();
     }
 
     static UpdateSupportBuildStep1 updateByExample(SimpleTableRecord record) {
         return update(simpleTable)
-                .set(id, record.getId())
-                .set(firstName, record.getFirstName())
-                .set(lastName, record.getLastName())
-                .set(birthDate, record.getBirthDate())
-                .set(employed, record.getEmployed())
-                .set(occupation, record.getOccupation());
+                .set(id).equalTo(record.getId())
+                .set(firstName).equalTo(record.getFirstName())
+                .set(lastName).equalTo(record.getLastName())
+                .set(birthDate).equalTo(record.getBirthDate())
+                .set(employed).equalTo(record.getEmployed())
+                .set(occupation).equalTo(record.getOccupation());
     }
 
     static UpdateSupportBuildStep1 updateByExampleSelective(SimpleTableRecord record) {
         return update(simpleTable)
-                .set(id, Optional.ofNullable(record.getId()))
-                .set(firstName, Optional.ofNullable(record.getFirstName()))
-                .set(lastName, Optional.ofNullable(record.getLastName()))
-                .set(birthDate, Optional.ofNullable(record.getBirthDate()))
-                .set(employed, Optional.ofNullable(record.getEmployed()))
-                .set(occupation, Optional.ofNullable(record.getOccupation()));
+                .set(id).equalToOrIgnore(record.getId())
+                .set(firstName).equalToOrIgnore(record.getFirstName())
+                .set(lastName).equalToOrIgnore(record.getLastName())
+                .set(birthDate).equalToOrIgnore(record.getBirthDate())
+                .set(employed).equalToOrIgnore(record.getEmployed())
+                .set(occupation).equalToOrIgnore(record.getOccupation());
     }
 
     static DeleteSupport buildDeleteByPrimaryKeySupport(Integer id_) {

@@ -493,8 +493,8 @@ public class AnimalDataTest {
             record.setBodyWeight(2.6);
             
             UpdateSupport updateSupport = update(animalData)
-                    .set(bodyWeight, record.getBodyWeight())
-                    .setNull(animalName)
+                    .set(bodyWeight).equalTo(record.getBodyWeight())
+                    .set(animalName).equalToNull()
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
