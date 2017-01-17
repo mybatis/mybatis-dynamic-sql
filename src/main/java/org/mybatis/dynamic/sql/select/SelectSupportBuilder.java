@@ -64,7 +64,7 @@ public interface SelectSupportBuilder {
         private String calculateColumnList(SqlColumn<?>...columns) {
             return Arrays.stream(columns)
                     .map(SqlColumn::nameIncludingTableAndColumnAlias)
-                    .collect(Collectors.joining(", "));
+                    .collect(Collectors.joining(", ")); //$NON-NLS-1$
         }
     }
     

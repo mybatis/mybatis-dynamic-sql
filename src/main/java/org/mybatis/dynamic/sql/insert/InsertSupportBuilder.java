@@ -103,7 +103,7 @@ public interface InsertSupportBuilder {
             
             void add(ColumnMapping<?> mapping) {
                 columnPhrases.add(mapping.column.name());
-                valuePhrases.add(mapping.column.getFormattedJdbcPlaceholder(String.format("record.%s", mapping.property))); //$NON-NLS-1$
+                valuePhrases.add(mapping.column.getFormattedJdbcPlaceholder("record", mapping.property)); //$NON-NLS-1$
             }
             
             CollectorSupport merge(CollectorSupport other) {

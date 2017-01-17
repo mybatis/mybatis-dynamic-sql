@@ -32,6 +32,8 @@ import org.mybatis.dynamic.sql.SqlColumn;
 
 public class ConditionRenderer<T> implements ConditionVisitor<T> {
     
+    private static final String PARAMETERS_PREFIX = "parameters"; //$NON-NLS-1$
+    
     private StringBuilder buffer = new StringBuilder();
     private Map<String, Object> parameters = new HashMap<>();
     private AtomicInteger sequence;
@@ -59,19 +61,20 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
 
     @Override
     public void visit(AbstractSingleValueCondition<T> condition) {
-        int number = sequence.getAndIncrement();
-        buffer.append(condition.render(calculateColumnName(), column.getFormattedJdbcPlaceholder(formatParameterName(number))));
-        parameters.put(formatParameterMapKey(number), condition.value());
+        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
+        buffer.append(condition.render(calculateColumnName(), column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey)));
+        parameters.put(mapKey, condition.value());
     }
 
     @Override
     public void visit(AbstractTwoValueCondition<T> condition) {
-        int number1 = sequence.getAndIncrement();
-        int number2 = sequence.getAndIncrement();
-        buffer.append(condition.render(calculateColumnName(), column.getFormattedJdbcPlaceholder(formatParameterName(number1)),
-                column.getFormattedJdbcPlaceholder(formatParameterName(number2))));
-        parameters.put(formatParameterMapKey(number1), condition.value1());
-        parameters.put(formatParameterMapKey(number2), condition.value2());
+        String mapKey1 = formatParameterMapKey(sequence.getAndIncrement());
+        String mapKey2 = formatParameterMapKey(sequence.getAndIncrement());
+        buffer.append(condition.render(calculateColumnName(),
+                column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey1),
+                column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey2)));
+        parameters.put(mapKey1, condition.value1());
+        parameters.put(mapKey2, condition.value2());
     }
 
     @Override
@@ -79,9 +82,9 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
         List<String> placeholders = new ArrayList<>();
         
         condition.values().forEach(v -> {
-            int number = sequence.getAndIncrement();
-            placeholders.add(column.getFormattedJdbcPlaceholder(formatParameterName(number)));
-            parameters.put(formatParameterMapKey(number), v);
+            String mapKey = formatParameterMapKey(sequence.getAndIncrement());
+            placeholders.add(column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey));
+            parameters.put(mapKey, v);
         });
         
         buffer.append(condition.render(calculateColumnName(), placeholders.stream()));
@@ -91,10 +94,6 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
         return String.format("p%s", number); //$NON-NLS-1$
     }
 
-    private String formatParameterName(int number) {
-        return String.format("parameters.p%s", number); //$NON-NLS-1$
-    }
-    
     private String calculateColumnName() {
         return nameFunction.apply(column);
     }

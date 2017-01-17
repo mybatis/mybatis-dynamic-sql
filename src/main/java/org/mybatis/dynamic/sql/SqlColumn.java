@@ -101,12 +101,12 @@ public class SqlColumn<T> extends AbstractColumn<T> {
         return column;
     }
     
-    public String getFormattedJdbcPlaceholder(String parameterName) {
-        return String.format("{%s}", parameterName); //$NON-NLS-1$
+    public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
+        return String.format("{%s.%s}", prefix, parameterName); //$NON-NLS-1$
     }
     
     public String orderByPhrase() {
-        return String.format("%s %s", columnAlias().orElse(name()), sortOrder); //$NON-NLS-1$
+        return String.format("%s %s", columnAlias().orElseGet(this::name), sortOrder); //$NON-NLS-1$
     }
     
     public static <T> SqlColumn<T> of(String name, JDBCType jdbcType) {

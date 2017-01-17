@@ -124,10 +124,10 @@ public interface UpdateSupportBuilder {
         
         private ColumnAndValue(SqlColumn<T> column, T value, int uniqueId) {
             this.value = value;
-            String jdbcPlaceholder = column.getFormattedJdbcPlaceholder(String.format("parameters.up%s", uniqueId)); //$NON-NLS-1$
+            mapKey = String.format("up%s", uniqueId); //$NON-NLS-1$
+            String jdbcPlaceholder = column.getFormattedJdbcPlaceholder("parameters", mapKey); //$NON-NLS-1$
             setPhrase = String.format("%s = %s", column.name(), //$NON-NLS-1$
                     jdbcPlaceholder);
-            mapKey = String.format("up%s", uniqueId); //$NON-NLS-1$
         }
         
         static <T> ColumnAndValue<T> of(SqlColumn<T> column, T value, int uniqueId) {

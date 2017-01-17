@@ -99,5 +99,11 @@
       <version>2.3.4</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>4.3.5.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

@@ -68,9 +68,11 @@ public class MyBatis3Column<T> extends SqlColumn<T> {
     }
     
     @Override
-    public String getFormattedJdbcPlaceholder(String parameterName) {
+    public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("#{"); //$NON-NLS-1$
+        buffer.append(prefix);
+        buffer.append('.');
         buffer.append(parameterName);
         buffer.append(",jdbcType="); //$NON-NLS-1$
         buffer.append(jdbcType().getName());
