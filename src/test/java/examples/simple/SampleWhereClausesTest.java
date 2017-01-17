@@ -15,8 +15,8 @@
  */
 package examples.simple;
 
-import static examples.simple.SimpleTableQBESupport.*;
-import static examples.simple.SimpleTableQBESupport.occupation;
+import static examples.simple.SimpleTableDynamicSqlSupport.*;
+import static examples.simple.SimpleTableDynamicSqlSupport.occupation;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.dynamic.sql.SqlConditions.*;

@@ -20,7 +20,7 @@ import java.sql.JDBCType;
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
 
-public interface AnimalDataFields {
+public interface AnimalDataDynamicSqlSupport {
     SqlTable animalData = SqlTable.of("AnimalData").withAlias("a");
     MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(animalData); 
     MyBatis3Column<String> animalName = MyBatis3Column.of("animal_name", JDBCType.VARCHAR).inTable(animalData);

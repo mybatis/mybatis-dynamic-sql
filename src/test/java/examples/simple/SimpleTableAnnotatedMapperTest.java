@@ -15,7 +15,7 @@
  */
 package examples.simple;
 
-import static examples.simple.SimpleTableQBESupport.*;
+import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;

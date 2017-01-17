@@ -15,7 +15,7 @@
  */
 package examples.generated.always.spring;
 
-import static examples.generated.always.spring.GeneratedAlwaysFields.*;
+import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.dynamic.sql.SqlConditions.isGreaterThan;

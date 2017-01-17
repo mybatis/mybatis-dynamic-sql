@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.insert.InsertSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep1;
 
-public interface GeneratedAlwaysFields {
+public interface GeneratedAlwaysDynamicSqlSupport {
     SqlTable generatedAlways = SqlTable.of("GeneratedAlways").withAlias("a");
     MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(generatedAlways);
     MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR).inTable(generatedAlways);

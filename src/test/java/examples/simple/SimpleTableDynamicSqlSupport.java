@@ -34,7 +34,7 @@ import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportBuildSte
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep1;
 
-public interface SimpleTableQBESupport {
+public interface SimpleTableDynamicSqlSupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
     MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
     MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);

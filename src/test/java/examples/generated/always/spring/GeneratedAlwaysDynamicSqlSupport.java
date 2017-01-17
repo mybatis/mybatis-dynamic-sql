@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportBuildSte
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep1;
 
-public interface GeneratedAlwaysFields {
+public interface GeneratedAlwaysDynamicSqlSupport {
     SqlTable generatedAlways = SqlTable.of("GeneratedAlways").withAlias("a");
     SpringNamedParameterColumn<Integer> id = SpringNamedParameterColumn.of("id", JDBCType.INTEGER).inTable(generatedAlways).withAlias("A_ID");
     SpringNamedParameterColumn<String> firstName = SpringNamedParameterColumn.of("first_name", JDBCType.VARCHAR).inTable(generatedAlways);
