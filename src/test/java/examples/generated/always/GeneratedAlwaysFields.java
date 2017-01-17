@@ -38,19 +38,19 @@ public interface GeneratedAlwaysFields {
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSupport(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
-                .withColumnMapping(id, "id", record::getId)
-                .withColumnMapping(firstName, "firstName", record::getFirstName)
-                .withColumnMapping(lastName, "lastName", record::getLastName)
-                .buildFullInsert();
+                .withColumnMapping(id, "id", record.getId())
+                .withColumnMapping(firstName, "firstName", record.getFirstName())
+                .withColumnMapping(lastName, "lastName", record.getLastName())
+                .build();
     }
 
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
-                .withColumnMapping(id, "id", record::getId)
-                .withColumnMapping(firstName, "firstName", record::getFirstName)
-                .withColumnMapping(lastName, "lastName", record::getLastName)
-                .buildSelectiveInsert();
+                .withColumnMapping(id, "id", Optional.ofNullable(record.getId()))
+                .withColumnMapping(firstName, "firstName", Optional.ofNullable(record.getFirstName()))
+                .withColumnMapping(lastName, "lastName", Optional.ofNullable(record.getLastName()))
+                .build();
     }
     
     static UpdateSupport buildUpdateByPrimaryKeySupport(GeneratedAlwaysRecord record) {

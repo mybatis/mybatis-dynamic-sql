@@ -22,6 +22,7 @@ import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.*;
 import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collector;
 
 import org.junit.Test;
@@ -47,11 +48,11 @@ public class InsertSupportTest {
         
         InsertSupport<TestRecord> insertSupport = insert(record)
                 .into(foo)
-                .withColumnMapping(id, "id", record::getId)
-                .withColumnMapping(firstName, "firstName", record::getFirstName)
-                .withColumnMapping(lastName, "lastName", record::getLastName)
-                .withColumnMapping(occupation, "occupation", record::getOccupation)
-                .buildFullInsert();
+                .withColumnMapping(id, "id", record.getId())
+                .withColumnMapping(firstName, "firstName", record.getFirstName())
+                .withColumnMapping(lastName, "lastName", record.getLastName())
+                .withColumnMapping(occupation, "occupation", record.getOccupation())
+                .build();
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
@@ -68,11 +69,11 @@ public class InsertSupportTest {
         
         InsertSupport<TestRecord> insertSupport = insert(record)
                 .into(foo)
-                .withColumnMapping(id, "id", record::getId)
-                .withColumnMapping(firstName, "firstName", record::getFirstName)
-                .withColumnMapping(lastName, "lastName", record::getLastName)
-                .withColumnMapping(occupation, "occupation", record::getOccupation)
-                .buildSelectiveInsert();
+                .withColumnMapping(id, "id", Optional.ofNullable(record.getId()))
+                .withColumnMapping(firstName, "firstName", Optional.ofNullable(record.getFirstName()))
+                .withColumnMapping(lastName, "lastName", Optional.ofNullable(record.getLastName()))
+                .withColumnMapping(occupation, "occupation", Optional.ofNullable(record.getOccupation()))
+                .build();
 
         String expectedColumnsPhrase = "(last_name, occupation)";
         assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
@@ -90,10 +91,10 @@ public class InsertSupportTest {
         
         List<ColumnMapping<?>> mappings = new ArrayList<>();
         
-        mappings.add(ColumnMapping.of(id, "id", record::getId));
-        mappings.add(ColumnMapping.of(firstName, "firstName", record::getFirstName));
-        mappings.add(ColumnMapping.of(lastName, "lastName", record::getLastName));
-        mappings.add(ColumnMapping.of(occupation, "occupation", record::getOccupation));
+        mappings.add(ColumnMapping.of(id, "id", record.getId()));
+        mappings.add(ColumnMapping.of(firstName, "firstName", record.getFirstName()));
+        mappings.add(ColumnMapping.of(lastName, "lastName", record.getLastName()));
+        mappings.add(ColumnMapping.of(occupation, "occupation", record.getOccupation()));
         
         InsertSupport<TestRecord> insertSupport = 
                 mappings.parallelStream().collect(Collector.of(
@@ -118,11 +119,11 @@ public class InsertSupportTest {
         
         InsertSupport<TestRecord> insertSupport = insert(record)
                 .into(foo)
-                .withColumnMapping(id, "id", record::getId)
-                .withColumnMapping(firstName, "firstName", record::getFirstName)
-                .withColumnMapping(lastName, "lastName", record::getLastName)
-                .withColumnMapping(occupation, "occupation", record::getOccupation)
-                .buildFullInsert();
+                .withColumnMapping(id, "id", record.getId())
+                .withColumnMapping(firstName, "firstName", record.getFirstName())
+                .withColumnMapping(lastName, "lastName", record.getLastName())
+                .withColumnMapping(occupation, "occupation", record.getOccupation())
+                .build();
 
         String expectedStatement = "insert into foo "
                 + "(id, first_name, last_name, occupation) "

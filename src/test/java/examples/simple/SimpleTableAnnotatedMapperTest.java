@@ -38,6 +38,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.delete.DeleteSupport;
+import org.mybatis.dynamic.sql.insert.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 
@@ -163,7 +164,10 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildFullInsertSupport(record));
+            InsertSupport<SimpleTableRecord> insertSupport = buildFullInsertSupport(record);
+            assertThat(insertSupport.getColumnsPhrase(), is("(id, first_name, last_name, birth_date, employed, occupation)"));
+            
+            int rows = mapper.insert(insertSupport);
             
             assertThat(rows, is(1));
         } finally {
@@ -183,7 +187,10 @@ public class SimpleTableAnnotatedMapperTest {
             record.setBirthDate(new Date());
             record.setEmployed(false);
             
-            int rows = mapper.insert(buildSelectiveInsertSupport(record));
+            InsertSupport<SimpleTableRecord> insertSupport = buildSelectiveInsertSupport(record);
+            assertThat(insertSupport.getColumnsPhrase(), is("(id, first_name, last_name, birth_date, employed)"));
+            
+            int rows = mapper.insert(insertSupport);
             
             assertThat(rows, is(1));
         } finally {

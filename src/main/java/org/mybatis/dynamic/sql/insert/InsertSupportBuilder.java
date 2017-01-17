@@ -17,10 +17,9 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -53,21 +52,18 @@ public interface InsertSupportBuilder {
             this.table = table;
         }
         
-        public <F> InsertSupportBuildStep2<T> withColumnMapping(SqlColumn<F> column, String property, Supplier<F> getterFunction) {
-            columnMappings.add(ColumnMapping.of(column, property, getterFunction));
+        public <F> InsertSupportBuildStep2<T> withColumnMapping(SqlColumn<F> column, String property, F value) {
+            columnMappings.add(ColumnMapping.of(column, property, value));
             return this;
         }
         
-        public InsertSupport<T> buildFullInsert() {
-            return build(columnMappings.stream());
-        }
-
-        public InsertSupport<T> buildSelectiveInsert() {
-            return build(columnMappings.stream().filter(ColumnMapping::hasValue));
+        public <F> InsertSupportBuildStep2<T> withColumnMapping(SqlColumn<F> column, String property, Optional<F> value) {
+            value.ifPresent(v -> columnMappings.add(ColumnMapping.of(column, property, v)));
+            return this;
         }
         
-        private InsertSupport<T> build(Stream<ColumnMapping<?>> mappings) {
-            return mappings.collect(Collector.of(
+        public InsertSupport<T> build() {
+            return columnMappings.stream().collect(Collector.of(
                     CollectorSupport::new,
                     CollectorSupport::add,
                     CollectorSupport::merge,
@@ -82,17 +78,13 @@ public interface InsertSupportBuilder {
         static class ColumnMapping<F> {
             SqlColumn<F> column;
             String property;
-            Supplier<F> getterFunction;
+            F value;
             
-            boolean hasValue() {
-                return getterFunction.get() != null;
-            }
-            
-            static <F> ColumnMapping<F> of(SqlColumn<F> column, String property, Supplier<F> getterFunction) {
+            static <F> ColumnMapping<F> of(SqlColumn<F> column, String property, F value) {
                 ColumnMapping<F> mapping = new ColumnMapping<>();
                 mapping.column = column;
                 mapping.property = property;
-                mapping.getterFunction = getterFunction;
+                mapping.value = value;
                 return mapping;
             }
         }

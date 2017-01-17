@@ -20,6 +20,7 @@ import static org.junit.Assert.assertThat;
 import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.insert;
 
 import java.sql.JDBCType;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.mybatis.dynamic.sql.MyBatis3Column;
@@ -41,11 +42,11 @@ public class InsertSupportTest {
         
         InsertSupport<?> insertSupport = insert(record)
                 .into(foo)
-                .withColumnMapping(id, "id", record::getId)
-                .withColumnMapping(firstName, "firstName", record::getFirstName)
-                .withColumnMapping(lastName, "lastName", record::getLastName)
-                .withColumnMapping(occupation, "occupation", record::getOccupation)
-                .buildFullInsert();
+                .withColumnMapping(id, "id", record.getId())
+                .withColumnMapping(firstName, "firstName", record.getFirstName())
+                .withColumnMapping(lastName, "lastName", record.getLastName())
+                .withColumnMapping(occupation, "occupation", record.getOccupation())
+                .build();
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
@@ -65,11 +66,11 @@ public class InsertSupportTest {
         
         InsertSupport<?> insertSupport = insert(record)
                 .into(foo)
-                .withColumnMapping(id, "id", record::getId)
-                .withColumnMapping(firstName, "firstName", record::getFirstName)
-                .withColumnMapping(lastName, "lastName", record::getLastName)
-                .withColumnMapping(occupation, "occupation", record::getOccupation)
-                .buildSelectiveInsert();
+                .withColumnMapping(id, "id", Optional.ofNullable(record.getId()))
+                .withColumnMapping(firstName, "firstName", Optional.ofNullable(record.getFirstName()))
+                .withColumnMapping(lastName, "lastName", Optional.ofNullable(record.getLastName()))
+                .withColumnMapping(occupation, "occupation", Optional.ofNullable(record.getOccupation()))
+                .build();
 
         String expectedColumnsPhrase = "(last_name, occupation)";
         assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));

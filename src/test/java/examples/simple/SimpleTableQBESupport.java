@@ -46,25 +46,25 @@ public interface SimpleTableQBESupport {
     static InsertSupport<SimpleTableRecord> buildFullInsertSupport(SimpleTableRecord record) {
         return insert(record)
                 .into(simpleTable)
-                .withColumnMapping(id, "id", record::getId)
-                .withColumnMapping(firstName, "firstName", record::getFirstName)
-                .withColumnMapping(lastName, "lastName", record::getLastName)
-                .withColumnMapping(birthDate, "birthDate", record::getBirthDate)
-                .withColumnMapping(employed, "employed", record::getEmployed)
-                .withColumnMapping(occupation, "occupation", record::getOccupation)
-                .buildFullInsert();
+                .withColumnMapping(id, "id", record.getId())
+                .withColumnMapping(firstName, "firstName", record.getFirstName())
+                .withColumnMapping(lastName, "lastName", record.getLastName())
+                .withColumnMapping(birthDate, "birthDate", record.getBirthDate())
+                .withColumnMapping(employed, "employed", record.getEmployed())
+                .withColumnMapping(occupation, "occupation", record.getOccupation())
+                .build();
     }
 
     static InsertSupport<SimpleTableRecord> buildSelectiveInsertSupport(SimpleTableRecord record) {
         return insert(record)
                 .into(simpleTable)
-                .withColumnMapping(id, "id", record::getId)
-                .withColumnMapping(firstName, "firstName", record::getFirstName)
-                .withColumnMapping(lastName, "lastName", record::getLastName)
-                .withColumnMapping(birthDate, "birthDate", record::getBirthDate)
-                .withColumnMapping(employed, "employed", record::getEmployed)
-                .withColumnMapping(occupation, "occupation", record::getOccupation)
-                .buildSelectiveInsert();
+                .withColumnMapping(id, "id", Optional.ofNullable(record.getId()))
+                .withColumnMapping(firstName, "firstName", Optional.ofNullable(record.getFirstName()))
+                .withColumnMapping(lastName, "lastName", Optional.ofNullable(record.getLastName()))
+                .withColumnMapping(birthDate, "birthDate", Optional.ofNullable(record.getBirthDate()))
+                .withColumnMapping(employed, "employed", Optional.ofNullable(record.getEmployed()))
+                .withColumnMapping(occupation, "occupation", Optional.ofNullable(record.getOccupation()))
+                .build();
     }
     
     static UpdateSupport buildFullUpdateByPrimaryKeySupport(SimpleTableRecord record) {
