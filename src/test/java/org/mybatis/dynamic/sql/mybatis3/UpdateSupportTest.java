@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.mybatis3;
 
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
@@ -46,17 +45,16 @@ public class UpdateSupportTest {
         
         String expectedSetClause = "set firstName = #{parameters.up1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.up2,jdbcType=VARCHAR}, "
-                + "occupation = #{parameters.up3,jdbcType=VARCHAR}";
+                + "occupation = null";
                 
         assertThat(updateSupport.getSetClause(), is(expectedSetClause));
         
         String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER}";
         assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
         
-        assertThat(updateSupport.getParameters().size(), is(4));
+        assertThat(updateSupport.getParameters().size(), is(3));
         assertThat(updateSupport.getParameters().get("up1"), is("fred"));
         assertThat(updateSupport.getParameters().get("up2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("up3"), is(nullValue()));
         assertThat(updateSupport.getParameters().get("p1"), is(3));
     }
 
@@ -70,9 +68,9 @@ public class UpdateSupportTest {
                 .and(firstName, isEqualTo("barney"))
                 .build();
         
-        String expectedSetClause = "set occupation = #{parameters.up1,jdbcType=VARCHAR}, "
-                + "firstName = #{parameters.up2,jdbcType=VARCHAR}, "
-                + "lastName = #{parameters.up3,jdbcType=VARCHAR}";
+        String expectedSetClause = "set occupation = null, "
+                + "firstName = #{parameters.up1,jdbcType=VARCHAR}, "
+                + "lastName = #{parameters.up2,jdbcType=VARCHAR}";
                 
         assertThat(updateSupport.getSetClause(), is(expectedSetClause));
         
@@ -80,10 +78,9 @@ public class UpdateSupportTest {
                 + "and firstName = #{parameters.p2,jdbcType=VARCHAR}";
         assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
         
-        assertThat(updateSupport.getParameters().size(), is(5));
-        assertThat(updateSupport.getParameters().get("up1"), is(nullValue()));
-        assertThat(updateSupport.getParameters().get("up2"), is("fred"));
-        assertThat(updateSupport.getParameters().get("up3"), is("jones"));
+        assertThat(updateSupport.getParameters().size(), is(4));
+        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
+        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
         assertThat(updateSupport.getParameters().get("p1"), is(3));
         assertThat(updateSupport.getParameters().get("p2"), is("barney"));
     }

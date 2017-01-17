@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.update;
 
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
@@ -49,17 +48,16 @@ public class UpdateSupportTest {
                 .where(id, isEqualTo(3))
                 .build();
         
-        String expectedSetClause = "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = {parameters.up3}";
+        String expectedSetClause = "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null";
                 
         assertThat(updateSupport.getSetClause(), is(expectedSetClause));
         
         String expectedWhereClauses = "where id = {parameters.p1}";
         assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
         
-        assertThat(updateSupport.getParameters().size(), is(4));
+        assertThat(updateSupport.getParameters().size(), is(3));
         assertThat(updateSupport.getParameters().get("up1"), is("fred"));
         assertThat(updateSupport.getParameters().get("up2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("up3"), is(nullValue()));
         assertThat(updateSupport.getParameters().get("p1"), is(3));
     }
 
@@ -73,17 +71,16 @@ public class UpdateSupportTest {
                 .and(firstName, isEqualTo("barney"))
                 .build();
         
-        String expectedSetClause = "set occupation = {parameters.up1}, firstName = {parameters.up2}, lastName = {parameters.up3}";
+        String expectedSetClause = "set occupation = null, firstName = {parameters.up1}, lastName = {parameters.up2}";
                 
         assertThat(updateSupport.getSetClause(), is(expectedSetClause));
         
         String expectedWhereClauses = "where id = {parameters.p1} and firstName = {parameters.p2}";
         assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
         
-        assertThat(updateSupport.getParameters().size(), is(5));
-        assertThat(updateSupport.getParameters().get("up1"), is(nullValue()));
-        assertThat(updateSupport.getParameters().get("up2"), is("fred"));
-        assertThat(updateSupport.getParameters().get("up3"), is("jones"));
+        assertThat(updateSupport.getParameters().size(), is(4));
+        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
+        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
         assertThat(updateSupport.getParameters().get("p1"), is(3));
         assertThat(updateSupport.getParameters().get("p2"), is("barney"));
     }
@@ -92,7 +89,7 @@ public class UpdateSupportTest {
     public void testParallelStream() {
         AtomicInteger sequence = new AtomicInteger(1);
         List<ColumnAndValue<?>> setColumns = new ArrayList<>();
-        setColumns.add(ColumnAndValue.of(occupation, sequence.getAndIncrement()));
+        setColumns.add(ColumnAndValue.of(occupation));
         setColumns.add(ColumnAndValue.of(firstName, "fred", sequence.getAndIncrement()));
         setColumns.add(ColumnAndValue.of(lastName, "jones", sequence.getAndIncrement()));
         
@@ -101,11 +98,10 @@ public class UpdateSupportTest {
                 SetValuesCollector::add,
                 SetValuesCollector::merge));
         
-        assertThat(collector.getSetClause(), is("set occupation = {parameters.up1}, firstName = {parameters.up2}, lastName = {parameters.up3}"));
-        assertThat(collector.parameters.size(), is(3));
-        assertThat(collector.parameters.get("up1"), is(nullValue()));
-        assertThat(collector.parameters.get("up2"), is("fred"));
-        assertThat(collector.parameters.get("up3"), is("jones"));
+        assertThat(collector.getSetClause(), is("set occupation = null, firstName = {parameters.up1}, lastName = {parameters.up2}"));
+        assertThat(collector.parameters.size(), is(2));
+        assertThat(collector.parameters.get("up1"), is("fred"));
+        assertThat(collector.parameters.get("up2"), is("jones"));
     }
 
     @Test
@@ -118,15 +114,14 @@ public class UpdateSupportTest {
                 .build();
         
         String expectedStatement = "update foo " 
-                + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = {parameters.up3} "
+                + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null "
                 + "where id = {parameters.p1}";
                 
         assertThat(updateSupport.getFullUpdateStatement(), is(expectedStatement));
         
-        assertThat(updateSupport.getParameters().size(), is(4));
+        assertThat(updateSupport.getParameters().size(), is(3));
         assertThat(updateSupport.getParameters().get("up1"), is("fred"));
         assertThat(updateSupport.getParameters().get("up2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("up3"), is(nullValue()));
         assertThat(updateSupport.getParameters().get("p1"), is(3));
     }
 }

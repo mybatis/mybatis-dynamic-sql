@@ -17,12 +17,14 @@ package examples.simple;
 
 import static examples.simple.SimpleTableQBESupport.*;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlConditions.isIn;
 import static org.mybatis.dynamic.sql.SqlConditions.isNull;
 import static org.mybatis.dynamic.sql.delete.DeleteSupportBuilder.deleteFrom;
 import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.selectCount;
+import static org.mybatis.dynamic.sql.update.UpdateSupportBuilder.update;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -250,6 +252,41 @@ public class SimpleTableAnnotatedMapperTest {
             
             SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
             assertThat(newRecord.getOccupation(), is("Programmer"));
+            assertThat(newRecord.getFirstName(), is("Joe"));
+            
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testUpdateWithNulls() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            SimpleTableRecord record = new SimpleTableRecord();
+            record.setId(100);
+            record.setFirstName("Joe");
+            record.setLastName("Jones");
+            record.setBirthDate(new Date());
+            record.setEmployed(true);
+            record.setOccupation("Developer");
+            
+            int rows = mapper.insert(buildFullInsertSupport(record));
+            assertThat(rows, is(1));
+
+            UpdateSupport updateSupport = update(simpleTable)
+                    .set(occupation).equalToNull()
+                    .set(employed).equalTo(false)
+                    .where(id, isEqualTo(100))
+                    .build();
+                    
+            rows = mapper.update(updateSupport);
+            assertThat(rows, is(1));
+            
+            SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+            assertThat(newRecord.getOccupation(), is(nullValue()));
+            assertThat(newRecord.getEmployed(), is(false));
             assertThat(newRecord.getFirstName(), is("Joe"));
             
         } finally {

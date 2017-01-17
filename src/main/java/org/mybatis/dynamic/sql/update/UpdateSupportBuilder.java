@@ -62,7 +62,7 @@ public interface UpdateSupportBuilder {
             }
             
             public UpdateSupportBuildStep1 equalToNull() {
-                columnsAndValues.add(ColumnAndValue.of(column, id++));
+                columnsAndValues.add(ColumnAndValue.of(column));
                 return UpdateSupportBuildStep1.this;
             }
 
@@ -115,7 +115,7 @@ public interface UpdateSupportBuilder {
             
             void add(ColumnAndValue<?> columnAndValue) {
                 phrases.add(columnAndValue.setPhrase);
-                parameters.put(columnAndValue.mapKey, columnAndValue.value);
+                columnAndValue.mapKey().ifPresent(mk -> parameters.put(mk, columnAndValue.value));
             }
             
             SetValuesCollector merge(SetValuesCollector other) {
@@ -139,16 +139,23 @@ public interface UpdateSupportBuilder {
             this.value = value;
             mapKey = String.format("up%s", uniqueId); //$NON-NLS-1$
             String jdbcPlaceholder = column.getFormattedJdbcPlaceholder("parameters", mapKey); //$NON-NLS-1$
-            setPhrase = String.format("%s = %s", column.name(), //$NON-NLS-1$
-                    jdbcPlaceholder);
+            setPhrase = String.format("%s = %s", column.name(), jdbcPlaceholder); //$NON-NLS-1$
+        }
+        
+        private ColumnAndValue(SqlColumn<T> column) {
+            setPhrase = String.format("%s = null", column.name()); //$NON-NLS-1$
+        }
+        
+        public Optional<String> mapKey() {
+            return Optional.ofNullable(mapKey);
         }
         
         static <T> ColumnAndValue<T> of(SqlColumn<T> column, T value, int uniqueId) {
             return new ColumnAndValue<>(column, value, uniqueId);
         }
 
-        static <T> ColumnAndValue<T> of(SqlColumn<T> column, int uniqueId) {
-            return new ColumnAndValue<>(column, null, uniqueId);
+        static <T> ColumnAndValue<T> of(SqlColumn<T> column) {
+            return new ColumnAndValue<>(column);
         }
     }
 }
