@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
-import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportBuildStep2;
+import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportAfterFromBuilder;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupportBuilder;
 
@@ -114,7 +114,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .build();
     }
     
-    static SelectSupportBuildStep2 selectByExample() {
+    static SelectSupportAfterFromBuilder selectByExample() {
         return select(id, firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }

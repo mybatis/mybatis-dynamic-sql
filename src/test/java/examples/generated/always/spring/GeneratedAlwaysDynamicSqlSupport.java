@@ -25,7 +25,7 @@ import java.sql.JDBCType;
 import org.mybatis.dynamic.sql.SpringNamedParameterColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.InsertSupport;
-import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportBuildStep2;
+import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportAfterFromBuilder;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupportBuilder;
 
@@ -84,7 +84,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .set(lastName).equalToWhenPresent(record.getLastName());
     }
 
-    static SelectSupportBuildStep2 selectByExample() {
+    static SelectSupportAfterFromBuilder selectByExample() {
         return select(id, firstName, lastName, fullName)
             .from(generatedAlways);
     }
