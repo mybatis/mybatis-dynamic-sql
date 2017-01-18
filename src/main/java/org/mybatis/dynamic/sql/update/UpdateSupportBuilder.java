@@ -30,59 +30,57 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.where.AbstractWhereBuilder;
 import org.mybatis.dynamic.sql.where.WhereSupport;
 
-public interface UpdateSupportBuilder {
+public class UpdateSupportBuilder {
 
-    static UpdateSupportBuildStep1 update(SqlTable table) {
-        return new UpdateSupportBuildStep1(table);
+    private int id = 1;
+    private List<SetColumnAndValue<?>> columnsAndValues = new ArrayList<>();
+    private SqlTable table;
+    
+    private UpdateSupportBuilder(SqlTable table) {
+        this.table = table;
     }
     
-    static class UpdateSupportBuildStep1 {
-        private int id = 1;
-        private List<ColumnAndValue<?>> columnsAndValues = new ArrayList<>();
-        private SqlTable table;
-        
-        public UpdateSupportBuildStep1(SqlTable table) {
-            this.table = table;
-        }
-        
-        public <T> UpdateSupportBuildStep1Finisher<T> set(SqlColumn<T> column) {
-            return new UpdateSupportBuildStep1Finisher<>(column);
-        }
-        
-        public <T> UpdateSupportBuildStep2 where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            return new UpdateSupportBuildStep2(table, columnsAndValues, column, condition, subCriteria);
-        }
-        
-        public class UpdateSupportBuildStep1Finisher<T> {
-            
-            private SqlColumn<T> column;
-            
-            public UpdateSupportBuildStep1Finisher(SqlColumn<T> column) {
-                this.column = column;
-            }
-            
-            public UpdateSupportBuildStep1 equalToNull() {
-                columnsAndValues.add(ColumnAndValue.of(column));
-                return UpdateSupportBuildStep1.this;
-            }
-
-            public UpdateSupportBuildStep1 equalTo(T value) {
-                columnsAndValues.add(ColumnAndValue.of(column, value, id++));
-                return UpdateSupportBuildStep1.this;
-            }
-
-            public UpdateSupportBuildStep1 equalToWhenPresent(T value) {
-                Optional.ofNullable(value).ifPresent(v -> columnsAndValues.add(ColumnAndValue.of(column, v, id++)));
-                return UpdateSupportBuildStep1.this;
-            }
-        }
+    public <T> UpdateSupportBuilderFinisher<T> set(SqlColumn<T> column) {
+        return new UpdateSupportBuilderFinisher<>(column);
     }
     
-    static class UpdateSupportBuildStep2 extends AbstractWhereBuilder<UpdateSupportBuildStep2> {
-        private List<ColumnAndValue<?>> setColumnsAndValues;
+    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        return new UpdateSupportWhereBuilder(table, columnsAndValues, column, condition, subCriteria);
+    }
+    
+    public class UpdateSupportBuilderFinisher<T> {
+        
+        private SqlColumn<T> column;
+        
+        public UpdateSupportBuilderFinisher(SqlColumn<T> column) {
+            this.column = column;
+        }
+        
+        public UpdateSupportBuilder equalToNull() {
+            columnsAndValues.add(SetColumnAndValue.of(column));
+            return UpdateSupportBuilder.this;
+        }
+
+        public UpdateSupportBuilder equalTo(T value) {
+            columnsAndValues.add(SetColumnAndValue.of(column, value, id++));
+            return UpdateSupportBuilder.this;
+        }
+
+        public UpdateSupportBuilder equalToWhenPresent(T value) {
+            Optional.ofNullable(value).ifPresent(v -> columnsAndValues.add(SetColumnAndValue.of(column, v, id++)));
+            return UpdateSupportBuilder.this;
+        }
+    }
+
+    public static UpdateSupportBuilder update(SqlTable table) {
+        return new UpdateSupportBuilder(table);
+    }
+    
+    public static class UpdateSupportWhereBuilder extends AbstractWhereBuilder<UpdateSupportWhereBuilder> {
+        private List<SetColumnAndValue<?>> setColumnsAndValues;
         private SqlTable table;
         
-        public <T> UpdateSupportBuildStep2(SqlTable table, List<ColumnAndValue<?>> setColumnsAndValues, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        public <T> UpdateSupportWhereBuilder(SqlTable table, List<SetColumnAndValue<?>> setColumnsAndValues, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
             this.table = table;
             this.setColumnsAndValues = setColumnsAndValues;
@@ -90,59 +88,59 @@ public interface UpdateSupportBuilder {
         
         public UpdateSupport build() {
             Map<String, Object> parameters = new HashMap<>();
-            SetValuesCollector setValuesCollector = renderSetValues();
+            SetValuesCollectorSupport setValuesCollector = renderSetValues();
             WhereSupport whereSupport = renderCriteria(SqlColumn::name);
             parameters.putAll(setValuesCollector.parameters);
             parameters.putAll(whereSupport.getParameters());
             return UpdateSupport.of(setValuesCollector.getSetClause(), whereSupport.getWhereClause(), parameters, table);
         }
         
-        private SetValuesCollector renderSetValues() {
+        private SetValuesCollectorSupport renderSetValues() {
             return setColumnsAndValues.stream().collect(Collector.of(
-                    SetValuesCollector::new,
-                    SetValuesCollector::add,
-                    SetValuesCollector::merge));
+                    SetValuesCollectorSupport::new,
+                    SetValuesCollectorSupport::add,
+                    SetValuesCollectorSupport::merge));
         }
 
         @Override
-        public UpdateSupportBuildStep2 getThis() {
+        protected UpdateSupportWhereBuilder getThis() {
             return this;
-        }
-        
-        static class SetValuesCollector {
-            List<String> phrases = new ArrayList<>();
-            Map<String, Object> parameters = new HashMap<>();
-            
-            void add(ColumnAndValue<?> columnAndValue) {
-                phrases.add(columnAndValue.setPhrase);
-                columnAndValue.mapKey().ifPresent(mk -> parameters.put(mk, columnAndValue.value));
-            }
-            
-            SetValuesCollector merge(SetValuesCollector other) {
-                phrases.addAll(other.phrases);
-                parameters.putAll(other.parameters);
-                return this;
-            }
-
-            String getSetClause() {
-                return phrases.stream().collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
         }
     }
     
-    static class ColumnAndValue<T> {
+    static class SetValuesCollectorSupport {
+        List<String> phrases = new ArrayList<>();
+        Map<String, Object> parameters = new HashMap<>();
+        
+        void add(SetColumnAndValue<?> columnAndValue) {
+            phrases.add(columnAndValue.setPhrase);
+            columnAndValue.mapKey().ifPresent(mk -> parameters.put(mk, columnAndValue.value));
+        }
+        
+        SetValuesCollectorSupport merge(SetValuesCollectorSupport other) {
+            phrases.addAll(other.phrases);
+            parameters.putAll(other.parameters);
+            return this;
+        }
+
+        String getSetClause() {
+            return phrases.stream().collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+    }
+    
+    static class SetColumnAndValue<T> {
         private T value;
         private String setPhrase;
         private String mapKey;
         
-        private ColumnAndValue(SqlColumn<T> column, T value, int uniqueId) {
+        private SetColumnAndValue(SqlColumn<T> column, T value, int uniqueId) {
             this.value = value;
             mapKey = String.format("up%s", uniqueId); //$NON-NLS-1$
             String jdbcPlaceholder = column.getFormattedJdbcPlaceholder("parameters", mapKey); //$NON-NLS-1$
             setPhrase = String.format("%s = %s", column.name(), jdbcPlaceholder); //$NON-NLS-1$
         }
         
-        private ColumnAndValue(SqlColumn<T> column) {
+        private SetColumnAndValue(SqlColumn<T> column) {
             setPhrase = String.format("%s = null", column.name()); //$NON-NLS-1$
         }
         
@@ -150,12 +148,12 @@ public interface UpdateSupportBuilder {
             return Optional.ofNullable(mapKey);
         }
         
-        static <T> ColumnAndValue<T> of(SqlColumn<T> column, T value, int uniqueId) {
-            return new ColumnAndValue<>(column, value, uniqueId);
+        static <T> SetColumnAndValue<T> of(SqlColumn<T> column, T value, int uniqueId) {
+            return new SetColumnAndValue<>(column, value, uniqueId);
         }
 
-        static <T> ColumnAndValue<T> of(SqlColumn<T> column) {
-            return new ColumnAndValue<>(column);
+        static <T> SetColumnAndValue<T> of(SqlColumn<T> column) {
+            return new SetColumnAndValue<>(column);
         }
     }
 }

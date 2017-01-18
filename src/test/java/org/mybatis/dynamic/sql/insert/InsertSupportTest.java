@@ -28,8 +28,8 @@ import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.InsertSupport;
-import org.mybatis.dynamic.sql.insert.InsertSupportBuilder.InsertSupportBuildStep2.CollectorSupport;
-import org.mybatis.dynamic.sql.insert.InsertSupportBuilder.InsertSupportBuildStep2.ColumnMapping;
+import org.mybatis.dynamic.sql.insert.InsertSupportBuilder.InsertCollectorSupport;
+import org.mybatis.dynamic.sql.insert.InsertSupportBuilder.InsertColumnMapping;
 
 public class InsertSupportTest {
     private static final SqlTable foo = SqlTable.of("foo");
@@ -108,18 +108,18 @@ public class InsertSupportTest {
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        List<ColumnMapping> mappings = new ArrayList<>();
+        List<InsertColumnMapping> mappings = new ArrayList<>();
         
-        mappings.add(ColumnMapping.of(id, "id"));
-        mappings.add(ColumnMapping.of(firstName, "firstName"));
-        mappings.add(ColumnMapping.of(lastName, "lastName"));
-        mappings.add(ColumnMapping.of(occupation, "occupation"));
+        mappings.add(InsertColumnMapping.of(id, "id"));
+        mappings.add(InsertColumnMapping.of(firstName, "firstName"));
+        mappings.add(InsertColumnMapping.of(lastName, "lastName"));
+        mappings.add(InsertColumnMapping.of(occupation, "occupation"));
         
         InsertSupport<TestRecord> insertSupport = 
                 mappings.parallelStream().collect(Collector.of(
-                        CollectorSupport::new,
-                        CollectorSupport::add,
-                        CollectorSupport::merge,
+                        InsertCollectorSupport::new,
+                        InsertCollectorSupport::add,
+                        InsertCollectorSupport::merge,
                         c -> c.toInsertSupport(record, foo)));
                 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";

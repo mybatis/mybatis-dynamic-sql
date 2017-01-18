@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.where.WhereSupport;
-import org.mybatis.dynamic.sql.where.AbstractWhereBuilder.CollectorSupport;
+import org.mybatis.dynamic.sql.where.AbstractWhereBuilder.WhereCollectorSupport;
 import org.mybatis.dynamic.sql.where.AbstractWhereBuilder.CriterionWrapper;
 
 public class ParallelWhereBuilderTest {
@@ -68,10 +68,10 @@ public class ParallelWhereBuilderTest {
         criteria.add(wrapper);
         
         WhereSupport whereSupport = criteria.parallelStream().collect(Collector.of(
-                () -> new CollectorSupport(SqlColumn::name),
-                CollectorSupport::add,
-                CollectorSupport::merge,
-                CollectorSupport::getWhereSupport));
+                () -> new WhereCollectorSupport(SqlColumn::name),
+                WhereCollectorSupport::add,
+                WhereCollectorSupport::merge,
+                WhereCollectorSupport::getWhereSupport));
 
         String expected = "where column1 = {parameters.p1}"
                 + " and column2 = {parameters.p2}"
@@ -115,10 +115,10 @@ public class ParallelWhereBuilderTest {
         criteria.add(wrapper);
         
         WhereSupport whereSupport = criteria.parallelStream().collect(Collector.of(
-                () -> new CollectorSupport(SqlColumn::name),
-                CollectorSupport::add,
-                CollectorSupport::merge,
-                CollectorSupport::getWhereSupport));
+                () -> new WhereCollectorSupport(SqlColumn::name),
+                WhereCollectorSupport::add,
+                WhereCollectorSupport::merge,
+                WhereCollectorSupport::getWhereSupport));
 
         String expected = "where column1 = {parameters.p1}"
                 + " and (column2 = {parameters.p2} and column1 is null)"

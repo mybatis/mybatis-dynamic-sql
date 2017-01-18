@@ -58,13 +58,13 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     
     protected WhereSupport renderCriteria(Function<SqlColumn<?>, String> nameFunction) {
         return criteria.stream().collect(Collector.of(
-                () -> new CollectorSupport(nameFunction),
-                CollectorSupport::add,
-                CollectorSupport::merge,
-                CollectorSupport::getWhereSupport));
+                () -> new WhereCollectorSupport(nameFunction),
+                WhereCollectorSupport::add,
+                WhereCollectorSupport::merge,
+                WhereCollectorSupport::getWhereSupport));
     }
     
-    public abstract T getThis();
+    protected abstract T getThis();
     
     static class CriterionWrapper {
         SqlCriterion<?> criterion;
@@ -78,12 +78,12 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         }
     }
     
-    static class CollectorSupport {
+    static class WhereCollectorSupport {
         Map<String, Object> parameters = new HashMap<>();
         List<String> phrases = new ArrayList<>();
         Function<SqlColumn<?>, String> nameFunction;
         
-        CollectorSupport(Function<SqlColumn<?>, String> nameFunction) {
+        WhereCollectorSupport(Function<SqlColumn<?>, String> nameFunction) {
             this.nameFunction = nameFunction;
         }
         
@@ -94,7 +94,7 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
             parameters.putAll(rc.fragmentParameters());
         }
         
-        CollectorSupport merge(CollectorSupport other) {
+        WhereCollectorSupport merge(WhereCollectorSupport other) {
             parameters.putAll(other.parameters);
             phrases.addAll(other.phrases);
             return this;

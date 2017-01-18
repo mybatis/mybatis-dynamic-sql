@@ -25,58 +25,56 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.where.AbstractWhereBuilder;
 import org.mybatis.dynamic.sql.where.WhereSupport;
 
-public interface SelectSupportBuilder {
+public class SelectSupportBuilder {
 
-    static SelectSupportBuildStep1 select(SqlColumn<?>...columns) {
-        return new SelectSupportBuildStep1(columns);
+    private SelectSupport.Builder selectSupportBuilder = new SelectSupport.Builder();
+
+    private SelectSupportBuilder() {
+        selectSupportBuilder.withColumnList("count(*)"); //$NON-NLS-1$
     }
     
-    static SelectSupportBuildStep1 selectDistinct(SqlColumn<?>...columns) {
-        SelectSupportBuildStep1 buildStep = new SelectSupportBuildStep1(columns);
+    private SelectSupportBuilder(SqlColumn<?>...columns) {
+        selectSupportBuilder.withColumnList(calculateColumnList(columns));
+    }
+    
+    public SelectSupportBuildStep2 from(SqlTable table) {
+        selectSupportBuilder.withTable(table);
+        return new SelectSupportBuildStep2(selectSupportBuilder);
+    }
+
+    private void makeDistinct() {
+        selectSupportBuilder.isDistinct();
+    }
+    
+    private String calculateColumnList(SqlColumn<?>...columns) {
+        return Arrays.stream(columns)
+                .map(SqlColumn::nameIncludingTableAndColumnAlias)
+                .collect(Collectors.joining(", ")); //$NON-NLS-1$
+    }
+
+    public static SelectSupportBuilder select(SqlColumn<?>...columns) {
+        return new SelectSupportBuilder(columns);
+    }
+    
+    public static SelectSupportBuilder selectDistinct(SqlColumn<?>...columns) {
+        SelectSupportBuilder buildStep = new SelectSupportBuilder(columns);
         buildStep.makeDistinct();
         return buildStep;
     }
     
-    static SelectSupportBuildStep1 selectCount() {
-        return new SelectSupportBuildStep1();
+    public static SelectSupportBuilder selectCount() {
+        return new SelectSupportBuilder();
     }
     
-    static class SelectSupportBuildStep1 {
-        private SelectSupport.Builder selectSupportBuilder = new SelectSupport.Builder();
-
-        public SelectSupportBuildStep1() {
-            selectSupportBuilder.withColumnList("count(*)"); //$NON-NLS-1$
-        }
-        
-        public SelectSupportBuildStep1(SqlColumn<?>...columns) {
-            selectSupportBuilder.withColumnList(calculateColumnList(columns));
-        }
-        
-        public SelectSupportBuildStep2 from(SqlTable table) {
-            selectSupportBuilder.withTable(table);
-            return new SelectSupportBuildStep2(selectSupportBuilder);
-        }
-
-        private void makeDistinct() {
-            selectSupportBuilder.isDistinct();
-        }
-        
-        private String calculateColumnList(SqlColumn<?>...columns) {
-            return Arrays.stream(columns)
-                    .map(SqlColumn::nameIncludingTableAndColumnAlias)
-                    .collect(Collectors.joining(", ")); //$NON-NLS-1$
-        }
-    }
-    
-    static class SelectSupportBuildStep2 {
+    public static class SelectSupportBuildStep2 {
         private SelectSupport.Builder selectSupportBuilder;
         
-        public SelectSupportBuildStep2(SelectSupport.Builder selectSupportBuilder) {
+        private SelectSupportBuildStep2(SelectSupport.Builder selectSupportBuilder) {
             this.selectSupportBuilder = selectSupportBuilder;
         }
         
-        public <T> SelectSupportBuildStep3 where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            return new SelectSupportBuildStep3(selectSupportBuilder, column, condition, subCriteria);
+        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+            return new SelectSupportWhereBuilder(selectSupportBuilder, column, condition, subCriteria);
         }
 
         public SelectSupportBuildStep4 orderBy(SqlColumn<?>...columns) {
@@ -93,10 +91,10 @@ public interface SelectSupportBuilder {
         }
     }
     
-    static class SelectSupportBuildStep3 extends AbstractWhereBuilder<SelectSupportBuildStep3> {
+    public static class SelectSupportWhereBuilder extends AbstractWhereBuilder<SelectSupportWhereBuilder> {
         private SelectSupport.Builder selectSupportBuilder;
         
-        public <T> SelectSupportBuildStep3(SelectSupport.Builder selectSupportBuilder, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        private <T> SelectSupportWhereBuilder(SelectSupport.Builder selectSupportBuilder, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
             this.selectSupportBuilder = selectSupportBuilder;
         }
@@ -123,15 +121,15 @@ public interface SelectSupportBuilder {
         }
 
         @Override
-        public SelectSupportBuildStep3 getThis() {
+        protected SelectSupportWhereBuilder getThis() {
             return this;
         }
     }
     
-    static class SelectSupportBuildStep4 {
+    public static class SelectSupportBuildStep4 {
         private SelectSupport.Builder selectSupportBuilder;
 
-        public SelectSupportBuildStep4(SelectSupport.Builder selectSupportBuilder) {
+        private SelectSupportBuildStep4(SelectSupport.Builder selectSupportBuilder) {
             this.selectSupportBuilder = selectSupportBuilder;
         }
         

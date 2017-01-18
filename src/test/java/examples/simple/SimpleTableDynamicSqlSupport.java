@@ -31,7 +31,7 @@ import org.mybatis.dynamic.sql.insert.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportBuildStep2;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep1;
+import org.mybatis.dynamic.sql.update.UpdateSupportBuilder;
 
 public interface SimpleTableDynamicSqlSupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
@@ -88,7 +88,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .build();
     }
 
-    static UpdateSupportBuildStep1 updateByExample(SimpleTableRecord record) {
+    static UpdateSupportBuilder updateByExample(SimpleTableRecord record) {
         return update(simpleTable)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
@@ -98,7 +98,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .set(occupation).equalTo(record.getOccupation());
     }
 
-    static UpdateSupportBuildStep1 updateByExampleSelective(SimpleTableRecord record) {
+    static UpdateSupportBuilder updateByExampleSelective(SimpleTableRecord record) {
         return update(simpleTable)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())

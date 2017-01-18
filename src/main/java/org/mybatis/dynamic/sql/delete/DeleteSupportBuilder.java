@@ -22,28 +22,26 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.where.AbstractWhereBuilder;
 import org.mybatis.dynamic.sql.where.WhereSupport;
 
-public interface DeleteSupportBuilder {
+public class DeleteSupportBuilder {
 
-    static DeleteSupportBuildStep1 deleteFrom(SqlTable table) {
-        return new DeleteSupportBuildStep1(table);
+    private SqlTable table;
+    
+    private DeleteSupportBuilder(SqlTable table) {
+        this.table = table;
     }
     
-    static class DeleteSupportBuildStep1 {
-        private SqlTable table;
-        
-        public DeleteSupportBuildStep1(SqlTable table) {
-            this.table = table;
-        }
-        
-        public <T> DeleteSupportBuildStep2 where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            return new DeleteSupportBuildStep2(table, column, condition, subCriteria);
-        }
+    public <T> DeleteSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        return new DeleteSupportWhereBuilder(table, column, condition, subCriteria);
     }
     
-    static class DeleteSupportBuildStep2 extends AbstractWhereBuilder<DeleteSupportBuildStep2> {
+    public static DeleteSupportBuilder deleteFrom(SqlTable table) {
+        return new DeleteSupportBuilder(table);
+    }
+    
+    public static class DeleteSupportWhereBuilder extends AbstractWhereBuilder<DeleteSupportWhereBuilder> {
         private SqlTable table;
         
-        public <T> DeleteSupportBuildStep2(SqlTable table, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        private <T> DeleteSupportWhereBuilder(SqlTable table, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
             this.table = table;
         }
@@ -54,7 +52,7 @@ public interface DeleteSupportBuilder {
         }
         
         @Override
-        public DeleteSupportBuildStep2 getThis() {
+        protected DeleteSupportWhereBuilder getThis() {
             return this;
         }
     }

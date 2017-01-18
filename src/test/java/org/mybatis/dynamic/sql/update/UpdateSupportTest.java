@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep2.SetValuesCollector;
+import org.mybatis.dynamic.sql.update.UpdateSupportBuilder.SetValuesCollectorSupport;
 
 public class UpdateSupportTest {
     private static final SqlTable foo = SqlTable.of("foo");
@@ -88,15 +88,15 @@ public class UpdateSupportTest {
     @Test
     public void testParallelStream() {
         AtomicInteger sequence = new AtomicInteger(1);
-        List<ColumnAndValue<?>> setColumns = new ArrayList<>();
-        setColumns.add(ColumnAndValue.of(occupation));
-        setColumns.add(ColumnAndValue.of(firstName, "fred", sequence.getAndIncrement()));
-        setColumns.add(ColumnAndValue.of(lastName, "jones", sequence.getAndIncrement()));
+        List<SetColumnAndValue<?>> setColumns = new ArrayList<>();
+        setColumns.add(SetColumnAndValue.of(occupation));
+        setColumns.add(SetColumnAndValue.of(firstName, "fred", sequence.getAndIncrement()));
+        setColumns.add(SetColumnAndValue.of(lastName, "jones", sequence.getAndIncrement()));
         
-        SetValuesCollector collector = setColumns.parallelStream().collect(Collector.of(
-                SetValuesCollector::new,
-                SetValuesCollector::add,
-                SetValuesCollector::merge));
+        SetValuesCollectorSupport collector = setColumns.parallelStream().collect(Collector.of(
+                SetValuesCollectorSupport::new,
+                SetValuesCollectorSupport::add,
+                SetValuesCollectorSupport::merge));
         
         assertThat(collector.getSetClause(), is("set occupation = null, firstName = {parameters.up1}, lastName = {parameters.up2}"));
         assertThat(collector.parameters.size(), is(2));

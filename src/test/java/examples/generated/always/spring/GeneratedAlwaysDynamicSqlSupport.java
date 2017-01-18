@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportBuildStep2;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupportBuilder.UpdateSupportBuildStep1;
+import org.mybatis.dynamic.sql.update.UpdateSupportBuilder;
 
 public interface GeneratedAlwaysDynamicSqlSupport {
     SqlTable generatedAlways = SqlTable.of("GeneratedAlways").withAlias("a");
@@ -70,14 +70,14 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .build();
     }
 
-    static UpdateSupportBuildStep1 updateByExample(GeneratedAlwaysRecord record) {
+    static UpdateSupportBuilder updateByExample(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName());
     }
 
-    static UpdateSupportBuildStep1 updateByExampleSelective(GeneratedAlwaysRecord record) {
+    static UpdateSupportBuilder updateByExampleSelective(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())
