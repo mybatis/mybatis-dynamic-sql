@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.insert;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -45,21 +46,15 @@ public interface InsertSupportBuilder {
     static class InsertSupportBuildStep2<T> {
         private T record;
         private SqlTable table;
-        private List<ColumnMapping<?>> columnMappings = new ArrayList<>();
+        private List<ColumnMapping> columnMappings = new ArrayList<>();
 
         public InsertSupportBuildStep2(T record, SqlTable table) {
             this.record = record;
             this.table = table;
         }
         
-        public <F> InsertSupportBuildStep2<T> withColumnMapping(SqlColumn<F> column, String property, F value) {
-            columnMappings.add(ColumnMapping.of(column, property, value));
-            return this;
-        }
-        
-        public <F> InsertSupportBuildStep2<T> withColumnMapping(SqlColumn<F> column, String property, Optional<F> value) {
-            value.ifPresent(v -> columnMappings.add(ColumnMapping.of(column, property, v)));
-            return this;
+        public <F> InsertSupportBuildStep2Finisher<F> map(SqlColumn<F> column) {
+            return new InsertSupportBuildStep2Finisher<>(column);
         }
         
         public InsertSupport<T> build() {
@@ -70,21 +65,46 @@ public interface InsertSupportBuilder {
                     c -> c.toInsertSupport(record, table)));
         }
         
+        public class InsertSupportBuildStep2Finisher<F> {
+            private SqlColumn<F> column;
+            
+            public InsertSupportBuildStep2Finisher(SqlColumn<F> column) {
+                this.column = column;
+            }
+            
+            public InsertSupportBuildStep2<T> toProperty(String property) {
+                columnMappings.add(ColumnMapping.of(column, property));
+                return InsertSupportBuildStep2.this;
+            }
+            
+            public InsertSupportBuildStep2<T> toPropertyIfNotNull(String property, Supplier<F> valueSupplier) {
+                Optional.ofNullable(valueSupplier.get()).ifPresent(v -> columnMappings.add(ColumnMapping.of(column, property)));
+                return InsertSupportBuildStep2.this;
+            }
+            
+            public InsertSupportBuildStep2<T> toNull() {
+                columnMappings.add(ColumnMapping.of(column));
+                return InsertSupportBuildStep2.this;
+            }
+        }
+        
         /**
-         * A little triplet to hold the column mapping.  Only intended for use in this builder. 
+         * A little pair to hold the column mapping.  Only intended for use in this builder. 
          *  
          * @param <F> the column type of this mapping
          */
-        static class ColumnMapping<F> {
-            SqlColumn<F> column;
+        static class ColumnMapping {
+            SqlColumn<?> column;
             String property;
-            F value;
             
-            static <F> ColumnMapping<F> of(SqlColumn<F> column, String property, F value) {
-                ColumnMapping<F> mapping = new ColumnMapping<>();
+            static ColumnMapping of(SqlColumn<?> column) {
+                return of(column, null);
+            }
+            
+            static ColumnMapping of(SqlColumn<?> column, String property) {
+                ColumnMapping mapping = new ColumnMapping();
                 mapping.column = column;
                 mapping.property = property;
-                mapping.value = value;
                 return mapping;
             }
         }
@@ -93,9 +113,13 @@ public interface InsertSupportBuilder {
             List<String> columnPhrases = new ArrayList<>();
             List<String> valuePhrases = new ArrayList<>();
             
-            void add(ColumnMapping<?> mapping) {
+            void add(ColumnMapping mapping) {
                 columnPhrases.add(mapping.column.name());
-                valuePhrases.add(mapping.column.getFormattedJdbcPlaceholder("record", mapping.property)); //$NON-NLS-1$
+                if (mapping.property == null) {
+                    valuePhrases.add("null"); //$NON-NLS-1$
+                } else {
+                    valuePhrases.add(mapping.column.getFormattedJdbcPlaceholder("record", mapping.property)); //$NON-NLS-1$
+                }
             }
             
             CollectorSupport merge(CollectorSupport other) {

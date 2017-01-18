@@ -23,7 +23,6 @@ import static org.mybatis.dynamic.sql.update.UpdateSupportBuilder.update;
 
 import java.sql.JDBCType;
 import java.util.Date;
-import java.util.Optional;
 
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -46,24 +45,24 @@ public interface SimpleTableDynamicSqlSupport {
     static InsertSupport<SimpleTableRecord> buildFullInsertSupport(SimpleTableRecord record) {
         return insert(record)
                 .into(simpleTable)
-                .withColumnMapping(id, "id", record.getId())
-                .withColumnMapping(firstName, "firstName", record.getFirstName())
-                .withColumnMapping(lastName, "lastName", record.getLastName())
-                .withColumnMapping(birthDate, "birthDate", record.getBirthDate())
-                .withColumnMapping(employed, "employed", record.getEmployed())
-                .withColumnMapping(occupation, "occupation", record.getOccupation())
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName")
+                .map(birthDate).toProperty("birthDate")
+                .map(employed).toProperty("employed")
+                .map(occupation).toProperty("occupation")
                 .build();
     }
 
     static InsertSupport<SimpleTableRecord> buildSelectiveInsertSupport(SimpleTableRecord record) {
         return insert(record)
                 .into(simpleTable)
-                .withColumnMapping(id, "id", Optional.ofNullable(record.getId()))
-                .withColumnMapping(firstName, "firstName", Optional.ofNullable(record.getFirstName()))
-                .withColumnMapping(lastName, "lastName", Optional.ofNullable(record.getLastName()))
-                .withColumnMapping(birthDate, "birthDate", Optional.ofNullable(record.getBirthDate()))
-                .withColumnMapping(employed, "employed", Optional.ofNullable(record.getEmployed()))
-                .withColumnMapping(occupation, "occupation", Optional.ofNullable(record.getOccupation()))
+                .map(id).toPropertyIfNotNull("id", record::getId)
+                .map(firstName).toPropertyIfNotNull("firstName", record::getFirstName)
+                .map(lastName).toPropertyIfNotNull("lastName", record::getLastName)
+                .map(birthDate).toPropertyIfNotNull("birthDate", record::getBirthDate)
+                .map(employed).toPropertyIfNotNull("employed", record::getEmployed)
+                .map(occupation).toPropertyIfNotNull("occupation", record::getOccupation)
                 .build();
     }
     

@@ -20,7 +20,6 @@ import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.insert;
 import static org.mybatis.dynamic.sql.update.UpdateSupportBuilder.update;
 
 import java.sql.JDBCType;
-import java.util.Optional;
 
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -38,18 +37,18 @@ public interface GeneratedAlwaysDynamicSqlSupport {
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSupport(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
-                .withColumnMapping(id, "id", record.getId())
-                .withColumnMapping(firstName, "firstName", record.getFirstName())
-                .withColumnMapping(lastName, "lastName", record.getLastName())
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName")
                 .build();
     }
 
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
-                .withColumnMapping(id, "id", Optional.ofNullable(record.getId()))
-                .withColumnMapping(firstName, "firstName", Optional.ofNullable(record.getFirstName()))
-                .withColumnMapping(lastName, "lastName", Optional.ofNullable(record.getLastName()))
+                .map(id).toPropertyIfNotNull("id", record::getId)
+                .map(firstName).toPropertyIfNotNull("firstName", record::getFirstName)
+                .map(lastName).toPropertyIfNotNull("lastName", record::getLastName)
                 .build();
     }
     

@@ -521,10 +521,10 @@ public class AnimalDataTest {
             
             InsertSupport<AnimalData> insertSupport = insert(record)
                     .into(animalData)
-                    .withColumnMapping(id, "id", record.getId())
-                    .withColumnMapping(animalName, "animalName", record.getAnimalName())
-                    .withColumnMapping(bodyWeight, "bodyWeight", record.getBodyWeight())
-                    .withColumnMapping(brainWeight, "brainWeight", record.getBrainWeight())
+                    .map(id).toProperty("id")
+                    .map(animalName).toProperty("animalName")
+                    .map(bodyWeight).toProperty("bodyWeight")
+                    .map(brainWeight).toProperty("brainWeight")
                     .build();
             
             int rows = mapper.insert(insertSupport);

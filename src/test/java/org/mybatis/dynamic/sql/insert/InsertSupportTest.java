@@ -22,7 +22,6 @@ import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.*;
 import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collector;
 
 import org.junit.Test;
@@ -48,16 +47,36 @@ public class InsertSupportTest {
         
         InsertSupport<TestRecord> insertSupport = insert(record)
                 .into(foo)
-                .withColumnMapping(id, "id", record.getId())
-                .withColumnMapping(firstName, "firstName", record.getFirstName())
-                .withColumnMapping(lastName, "lastName", record.getLastName())
-                .withColumnMapping(occupation, "occupation", record.getOccupation())
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName")
+                .map(occupation).toProperty("occupation")
                 .build();
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
 
         String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+    }
+
+    @Test
+    public void testInsertSupportBuilderWithNulls() {
+
+        TestRecord record = new TestRecord();
+        
+        InsertSupport<TestRecord> insertSupport = insert(record)
+                .into(foo)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName")
+                .map(occupation).toNull()
+                .build();
+
+        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
+
+        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, null)";
         assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
     }
 
@@ -69,10 +88,10 @@ public class InsertSupportTest {
         
         InsertSupport<TestRecord> insertSupport = insert(record)
                 .into(foo)
-                .withColumnMapping(id, "id", Optional.ofNullable(record.getId()))
-                .withColumnMapping(firstName, "firstName", Optional.ofNullable(record.getFirstName()))
-                .withColumnMapping(lastName, "lastName", Optional.ofNullable(record.getLastName()))
-                .withColumnMapping(occupation, "occupation", Optional.ofNullable(record.getOccupation()))
+                .map(id).toPropertyIfNotNull("id", record::getId)
+                .map(firstName).toPropertyIfNotNull("firstName", record::getFirstName)
+                .map(lastName).toPropertyIfNotNull("lastName", record::getLastName)
+                .map(occupation).toPropertyIfNotNull("occupation", record::getOccupation)
                 .build();
 
         String expectedColumnsPhrase = "(last_name, occupation)";
@@ -89,12 +108,12 @@ public class InsertSupportTest {
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        List<ColumnMapping<?>> mappings = new ArrayList<>();
+        List<ColumnMapping> mappings = new ArrayList<>();
         
-        mappings.add(ColumnMapping.of(id, "id", record.getId()));
-        mappings.add(ColumnMapping.of(firstName, "firstName", record.getFirstName()));
-        mappings.add(ColumnMapping.of(lastName, "lastName", record.getLastName()));
-        mappings.add(ColumnMapping.of(occupation, "occupation", record.getOccupation()));
+        mappings.add(ColumnMapping.of(id, "id"));
+        mappings.add(ColumnMapping.of(firstName, "firstName"));
+        mappings.add(ColumnMapping.of(lastName, "lastName"));
+        mappings.add(ColumnMapping.of(occupation, "occupation"));
         
         InsertSupport<TestRecord> insertSupport = 
                 mappings.parallelStream().collect(Collector.of(
@@ -119,10 +138,10 @@ public class InsertSupportTest {
         
         InsertSupport<TestRecord> insertSupport = insert(record)
                 .into(foo)
-                .withColumnMapping(id, "id", record.getId())
-                .withColumnMapping(firstName, "firstName", record.getFirstName())
-                .withColumnMapping(lastName, "lastName", record.getLastName())
-                .withColumnMapping(occupation, "occupation", record.getOccupation())
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName")
+                .map(occupation).toProperty("occupation")
                 .build();
 
         String expectedStatement = "insert into foo "
