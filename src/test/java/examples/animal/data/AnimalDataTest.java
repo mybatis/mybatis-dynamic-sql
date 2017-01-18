@@ -535,6 +535,32 @@ public class AnimalDataTest {
     }
 
     @Test
+    public void testInsertNull() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            AnimalData record = new AnimalData();
+            record.setId(100);
+            record.setAnimalName("Old Shep");
+            record.setBodyWeight(22.5);
+            record.setBrainWeight(1.2);
+            
+            InsertSupport<AnimalData> insertSupport = insert(record)
+                    .into(animalData)
+                    .map(id).toProperty("id")
+                    .map(animalName).toNull()
+                    .map(bodyWeight).toProperty("bodyWeight")
+                    .map(brainWeight).toProperty("brainWeight")
+                    .build();
+            
+            int rows = mapper.insert(insertSupport);
+            assertThat(rows, is(1));
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
     public void testOrderByAndDistinct() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {

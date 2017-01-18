@@ -95,16 +95,19 @@ public interface InsertSupportBuilder {
          */
         static class ColumnMapping {
             SqlColumn<?> column;
-            String property;
+            String valuePhrase;
             
             static ColumnMapping of(SqlColumn<?> column) {
-                return of(column, null);
+                ColumnMapping mapping = new ColumnMapping();
+                mapping.column = column;
+                mapping.valuePhrase = "null"; //$NON-NLS-1$
+                return mapping;
             }
             
             static ColumnMapping of(SqlColumn<?> column, String property) {
                 ColumnMapping mapping = new ColumnMapping();
                 mapping.column = column;
-                mapping.property = property;
+                mapping.valuePhrase = column.getFormattedJdbcPlaceholder("record", property); //$NON-NLS-1$
                 return mapping;
             }
         }
@@ -115,11 +118,7 @@ public interface InsertSupportBuilder {
             
             void add(ColumnMapping mapping) {
                 columnPhrases.add(mapping.column.name());
-                if (mapping.property == null) {
-                    valuePhrases.add("null"); //$NON-NLS-1$
-                } else {
-                    valuePhrases.add(mapping.column.getFormattedJdbcPlaceholder("record", mapping.property)); //$NON-NLS-1$
-                }
+                valuePhrases.add(mapping.valuePhrase);
             }
             
             CollectorSupport merge(CollectorSupport other) {

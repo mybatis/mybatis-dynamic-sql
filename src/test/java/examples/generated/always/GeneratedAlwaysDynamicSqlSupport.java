@@ -62,8 +62,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
 
     static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
-                .set(firstName).equalToOrIgnore(record.getFirstName())
-                .set(lastName).equalToOrIgnore(record.getLastName())
+                .set(firstName).equalToWhenPresent(record.getFirstName())
+                .set(lastName).equalToWhenPresent(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
                 .build();
     }
@@ -77,8 +77,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
 
     static UpdateSupportBuildStep1 updateByExampleSelective(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
-                .set(id).equalToOrIgnore(record.getId())
-                .set(firstName).equalToOrIgnore(record.getFirstName())
-                .set(lastName).equalToOrIgnore(record.getLastName());
+                .set(id).equalToWhenPresent(record.getId())
+                .set(firstName).equalToWhenPresent(record.getFirstName())
+                .set(lastName).equalToWhenPresent(record.getLastName());
     }
 }

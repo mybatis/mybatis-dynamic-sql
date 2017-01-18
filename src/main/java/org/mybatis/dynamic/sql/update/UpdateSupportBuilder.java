@@ -71,7 +71,7 @@ public interface UpdateSupportBuilder {
                 return UpdateSupportBuildStep1.this;
             }
 
-            public UpdateSupportBuildStep1 equalToOrIgnore(T value) {
+            public UpdateSupportBuildStep1 equalToWhenPresent(T value) {
                 Optional.ofNullable(value).ifPresent(v -> columnsAndValues.add(ColumnAndValue.of(column, v, id++)));
                 return UpdateSupportBuildStep1.this;
             }

@@ -79,11 +79,11 @@ public interface SimpleTableDynamicSqlSupport {
 
     static UpdateSupport buildSelectiveUpdateByPrimaryKeySupport(SimpleTableRecord record) {
         return update(simpleTable)
-                .set(firstName).equalToOrIgnore(record.getFirstName())
-                .set(lastName).equalToOrIgnore(record.getLastName())
-                .set(birthDate).equalToOrIgnore(record.getBirthDate())
-                .set(employed).equalToOrIgnore(record.getEmployed())
-                .set(occupation).equalToOrIgnore(record.getOccupation())
+                .set(firstName).equalToWhenPresent(record.getFirstName())
+                .set(lastName).equalToWhenPresent(record.getLastName())
+                .set(birthDate).equalToWhenPresent(record.getBirthDate())
+                .set(employed).equalToWhenPresent(record.getEmployed())
+                .set(occupation).equalToWhenPresent(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
                 .build();
     }
@@ -100,12 +100,12 @@ public interface SimpleTableDynamicSqlSupport {
 
     static UpdateSupportBuildStep1 updateByExampleSelective(SimpleTableRecord record) {
         return update(simpleTable)
-                .set(id).equalToOrIgnore(record.getId())
-                .set(firstName).equalToOrIgnore(record.getFirstName())
-                .set(lastName).equalToOrIgnore(record.getLastName())
-                .set(birthDate).equalToOrIgnore(record.getBirthDate())
-                .set(employed).equalToOrIgnore(record.getEmployed())
-                .set(occupation).equalToOrIgnore(record.getOccupation());
+                .set(id).equalToWhenPresent(record.getId())
+                .set(firstName).equalToWhenPresent(record.getFirstName())
+                .set(lastName).equalToWhenPresent(record.getLastName())
+                .set(birthDate).equalToWhenPresent(record.getBirthDate())
+                .set(employed).equalToWhenPresent(record.getEmployed())
+                .set(occupation).equalToWhenPresent(record.getOccupation());
     }
 
     static DeleteSupport buildDeleteByPrimaryKeySupport(Integer id_) {
