@@ -48,9 +48,9 @@ public interface GeneratedAlwaysDynamicSqlSupport {
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
-                .map(id).toPropertyIfNotNull("id", record::getId)
-                .map(firstName).toPropertyIfNotNull("firstName", record::getFirstName)
-                .map(lastName).toPropertyIfNotNull("lastName", record::getLastName)
+                .map(id).toPropertyWhenPresent("id", record::getId)
+                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
+                .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
                 .build();
     }
     

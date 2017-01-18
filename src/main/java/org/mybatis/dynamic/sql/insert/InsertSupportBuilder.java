@@ -77,7 +77,7 @@ public interface InsertSupportBuilder {
                 return InsertSupportBuildStep2.this;
             }
             
-            public InsertSupportBuildStep2<T> toPropertyIfNotNull(String property, Supplier<F> valueSupplier) {
+            public InsertSupportBuildStep2<T> toPropertyWhenPresent(String property, Supplier<F> valueSupplier) {
                 Optional.ofNullable(valueSupplier.get()).ifPresent(v -> columnMappings.add(ColumnMapping.of(column, property)));
                 return InsertSupportBuildStep2.this;
             }

@@ -57,12 +57,12 @@ public interface SimpleTableDynamicSqlSupport {
     static InsertSupport<SimpleTableRecord> buildSelectiveInsertSupport(SimpleTableRecord record) {
         return insert(record)
                 .into(simpleTable)
-                .map(id).toPropertyIfNotNull("id", record::getId)
-                .map(firstName).toPropertyIfNotNull("firstName", record::getFirstName)
-                .map(lastName).toPropertyIfNotNull("lastName", record::getLastName)
-                .map(birthDate).toPropertyIfNotNull("birthDate", record::getBirthDate)
-                .map(employed).toPropertyIfNotNull("employed", record::getEmployed)
-                .map(occupation).toPropertyIfNotNull("occupation", record::getOccupation)
+                .map(id).toPropertyWhenPresent("id", record::getId)
+                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
+                .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
+                .map(birthDate).toPropertyWhenPresent("birthDate", record::getBirthDate)
+                .map(employed).toPropertyWhenPresent("employed", record::getEmployed)
+                .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
                 .build();
     }
     
