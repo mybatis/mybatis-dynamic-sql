@@ -8,7 +8,8 @@ This library is a framework for creating dynamic SQL statements.
 
 The library will generate full DELETE, INSERT, SELECT, and UPDATE statements, or suitable statement fragments.
 The most common use case is to generate statements, and a matching set of parameters, that can be directly used
-by MyBatis.  
+by MyBatis.  The library will also generate statements and parameter objects that are compatible with Spring JDBC
+templates.
 
 The library will generate these types of statements:
 
@@ -78,6 +79,7 @@ create table SimpleTable (
    first_name varchar(30) not null,
    last_name varchar(30) not null,
    birth_date date not null, 
+   employed varchar(3) not null,
    occupation varchar(30) null,
    primary key(id)
 );
@@ -103,12 +105,13 @@ import java.util.Date;
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
 
-public interface SimpleTableQBESupport {
+public interface SimpleTableDynamicSqlSupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
-    MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(simpleTable);
+    MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
     MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
     MyBatis3Column<String> lastName = MyBatis3Column.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
     MyBatis3Column<Date> birthDate = MyBatis3Column.of("birth_date", JDBCType.DATE).inTable(simpleTable);
+    MyBatis3Column<Boolean> employed = MyBatis3Column.of("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler").inTable(simpleTable);
     MyBatis3Column<String> occupation = MyBatis3Column.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
 }
 ```
@@ -126,27 +129,31 @@ For example, an annotated mapper might look like this:
 package examples.simple;
 
 import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.mybatis.dynamic.sql.delete.DeleteSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
-import org.mybatis.dynamic.sql.where.WhereSupport;
 
 public class SimpleTableAnnotatedMapper {
     
     @Select({
-        "select ${distinct} a.id, a.first_name, a.last_name, a.birth_date, a.occupation",
-        "from simpletable a",
-        "${whereClause}",
-        "${orderByClause}"
+        "${fullSelectStatement}"
     })
-    @ResultMap("SimpleTableResult")
-    List<SimpleTableRecord> selectByExample(SelectSupport selectSupport);
+    @Results(id="SimpleTableResult", value= {
+            @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
+            @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
+            @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR),
+            @Result(column="birth_date", property="birthDate", jdbcType=JdbcType.DATE),
+            @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR, typeHandler=YesNoTypeHandler.class),
+            @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
+    })
+    List<SimpleTableRecord> selectMany(SelectSupport selectSupport);
 
     @Delete({
-        "delete from simpletable",
-        "${whereClause}"
+        "${fullDeleteStatement}"
     })
-    int deleteByExample(WhereSupport whereSupport);
+    int delete(DeleteSupport deleteSupport);
 }
 ```
 An XML mapper might look like this:
@@ -161,34 +168,29 @@ An XML mapper might look like this:
     <result column="first_name" jdbcType="VARCHAR" property="firstName" />
     <result column="last_name" jdbcType="VARCHAR" property="lastName" />
     <result column="birth_date" jdbcType="DATE" property="birthDate" />
+    <result column="employed" jdbcType="VARCHAR" property="employed" typeHandler="examples.simple.YesNoTypeHandler" />
     <result column="occupation" jdbcType="VARCHAR" property="occupation" />
   </resultMap>
 
-  <select id="selectByExample" resultMap="SimpleTableResult">
-    select ${distinct} a.id, a.first_name, a.last_name, a.birth_date, a.occupation
-    from SimpleTable a
-    ${whereClause}
-    ${orderByClause}
+  <select id="selectMany" resultMap="SimpleTableResult">
+    ${fullSelectStatement}
   </select>
 
-  <delete id="deleteByExample">
-    delete from SimpleTable
-    ${whereClause}
-  </delete>  
+  <delete id="delete">
+    ${fullDeleteStatement}
+  </delete>
 </mapper>
 ```
 
-Notice in both examples that the select uses a table alias and the delete does not.  If you specify an alias
-for columns, it will only be used for select statements.
-
 ### Third - Create where clauses for your queries
 Where clauses are created by combining your column definition (from the first step above) with a condition for the column.  This library includes a large number of type safe conditions.
-All conditions can be accessed through expressive static methods in the ```org.mybatis.qbe.sql.SqlConditions``` interface.
+All conditions can be accessed through expressive static methods in the ```org.mybatis.dynamic.sql.SqlConditions``` interface.
 
 For example, a very simple condition can be defined like this:
 
 ```java
-        SelectSupport selectSupport = selectSupport()
+        SelectSupport selectSupport = selectCount()
+                .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build();
 ```
@@ -196,7 +198,8 @@ For example, a very simple condition can be defined like this:
 Or this:
 
 ```java
-        SelectSupport selectSupport = selectSupport()
+        SelectSupport selectSupport = selectCount()
+                .from(simpleTable)
                 .where(id, isNull())
                 .build();
 ```
@@ -204,7 +207,8 @@ Or this:
 The "between" condition is also expressive:
 
 ```java
-        SelectSupport selectSupport = selectSupport()
+        SelectSupport selectSupport = selectCount()
+                .from(simpleTable)
                 .where(id, isBetween(1).and(4))
                 .build();
 ```
@@ -212,7 +216,8 @@ The "between" condition is also expressive:
 More complex expressions can be built using the "and" and "or" conditions as follows:
 
 ```java
-        SelectSupport selectSupport = selectSupport()
+        SelectSupport selectSupport = selectCount()
+                .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
                 .build();
@@ -222,11 +227,11 @@ All of these statements rely on a set of expressive static methods.  It is typic
 
 ```java
 // import all column definitions for your table
-import static examples.simple.SimpleTableQBESupport.*;
+import static examples.simple.SimpleTableDynamicSqlSupport.*;
 
-// import all conditions and the where support builder
-import static org.mybatis.qbe.sql.SqlConditions.*;
-import static org.mybatis.qbe.sql.select.SelectSupportBuilder.selectSupport;
+// import all conditions and the select support builder
+import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.select;
 ```
 
 ### Fourth - Use your where clauses
@@ -240,12 +245,12 @@ an example from ```examples.simple.SimpleTableXmlMapperTest```:
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            SelectSupport selectSupport = selectSupport()
+            SelectSupport selectSupport = selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build();
             
-            List<SimpleTableRecord> rows = mapper.selectByExample(selectSupport);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
             assertThat(rows.size(), is(3));
         } finally {
