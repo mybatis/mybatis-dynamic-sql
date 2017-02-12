@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
-import org.mybatis.dynamic.sql.where.render.RenderedCriterion;
+import org.mybatis.dynamic.sql.where.render.FragmentAndParameters;
 
 public class CriterionRendererTest {
 
@@ -43,9 +43,9 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::name);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
+        FragmentAndParameters fp = renderer.render();
+        assertThat(fp.fragment(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
+        assertThat(fp.parameters().size(), is(1));
     }
 
     @Test
@@ -57,9 +57,9 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::nameIncludingTableAlias);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" a.id = #{parameters.p1,jdbcType=INTEGER}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
+        FragmentAndParameters fp = renderer.render();
+        assertThat(fp.fragment(), is(" a.id = #{parameters.p1,jdbcType=INTEGER}"));
+        assertThat(fp.parameters().size(), is(1));
     }
 
     @Test
@@ -70,9 +70,9 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::name);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
+        FragmentAndParameters fp = renderer.render();
+        assertThat(fp.fragment(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
+        assertThat(fp.parameters().size(), is(1));
     }
 
     @Test
@@ -83,9 +83,9 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::nameIncludingTableAlias);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
+        FragmentAndParameters fp = renderer.render();
+        assertThat(fp.fragment(), is(" id = #{parameters.p1,jdbcType=INTEGER}"));
+        assertThat(fp.parameters().size(), is(1));
     }
 
     @Test
@@ -96,9 +96,9 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Date> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::name);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
+        FragmentAndParameters fp = renderer.render();
+        assertThat(fp.fragment(), is(" id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"));
+        assertThat(fp.parameters().size(), is(1));
     }
 
     @Test
@@ -110,8 +110,8 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::nameIncludingTableAlias);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
+        FragmentAndParameters rc = renderer.render();
+        assertThat(rc.fragment(), is(" a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"));
+        assertThat(rc.parameters().size(), is(1));
     }
 }

@@ -33,8 +33,8 @@ public abstract class AbstractTwoValueCondition<T> implements Condition<T> {
     }
 
     @Override
-    public void accept(ConditionVisitor<T> visitor) {
-        visitor.visit(this);
+    public <R> R accept(ConditionVisitor<T, R> visitor) {
+        return visitor.visit(this);
     }
 
     @Override

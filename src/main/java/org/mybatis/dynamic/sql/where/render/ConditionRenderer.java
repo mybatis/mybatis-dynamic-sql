@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.where.render;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +29,10 @@ import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ConditionRenderer<T> implements ConditionVisitor<T> {
+public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndParameters> {
     
     private static final String PARAMETERS_PREFIX = "parameters"; //$NON-NLS-1$
     
-    private StringBuilder buffer = new StringBuilder();
-    private Map<String, Object> parameters = new HashMap<>();
     private AtomicInteger sequence;
     private SqlColumn<?> column;
     private Function<SqlColumn<?>, String> nameFunction;
@@ -46,40 +43,37 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
         this.nameFunction = nameFunction;
     }
     
-    public String fragment() {
-        return buffer.toString();
-    }
-    
-    public Map<String, Object> parameters() {
-        return Collections.unmodifiableMap(parameters);
+    @Override
+    public FragmentAndParameters visit(AbstractNoValueCondition<T> condition) {
+        return new FragmentAndParameters.Builder(condition.render(calculateColumnName())).build();
     }
 
     @Override
-    public void visit(AbstractNoValueCondition<T> condition) {
-        buffer.append(condition.render(calculateColumnName()));
-    }
-
-    @Override
-    public void visit(AbstractSingleValueCondition<T> condition) {
+    public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
         String mapKey = formatParameterMapKey(sequence.getAndIncrement());
-        buffer.append(condition.render(calculateColumnName(), column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey)));
-        parameters.put(mapKey, condition.value());
+        return new FragmentAndParameters.Builder(condition.render(calculateColumnName(), column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey)))
+                .withParameter(mapKey, condition.value())
+                .build();
     }
 
     @Override
-    public void visit(AbstractTwoValueCondition<T> condition) {
+    public FragmentAndParameters visit(AbstractTwoValueCondition<T> condition) {
         String mapKey1 = formatParameterMapKey(sequence.getAndIncrement());
         String mapKey2 = formatParameterMapKey(sequence.getAndIncrement());
-        buffer.append(condition.render(calculateColumnName(),
+        String fragment = condition.render(calculateColumnName(),
                 column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey1),
-                column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey2)));
-        parameters.put(mapKey1, condition.value1());
-        parameters.put(mapKey2, condition.value2());
+                column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey2));
+                
+        return new FragmentAndParameters.Builder(fragment)
+                .withParameter(mapKey1, condition.value1())
+                .withParameter(mapKey2, condition.value2())
+                .build();
     }
 
     @Override
-    public void visit(AbstractListValueCondition<T> condition) {
+    public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
         List<String> placeholders = new ArrayList<>();
+        Map<String, Object> parameters = new HashMap<>();
         
         condition.values().forEach(v -> {
             String mapKey = formatParameterMapKey(sequence.getAndIncrement());
@@ -87,7 +81,9 @@ public class ConditionRenderer<T> implements ConditionVisitor<T> {
             parameters.put(mapKey, v);
         });
         
-        buffer.append(condition.render(calculateColumnName(), placeholders.stream()));
+        return new FragmentAndParameters.Builder(condition.render(calculateColumnName(), placeholders.stream()))
+                .withParameters(parameters)
+                .build();
     }
 
     private String formatParameterMapKey(int number) {

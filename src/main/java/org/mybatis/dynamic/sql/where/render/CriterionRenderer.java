@@ -36,7 +36,7 @@ public class CriterionRenderer<T> {
         this.nameFunction = nameFunction;
     }
     
-    public RenderedCriterion render() {
+    public FragmentAndParameters render() {
         buffer.append(' ');
         
         renderConnector();
@@ -49,7 +49,9 @@ public class CriterionRenderer<T> {
             renderCriteria();
         }
         
-        return RenderedCriterion.of(buffer.toString(), parameters);
+        return new FragmentAndParameters.Builder(buffer.toString())
+                .withParameters(parameters)
+                .build();
     }
     
     private void renderConnector() {
@@ -66,15 +68,15 @@ public class CriterionRenderer<T> {
 
     private void renderCondition() {
         ConditionRenderer<T> visitor = ConditionRenderer.of(sequence, criterion.column(), nameFunction);
-        criterion.condition().accept(visitor);
-        buffer.append(visitor.fragment());
-        parameters.putAll(visitor.parameters());
+        FragmentAndParameters fp = criterion.condition().accept(visitor);
+        buffer.append(fp.fragment());
+        parameters.putAll(fp.parameters());
     }
 
     private void handleSubCriterion(SqlCriterion<?> subCriterion) {
-        RenderedCriterion rc = new CriterionRenderer<>(subCriterion, sequence, nameFunction).render();
-        buffer.append(rc.whereClauseFragment());
-        parameters.putAll(rc.fragmentParameters());
+        FragmentAndParameters rc = new CriterionRenderer<>(subCriterion, sequence, nameFunction).render();
+        buffer.append(rc.fragment());
+        parameters.putAll(rc.parameters());
     }
     
     public static <T> CriterionRenderer<T> of(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlColumn<?>, String> nameFunction) {

@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
-import org.mybatis.dynamic.sql.where.render.RenderedCriterion;
+import org.mybatis.dynamic.sql.where.render.FragmentAndParameters;
 
 public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     private List<CriterionWrapper> criteria = new ArrayList<>();
@@ -88,10 +88,10 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         }
         
         void add(CriterionWrapper criterionWrapper) {
-            RenderedCriterion rc = CriterionRenderer.of(criterionWrapper.criterion, criterionWrapper.sequence, nameFunction)
+            FragmentAndParameters rc = CriterionRenderer.of(criterionWrapper.criterion, criterionWrapper.sequence, nameFunction)
                     .render();
-            phrases.add(rc.whereClauseFragment());
-            parameters.putAll(rc.fragmentParameters());
+            phrases.add(rc.fragment());
+            parameters.putAll(rc.parameters());
         }
         
         WhereCollectorSupport merge(WhereCollectorSupport other) {

@@ -26,8 +26,6 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
-import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
-import org.mybatis.dynamic.sql.where.render.RenderedCriterion;
 
 public class CriterionRendererTest {
 
@@ -41,10 +39,10 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::name);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
-        assertThat(rc.fragmentParameters().get("p1"), is(3));
+        FragmentAndParameters fp = renderer.render();
+        assertThat(fp.fragment(), is(" id = {parameters.p1}"));
+        assertThat(fp.parameters().size(), is(1));
+        assertThat(fp.parameters().get("p1"), is(3));
     }
 
     @Test
@@ -56,10 +54,10 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::nameIncludingTableAlias);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" a.id = {parameters.p1}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
-        assertThat(rc.fragmentParameters().get("p1"), is(3));
+        FragmentAndParameters fp = renderer.render();
+        assertThat(fp.fragment(), is(" a.id = {parameters.p1}"));
+        assertThat(fp.parameters().size(), is(1));
+        assertThat(fp.parameters().get("p1"), is(3));
     }
 
     @Test
@@ -70,10 +68,10 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::name);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
-        assertThat(rc.fragmentParameters().get("p1"), is(3));
+        FragmentAndParameters fp = renderer.render();
+        assertThat(fp.fragment(), is(" id = {parameters.p1}"));
+        assertThat(fp.parameters().size(), is(1));
+        assertThat(fp.parameters().get("p1"), is(3));
     }
 
     @Test
@@ -84,9 +82,9 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::nameIncludingTableAlias);
         
-        RenderedCriterion rc = renderer.render();
-        assertThat(rc.whereClauseFragment(), is(" id = {parameters.p1}"));
-        assertThat(rc.fragmentParameters().size(), is(1));
-        assertThat(rc.fragmentParameters().get("p1"), is(3));
+        FragmentAndParameters fp = renderer.render();
+        assertThat(fp.fragment(), is(" id = {parameters.p1}"));
+        assertThat(fp.parameters().size(), is(1));
+        assertThat(fp.parameters().get("p1"), is(3));
     }
 }
