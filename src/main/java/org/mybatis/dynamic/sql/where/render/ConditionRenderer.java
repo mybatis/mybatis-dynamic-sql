@@ -51,7 +51,10 @@ public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndPara
     @Override
     public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
         String mapKey = formatParameterMapKey(sequence.getAndIncrement());
-        return new FragmentAndParameters.Builder(condition.render(calculateColumnName(), column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey)))
+        String fragment = condition.render(calculateColumnName(),
+                column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey));
+
+        return new FragmentAndParameters.Builder(fragment)
                 .withParameter(mapKey, condition.value())
                 .build();
     }
