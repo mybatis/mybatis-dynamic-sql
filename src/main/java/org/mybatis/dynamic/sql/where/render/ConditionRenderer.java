@@ -34,10 +34,10 @@ public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndPara
     private static final String PARAMETERS_PREFIX = "parameters"; //$NON-NLS-1$
     
     private AtomicInteger sequence;
-    private SqlColumn<?> column;
+    private SqlColumn<T> column;
     private Function<SqlColumn<?>, String> nameFunction;
     
-    private ConditionRenderer(AtomicInteger sequence, SqlColumn<?> column, Function<SqlColumn<?>, String> nameFunction) {
+    private ConditionRenderer(AtomicInteger sequence, SqlColumn<T> column, Function<SqlColumn<?>, String> nameFunction) {
         this.sequence = sequence;
         this.column = column;
         this.nameFunction = nameFunction;
