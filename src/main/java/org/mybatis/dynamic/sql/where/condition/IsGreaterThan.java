@@ -25,7 +25,7 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
     
     @Override
     public String render(String columnName, String placeholder) {
-        return String.format("%s > %s", columnName, placeholder); //$NON-NLS-1$
+        return columnName + " > " + placeholder; //$NON-NLS-1$
     }
 
     public static <T> IsGreaterThan<T> of(T value) {

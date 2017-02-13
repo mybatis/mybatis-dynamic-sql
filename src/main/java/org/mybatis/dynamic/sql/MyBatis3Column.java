@@ -76,12 +76,8 @@ public class MyBatis3Column<T> extends SqlColumn<T> {
         buffer.append(parameterName);
         buffer.append(",jdbcType="); //$NON-NLS-1$
         buffer.append(jdbcType().getName());
-        
-        typeHandler().ifPresent(th -> {
-            buffer.append(",typeHandler="); //$NON-NLS-1$
-            buffer.append(th);
-        });
-        
+        buffer.append(typeHandler().map(th -> ",typeHandler=" + th) //$NON-NLS-1$
+                .orElse("")); //$NON-NLS-1$
         buffer.append('}');
         return buffer.toString();
     }

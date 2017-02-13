@@ -48,23 +48,12 @@ public class SqlColumn<T> extends AbstractColumn<T> {
     }
     
     public String nameIncludingTableAlias() {
-        StringBuilder sb = new StringBuilder();
-        tableAlias().ifPresent(a -> {
-            sb.append(a);
-            sb.append('.');
-        });
-        sb.append(name());
-        return sb.toString();
+        return tableAlias().map(a -> a + "." + name()).orElse(name()); //$NON-NLS-1$
     }
     
     public String nameIncludingTableAndColumnAlias() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(nameIncludingTableAlias());
-        columnAlias().ifPresent(a -> {
-            sb.append(" as "); //$NON-NLS-1$
-            sb.append(a);
-        });
-        return sb.toString();
+        return columnAlias().map(a -> nameIncludingTableAlias() + " as " + a) //$NON-NLS-1$
+                .orElse(nameIncludingTableAlias());
     }
     
     public JDBCType jdbcType() {
@@ -102,11 +91,11 @@ public class SqlColumn<T> extends AbstractColumn<T> {
     }
     
     public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
-        return String.format("{%s.%s}", prefix, parameterName); //$NON-NLS-1$
+        return "{" + prefix + "." + parameterName + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     public String orderByPhrase() {
-        return String.format("%s %s", columnAlias().orElseGet(this::name), sortOrder); //$NON-NLS-1$
+        return columnAlias().orElseGet(this::name) + " " + sortOrder; //$NON-NLS-1$
     }
     
     public static <T> SqlColumn<T> of(String name, JDBCType jdbcType) {

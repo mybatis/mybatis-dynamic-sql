@@ -55,7 +55,7 @@ public class SpringNamedParameterColumn<T> extends SqlColumn<T> {
     
     @Override
     public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
-        return String.format(":%s", parameterName); //$NON-NLS-1$
+        return ":" + parameterName; //$NON-NLS-1$
     }
 
     public static <T> SpringNamedParameterColumn<T> of(String name, JDBCType jdbcType) {

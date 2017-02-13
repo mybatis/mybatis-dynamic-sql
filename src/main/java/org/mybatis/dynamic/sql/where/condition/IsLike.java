@@ -25,7 +25,7 @@ public class IsLike extends AbstractSingleValueCondition<String> {
 
     @Override
     public String render(String columnName, String placeholder) {
-        return String.format("%s like %s", columnName, placeholder); //$NON-NLS-1$
+        return columnName + " like " + placeholder; //$NON-NLS-1$
     }
     
     public static IsLike of(String value) {

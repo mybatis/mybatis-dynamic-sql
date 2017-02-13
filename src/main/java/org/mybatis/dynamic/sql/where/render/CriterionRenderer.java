@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -24,8 +22,6 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 
 public class CriterionRenderer<T> {
-    private StringBuilder buffer = new StringBuilder();
-    private Map<String, Object> parameters = new HashMap<>();
     private SqlCriterion<T> criterion;
     private AtomicInteger sequence;
     private Function<SqlColumn<?>, String> nameFunction;
@@ -37,46 +33,40 @@ public class CriterionRenderer<T> {
     }
     
     public FragmentAndParameters render() {
-        buffer.append(' ');
-        
-        renderConnector();
-
+        String prefix = ""; //$NON-NLS-1$
+        String suffix = ""; //$NON-NLS-1$
         if (criterion.hasSubCriteria()) {
-            buffer.append('(');
-            renderCriteria();
-            buffer.append(')');
-        } else {
-            renderCriteria();
+            prefix = "("; //$NON-NLS-1$
+            suffix = ")"; //$NON-NLS-1$
         }
         
-        return new FragmentAndParameters.Builder(buffer.toString())
-                .withParameters(parameters)
+        FragmentAndParameters fp = renderCriteria();
+
+        String fragment = 
+                criterion.connector().map(c -> c + " ").orElse("") //$NON-NLS-1$ //$NON-NLS-2$
+                + prefix
+                + fp.fragment()
+                + suffix;
+        
+        return new FragmentAndParameters.Builder(fragment)
+                .withParameters(fp.parameters())
                 .build();
     }
     
-    private void renderConnector() {
-        criterion.connector().ifPresent(c -> {
-            buffer.append(c);
-            buffer.append(' ');
-        });
+    private FragmentAndParameters renderCriteria() {
+        FragmentAndParameters renderedCondition = renderCondition();
+        return criterion.subCriteria()
+            .map(this::handleSubCriterion)
+            .reduce(renderedCondition, (left, right) -> left.merge(right, " ")); //$NON-NLS-1$
     }
     
-    private void renderCriteria() {
-        renderCondition();
-        criterion.subCriteria().forEach(this::handleSubCriterion);
-    }
-
-    private void renderCondition() {
+    private FragmentAndParameters renderCondition() {
         ConditionRenderer<T> visitor = ConditionRenderer.of(sequence, criterion.column(), nameFunction);
-        FragmentAndParameters fp = criterion.condition().accept(visitor);
-        buffer.append(fp.fragment());
-        parameters.putAll(fp.parameters());
+        return criterion.condition().accept(visitor);
     }
 
-    private void handleSubCriterion(SqlCriterion<?> subCriterion) {
-        FragmentAndParameters rc = new CriterionRenderer<>(subCriterion, sequence, nameFunction).render();
-        buffer.append(rc.fragment());
-        parameters.putAll(rc.parameters());
+    private FragmentAndParameters handleSubCriterion(SqlCriterion<?> subCriterion) {
+        return CriterionRenderer.of(subCriterion, sequence, nameFunction).render();
     }
     
     public static <T> CriterionRenderer<T> of(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlColumn<?>, String> nameFunction) {

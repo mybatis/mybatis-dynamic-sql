@@ -90,7 +90,7 @@ public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndPara
     }
 
     private String formatParameterMapKey(int number) {
-        return String.format("p%s", number); //$NON-NLS-1$
+        return "p" + number; //$NON-NLS-1$
     }
 
     private String calculateColumnName() {

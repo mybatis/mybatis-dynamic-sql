@@ -135,13 +135,13 @@ public class UpdateSupportBuilder {
         
         private SetColumnAndValue(SqlColumn<T> column, T value, int uniqueId) {
             this.value = value;
-            mapKey = String.format("up%s", uniqueId); //$NON-NLS-1$
+            mapKey = "up" + uniqueId; //$NON-NLS-1$
             String jdbcPlaceholder = column.getFormattedJdbcPlaceholder("parameters", mapKey); //$NON-NLS-1$
-            setPhrase = String.format("%s = %s", column.name(), jdbcPlaceholder); //$NON-NLS-1$
+            setPhrase = column.name() + " = " + jdbcPlaceholder; //$NON-NLS-1$
         }
         
         private SetColumnAndValue(SqlColumn<T> column) {
-            setPhrase = String.format("%s = null", column.name()); //$NON-NLS-1$
+            setPhrase = column.name() + " = null"; //$NON-NLS-1$
         }
         
         public Optional<String> mapKey() {

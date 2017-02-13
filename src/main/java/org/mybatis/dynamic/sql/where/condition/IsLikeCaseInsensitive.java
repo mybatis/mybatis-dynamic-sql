@@ -28,7 +28,7 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> 
     
     @Override
     public String render(String columnName, String placeholder) {
-        return String.format("upper(%s) like %s", columnName, placeholder); //$NON-NLS-1$
+        return "upper(" + columnName + ") like " + placeholder; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

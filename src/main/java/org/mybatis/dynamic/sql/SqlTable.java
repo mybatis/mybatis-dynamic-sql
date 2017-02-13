@@ -31,12 +31,7 @@ public class SqlTable {
     }
     
     public String nameIncludingAlias() {
-        StringBuilder buffer = new StringBuilder(name);
-        alias().ifPresent(a -> {
-            buffer.append(' ');
-            buffer.append(a);
-        });
-        return buffer.toString();
+        return alias().map(a -> name + " " + a).orElse(name); //$NON-NLS-1$
     }
     
     public Optional<String> alias() {

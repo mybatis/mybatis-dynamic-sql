@@ -40,7 +40,7 @@ public class CriterionRendererTest {
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::name);
         
         FragmentAndParameters fp = renderer.render();
-        assertThat(fp.fragment(), is(" id = {parameters.p1}"));
+        assertThat(fp.fragment(), is("id = {parameters.p1}"));
         assertThat(fp.parameters().size(), is(1));
         assertThat(fp.parameters().get("p1"), is(3));
     }
@@ -55,7 +55,7 @@ public class CriterionRendererTest {
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::nameIncludingTableAlias);
         
         FragmentAndParameters fp = renderer.render();
-        assertThat(fp.fragment(), is(" a.id = {parameters.p1}"));
+        assertThat(fp.fragment(), is("a.id = {parameters.p1}"));
         assertThat(fp.parameters().size(), is(1));
         assertThat(fp.parameters().get("p1"), is(3));
     }
@@ -69,7 +69,7 @@ public class CriterionRendererTest {
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::name);
         
         FragmentAndParameters fp = renderer.render();
-        assertThat(fp.fragment(), is(" id = {parameters.p1}"));
+        assertThat(fp.fragment(), is("id = {parameters.p1}"));
         assertThat(fp.parameters().size(), is(1));
         assertThat(fp.parameters().get("p1"), is(3));
     }
@@ -83,7 +83,7 @@ public class CriterionRendererTest {
         CriterionRenderer<Integer> renderer = CriterionRenderer.of(criterion, sequence, SqlColumn::nameIncludingTableAlias);
         
         FragmentAndParameters fp = renderer.render();
-        assertThat(fp.fragment(), is(" id = {parameters.p1}"));
+        assertThat(fp.fragment(), is("id = {parameters.p1}"));
         assertThat(fp.parameters().size(), is(1));
         assertThat(fp.parameters().get("p1"), is(3));
     }

@@ -101,7 +101,7 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         }
         
         WhereSupport getWhereSupport() {
-            String whereClause = phrases.stream().collect(Collectors.joining("", "where", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String whereClause = phrases.stream().collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return WhereSupport.of(whereClause, parameters);
         }
     }
