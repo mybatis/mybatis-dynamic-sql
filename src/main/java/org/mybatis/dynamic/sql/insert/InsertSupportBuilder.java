@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -76,7 +75,9 @@ public class InsertSupportBuilder<T> {
             }
             
             public InsertSupportMappingBuilder<T> toPropertyWhenPresent(String property, Supplier<F> valueSupplier) {
-                Optional.ofNullable(valueSupplier.get()).ifPresent(v -> columnMappings.add(InsertColumnMapping.of(column, property)));
+                if (valueSupplier.get() != null) {
+                    columnMappings.add(InsertColumnMapping.of(column, property));
+                }
                 return InsertSupportMappingBuilder.this;
             }
             

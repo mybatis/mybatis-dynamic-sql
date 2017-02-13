@@ -67,7 +67,9 @@ public class UpdateSupportBuilder {
         }
 
         public UpdateSupportBuilder equalToWhenPresent(T value) {
-            Optional.ofNullable(value).ifPresent(v -> columnsAndValues.add(SetColumnAndValue.of(column, v, id++)));
+            if (value != null) {
+                columnsAndValues.add(SetColumnAndValue.of(column, value, id++));
+            }
             return UpdateSupportBuilder.this;
         }
     }
