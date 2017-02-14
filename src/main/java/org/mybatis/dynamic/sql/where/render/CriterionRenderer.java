@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql.where.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -33,31 +35,41 @@ public class CriterionRenderer<T> {
     }
     
     public FragmentAndParameters render() {
-        String prefix = ""; //$NON-NLS-1$
-        String suffix = ""; //$NON-NLS-1$
         if (criterion.hasSubCriteria()) {
-            prefix = "("; //$NON-NLS-1$
-            suffix = ")"; //$NON-NLS-1$
+            return renderWithSubCriteria();
+        } else {
+            return renderWithoutSubCriteria();
         }
-        
-        FragmentAndParameters fp = renderCriteria();
+    }
+    
+    private FragmentAndParameters renderWithSubCriteria() {
+        FragmentAndParameters renderedCondition = renderCondition();
+        FragmentCollector renderedSubCriteria = renderSubCriteria();
 
-        String fragment = 
-                criterion.connector().map(c -> c + " ").orElse("") //$NON-NLS-1$ //$NON-NLS-2$
-                + prefix
-                + fp.fragment()
-                + suffix;
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(criterion.connector().map(c -> c + " ").orElse("")) //$NON-NLS-1$ //$NON-NLS-2$
+        .append('(') 
+        .append(renderedCondition.fragment())
+        .append(' ')
+        .append(renderedSubCriteria.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+        .append(')');
         
-        return new FragmentAndParameters.Builder(fragment)
-                .withParameters(fp.parameters())
+        return new FragmentAndParameters.Builder(buffer.toString())
+                .withParameters(renderedCondition.parameters())
+                .withParameters(renderedSubCriteria.parameters())
                 .build();
     }
     
-    private FragmentAndParameters renderCriteria() {
+    private FragmentAndParameters renderWithoutSubCriteria() {
         FragmentAndParameters renderedCondition = renderCondition();
-        return criterion.subCriteria()
-            .map(this::handleSubCriterion)
-            .reduce(renderedCondition, (left, right) -> left.merge(right, " ")); //$NON-NLS-1$
+
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(criterion.connector().map(c -> c + " ").orElse("")) //$NON-NLS-1$ //$NON-NLS-2$
+        .append(renderedCondition.fragment());
+        
+        return new FragmentAndParameters.Builder(buffer.toString())
+                .withParameters(renderedCondition.parameters())
+                .build();
     }
     
     private FragmentAndParameters renderCondition() {
@@ -65,7 +77,15 @@ public class CriterionRenderer<T> {
         return criterion.condition().accept(visitor);
     }
 
-    private FragmentAndParameters handleSubCriterion(SqlCriterion<?> subCriterion) {
+    private FragmentCollector renderSubCriteria() {
+        return criterion.subCriteria()
+            .map(this::renderSubCriterion)
+            .collect(Collector.of(FragmentCollector::new,
+                    FragmentCollector::add,
+                    FragmentCollector::merge));
+    }
+    
+    private FragmentAndParameters renderSubCriterion(SqlCriterion<?> subCriterion) {
         return CriterionRenderer.of(subCriterion, sequence, nameFunction).render();
     }
     

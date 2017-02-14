@@ -35,13 +35,6 @@ public class FragmentAndParameters {
         return parameters;
     }
     
-    public FragmentAndParameters merge(FragmentAndParameters other, String delimiter) {
-        return new Builder(fragment + delimiter + other.fragment)
-                .withParameters(parameters)
-                .withParameters(other.parameters)
-                .build();
-    }
-
     public static class Builder {
         private FragmentAndParameters fragmentAndParameters = new FragmentAndParameters();
         

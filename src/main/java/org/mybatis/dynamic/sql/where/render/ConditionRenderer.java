@@ -15,10 +15,6 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -29,6 +25,7 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.where.render.FragmentCollector.Triple;
 
 public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndParameters> {
     
@@ -76,14 +73,14 @@ public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndPara
 
     @Override
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
-        TripleCollector tc = condition.values()
+        FragmentCollector fc = condition.values()
                 .map(this::toTriple)
-                .collect(Collector.of(TripleCollector::new,
-                        TripleCollector::add,
-                        TripleCollector::merge));
+                .collect(Collector.of(FragmentCollector::new,
+                        FragmentCollector::add,
+                        FragmentCollector::merge));
         
-        return new FragmentAndParameters.Builder(condition.render(calculateColumnName(), tc.jdbcPlaceholders.stream()))
-                .withParameters(tc.parameters)
+        return new FragmentAndParameters.Builder(condition.render(calculateColumnName(), fc.fragments()))
+                .withParameters(fc.parameters())
                 .build();
     }
     
@@ -94,38 +91,13 @@ public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndPara
     private String calculateColumnName() {
         return nameFunction.apply(column);
     }
+
+    private Triple<T> toTriple(T value) {
+        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
+        return Triple.of(mapKey, column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey), value);
+    }
     
     public static <T> ConditionRenderer<T> of(AtomicInteger sequence, SqlColumn<T> column, Function<SqlColumn<?>, String> nameFunction) {
         return new ConditionRenderer<>(sequence, column, nameFunction);
-    }
-
-    private Triple<T> toTriple(T value) {
-        Triple<T> t = new Triple<>();
-        t.mapKey = formatParameterMapKey(sequence.getAndIncrement());
-        t.jdbcPlaceholder = column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, t.mapKey);
-        t.value = value;
-        return t;
-    }
-
-    static class Triple<T> {
-        String mapKey;
-        String jdbcPlaceholder;
-        T value;
-    }
-    
-    static class TripleCollector {
-        List<String> jdbcPlaceholders = new ArrayList<>();
-        Map<String, Object> parameters = new HashMap<>();
-        
-        public void add(Triple<?> triple) {
-            jdbcPlaceholders.add(triple.jdbcPlaceholder);
-            parameters.put(triple.mapKey, triple.value);
-        }
-        
-        public TripleCollector merge(TripleCollector other) {
-            jdbcPlaceholders.addAll(other.jdbcPlaceholders);
-            parameters.putAll(other.parameters);
-            return this;
-        }
     }
 }
