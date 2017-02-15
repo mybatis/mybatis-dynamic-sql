@@ -27,7 +27,6 @@ public class SqlColumn<T> extends AbstractColumn<T> {
     
     private static final String ASCENDING = "ASC"; //$NON-NLS-1$
     protected static final String DESCENDING = "DESC"; //$NON-NLS-1$
-    private static final SqlTable NULL_TABLE = SqlTable.of(""); //$NON-NLS-1$
 
     protected SqlTable table;
     protected JDBCType jdbcType;
@@ -65,7 +64,7 @@ public class SqlColumn<T> extends AbstractColumn<T> {
     }
     
     public Optional<String> tableAlias() {
-        return table().orElse(NULL_TABLE).alias();
+        return table().map(SqlTable::alias).orElse(Optional.empty());
     }
     
     public Optional<String> columnAlias() {

@@ -57,7 +57,7 @@ public class UpdateSupport extends AbstractSqlSupport {
 
     public String getFullUpdateStatement() {
         return Stream.of("update", //$NON-NLS-1$
-                table().orElse(UNKNOWN_TABLE).name(),
+                table().map(SqlTable::name).orElse(UNKNOWN_TABLE),
                 getSetClause(),
                 getWhereClause()).collect(Collectors.joining(" ")); //$NON-NLS-1$
     }

@@ -43,7 +43,7 @@ public class DeleteSupport extends AbstractSqlSupport {
     
     public String getFullDeleteStatement() {
         return Stream.of("delete from", //$NON-NLS-1$
-                table().orElse(UNKNOWN_TABLE).name(),
+                table().map(SqlTable::name).orElse(UNKNOWN_TABLE),
                 getWhereClause()).collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
 

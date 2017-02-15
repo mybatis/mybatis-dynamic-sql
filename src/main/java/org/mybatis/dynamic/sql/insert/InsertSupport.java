@@ -48,7 +48,7 @@ public class InsertSupport<T> extends AbstractSqlSupport {
     
     public String getFullInsertStatement() {
         return Stream.of("insert into", //$NON-NLS-1$
-                table().orElse(UNKNOWN_TABLE).name(),
+                table().map(SqlTable::name).orElse(UNKNOWN_TABLE),
                 getColumnsPhrase(),
                 getValuesPhrase()).collect(Collectors.joining(" ")); //$NON-NLS-1$
     }

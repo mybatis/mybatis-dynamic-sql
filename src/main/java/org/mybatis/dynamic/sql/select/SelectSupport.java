@@ -63,7 +63,7 @@ public class SelectSupport extends AbstractSqlSupport {
                 distinct,
                 getColumnList(),
                 "from", //$NON-NLS-1$
-                table().orElse(UNKNOWN_TABLE).nameIncludingAlias(),
+                table().map(SqlTable::nameIncludingAlias).orElse(UNKNOWN_TABLE),
                 getWhereClause(),
                 getOrderByClause()).collect(Collectors.joining(" ")); //$NON-NLS-1$
     }

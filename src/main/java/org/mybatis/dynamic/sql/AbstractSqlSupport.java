@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql;
 import java.util.Optional;
 
 public abstract class AbstractSqlSupport {
-    protected static final SqlTable UNKNOWN_TABLE = SqlTable.of("<<unknown>>"); //$NON-NLS-1$
+    protected static final String UNKNOWN_TABLE = "<<unknown>>"; //$NON-NLS-1$
 
     private SqlTable table;
 
