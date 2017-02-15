@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -27,6 +26,8 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.AbstractWhereBuilder;
 import org.mybatis.dynamic.sql.where.WhereSupport;
 
@@ -90,18 +91,20 @@ public class UpdateSupportBuilder {
         
         public UpdateSupport build() {
             Map<String, Object> parameters = new HashMap<>();
-            SetValuesCollectorSupport setValuesCollector = renderSetValues();
+            FragmentCollector setValuesCollector = renderSetValues();
             WhereSupport whereSupport = renderCriteria(SqlColumn::name);
-            parameters.putAll(setValuesCollector.parameters);
+            parameters.putAll(setValuesCollector.parameters());
             parameters.putAll(whereSupport.getParameters());
-            return UpdateSupport.of(setValuesCollector.getSetClause(), whereSupport.getWhereClause(), parameters, table);
+            return UpdateSupport.of(setValuesCollector.fragments().collect(Collectors.joining(", ", "set ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    whereSupport.getWhereClause(), parameters, table);
         }
         
-        private SetValuesCollectorSupport renderSetValues() {
-            return setColumnsAndValues.stream().collect(Collector.of(
-                    SetValuesCollectorSupport::new,
-                    SetValuesCollectorSupport::add,
-                    SetValuesCollectorSupport::merge));
+        private FragmentCollector renderSetValues() {
+            return setColumnsAndValues.stream()
+                    .map(SetColumnAndValue::fragmentAndParameters)
+                    .collect(Collector.of(FragmentCollector::new,
+                            FragmentCollector::add,
+                            FragmentCollector::merge));
         }
 
         @Override
@@ -110,44 +113,26 @@ public class UpdateSupportBuilder {
         }
     }
     
-    static class SetValuesCollectorSupport {
-        List<String> phrases = new ArrayList<>();
-        Map<String, Object> parameters = new HashMap<>();
-        
-        void add(SetColumnAndValue<?> columnAndValue) {
-            phrases.add(columnAndValue.setPhrase);
-            columnAndValue.mapKey().ifPresent(mk -> parameters.put(mk, columnAndValue.value));
-        }
-        
-        SetValuesCollectorSupport merge(SetValuesCollectorSupport other) {
-            phrases.addAll(other.phrases);
-            parameters.putAll(other.parameters);
-            return this;
-        }
-
-        String getSetClause() {
-            return phrases.stream().collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-    }
-    
     static class SetColumnAndValue<T> {
-        private T value;
-        private String setPhrase;
-        private String mapKey;
+        private FragmentAndParameters fragmentAndParameters;
         
         private SetColumnAndValue(SqlColumn<T> column, T value, int uniqueId) {
-            this.value = value;
-            mapKey = "up" + uniqueId; //$NON-NLS-1$
+            String mapKey = "up" + uniqueId; //$NON-NLS-1$
             String jdbcPlaceholder = column.getFormattedJdbcPlaceholder("parameters", mapKey); //$NON-NLS-1$
-            setPhrase = column.name() + " = " + jdbcPlaceholder; //$NON-NLS-1$
+            String setPhrase = column.name() + " = " + jdbcPlaceholder; //$NON-NLS-1$
+            
+            fragmentAndParameters = new FragmentAndParameters.Builder(setPhrase) //$NON-NLS-1$)
+                    .withParameter(mapKey, value)
+                    .build();
         }
         
         private SetColumnAndValue(SqlColumn<T> column) {
-            setPhrase = column.name() + " = null"; //$NON-NLS-1$
+            fragmentAndParameters = new FragmentAndParameters.Builder(column.name() + " = null") //$NON-NLS-1$)
+                    .build();
         }
         
-        public Optional<String> mapKey() {
-            return Optional.ofNullable(mapKey);
+        FragmentAndParameters fragmentAndParameters() {
+            return fragmentAndParameters;
         }
         
         static <T> SetColumnAndValue<T> of(SqlColumn<T> column, T value, int uniqueId) {

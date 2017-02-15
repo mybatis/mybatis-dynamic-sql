@@ -13,12 +13,13 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where.render;
+package org.mybatis.dynamic.sql.util;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class FragmentCollectorTest {
 

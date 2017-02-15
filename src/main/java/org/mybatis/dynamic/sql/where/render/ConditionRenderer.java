@@ -25,7 +25,9 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.where.render.FragmentCollector.Triple;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.util.FragmentCollector.Triple;
 
 public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndParameters> {
     

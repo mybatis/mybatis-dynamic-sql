@@ -16,9 +16,7 @@
 package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -27,8 +25,9 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
-import org.mybatis.dynamic.sql.where.render.FragmentAndParameters;
 
 public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     private List<CriterionWrapper> criteria = new ArrayList<>();
@@ -57,11 +56,14 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     }
     
     protected WhereSupport renderCriteria(Function<SqlColumn<?>, String> nameFunction) {
-        return criteria.stream().collect(Collector.of(
-                () -> new WhereCollectorSupport(nameFunction),
-                WhereCollectorSupport::add,
-                WhereCollectorSupport::merge,
-                WhereCollectorSupport::getWhereSupport));
+        FragmentCollector fc = criteria.stream()
+                .map(c -> c.render(nameFunction))
+                .collect(Collector.of(FragmentCollector::new,
+                        FragmentCollector::add,
+                        FragmentCollector::merge));
+
+        return WhereSupport.of(fc.fragments().collect(Collectors.joining(" ", "where ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                fc.parameters());
     }
     
     protected abstract T getThis();
@@ -70,39 +72,15 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         SqlCriterion<?> criterion;
         AtomicInteger sequence;
         
+        FragmentAndParameters render(Function<SqlColumn<?>, String> nameFunction) {
+            return CriterionRenderer.of(criterion, sequence, nameFunction).render();
+        }
+        
         static CriterionWrapper of(SqlCriterion<?> criterion, int idStartValue) {
             CriterionWrapper wrapper = new CriterionWrapper();
             wrapper.criterion = criterion;
             wrapper.sequence = new AtomicInteger(idStartValue);
             return wrapper;
-        }
-    }
-    
-    static class WhereCollectorSupport {
-        Map<String, Object> parameters = new HashMap<>();
-        List<String> phrases = new ArrayList<>();
-        Function<SqlColumn<?>, String> nameFunction;
-        
-        WhereCollectorSupport(Function<SqlColumn<?>, String> nameFunction) {
-            this.nameFunction = nameFunction;
-        }
-        
-        void add(CriterionWrapper criterionWrapper) {
-            FragmentAndParameters rc = CriterionRenderer.of(criterionWrapper.criterion, criterionWrapper.sequence, nameFunction)
-                    .render();
-            phrases.add(rc.fragment());
-            parameters.putAll(rc.parameters());
-        }
-        
-        WhereCollectorSupport merge(WhereCollectorSupport other) {
-            parameters.putAll(other.parameters);
-            phrases.addAll(other.phrases);
-            return this;
-        }
-        
-        WhereSupport getWhereSupport() {
-            String whereClause = phrases.stream().collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            return WhereSupport.of(whereClause, parameters);
         }
     }
 }

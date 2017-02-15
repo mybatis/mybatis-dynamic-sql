@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where.render;
+package org.mybatis.dynamic.sql.util;
 
 import java.util.HashMap;
 import java.util.Map;

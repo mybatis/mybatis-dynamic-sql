@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class CriterionRenderer<T> {
     private SqlCriterion<T> criterion;
