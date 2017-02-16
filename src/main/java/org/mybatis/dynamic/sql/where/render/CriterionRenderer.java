@@ -19,34 +19,33 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
-public class CriterionRenderer<T> {
-    private SqlCriterion<T> criterion;
+public class CriterionRenderer {
     private AtomicInteger sequence;
     private Function<SqlColumn<?>, String> nameFunction;
     
-    protected CriterionRenderer(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlColumn<?>, String> nameFunction) {
-        this.criterion = criterion;
+    protected CriterionRenderer(AtomicInteger sequence, Function<SqlColumn<?>, String> nameFunction) {
         this.sequence = sequence;
         this.nameFunction = nameFunction;
     }
     
-    public FragmentAndParameters render() {
+    public <T> FragmentAndParameters render(SqlCriterion<T> criterion) {
         if (criterion.hasSubCriteria()) {
-            return renderWithSubCriteria();
+            return renderWithSubCriteria(criterion);
         } else {
-            return renderWithoutSubCriteria();
+            return renderWithoutSubCriteria(criterion);
         }
     }
     
-    private FragmentAndParameters renderWithSubCriteria() {
-        FragmentAndParameters renderedCondition = renderCondition();
-        FragmentCollector renderedSubCriteria = renderSubCriteria();
+    private <T> FragmentAndParameters renderWithSubCriteria(SqlCriterion<T> criterion) {
+        FragmentAndParameters renderedCondition = renderCondition(criterion);
+        FragmentCollector renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
 
         StringBuilder buffer = new StringBuilder();
         buffer.append(criterion.connector().map(c -> c + " ").orElse("")) //$NON-NLS-1$ //$NON-NLS-2$
@@ -62,8 +61,8 @@ public class CriterionRenderer<T> {
                 .build();
     }
     
-    private FragmentAndParameters renderWithoutSubCriteria() {
-        FragmentAndParameters renderedCondition = renderCondition();
+    private <T> FragmentAndParameters renderWithoutSubCriteria(SqlCriterion<T> criterion) {
+        FragmentAndParameters renderedCondition = renderCondition(criterion);
 
         StringBuilder buffer = new StringBuilder();
         buffer.append(criterion.connector().map(c -> c + " ").orElse("")) //$NON-NLS-1$ //$NON-NLS-2$
@@ -74,24 +73,23 @@ public class CriterionRenderer<T> {
                 .build();
     }
     
-    private FragmentAndParameters renderCondition() {
+    private <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
         ConditionRenderer<T> visitor = ConditionRenderer.of(sequence, criterion.column(), nameFunction);
         return criterion.condition().accept(visitor);
     }
 
-    private FragmentCollector renderSubCriteria() {
-        return criterion.subCriteria()
-            .map(this::renderSubCriterion)
+    private FragmentCollector renderSubCriteria(Stream<SqlCriterion<?>> subCriteria) {
+        return subCriteria.map(this::renderSubCriterion)
             .collect(Collector.of(FragmentCollector::new,
                     FragmentCollector::add,
                     FragmentCollector::merge));
     }
     
-    private FragmentAndParameters renderSubCriterion(SqlCriterion<?> subCriterion) {
-        return CriterionRenderer.of(subCriterion, sequence, nameFunction).render();
+    private <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {
+        return CriterionRenderer.of(sequence, nameFunction).render(subCriterion);
     }
     
-    public static <T> CriterionRenderer<T> of(SqlCriterion<T> criterion, AtomicInteger sequence, Function<SqlColumn<?>, String> nameFunction) {
-        return new CriterionRenderer<>(criterion, sequence, nameFunction);
+    public static CriterionRenderer of(AtomicInteger sequence, Function<SqlColumn<?>, String> nameFunction) {
+        return new CriterionRenderer(sequence, nameFunction);
     }
 }

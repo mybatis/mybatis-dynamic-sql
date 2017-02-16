@@ -73,7 +73,7 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         AtomicInteger sequence;
         
         FragmentAndParameters render(Function<SqlColumn<?>, String> nameFunction) {
-            return CriterionRenderer.of(criterion, sequence, nameFunction).render();
+            return CriterionRenderer.of(sequence, nameFunction).render(criterion);
         }
         
         static CriterionWrapper of(SqlCriterion<?> criterion, int idStartValue) {
