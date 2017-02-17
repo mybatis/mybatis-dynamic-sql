@@ -15,9 +15,6 @@
  */
 package org.mybatis.dynamic.sql.insert;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 import org.mybatis.dynamic.sql.SqlTable;
 
@@ -47,10 +44,12 @@ public class InsertSupport<T> extends AbstractSqlSupport {
     }
     
     public String getFullInsertStatement() {
-        return Stream.of("insert into", //$NON-NLS-1$
-                table().map(SqlTable::name).orElse(UNKNOWN_TABLE),
-                getColumnsPhrase(),
-                getValuesPhrase()).collect(Collectors.joining(" ")); //$NON-NLS-1$
+        return "insert into " //$NON-NLS-1$
+                + tableName()
+                + ONE_SPACE
+                + getColumnsPhrase()
+                + ONE_SPACE
+                + getValuesPhrase();
     }
 
     public static <T> InsertSupport<T> of(String columnsPhrase, String valuesPhrase, T record, SqlTable table) {

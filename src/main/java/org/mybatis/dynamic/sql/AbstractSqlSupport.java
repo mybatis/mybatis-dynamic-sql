@@ -18,7 +18,9 @@ package org.mybatis.dynamic.sql;
 import java.util.Optional;
 
 public abstract class AbstractSqlSupport {
-    protected static final String UNKNOWN_TABLE = "<<unknown>>"; //$NON-NLS-1$
+    public static final String EMPTY_STRING = ""; //$NON-NLS-1$
+    public static final String ONE_SPACE = " "; //$NON-NLS-1$
+    private static final String UNKNOWN_TABLE = "<<unknown>>"; //$NON-NLS-1$
 
     private SqlTable table;
 
@@ -26,7 +28,15 @@ public abstract class AbstractSqlSupport {
         this.table = table;
     }
 
-    public Optional<SqlTable> table() {
+    private Optional<SqlTable> table() {
         return Optional.ofNullable(table);
+    }
+    
+    protected String tableName() {
+        return table().map(SqlTable::name).orElse(UNKNOWN_TABLE);
+    }
+
+    protected String tableNameIncludingAlias() {
+        return table().map(SqlTable::nameIncludingAlias).orElse(UNKNOWN_TABLE);
     }
 }

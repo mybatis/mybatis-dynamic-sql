@@ -17,8 +17,7 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -26,7 +25,6 @@ import org.mybatis.dynamic.sql.SqlTable;
 public class SelectSupport extends AbstractSqlSupport {
     
     private static final String DISTINCT_STRING = "distinct"; //$NON-NLS-1$
-    private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
     private String columnList;
     private String whereClause;
@@ -39,11 +37,19 @@ public class SelectSupport extends AbstractSqlSupport {
     }
     
     public String getDistinct() {
-        return distinct;
+        return distinct().orElse(EMPTY_STRING);
+    }
+    
+    private Optional<String> distinct() {
+        return Optional.ofNullable(distinct);
     }
     
     public String getWhereClause() {
-        return whereClause;
+        return whereClause().orElse(EMPTY_STRING);
+    }
+
+    public Optional<String> whereClause() {
+        return Optional.ofNullable(whereClause);
     }
 
     public Map<String, Object> getParameters() {
@@ -51,7 +57,11 @@ public class SelectSupport extends AbstractSqlSupport {
     }
     
     public String getOrderByClause() {
-        return orderByClause;
+        return orderByClause().orElse(EMPTY_STRING);
+    }
+    
+    public Optional<String> orderByClause() {
+        return Optional.ofNullable(orderByClause);
     }
     
     public String getColumnList() {
@@ -59,25 +69,25 @@ public class SelectSupport extends AbstractSqlSupport {
     }
     
     public String getFullSelectStatement() {
-        return Stream.of("select", //$NON-NLS-1$
-                distinct,
-                getColumnList(),
-                "from", //$NON-NLS-1$
-                table().map(SqlTable::nameIncludingAlias).orElse(UNKNOWN_TABLE),
-                getWhereClause(),
-                getOrderByClause()).collect(Collectors.joining(" ")); //$NON-NLS-1$
+        return "select " //$NON-NLS-1$
+                + distinct().map(d -> d + ONE_SPACE).orElse(EMPTY_STRING)
+                + getColumnList()
+                + " from " //$NON-NLS-1$
+                + tableNameIncludingAlias()
+                + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING)
+                + orderByClause().map(o -> ONE_SPACE + o).orElse(EMPTY_STRING);
     }
     
     public static class Builder {
-        private String distinctString = EMPTY_STRING;
-        private String orderByClause = EMPTY_STRING;
-        private String whereClause = EMPTY_STRING;
-        private Map<String, Object> parameters;
+        private String distinct;
+        private String orderByClause;
+        private String whereClause;
+        private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
         private SqlTable table;
         
         public Builder isDistinct() {
-            distinctString = DISTINCT_STRING;
+            distinct = DISTINCT_STRING;
             return this;
         }
         
@@ -92,7 +102,7 @@ public class SelectSupport extends AbstractSqlSupport {
         }
         
         public Builder withParameters(Map<String, Object> parameters) {
-            this.parameters = parameters;
+            this.parameters.putAll(parameters);
             return this;
         }
         
@@ -107,7 +117,7 @@ public class SelectSupport extends AbstractSqlSupport {
         }
         public SelectSupport build() {
             SelectSupport selectSupport = new SelectSupport(table);
-            selectSupport.distinct = distinctString;
+            selectSupport.distinct = distinct;
             selectSupport.orderByClause = orderByClause;
             selectSupport.whereClause = whereClause;
             selectSupport.parameters = parameters;

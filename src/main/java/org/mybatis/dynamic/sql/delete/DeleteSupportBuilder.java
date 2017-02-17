@@ -34,6 +34,16 @@ public class DeleteSupportBuilder {
         return new DeleteSupportWhereBuilder(table, column, condition, subCriteria);
     }
     
+    /**
+     * WARNING! Calling this method will result in an delete statement that deletes
+     * all rows in a table.
+     * 
+     * @return
+     */
+    public DeleteSupport build() {
+        return DeleteSupport.of(table);
+    }
+    
     public static DeleteSupportBuilder deleteFrom(SqlTable table) {
         return new DeleteSupportBuilder(table);
     }

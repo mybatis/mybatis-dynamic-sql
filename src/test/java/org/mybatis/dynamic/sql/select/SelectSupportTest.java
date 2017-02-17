@@ -21,7 +21,7 @@ import static org.mybatis.dynamic.sql.SqlConditions.and;
 import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlConditions.isLessThan;
 import static org.mybatis.dynamic.sql.SqlConditions.or;
-import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.select;
+import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.Date;
@@ -38,7 +38,7 @@ public class SelectSupportTest {
     public static final SqlColumn<Integer> column2 = SqlColumn.of("column2", JDBCType.INTEGER).inTable(table);
 
     @Test
-    public void testSimpleCriteriaWithoutAlias() {
+    public void testSimpleCriteria() {
         Date d = new Date();
 
         SelectSupport selectSupport = select(column1, column2)
@@ -48,7 +48,17 @@ public class SelectSupportTest {
                 .and(column2, isLessThan(3))
                 .build();
 
+        assertThat(selectSupport.getDistinct(), is(""));
+        assertThat(selectSupport.getColumnList(), is("a.column1 as A_COLUMN1, a.column2"));
         assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1} or a.column2 = {parameters.p2} and a.column2 < {parameters.p3}"));
+        assertThat(selectSupport.getOrderByClause(), is(""));
+        
+        String expectedFullStatement = "select "
+                + selectSupport.getColumnList()
+                + " from foo a "
+                + selectSupport.getWhereClause();
+        
+        assertThat(selectSupport.getFullSelectStatement(), is(expectedFullStatement));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -57,7 +67,7 @@ public class SelectSupportTest {
     }
 
     @Test
-    public void testComplexCriteriaWithoutAlias() {
+    public void testComplexCriteria() {
         Date d = new Date();
 
         SelectSupport selectSupport = select(column1, column2)
@@ -70,64 +80,24 @@ public class SelectSupportTest {
                 .build();
         
 
-        String expected = "where a.column1 = {parameters.p1}" +
+        assertThat(selectSupport.getDistinct(), is(""));
+        assertThat(selectSupport.getColumnList(), is("a.column1 as A_COLUMN1, a.column2"));
+        
+        String expectedWhereClause = "where a.column1 = {parameters.p1}" +
                 " or a.column2 = {parameters.p2}" +
                 " and a.column2 < {parameters.p3}" +
                 " or (a.column2 = {parameters.p4} and a.column2 = {parameters.p5})" +
                 " and (a.column2 < {parameters.p6} or a.column1 = {parameters.p7})";
         
-        assertThat(selectSupport.getWhereClause(), is(expected));
+        assertThat(selectSupport.getWhereClause(), is(expectedWhereClause));
+        assertThat(selectSupport.getOrderByClause(), is(""));
         
-        Map<String, Object> parameters = selectSupport.getParameters();
-        assertThat(parameters.get("p1"), is(d));
-        assertThat(parameters.get("p2"), is(4));
-        assertThat(parameters.get("p3"), is(3));
-        assertThat(parameters.get("p4"), is(4));
-        assertThat(parameters.get("p5"), is(6));
-        assertThat(parameters.get("p6"), is(3));
-        assertThat(parameters.get("p7"), is(d));
-    }
+        String expectedFullStatement = "select "
+                + selectSupport.getColumnList()
+                + " from foo a "
+                + selectSupport.getWhereClause();
 
-    @Test
-    public void testSimpleCriteriaWithAlias() {
-        Date d = new Date();
-
-        SelectSupport selectSupport = select(column1, column2)
-                .from(table)
-                .where(column1, isEqualTo(d))
-                .or(column2, isEqualTo(4))
-                .and(column2, isLessThan(3))
-                .build();
-
-        assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1} or a.column2 = {parameters.p2} and a.column2 < {parameters.p3}"));
-        
-        Map<String, Object> parameters = selectSupport.getParameters();
-        assertThat(parameters.get("p1"), is(d));
-        assertThat(parameters.get("p2"), is(4));
-        assertThat(parameters.get("p3"), is(3));
-    }
-
-    @Test
-    public void testComplexCriteriaWithAlias() {
-        Date d = new Date();
-
-        SelectSupport selectSupport = select(column1, column2)
-                .from(table)
-                .where(column1, isEqualTo(d))
-                .or(column2, isEqualTo(4))
-                .and(column2, isLessThan(3))
-                .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
-                .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
-                .build();
-        
-
-        String expected = "where a.column1 = {parameters.p1}" +
-                " or a.column2 = {parameters.p2}" +
-                " and a.column2 < {parameters.p3}" +
-                " or (a.column2 = {parameters.p4} and a.column2 = {parameters.p5})" +
-                " and (a.column2 < {parameters.p6} or a.column1 = {parameters.p7})";
-        
-        assertThat(selectSupport.getWhereClause(), is(expected));
+        assertThat(selectSupport.getFullSelectStatement(), is(expectedFullStatement));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -149,9 +119,19 @@ public class SelectSupportTest {
                 .orderBy(column1)
                 .build();
 
+        assertThat(selectSupport.getDistinct(), is(""));
         assertThat(selectSupport.getColumnList(), is("a.column1 as A_COLUMN1, a.column2"));
         assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1}"));
         assertThat(selectSupport.getOrderByClause(), is("order by A_COLUMN1 ASC"));
+        
+        String expectedFullStatement = "select "
+                + selectSupport.getColumnList()
+                + " from foo a "
+                + selectSupport.getWhereClause()
+                + " "
+                + selectSupport.getOrderByClause();
+        
+        assertThat(selectSupport.getFullSelectStatement(), is(expectedFullStatement));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -167,8 +147,19 @@ public class SelectSupportTest {
                 .orderBy(column2.descending())
                 .build();
 
+        assertThat(selectSupport.getDistinct(), is(""));
+        assertThat(selectSupport.getColumnList(), is("a.column1 as A_COLUMN1, a.column2"));
         assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1}"));
         assertThat(selectSupport.getOrderByClause(), is("order by column2 DESC"));
+        
+        String expectedFullStatement = "select "
+                + selectSupport.getColumnList()
+                + " from foo a "
+                + selectSupport.getWhereClause()
+                + " "
+                + selectSupport.getOrderByClause();
+
+        assertThat(selectSupport.getFullSelectStatement(), is(expectedFullStatement));
         
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
@@ -184,10 +175,95 @@ public class SelectSupportTest {
                 .orderBy(column2.descending(), column1)
                 .build();
 
+        assertThat(selectSupport.getDistinct(), is(""));
+        assertThat(selectSupport.getColumnList(), is("a.column1 as A_COLUMN1, a.column2"));
         assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1}"));
         assertThat(selectSupport.getOrderByClause(), is("order by column2 DESC, A_COLUMN1 ASC"));
         
+        String expectedFullStatement = "select "
+                + selectSupport.getColumnList()
+                + " from foo a "
+                + selectSupport.getWhereClause()
+                + " "
+                + selectSupport.getOrderByClause();
+
+        assertThat(selectSupport.getFullSelectStatement(), is(expectedFullStatement));
+        
         Map<String, Object> parameters = selectSupport.getParameters();
         assertThat(parameters.get("p1"), is(d));
+    }
+
+    @Test
+    public void testDistinct() {
+        Date d = new Date();
+
+        SelectSupport selectSupport = selectDistinct(column1, column2)
+                .from(table)
+                .where(column1, isEqualTo(d))
+                .orderBy(column2.descending(), column1)
+                .build();
+
+        assertThat(selectSupport.getDistinct(), is("distinct"));
+        assertThat(selectSupport.getColumnList(), is("a.column1 as A_COLUMN1, a.column2"));
+        assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1}"));
+        assertThat(selectSupport.getOrderByClause(), is("order by column2 DESC, A_COLUMN1 ASC"));
+        
+        String expectedFullStatement = "select distinct "
+                + selectSupport.getColumnList()
+                + " from foo a "
+                + selectSupport.getWhereClause()
+                + " "
+                + selectSupport.getOrderByClause();
+
+        assertThat(selectSupport.getFullSelectStatement(), is(expectedFullStatement));
+        
+        Map<String, Object> parameters = selectSupport.getParameters();
+        assertThat(parameters.get("p1"), is(d));
+    }
+
+    @Test
+    public void testCount() {
+        Date d = new Date();
+
+        SelectSupport selectSupport = selectCount()
+                .from(table)
+                .where(column1, isEqualTo(d))
+                .build();
+
+        assertThat(selectSupport.getDistinct(), is(""));
+        assertThat(selectSupport.getColumnList(), is("count(*)"));
+        assertThat(selectSupport.getWhereClause(), is("where a.column1 = {parameters.p1}"));
+        assertThat(selectSupport.getOrderByClause(), is(""));
+        
+        String expectedFullStatement = "select "
+                + selectSupport.getColumnList()
+                + " from foo a "
+                + selectSupport.getWhereClause();
+
+        assertThat(selectSupport.getFullSelectStatement(), is(expectedFullStatement));
+        
+        Map<String, Object> parameters = selectSupport.getParameters();
+        assertThat(parameters.get("p1"), is(d));
+    }
+
+    @Test
+    public void testNoWhere() {
+        SelectSupport selectSupport = selectCount()
+                .from(table)
+                .build();
+
+        assertThat(selectSupport.getDistinct(), is(""));
+        assertThat(selectSupport.getColumnList(), is("count(*)"));
+        assertThat(selectSupport.getWhereClause(), is(""));
+        assertThat(selectSupport.getOrderByClause(), is(""));
+        
+        String expectedFullStatement = "select "
+                + selectSupport.getColumnList()
+                + " from foo a";
+
+        assertThat(selectSupport.getFullSelectStatement(), is(expectedFullStatement));
+        
+        Map<String, Object> parameters = selectSupport.getParameters();
+        assertThat(parameters.size(), is(0));
     }
 }

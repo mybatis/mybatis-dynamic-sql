@@ -18,8 +18,7 @@ package org.mybatis.dynamic.sql.update;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -48,7 +47,11 @@ public class UpdateSupport extends AbstractSqlSupport {
     }
 
     public String getWhereClause() {
-        return whereClause;
+        return whereClause().orElse(EMPTY_STRING);
+    }
+
+    public Optional<String> whereClause() {
+        return Optional.ofNullable(whereClause);
     }
 
     public Map<String, Object> getParameters() {
@@ -56,10 +59,11 @@ public class UpdateSupport extends AbstractSqlSupport {
     }
 
     public String getFullUpdateStatement() {
-        return Stream.of("update", //$NON-NLS-1$
-                table().map(SqlTable::name).orElse(UNKNOWN_TABLE),
-                getSetClause(),
-                getWhereClause()).collect(Collectors.joining(" ")); //$NON-NLS-1$
+        return "update " //$NON-NLS-1$
+                + tableName()
+                + ONE_SPACE
+                + getSetClause()
+                + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING);
     }
     
     public static UpdateSupport of(String setClause, String whereClause, Map<String, Object> parameters, SqlTable table) {

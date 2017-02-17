@@ -100,4 +100,22 @@ public class UpdateSupportTest {
         assertThat(updateSupport.getParameters().get("up2"), is("jones"));
         assertThat(updateSupport.getParameters().get("p1"), is(3));
     }
+
+    @Test
+    public void testFullUpdateStatementNoWhere() {
+        UpdateSupport updateSupport = update(foo)
+                .set(firstName).equalTo("fred")
+                .set(lastName).equalTo("jones")
+                .set(occupation).equalToNull()
+                .build();
+        
+        String expectedStatement = "update foo " 
+                + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null";
+                
+        assertThat(updateSupport.getFullUpdateStatement(), is(expectedStatement));
+        
+        assertThat(updateSupport.getParameters().size(), is(2));
+        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
+        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
+    }
 }

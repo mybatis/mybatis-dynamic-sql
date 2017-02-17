@@ -46,7 +46,27 @@ public class UpdateSupportBuilder {
     }
     
     public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return new UpdateSupportWhereBuilder(table, columnsAndValues, column, condition, subCriteria);
+        return new UpdateSupportWhereBuilder(table, column, condition, subCriteria);
+    }
+    
+    /**
+     * WARNING! Calling this method will result in an update statement that updates
+     * all rows in a table.
+     * 
+     * @return
+     */
+    public UpdateSupport build() {
+        FragmentCollector setValuesCollector = renderSetValues();
+        return UpdateSupport.of(setValuesCollector.fragments().collect(Collectors.joining(", ", "set ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                null, setValuesCollector.parameters(), table);
+    }
+    
+    private FragmentCollector renderSetValues() {
+        return columnsAndValues.stream()
+                .map(SetColumnAndValue::fragmentAndParameters)
+                .collect(Collector.of(FragmentCollector::new,
+                        FragmentCollector::add,
+                        FragmentCollector::merge));
     }
     
     public class UpdateSupportBuilderFinisher<T> {
@@ -79,14 +99,12 @@ public class UpdateSupportBuilder {
         return new UpdateSupportBuilder(table);
     }
     
-    public static class UpdateSupportWhereBuilder extends AbstractWhereBuilder<UpdateSupportWhereBuilder> {
-        private List<SetColumnAndValue<?>> setColumnsAndValues;
+    public class UpdateSupportWhereBuilder extends AbstractWhereBuilder<UpdateSupportWhereBuilder> {
         private SqlTable table;
         
-        public <T> UpdateSupportWhereBuilder(SqlTable table, List<SetColumnAndValue<?>> setColumnsAndValues, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        public <T> UpdateSupportWhereBuilder(SqlTable table, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
             this.table = table;
-            this.setColumnsAndValues = setColumnsAndValues;
         }
         
         public UpdateSupport build() {
@@ -99,14 +117,6 @@ public class UpdateSupportBuilder {
                     whereSupport.getWhereClause(), parameters, table);
         }
         
-        private FragmentCollector renderSetValues() {
-            return setColumnsAndValues.stream()
-                    .map(SetColumnAndValue::fragmentAndParameters)
-                    .collect(Collector.of(FragmentCollector::new,
-                            FragmentCollector::add,
-                            FragmentCollector::merge));
-        }
-
         @Override
         protected UpdateSupportWhereBuilder getThis() {
             return this;
