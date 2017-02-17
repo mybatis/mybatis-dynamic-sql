@@ -50,10 +50,5 @@ public abstract class AbstractListValueCondition<T> implements Condition<T> {
         return visitor.visit(this);
     }
     
-    @Override
-    public int valueCount() {
-        return values.size();
-    }
-
     public abstract String render(String columnName, Stream<String> placeholders);
 }

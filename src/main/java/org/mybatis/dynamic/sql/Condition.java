@@ -17,5 +17,4 @@ package org.mybatis.dynamic.sql;
 
 public interface Condition<T> {
     <R> R accept(ConditionVisitor<T, R> visitor);
-    int valueCount();
 }

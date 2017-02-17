@@ -49,9 +49,4 @@ public abstract class AbstractCriterion<T, S extends AbstractColumn<T>, R extend
     public Stream<R> subCriteria() {
         return subCriteria.stream();
     }
-    
-    public int valueCount() {
-        int subCriteriaCount = subCriteria.stream().mapToInt(AbstractCriterion::valueCount).sum();
-        return subCriteriaCount + condition.valueCount();
-    }
 }

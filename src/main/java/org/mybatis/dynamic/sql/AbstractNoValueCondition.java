@@ -22,10 +22,5 @@ public abstract class AbstractNoValueCondition <T> implements Condition<T> {
         return visitor.visit(this);
     }
 
-    @Override
-    public int valueCount() {
-        return 0;
-    }
-    
     public abstract String render(String columnName);
 }

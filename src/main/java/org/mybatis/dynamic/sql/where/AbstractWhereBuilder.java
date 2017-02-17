@@ -30,8 +30,8 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
 
 public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
-    private List<CriterionWrapper> criteria = new ArrayList<>();
-    private int valueCount = 1;
+    private List<SqlCriterion<?>> criteria = new ArrayList<>();
+    private AtomicInteger sequence = new AtomicInteger(1);
     
     protected <S> AbstractWhereBuilder(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
         SqlCriterion<S> criterion = SqlCriterion.of(column, condition, subCriteria);
@@ -51,13 +51,12 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     }
     
     private <S> void addCriterion(SqlCriterion<S> criterion) {
-        criteria.add(CriterionWrapper.of(criterion, valueCount));
-        valueCount += criterion.valueCount();
+        criteria.add(criterion);
     }
     
     protected WhereSupport renderCriteria(Function<SqlColumn<?>, String> nameFunction) {
         FragmentCollector fc = criteria.stream()
-                .map(c -> c.render(nameFunction))
+                .map(c -> renderCriterion(c, nameFunction))
                 .collect(Collector.of(FragmentCollector::new,
                         FragmentCollector::add,
                         FragmentCollector::merge));
@@ -66,21 +65,9 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
                 fc.parameters());
     }
     
-    protected abstract T getThis();
-    
-    static class CriterionWrapper {
-        SqlCriterion<?> criterion;
-        AtomicInteger sequence;
-        
-        FragmentAndParameters render(Function<SqlColumn<?>, String> nameFunction) {
-            return CriterionRenderer.of(sequence, nameFunction).render(criterion);
-        }
-        
-        static CriterionWrapper of(SqlCriterion<?> criterion, int idStartValue) {
-            CriterionWrapper wrapper = new CriterionWrapper();
-            wrapper.criterion = criterion;
-            wrapper.sequence = new AtomicInteger(idStartValue);
-            return wrapper;
-        }
+    private FragmentAndParameters renderCriterion(SqlCriterion<?> criterion, Function<SqlColumn<?>, String> nameFunction) {
+        return CriterionRenderer.of(sequence, nameFunction).render(criterion);
     }
+    
+    protected abstract T getThis();
 }

@@ -31,10 +31,5 @@ public abstract class AbstractSingleValueCondition<T> implements Condition<T> {
         return visitor.visit(this);
     }
 
-    @Override
-    public int valueCount() {
-        return 1;
-    }
-    
     public abstract String render(String columnName, String placeholder);
 }
