@@ -19,12 +19,8 @@ import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlConditions.isIn;
-import static org.mybatis.dynamic.sql.SqlConditions.isNull;
-import static org.mybatis.dynamic.sql.delete.DeleteSupportBuilder.deleteFrom;
-import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.selectCount;
-import static org.mybatis.dynamic.sql.update.UpdateSupportBuilder.update;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -332,7 +328,7 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            SelectSupport selectSupport = selectCount()
+            SelectSupport selectSupport = select().count()
                     .from(simpleTable)
                     .where(occupation, isNull())
                     .build();

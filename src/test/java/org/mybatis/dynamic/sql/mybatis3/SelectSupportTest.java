@@ -17,11 +17,8 @@ package org.mybatis.dynamic.sql.mybatis3;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.dynamic.sql.SqlConditions.and;
-import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlConditions.isLessThan;
-import static org.mybatis.dynamic.sql.SqlConditions.or;
-import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.sql.JDBCType;
 import java.util.Date;

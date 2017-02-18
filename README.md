@@ -190,7 +190,7 @@ All conditions can be accessed through expressive static methods in the ```org.m
 For example, a very simple condition can be defined like this:
 
 ```java
-        SelectSupport selectSupport = selectCount()
+        SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build();
@@ -199,7 +199,7 @@ For example, a very simple condition can be defined like this:
 Or this:
 
 ```java
-        SelectSupport selectSupport = selectCount()
+        SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isNull())
                 .build();
@@ -208,7 +208,7 @@ Or this:
 The "between" condition is also expressive:
 
 ```java
-        SelectSupport selectSupport = selectCount()
+        SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isBetween(1).and(4))
                 .build();
@@ -217,7 +217,7 @@ The "between" condition is also expressive:
 More complex expressions can be built using the "and" and "or" conditions as follows:
 
 ```java
-        SelectSupport selectSupport = selectCount()
+        SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
@@ -230,9 +230,9 @@ All of these statements rely on a set of expressive static methods.  It is typic
 // import all column definitions for your table
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
 
-// import all conditions and the select support builder
+// import the SQL builders and conditions
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
-import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.select;
 ```
 
 ### Fourth - Use your where clauses

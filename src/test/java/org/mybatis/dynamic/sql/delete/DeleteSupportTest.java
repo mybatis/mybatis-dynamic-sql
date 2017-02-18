@@ -17,8 +17,8 @@ package org.mybatis.dynamic.sql.delete;
 
 import static org.hamcrest.core.Is.*;
 import static org.junit.Assert.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
-import static org.mybatis.dynamic.sql.delete.DeleteSupportBuilder.deleteFrom;
 
 import java.sql.JDBCType;
 

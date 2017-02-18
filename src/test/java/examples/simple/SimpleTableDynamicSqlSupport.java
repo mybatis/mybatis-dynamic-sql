@@ -15,11 +15,8 @@
  */
 package examples.simple;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
-import static org.mybatis.dynamic.sql.delete.DeleteSupportBuilder.deleteFrom;
-import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.insert;
-import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.select;
-import static org.mybatis.dynamic.sql.update.UpdateSupportBuilder.update;
 
 import java.sql.JDBCType;
 import java.util.Date;

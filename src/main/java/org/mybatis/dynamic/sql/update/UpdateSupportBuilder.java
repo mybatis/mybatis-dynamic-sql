@@ -26,7 +26,6 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.AbstractWhereBuilder;
 import org.mybatis.dynamic.sql.where.WhereSupport;
@@ -69,6 +68,10 @@ public class UpdateSupportBuilder {
                         FragmentCollector::merge));
     }
     
+    public static UpdateSupportBuilder of(SqlTable table) {
+        return new UpdateSupportBuilder(table);
+    }
+    
     public class UpdateSupportBuilderFinisher<T> {
         
         private SqlColumn<T> column;
@@ -95,10 +98,6 @@ public class UpdateSupportBuilder {
         }
     }
 
-    public static UpdateSupportBuilder update(SqlTable table) {
-        return new UpdateSupportBuilder(table);
-    }
-    
     public class UpdateSupportWhereBuilder extends AbstractWhereBuilder<UpdateSupportWhereBuilder> {
         private SqlTable table;
         
@@ -120,37 +119,6 @@ public class UpdateSupportBuilder {
         @Override
         protected UpdateSupportWhereBuilder getThis() {
             return this;
-        }
-    }
-    
-    static class SetColumnAndValue<T> {
-        private FragmentAndParameters fragmentAndParameters;
-        
-        private SetColumnAndValue(SqlColumn<T> column, T value, int uniqueId) {
-            String mapKey = "up" + uniqueId; //$NON-NLS-1$
-            String jdbcPlaceholder = column.getFormattedJdbcPlaceholder("parameters", mapKey); //$NON-NLS-1$
-            String setPhrase = column.name() + " = " + jdbcPlaceholder; //$NON-NLS-1$
-            
-            fragmentAndParameters = new FragmentAndParameters.Builder(setPhrase) //$NON-NLS-1$)
-                    .withParameter(mapKey, value)
-                    .build();
-        }
-        
-        private SetColumnAndValue(SqlColumn<T> column) {
-            fragmentAndParameters = new FragmentAndParameters.Builder(column.name() + " = null") //$NON-NLS-1$)
-                    .build();
-        }
-        
-        FragmentAndParameters fragmentAndParameters() {
-            return fragmentAndParameters;
-        }
-        
-        static <T> SetColumnAndValue<T> of(SqlColumn<T> column, T value, int uniqueId) {
-            return new SetColumnAndValue<>(column, value, uniqueId);
-        }
-
-        static <T> SetColumnAndValue<T> of(SqlColumn<T> column) {
-            return new SetColumnAndValue<>(column);
         }
     }
 }

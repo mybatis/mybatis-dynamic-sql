@@ -31,7 +31,7 @@ public class DeleteSupportBuilder {
     }
     
     public <T> DeleteSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return new DeleteSupportWhereBuilder(table, column, condition, subCriteria);
+        return new DeleteSupportWhereBuilder(column, condition, subCriteria);
     }
     
     /**
@@ -44,16 +44,14 @@ public class DeleteSupportBuilder {
         return DeleteSupport.of(table);
     }
     
-    public static DeleteSupportBuilder deleteFrom(SqlTable table) {
+    public static DeleteSupportBuilder of(SqlTable table) {
         return new DeleteSupportBuilder(table);
     }
     
-    public static class DeleteSupportWhereBuilder extends AbstractWhereBuilder<DeleteSupportWhereBuilder> {
-        private SqlTable table;
+    public class DeleteSupportWhereBuilder extends AbstractWhereBuilder<DeleteSupportWhereBuilder> {
         
-        private <T> DeleteSupportWhereBuilder(SqlTable table, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        private <T> DeleteSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
-            this.table = table;
         }
         
         public DeleteSupport build() {

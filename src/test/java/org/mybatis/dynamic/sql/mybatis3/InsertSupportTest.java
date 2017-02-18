@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.mybatis3;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.insert;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 

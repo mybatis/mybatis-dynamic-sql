@@ -30,7 +30,7 @@ public class SelectSupportBuilder {
     private SelectSupport.Builder builder = new SelectSupport.Builder();
 
     private SelectSupportBuilder() {
-        builder.withColumnList("count(*)"); //$NON-NLS-1$
+        super();
     }
     
     private SelectSupportBuilder(SqlColumn<?>...columns) {
@@ -39,42 +39,38 @@ public class SelectSupportBuilder {
     
     public SelectSupportAfterFromBuilder from(SqlTable table) {
         builder.withTable(table);
-        return new SelectSupportAfterFromBuilder(builder);
+        return new SelectSupportAfterFromBuilder();
     }
 
-    private void makeDistinct() {
-        builder.isDistinct();
-    }
-    
     private String calculateColumnList(SqlColumn<?>...columns) {
         return Arrays.stream(columns)
                 .map(SqlColumn::nameIncludingTableAndColumnAlias)
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
-    public static SelectSupportBuilder select(SqlColumn<?>...columns) {
+    public static SelectSupportBuilder of(SqlColumn<?>...columns) {
         return new SelectSupportBuilder(columns);
     }
     
-    public static SelectSupportBuilder selectDistinct(SqlColumn<?>...columns) {
-        SelectSupportBuilder buildStep = new SelectSupportBuilder(columns);
-        buildStep.makeDistinct();
-        return buildStep;
+    public static SelectSupportBuilder ofDistinct(SqlColumn<?>...columns) {
+        SelectSupportBuilder builder = SelectSupportBuilder.of(columns);
+        builder.builder.isDistinct();
+        return builder;
     }
     
-    public static SelectSupportBuilder selectCount() {
-        return new SelectSupportBuilder();
+    public static SelectSupportBuilder forCount() {
+        SelectSupportBuilder builder = new SelectSupportBuilder();
+        builder.builder.withColumnList("count(*)"); //$NON-NLS-1$
+        return builder;
     }
     
-    public static class SelectSupportAfterFromBuilder {
-        private SelectSupport.Builder builder;
-        
-        private SelectSupportAfterFromBuilder(SelectSupport.Builder builder) {
-            this.builder = builder;
+    public class SelectSupportAfterFromBuilder {
+        private SelectSupportAfterFromBuilder() {
+            super();
         }
         
         public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-            return new SelectSupportWhereBuilder(builder, column, condition, subCriteria);
+            return new SelectSupportWhereBuilder(column, condition, subCriteria);
         }
 
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
@@ -83,7 +79,7 @@ public class SelectSupportBuilder {
                     .map(SqlColumn::orderByPhrase)
                     .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             builder.withOrderByClause(orderByClause);
-            return new SelectSupportAfterOrderByBuilder(builder);
+            return new SelectSupportAfterOrderByBuilder();
         }
         
         public SelectSupport build() {
@@ -91,12 +87,9 @@ public class SelectSupportBuilder {
         }
     }
     
-    public static class SelectSupportWhereBuilder extends AbstractWhereBuilder<SelectSupportWhereBuilder> {
-        private SelectSupport.Builder builder;
-        
-        private <T> SelectSupportWhereBuilder(SelectSupport.Builder builder, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+    public class SelectSupportWhereBuilder extends AbstractWhereBuilder<SelectSupportWhereBuilder> {
+        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
-            this.builder = builder;
         }
         
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
@@ -106,7 +99,7 @@ public class SelectSupportBuilder {
                     .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             buildWhereSupport();
             builder.withOrderByClause(orderByClause);
-            return new SelectSupportAfterOrderByBuilder(builder);
+            return new SelectSupportAfterOrderByBuilder();
         }
         
         public SelectSupport build() {
@@ -126,11 +119,9 @@ public class SelectSupportBuilder {
         }
     }
     
-    public static class SelectSupportAfterOrderByBuilder {
-        private SelectSupport.Builder builder;
-
-        private SelectSupportAfterOrderByBuilder(SelectSupport.Builder builder) {
-            this.builder = builder;
+    public class SelectSupportAfterOrderByBuilder {
+        private SelectSupportAfterOrderByBuilder() {
+            super();
         }
         
         public SelectSupport build() {

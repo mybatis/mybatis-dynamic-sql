@@ -15,9 +15,8 @@
  */
 package examples.generated.always;
 
-import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
-import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.insert;
-import static org.mybatis.dynamic.sql.update.UpdateSupportBuilder.update;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.sql.JDBCType;
 

@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.insert;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 
 import java.sql.JDBCType;
 import java.util.ArrayList;
@@ -27,9 +27,6 @@ import java.util.stream.Collector;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.InsertSupport;
-import org.mybatis.dynamic.sql.insert.InsertSupportBuilder.InsertCollectorSupport;
-import org.mybatis.dynamic.sql.insert.InsertSupportBuilder.InsertColumnMapping;
 
 public class InsertSupportTest {
     private static final SqlTable foo = SqlTable.of("foo");
@@ -115,18 +112,17 @@ public class InsertSupportTest {
         mappings.add(InsertColumnMapping.of(lastName, "lastName"));
         mappings.add(InsertColumnMapping.of(occupation, "occupation"));
         
-        InsertSupport<TestRecord> insertSupport = 
+        InsertColumnMappingCollector collector = 
                 mappings.parallelStream().collect(Collector.of(
-                        InsertCollectorSupport::new,
-                        InsertCollectorSupport::add,
-                        InsertCollectorSupport::merge,
-                        c -> c.toInsertSupport(record, foo)));
+                        InsertColumnMappingCollector::new,
+                        InsertColumnMappingCollector::add,
+                        InsertColumnMappingCollector::merge));
                 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
+        assertThat(collector.columnsPhrase(), is(expectedColumnsPhrase));
 
         String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
-        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+        assertThat(collector.valuesPhrase(), is(expectedValuesPhrase));
     }
     
     @Test

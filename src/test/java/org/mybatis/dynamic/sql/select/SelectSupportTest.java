@@ -17,11 +17,8 @@ package org.mybatis.dynamic.sql.select;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.dynamic.sql.SqlConditions.and;
-import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlConditions.isLessThan;
-import static org.mybatis.dynamic.sql.SqlConditions.or;
-import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.sql.JDBCType;
 import java.util.Date;
@@ -197,7 +194,7 @@ public class SelectSupportTest {
     public void testDistinct() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectDistinct(column1, column2)
+        SelectSupport selectSupport = select().distinct(column1, column2)
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)
@@ -225,7 +222,7 @@ public class SelectSupportTest {
     public void testCount() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectCount()
+        SelectSupport selectSupport = select().count()
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .build();
@@ -248,7 +245,7 @@ public class SelectSupportTest {
 
     @Test
     public void testNoWhere() {
-        SelectSupport selectSupport = selectCount()
+        SelectSupport selectSupport = select().count()
                 .from(table)
                 .build();
 

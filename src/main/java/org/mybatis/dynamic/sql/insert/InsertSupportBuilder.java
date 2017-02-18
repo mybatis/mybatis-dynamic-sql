@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -32,21 +31,19 @@ public class InsertSupportBuilder<T> {
         this.record = record;
     }
     
-    public InsertSupportMappingBuilder<T> into(SqlTable table) {
-        return new InsertSupportMappingBuilder<>(record, table);
+    public InsertSupportMappingBuilder into(SqlTable table) {
+        return new InsertSupportMappingBuilder(table);
     }
     
-    public static <T> InsertSupportBuilder<T> insert(T record) {
+    public static <T> InsertSupportBuilder<T> of(T record) {
         return new InsertSupportBuilder<>(record);
     }
     
-    public static class InsertSupportMappingBuilder<T> {
-        private T record;
-        private SqlTable table;
+    public class InsertSupportMappingBuilder {
         private List<InsertColumnMapping> columnMappings = new ArrayList<>();
+        private SqlTable table;
 
-        private InsertSupportMappingBuilder(T record, SqlTable table) {
-            this.record = record;
+        private InsertSupportMappingBuilder(SqlTable table) {
             this.table = table;
         }
         
@@ -55,11 +52,11 @@ public class InsertSupportBuilder<T> {
         }
         
         public InsertSupport<T> build() {
-            return columnMappings.stream().collect(Collector.of(
-                    InsertCollectorSupport::new,
-                    InsertCollectorSupport::add,
-                    InsertCollectorSupport::merge,
-                    c -> c.toInsertSupport(record, table)));
+            InsertColumnMappingCollector collector = columnMappings.stream().collect(Collector.of(
+                    InsertColumnMappingCollector::new,
+                    InsertColumnMappingCollector::add,
+                    InsertColumnMappingCollector::merge));
+            return InsertSupport.of(collector.columnsPhrase(), collector.valuesPhrase(), record, table);
         }
         
         public class InsertSupportMappingBuilderFinisher<F> {
@@ -69,77 +66,22 @@ public class InsertSupportBuilder<T> {
                 this.column = column;
             }
             
-            public InsertSupportMappingBuilder<T> toProperty(String property) {
+            public InsertSupportMappingBuilder toProperty(String property) {
                 columnMappings.add(InsertColumnMapping.of(column, property));
                 return InsertSupportMappingBuilder.this;
             }
             
-            public InsertSupportMappingBuilder<T> toPropertyWhenPresent(String property, Supplier<F> valueSupplier) {
+            public InsertSupportMappingBuilder toPropertyWhenPresent(String property, Supplier<F> valueSupplier) {
                 if (valueSupplier.get() != null) {
                     columnMappings.add(InsertColumnMapping.of(column, property));
                 }
                 return InsertSupportMappingBuilder.this;
             }
             
-            public InsertSupportMappingBuilder<T> toNull() {
+            public InsertSupportMappingBuilder toNull() {
                 columnMappings.add(InsertColumnMapping.of(column));
                 return InsertSupportMappingBuilder.this;
             }
-        }
-    }
-
-    /**
-     * A little pair to hold the column mapping.  Only intended for use in this builder. 
-     *  
-     * @param <F> the column type of this mapping
-     */
-    static class InsertColumnMapping {
-        private SqlColumn<?> column;
-        private String valuePhrase;
-        
-        static InsertColumnMapping of(SqlColumn<?> column) {
-            InsertColumnMapping mapping = new InsertColumnMapping();
-            mapping.column = column;
-            mapping.valuePhrase = "null"; //$NON-NLS-1$
-            return mapping;
-        }
-        
-        static InsertColumnMapping of(SqlColumn<?> column, String property) {
-            InsertColumnMapping mapping = new InsertColumnMapping();
-            mapping.column = column;
-            mapping.valuePhrase = column.getFormattedJdbcPlaceholder("record", property); //$NON-NLS-1$
-            return mapping;
-        }
-    }
-    
-    static class InsertCollectorSupport {
-        
-        private List<String> columnPhrases = new ArrayList<>();
-        private List<String> valuePhrases = new ArrayList<>();
-        
-        void add(InsertColumnMapping mapping) {
-            columnPhrases.add(mapping.column.name());
-            valuePhrases.add(mapping.valuePhrase);
-        }
-        
-        InsertCollectorSupport merge(InsertCollectorSupport other) {
-            columnPhrases.addAll(other.columnPhrases);
-            valuePhrases.addAll(other.valuePhrases);
-            return this;
-        }
-        
-        String columnsPhrase() {
-            return columnPhrases.stream()
-                    .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
-        }
-
-        String valuesPhrase() {
-            return valuePhrases.stream()
-                    .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-        
-        <T> InsertSupport<T> toInsertSupport(T record, SqlTable table) {
-            return InsertSupport.of(columnsPhrase(), valuesPhrase(), record, table);
         }
     }
 }

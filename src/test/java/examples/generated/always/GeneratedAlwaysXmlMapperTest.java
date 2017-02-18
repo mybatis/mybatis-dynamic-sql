@@ -18,9 +18,8 @@ package examples.generated.always;
 import static examples.generated.always.GeneratedAlwaysDynamicSqlSupport.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlConditions.isIn;
-import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

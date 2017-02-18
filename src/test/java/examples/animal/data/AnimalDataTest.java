@@ -18,12 +18,8 @@ package examples.animal.data;
 import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
-import static org.mybatis.dynamic.sql.delete.DeleteSupportBuilder.deleteFrom;
-import static org.mybatis.dynamic.sql.insert.InsertSupportBuilder.insert;
-import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.select;
-import static org.mybatis.dynamic.sql.select.SelectSupportBuilder.selectDistinct;
-import static org.mybatis.dynamic.sql.update.UpdateSupportBuilder.update;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -566,7 +562,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectDistinct(id, animalName, bodyWeight, brainWeight)
+            SelectSupport selectSupport = select().distinct(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))
