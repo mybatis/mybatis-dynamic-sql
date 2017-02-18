@@ -29,7 +29,6 @@
     <menu name="User's Guide">
       <item href="introduction.html" name="Introduction" />
       <item href="quickStart.html" name="Quick Start" />
-      <item href="extending.html" name="Extending MyBatis Dynamic SQL" />
     </menu>
     
     <menu ref="reports"/>
