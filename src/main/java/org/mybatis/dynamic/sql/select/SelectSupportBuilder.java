@@ -47,6 +47,12 @@ public class SelectSupportBuilder {
                 .map(SqlColumn::nameIncludingTableAndColumnAlias)
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
     }
+    
+    private String calculateOrderByPhrase(SqlColumn<?>...columns) {
+        return Arrays.stream(columns)
+                .map(SqlColumn::orderByPhrase)
+                .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
 
     public static SelectSupportBuilder of(SqlColumn<?>...columns) {
         return new SelectSupportBuilder(columns);
@@ -74,11 +80,7 @@ public class SelectSupportBuilder {
         }
 
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
-            String orderByClause = 
-                    Arrays.stream(columns)
-                    .map(SqlColumn::orderByPhrase)
-                    .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            builder.withOrderByClause(orderByClause);
+            builder.withOrderByClause(calculateOrderByPhrase(columns));
             return new SelectSupportAfterOrderByBuilder();
         }
         
@@ -93,12 +95,8 @@ public class SelectSupportBuilder {
         }
         
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
-            String orderByClause = 
-                    Arrays.stream(columns)
-                    .map(SqlColumn::orderByPhrase)
-                    .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             buildWhereSupport();
-            builder.withOrderByClause(orderByClause);
+            builder.withOrderByClause(calculateOrderByPhrase(columns));
             return new SelectSupportAfterOrderByBuilder();
         }
         
