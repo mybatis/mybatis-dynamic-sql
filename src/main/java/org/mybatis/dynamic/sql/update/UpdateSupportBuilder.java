@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.Condition;
@@ -63,9 +62,7 @@ public class UpdateSupportBuilder {
     private FragmentCollector renderSetValues() {
         return columnsAndValues.stream()
                 .map(SetColumnAndValue::fragmentAndParameters)
-                .collect(Collector.of(FragmentCollector::new,
-                        FragmentCollector::add,
-                        FragmentCollector::merge));
+                .collect(FragmentCollector.fragmentAndParameterCollector());
     }
     
     public static UpdateSupportBuilder of(SqlTable table) {

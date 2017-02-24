@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.where.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,9 +79,7 @@ public class CriterionRenderer {
 
     private FragmentCollector renderSubCriteria(Stream<SqlCriterion<?>> subCriteria) {
         return subCriteria.map(this::renderSubCriterion)
-            .collect(Collector.of(FragmentCollector::new,
-                    FragmentCollector::add,
-                    FragmentCollector::merge));
+            .collect(FragmentCollector.fragmentAndParameterCollector());
     }
     
     private <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {

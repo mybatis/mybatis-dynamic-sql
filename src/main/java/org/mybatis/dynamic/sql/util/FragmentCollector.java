@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public class FragmentCollector {
@@ -51,6 +52,14 @@ public class FragmentCollector {
     
     public Map<String, Object> parameters() {
         return parameters;
+    }
+    
+    public static Collector<Triple<?>, FragmentCollector, FragmentCollector> tripleCollector() {
+        return Collector.of(FragmentCollector::new, FragmentCollector::add, FragmentCollector::merge);
+    }
+    
+    public static Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> fragmentAndParameterCollector() {
+        return Collector.of(FragmentCollector::new, FragmentCollector::add, FragmentCollector::merge);
     }
     
     public static class Triple<T> {

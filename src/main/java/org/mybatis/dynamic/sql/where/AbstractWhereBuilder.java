@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.Condition;
@@ -57,9 +56,7 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     protected WhereSupport renderCriteria(Function<SqlColumn<?>, String> nameFunction) {
         FragmentCollector fc = criteria.stream()
                 .map(c -> renderCriterion(c, nameFunction))
-                .collect(Collector.of(FragmentCollector::new,
-                        FragmentCollector::add,
-                        FragmentCollector::merge));
+                .collect(FragmentCollector.fragmentAndParameterCollector());
 
         return WhereSupport.of(fc.fragments().collect(Collectors.joining(" ", "where ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 fc.parameters());

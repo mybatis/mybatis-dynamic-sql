@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.where.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.stream.Collector;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
@@ -77,9 +76,7 @@ public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndPara
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
         FragmentCollector fc = condition.values()
                 .map(this::toTriple)
-                .collect(Collector.of(FragmentCollector::new,
-                        FragmentCollector::add,
-                        FragmentCollector::merge));
+                .collect(FragmentCollector.tripleCollector());
         
         return new FragmentAndParameters.Builder(condition.render(calculateColumnName(), fc.fragments()))
                 .withParameters(fc.parameters())
