@@ -54,11 +54,11 @@ public class FragmentCollector {
         return parameters;
     }
     
-    public static Collector<Triple<?>, FragmentCollector, FragmentCollector> tripleCollector() {
+    public static Collector<Triple<?>, ?, FragmentCollector> tripleCollector() {
         return Collector.of(FragmentCollector::new, FragmentCollector::add, FragmentCollector::merge);
     }
     
-    public static Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> fragmentAndParameterCollector() {
+    public static Collector<FragmentAndParameters, ?, FragmentCollector> fragmentAndParameterCollector() {
         return Collector.of(FragmentCollector::new, FragmentCollector::add, FragmentCollector::merge);
     }
     

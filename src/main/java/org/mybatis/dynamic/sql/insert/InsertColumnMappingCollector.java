@@ -17,19 +17,29 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-class InsertColumnMappingCollector {
+import org.mybatis.dynamic.sql.SqlTable;
+
+class InsertColumnMappingCollector<T> {
     
     private List<String> columnNames = new ArrayList<>();
     private List<String> valuePhrases = new ArrayList<>();
+    private T record;
+    private SqlTable table;
+    
+    public InsertColumnMappingCollector(T record, SqlTable table) {
+        this.record = record;
+        this.table = table;
+    }
     
     public void add(InsertColumnMapping mapping) {
         columnNames.add(mapping.columnName());
         valuePhrases.add(mapping.valuePhrase());
     }
     
-    public InsertColumnMappingCollector merge(InsertColumnMappingCollector other) {
+    public InsertColumnMappingCollector<T> merge(InsertColumnMappingCollector<T> other) {
         columnNames.addAll(other.columnNames);
         valuePhrases.addAll(other.valuePhrases);
         return this;
@@ -43,5 +53,16 @@ class InsertColumnMappingCollector {
     public String valuesPhrase() {
         return valuePhrases.stream()
                 .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+    
+    public InsertSupport<T> toInsertSupport() {
+        return InsertSupport.of(columnsPhrase(), valuesPhrase(), record, table);
+    }
+    
+    public static <T> Collector<InsertColumnMapping, ?, InsertSupport<T>> toInsertSupport(T record, SqlTable table) {
+        return Collector.of(() -> new InsertColumnMappingCollector<>(record, table),
+                InsertColumnMappingCollector::add,
+                InsertColumnMappingCollector::merge,
+                InsertColumnMappingCollector::toInsertSupport);
     }
 }

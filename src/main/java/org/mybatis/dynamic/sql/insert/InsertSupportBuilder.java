@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.insert;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -52,11 +51,8 @@ public class InsertSupportBuilder<T> {
         }
         
         public InsertSupport<T> build() {
-            InsertColumnMappingCollector collector = columnMappings.stream().collect(Collector.of(
-                    InsertColumnMappingCollector::new,
-                    InsertColumnMappingCollector::add,
-                    InsertColumnMappingCollector::merge));
-            return InsertSupport.of(collector.columnsPhrase(), collector.valuesPhrase(), record, table);
+            return columnMappings.stream()
+                    .collect(InsertColumnMappingCollector.toInsertSupport(record, table));
         }
         
         public class InsertSupportMappingBuilderFinisher<F> {

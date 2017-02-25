@@ -112,9 +112,9 @@ public class InsertSupportTest {
         mappings.add(InsertColumnMapping.of(lastName, "lastName"));
         mappings.add(InsertColumnMapping.of(occupation, "occupation"));
         
-        InsertColumnMappingCollector collector = 
+        InsertColumnMappingCollector<TestRecord> collector = 
                 mappings.parallelStream().collect(Collector.of(
-                        InsertColumnMappingCollector::new,
+                        () -> new InsertColumnMappingCollector<>(record, foo),
                         InsertColumnMappingCollector::add,
                         InsertColumnMappingCollector::merge));
                 
