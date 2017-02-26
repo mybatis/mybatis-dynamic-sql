@@ -35,7 +35,7 @@ public class FragmentCollector {
         parameters.putAll(fragmentAndParameters.parameters());
     }
     
-    public void add(Triple<?> triple) {
+    public void add(Triple triple) {
         fragments.add(triple.jdbcPlaceholder());
         parameters.put(triple.mapKey(), triple.value());
     }
@@ -54,18 +54,18 @@ public class FragmentCollector {
         return parameters;
     }
     
-    public static Collector<Triple<?>, ?, FragmentCollector> tripleCollector() {
+    public static Collector<Triple, FragmentCollector, FragmentCollector> tripleCollector() {
         return Collector.of(FragmentCollector::new, FragmentCollector::add, FragmentCollector::merge);
     }
     
-    public static Collector<FragmentAndParameters, ?, FragmentCollector> fragmentAndParameterCollector() {
+    public static Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> fragmentAndParameterCollector() {
         return Collector.of(FragmentCollector::new, FragmentCollector::add, FragmentCollector::merge);
     }
     
-    public static class Triple<T> {
+    public static class Triple {
         private String mapKey;
         private String jdbcPlaceholder;
-        private T value;
+        private Object value;
         
         private Triple() {
             super();
@@ -79,12 +79,12 @@ public class FragmentCollector {
             return jdbcPlaceholder;
         }
         
-        public T value() {
+        public Object value() {
             return value;
         }
         
-        public static <T> Triple<T> of(String mapKey, String jdbcPlaceholder, T value) {
-            Triple<T> triple = new Triple<>();
+        public static Triple of(String mapKey, String jdbcPlaceholder, Object value) {
+            Triple triple = new Triple();
             triple.mapKey = mapKey;
             triple.jdbcPlaceholder = jdbcPlaceholder;
             triple.value = value;

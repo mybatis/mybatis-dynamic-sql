@@ -91,7 +91,7 @@ public class ConditionRenderer<T> implements ConditionVisitor<T, FragmentAndPara
         return nameFunction.apply(column);
     }
 
-    private Triple<T> toTriple(T value) {
+    private Triple toTriple(Object value) {
         String mapKey = formatParameterMapKey(sequence.getAndIncrement());
         return Triple.of(mapKey, column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey), value);
     }

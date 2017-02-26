@@ -59,7 +59,7 @@ class InsertColumnMappingCollector<T> {
         return InsertSupport.of(columnsPhrase(), valuesPhrase(), record, table);
     }
     
-    public static <T> Collector<InsertColumnMapping, ?, InsertSupport<T>> toInsertSupport(T record, SqlTable table) {
+    public static <T> Collector<InsertColumnMapping, InsertColumnMappingCollector<T>, InsertSupport<T>> toInsertSupport(T record, SqlTable table) {
         return Collector.of(() -> new InsertColumnMappingCollector<>(record, table),
                 InsertColumnMappingCollector::add,
                 InsertColumnMappingCollector::merge,
