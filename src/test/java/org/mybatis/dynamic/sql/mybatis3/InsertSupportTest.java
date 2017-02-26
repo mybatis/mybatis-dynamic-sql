@@ -65,10 +65,10 @@ public class InsertSupportTest {
         
         InsertSupport<?> insertSupport = insert(record)
                 .into(foo)
-                .map(id).toPropertyWhenPresent("id", record::getId)
-                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
-                .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
-                .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
+                .map(id).toPropertyWhenPresent("id")
+                .map(firstName).toPropertyWhenPresent("firstName")
+                .map(lastName).toPropertyWhenPresent("lastName")
+                .map(occupation).toPropertyWhenPresent("occupation")
                 .build();
 
         String expectedColumnsPhrase = "(last_name, occupation)";

@@ -17,10 +17,10 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.util.BeanPropertyGetter;
 
 public class InsertSupportBuilder<T> {
 
@@ -67,8 +67,8 @@ public class InsertSupportBuilder<T> {
                 return InsertSupportMappingBuilder.this;
             }
             
-            public InsertSupportMappingBuilder toPropertyWhenPresent(String property, Supplier<F> valueSupplier) {
-                if (valueSupplier.get() != null) {
+            public InsertSupportMappingBuilder toPropertyWhenPresent(String property) {
+                if (BeanPropertyGetter.instance().getPropertyValue(record, property) != null) {
                     columnMappings.add(InsertColumnMapping.of(column, property));
                 }
                 return InsertSupportMappingBuilder.this;
