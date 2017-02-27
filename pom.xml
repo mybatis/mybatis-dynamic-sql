@@ -99,6 +99,8 @@
                   <artifact>org.mybatis:mybatis</artifact>
                   <excludes>
                     <exclude>**/*.dtd</exclude>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*.xml</exclude>
                   </excludes>
                 </filter>
               </filters>
