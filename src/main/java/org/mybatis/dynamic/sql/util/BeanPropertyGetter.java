@@ -38,14 +38,6 @@ public class BeanPropertyGetter {
         return instance;
     }
     
-    /**
-     * 
-     * @param bean
-     *            can be a bean or a map
-     * @param property
-     *            can be in the form obj.obj[].obj[]
-     * @return
-     */
     public Object getPropertyValue(Object bean, String property) {
         MetaObject metaObject = MetaObject.forObject(bean, objectFactory, objectWrapperFactory, reflectorFactory);
         return metaObject.getValue(property);

@@ -80,7 +80,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.0.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -99,7 +98,7 @@
                 <filter>
                   <artifact>org.mybatis:mybatis</artifact>
                   <excludes>
-                    <exclude>org/apache/ibatis/builder/xml/**</exclude>
+                    <exclude>**/*.dtd</exclude>
                   </excludes>
                 </filter>
               </filters>

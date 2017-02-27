@@ -27,4 +27,8 @@ public class ClassWithPrimitiveProperties {
     public int getId() {
         return id;
     }
+    
+    public int getInternalId() {
+        return privateId;
+    }
 }
