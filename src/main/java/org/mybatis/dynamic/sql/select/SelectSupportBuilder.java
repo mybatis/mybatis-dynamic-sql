@@ -106,7 +106,7 @@ public class SelectSupportBuilder {
         }
         
         private void buildWhereSupport() {
-            WhereSupport whereSupport = renderCriteria(SqlColumn::nameIncludingTableAlias);
+            WhereSupport whereSupport = renderCriteriaIncludingTableAlias();
             builder.withParameters(whereSupport.getParameters())
                 .withWhereClause(whereSupport.getWhereClause());
         }

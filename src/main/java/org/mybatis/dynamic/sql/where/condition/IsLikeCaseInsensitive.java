@@ -18,21 +18,21 @@ package org.mybatis.dynamic.sql.where.condition;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
-    private IsLikeCaseInsensitive(String value) {
+    protected IsLikeCaseInsensitive(String value) {
         super(value);
     }
     
-    public static IsLikeCaseInsensitive of(String value) {
-        return new IsLikeCaseInsensitive(value);
-    }
-    
     @Override
-    public String render(String columnName, String placeholder) {
+    protected String renderCondition(String columnName, String placeholder) {
         return "upper(" + columnName + ") like " + placeholder; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
-    public String value() {
+    protected String value() {
         return super.value().toUpperCase();
+    }
+
+    public static IsLikeCaseInsensitive of(String value) {
+        return new IsLikeCaseInsensitive(value);
     }
 }

@@ -106,7 +106,7 @@ public class UpdateSupportBuilder {
         public UpdateSupport build() {
             Map<String, Object> parameters = new HashMap<>();
             FragmentCollector setValuesCollector = renderSetValues();
-            WhereSupport whereSupport = renderCriteria(SqlColumn::name);
+            WhereSupport whereSupport = renderCriteriaIgnoringTableAlias();
             parameters.putAll(setValuesCollector.parameters());
             parameters.putAll(whereSupport.getParameters());
             return UpdateSupport.of(setValuesCollector.fragments().collect(Collectors.joining(", ", "set ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

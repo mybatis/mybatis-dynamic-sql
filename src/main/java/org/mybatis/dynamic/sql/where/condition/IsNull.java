@@ -24,7 +24,7 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
     }
     
     @Override
-    public String render(String columnName) {
+    protected String renderCondition(String columnName) {
         return columnName + " is null"; //$NON-NLS-1$
     }
 }

@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.where.CriterionRenderer;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 
 public class CriterionRendererTest {
@@ -38,7 +39,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::name);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment(), is("id = {parameters.p1}"));
@@ -53,7 +54,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::nameIncludingTableAlias);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment(), is("a.id = {parameters.p1}"));
@@ -67,7 +68,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::name);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment(), is("id = {parameters.p1}"));
@@ -81,7 +82,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::nameIncludingTableAlias);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment(), is("id = {parameters.p1}"));

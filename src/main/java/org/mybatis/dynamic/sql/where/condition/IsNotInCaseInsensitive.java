@@ -27,13 +27,13 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
     }
     
     @Override
-    public String render(String columnName, Stream<String> placeholders) {
+    protected String renderCondition(String columnName, Stream<String> placeholders) {
         return "upper(" + columnName + ") " + //$NON-NLS-1$ //$NON-NLS-2$
                 placeholders.collect(Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override
-    public String transformValue(String value) {
+    protected String transformValue(String value) {
         return value.toUpperCase();
     }
     

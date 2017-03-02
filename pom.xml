@@ -122,6 +122,7 @@
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
       <version>3.4.2</version>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.hsqldb</groupId>

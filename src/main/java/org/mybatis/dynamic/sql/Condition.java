@@ -15,6 +15,24 @@
  */
 package org.mybatis.dynamic.sql;
 
-public interface Condition<T> {
-    <R> R accept(ConditionVisitor<T, R> visitor);
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+
+public abstract class Condition<T> {
+    protected static final String PARAMETERS_PREFIX = "parameters"; //$NON-NLS-1$
+    
+    public FragmentAndParameters renderIgnoringTableAlias(AtomicInteger sequence, SqlColumn<T> column) {
+        return render(sequence, column, column.name());
+    }
+    
+    public FragmentAndParameters renderIncludingTableAlias(AtomicInteger sequence, SqlColumn<T> column) {
+        return render(sequence, column, column.nameIncludingTableAlias());
+    }
+    
+    protected abstract FragmentAndParameters render(AtomicInteger sequence, SqlColumn<T> column, String columnName);
+
+    protected String formatParameterMapKey(int number) {
+        return "p" + number; //$NON-NLS-1$
+    }
 }

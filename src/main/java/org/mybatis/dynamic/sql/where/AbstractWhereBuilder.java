@@ -18,15 +18,14 @@ package org.mybatis.dynamic.sql.where;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
 
 public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();
@@ -53,17 +52,27 @@ public abstract class AbstractWhereBuilder<T extends AbstractWhereBuilder<T>> {
         criteria.add(criterion);
     }
     
-    protected WhereSupport renderCriteria(Function<SqlColumn<?>, String> nameFunction) {
-        FragmentCollector fc = criteria.stream()
-                .map(c -> renderCriterion(c, nameFunction))
-                .collect(FragmentCollector.fragmentAndParameterCollector());
+    protected WhereSupport renderCriteriaIncludingTableAlias() {
+        return renderCriteria(criteria.stream().map(this::renderCriterionIncludingTableAlias));
+    }
+    
+    protected WhereSupport renderCriteriaIgnoringTableAlias() {
+        return renderCriteria(criteria.stream().map(this::renderCriterionIgnoringTableAlias));
+    }
+    
+    private WhereSupport renderCriteria(Stream<FragmentAndParameters> stream) {
+        FragmentCollector fc = stream.collect(FragmentCollector.fragmentAndParameterCollector());
 
         return WhereSupport.of(fc.fragments().collect(Collectors.joining(" ", "where ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 fc.parameters());
     }
     
-    private FragmentAndParameters renderCriterion(SqlCriterion<?> criterion, Function<SqlColumn<?>, String> nameFunction) {
-        return CriterionRenderer.of(sequence, nameFunction).render(criterion);
+    private FragmentAndParameters renderCriterionIncludingTableAlias(SqlCriterion<?> criterion) {
+        return CriterionRenderer.newRendererIncludingTableAlias(sequence).render(criterion);
+    }
+    
+    private FragmentAndParameters renderCriterionIgnoringTableAlias(SqlCriterion<?> criterion) {
+        return CriterionRenderer.newRendererIgnoringTableAlias(sequence).render(criterion);
     }
     
     protected abstract T getThis();

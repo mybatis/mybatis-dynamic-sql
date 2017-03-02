@@ -98,11 +98,11 @@ public interface SqlConditions {
     }
     
     static <T> IsBetween.Builder<T> isBetween(T value1) {
-        return IsBetween.Builder.of(value1);
+        return IsBetween.isBetween(value1);
     }
     
     static <T> IsNotBetween.Builder<T> isNotBetween(T value1) {
-        return IsNotBetween.Builder.of(value1);
+        return IsNotBetween.isNotBetween(value1);
     }
     
     // for strings only

@@ -24,12 +24,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 import org.mybatis.dynamic.sql.MyBatis3Column;
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.where.CriterionRenderer;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
-import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
 
 public class CriterionRendererTest {
 
@@ -41,7 +40,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::name);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment(), is("id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -55,7 +54,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::nameIncludingTableAlias);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment(), is("a.id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -68,7 +67,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::name);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment(), is("id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -81,7 +80,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::nameIncludingTableAlias);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment(), is("id = #{parameters.p1,jdbcType=INTEGER}"));
@@ -94,7 +93,7 @@ public class CriterionRendererTest {
         IsEqualTo<Date> condition = IsEqualTo.of(new Date());
         SqlCriterion<Date> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::name);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment(), is("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"));
@@ -108,7 +107,7 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, SqlColumn::nameIncludingTableAlias);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters rc = renderer.render(criterion);
         assertThat(rc.fragment(), is("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"));

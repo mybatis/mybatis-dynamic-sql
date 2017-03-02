@@ -16,17 +16,22 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractListValueCondition<T> implements Condition<T> {
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.util.FragmentCollector.Triple;
+
+public abstract class AbstractListValueCondition<T> extends Condition<T> {
     private List<T> values;
 
     protected AbstractListValueCondition(Stream<T> values) {
         this.values = values.collect(Collectors.toList());
     }
     
-    public final Stream<T> values() {
+    protected final Stream<T> values() {
         return values.stream().map(this::transformValue);
     }
 
@@ -41,14 +46,25 @@ public abstract class AbstractListValueCondition<T> implements Condition<T> {
      * @param value
      * @return the transformed value - in most cases the value is not changed
      */
-    public T transformValue(T value) {
+    protected T transformValue(T value) {
         return value;
     }
     
     @Override
-    public <R> R accept(ConditionVisitor<T, R> visitor) {
-        return visitor.visit(this);
+    protected FragmentAndParameters render(AtomicInteger sequence, SqlColumn<T> column, String columnName) {
+        FragmentCollector fc = values()
+                .map(v -> toTriple(sequence, column, v))
+                .collect(FragmentCollector.tripleCollector());
+        
+        return new FragmentAndParameters.Builder(renderCondition(columnName, fc.fragments()))
+                .withParameters(fc.parameters())
+                .build();
     }
     
-    public abstract String render(String columnName, Stream<String> placeholders);
+    private Triple toTriple(AtomicInteger sequence, SqlColumn<?> column, Object value) {
+        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
+        return Triple.of(mapKey, column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey), value);
+    }
+
+    protected abstract String renderCondition(String columnName, Stream<String> placeholders);
 }

@@ -15,7 +15,11 @@
  */
 package org.mybatis.dynamic.sql;
 
-public abstract class AbstractTwoValueCondition<T> implements Condition<T> {
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+
+public abstract class AbstractTwoValueCondition<T> extends Condition<T> {
     private T value1;
     private T value2;
     
@@ -24,18 +28,27 @@ public abstract class AbstractTwoValueCondition<T> implements Condition<T> {
         this.value2 = value2;
     }
 
-    public T value1() {
+    protected T value1() {
         return value1;
     }
 
-    public T value2() {
+    protected T value2() {
         return value2;
     }
 
     @Override
-    public <R> R accept(ConditionVisitor<T, R> visitor) {
-        return visitor.visit(this);
+    protected FragmentAndParameters render(AtomicInteger sequence, SqlColumn<T> column, String columnName) {
+        String mapKey1 = formatParameterMapKey(sequence.getAndIncrement());
+        String mapKey2 = formatParameterMapKey(sequence.getAndIncrement());
+        String fragment = renderCondition(columnName,
+                column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey1),
+                column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey2));
+                
+        return new FragmentAndParameters.Builder(fragment)
+                .withParameter(mapKey1, value1())
+                .withParameter(mapKey2, value2())
+                .build();
     }
 
-    public abstract String render(String columnName, String placeholder1, String placeholder2);
+    protected abstract String renderCondition(String columnName, String placeholder1, String placeholder2);
 }

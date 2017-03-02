@@ -15,21 +15,31 @@
  */
 package org.mybatis.dynamic.sql;
 
-public abstract class AbstractSingleValueCondition<T> implements Condition<T> {
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+
+public abstract class AbstractSingleValueCondition<T> extends Condition<T> {
     private T value;
     
     protected AbstractSingleValueCondition(T value) {
         this.value = value;
     }
     
-    public T value() {
+    protected T value() {
         return value;
     }
     
     @Override
-    public <R> R accept(ConditionVisitor<T, R> visitor) {
-        return visitor.visit(this);
-    }
+    protected FragmentAndParameters render(AtomicInteger sequence, SqlColumn<T> column, String columnName) {
+        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
+        String fragment = renderCondition(columnName,
+                column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey));
 
-    public abstract String render(String columnName, String placeholder);
+        return new FragmentAndParameters.Builder(fragment)
+                .withParameter(mapKey, value())
+                .build();
+    }
+    
+    protected abstract String renderCondition(String columnName, String placeholder);
 }

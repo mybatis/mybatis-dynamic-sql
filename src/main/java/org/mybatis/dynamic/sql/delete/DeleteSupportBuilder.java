@@ -55,7 +55,7 @@ public class DeleteSupportBuilder {
         }
         
         public DeleteSupport build() {
-            WhereSupport whereSupport = renderCriteria(SqlColumn::name);
+            WhereSupport whereSupport = renderCriteriaIgnoringTableAlias();
             return DeleteSupport.of(whereSupport.getWhereClause(), whereSupport.getParameters(), table);
         }
         
