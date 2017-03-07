@@ -13,24 +13,13 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package org.mybatis.ibatis.reflection.invoker;
 
-import org.mybatis.ibatis.reflection.MetaObject;
-
-public class BeanPropertyGetter {
-
-    private static BeanPropertyGetter instance = new BeanPropertyGetter();
-    
-    private BeanPropertyGetter() {
-        super();
-    }
-    
-    public static BeanPropertyGetter instance() {
-        return instance;
-    }
-    
-    public Object getPropertyValue(Object bean, String property) {
-        MetaObject metaObject = MetaObject.forObject(bean);
-        return metaObject.getValue(property);
-    }
+/**
+ * @author Clinton Begin (original)
+ * @author Jeff Butler (derivation)
+ */
+@FunctionalInterface
+public interface Invoker {
+    Object invoke(Object target, Object[] args) throws ReflectiveOperationException;
 }

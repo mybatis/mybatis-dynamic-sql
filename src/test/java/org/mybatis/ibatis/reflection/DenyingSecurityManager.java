@@ -13,24 +13,16 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package org.mybatis.ibatis.reflection;
 
-import org.mybatis.ibatis.reflection.MetaObject;
+import java.security.Permission;
 
-public class BeanPropertyGetter {
+public class DenyingSecurityManager extends SecurityManager {
 
-    private static BeanPropertyGetter instance = new BeanPropertyGetter();
-    
-    private BeanPropertyGetter() {
-        super();
-    }
-    
-    public static BeanPropertyGetter instance() {
-        return instance;
-    }
-    
-    public Object getPropertyValue(Object bean, String property) {
-        MetaObject metaObject = MetaObject.forObject(bean);
-        return metaObject.getValue(property);
+    @Override
+    public void checkPermission(Permission permission) {
+        if ("suppressAccessChecks".equals(permission.getName())) {
+            throw new SecurityException("Permission Denied by DenyingSecurityManager");
+        }
     }
 }

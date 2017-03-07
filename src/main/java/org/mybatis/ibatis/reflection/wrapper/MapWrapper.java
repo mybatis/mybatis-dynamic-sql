@@ -13,24 +13,33 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package org.mybatis.ibatis.reflection.wrapper;
+
+import java.util.Map;
 
 import org.mybatis.ibatis.reflection.MetaObject;
+import org.mybatis.ibatis.reflection.property.PropertyTokenizer;
 
-public class BeanPropertyGetter {
+/**
+ * @author Clinton Begin (initial work)
+ * @author Jeff Butler (derivation)
+ */
+public class MapWrapper extends ObjectWrapper {
 
-    private static BeanPropertyGetter instance = new BeanPropertyGetter();
-    
-    private BeanPropertyGetter() {
-        super();
+    private Map<String, Object> map;
+
+    public MapWrapper(MetaObject metaObject, Map<String, Object> map) {
+        super(metaObject);
+        this.map = map;
     }
-    
-    public static BeanPropertyGetter instance() {
-        return instance;
-    }
-    
-    public Object getPropertyValue(Object bean, String property) {
-        MetaObject metaObject = MetaObject.forObject(bean);
-        return metaObject.getValue(property);
+
+    @Override
+    public Object get(PropertyTokenizer prop) {
+        if (prop.getIndex() != null) {
+            Object collection = resolveCollection(prop);
+            return getCollectionValue(prop, collection);
+        } else {
+            return map.get(prop.getName());
+        }
     }
 }

@@ -15,14 +15,15 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.mybatis.ibatis.reflection.ReflectionException;
 
 import examples.simple.SimpleTableRecord;
 
@@ -36,6 +37,14 @@ public class BeanPropertyGetterTest {
         assertThat(BeanPropertyGetter.instance().getPropertyValue(record, "id"), is(22));
     }
 
+    @Test(expected=ReflectionException.class)
+    public void testIndexOnNonIndexedProperty() {
+        SimpleTableRecord record = new SimpleTableRecord();
+        record.setId(22);
+        
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(record, "id[3]"), is(22));
+    }
+    
     @Test
     public void testSimpleMap() {
         Map<String, Integer> testMap = new HashMap<>();
@@ -45,10 +54,70 @@ public class BeanPropertyGetterTest {
     }
 
     @Test
+    public void testComplexMap() {
+        Map<String, Map<String, Integer>> testMap = new HashMap<>();
+        Map<String, Integer> innerMap = new HashMap<>();
+        innerMap.put("id", 33);
+        testMap.put("innerMap", innerMap);
+        
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(testMap, "innerMap.id"), is(33));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(testMap, "innerMap[id]"), is(33));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(testMap, "innerMap").getClass().getName(), is(HashMap.class.getName()));
+    }
+
+    @Test
     public void testPrimitiveValue() {
         ClassWithPrimitiveProperties testClass = new ClassWithPrimitiveProperties(2, 3);
         
-        assertThat(BeanPropertyGetter.instance().getPropertyValue(testClass, "id"), is(notNullValue()));
-        assertThat(BeanPropertyGetter.instance().getPropertyValue(testClass, "privateId"), is(notNullValue()));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(testClass, "id"), is(2));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(testClass, "privateId"), is(3));
+    }
+    
+    @Test
+    public void testNull() {
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(null, "id"), is(nullValue()));
+    }
+
+    @Test
+    public void testComplexObject() {
+        ComplexObject complexObject = new ComplexObject();
+        
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "b"), is(true));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "dummy"), is(nullValue()));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "id"), is(3));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "description"), is("Outer Class"));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "names.Fred"), is("Flintstone"));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.dummy"), is(nullValue()));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.dummy.dummy"), is(nullValue()));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.id"), is(33));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.description"), is("Inner Class"));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.names.Barney"), is("Rubble"));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.names[Barney]"), is("Rubble"));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.ints[0]"), is(44));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.ints[1]"), is(55));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.active"), is(true));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.firstName"), is("Bamm Bamm"));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.a"), is("a"));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassList[0].ints[0]"), is(44));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassList[2].ints[1]"), is(55));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassMap[first].ints[0]"), is(44));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassMap[second].ints[1]"), is(55));
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassMap.first.ints[0]"), is(44));
+
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClasses[1].id"), is(33));
+    }
+    
+    @Test
+    public void testThatIsMethodsAreSelectedBeforeGetMethods() {
+        ComplexObject complexObject = new ComplexObject();
+        
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "booleanProperty"), is(false));
+    }
+
+    @Test
+    public void testThatInvocationTargetExceptionsReturnNull() {
+        ComplexObject complexObject = new ComplexObject();
+        
+        assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "throwsException"), is(nullValue()));
     }
 }

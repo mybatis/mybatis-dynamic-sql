@@ -15,22 +15,17 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.mybatis.ibatis.reflection.MetaObject;
+import java.util.StringJoiner;
+import java.util.stream.Collector;
 
-public class BeanPropertyGetter {
+public interface CustomCollectors {
 
-    private static BeanPropertyGetter instance = new BeanPropertyGetter();
-    
-    private BeanPropertyGetter() {
-        super();
-    }
-    
-    public static BeanPropertyGetter instance() {
-        return instance;
-    }
-    
-    public Object getPropertyValue(Object bean, String property) {
-        MetaObject metaObject = MetaObject.forObject(bean);
-        return metaObject.getValue(property);
+    static Collector<CharSequence, StringJoiner, String> joining(CharSequence delimiter, CharSequence prefix,
+            CharSequence suffix, CharSequence emptyValue) {
+        return Collector.of(() -> {
+            StringJoiner sj = new StringJoiner(delimiter, prefix, suffix);
+            sj.setEmptyValue(emptyValue);
+            return sj;
+        }, StringJoiner::add, StringJoiner::merge, StringJoiner::toString);
     }
 }
