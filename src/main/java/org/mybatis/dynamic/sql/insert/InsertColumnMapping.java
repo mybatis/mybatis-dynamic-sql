@@ -21,6 +21,10 @@ public class InsertColumnMapping {
     private SqlColumn<?> column;
     private String valuePhrase;
     
+    private InsertColumnMapping() {
+        super();
+    }
+    
     public String columnName() {
         return column.name();
     }
@@ -29,14 +33,14 @@ public class InsertColumnMapping {
         return valuePhrase;
     }
     
-    public static InsertColumnMapping of(SqlColumn<?> column) {
+    public static InsertColumnMapping ofConstantMap(SqlColumn<?> column, String constant) {
         InsertColumnMapping mapping = new InsertColumnMapping();
         mapping.column = column;
-        mapping.valuePhrase = "null"; //$NON-NLS-1$
+        mapping.valuePhrase = constant;
         return mapping;
     }
     
-    public static InsertColumnMapping of(SqlColumn<?> column, String property) {
+    public static InsertColumnMapping ofPropertyMap(SqlColumn<?> column, String property) {
         InsertColumnMapping mapping = new InsertColumnMapping();
         mapping.column = column;
         mapping.valuePhrase = column.getFormattedJdbcPlaceholder("record", property); //$NON-NLS-1$

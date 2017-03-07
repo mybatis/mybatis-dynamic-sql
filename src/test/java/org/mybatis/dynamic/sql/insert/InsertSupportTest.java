@@ -78,6 +78,26 @@ public class InsertSupportTest {
     }
 
     @Test
+    public void testInsertSupportBuilderWithConstants() {
+
+        TestRecord record = new TestRecord();
+        
+        InsertSupport<TestRecord> insertSupport = insert(record)
+                .into(foo)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName")
+                .map(occupation).toConstant("'Y'")
+                .build();
+
+        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
+
+        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, 'Y')";
+        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+    }
+    
+    @Test
     public void testSelectiveInsertSupportBuilder() {
         TestRecord record = new TestRecord();
         record.setLastName("jones");
@@ -107,10 +127,10 @@ public class InsertSupportTest {
         
         List<InsertColumnMapping> mappings = new ArrayList<>();
         
-        mappings.add(InsertColumnMapping.of(id, "id"));
-        mappings.add(InsertColumnMapping.of(firstName, "firstName"));
-        mappings.add(InsertColumnMapping.of(lastName, "lastName"));
-        mappings.add(InsertColumnMapping.of(occupation, "occupation"));
+        mappings.add(InsertColumnMapping.ofPropertyMap(id, "id"));
+        mappings.add(InsertColumnMapping.ofPropertyMap(firstName, "firstName"));
+        mappings.add(InsertColumnMapping.ofPropertyMap(lastName, "lastName"));
+        mappings.add(InsertColumnMapping.ofPropertyMap(occupation, "occupation"));
         
         InsertColumnMappingCollector<TestRecord> collector = 
                 mappings.parallelStream().collect(Collector.of(

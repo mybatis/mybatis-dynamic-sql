@@ -81,6 +81,30 @@ public class UpdateSupportTest {
     }
     
     @Test
+    public void testUpdateParameterStartWithConstant() {
+        UpdateSupport updateSupport = update(foo)
+                .set(occupation).equalToConstant("'Y'")
+                .set(firstName).equalTo("fred")
+                .set(lastName).equalTo("jones")
+                .where(id, isEqualTo(3))
+                .and(firstName, isEqualTo("barney"))
+                .build();
+        
+        String expectedSetClause = "set occupation = 'Y', firstName = {parameters.up1}, lastName = {parameters.up2}";
+                
+        assertThat(updateSupport.getSetClause(), is(expectedSetClause));
+        
+        String expectedWhereClauses = "where id = {parameters.p1} and firstName = {parameters.p2}";
+        assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
+        
+        assertThat(updateSupport.getParameters().size(), is(4));
+        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
+        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
+        assertThat(updateSupport.getParameters().get("p1"), is(3));
+        assertThat(updateSupport.getParameters().get("p2"), is("barney"));
+    }
+    
+    @Test
     public void testFullUpdateStatement() {
         UpdateSupport updateSupport = update(foo)
                 .set(firstName).equalTo("fred")

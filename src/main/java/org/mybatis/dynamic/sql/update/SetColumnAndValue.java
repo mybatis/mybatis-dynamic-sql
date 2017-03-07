@@ -36,6 +36,11 @@ public class SetColumnAndValue<T> {
                 .build();
     }
     
+    private SetColumnAndValue(SqlColumn<T> column, String constant) {
+        fragmentAndParameters = new FragmentAndParameters.Builder(column.name() + " = " + constant) //$NON-NLS-1$)
+                .build();
+    }
+    
     public FragmentAndParameters fragmentAndParameters() {
         return fragmentAndParameters;
     }
@@ -44,6 +49,10 @@ public class SetColumnAndValue<T> {
         return new SetColumnAndValue<>(column, value, uniqueId);
     }
 
+    public static <T> SetColumnAndValue<T> of(SqlColumn<T> column, String constant) {
+        return new SetColumnAndValue<>(column, constant);
+    }
+    
     public static <T> SetColumnAndValue<T> of(SqlColumn<T> column) {
         return new SetColumnAndValue<>(column);
     }

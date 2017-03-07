@@ -63,19 +63,24 @@ public class InsertSupportBuilder<T> {
             }
             
             public InsertSupportMappingBuilder toProperty(String property) {
-                columnMappings.add(InsertColumnMapping.of(column, property));
+                columnMappings.add(InsertColumnMapping.ofPropertyMap(column, property));
                 return InsertSupportMappingBuilder.this;
             }
             
             public InsertSupportMappingBuilder toPropertyWhenPresent(String property) {
                 if (BeanPropertyGetter.instance().getPropertyValue(record, property) != null) {
-                    columnMappings.add(InsertColumnMapping.of(column, property));
+                    columnMappings.add(InsertColumnMapping.ofPropertyMap(column, property));
                 }
                 return InsertSupportMappingBuilder.this;
             }
             
             public InsertSupportMappingBuilder toNull() {
-                columnMappings.add(InsertColumnMapping.of(column));
+                columnMappings.add(InsertColumnMapping.ofConstantMap(column, "null")); //$NON-NLS-1$
+                return InsertSupportMappingBuilder.this;
+            }
+            
+            public InsertSupportMappingBuilder toConstant(String constant) {
+                columnMappings.add(InsertColumnMapping.ofConstantMap(column, constant));
                 return InsertSupportMappingBuilder.this;
             }
         }

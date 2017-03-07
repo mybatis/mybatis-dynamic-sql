@@ -82,6 +82,11 @@ public class UpdateSupportBuilder {
             return UpdateSupportBuilder.this;
         }
 
+        public UpdateSupportBuilder equalToConstant(String constant) {
+            columnsAndValues.add(SetColumnAndValue.of(column, constant));
+            return UpdateSupportBuilder.this;
+        }
+        
         public UpdateSupportBuilder equalTo(T value) {
             columnsAndValues.add(SetColumnAndValue.of(column, value, id++));
             return UpdateSupportBuilder.this;
