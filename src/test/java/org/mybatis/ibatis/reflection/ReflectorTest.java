@@ -18,11 +18,10 @@ package org.mybatis.ibatis.reflection;
 import static org.hamcrest.core.Is.*;
 import static org.junit.Assert.assertThat;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Test;
+import org.mybatis.ibatis.reflection.invoker.Invoker;
 
 public class ReflectorTest {
 
@@ -59,22 +58,27 @@ public class ReflectorTest {
     }
     
     @Test
-    public void testThatMethodsFromSubclassesPrevail() {
+    public void testThatMethodsFromSubclassesPrevail() throws Exception {
         TestClass tc = new TestClass();
-        
         Reflector reflector = new Reflector(tc.getClass());
-        Map<String, Method> uniqueMethods = new HashMap<>();
-        
-        reflector.addUniqueMethods(uniqueMethods, TestClass.class.getDeclaredMethods());
-        Method toStringMethod = uniqueMethods.get("java.lang.String#toString");
-        assertThat(toStringMethod.getDeclaringClass().getName(), is(TestClass.class.getName()));
-
-        reflector.addUniqueMethods(uniqueMethods, Object.class.getDeclaredMethods());
-        toStringMethod = uniqueMethods.get("java.lang.String#toString");
-        // this tests that the toString method in Object does not replace the toString method from TestClass
-        assertThat(toStringMethod.getDeclaringClass().getName(), is(TestClass.class.getName()));
+        Optional<Invoker> inv = reflector.getGetInvoker("name");
+        Invoker invoker = inv.get();
+        Object answer = invoker.invoke(tc, new Object[0]);
+        assertThat(answer, is("fred"));
+        assertThat(invoker.getDeclaringClass().getName(), is(TestClass.class.getName()));
     }
 
+    @Test
+    public void testThatFieldsFromSubclassesPrevail() throws Exception {
+        TestClass tc = new TestClass();
+        Reflector reflector = new Reflector(tc.getClass());
+        Optional<Invoker> inv = reflector.getGetInvoker("privateField");
+        Invoker invoker = inv.get();
+        Object answer = invoker.invoke(tc, new Object[0]);
+        assertThat(answer, is("Test"));
+        assertThat(invoker.getDeclaringClass().getName(), is(TestClass.class.getName()));
+    }
+    
     @Test
     public void testPropertyCaseFixerSingleUpperCaseLetter() {
         assertThat(Reflector.fixPropertyCase("A"), is("a"));
@@ -135,6 +139,8 @@ public class ReflectorTest {
         Reflector r = new Reflector(TestClass.class);
         assertThat(r.getGetInvoker("firstName").isPresent(), is(true));
         assertThat(r.getGetInvoker("privateField").isPresent(), is(true));
+        assertThat(r.getGetInvoker("name").isPresent(), is(true));
+        assertThat(r.getGetInvoker("publicField").isPresent(), is(true));
     }
     
     @Test
@@ -145,11 +151,27 @@ public class ReflectorTest {
         System.setSecurityManager(oldSm);
         assertThat(r.getGetInvoker("firstName").isPresent(), is(false));
         assertThat(r.getGetInvoker("privateField").isPresent(), is(false));
+        // public methods and fields should still be available
+        assertThat(r.getGetInvoker("publicField").isPresent(), is(true));
+        assertThat(r.getGetInvoker("name").isPresent(), is(true));
     }
     
-    public static class TestClass {
+    public static class BaseClass {
         @SuppressWarnings("unused")
-        private int privateField;
+        private String privateField = "Base";
+        
+        public String getName() {
+            return "wilma";
+        }
+    }
+    
+    public static class TestClass extends BaseClass {
+        @SuppressWarnings("unused")
+        private String privateField = "Test";
+        
+        public String publicField;
+
+        @Override
         public String getName() {
             return "fred";
         }

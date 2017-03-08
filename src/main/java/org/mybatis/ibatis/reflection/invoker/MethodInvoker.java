@@ -23,14 +23,19 @@ import java.lang.reflect.Method;
  */
 public class MethodInvoker implements Invoker {
 
-  private Method method;
+    private Method method;
 
-  public MethodInvoker(Method method) {
-    this.method = method;
-  }
+    public MethodInvoker(Method method) {
+        this.method = method;
+    }
 
-  @Override
-  public Object invoke(Object target, Object[] args) throws ReflectiveOperationException {
-    return method.invoke(target, args);
-  }
+    @Override
+    public Object invoke(Object target, Object[] args) throws ReflectiveOperationException {
+        return method.invoke(target, args);
+    }
+    
+    @Override
+    public Class<?> getDeclaringClass() {
+        return method.getDeclaringClass();
+    }
 }

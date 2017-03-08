@@ -22,14 +22,19 @@ import java.lang.reflect.Field;
  * @author Jeff Butler (derivation)
  */
 public class GetFieldInvoker implements Invoker {
-  private Field field;
+    private Field field;
 
-  public GetFieldInvoker(Field field) {
-    this.field = field;
-  }
+    public GetFieldInvoker(Field field) {
+        this.field = field;
+    }
 
-  @Override
-  public Object invoke(Object target, Object[] args) throws IllegalAccessException {
-    return field.get(target);
-  }
+    @Override
+    public Object invoke(Object target, Object[] args) throws IllegalAccessException {
+        return field.get(target);
+    }
+
+    @Override
+    public Class<?> getDeclaringClass() {
+        return field.getDeclaringClass();
+    }
 }

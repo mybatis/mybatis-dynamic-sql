@@ -19,7 +19,7 @@ package org.mybatis.ibatis.reflection.invoker;
  * @author Clinton Begin (original)
  * @author Jeff Butler (derivation)
  */
-@FunctionalInterface
 public interface Invoker {
     Object invoke(Object target, Object[] args) throws ReflectiveOperationException;
+    Class<?> getDeclaringClass();
 }

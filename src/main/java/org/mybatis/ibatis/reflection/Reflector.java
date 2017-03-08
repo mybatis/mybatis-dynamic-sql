@@ -17,11 +17,13 @@ package org.mybatis.ibatis.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -103,7 +105,7 @@ public class Reflector {
         .filter(this::hasNoGetterMethod)
         .filter(this::isValidPropertyName)
         .map(this::setAccessible)
-        .filter(Field::isAccessible)
+        .filter(this::isAccessible)
         .collect(Collectors.toMap(Field::getName, GetFieldInvoker::new,  (f1, f2) -> f1, () -> getMethods));
         
         if (clazz.getSuperclass() != null) {
@@ -117,6 +119,14 @@ public class Reflector {
 
     private boolean isValidPropertyName(Field field) {
         return isValidPropertyName(field.getName());
+    }
+    
+    private boolean isAccessible(Field field) {
+        return field.isAccessible() || Modifier.isPublic(field.getModifiers());
+    }
+    
+    private boolean isAccessible(Method method) {
+        return method.isAccessible() || Modifier.isPublic(method.getModifiers());
     }
     
     static boolean isValidPropertyName(String name) {
@@ -136,28 +146,26 @@ public class Reflector {
      * @return A map containing all methods in this class
      */
     private Map<String, Method> getClassMethods(Class<?> clazz) {
-        Map<String, Method> uniqueMethods = new HashMap<>();
+        // build map of all class methods (including private methods if they can be made accessible) 
+        Map<String, Method> uniqueMethods = Arrays.stream(clazz.getDeclaredMethods())
+                .filter(m -> !m.isBridge())
+                .map(this::setAccessible)
+                .filter(this::isAccessible)
+                .collect(Collectors.toMap(this::getMethodSignature, Function.identity()));
         
-        addUniqueMethods(uniqueMethods, clazz.getDeclaredMethods());
-        
-        // we also need to look for interface methods -
-        // because the class may be abstract
+        // add interface methods because the class may be abstract
         Arrays.stream(clazz.getInterfaces())
-        .forEach(i -> addUniqueMethods(uniqueMethods, i.getMethods()));
-
+        .map(Class::getMethods)
+        .flatMap(Arrays::stream)
+        .collect(Collectors.toMap(this::getMethodSignature, Function.identity(), (m1, m2) -> m1, () -> uniqueMethods));
+        
+        // add methods from the superclass if there is one
         if (clazz.getSuperclass() != null) {
-            uniqueMethods.putAll(getClassMethods(clazz.getSuperclass()));
+            getClassMethods(clazz.getSuperclass()).entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (m1, m2) -> m1, () -> uniqueMethods));
         }
         
         return uniqueMethods;
-    }
-
-    void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
-        Arrays.stream(methods)
-        .filter(m -> !m.isBridge())
-        .map(this::setAccessible)
-        .filter(Method::isAccessible)
-        .collect(Collectors.toMap(this::getMethodSignature, m -> m, (m1, m2) -> m1, () -> uniqueMethods));
     }
     
     private Method setAccessible(Method method) {
