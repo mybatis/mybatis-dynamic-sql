@@ -64,7 +64,7 @@ public class MetaObject {
 
     private static class NullMetaObject extends MetaObject {
         private NullMetaObject() {
-            super("NullObject"); //$NON-NLS-1$
+            super(NullMetaObject.class);
         }
         
         @Override

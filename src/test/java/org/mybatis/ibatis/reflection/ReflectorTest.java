@@ -27,33 +27,25 @@ public class ReflectorTest {
 
     @Test
     public void testMethodSignatureWithGetter() throws Exception {
-        Reflector reflector = new Reflector(TestClass.class);
-        
-        String signature = reflector.getMethodSignature(TestClass.class.getMethod("getName"));
+        String signature = Reflector.getMethodSignature(TestClass.class.getMethod("getName"));
         assertThat(signature, is("java.lang.String#getName"));
     }
     
     @Test
     public void testMethodSignatureWithSetter() throws Exception {
-        Reflector reflector = new Reflector(TestClass.class);
-        
-        String signature = reflector.getMethodSignature(TestClass.class.getMethod("setName", String.class));
+        String signature = Reflector.getMethodSignature(TestClass.class.getMethod("setName", String.class));
         assertThat(signature, is("void#setName:java.lang.String"));
     }
     
     @Test
     public void testComplexMethodReturningNull() throws Exception {
-        Reflector reflector = new Reflector(TestClass.class);
-        
-        String signature = reflector.getMethodSignature(TestClass.class.getMethod("setFullName", String.class, String.class));
+        String signature = Reflector.getMethodSignature(TestClass.class.getMethod("setFullName", String.class, String.class));
         assertThat(signature, is("void#setFullName:java.lang.String,java.lang.String"));
     }
     
     @Test
     public void testComplexMethodReturningString() throws Exception {
-        Reflector reflector = new Reflector(TestClass.class);
-        
-        String signature = reflector.getMethodSignature(TestClass.class.getMethod("composeName", String.class, String.class));
+        String signature = Reflector.getMethodSignature(TestClass.class.getMethod("composeName", String.class, String.class));
         assertThat(signature, is("java.lang.String#composeName:java.lang.String,java.lang.String"));
     }
     
@@ -141,6 +133,7 @@ public class ReflectorTest {
         assertThat(r.getGetInvoker("privateField").isPresent(), is(true));
         assertThat(r.getGetInvoker("name").isPresent(), is(true));
         assertThat(r.getGetInvoker("publicField").isPresent(), is(true));
+        assertThat(r.getGetInvoker("ignored").isPresent(), is(false));
     }
     
     @Test
@@ -156,16 +149,20 @@ public class ReflectorTest {
         assertThat(r.getGetInvoker("name").isPresent(), is(true));
     }
     
-    public static class BaseClass {
+    public static class BaseClass<T> {
         @SuppressWarnings("unused")
         private String privateField = "Base";
         
         public String getName() {
             return "wilma";
         }
+        
+        public T getT() {
+            return null;
+        }
     }
     
-    public static class TestClass extends BaseClass {
+    public static class TestClass extends BaseClass<String> {
         @SuppressWarnings("unused")
         private String privateField = "Test";
         
@@ -181,6 +178,12 @@ public class ReflectorTest {
             return null;
         }
         
+        // this should cause a bridge method to be generated
+        @Override
+        public String getT() {
+            return null;
+        }
+        
         public void setName(String name) {
             
         }
@@ -191,6 +194,11 @@ public class ReflectorTest {
 
         public String composeName(String firstName, String lastName) {
             return null;
+        }
+        
+        // this is not a valid getter - should be ignored by the reflector
+        public String getIgnored(String ignored) {
+            return ignored;
         }
         
         @Override

@@ -57,15 +57,15 @@ public class Reflector {
         Map<String, Method> uniqueMethods = getClassMethods(cls);
 
         uniqueMethods.values().stream()
-                .filter(this::isAnIsGetter)
-                .collect(Collectors.toMap(this::extractIsPropertyName, MethodInvoker::new, (m1, m2) -> m1, () -> getMethods));
+                .filter(Reflector::isAnIsGetter)
+                .collect(Collectors.toMap(Reflector::extractIsPropertyName, MethodInvoker::new, (m1, m2) -> m1, () -> getMethods));
         
         uniqueMethods.values().stream()
-                .filter(this::isAGetter)
-                .collect(Collectors.toMap(this::extractGetPropertyName, MethodInvoker::new, (m1, m2) -> m1, () -> getMethods));
+                .filter(Reflector::isAGetter)
+                .collect(Collectors.toMap(Reflector::extractGetPropertyName, MethodInvoker::new, (m1, m2) -> m1, () -> getMethods));
     }
 
-    private boolean isAnIsGetter(Method method) {
+    private static boolean isAnIsGetter(Method method) {
         String methodName = method.getName();
         return methodName.startsWith(IS)
                 && methodName.length() > IS.length()
@@ -73,12 +73,12 @@ public class Reflector {
                 && method.getReturnType().equals(boolean.class);
     }
     
-    private String extractIsPropertyName(Method method) {
+    private static String extractIsPropertyName(Method method) {
         String propertyName = method.getName().substring(IS.length());
         return fixPropertyCase(propertyName);
     }
     
-    private boolean isAGetter(Method method) {
+    private static boolean isAGetter(Method method) {
         String methodName = method.getName();
         return methodName.startsWith(GET)
                 && methodName.length() > GET.length()
@@ -86,7 +86,7 @@ public class Reflector {
                 && !method.getReturnType().equals(void.class);
     }
     
-    private String extractGetPropertyName(Method method) {
+    private static String extractGetPropertyName(Method method) {
         String propertyName = method.getName().substring(GET.length());
         return fixPropertyCase(propertyName);
     }
@@ -103,9 +103,9 @@ public class Reflector {
     private void addFields(Class<?> clazz) {
         Arrays.stream(clazz.getDeclaredFields())
         .filter(this::hasNoGetterMethod)
-        .filter(this::isValidPropertyName)
-        .map(this::setAccessible)
-        .filter(this::isAccessible)
+        .filter(Reflector::isValidPropertyName)
+        .map(Reflector::setAccessible)
+        .filter(Reflector::isAccessible)
         .collect(Collectors.toMap(Field::getName, GetFieldInvoker::new,  (f1, f2) -> f1, () -> getMethods));
         
         if (clazz.getSuperclass() != null) {
@@ -117,15 +117,15 @@ public class Reflector {
         return !getMethods.containsKey(field.getName());
     }
 
-    private boolean isValidPropertyName(Field field) {
+    private static boolean isValidPropertyName(Field field) {
         return isValidPropertyName(field.getName());
     }
     
-    private boolean isAccessible(Field field) {
+    private static boolean isAccessible(Field field) {
         return field.isAccessible() || Modifier.isPublic(field.getModifiers());
     }
     
-    private boolean isAccessible(Method method) {
+    private static boolean isAccessible(Method method) {
         return method.isAccessible() || Modifier.isPublic(method.getModifiers());
     }
     
@@ -145,19 +145,19 @@ public class Reflector {
      * 
      * @return A map containing all methods in this class
      */
-    private Map<String, Method> getClassMethods(Class<?> clazz) {
+    private static Map<String, Method> getClassMethods(Class<?> clazz) {
         // build map of all class methods (including private methods if they can be made accessible) 
         Map<String, Method> uniqueMethods = Arrays.stream(clazz.getDeclaredMethods())
                 .filter(m -> !m.isBridge())
-                .map(this::setAccessible)
-                .filter(this::isAccessible)
-                .collect(Collectors.toMap(this::getMethodSignature, Function.identity()));
+                .map(Reflector::setAccessible)
+                .filter(Reflector::isAccessible)
+                .collect(Collectors.toMap(Reflector::getMethodSignature, Function.identity()));
         
         // add interface methods because the class may be abstract
         Arrays.stream(clazz.getInterfaces())
         .map(Class::getMethods)
         .flatMap(Arrays::stream)
-        .collect(Collectors.toMap(this::getMethodSignature, Function.identity(), (m1, m2) -> m1, () -> uniqueMethods));
+        .collect(Collectors.toMap(Reflector::getMethodSignature, Function.identity(), (m1, m2) -> m1, () -> uniqueMethods));
         
         // add methods from the superclass if there is one
         if (clazz.getSuperclass() != null) {
@@ -168,7 +168,7 @@ public class Reflector {
         return uniqueMethods;
     }
     
-    private Method setAccessible(Method method) {
+    private static Method setAccessible(Method method) {
         try {
             method.setAccessible(true);
         } catch (Exception e) {
@@ -178,7 +178,7 @@ public class Reflector {
         return method;
     }
 
-    private Field setAccessible(Field field) {
+    private static Field setAccessible(Field field) {
         try {
             field.setAccessible(true);
         } catch (Exception e) {
@@ -188,7 +188,7 @@ public class Reflector {
         return field;
     }
     
-    String getMethodSignature(Method method) {
+    static String getMethodSignature(Method method) {
         return method.getReturnType().getName()
                 + "#" //$NON-NLS-1$
                 + method.getName()
