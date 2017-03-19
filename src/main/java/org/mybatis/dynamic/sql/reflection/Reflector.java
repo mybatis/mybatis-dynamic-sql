@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.ibatis.reflection;
+package org.mybatis.dynamic.sql.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -28,10 +28,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.reflection.invoker.GetFieldInvoker;
+import org.mybatis.dynamic.sql.reflection.invoker.Invoker;
+import org.mybatis.dynamic.sql.reflection.invoker.MethodInvoker;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
-import org.mybatis.ibatis.reflection.invoker.GetFieldInvoker;
-import org.mybatis.ibatis.reflection.invoker.Invoker;
-import org.mybatis.ibatis.reflection.invoker.MethodInvoker;
 
 /**
  * This class represents a cached set of class definition information that

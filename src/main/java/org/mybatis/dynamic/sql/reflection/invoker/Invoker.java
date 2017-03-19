@@ -13,17 +13,13 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.ibatis.reflection;
+package org.mybatis.dynamic.sql.reflection.invoker;
 
 /**
- * @author Clinton Begin (initial work)
+ * @author Clinton Begin (original)
  * @author Jeff Butler (derivation)
  */
-public class ReflectionException extends RuntimeException {
-
-    private static final long serialVersionUID = -1969069666517038334L;
-
-    public ReflectionException(String message) {
-        super(message);
-    }
+public interface Invoker {
+    Object invoke(Object target, Object[] args) throws ReflectiveOperationException;
+    Class<?> getDeclaringClass();
 }

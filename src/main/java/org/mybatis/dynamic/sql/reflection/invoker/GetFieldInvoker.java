@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.ibatis.reflection.invoker;
+package org.mybatis.dynamic.sql.reflection.invoker;
 
 import java.lang.reflect.Field;
 

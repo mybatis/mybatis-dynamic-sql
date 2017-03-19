@@ -13,16 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.ibatis.reflection;
+package org.mybatis.dynamic.sql.reflection;
 
-import java.security.Permission;
+/**
+ * @author Clinton Begin (initial work)
+ * @author Jeff Butler (derivation)
+ */
+public class ReflectionException extends RuntimeException {
 
-public class DenyingSecurityManager extends SecurityManager {
+    private static final long serialVersionUID = -1969069666517038334L;
 
-    @Override
-    public void checkPermission(Permission permission) {
-        if ("suppressAccessChecks".equals(permission.getName())) {
-            throw new SecurityException("Permission Denied by DenyingSecurityManager");
-        }
+    public ReflectionException(String message) {
+        super(message);
     }
 }

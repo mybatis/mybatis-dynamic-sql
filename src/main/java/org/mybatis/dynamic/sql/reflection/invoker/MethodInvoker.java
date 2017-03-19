@@ -13,33 +13,29 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.ibatis.reflection.wrapper;
+package org.mybatis.dynamic.sql.reflection.invoker;
 
-import java.util.Map;
-
-import org.mybatis.ibatis.reflection.MetaObject;
-import org.mybatis.ibatis.reflection.property.PropertyTokenizer;
+import java.lang.reflect.Method;
 
 /**
  * @author Clinton Begin (initial work)
  * @author Jeff Butler (derivation)
  */
-public class MapWrapper extends ObjectWrapper {
+public class MethodInvoker implements Invoker {
 
-    private Map<String, Object> map;
+    private Method method;
 
-    public MapWrapper(MetaObject metaObject, Map<String, Object> map) {
-        super(metaObject);
-        this.map = map;
+    public MethodInvoker(Method method) {
+        this.method = method;
     }
 
     @Override
-    public Object get(PropertyTokenizer prop) {
-        if (prop.getIndex() != null) {
-            Object collection = resolveCollection(prop);
-            return getCollectionValue(prop, collection);
-        } else {
-            return map.get(prop.getName());
-        }
+    public Object invoke(Object target, Object[] args) throws ReflectiveOperationException {
+        return method.invoke(target, args);
+    }
+    
+    @Override
+    public Class<?> getDeclaringClass() {
+        return method.getDeclaringClass();
     }
 }

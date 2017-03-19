@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.ibatis.reflection;
+package org.mybatis.dynamic.sql.reflection;
 
 import static org.hamcrest.core.Is.*;
 import static org.junit.Assert.assertThat;
@@ -21,7 +21,8 @@ import static org.junit.Assert.assertThat;
 import java.util.Optional;
 
 import org.junit.Test;
-import org.mybatis.ibatis.reflection.invoker.Invoker;
+import org.mybatis.dynamic.sql.reflection.Reflector;
+import org.mybatis.dynamic.sql.reflection.invoker.Invoker;
 
 public class ReflectorTest {
 

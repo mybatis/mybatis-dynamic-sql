@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.mybatis.ibatis.reflection.MetaObject;
+import org.mybatis.dynamic.sql.reflection.MetaObject;
 
 public class BeanPropertyGetter {
 

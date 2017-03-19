@@ -13,13 +13,16 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.ibatis.reflection.invoker;
+package org.mybatis.dynamic.sql.reflection;
 
-/**
- * @author Clinton Begin (original)
- * @author Jeff Butler (derivation)
- */
-public interface Invoker {
-    Object invoke(Object target, Object[] args) throws ReflectiveOperationException;
-    Class<?> getDeclaringClass();
+import java.security.Permission;
+
+public class DenyingSecurityManager extends SecurityManager {
+
+    @Override
+    public void checkPermission(Permission permission) {
+        if ("suppressAccessChecks".equals(permission.getName())) {
+            throw new SecurityException("Permission Denied by DenyingSecurityManager");
+        }
+    }
 }

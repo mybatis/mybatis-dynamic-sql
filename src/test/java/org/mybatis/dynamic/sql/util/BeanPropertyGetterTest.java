@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.mybatis.ibatis.reflection.ReflectionException;
+import org.mybatis.dynamic.sql.reflection.ReflectionException;
 
 import examples.simple.SimpleTableRecord;
 

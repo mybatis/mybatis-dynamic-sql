@@ -13,14 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.ibatis.reflection;
+package org.mybatis.dynamic.sql.reflection;
 
 import java.util.Map;
 
-import org.mybatis.ibatis.reflection.property.PropertyTokenizer;
-import org.mybatis.ibatis.reflection.wrapper.ObjectWrapper;
-import org.mybatis.ibatis.reflection.wrapper.BeanWrapper;
-import org.mybatis.ibatis.reflection.wrapper.MapWrapper;
+import org.mybatis.dynamic.sql.reflection.property.PropertyTokenizer;
+import org.mybatis.dynamic.sql.reflection.wrapper.BeanWrapper;
+import org.mybatis.dynamic.sql.reflection.wrapper.MapWrapper;
+import org.mybatis.dynamic.sql.reflection.wrapper.ObjectWrapper;
 
 /**
  * @author Clinton Begin (initial work)
