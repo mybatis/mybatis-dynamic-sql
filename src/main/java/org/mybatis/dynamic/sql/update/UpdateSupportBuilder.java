@@ -44,7 +44,7 @@ public class UpdateSupportBuilder {
     }
     
     public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return new UpdateSupportWhereBuilder(table, column, condition, subCriteria);
+        return new UpdateSupportWhereBuilder(column, condition, subCriteria);
     }
     
     /**
@@ -101,11 +101,9 @@ public class UpdateSupportBuilder {
     }
 
     public class UpdateSupportWhereBuilder extends AbstractWhereBuilder<UpdateSupportWhereBuilder> {
-        private SqlTable table;
         
-        public <T> UpdateSupportWhereBuilder(SqlTable table, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
-            this.table = table;
         }
         
         public UpdateSupport build() {
