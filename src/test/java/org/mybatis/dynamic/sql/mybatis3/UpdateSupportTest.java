@@ -15,19 +15,22 @@
  */
 package org.mybatis.dynamic.sql.mybatis3;
 
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.core.Is.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.update;
+import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
 
 import java.sql.JDBCType;
 
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 
 public class UpdateSupportTest {
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+    
     private static final SqlTable foo = SqlTable.of("foo");
     private static final MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER);
     private static final MyBatis3Column<String> firstName = MyBatis3Column.of("firstName", JDBCType.VARCHAR);
@@ -47,15 +50,15 @@ public class UpdateSupportTest {
                 + "lastName = #{parameters.up2,jdbcType=VARCHAR}, "
                 + "occupation = null";
                 
-        assertThat(updateSupport.getSetClause(), is(expectedSetClause));
+        softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
         String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER}";
-        assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
+        softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
-        assertThat(updateSupport.getParameters().size(), is(3));
-        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
-        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("p1"), is(3));
+        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(3);
+        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+        softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
     }
 
     @Test
@@ -72,16 +75,16 @@ public class UpdateSupportTest {
                 + "firstName = #{parameters.up1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.up2,jdbcType=VARCHAR}";
                 
-        assertThat(updateSupport.getSetClause(), is(expectedSetClause));
+        softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
         String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER} "
                 + "and firstName = #{parameters.p2,jdbcType=VARCHAR}";
-        assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
+        softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
-        assertThat(updateSupport.getParameters().size(), is(4));
-        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
-        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("p1"), is(3));
-        assertThat(updateSupport.getParameters().get("p2"), is("barney"));
+        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(4);
+        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+        softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+        softly.assertThat(updateSupport.getParameters().get("p2")).isEqualTo("barney");
     }
 }

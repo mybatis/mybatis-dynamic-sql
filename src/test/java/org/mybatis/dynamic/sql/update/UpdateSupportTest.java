@@ -15,19 +15,21 @@
  */
 package org.mybatis.dynamic.sql.update;
 
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.core.Is.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.update;
+import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
 
 import java.sql.JDBCType;
 
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.update.UpdateSupport;
 
 public class UpdateSupportTest {
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = SqlColumn.of("firstName", JDBCType.VARCHAR);
@@ -45,15 +47,15 @@ public class UpdateSupportTest {
         
         String expectedSetClause = "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null";
                 
-        assertThat(updateSupport.getSetClause(), is(expectedSetClause));
+        softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
         String expectedWhereClauses = "where id = {parameters.p1}";
-        assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
+        softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
-        assertThat(updateSupport.getParameters().size(), is(3));
-        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
-        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("p1"), is(3));
+        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(3);
+        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+        softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
     }
 
     @Test
@@ -68,16 +70,16 @@ public class UpdateSupportTest {
         
         String expectedSetClause = "set occupation = null, firstName = {parameters.up1}, lastName = {parameters.up2}";
                 
-        assertThat(updateSupport.getSetClause(), is(expectedSetClause));
+        softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
         String expectedWhereClauses = "where id = {parameters.p1} and firstName = {parameters.p2}";
-        assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
+        softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
-        assertThat(updateSupport.getParameters().size(), is(4));
-        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
-        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("p1"), is(3));
-        assertThat(updateSupport.getParameters().get("p2"), is("barney"));
+        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(4);
+        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+        softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+        softly.assertThat(updateSupport.getParameters().get("p2")).isEqualTo("barney");
     }
     
     @Test
@@ -92,16 +94,16 @@ public class UpdateSupportTest {
         
         String expectedSetClause = "set occupation = 'Y', firstName = {parameters.up1}, lastName = {parameters.up2}";
                 
-        assertThat(updateSupport.getSetClause(), is(expectedSetClause));
+        softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
         String expectedWhereClauses = "where id = {parameters.p1} and firstName = {parameters.p2}";
-        assertThat(updateSupport.getWhereClause(), is(expectedWhereClauses));
+        softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
-        assertThat(updateSupport.getParameters().size(), is(4));
-        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
-        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("p1"), is(3));
-        assertThat(updateSupport.getParameters().get("p2"), is("barney"));
+        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(4);
+        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+        softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+        softly.assertThat(updateSupport.getParameters().get("p2")).isEqualTo("barney");
     }
     
     @Test
@@ -117,12 +119,12 @@ public class UpdateSupportTest {
                 + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null "
                 + "where id = {parameters.p1}";
                 
-        assertThat(updateSupport.getFullUpdateStatement(), is(expectedStatement));
+        softly.assertThat(updateSupport.getFullUpdateStatement()).isEqualTo(expectedStatement);
         
-        assertThat(updateSupport.getParameters().size(), is(3));
-        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
-        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
-        assertThat(updateSupport.getParameters().get("p1"), is(3));
+        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(3);
+        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+        softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
     }
 
     @Test
@@ -136,10 +138,10 @@ public class UpdateSupportTest {
         String expectedStatement = "update foo " 
                 + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null";
                 
-        assertThat(updateSupport.getFullUpdateStatement(), is(expectedStatement));
+        softly.assertThat(updateSupport.getFullUpdateStatement()).isEqualTo(expectedStatement);
         
-        assertThat(updateSupport.getParameters().size(), is(2));
-        assertThat(updateSupport.getParameters().get("up1"), is("fred"));
-        assertThat(updateSupport.getParameters().get("up2"), is("jones"));
+        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(2);
+        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
     }
 }

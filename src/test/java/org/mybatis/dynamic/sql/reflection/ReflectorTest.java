@@ -15,39 +15,42 @@
  */
 package org.mybatis.dynamic.sql.reflection;
 
-import static org.hamcrest.core.Is.*;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.reflection.Reflector;
 import org.mybatis.dynamic.sql.reflection.invoker.Invoker;
 
 public class ReflectorTest {
 
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+
     @Test
     public void testMethodSignatureWithGetter() throws Exception {
         String signature = Reflector.getMethodSignature(TestClass.class.getMethod("getName"));
-        assertThat(signature, is("java.lang.String#getName"));
+        assertThat(signature).isEqualTo("java.lang.String#getName");
     }
     
     @Test
     public void testMethodSignatureWithSetter() throws Exception {
         String signature = Reflector.getMethodSignature(TestClass.class.getMethod("setName", String.class));
-        assertThat(signature, is("void#setName:java.lang.String"));
+        assertThat(signature).isEqualTo("void#setName:java.lang.String");
     }
     
     @Test
     public void testComplexMethodReturningNull() throws Exception {
         String signature = Reflector.getMethodSignature(TestClass.class.getMethod("setFullName", String.class, String.class));
-        assertThat(signature, is("void#setFullName:java.lang.String,java.lang.String"));
+        assertThat(signature).isEqualTo("void#setFullName:java.lang.String,java.lang.String");
     }
     
     @Test
     public void testComplexMethodReturningString() throws Exception {
         String signature = Reflector.getMethodSignature(TestClass.class.getMethod("composeName", String.class, String.class));
-        assertThat(signature, is("java.lang.String#composeName:java.lang.String,java.lang.String"));
+        assertThat(signature).isEqualTo("java.lang.String#composeName:java.lang.String,java.lang.String");
     }
     
     @Test
@@ -57,8 +60,8 @@ public class ReflectorTest {
         Optional<Invoker> inv = reflector.getGetInvoker("name");
         Invoker invoker = inv.get();
         Object answer = invoker.invoke(tc, new Object[0]);
-        assertThat(answer, is("fred"));
-        assertThat(invoker.getDeclaringClass().getName(), is(TestClass.class.getName()));
+        softly.assertThat(answer).isEqualTo("fred");
+        softly.assertThat(invoker.getDeclaringClass()).isEqualTo(TestClass.class);
     }
 
     @Test
@@ -68,73 +71,73 @@ public class ReflectorTest {
         Optional<Invoker> inv = reflector.getGetInvoker("privateField");
         Invoker invoker = inv.get();
         Object answer = invoker.invoke(tc, new Object[0]);
-        assertThat(answer, is("Test"));
-        assertThat(invoker.getDeclaringClass().getName(), is(TestClass.class.getName()));
+        softly.assertThat(answer).isEqualTo("Test");
+        softly.assertThat(invoker.getDeclaringClass()).isEqualTo(TestClass.class);
     }
     
     @Test
     public void testPropertyCaseFixerSingleUpperCaseLetter() {
-        assertThat(Reflector.fixPropertyCase("A"), is("a"));
+        assertThat(Reflector.fixPropertyCase("A")).isEqualTo("a");
     }
     
     @Test
     public void testPropertyCaseFixerSingleLowerCaseLetter() {
-        assertThat(Reflector.fixPropertyCase("a"), is("a"));
+        assertThat(Reflector.fixPropertyCase("a")).isEqualTo("a");
     }
     
     @Test
     public void testPropertyCaseFixerCorrectName() {
-        assertThat(Reflector.fixPropertyCase("firstName"), is("firstName"));
+        assertThat(Reflector.fixPropertyCase("firstName")).isEqualTo("firstName");
     }
     
     @Test
     public void testPropertyCaseFixerUpperCaseName() {
-        assertThat(Reflector.fixPropertyCase("FirstName"), is("firstName"));
+        assertThat(Reflector.fixPropertyCase("FirstName")).isEqualTo("firstName");
     }
     
     @Test
     public void testPropertyCaseFixerAcronym() {
-        assertThat(Reflector.fixPropertyCase("IBM"), is("IBM"));
+        assertThat(Reflector.fixPropertyCase("IBM")).isEqualTo("IBM");
     }
     
     @Test
     public void testPropertyCaseFixerEmptyProperty() {
-        assertThat(Reflector.fixPropertyCase(""), is(""));
+        assertThat(Reflector.fixPropertyCase("")).isEqualTo("");
     }
     
     @Test
     public void testValidPropertyNameEmpty() {
-        assertThat(Reflector.isValidPropertyName(""), is(false));
+        assertThat(Reflector.isValidPropertyName("")).isEqualTo(false);
     }
     
     @Test
     public void testValidPropertyNameClass() {
-        assertThat(Reflector.isValidPropertyName("class"), is(false));
+        assertThat(Reflector.isValidPropertyName("class")).isEqualTo(false);
     }
     
     @Test
     public void testValidPropertyNameSerialVersionUID() {
-        assertThat(Reflector.isValidPropertyName("serialVersionUID"), is(false));
+        assertThat(Reflector.isValidPropertyName("serialVersionUID")).isEqualTo(false);
     }
     
     @Test
     public void testValidPropertyNameDollar() {
-        assertThat(Reflector.isValidPropertyName("$fred"), is(false));
+        assertThat(Reflector.isValidPropertyName("$fred")).isEqualTo(false);
     }
     
     @Test
     public void testValidPropertyName() {
-        assertThat(Reflector.isValidPropertyName("firstName"), is(true));
+        assertThat(Reflector.isValidPropertyName("firstName")).isEqualTo(true);
     }
     
     @Test
     public void someTestSetAccessible() {
         Reflector r = new Reflector(TestClass.class);
-        assertThat(r.getGetInvoker("firstName").isPresent(), is(true));
-        assertThat(r.getGetInvoker("privateField").isPresent(), is(true));
-        assertThat(r.getGetInvoker("name").isPresent(), is(true));
-        assertThat(r.getGetInvoker("publicField").isPresent(), is(true));
-        assertThat(r.getGetInvoker("ignored").isPresent(), is(false));
+        softly.assertThat(r.getGetInvoker("firstName").isPresent()).isEqualTo(true);
+        softly.assertThat(r.getGetInvoker("privateField").isPresent()).isEqualTo(true);
+        softly.assertThat(r.getGetInvoker("name").isPresent()).isEqualTo(true);
+        softly.assertThat(r.getGetInvoker("publicField").isPresent()).isEqualTo(true);
+        softly.assertThat(r.getGetInvoker("ignored").isPresent()).isEqualTo(false);
     }
     
     @Test
@@ -143,11 +146,11 @@ public class ReflectorTest {
         System.setSecurityManager(new DenyingSecurityManager());
         Reflector r = new Reflector(TestClass.class);
         System.setSecurityManager(oldSm);
-        assertThat(r.getGetInvoker("firstName").isPresent(), is(false));
-        assertThat(r.getGetInvoker("privateField").isPresent(), is(false));
+        softly.assertThat(r.getGetInvoker("firstName").isPresent()).isEqualTo(false);
+        softly.assertThat(r.getGetInvoker("privateField").isPresent()).isEqualTo(false);
         // public methods and fields should still be available
-        assertThat(r.getGetInvoker("publicField").isPresent(), is(true));
-        assertThat(r.getGetInvoker("name").isPresent(), is(true));
+        softly.assertThat(r.getGetInvoker("publicField").isPresent()).isEqualTo(true);
+        softly.assertThat(r.getGetInvoker("name").isPresent()).isEqualTo(true);
     }
     
     public static class BaseClass<T> {

@@ -17,8 +17,7 @@ package examples.simple;
 
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static examples.simple.SimpleTableDynamicSqlSupport.occupation;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
@@ -34,8 +33,8 @@ public class SampleWhereClausesTest {
                 .where(id, isEqualTo(3))
                 .build();
         
-        assertThat(selectSupport.getWhereClause(),
-                is("where a.id = #{parameters.p1,jdbcType=INTEGER}"));
+        assertThat(selectSupport.getWhereClause())
+                .isEqualTo("where a.id = #{parameters.p1,jdbcType=INTEGER}");
     }
     
     @Test
@@ -45,8 +44,7 @@ public class SampleWhereClausesTest {
                 .where(id, isNull())
                 .build();
         
-        assertThat(selectSupport.getWhereClause(),
-                is("where a.id is null"));
+        assertThat(selectSupport.getWhereClause()).isEqualTo("where a.id is null");
     }
     
     @Test
@@ -56,8 +54,8 @@ public class SampleWhereClausesTest {
                 .where(id, isBetween(1).and(4))
                 .build();
         
-        assertThat(selectSupport.getWhereClause(),
-                is("where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}"));
+        assertThat(selectSupport.getWhereClause())
+            .isEqualTo("where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}");
     }
 
     @Test
@@ -68,7 +66,7 @@ public class SampleWhereClausesTest {
                 .or(occupation, isNull(), and(id, isLessThan(6)))
                 .build();
         
-        assertThat(selectSupport.getWhereClause(),
-                is("where a.id > #{parameters.p1,jdbcType=INTEGER} or (a.occupation is null and a.id < #{parameters.p2,jdbcType=INTEGER})"));
+        assertThat(selectSupport.getWhereClause())
+            .isEqualTo("where a.id > #{parameters.p1,jdbcType=INTEGER} or (a.occupation is null and a.id < #{parameters.p2,jdbcType=INTEGER})");
     }
 }

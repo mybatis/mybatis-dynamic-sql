@@ -16,8 +16,7 @@
 package examples.animal.data;
 
 import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
@@ -35,7 +34,9 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.delete.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.InsertSupport;
@@ -43,6 +44,9 @@ import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 
 public class AnimalDataTest {
+    
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -75,8 +79,8 @@ public class AnimalDataTest {
                     .from(animalData)
                     .build();
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(65));
-            assertThat(animals.get(0).getId(), is(1));
+            softly.assertThat(animals.size()).isEqualTo(65);
+            softly.assertThat(animals.get(0).getId()).isEqualTo(1);
         } finally {
             sqlSession.close();
         }
@@ -92,8 +96,8 @@ public class AnimalDataTest {
                     .orderBy(id.descending())
                     .build();
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(65));
-            assertThat(animals.get(0).getId(), is(65));
+            softly.assertThat(animals.size()).isEqualTo(65);
+            softly.assertThat(animals.get(0).getId()).isEqualTo(65);
         } finally {
             sqlSession.close();
         }
@@ -111,7 +115,7 @@ public class AnimalDataTest {
                     .build();
             
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(19));
+            assertThat(animals.size()).isEqualTo(19);
         } finally {
             sqlSession.close();
         }
@@ -129,7 +133,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(11));
+            assertThat(animals.size()).isEqualTo(11);
         } finally {
             sqlSession.close();
         }
@@ -147,7 +151,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(14));
+            assertThat(animals.size()).isEqualTo(14);
         } finally {
             sqlSession.close();
         }
@@ -165,7 +169,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(14));
+            assertThat(animals.size()).isEqualTo(14);
         } finally {
             sqlSession.close();
         }
@@ -183,7 +187,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(1));
+            assertThat(animals.size()).isEqualTo(1);
         } finally {
             sqlSession.close();
         }
@@ -201,7 +205,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(64));
+            assertThat(animals.size()).isEqualTo(64);
         } finally {
             sqlSession.close();
         }
@@ -219,7 +223,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(6));
+            assertThat(animals.size()).isEqualTo(6);
         } finally {
             sqlSession.close();
         }
@@ -237,7 +241,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(10));
+            assertThat(animals.size()).isEqualTo(10);
         } finally {
             sqlSession.close();
         }
@@ -255,7 +259,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(3));
+            assertThat(animals.size()).isEqualTo(3);
         } finally {
             sqlSession.close();
         }
@@ -273,7 +277,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(2));
+            assertThat(animals.size()).isEqualTo(2);
         } finally {
             sqlSession.close();
         }
@@ -291,7 +295,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(62));
+            assertThat(animals.size()).isEqualTo(62);
         } finally {
             sqlSession.close();
         }
@@ -309,7 +313,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(63));
+            assertThat(animals.size()).isEqualTo(63);
         } finally {
             sqlSession.close();
         }
@@ -327,7 +331,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(2));
+            assertThat(animals.size()).isEqualTo(2);
         } finally {
             sqlSession.close();
         }
@@ -345,7 +349,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(2));
+            assertThat(animals.size()).isEqualTo(2);
         } finally {
             sqlSession.close();
         }
@@ -363,7 +367,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(63));
+            assertThat(animals.size()).isEqualTo(63);
         } finally {
             sqlSession.close();
         }
@@ -381,7 +385,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(63));
+            assertThat(animals.size()).isEqualTo(63);
         } finally {
             sqlSession.close();
         }
@@ -398,7 +402,7 @@ public class AnimalDataTest {
                     .build();
 
             int rowCount = mapper.delete(deleteSupport);
-            assertThat(rowCount, is(3));
+            assertThat(rowCount).isEqualTo(3);
         } finally {
             sqlSession.close();
         }
@@ -416,7 +420,7 @@ public class AnimalDataTest {
                     .build();
 
             int rowCount = mapper.delete(deleteSupport);
-            assertThat(rowCount, is(14));
+            assertThat(rowCount).isEqualTo(14);
         } finally {
             sqlSession.close();
         }
@@ -434,7 +438,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(0));
+            assertThat(animals.size()).isEqualTo(0);
         } finally {
             sqlSession.close();
         }
@@ -452,7 +456,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(65));
+            assertThat(animals.size()).isEqualTo(65);
         } finally {
             sqlSession.close();
         }
@@ -474,7 +478,7 @@ public class AnimalDataTest {
                     .build();
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(4));
+            assertThat(animals.size()).isEqualTo(4);
         } finally {
             sqlSession.close();
         }
@@ -498,7 +502,7 @@ public class AnimalDataTest {
                     .build();
 
             int rows = mapper.update(updateSupport);
-            assertThat(rows, is(4));
+            assertThat(rows).isEqualTo(4);
         } finally {
             sqlSession.close();
         }
@@ -524,7 +528,7 @@ public class AnimalDataTest {
                     .build();
             
             int rows = mapper.insert(insertSupport);
-            assertThat(rows, is(1));
+            assertThat(rows).isEqualTo(1);
         } finally {
             sqlSession.close();
         }
@@ -550,7 +554,7 @@ public class AnimalDataTest {
                     .build();
             
             int rows = mapper.insert(insertSupport);
-            assertThat(rows, is(1));
+            assertThat(rows).isEqualTo(1);
         } finally {
             sqlSession.close();
         }
@@ -570,8 +574,8 @@ public class AnimalDataTest {
                     .build();
             
             List<AnimalData> rows = mapper.selectMany(selectSupport);
-            assertThat(rows.size(), is(14));
-            assertThat(rows.get(0).getId(), is(65));
+            softly.assertThat(rows.size()).isEqualTo(14);
+            softly.assertThat(rows.get(0).getId()).isEqualTo(65);
         } finally {
             sqlSession.close();
         }
@@ -591,8 +595,8 @@ public class AnimalDataTest {
                     .build();
             
             List<AnimalData> rows = mapper.selectMany(selectSupport);
-            assertThat(rows.size(), is(14));
-            assertThat(rows.get(0).getId(), is(65));
+            softly.assertThat(rows.size()).isEqualTo(14);
+            softly.assertThat(rows.get(0).getId()).isEqualTo(65);
         } finally {
             sqlSession.close();
         }

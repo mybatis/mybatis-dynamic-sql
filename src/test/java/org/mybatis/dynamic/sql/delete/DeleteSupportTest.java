@@ -15,18 +15,22 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
-import static org.hamcrest.core.Is.*;
-import static org.junit.Assert.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isLikeCaseInsensitive;
 
 import java.sql.JDBCType;
 
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public class DeleteSupportTest {
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+
     private static final SqlTable foo = SqlTable.of("foo").withAlias("A");
     private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR);
@@ -39,14 +43,14 @@ public class DeleteSupportTest {
                 .build();
 
         String expectedWhereClause = "where id = {parameters.p1} or upper(first_name) like {parameters.p2}";
-        assertThat(deleteSupport.getWhereClause(), is(expectedWhereClause));
+        softly.assertThat(deleteSupport.getWhereClause()).isEqualTo(expectedWhereClause);
 
         String expectedFullStatement = "delete from foo where id = {parameters.p1} or upper(first_name) like {parameters.p2}";
-        assertThat(deleteSupport.getFullDeleteStatement(), is(expectedFullStatement));
+        softly.assertThat(deleteSupport.getFullDeleteStatement()).isEqualTo(expectedFullStatement);
         
-        assertThat(deleteSupport.getParameters().size(), is(2));
-        assertThat(deleteSupport.getParameters().get("p1"), is(3));
-        assertThat(deleteSupport.getParameters().get("p2"), is("%FR%"));
+        softly.assertThat(deleteSupport.getParameters().size()).isEqualTo(2);
+        softly.assertThat(deleteSupport.getParameters().get("p1")).isEqualTo(3);
+        softly.assertThat(deleteSupport.getParameters().get("p2")).isEqualTo("%FR%");
     }
 
     @Test
@@ -55,10 +59,10 @@ public class DeleteSupportTest {
                 .build();
 
         String expectedWhereClause = "";
-        assertThat(deleteSupport.getWhereClause(), is(expectedWhereClause));
+        softly.assertThat(deleteSupport.getWhereClause()).isEqualTo(expectedWhereClause);
 
         String expectedFullStatement = "delete from foo";
-        assertThat(deleteSupport.getFullDeleteStatement(), is(expectedFullStatement));
-        assertThat(deleteSupport.getParameters().size(), is(0));
+        softly.assertThat(deleteSupport.getFullDeleteStatement()).isEqualTo(expectedFullStatement);
+        softly.assertThat(deleteSupport.getParameters().size()).isEqualTo(0);
     }
 }

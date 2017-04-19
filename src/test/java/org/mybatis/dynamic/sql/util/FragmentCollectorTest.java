@@ -15,14 +15,15 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class FragmentCollectorTest {
 
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+    
     @Test
     public void testFragmentCollectorMerge() {
         FragmentCollector fc1 = new FragmentCollector();
@@ -35,12 +36,12 @@ public class FragmentCollectorTest {
         
         fc1 = fc1.merge(fc2);
         
-        assertThat(fc1.fragments.size(), is(2));
-        assertThat(fc1.fragments.get(0), is(":p1"));
-        assertThat(fc1.fragments.get(1), is(":p2"));
+        softly.assertThat(fc1.fragments.size()).isEqualTo(2);
+        softly.assertThat(fc1.fragments.get(0)).isEqualTo(":p1");
+        softly.assertThat(fc1.fragments.get(1)).isEqualTo(":p2");
         
-        assertThat(fc1.parameters.size(), is(2));
-        assertThat(fc1.parameters.get("p1"), is(1));
-        assertThat(fc1.parameters.get("p2"), is(2));
+        softly.assertThat(fc1.parameters.size()).isEqualTo(2);
+        softly.assertThat(fc1.parameters.get("p1")).isEqualTo(1);
+        softly.assertThat(fc1.parameters.get("p2")).isEqualTo(2);
     }
 }

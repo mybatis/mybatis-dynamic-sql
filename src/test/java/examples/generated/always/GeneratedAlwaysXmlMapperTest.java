@@ -16,8 +16,7 @@
 package examples.generated.always;
 
 import static examples.generated.always.GeneratedAlwaysDynamicSqlSupport.*;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
@@ -31,12 +30,17 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 
 public class GeneratedAlwaysXmlMapperTest {
+
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -70,7 +74,7 @@ public class GeneratedAlwaysXmlMapperTest {
             
             List<GeneratedAlwaysRecord> rows = mapper.selectByExample(selectSupport);
             
-            assertThat(rows.size(), is(1));
+            assertThat(rows.size()).isEqualTo(1);
         } finally {
             session.close();
         }
@@ -89,7 +93,7 @@ public class GeneratedAlwaysXmlMapperTest {
             
             List<GeneratedAlwaysRecord> rows = mapper.selectByExample(selectSupport);
             
-            assertThat(rows.size(), is(2));
+            assertThat(rows.size()).isEqualTo(2);
         } finally {
             session.close();
         }
@@ -107,8 +111,8 @@ public class GeneratedAlwaysXmlMapperTest {
             
             int rows = mapper.insert(buildInsertSupport(record));
             
-            assertThat(rows, is(1));
-            assertThat(record.getFullName(), is("Joe Jones"));
+            softly.assertThat(rows).isEqualTo(1);
+            softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
         } finally {
             session.close();
         }
@@ -126,8 +130,8 @@ public class GeneratedAlwaysXmlMapperTest {
             
             int rows = mapper.insert(buildInsertSelectiveSupport(record));
             
-            assertThat(rows, is(1));
-            assertThat(record.getFullName(), is("Joe Jones"));
+            softly.assertThat(rows).isEqualTo(1);
+            softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
         } finally {
             session.close();
         }
@@ -144,15 +148,15 @@ public class GeneratedAlwaysXmlMapperTest {
             record.setLastName("Jones");
             
             int rows = mapper.insert(buildInsertSupport(record));
-            assertThat(rows, is(1));
-            assertThat(record.getFullName(), is("Joe Jones"));
+            softly.assertThat(rows).isEqualTo(1);
+            softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
             
             record.setLastName("Smith");
             rows = mapper.update(buildUpdateByPrimaryKeySupport(record));
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
             
             GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(100);
-            assertThat(newRecord.getFullName(), is("Joe Smith"));
+            softly.assertThat(newRecord.getFullName()).isEqualTo("Joe Smith");
         } finally {
             session.close();
         }
@@ -171,7 +175,7 @@ public class GeneratedAlwaysXmlMapperTest {
                     .build();
             
             int rows = mapper.update(updateSupport);
-            assertThat(rows, is(3));
+            assertThat(rows).isEqualTo(3);
             
             SelectSupport selectSupport = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
@@ -180,10 +184,10 @@ public class GeneratedAlwaysXmlMapperTest {
                     .build();
             
             List<GeneratedAlwaysRecord> records = mapper.selectByExample(selectSupport);
-            assertThat(records.size(), is(3));
-            assertThat(records.get(0).getFullName(), is("Fred Jones"));
-            assertThat(records.get(1).getFullName(), is("Pebbles Jones"));
-            assertThat(records.get(2).getFullName(), is("Wilma Jones"));
+            softly.assertThat(records.size()).isEqualTo(3);
+            softly.assertThat(records.get(0).getFullName()).isEqualTo("Fred Jones");
+            softly.assertThat(records.get(1).getFullName()).isEqualTo("Pebbles Jones");
+            softly.assertThat(records.get(2).getFullName()).isEqualTo("Wilma Jones");
         } finally {
             session.close();
         }
@@ -200,18 +204,18 @@ public class GeneratedAlwaysXmlMapperTest {
             record.setLastName("Jones");
             
             int rows = mapper.insert(buildInsertSupport(record));
-            assertThat(rows, is(1));
+            assertThat(rows).isEqualTo(1);
 
             GeneratedAlwaysRecord updateRecord = new GeneratedAlwaysRecord();
             updateRecord.setId(100);
             updateRecord.setLastName("Smith");
             rows = mapper.update(buildUpdateByPrimaryKeySelectiveSupport(updateRecord));
-            assertThat(rows, is(1));
+            assertThat(rows).isEqualTo(1);
             
             GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(100);
-            assertThat(newRecord.getFirstName(), is("Joe"));
-            assertThat(newRecord.getLastName(), is("Smith"));
-            assertThat(newRecord.getFullName(), is("Joe Smith"));
+            softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
+            softly.assertThat(newRecord.getLastName()).isEqualTo("Smith");
+            softly.assertThat(newRecord.getFullName()).isEqualTo("Joe Smith");
             
         } finally {
             session.close();

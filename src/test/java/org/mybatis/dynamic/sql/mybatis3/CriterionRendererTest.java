@@ -15,13 +15,12 @@
  */
 package org.mybatis.dynamic.sql.mybatis3;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
 import java.sql.JDBCType;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -31,6 +30,8 @@ import org.mybatis.dynamic.sql.where.CriterionRenderer;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 
 public class CriterionRendererTest {
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     @Test
     public void testAliasWithIgnore() {
@@ -43,8 +44,8 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment(), is("id = #{parameters.p1,jdbcType=INTEGER}"));
-        assertThat(fp.parameters().size(), is(1));
+        softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
+        softly.assertThat(fp.parameters().size()).isEqualTo(1);
     }
 
     @Test
@@ -57,8 +58,8 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment(), is("a.id = #{parameters.p1,jdbcType=INTEGER}"));
-        assertThat(fp.parameters().size(), is(1));
+        softly.assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
+        softly.assertThat(fp.parameters().size()).isEqualTo(1);
     }
 
     @Test
@@ -70,8 +71,8 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment(), is("id = #{parameters.p1,jdbcType=INTEGER}"));
-        assertThat(fp.parameters().size(), is(1));
+        softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
+        softly.assertThat(fp.parameters().size()).isEqualTo(1);
     }
 
     @Test
@@ -83,8 +84,8 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment(), is("id = #{parameters.p1,jdbcType=INTEGER}"));
-        assertThat(fp.parameters().size(), is(1));
+        softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
+        softly.assertThat(fp.parameters().size()).isEqualTo(1);
     }
 
     @Test
@@ -96,8 +97,8 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment(), is("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"));
-        assertThat(fp.parameters().size(), is(1));
+        softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}");
+        softly.assertThat(fp.parameters().size()).isEqualTo(1);
     }
 
     @Test
@@ -110,7 +111,7 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters rc = renderer.render(criterion);
-        assertThat(rc.fragment(), is("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"));
-        assertThat(rc.parameters().size(), is(1));
+        softly.assertThat(rc.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}");
+        softly.assertThat(rc.parameters().size()).isEqualTo(1);
     }
 }

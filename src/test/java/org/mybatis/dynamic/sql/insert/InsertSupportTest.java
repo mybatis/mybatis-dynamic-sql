@@ -15,8 +15,7 @@
  */
 package org.mybatis.dynamic.sql.insert;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 
 import java.sql.JDBCType;
@@ -24,11 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
 
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public class InsertSupportTest {
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR);
@@ -51,10 +55,10 @@ public class InsertSupportTest {
                 .build();
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
+        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
         String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
-        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
 
     @Test
@@ -71,10 +75,10 @@ public class InsertSupportTest {
                 .build();
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
+        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
         String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, null)";
-        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
 
     @Test
@@ -91,10 +95,10 @@ public class InsertSupportTest {
                 .build();
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
+        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
         String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, 'Y')";
-        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
     
     @Test
@@ -112,10 +116,10 @@ public class InsertSupportTest {
                 .build();
 
         String expectedColumnsPhrase = "(last_name, occupation)";
-        assertThat(insertSupport.getColumnsPhrase(), is(expectedColumnsPhrase));
+        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
         String expectedValuesPhrase = "values ({record.lastName}, {record.occupation})";
-        assertThat(insertSupport.getValuesPhrase(), is(expectedValuesPhrase));
+        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
 
     @Test
@@ -139,10 +143,10 @@ public class InsertSupportTest {
                         InsertColumnMappingCollector::merge));
                 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        assertThat(collector.columnsPhrase(), is(expectedColumnsPhrase));
+        softly.assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
         String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
-        assertThat(collector.valuesPhrase(), is(expectedValuesPhrase));
+        softly.assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
     
     @Test
@@ -164,7 +168,7 @@ public class InsertSupportTest {
                 + "(id, first_name, last_name, occupation) "
                 + "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
         
-        assertThat(insertSupport.getFullInsertStatement(), is(expectedStatement));
+        assertThat(insertSupport.getFullInsertStatement()).isEqualTo(expectedStatement);
     }
 
     public static class TestRecord {

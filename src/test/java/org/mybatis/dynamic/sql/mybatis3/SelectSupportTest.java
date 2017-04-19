@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.mybatis3;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
@@ -24,12 +22,17 @@ import java.sql.JDBCType;
 import java.util.Date;
 import java.util.Map;
 
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 
 public class SelectSupportTest {
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+
     public static final SqlTable table = SqlTable.of("foo").withAlias("a");
     public static final MyBatis3Column<Date> column1 = MyBatis3Column.of("column1", JDBCType.DATE).inTable(table);
     public static final MyBatis3Column<Integer> column2 = MyBatis3Column.of("column2", JDBCType.INTEGER).inTable(table);
@@ -45,12 +48,12 @@ public class SelectSupportTest {
                 .and(column2, isLessThan(3))
                 .build();
 
-        assertThat(selectSupport.getWhereClause(), is("where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}"));
+        softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
         
         Map<String, Object> parameters = selectSupport.getParameters();
-        assertThat(parameters.get("p1"), is(d));
-        assertThat(parameters.get("p2"), is(4));
-        assertThat(parameters.get("p3"), is(3));
+        softly.assertThat(parameters.get("p1")).isEqualTo(d);
+        softly.assertThat(parameters.get("p2")).isEqualTo(4);
+        softly.assertThat(parameters.get("p3")).isEqualTo(3);
     }
 
     @Test
@@ -73,16 +76,16 @@ public class SelectSupportTest {
                 " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})" +
                 " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
         
-        assertThat(selectSupport.getWhereClause(), is(expected));
+        softly.assertThat(selectSupport.getWhereClause()).isEqualTo(expected);
         
         Map<String, Object> parameters = selectSupport.getParameters();
-        assertThat(parameters.get("p1"), is(d));
-        assertThat(parameters.get("p2"), is(4));
-        assertThat(parameters.get("p3"), is(3));
-        assertThat(parameters.get("p4"), is(4));
-        assertThat(parameters.get("p5"), is(6));
-        assertThat(parameters.get("p6"), is(3));
-        assertThat(parameters.get("p7"), is(d));
+        softly.assertThat(parameters.get("p1")).isEqualTo(d);
+        softly.assertThat(parameters.get("p2")).isEqualTo(4);
+        softly.assertThat(parameters.get("p3")).isEqualTo(3);
+        softly.assertThat(parameters.get("p4")).isEqualTo(4);
+        softly.assertThat(parameters.get("p5")).isEqualTo(6);
+        softly.assertThat(parameters.get("p6")).isEqualTo(3);
+        softly.assertThat(parameters.get("p7")).isEqualTo(d);
     }
 
     @Test
@@ -96,12 +99,12 @@ public class SelectSupportTest {
                 .and(column2, isLessThan(3))
                 .build();
 
-        assertThat(selectSupport.getWhereClause(), is("where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}"));
+        softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
         
         Map<String, Object> parameters = selectSupport.getParameters();
-        assertThat(parameters.get("p1"), is(d));
-        assertThat(parameters.get("p2"), is(4));
-        assertThat(parameters.get("p3"), is(3));
+        softly.assertThat(parameters.get("p1")).isEqualTo(d);
+        softly.assertThat(parameters.get("p2")).isEqualTo(4);
+        softly.assertThat(parameters.get("p3")).isEqualTo(3);
     }
 
     @Test
@@ -124,15 +127,15 @@ public class SelectSupportTest {
                 " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})" +
                 " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
         
-        assertThat(selectSupport.getWhereClause(), is(expected));
+        softly.assertThat(selectSupport.getWhereClause()).isEqualTo(expected);
         
         Map<String, Object> parameters = selectSupport.getParameters();
-        assertThat(parameters.get("p1"), is(d));
-        assertThat(parameters.get("p2"), is(4));
-        assertThat(parameters.get("p3"), is(3));
-        assertThat(parameters.get("p4"), is(4));
-        assertThat(parameters.get("p5"), is(6));
-        assertThat(parameters.get("p6"), is(3));
-        assertThat(parameters.get("p7"), is(d));
+        softly.assertThat(parameters.get("p1")).isEqualTo(d);
+        softly.assertThat(parameters.get("p2")).isEqualTo(4);
+        softly.assertThat(parameters.get("p3")).isEqualTo(3);
+        softly.assertThat(parameters.get("p4")).isEqualTo(4);
+        softly.assertThat(parameters.get("p5")).isEqualTo(6);
+        softly.assertThat(parameters.get("p6")).isEqualTo(3);
+        softly.assertThat(parameters.get("p7")).isEqualTo(d);
     }
 }

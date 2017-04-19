@@ -15,8 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.sql.JDBCType;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,9 +41,9 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment(), is("id = {parameters.p1}"));
-        assertThat(fp.parameters().size(), is(1));
-        assertThat(fp.parameters().get("p1"), is(3));
+        assertThat(fp.fragment()).isEqualTo("id = {parameters.p1}");
+        assertThat(fp.parameters().size()).isEqualTo(1);
+        assertThat(fp.parameters().get("p1")).isEqualTo(3);
     }
 
     @Test
@@ -57,9 +56,9 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment(), is("a.id = {parameters.p1}"));
-        assertThat(fp.parameters().size(), is(1));
-        assertThat(fp.parameters().get("p1"), is(3));
+        assertThat(fp.fragment()).isEqualTo("a.id = {parameters.p1}");
+        assertThat(fp.parameters().size()).isEqualTo(1);
+        assertThat(fp.parameters().get("p1")).isEqualTo(3);
     }
 
     @Test
@@ -71,9 +70,9 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment(), is("id = {parameters.p1}"));
-        assertThat(fp.parameters().size(), is(1));
-        assertThat(fp.parameters().get("p1"), is(3));
+        assertThat(fp.fragment()).isEqualTo("id = {parameters.p1}");
+        assertThat(fp.parameters().size()).isEqualTo(1);
+        assertThat(fp.parameters().get("p1")).isEqualTo(3);
     }
 
     @Test
@@ -85,8 +84,8 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment(), is("id = {parameters.p1}"));
-        assertThat(fp.parameters().size(), is(1));
-        assertThat(fp.parameters().get("p1"), is(3));
+        assertThat(fp.fragment()).isEqualTo("id = {parameters.p1}");
+        assertThat(fp.parameters().size()).isEqualTo(1);
+        assertThat(fp.parameters().get("p1")).isEqualTo(3);
     }
 }

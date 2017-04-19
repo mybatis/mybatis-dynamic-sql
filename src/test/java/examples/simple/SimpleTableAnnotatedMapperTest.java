@@ -16,9 +16,7 @@
 package examples.simple;
 
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
@@ -33,7 +31,9 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.delete.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.InsertSupport;
@@ -41,6 +41,9 @@ import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 
 public class SimpleTableAnnotatedMapperTest {
+
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -75,7 +78,7 @@ public class SimpleTableAnnotatedMapperTest {
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
-            assertThat(rows.size(), is(3));
+            assertThat(rows.size()).isEqualTo(3);
         } finally {
             session.close();
         }
@@ -94,9 +97,9 @@ public class SimpleTableAnnotatedMapperTest {
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
-            assertThat(rows.size(), is(2));
-            assertThat(rows.get(0).getId(), is(3));
-            assertThat(rows.get(1).getId(), is(6));
+            softly.assertThat(rows.size()).isEqualTo(2);
+            softly.assertThat(rows.get(0).getId()).isEqualTo(3);
+            softly.assertThat(rows.get(1).getId()).isEqualTo(6);
         } finally {
             session.close();
         }
@@ -114,7 +117,7 @@ public class SimpleTableAnnotatedMapperTest {
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
-            assertThat(rows.size(), is(2));
+            assertThat(rows.size()).isEqualTo(2);
         } finally {
             session.close();
         }
@@ -129,7 +132,7 @@ public class SimpleTableAnnotatedMapperTest {
                     .where(occupation, isNull()).build();
             int rows = mapper.delete(deleteSupport);
             
-            assertThat(rows, is(2));
+            assertThat(rows).isEqualTo(2);
         } finally {
             session.close();
         }
@@ -143,7 +146,7 @@ public class SimpleTableAnnotatedMapperTest {
             DeleteSupport deleteSupport = buildDeleteByPrimaryKeySupport(2);
             int rows = mapper.delete(deleteSupport);
             
-            assertThat(rows, is(1));
+            assertThat(rows).isEqualTo(1);
         } finally {
             session.close();
         }
@@ -163,11 +166,11 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             InsertSupport<SimpleTableRecord> insertSupport = buildFullInsertSupport(record);
-            assertThat(insertSupport.getColumnsPhrase(), is("(id, first_name, last_name, birth_date, employed, occupation)"));
+            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo("(id, first_name, last_name, birth_date, employed, occupation)");
             
             int rows = mapper.insert(insertSupport);
             
-            assertThat(rows, is(1));
+            softly.     assertThat(rows).isEqualTo(1);
         } finally {
             session.close();
         }
@@ -186,11 +189,11 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(false);
             
             InsertSupport<SimpleTableRecord> insertSupport = buildSelectiveInsertSupport(record);
-            assertThat(insertSupport.getColumnsPhrase(), is("(id, first_name, last_name, birth_date, employed)"));
+            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo("(id, first_name, last_name, birth_date, employed)");
             
             int rows = mapper.insert(insertSupport);
             
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
         } finally {
             session.close();
         }
@@ -210,14 +213,14 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             int rows = mapper.insert(buildFullInsertSupport(record));
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
             
             record.setOccupation("Programmer");
             rows = mapper.update(buildFullUpdateByPrimaryKeySupport(record));
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
             
             SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            assertThat(newRecord.getOccupation(), is("Programmer"));
+            softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
             
         } finally {
             session.close();
@@ -238,17 +241,17 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             int rows = mapper.insert(buildFullInsertSupport(record));
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
 
             SimpleTableRecord updateRecord = new SimpleTableRecord();
             updateRecord.setId(100);
             updateRecord.setOccupation("Programmer");
             rows = mapper.update(buildSelectiveUpdateByPrimaryKeySupport(updateRecord));
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
             
             SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            assertThat(newRecord.getOccupation(), is("Programmer"));
-            assertThat(newRecord.getFirstName(), is("Joe"));
+            softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
+            softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
             
         } finally {
             session.close();
@@ -269,7 +272,7 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             int rows = mapper.insert(buildFullInsertSupport(record));
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
 
             UpdateSupport updateSupport = update(simpleTable)
                     .set(occupation).equalToNull()
@@ -278,12 +281,12 @@ public class SimpleTableAnnotatedMapperTest {
                     .build();
                     
             rows = mapper.update(updateSupport);
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
             
             SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            assertThat(newRecord.getOccupation(), is(nullValue()));
-            assertThat(newRecord.getEmployed(), is(false));
-            assertThat(newRecord.getFirstName(), is("Joe"));
+            softly.assertThat(newRecord.getOccupation()).isNull();
+            softly.assertThat(newRecord.getEmployed()).isEqualTo(false);
+            softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
             
         } finally {
             session.close();
@@ -304,7 +307,7 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             int rows = mapper.insert(buildFullInsertSupport(record));
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
             
             record.setOccupation("Programmer");
             UpdateSupport updateSupport = updateByExample(record)
@@ -313,10 +316,10 @@ public class SimpleTableAnnotatedMapperTest {
                 .build();
             
             rows = mapper.update(updateSupport);
-            assertThat(rows, is(1));
+            softly.assertThat(rows).isEqualTo(1);
             
             SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            assertThat(newRecord.getOccupation(), is("Programmer"));
+            softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
             
         } finally {
             session.close();
@@ -334,7 +337,7 @@ public class SimpleTableAnnotatedMapperTest {
                     .build();
             long rows = mapper.count(selectSupport);
             
-            assertThat(rows, is(2L));
+            assertThat(rows).isEqualTo(2L);
         } finally {
             session.close();
         }

@@ -15,17 +15,19 @@
  */
 package examples.generated.always.spring;
 
-import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.*;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.buildInsertSupport;
+import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.id;
+import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.selectByExample;
 import static org.mybatis.dynamic.sql.SqlConditions.isGreaterThan;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.insert.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
@@ -40,6 +42,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 public class SpringTest {
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     private EmbeddedDatabase db;
     
@@ -61,7 +65,7 @@ public class SpringTest {
                 .orderBy(id.descending())
                 .build();
         
-        assertThat(selectSupport.getColumnList(), is("a.id as A_ID, a.first_name, a.last_name, a.full_name"));
+        softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.id as A_ID, a.first_name, a.last_name, a.full_name");
         
         List<GeneratedAlwaysRecord> records = template.query(selectSupport.getFullSelectStatement(), selectSupport.getParameters(),
                 new RowMapper<GeneratedAlwaysRecord>(){
@@ -74,10 +78,10 @@ public class SpringTest {
                     }
                 });
         
-        assertThat(records.size(), is(3));
-        assertThat(records.get(0).getId(), is(6));
-        assertThat(records.get(1).getId(), is(5));
-        assertThat(records.get(2).getId(), is(4));
+        softly.assertThat(records.size()).isEqualTo(3);
+        softly.assertThat(records.get(0).getId()).isEqualTo(6);
+        softly.assertThat(records.get(1).getId()).isEqualTo(5);
+        softly.assertThat(records.get(2).getId()).isEqualTo(4);
     }
     
     @Test
@@ -96,8 +100,8 @@ public class SpringTest {
         
         int rows = template.update(insertSupport.getFullInsertStatement(), ps, kh);
         
-        assertThat(rows, is(1));
-        assertThat(kh.getKeys().get("FULL_NAME"), is("Bob Jones"));
+        softly.assertThat(rows).isEqualTo(1);
+        softly.assertThat(kh.getKeys().get("FULL_NAME")).isEqualTo("Bob Jones");
     }
     
     @After
