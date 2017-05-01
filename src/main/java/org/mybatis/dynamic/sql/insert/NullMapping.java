@@ -13,20 +13,21 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.simple;
+package org.mybatis.dynamic.sql.insert;
 
-import java.util.List;
+import org.mybatis.dynamic.sql.SqlColumn;
 
-import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.select.SelectSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupport;
-
-public interface SimpleTableXmlMapper {
-    List<SimpleTableRecord> selectMany(SelectSupport selectSupport);
-    int delete(DeleteSupport deleteSupport);
-    int insert(InsertSupport<SimpleTableRecord> insertSupport);
-    int update(UpdateSupport updateSupport);
-    SimpleTableRecord selectOne(SelectSupport selectSupport);
-    long count(SelectSupport selectSupport);
+public class NullMapping extends AbstractColumnMapping {
+    private NullMapping(SqlColumn<?> column) {
+        super(column);
+    }
+    
+    @Override
+    public <S> S accept(ColumnMappingVisitor<S> visitor) {
+        return visitor.visit(this);
+    }
+    
+    public static NullMapping of(SqlColumn<?> column) {
+        return new NullMapping(column);
+    }
 }

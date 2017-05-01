@@ -24,7 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.InsertSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 
 public class InsertSupportTest {
     @Rule
@@ -48,7 +48,7 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toProperty("occupation")
-                .build();
+                .buildAndRender();
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
@@ -72,7 +72,7 @@ public class InsertSupportTest {
                 .map(firstName).toPropertyWhenPresent("firstName")
                 .map(lastName).toPropertyWhenPresent("lastName")
                 .map(occupation).toPropertyWhenPresent("occupation")
-                .build();
+                .buildAndRender();
 
         String expectedColumnsPhrase = "(last_name, occupation)";
         softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);

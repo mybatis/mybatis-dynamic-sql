@@ -32,6 +32,7 @@ public class SqlColumn<T> extends AbstractColumn<T> {
     protected JDBCType jdbcType;
     protected String sortOrder = ASCENDING;
     protected String alias;
+    protected String typeHandler;
     
     protected SqlColumn(SqlColumn<?> sqlColumn) {
         super(sqlColumn.name);
@@ -39,6 +40,7 @@ public class SqlColumn<T> extends AbstractColumn<T> {
         this.jdbcType = sqlColumn.jdbcType;
         this.sortOrder = sqlColumn.sortOrder;
         this.alias = sqlColumn.alias;
+        this.typeHandler = sqlColumn.typeHandler;
     }
     
     protected SqlColumn(String name, JDBCType jdbcType) {
@@ -71,6 +73,10 @@ public class SqlColumn<T> extends AbstractColumn<T> {
         return Optional.ofNullable(alias);
     }
     
+    public Optional<String> typeHandler() {
+        return Optional.ofNullable(typeHandler);
+    }
+    
     public <S> SqlColumn<S> inTable(SqlTable table) {
         SqlColumn<S> column = new SqlColumn<>(this);
         column.table = table;
@@ -86,6 +92,12 @@ public class SqlColumn<T> extends AbstractColumn<T> {
     public <S> SqlColumn<S> withAlias(String alias) {
         SqlColumn<S> column = new SqlColumn<>(this);
         column.alias = alias;
+        return column;
+    }
+    
+    public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
+        SqlColumn<S> column = new SqlColumn<>(this);
+        column.typeHandler = typeHandler;
         return column;
     }
     

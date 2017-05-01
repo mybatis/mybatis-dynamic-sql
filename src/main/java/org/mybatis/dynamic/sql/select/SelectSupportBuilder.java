@@ -22,8 +22,9 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.where.AbstractWhereBuilder;
-import org.mybatis.dynamic.sql.where.WhereSupport;
+import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
+import org.mybatis.dynamic.sql.where.render.WhereRenderer;
+import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class SelectSupportBuilder {
 
@@ -89,7 +90,7 @@ public class SelectSupportBuilder {
         }
     }
     
-    public class SelectSupportWhereBuilder extends AbstractWhereBuilder<SelectSupportWhereBuilder> {
+    public class SelectSupportWhereBuilder extends AbstractWhereModelBuilder<SelectSupportWhereBuilder> {
         private <T> SelectSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
@@ -106,7 +107,7 @@ public class SelectSupportBuilder {
         }
         
         private void buildWhereSupport() {
-            WhereSupport whereSupport = renderCriteriaIncludingTableAlias();
+            WhereSupport whereSupport = WhereRenderer.of(buildWhereModel()).renderCriteriaIncludingTableAlias();
             builder.withParameters(whereSupport.getParameters())
                 .withWhereClause(whereSupport.getWhereClause());
         }

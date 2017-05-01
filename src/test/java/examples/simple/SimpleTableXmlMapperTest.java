@@ -35,7 +35,7 @@ import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.delete.DeleteSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 
 public class SimpleTableXmlMapperTest {
@@ -126,7 +126,7 @@ public class SimpleTableXmlMapperTest {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             DeleteSupport deleteSupport = deleteFrom(simpleTable)
                     .where(occupation, isNull())
-                    .build();
+                    .buildAndRender();
             int rows = mapper.delete(deleteSupport);
             
             assertThat(rows).isEqualTo(2);

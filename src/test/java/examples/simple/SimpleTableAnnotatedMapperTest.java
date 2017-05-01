@@ -35,8 +35,8 @@ import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.delete.DeleteSupport;
-import org.mybatis.dynamic.sql.insert.InsertSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 
@@ -129,7 +129,8 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             DeleteSupport deleteSupport = deleteFrom(simpleTable)
-                    .where(occupation, isNull()).build();
+                    .where(occupation, isNull())
+                    .buildAndRender();
             int rows = mapper.delete(deleteSupport);
             
             assertThat(rows).isEqualTo(2);

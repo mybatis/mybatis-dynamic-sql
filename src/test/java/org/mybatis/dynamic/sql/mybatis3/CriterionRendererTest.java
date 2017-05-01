@@ -26,8 +26,8 @@ import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.where.CriterionRenderer;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
+import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
 
 public class CriterionRendererTest {
     @Rule

@@ -22,7 +22,7 @@ import java.sql.JDBCType;
 
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.InsertSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupportBuilder;
 
@@ -39,7 +39,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
-                .build();
+                .buildAndRender();
     }
 
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
@@ -48,7 +48,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .map(id).toPropertyWhenPresent("id")
                 .map(firstName).toPropertyWhenPresent("firstName")
                 .map(lastName).toPropertyWhenPresent("lastName")
-                .build();
+                .buildAndRender();
     }
     
     static UpdateSupport buildUpdateByPrimaryKeySupport(GeneratedAlwaysRecord record) {

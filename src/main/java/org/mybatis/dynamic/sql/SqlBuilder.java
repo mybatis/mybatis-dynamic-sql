@@ -15,20 +15,20 @@
  */
 package org.mybatis.dynamic.sql;
 
-import org.mybatis.dynamic.sql.delete.DeleteSupportBuilder;
-import org.mybatis.dynamic.sql.insert.InsertSupportBuilder;
+import org.mybatis.dynamic.sql.delete.DeleteModelBuilder;
+import org.mybatis.dynamic.sql.insert.InsertModelBuilder;
 import org.mybatis.dynamic.sql.select.SelectCountOrDistinctBuilder;
 import org.mybatis.dynamic.sql.select.SelectSupportBuilder;
 import org.mybatis.dynamic.sql.update.UpdateSupportBuilder;
 
 public interface SqlBuilder {
 
-    public static DeleteSupportBuilder deleteFrom(SqlTable table) {
-        return DeleteSupportBuilder.of(table);
+    public static DeleteModelBuilder deleteFrom(SqlTable table) {
+        return DeleteModelBuilder.of(table);
     }
 
-    public static <T> InsertSupportBuilder<T> insert(T record) {
-        return InsertSupportBuilder.of(record);
+    public static <T> InsertModelBuilder<T> insert(T record) {
+        return InsertModelBuilder.insert(record);
     }
     
     public static SelectSupportBuilder select(SqlColumn<?>...columns) {

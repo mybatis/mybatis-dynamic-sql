@@ -15,10 +15,35 @@
  */
 package examples.animal.data;
 
-import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.animalData;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.animalName;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.bodyWeight;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.brainWeight;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.id;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.SqlBuilder.insert;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.update;
+import static org.mybatis.dynamic.sql.SqlConditions.and;
+import static org.mybatis.dynamic.sql.SqlConditions.isBetween;
+import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isGreaterThan;
+import static org.mybatis.dynamic.sql.SqlConditions.isGreaterThanOrEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isIn;
+import static org.mybatis.dynamic.sql.SqlConditions.isInCaseInsensitive;
+import static org.mybatis.dynamic.sql.SqlConditions.isLessThan;
+import static org.mybatis.dynamic.sql.SqlConditions.isLessThanOrEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isLike;
+import static org.mybatis.dynamic.sql.SqlConditions.isLikeCaseInsensitive;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotBetween;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotIn;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotInCaseInsensitive;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotLike;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotLikeCaseInsensitive;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotNull;
+import static org.mybatis.dynamic.sql.SqlConditions.isNull;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,8 +63,8 @@ import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.delete.DeleteSupport;
-import org.mybatis.dynamic.sql.insert.InsertSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 
@@ -399,7 +424,7 @@ public class AnimalDataTest {
             
             DeleteSupport deleteSupport = deleteFrom(animalData)
                     .where(id, isIn(5, 8, 10))
-                    .build();
+                    .buildAndRender();
 
             int rowCount = mapper.delete(deleteSupport);
             assertThat(rowCount).isEqualTo(3);
@@ -417,7 +442,7 @@ public class AnimalDataTest {
             DeleteSupport deleteSupport = deleteFrom(animalData)
                     .where(id, isLessThan(10))
                     .or(id, isGreaterThan(60))
-                    .build();
+                    .buildAndRender();
 
             int rowCount = mapper.delete(deleteSupport);
             assertThat(rowCount).isEqualTo(14);
@@ -525,7 +550,7 @@ public class AnimalDataTest {
                     .map(animalName).toProperty("animalName")
                     .map(bodyWeight).toProperty("bodyWeight")
                     .map(brainWeight).toProperty("brainWeight")
-                    .build();
+                    .buildAndRender();
             
             int rows = mapper.insert(insertSupport);
             assertThat(rows).isEqualTo(1);
@@ -551,7 +576,7 @@ public class AnimalDataTest {
                     .map(animalName).toNull()
                     .map(bodyWeight).toProperty("bodyWeight")
                     .map(brainWeight).toProperty("brainWeight")
-                    .build();
+                    .buildAndRender();
             
             int rows = mapper.insert(insertSupport);
             assertThat(rows).isEqualTo(1);

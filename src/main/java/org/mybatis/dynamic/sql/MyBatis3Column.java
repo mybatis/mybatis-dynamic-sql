@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql;
 
 import java.sql.JDBCType;
-import java.util.Optional;
 
 /**
  * 
@@ -25,21 +24,16 @@ import java.util.Optional;
  */
 public class MyBatis3Column<T> extends SqlColumn<T> {
 
-    protected String typeHandler;
     
     protected MyBatis3Column(MyBatis3Column<?> myBatis3Column) {
         super(myBatis3Column);
-        this.typeHandler = myBatis3Column.typeHandler;
     }
     
     protected MyBatis3Column(String name, JDBCType jdbcType) {
         super(name, jdbcType);
     }
     
-    public Optional<String> typeHandler() {
-        return Optional.ofNullable(typeHandler);
-    }
-    
+    @Override
     public <S> MyBatis3Column<S> withTypeHandler(String typeHandler) {
         MyBatis3Column<S> column = new MyBatis3Column<>(this);
         column.typeHandler = typeHandler;

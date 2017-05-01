@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.insert;
+package org.mybatis.dynamic.sql.insert.render;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 import org.mybatis.dynamic.sql.SqlTable;

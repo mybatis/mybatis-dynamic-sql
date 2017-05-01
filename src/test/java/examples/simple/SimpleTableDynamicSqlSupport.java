@@ -23,8 +23,8 @@ import java.util.Date;
 
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.delete.DeleteSupport;
-import org.mybatis.dynamic.sql.insert.InsertSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportAfterFromBuilder;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
@@ -48,7 +48,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .map(birthDate).toProperty("birthDate")
                 .map(employed).toProperty("employed")
                 .map(occupation).toProperty("occupation")
-                .build();
+                .buildAndRender();
     }
 
     static InsertSupport<SimpleTableRecord> buildSelectiveInsertSupport(SimpleTableRecord record) {
@@ -60,7 +60,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .map(birthDate).toPropertyWhenPresent("birthDate")
                 .map(employed).toPropertyWhenPresent("employed")
                 .map(occupation).toPropertyWhenPresent("occupation")
-                .build();
+                .buildAndRender();
     }
     
     static UpdateSupport buildFullUpdateByPrimaryKeySupport(SimpleTableRecord record) {
@@ -108,7 +108,7 @@ public interface SimpleTableDynamicSqlSupport {
     static DeleteSupport buildDeleteByPrimaryKeySupport(Integer id_) {
         return deleteFrom(simpleTable)
                 .where(id, isEqualTo(id_))
-                .build();
+                .buildAndRender();
     }
     
     static SelectSupportAfterFromBuilder selectByExample() {

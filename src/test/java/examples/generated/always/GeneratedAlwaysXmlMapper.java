@@ -17,7 +17,7 @@ package examples.generated.always;
 
 import java.util.List;
 
-import org.mybatis.dynamic.sql.insert.InsertSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.update.UpdateSupport;
 

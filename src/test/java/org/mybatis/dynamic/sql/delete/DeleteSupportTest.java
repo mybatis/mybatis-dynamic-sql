@@ -26,6 +26,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 
 public class DeleteSupportTest {
     @Rule
@@ -40,7 +41,7 @@ public class DeleteSupportTest {
         DeleteSupport deleteSupport = deleteFrom(foo)
                 .where(id, isEqualTo(3))
                 .or(firstName, isLikeCaseInsensitive("%Fr%"))
-                .build();
+                .buildAndRender();
 
         String expectedWhereClause = "where id = {parameters.p1} or upper(first_name) like {parameters.p2}";
         softly.assertThat(deleteSupport.getWhereClause()).isEqualTo(expectedWhereClause);
@@ -56,7 +57,7 @@ public class DeleteSupportTest {
     @Test
     public void testFullStatementWithoutWhere() {
         DeleteSupport deleteSupport = deleteFrom(foo)
-                .build();
+                .buildAndRender();
 
         String expectedWhereClause = "";
         softly.assertThat(deleteSupport.getWhereClause()).isEqualTo(expectedWhereClause);

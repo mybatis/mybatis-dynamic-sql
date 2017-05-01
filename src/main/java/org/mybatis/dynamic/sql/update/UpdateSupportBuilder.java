@@ -26,8 +26,9 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.where.AbstractWhereBuilder;
-import org.mybatis.dynamic.sql.where.WhereSupport;
+import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
+import org.mybatis.dynamic.sql.where.render.WhereRenderer;
+import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class UpdateSupportBuilder {
 
@@ -100,7 +101,7 @@ public class UpdateSupportBuilder {
         }
     }
 
-    public class UpdateSupportWhereBuilder extends AbstractWhereBuilder<UpdateSupportWhereBuilder> {
+    public class UpdateSupportWhereBuilder extends AbstractWhereModelBuilder<UpdateSupportWhereBuilder> {
         
         public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
@@ -109,7 +110,7 @@ public class UpdateSupportBuilder {
         public UpdateSupport build() {
             Map<String, Object> parameters = new HashMap<>();
             FragmentCollector setValuesCollector = renderSetValues();
-            WhereSupport whereSupport = renderCriteriaIgnoringTableAlias();
+            WhereSupport whereSupport = WhereRenderer.of(buildWhereModel()).renderCriteriaIgnoringTableAlias();
             parameters.putAll(setValuesCollector.parameters());
             parameters.putAll(whereSupport.getParameters());
             return UpdateSupport.of(setValuesCollector.fragments().collect(Collectors.joining(", ", "set ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

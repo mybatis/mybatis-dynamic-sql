@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.insert;
+package org.mybatis.dynamic.sql.insert.render;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,24 +22,24 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
 
-class InsertColumnMappingCollector<T> {
+public class FieldAndValueCollector<T> {
     
     private List<String> columnNames = new ArrayList<>();
     private List<String> valuePhrases = new ArrayList<>();
     private T record;
     private SqlTable table;
     
-    public InsertColumnMappingCollector(T record, SqlTable table) {
+    public FieldAndValueCollector(T record, SqlTable table) {
         this.record = record;
         this.table = table;
     }
     
-    public void add(InsertColumnMapping mapping) {
-        columnNames.add(mapping.columnName());
-        valuePhrases.add(mapping.valuePhrase());
+    public void add(FieldAndValue fieldAndValue) {
+        columnNames.add(fieldAndValue.fieldName());
+        valuePhrases.add(fieldAndValue.valuePhrase());
     }
     
-    public InsertColumnMappingCollector<T> merge(InsertColumnMappingCollector<T> other) {
+    public FieldAndValueCollector<T> merge(FieldAndValueCollector<T> other) {
         columnNames.addAll(other.columnNames);
         valuePhrases.addAll(other.valuePhrases);
         return this;
@@ -59,10 +59,10 @@ class InsertColumnMappingCollector<T> {
         return InsertSupport.of(columnsPhrase(), valuesPhrase(), record, table);
     }
     
-    public static <T> Collector<InsertColumnMapping, InsertColumnMappingCollector<T>, InsertSupport<T>> toInsertSupport(T record, SqlTable table) {
-        return Collector.of(() -> new InsertColumnMappingCollector<>(record, table),
-                InsertColumnMappingCollector::add,
-                InsertColumnMappingCollector::merge,
-                InsertColumnMappingCollector::toInsertSupport);
+    public static <T> Collector<FieldAndValue, FieldAndValueCollector<T>, InsertSupport<T>> toInsertSupport(T record, SqlTable table) {
+        return Collector.of(() -> new FieldAndValueCollector<>(record, table),
+                FieldAndValueCollector::add,
+                FieldAndValueCollector::merge,
+                FieldAndValueCollector::toInsertSupport);
     }
 }

@@ -19,14 +19,15 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.where.AbstractWhereBuilder;
-import org.mybatis.dynamic.sql.where.WhereSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteRenderer;
+import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 
-public class DeleteSupportBuilder {
+public class DeleteModelBuilder {
 
     private SqlTable table;
     
-    private DeleteSupportBuilder(SqlTable table) {
+    private DeleteModelBuilder(SqlTable table) {
         this.table = table;
     }
     
@@ -35,28 +36,35 @@ public class DeleteSupportBuilder {
     }
     
     /**
-     * WARNING! Calling this method will result in an delete statement that deletes
+     * WARNING! Calling this method could result in an delete statement that deletes
      * all rows in a table.
      * 
      * @return
      */
-    public DeleteSupport build() {
-        return DeleteSupport.of(table);
+    public DeleteModel build() {
+        return DeleteModel.of(table);
     }
     
-    public static DeleteSupportBuilder of(SqlTable table) {
-        return new DeleteSupportBuilder(table);
+    public DeleteSupport buildAndRender() {
+        return DeleteRenderer.of(build()).render();
     }
     
-    public class DeleteSupportWhereBuilder extends AbstractWhereBuilder<DeleteSupportWhereBuilder> {
+    public static DeleteModelBuilder of(SqlTable table) {
+        return new DeleteModelBuilder(table);
+    }
+    
+    public class DeleteSupportWhereBuilder extends AbstractWhereModelBuilder<DeleteSupportWhereBuilder> {
         
         private <T> DeleteSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
         
-        public DeleteSupport build() {
-            WhereSupport whereSupport = renderCriteriaIgnoringTableAlias();
-            return DeleteSupport.of(whereSupport.getWhereClause(), whereSupport.getParameters(), table);
+        public DeleteModel build() {
+            return DeleteModel.of(table, buildWhereModel());
+        }
+        
+        public DeleteSupport buildAndRender() {
+            return DeleteRenderer.of(build()).render();
         }
         
         @Override
