@@ -34,7 +34,7 @@ public class InsertRenderer<T> {
     }
     
     private FieldAndValue transform(AbstractColumnAndValue mapping) {
-        return FieldAndValue.of(mapping.column().name(), mapping.accept(visitor));
+        return mapping.accept(visitor);
     }
     
     public static <T> InsertRenderer<T> of(InsertModel<T> model) {

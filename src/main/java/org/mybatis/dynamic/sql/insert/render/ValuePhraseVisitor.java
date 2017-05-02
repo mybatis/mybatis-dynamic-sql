@@ -20,20 +20,21 @@ import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 
-public class ValuePhraseVisitor implements ColumnAndValueVisitor<String> {
+public class ValuePhraseVisitor implements ColumnAndValueVisitor<FieldAndValue> {
 
     @Override
-    public String visit(NullMapping mapping) {
-        return "null"; //$NON-NLS-1$
+    public FieldAndValue visit(NullMapping mapping) {
+        return FieldAndValue.of(mapping.column().name(), "null"); //$NON-NLS-1$
     }
 
     @Override
-    public String visit(ConstantMapping mapping) {
-        return mapping.constant();
+    public FieldAndValue visit(ConstantMapping mapping) {
+        return FieldAndValue.of(mapping.column().name(), mapping.constant());
     }
 
     @Override
-    public String visit(PropertyMapping mapping) {
-        return mapping.getFormattedJdbcPlaceholder("record"); //$NON-NLS-1$
+    public FieldAndValue visit(PropertyMapping mapping) {
+        return FieldAndValue.of(mapping.column().name(), 
+                mapping.getFormattedJdbcPlaceholder("record")); //$NON-NLS-1$
     }
 }
