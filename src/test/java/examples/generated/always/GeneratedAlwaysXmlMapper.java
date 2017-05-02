@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupport;
+import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface GeneratedAlwaysXmlMapper {
     List<GeneratedAlwaysRecord> selectByExample(SelectSupport selectSupport);

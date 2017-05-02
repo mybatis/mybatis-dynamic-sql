@@ -15,16 +15,28 @@
  */
 package org.mybatis.dynamic.sql.insert;
 
-public interface ColumnMappingVisitor<T> {
-    T visit(NullMapping mapping);
+import org.mybatis.dynamic.sql.SqlColumn;
 
-    T visit(ConstantMapping mapping);
+public class ValueMapping<T> extends AbstractColumnMapping {
 
-    default T visit(PropertyMapping mapping) {
-        return null;
+    private T value;
+    
+    private ValueMapping(SqlColumn<T> column) {
+        super(column);
+    }
+    
+    public T value() {
+        return value;
     }
 
-    default <S> T visit(ValueMapping<S> mapping) {
-        return null;
+    @Override
+    public <R> R accept(ColumnMappingVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+    public static <T> ValueMapping<T> of(SqlColumn<T> column, T value) {
+        ValueMapping<T> mapping = new ValueMapping<>(column);
+        mapping.value = value;
+        return mapping;
     }
 }

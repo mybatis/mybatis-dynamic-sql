@@ -25,6 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class UpdateSupportTest {
     @Rule
@@ -43,7 +44,7 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
-                .build();
+                .buildAndRender();
         
         String expectedSetClause = "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null";
                 
@@ -66,7 +67,7 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
-                .build();
+                .buildAndRender();
         
         String expectedSetClause = "set occupation = null, firstName = {parameters.up1}, lastName = {parameters.up2}";
                 
@@ -90,7 +91,7 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
-                .build();
+                .buildAndRender();
         
         String expectedSetClause = "set occupation = 'Y', firstName = {parameters.up1}, lastName = {parameters.up2}";
                 
@@ -113,7 +114,7 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
-                .build();
+                .buildAndRender();
         
         String expectedStatement = "update foo " 
                 + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null "
@@ -133,7 +134,7 @@ public class UpdateSupportTest {
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
-                .build();
+                .buildAndRender();
         
         String expectedStatement = "update foo " 
                 + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null";

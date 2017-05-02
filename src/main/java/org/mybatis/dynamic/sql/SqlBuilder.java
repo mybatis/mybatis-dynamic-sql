@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.delete.DeleteModelBuilder;
 import org.mybatis.dynamic.sql.insert.InsertModelBuilder;
 import org.mybatis.dynamic.sql.select.SelectCountOrDistinctBuilder;
 import org.mybatis.dynamic.sql.select.SelectSupportBuilder;
-import org.mybatis.dynamic.sql.update.UpdateSupportBuilder;
+import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 
 public interface SqlBuilder {
 
@@ -39,7 +39,7 @@ public interface SqlBuilder {
         return new SelectCountOrDistinctBuilder();
     }
     
-    public static UpdateSupportBuilder update(SqlTable table) {
-        return UpdateSupportBuilder.of(table);
+    public static UpdateModelBuilder update(SqlTable table) {
+        return UpdateModelBuilder.of(table);
     }
 }

@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.select.SelectSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupport;
+import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class GeneratedAlwaysXmlMapperTest {
 
@@ -172,7 +172,7 @@ public class GeneratedAlwaysXmlMapperTest {
             
             UpdateSupport updateSupport = updateByExampleSelective(record)
                     .where(lastName, isEqualTo("Flintstone"))
-                    .build();
+                    .buildAndRender();
             
             int rows = mapper.update(updateSupport);
             assertThat(rows).isEqualTo(3);

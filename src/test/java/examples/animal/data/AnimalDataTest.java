@@ -66,7 +66,7 @@ import org.junit.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupport;
+import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class AnimalDataTest {
     
@@ -524,7 +524,7 @@ public class AnimalDataTest {
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
-                    .build();
+                    .buildAndRender();
 
             int rows = mapper.update(updateSupport);
             assertThat(rows).isEqualTo(4);

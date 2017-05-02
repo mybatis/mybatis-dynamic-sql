@@ -25,7 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.update.UpdateSupport;
+import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class UpdateSupportTest {
     @Rule
@@ -44,7 +44,7 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
-                .build();
+                .buildAndRender();
         
         String expectedSetClause = "set firstName = #{parameters.up1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.up2,jdbcType=VARCHAR}, "
@@ -69,7 +69,7 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
-                .build();
+                .buildAndRender();
         
         String expectedSetClause = "set occupation = null, "
                 + "firstName = #{parameters.up1,jdbcType=VARCHAR}, "

@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupport;
+import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class SimpleTableAnnotatedMapperTest {
 
@@ -279,7 +279,7 @@ public class SimpleTableAnnotatedMapperTest {
                     .set(occupation).equalToNull()
                     .set(employed).equalTo(false)
                     .where(id, isEqualTo(100))
-                    .build();
+                    .buildAndRender();
                     
             rows = mapper.update(updateSupport);
             softly.assertThat(rows).isEqualTo(1);
@@ -314,7 +314,7 @@ public class SimpleTableAnnotatedMapperTest {
             UpdateSupport updateSupport = updateByExample(record)
                 .where(id, isEqualTo(100))
                 .and(firstName, isEqualTo("Joe"))
-                .build();
+                .buildAndRender();
             
             rows = mapper.update(updateSupport);
             softly.assertThat(rows).isEqualTo(1);

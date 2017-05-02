@@ -23,8 +23,8 @@ import java.sql.JDBCType;
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupportBuilder;
+import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
+import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface GeneratedAlwaysDynamicSqlSupport {
     SqlTable generatedAlways = SqlTable.of("GeneratedAlways").withAlias("a");
@@ -56,7 +56,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
-                .build();
+                .buildAndRender();
     }
 
     static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(GeneratedAlwaysRecord record) {
@@ -64,17 +64,17 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
-                .build();
+                .buildAndRender();
     }
 
-    static UpdateSupportBuilder updateByExample(GeneratedAlwaysRecord record) {
+    static UpdateModelBuilder updateByExample(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName());
     }
 
-    static UpdateSupportBuilder updateByExampleSelective(GeneratedAlwaysRecord record) {
+    static UpdateModelBuilder updateByExampleSelective(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())

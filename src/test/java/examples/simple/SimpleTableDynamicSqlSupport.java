@@ -27,8 +27,8 @@ import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.select.SelectSupport;
 import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportAfterFromBuilder;
-import org.mybatis.dynamic.sql.update.UpdateSupport;
-import org.mybatis.dynamic.sql.update.UpdateSupportBuilder;
+import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
+import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface SimpleTableDynamicSqlSupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
@@ -71,7 +71,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .set(employed).equalTo(record.getEmployed())
                 .set(occupation).equalTo(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
-                .build();
+                .buildAndRender();
     }
 
     static UpdateSupport buildSelectiveUpdateByPrimaryKeySupport(SimpleTableRecord record) {
@@ -82,10 +82,10 @@ public interface SimpleTableDynamicSqlSupport {
                 .set(employed).equalToWhenPresent(record.getEmployed())
                 .set(occupation).equalToWhenPresent(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
-                .build();
+                .buildAndRender();
     }
 
-    static UpdateSupportBuilder updateByExample(SimpleTableRecord record) {
+    static UpdateModelBuilder updateByExample(SimpleTableRecord record) {
         return update(simpleTable)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
@@ -95,7 +95,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .set(occupation).equalTo(record.getOccupation());
     }
 
-    static UpdateSupportBuilder updateByExampleSelective(SimpleTableRecord record) {
+    static UpdateModelBuilder updateByExampleSelective(SimpleTableRecord record) {
         return update(simpleTable)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())
