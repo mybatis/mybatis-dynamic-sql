@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.AbstractColumnMapping;
+import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
     private SqlTable table;
     private WhereModel whereModel;
-    private List<AbstractColumnMapping> columnValues;
+    private List<AbstractColumnAndValue> columnValues;
     
     private UpdateModel() {
         super();
@@ -41,15 +41,15 @@ public class UpdateModel {
         return Optional.ofNullable(whereModel);
     }
     
-    public Stream<AbstractColumnMapping> columnValues() {
+    public Stream<AbstractColumnAndValue> columnValues() {
         return columnValues.stream();
     }
     
-    public static UpdateModel of(SqlTable table, Stream<AbstractColumnMapping> columnValues) {
+    public static UpdateModel of(SqlTable table, Stream<AbstractColumnAndValue> columnValues) {
         return of(table, null, columnValues);
     }
 
-    public static UpdateModel of(SqlTable table, WhereModel whereModel, Stream<AbstractColumnMapping> columnValues) {
+    public static UpdateModel of(SqlTable table, WhereModel whereModel, Stream<AbstractColumnAndValue> columnValues) {
         UpdateModel model = new UpdateModel();
         model.table = table;
         model.columnValues = columnValues.collect(Collectors.toList());

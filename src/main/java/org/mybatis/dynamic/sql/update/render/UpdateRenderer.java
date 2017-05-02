@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.insert.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.update.UpdateModel;
+import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -63,7 +63,7 @@ public class UpdateRenderer {
                 .collect(FragmentCollector.fragmentAndParameterCollector());
     }
     
-    private FragmentAndParameters transform(AbstractColumnMapping columnAndValue) {
+    private FragmentAndParameters transform(AbstractColumnAndValue columnAndValue) {
         return columnAndValue.accept(visitor);
     }
     

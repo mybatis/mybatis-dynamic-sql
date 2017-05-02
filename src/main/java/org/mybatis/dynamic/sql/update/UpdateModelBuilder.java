@@ -22,17 +22,17 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.AbstractColumnMapping;
-import org.mybatis.dynamic.sql.insert.ConstantMapping;
-import org.mybatis.dynamic.sql.insert.NullMapping;
-import org.mybatis.dynamic.sql.insert.ValueMapping;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
+import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 
 public class UpdateModelBuilder {
 
-    private List<AbstractColumnMapping> columnsAndValues = new ArrayList<>();
+    private List<AbstractColumnAndValue> columnsAndValues = new ArrayList<>();
     private SqlTable table;
     
     private UpdateModelBuilder(SqlTable table) {

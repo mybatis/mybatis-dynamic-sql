@@ -17,13 +17,13 @@ package org.mybatis.dynamic.sql.update.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.dynamic.sql.insert.ColumnMappingVisitor;
-import org.mybatis.dynamic.sql.insert.ConstantMapping;
-import org.mybatis.dynamic.sql.insert.NullMapping;
-import org.mybatis.dynamic.sql.insert.ValueMapping;
+import org.mybatis.dynamic.sql.util.ColumnAndValueVisitor;
+import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.ValueMapping;
 
-public class SetPhraseVisitor implements ColumnMappingVisitor<FragmentAndParameters> {
+public class SetPhraseVisitor implements ColumnAndValueVisitor<FragmentAndParameters> {
     
     private AtomicInteger sequence = new AtomicInteger(1);
 

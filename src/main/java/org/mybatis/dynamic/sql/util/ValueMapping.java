@@ -13,34 +13,30 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.insert;
+package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class PropertyMapping extends AbstractColumnMapping {
-    private String property;
+public class ValueMapping<T> extends AbstractColumnAndValue {
+
+    private T value;
     
-    private PropertyMapping(SqlColumn<?> column) {
+    private ValueMapping(SqlColumn<T> column) {
         super(column);
     }
     
-    public String property() {
-        return property;
+    public T value() {
+        return value;
     }
 
     @Override
-    public <S> S accept(ColumnMappingVisitor<S> visitor) {
+    public <R> R accept(ColumnAndValueVisitor<R> visitor) {
         return visitor.visit(this);
     }
-    
-    public String getFormattedJdbcPlaceholder(String prefix) {
-        return column.getFormattedJdbcPlaceholder(prefix, property());
-        
-    }
-    
-    public static PropertyMapping of (SqlColumn<?> column, String property) {
-        PropertyMapping mapping = new PropertyMapping(column);
-        mapping.property = property;
+
+    public static <T> ValueMapping<T> of(SqlColumn<T> column, T value) {
+        ValueMapping<T> mapping = new ValueMapping<>(column);
+        mapping.value = value;
         return mapping;
     }
 }

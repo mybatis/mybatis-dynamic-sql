@@ -13,21 +13,18 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.insert;
+package org.mybatis.dynamic.sql.util;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+public interface ColumnAndValueVisitor<T> {
+    T visit(NullMapping mapping);
 
-public class NullMapping extends AbstractColumnMapping {
-    private NullMapping(SqlColumn<?> column) {
-        super(column);
+    T visit(ConstantMapping mapping);
+
+    default T visit(PropertyMapping mapping) {
+        return null;
     }
-    
-    @Override
-    public <S> S accept(ColumnMappingVisitor<S> visitor) {
-        return visitor.visit(this);
-    }
-    
-    public static NullMapping of(SqlColumn<?> column) {
-        return new NullMapping(column);
+
+    default <S> T visit(ValueMapping<S> mapping) {
+        return null;
     }
 }

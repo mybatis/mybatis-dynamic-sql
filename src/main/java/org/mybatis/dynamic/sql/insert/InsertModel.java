@@ -20,17 +20,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 
 public class InsertModel<T> {
     private SqlTable table;
     private T record;
-    private List<AbstractColumnMapping> columnMappings;
+    private List<AbstractColumnAndValue> columnMappings;
     
     private InsertModel() {
         super();
     }
 
-    public Stream<AbstractColumnMapping> columnMappings() {
+    public Stream<AbstractColumnAndValue> columnMappings() {
         return columnMappings.stream();
     }
     
@@ -42,7 +43,7 @@ public class InsertModel<T> {
         return table;
     }
     
-    public static <T> InsertModel<T> of (SqlTable table, T record, Stream<AbstractColumnMapping> columnMappings) {
+    public static <T> InsertModel<T> of (SqlTable table, T record, Stream<AbstractColumnAndValue> columnMappings) {
         InsertModel<T> insertModel = new InsertModel<>();
         insertModel.table = table;
         insertModel.record = record;

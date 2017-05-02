@@ -15,8 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import org.mybatis.dynamic.sql.insert.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.insert.InsertModel;
+import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 
 public class InsertRenderer<T> {
 
@@ -33,7 +33,7 @@ public class InsertRenderer<T> {
                 .collect(FieldAndValueCollector.toInsertSupport(model.record(), model.table()));
     }
     
-    private FieldAndValue transform(AbstractColumnMapping mapping) {
+    private FieldAndValue transform(AbstractColumnAndValue mapping) {
         return FieldAndValue.of(mapping.column().name(), mapping.accept(visitor));
     }
     

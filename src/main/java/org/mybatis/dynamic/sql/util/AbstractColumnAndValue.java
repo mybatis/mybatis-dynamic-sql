@@ -13,29 +13,21 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.insert;
+package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ConstantMapping extends AbstractColumnMapping {
-    private String constant;
+public abstract class AbstractColumnAndValue {
+    protected SqlColumn<?> column;
     
-    private ConstantMapping(SqlColumn<?> column) {
-        super(column);
-    }
-
-    @Override
-    public <S> S accept(ColumnMappingVisitor<S> visitor) {
-        return visitor.visit(this);
+    protected AbstractColumnAndValue(SqlColumn<?> column) {
+        this.column = column;
     }
     
-    public String constant() {
-        return constant;
+    public SqlColumn<?> column() {
+        return column;
     }
     
-    public static ConstantMapping of(SqlColumn<?> column, String constant) {
-        ConstantMapping mapping = new ConstantMapping(column);
-        mapping.constant = constant;
-        return mapping;
-    }
+    public abstract <R> R accept(ColumnAndValueVisitor<R> visitor);
 }
+ 

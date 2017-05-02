@@ -15,12 +15,12 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import org.mybatis.dynamic.sql.insert.ColumnMappingVisitor;
-import org.mybatis.dynamic.sql.insert.ConstantMapping;
-import org.mybatis.dynamic.sql.insert.NullMapping;
-import org.mybatis.dynamic.sql.insert.PropertyMapping;
+import org.mybatis.dynamic.sql.util.ColumnAndValueVisitor;
+import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.PropertyMapping;
 
-public class ValuePhraseVisitor implements ColumnMappingVisitor<String> {
+public class ValuePhraseVisitor implements ColumnAndValueVisitor<String> {
 
     @Override
     public String visit(NullMapping mapping) {
