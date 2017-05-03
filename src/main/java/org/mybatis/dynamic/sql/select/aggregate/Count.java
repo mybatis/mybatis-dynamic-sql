@@ -13,17 +13,32 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.generated.always;
+package org.mybatis.dynamic.sql.select.aggregate;
 
-import java.util.List;
+import java.sql.JDBCType;
 
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.SqlColumn;
 
-public interface GeneratedAlwaysXmlMapper {
-    List<GeneratedAlwaysRecord> selectByExample(SelectSupport selectSupport);
-    GeneratedAlwaysRecord selectByPrimaryKey(int id);
-    int insert(InsertSupport<GeneratedAlwaysRecord> insertSupport);
-    int update(UpdateSupport updateSupport);
+public class Count<T> extends SqlColumn<T> {
+
+    private Count() {
+        super("*", JDBCType.INTEGER); //$NON-NLS-1$
+    }
+    
+    private Count(SqlColumn<T> column) {
+        super(column);
+    }
+    
+    @Override
+    public String name() {
+        return "count(" + super.name() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
+    public static Count<Long> count() {
+        return new Count<>();
+    }
+    
+    public static <T> Count<T> count(SqlColumn<T> column) {
+        return new Count<>(column);
+    }
 }

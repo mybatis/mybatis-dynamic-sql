@@ -23,7 +23,7 @@ import java.sql.JDBCType;
 import org.mybatis.dynamic.sql.SpringNamedParameterColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.select.SelectSupportBuilder.SelectSupportAfterFromBuilder;
+import org.mybatis.dynamic.sql.select.SelectModelBuilder.SelectSupportAfterFromBuilder;
 import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 

@@ -19,6 +19,7 @@ import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.select.aggregate.Aggregates.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,7 +37,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
-import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SimpleTableXmlMapperTest {
     @Rule
@@ -70,7 +71,7 @@ public class SimpleTableXmlMapperTest {
             SelectSupport selectSupport = selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
-                    .build();
+                    .buildAndRender();
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -89,7 +90,7 @@ public class SimpleTableXmlMapperTest {
             SelectSupport selectSupport = selectByExample()
                     .where(employed, isEqualTo(false))
                     .orderBy(id)
-                    .build();
+                    .buildAndRender();
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -109,7 +110,7 @@ public class SimpleTableXmlMapperTest {
             
             SelectSupport selectSupport = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
-                    .build();
+                    .buildAndRender();
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -257,10 +258,10 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            SelectSupport selectSupport = select().count()
+            SelectSupport selectSupport = select(count())
                     .from(simpleTable)
                     .where(occupation, isNull())
-                    .build();
+                    .buildAndRender();
             long rows = mapper.count(selectSupport);
             
             assertThat(rows).isEqualTo(2L);

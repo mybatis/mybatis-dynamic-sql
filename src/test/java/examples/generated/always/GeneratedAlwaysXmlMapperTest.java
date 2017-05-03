@@ -34,7 +34,7 @@ import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class GeneratedAlwaysXmlMapperTest {
@@ -70,7 +70,7 @@ public class GeneratedAlwaysXmlMapperTest {
             SelectSupport selectSupport = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
                     .where(id, isEqualTo(1))
-                    .build();
+                    .buildAndRender();
             
             List<GeneratedAlwaysRecord> rows = mapper.selectByExample(selectSupport);
             
@@ -89,7 +89,7 @@ public class GeneratedAlwaysXmlMapperTest {
             SelectSupport selectSupport = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
                     .where(firstName, isIn("Fred", "Barney"))
-                    .build();
+                    .buildAndRender();
             
             List<GeneratedAlwaysRecord> rows = mapper.selectByExample(selectSupport);
             
@@ -181,7 +181,7 @@ public class GeneratedAlwaysXmlMapperTest {
                     .from(generatedAlways)
                     .where(lastName, isEqualTo("Jones"))
                     .orderBy(firstName)
-                    .build();
+                    .buildAndRender();
             
             List<GeneratedAlwaysRecord> records = mapper.selectByExample(selectSupport);
             softly.assertThat(records.size()).isEqualTo(3);

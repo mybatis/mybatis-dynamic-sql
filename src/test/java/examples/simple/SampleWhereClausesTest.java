@@ -17,21 +17,22 @@ package examples.simple;
 
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static examples.simple.SimpleTableDynamicSqlSupport.occupation;
+import static org.mybatis.dynamic.sql.select.aggregate.Aggregates.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import org.junit.Test;
-import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SampleWhereClausesTest {
 
     @Test
     public void simpleClause1() {
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
-                .build();
+                .buildAndRender();
         
         assertThat(selectSupport.getWhereClause())
                 .isEqualTo("where a.id = #{parameters.p1,jdbcType=INTEGER}");
@@ -39,20 +40,20 @@ public class SampleWhereClausesTest {
     
     @Test
     public void simpleClause2() {
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isNull())
-                .build();
+                .buildAndRender();
         
         assertThat(selectSupport.getWhereClause()).isEqualTo("where a.id is null");
     }
     
     @Test
     public void betweenClause() {
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isBetween(1).and(4))
-                .build();
+                .buildAndRender();
         
         assertThat(selectSupport.getWhereClause())
             .isEqualTo("where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}");
@@ -60,11 +61,11 @@ public class SampleWhereClausesTest {
 
     @Test
     public void complexClause() {
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .build();
+                .buildAndRender();
         
         assertThat(selectSupport.getWhereClause())
             .isEqualTo("where a.id > #{parameters.p1,jdbcType=INTEGER} or (a.occupation is null and a.id < #{parameters.p2,jdbcType=INTEGER})");

@@ -17,16 +17,12 @@ package org.mybatis.dynamic.sql.select;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class SelectCountOrDistinctBuilder {
-    public SelectCountOrDistinctBuilder() {
+public class SelectDistinctBuilder {
+    public SelectDistinctBuilder() {
         super();
     }
     
-    public SelectSupportBuilder count() {
-        return SelectSupportBuilder.forCount();
-    }
-
-    public SelectSupportBuilder distinct(SqlColumn<?>...columns) {
-        return SelectSupportBuilder.ofDistinct(columns);
+    public SelectModelBuilder distinct(SqlColumn<?>...columns) {
+        return SelectModelBuilder.ofDistinct(columns);
     }
 }

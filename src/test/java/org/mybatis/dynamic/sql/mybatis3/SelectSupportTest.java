@@ -27,7 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.MyBatis3Column;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SelectSupportTest {
     @Rule
@@ -46,7 +46,7 @@ public class SelectSupportTest {
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
-                .build();
+                .buildAndRender();
 
         softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
         
@@ -67,7 +67,7 @@ public class SelectSupportTest {
                 .and(column2, isLessThan(3))
                 .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
                 .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
-                .build();
+                .buildAndRender();
         
 
         String expected = "where a.column1 = #{parameters.p1,jdbcType=DATE}" +
@@ -97,7 +97,7 @@ public class SelectSupportTest {
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
-                .build();
+                .buildAndRender();
 
         softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
         
@@ -118,7 +118,7 @@ public class SelectSupportTest {
                 .and(column2, isLessThan(3))
                 .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
                 .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
-                .build();
+                .buildAndRender();
         
 
         String expected = "where a.column1 = #{parameters.p1,jdbcType=DATE}" +

@@ -23,7 +23,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface AnimalDataMapper {
@@ -33,6 +33,11 @@ public interface AnimalDataMapper {
     })
     List<AnimalData> selectMany(SelectSupport selectSupport);
 
+    @Select({
+        "${fullSelectStatement}"
+    })
+    Integer selectAnInteger(SelectSupport selectSupport);
+    
     @Delete({
         "${fullDeleteStatement}"
     })

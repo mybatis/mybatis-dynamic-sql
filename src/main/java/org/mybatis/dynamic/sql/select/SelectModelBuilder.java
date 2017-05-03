@@ -15,60 +15,55 @@
  */
 package org.mybatis.dynamic.sql.select;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.select.render.SelectRenderer;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
-import org.mybatis.dynamic.sql.where.render.WhereRenderer;
-import org.mybatis.dynamic.sql.where.render.WhereSupport;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class SelectSupportBuilder {
+public class SelectModelBuilder {
 
-    private SelectSupport.Builder builder = new SelectSupport.Builder();
-
-    private SelectSupportBuilder() {
-        super();
-    }
+    private boolean isDistinct;
+    private SqlColumn<?>[] columns;
+    private SqlTable table;
+    private WhereModel whereModel;
+    private SqlColumn<?>[] orderByColumns;
     
-    private SelectSupportBuilder(SqlColumn<?>...columns) {
-        builder.withColumnList(calculateColumnList(columns));
+    private SelectModelBuilder(SqlColumn<?>...columns) {
+        this.columns = columns;
     }
     
     public SelectSupportAfterFromBuilder from(SqlTable table) {
-        builder.withTable(table);
+        this.table = table;
         return new SelectSupportAfterFromBuilder();
     }
 
-    private String calculateColumnList(SqlColumn<?>...columns) {
-        return Arrays.stream(columns)
-                .map(SqlColumn::nameIncludingTableAndColumnAlias)
-                .collect(Collectors.joining(", ")); //$NON-NLS-1$
-    }
-    
-    private String calculateOrderByPhrase(SqlColumn<?>...columns) {
-        return Arrays.stream(columns)
-                .map(SqlColumn::orderByPhrase)
-                .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
 
-    public static SelectSupportBuilder of(SqlColumn<?>...columns) {
-        return new SelectSupportBuilder(columns);
+    public static SelectModelBuilder of(SqlColumn<?>...columns) {
+        return new SelectModelBuilder(columns);
     }
     
-    public static SelectSupportBuilder ofDistinct(SqlColumn<?>...columns) {
-        SelectSupportBuilder builder = SelectSupportBuilder.of(columns);
-        builder.builder.isDistinct();
+    public static SelectModelBuilder ofDistinct(SqlColumn<?>...columns) {
+        SelectModelBuilder builder = SelectModelBuilder.of(columns);
+        builder.isDistinct = true;
         return builder;
     }
     
-    public static SelectSupportBuilder forCount() {
-        SelectSupportBuilder builder = new SelectSupportBuilder();
-        builder.builder.withColumnList("count(*)"); //$NON-NLS-1$
-        return builder;
+    protected SelectModel buildModel() {
+        return new SelectModel.Builder()
+                .isDistinct(isDistinct)
+                .withColumns(columns)
+                .withTable(table)
+                .withWhereModel(whereModel)
+                .withOrderByColumns(orderByColumns)
+                .build();
+    }
+    
+    protected SelectSupport buildModelAndRender() {
+        return SelectRenderer.of(buildModel()).render();
     }
     
     public class SelectSupportAfterFromBuilder {
@@ -81,12 +76,16 @@ public class SelectSupportBuilder {
         }
 
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
-            builder.withOrderByClause(calculateOrderByPhrase(columns));
+            orderByColumns = columns;
             return new SelectSupportAfterOrderByBuilder();
         }
         
-        public SelectSupport build() {
-            return builder.build();
+        public SelectModel build() {
+            return buildModel();
+        }
+
+        public SelectSupport buildAndRender() {
+            return buildModelAndRender();
         }
     }
     
@@ -96,20 +95,19 @@ public class SelectSupportBuilder {
         }
         
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
-            buildWhereSupport();
-            builder.withOrderByClause(calculateOrderByPhrase(columns));
+            whereModel = buildWhereModel();
+            orderByColumns = columns;
             return new SelectSupportAfterOrderByBuilder();
         }
         
-        public SelectSupport build() {
-            buildWhereSupport();
-            return builder.build();
+        public SelectModel build() {
+            whereModel = buildWhereModel();
+            return buildModel();
         }
         
-        private void buildWhereSupport() {
-            WhereSupport whereSupport = WhereRenderer.of(buildWhereModel()).renderCriteriaIncludingTableAlias();
-            builder.withParameters(whereSupport.getParameters())
-                .withWhereClause(whereSupport.getWhereClause());
+        public SelectSupport buildAndRender() {
+            whereModel = buildWhereModel();
+            return buildModelAndRender();
         }
 
         @Override
@@ -123,8 +121,12 @@ public class SelectSupportBuilder {
             super();
         }
         
-        public SelectSupport build() {
-            return builder.build();
+        public SelectModel build() {
+            return buildModel();
+        }
+
+        public SelectSupport buildAndRender() {
+            return buildModelAndRender();
         }
     }
 }

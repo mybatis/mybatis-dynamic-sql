@@ -17,8 +17,8 @@ package org.mybatis.dynamic.sql;
 
 import org.mybatis.dynamic.sql.delete.DeleteModelBuilder;
 import org.mybatis.dynamic.sql.insert.InsertModelBuilder;
-import org.mybatis.dynamic.sql.select.SelectCountOrDistinctBuilder;
-import org.mybatis.dynamic.sql.select.SelectSupportBuilder;
+import org.mybatis.dynamic.sql.select.SelectDistinctBuilder;
+import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 
 public interface SqlBuilder {
@@ -31,12 +31,12 @@ public interface SqlBuilder {
         return InsertModelBuilder.insert(record);
     }
     
-    public static SelectSupportBuilder select(SqlColumn<?>...columns) {
-        return SelectSupportBuilder.of(columns);
+    public static SelectModelBuilder select(SqlColumn<?>...columns) {
+        return SelectModelBuilder.of(columns);
     }
     
-    public static SelectCountOrDistinctBuilder select() {
-        return new SelectCountOrDistinctBuilder();
+    public static SelectDistinctBuilder select() {
+        return new SelectDistinctBuilder();
     }
     
     public static UpdateModelBuilder update(SqlTable table) {

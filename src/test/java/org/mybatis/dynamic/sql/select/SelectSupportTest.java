@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.select.aggregate.Aggregates.*;
 
 import java.sql.JDBCType;
 import java.util.Date;
@@ -27,7 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SelectSupportTest {
     
@@ -47,7 +48,7 @@ public class SelectSupportTest {
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
-                .build();
+                .buildAndRender();
 
         softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
         softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
@@ -78,7 +79,7 @@ public class SelectSupportTest {
                 .and(column2, isLessThan(3))
                 .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
                 .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
-                .build();
+                .buildAndRender();
         
 
         softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
@@ -118,7 +119,7 @@ public class SelectSupportTest {
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column1)
-                .build();
+                .buildAndRender();
 
         softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
         softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
@@ -146,7 +147,7 @@ public class SelectSupportTest {
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending())
-                .build();
+                .buildAndRender();
 
         softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
         softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
@@ -174,7 +175,7 @@ public class SelectSupportTest {
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)
-                .build();
+                .buildAndRender();
 
         softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
         softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
@@ -202,7 +203,7 @@ public class SelectSupportTest {
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)
-                .build();
+                .buildAndRender();
 
         softly.assertThat(selectSupport.getDistinct()).isEqualTo("distinct");
         softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
@@ -226,10 +227,10 @@ public class SelectSupportTest {
     public void testCount() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(table)
                 .where(column1, isEqualTo(d))
-                .build();
+                .buildAndRender();
 
         softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
         softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
@@ -249,9 +250,9 @@ public class SelectSupportTest {
 
     @Test
     public void testNoWhere() {
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(table)
-                .build();
+                .buildAndRender();
 
         softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
         softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");

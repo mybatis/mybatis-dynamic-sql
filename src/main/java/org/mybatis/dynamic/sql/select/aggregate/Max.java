@@ -13,17 +13,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.generated.always;
+package org.mybatis.dynamic.sql.select.aggregate;
 
-import java.util.List;
+import org.mybatis.dynamic.sql.SqlColumn;
 
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+public class Max<T> extends SqlColumn<T> {
 
-public interface GeneratedAlwaysXmlMapper {
-    List<GeneratedAlwaysRecord> selectByExample(SelectSupport selectSupport);
-    GeneratedAlwaysRecord selectByPrimaryKey(int id);
-    int insert(InsertSupport<GeneratedAlwaysRecord> insertSupport);
-    int update(UpdateSupport updateSupport);
+    private Max(SqlColumn<T> column) {
+        super(column);
+    }
+
+    @Override
+    public String name() {
+        return "max(" + super.name() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    @Override
+    public String nameIncludingTableAlias() {
+        return tableAlias().map(a -> "max(" + a + "." + name + ")").orElse(name()); //$NON-NLS-1$
+    }
+
+    public static <T> Max<T> max(SqlColumn<T> column) {
+        return new Max<>(column);
+    }
 }
