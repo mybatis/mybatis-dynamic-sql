@@ -19,6 +19,7 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
@@ -62,8 +63,8 @@ public class SelectModelBuilder {
                 .build();
     }
     
-    protected SelectSupport buildModelAndRender() {
-        return SelectRenderer.of(buildModel()).render();
+    protected SelectSupport buildModelAndRender(RenderingStrategy renderingStrategy) {
+        return SelectRenderer.of(buildModel()).render(renderingStrategy);
     }
     
     public class SelectSupportAfterFromBuilder {
@@ -84,8 +85,8 @@ public class SelectModelBuilder {
             return buildModel();
         }
 
-        public SelectSupport buildAndRender() {
-            return buildModelAndRender();
+        public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
+            return buildModelAndRender(renderingStrategy);
         }
     }
     
@@ -105,9 +106,9 @@ public class SelectModelBuilder {
             return buildModel();
         }
         
-        public SelectSupport buildAndRender() {
+        public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
             whereModel = buildWhereModel();
-            return buildModelAndRender();
+            return buildModelAndRender(renderingStrategy);
         }
 
         @Override
@@ -125,8 +126,8 @@ public class SelectModelBuilder {
             return buildModel();
         }
 
-        public SelectSupport buildAndRender() {
-            return buildModelAndRender();
+        public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
+            return buildModelAndRender(renderingStrategy);
         }
     }
 }

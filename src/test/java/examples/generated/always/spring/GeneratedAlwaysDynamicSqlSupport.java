@@ -20,19 +20,20 @@ import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.sql.JDBCType;
 
-import org.mybatis.dynamic.sql.SpringNamedParameterColumn;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModelBuilder.SelectSupportAfterFromBuilder;
 import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface GeneratedAlwaysDynamicSqlSupport {
     SqlTable generatedAlways = SqlTable.of("GeneratedAlways").withAlias("a");
-    SpringNamedParameterColumn<Integer> id = SpringNamedParameterColumn.of("id", JDBCType.INTEGER).inTable(generatedAlways).withAlias("A_ID");
-    SpringNamedParameterColumn<String> firstName = SpringNamedParameterColumn.of("first_name", JDBCType.VARCHAR).inTable(generatedAlways);
-    SpringNamedParameterColumn<String> lastName = SpringNamedParameterColumn.of("last_name", JDBCType.VARCHAR).inTable(generatedAlways);
-    SpringNamedParameterColumn<String> fullName = SpringNamedParameterColumn.of("full_name", JDBCType.VARCHAR).inTable(generatedAlways);
+    SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER).inTable(generatedAlways).withAlias("A_ID");
+    SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR).inTable(generatedAlways);
+    SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR).inTable(generatedAlways);
+    SqlColumn<String> fullName = SqlColumn.of("full_name", JDBCType.VARCHAR).inTable(generatedAlways);
     
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSupport(GeneratedAlwaysRecord record) {
         return insert(record)
@@ -40,7 +41,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
@@ -49,7 +50,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .map(id).toPropertyWhenPresent("id")
                 .map(firstName).toPropertyWhenPresent("firstName")
                 .map(lastName).toPropertyWhenPresent("lastName")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
     
     static UpdateSupport buildUpdateByPrimaryKeySupport(GeneratedAlwaysRecord record) {
@@ -57,7 +58,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
     static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(GeneratedAlwaysRecord record) {
@@ -65,7 +66,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
     static UpdateModelBuilder updateByExample(GeneratedAlwaysRecord record) {

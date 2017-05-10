@@ -15,16 +15,11 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-
 public abstract class AbstractNoValueCondition <T> extends Condition<T> {
 
-    @Override
-    protected FragmentAndParameters render(AtomicInteger sequence, SqlColumn<T> column, String columnName) {
-        return new FragmentAndParameters.Builder(renderCondition(columnName)).build();
+    public <R> R accept(ConditionVisitor<T,R> visitor) {
+        return visitor.visit(this);
     }
     
-    protected abstract String renderCondition(String columnName);
+    public abstract String renderCondition(String columnName);
 }

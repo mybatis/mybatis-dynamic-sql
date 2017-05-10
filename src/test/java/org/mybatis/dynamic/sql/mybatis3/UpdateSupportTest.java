@@ -23,8 +23,9 @@ import java.sql.JDBCType;
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.MyBatis3Column;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class UpdateSupportTest {
@@ -32,10 +33,10 @@ public class UpdateSupportTest {
     public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
     
     private static final SqlTable foo = SqlTable.of("foo");
-    private static final MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER);
-    private static final MyBatis3Column<String> firstName = MyBatis3Column.of("firstName", JDBCType.VARCHAR);
-    private static final MyBatis3Column<String> lastName = MyBatis3Column.of("lastName", JDBCType.VARCHAR);
-    private static final MyBatis3Column<String> occupation = MyBatis3Column.of("occupation", JDBCType.VARCHAR);
+    private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
+    private static final SqlColumn<String> firstName = SqlColumn.of("firstName", JDBCType.VARCHAR);
+    private static final SqlColumn<String> lastName = SqlColumn.of("lastName", JDBCType.VARCHAR);
+    private static final SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR);
 
     @Test
     public void testUpdateParameter() {
@@ -44,7 +45,7 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
         String expectedSetClause = "set firstName = #{parameters.up1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.up2,jdbcType=VARCHAR}, "
@@ -69,7 +70,7 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
         String expectedSetClause = "set occupation = null, "
                 + "firstName = #{parameters.up1,jdbcType=VARCHAR}, "

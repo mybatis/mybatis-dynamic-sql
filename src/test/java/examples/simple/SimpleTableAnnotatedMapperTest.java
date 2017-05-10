@@ -38,6 +38,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
@@ -75,7 +76,7 @@ public class SimpleTableAnnotatedMapperTest {
             SelectSupport selectSupport = selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -94,7 +95,7 @@ public class SimpleTableAnnotatedMapperTest {
             SelectSupport selectSupport = selectByExample()
                     .where(employed, isEqualTo(false))
                     .orderBy(id)
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -114,7 +115,7 @@ public class SimpleTableAnnotatedMapperTest {
             
             SelectSupport selectSupport = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -131,7 +132,7 @@ public class SimpleTableAnnotatedMapperTest {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             DeleteSupport deleteSupport = deleteFrom(simpleTable)
                     .where(occupation, isNull())
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             int rows = mapper.delete(deleteSupport);
             
             assertThat(rows).isEqualTo(2);
@@ -280,7 +281,7 @@ public class SimpleTableAnnotatedMapperTest {
                     .set(occupation).equalToNull()
                     .set(employed).equalTo(false)
                     .where(id, isEqualTo(100))
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
                     
             rows = mapper.update(updateSupport);
             softly.assertThat(rows).isEqualTo(1);
@@ -315,7 +316,7 @@ public class SimpleTableAnnotatedMapperTest {
             UpdateSupport updateSupport = updateByExample(record)
                 .where(id, isEqualTo(100))
                 .and(firstName, isEqualTo("Joe"))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
             
             rows = mapper.update(updateSupport);
             softly.assertThat(rows).isEqualTo(1);
@@ -336,7 +337,7 @@ public class SimpleTableAnnotatedMapperTest {
             SelectSupport selectSupport = select(count())
                     .from(simpleTable)
                     .where(occupation, isNull())
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             long rows = mapper.count(selectSupport);
             
             assertThat(rows).isEqualTo(2L);

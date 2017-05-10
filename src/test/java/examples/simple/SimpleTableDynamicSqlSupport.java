@@ -21,10 +21,11 @@ import static org.mybatis.dynamic.sql.SqlConditions.*;
 import java.sql.JDBCType;
 import java.util.Date;
 
-import org.mybatis.dynamic.sql.MyBatis3Column;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModelBuilder.SelectSupportAfterFromBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
@@ -32,12 +33,12 @@ import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface SimpleTableDynamicSqlSupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
-    MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
-    MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
-    MyBatis3Column<String> lastName = MyBatis3Column.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
-    MyBatis3Column<Date> birthDate = MyBatis3Column.of("birth_date", JDBCType.DATE).inTable(simpleTable);
-    MyBatis3Column<Boolean> employed = MyBatis3Column.of("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler").inTable(simpleTable);
-    MyBatis3Column<String> occupation = MyBatis3Column.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
+    SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
+    SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
+    SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
+    SqlColumn<Date> birthDate = SqlColumn.of("birth_date", JDBCType.DATE).inTable(simpleTable);
+    SqlColumn<Boolean> employed = SqlColumn.of("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler").inTable(simpleTable);
+    SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
     
     static InsertSupport<SimpleTableRecord> buildFullInsertSupport(SimpleTableRecord record) {
         return insert(record)
@@ -48,7 +49,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .map(birthDate).toProperty("birthDate")
                 .map(employed).toProperty("employed")
                 .map(occupation).toProperty("occupation")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
     }
 
     static InsertSupport<SimpleTableRecord> buildSelectiveInsertSupport(SimpleTableRecord record) {
@@ -60,7 +61,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .map(birthDate).toPropertyWhenPresent("birthDate")
                 .map(employed).toPropertyWhenPresent("employed")
                 .map(occupation).toPropertyWhenPresent("occupation")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
     }
     
     static UpdateSupport buildFullUpdateByPrimaryKeySupport(SimpleTableRecord record) {
@@ -71,7 +72,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .set(employed).equalTo(record.getEmployed())
                 .set(occupation).equalTo(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
     }
 
     static UpdateSupport buildSelectiveUpdateByPrimaryKeySupport(SimpleTableRecord record) {
@@ -82,7 +83,7 @@ public interface SimpleTableDynamicSqlSupport {
                 .set(employed).equalToWhenPresent(record.getEmployed())
                 .set(occupation).equalToWhenPresent(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
     }
 
     static UpdateModelBuilder updateByExample(SimpleTableRecord record) {
@@ -108,7 +109,7 @@ public interface SimpleTableDynamicSqlSupport {
     static DeleteSupport buildDeleteByPrimaryKeySupport(Integer id_) {
         return deleteFrom(simpleTable)
                 .where(id, isEqualTo(id_))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
     }
     
     static SelectSupportAfterFromBuilder selectByExample() {
@@ -120,6 +121,6 @@ public interface SimpleTableDynamicSqlSupport {
         return select(id, firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)
             .where(id, isEqualTo(id_))
-            .buildAndRender();
+            .buildAndRender(RenderingStrategy.MYBATIS3);
     }
 }

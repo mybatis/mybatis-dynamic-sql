@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SimpleTableXmlMapperTest {
@@ -71,7 +72,7 @@ public class SimpleTableXmlMapperTest {
             SelectSupport selectSupport = selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -90,7 +91,7 @@ public class SimpleTableXmlMapperTest {
             SelectSupport selectSupport = selectByExample()
                     .where(employed, isEqualTo(false))
                     .orderBy(id)
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -110,7 +111,7 @@ public class SimpleTableXmlMapperTest {
             
             SelectSupport selectSupport = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -127,7 +128,7 @@ public class SimpleTableXmlMapperTest {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             DeleteSupport deleteSupport = deleteFrom(simpleTable)
                     .where(occupation, isNull())
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             int rows = mapper.delete(deleteSupport);
             
             assertThat(rows).isEqualTo(2);
@@ -261,7 +262,7 @@ public class SimpleTableXmlMapperTest {
             SelectSupport selectSupport = select(count())
                     .from(simpleTable)
                     .where(occupation, isNull())
-                    .buildAndRender();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             long rows = mapper.count(selectSupport);
             
             assertThat(rows).isEqualTo(2L);

@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
@@ -57,8 +58,8 @@ public class UpdateModelBuilder {
         return UpdateModel.of(table, columnsAndValues.stream());
     }
     
-    public UpdateSupport buildAndRender() {
-        return UpdateRenderer.of(build()).render();
+    public UpdateSupport buildAndRender(RenderingStrategy renderingStrategy) {
+        return UpdateRenderer.of(build()).render(renderingStrategy);
     }
     
     public static UpdateModelBuilder of(SqlTable table) {
@@ -106,8 +107,8 @@ public class UpdateModelBuilder {
             return UpdateModel.of(table, buildWhereModel(), columnsAndValues.stream());
         }
         
-        public UpdateSupport buildAndRender() {
-            return UpdateRenderer.of(build()).render();
+        public UpdateSupport buildAndRender(RenderingStrategy renderingStrategy) {
+            return UpdateRenderer.of(build()).render(renderingStrategy);
         }
         
         @Override

@@ -15,12 +15,19 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.ColumnAndValueVisitor;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 
 public class ValuePhraseVisitor implements ColumnAndValueVisitor<FieldAndValue> {
+    
+    private RenderingStrategy renderingStrategy;
+    
+    public ValuePhraseVisitor(RenderingStrategy renderingStrategy) {
+        this.renderingStrategy = renderingStrategy;
+    }
 
     @Override
     public FieldAndValue visit(NullMapping mapping) {
@@ -34,7 +41,7 @@ public class ValuePhraseVisitor implements ColumnAndValueVisitor<FieldAndValue> 
 
     @Override
     public FieldAndValue visit(PropertyMapping mapping) {
-        return FieldAndValue.of(mapping.column().name(), 
-                mapping.getFormattedJdbcPlaceholder("record")); //$NON-NLS-1$
+        return FieldAndValue.of(mapping.column().name(),
+                renderingStrategy.getFormattedJdbcPlaceholder(mapping.column(), "record", mapping.property())); //$NON-NLS-1$
     }
 }

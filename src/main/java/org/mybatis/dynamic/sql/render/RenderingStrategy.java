@@ -13,28 +13,13 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql;
+package org.mybatis.dynamic.sql.render;
 
-public abstract class AbstractTwoValueCondition<T> extends Condition<T> {
-    private T value1;
-    private T value2;
+import org.mybatis.dynamic.sql.SqlColumn;
+
+public abstract class RenderingStrategy {
+    public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();
+    public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();
     
-    protected AbstractTwoValueCondition(T value1, T value2) {
-        this.value1 = value1;
-        this.value2 = value2;
-    }
-
-    public T value1() {
-        return value1;
-    }
-
-    public T value2() {
-        return value2;
-    }
-
-    public <R> R accept(ConditionVisitor<T,R> visitor) {
-        return visitor.visit(this);
-    }
-
-    public abstract String renderCondition(String columnName, String placeholder1, String placeholder2);
+    public abstract String getFormattedJdbcPlaceholder(SqlColumn<?> column, String prefix, String parameterName);
 }

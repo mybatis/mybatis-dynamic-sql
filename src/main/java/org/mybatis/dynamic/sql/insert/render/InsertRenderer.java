@@ -16,18 +16,20 @@
 package org.mybatis.dynamic.sql.insert.render;
 
 import org.mybatis.dynamic.sql.insert.InsertModel;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 
 public class InsertRenderer<T> {
 
-    private ValuePhraseVisitor visitor = new ValuePhraseVisitor();
+    private ValuePhraseVisitor visitor;
     private InsertModel<T> model;
     
     private InsertRenderer(InsertModel<T> model) {
         this.model = model;
     }
     
-    public InsertSupport<T> render() {
+    public InsertSupport<T> render(RenderingStrategy renderingStrategy) {
+        visitor = new ValuePhraseVisitor(renderingStrategy);
         return model.columnMappings()
                 .map(this::transform)
                 .collect(FieldAndValueCollector.toInsertSupport(model.record(), model.table()));

@@ -22,9 +22,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.MyBatis3Column;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
@@ -36,12 +37,12 @@ public class CriterionRendererTest {
     @Test
     public void testAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo").withAlias("a");
-        MyBatis3Column<Integer> column = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(table);
+        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
         
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters fp = renderer.render(criterion);
         softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
@@ -51,11 +52,11 @@ public class CriterionRendererTest {
     @Test
     public void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo").withAlias("a");
-        MyBatis3Column<Integer> column = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(table);
+        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters fp = renderer.render(criterion);
         softly.assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
@@ -64,11 +65,11 @@ public class CriterionRendererTest {
 
     @Test
     public void testNoAliasWithIgnore() {
-        MyBatis3Column<Integer> column = MyBatis3Column.of("id", JDBCType.INTEGER);
+        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters fp = renderer.render(criterion);
         softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
@@ -77,11 +78,11 @@ public class CriterionRendererTest {
 
     @Test
     public void testNoAliasWithoutIgnore() {
-        MyBatis3Column<Integer> column = MyBatis3Column.of("id", JDBCType.INTEGER);
+        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters fp = renderer.render(criterion);
         softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
@@ -90,11 +91,11 @@ public class CriterionRendererTest {
 
     @Test
     public void testTypeHandler() {
-        MyBatis3Column<Date> column = MyBatis3Column.of("id", JDBCType.DATE).withTypeHandler("foo.Bar");
+        SqlColumn<Date> column = SqlColumn.of("id", JDBCType.DATE).withTypeHandler("foo.Bar");
         IsEqualTo<Date> condition = IsEqualTo.of(new Date());
         SqlCriterion<Date> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters fp = renderer.render(criterion);
         softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}");
@@ -104,11 +105,11 @@ public class CriterionRendererTest {
     @Test
     public void testTypeHandlerAndAlias() {
         SqlTable table = SqlTable.of("foo").withAlias("a");
-        MyBatis3Column<Integer> column = MyBatis3Column.of("id", JDBCType.INTEGER).withTypeHandler("foo.Bar").inTable(table);
+        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).withTypeHandler("foo.Bar").inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters rc = renderer.render(criterion);
         softly.assertThat(rc.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}");

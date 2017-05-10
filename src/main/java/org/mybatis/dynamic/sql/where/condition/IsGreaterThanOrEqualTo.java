@@ -24,7 +24,7 @@ public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
     }
     
     @Override
-    protected String renderCondition(String columnName, String placeholder) {
+    public String renderCondition(String columnName, String placeholder) {
         return columnName + " >= " + placeholder; //$NON-NLS-1$
     }
 

@@ -25,8 +25,9 @@ import java.util.Map;
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.MyBatis3Column;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SelectSupportTest {
@@ -34,8 +35,8 @@ public class SelectSupportTest {
     public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     public static final SqlTable table = SqlTable.of("foo").withAlias("a");
-    public static final MyBatis3Column<Date> column1 = MyBatis3Column.of("column1", JDBCType.DATE).inTable(table);
-    public static final MyBatis3Column<Integer> column2 = MyBatis3Column.of("column2", JDBCType.INTEGER).inTable(table);
+    public static final SqlColumn<Date> column1 = SqlColumn.of("column1", JDBCType.DATE).inTable(table);
+    public static final SqlColumn<Integer> column2 = SqlColumn.of("column2", JDBCType.INTEGER).inTable(table);
 
     @Test
     public void testSimpleCriteriaWithoutAlias() {
@@ -46,7 +47,7 @@ public class SelectSupportTest {
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 
         softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
         
@@ -67,7 +68,7 @@ public class SelectSupportTest {
                 .and(column2, isLessThan(3))
                 .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
                 .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
 
         String expected = "where a.column1 = #{parameters.p1,jdbcType=DATE}" +
@@ -97,7 +98,7 @@ public class SelectSupportTest {
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 
         softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
         
@@ -118,7 +119,7 @@ public class SelectSupportTest {
                 .and(column2, isLessThan(3))
                 .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
                 .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
 
         String expected = "where a.column1 = #{parameters.p1,jdbcType=DATE}" +

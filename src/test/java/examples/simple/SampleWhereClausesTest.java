@@ -23,6 +23,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import org.junit.Test;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SampleWhereClausesTest {
@@ -32,7 +33,7 @@ public class SampleWhereClausesTest {
         SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
         assertThat(selectSupport.getWhereClause())
                 .isEqualTo("where a.id = #{parameters.p1,jdbcType=INTEGER}");
@@ -43,7 +44,7 @@ public class SampleWhereClausesTest {
         SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isNull())
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
         assertThat(selectSupport.getWhereClause()).isEqualTo("where a.id is null");
     }
@@ -53,7 +54,7 @@ public class SampleWhereClausesTest {
         SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isBetween(1).and(4))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
         assertThat(selectSupport.getWhereClause())
             .isEqualTo("where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}");
@@ -65,7 +66,7 @@ public class SampleWhereClausesTest {
                 .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
         assertThat(selectSupport.getWhereClause())
             .isEqualTo("where a.id > #{parameters.p1,jdbcType=INTEGER} or (a.occupation is null and a.id < #{parameters.p2,jdbcType=INTEGER})");

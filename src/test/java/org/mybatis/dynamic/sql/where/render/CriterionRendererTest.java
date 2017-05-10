@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 
@@ -37,10 +38,10 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment()).isEqualTo("id = {parameters.p1}");
+        assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters().size()).isEqualTo(1);
         assertThat(fp.parameters().get("p1")).isEqualTo(3);
     }
@@ -52,10 +53,10 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment()).isEqualTo("a.id = {parameters.p1}");
+        assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters().size()).isEqualTo(1);
         assertThat(fp.parameters().get("p1")).isEqualTo(3);
     }
@@ -66,10 +67,10 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIgnoringTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment()).isEqualTo("id = {parameters.p1}");
+        assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters().size()).isEqualTo(1);
         assertThat(fp.parameters().get("p1")).isEqualTo(3);
     }
@@ -80,10 +81,10 @@ public class CriterionRendererTest {
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence);
+        CriterionRenderer renderer = CriterionRenderer.newRendererIncludingTableAlias(sequence, RenderingStrategy.MYBATIS3);
         
         FragmentAndParameters fp = renderer.render(criterion);
-        assertThat(fp.fragment()).isEqualTo("id = {parameters.p1}");
+        assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters().size()).isEqualTo(1);
         assertThat(fp.parameters().get("p1")).isEqualTo(3);
     }

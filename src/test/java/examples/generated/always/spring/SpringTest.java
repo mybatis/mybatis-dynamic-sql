@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -63,7 +64,7 @@ public class SpringTest {
         SelectSupport selectSupport = selectByExample()
                 .where(id, isGreaterThan(3))
                 .orderBy(id.descending())
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
         
         softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.id as A_ID, a.first_name, a.last_name, a.full_name");
         

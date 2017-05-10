@@ -15,26 +15,9 @@
  */
 package org.mybatis.dynamic.sql;
 
-public abstract class AbstractTwoValueCondition<T> extends Condition<T> {
-    private T value1;
-    private T value2;
-    
-    protected AbstractTwoValueCondition(T value1, T value2) {
-        this.value1 = value1;
-        this.value2 = value2;
-    }
-
-    public T value1() {
-        return value1;
-    }
-
-    public T value2() {
-        return value2;
-    }
-
-    public <R> R accept(ConditionVisitor<T,R> visitor) {
-        return visitor.visit(this);
-    }
-
-    public abstract String renderCondition(String columnName, String placeholder1, String placeholder2);
+public interface ConditionVisitor<T, R> {
+    R visit(AbstractListValueCondition<T> condition);
+    R visit(AbstractNoValueCondition<T> condition);
+    R visit(AbstractSingleValueCondition<T> condition);
+    R visit(AbstractTwoValueCondition<T> condition);
 }

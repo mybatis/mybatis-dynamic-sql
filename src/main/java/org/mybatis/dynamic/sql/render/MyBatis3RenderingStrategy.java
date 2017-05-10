@@ -13,29 +13,23 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package org.mybatis.dynamic.sql.render;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class PropertyMapping extends AbstractColumnAndValue {
-    private String property;
-    
-    private PropertyMapping(SqlColumn<?> column) {
-        super(column);
-    }
-    
-    public String property() {
-        return property;
-    }
-
+public class MyBatis3RenderingStrategy extends RenderingStrategy {
     @Override
-    public <S> S accept(ColumnAndValueVisitor<S> visitor) {
-        return visitor.visit(this);
-    }
-    
-    public static PropertyMapping of (SqlColumn<?> column, String property) {
-        PropertyMapping mapping = new PropertyMapping(column);
-        mapping.property = property;
-        return mapping;
+    public String getFormattedJdbcPlaceholder(SqlColumn<?> column, String prefix, String parameterName) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("#{"); //$NON-NLS-1$
+        buffer.append(prefix);
+        buffer.append('.');
+        buffer.append(parameterName);
+        buffer.append(",jdbcType="); //$NON-NLS-1$
+        buffer.append(column.jdbcType().getName());
+        buffer.append(column.typeHandler().map(th -> ",typeHandler=" + th) //$NON-NLS-1$
+                .orElse("")); //$NON-NLS-1$
+        buffer.append('}');
+        return buffer.toString();
     }
 }

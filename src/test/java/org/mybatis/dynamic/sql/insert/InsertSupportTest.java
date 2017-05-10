@@ -31,6 +31,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValue;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValueCollector;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 public class InsertSupportTest {
     @Rule
@@ -55,12 +56,12 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toProperty("occupation")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
+        String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";
         softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
 
@@ -75,12 +76,12 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toNull()
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, null)";
+        String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, null)";
         softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
 
@@ -95,12 +96,12 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toConstant("'Y'")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, 'Y')";
+        String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, 'Y')";
         softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
     
@@ -116,12 +117,12 @@ public class InsertSupportTest {
                 .map(firstName).toPropertyWhenPresent("firstName")
                 .map(lastName).toPropertyWhenPresent("lastName")
                 .map(occupation).toPropertyWhenPresent("occupation")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedColumnsPhrase = "(last_name, occupation)";
         softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values ({record.lastName}, {record.occupation})";
+        String expectedValuesPhrase = "values (#{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";
         softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
 
@@ -165,11 +166,11 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toProperty("occupation")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
         String expectedStatement = "insert into foo "
                 + "(id, first_name, last_name, occupation) "
-                + "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
+                + "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";
         
         assertThat(insertSupport.getFullInsertStatement()).isEqualTo(expectedStatement);
     }

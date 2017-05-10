@@ -23,12 +23,12 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
     }
     
     @Override
-    protected String renderCondition(String columnName, String placeholder) {
+    public String renderCondition(String columnName, String placeholder) {
         return "upper(" + columnName + ") not like " + placeholder; //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     @Override
-    protected String value() {
+    public String value() {
         return super.value().toUpperCase();
     }
 

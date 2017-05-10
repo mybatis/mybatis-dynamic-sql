@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.delete.render;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
@@ -27,13 +28,13 @@ public class DeleteRenderer {
         this.deleteModel = deleteModel;
     }
     
-    public DeleteSupport render() {
-        return deleteModel.whereModel().map(this::renderWithWhereClause)
+    public DeleteSupport render(RenderingStrategy renderingStrategy) {
+        return deleteModel.whereModel().map(wm -> renderWithWhereClause(wm, renderingStrategy))
                 .orElse(DeleteSupport.of(deleteModel.table()));
     }
     
-    private DeleteSupport renderWithWhereClause(WhereModel whereModel) {
-        WhereRenderer whereRenderer = WhereRenderer.of(whereModel);
+    private DeleteSupport renderWithWhereClause(WhereModel whereModel, RenderingStrategy renderingStrategy) {
+        WhereRenderer whereRenderer = WhereRenderer.of(whereModel, renderingStrategy);
         WhereSupport whereSupport = whereRenderer.renderCriteriaIgnoringTableAlias();
         return DeleteSupport.of(whereSupport.getWhereClause(), whereSupport.getParameters(), deleteModel.table());
     }

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -29,14 +30,15 @@ import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class UpdateRenderer {
     private UpdateModel updateModel;
-    private SetPhraseVisitor visitor = new SetPhraseVisitor();
+    private SetPhraseVisitor visitor;
     
     private UpdateRenderer(UpdateModel updateModel) {
         this.updateModel = updateModel;
     }
     
-    public UpdateSupport render() {
-        return updateModel.whereModel().map(this::renderWithWhereClause)
+    public UpdateSupport render(RenderingStrategy renderingStrategy) {
+        visitor = new SetPhraseVisitor(renderingStrategy);
+        return updateModel.whereModel().map(wm ->renderWithWhereClause(wm, renderingStrategy))
                 .orElse(renderWithoutWhereClause());
     }
     
@@ -47,10 +49,10 @@ public class UpdateRenderer {
         
     }
     
-    private UpdateSupport renderWithWhereClause(WhereModel whereModel) {
+    private UpdateSupport renderWithWhereClause(WhereModel whereModel, RenderingStrategy renderingStrategy) {
         Map<String, Object> parameters = new HashMap<>();
         FragmentCollector setValuesCollector = renderSetValues();
-        WhereSupport whereSupport = WhereRenderer.of(whereModel).renderCriteriaIgnoringTableAlias();
+        WhereSupport whereSupport = WhereRenderer.of(whereModel, renderingStrategy).renderCriteriaIgnoringTableAlias();
         parameters.putAll(setValuesCollector.parameters());
         parameters.putAll(whereSupport.getParameters());
         return UpdateSupport.of(setValuesCollector.fragments().collect(Collectors.joining(", ", "set ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

@@ -101,10 +101,6 @@ public class SqlColumn<T> extends AbstractColumn<T> {
         return column;
     }
     
-    public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
-        return "{" + prefix + "." + parameterName + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
-    
     public String orderByPhrase() {
         return columnAlias().orElseGet(this::name) + " " + sortOrder; //$NON-NLS-1$
     }

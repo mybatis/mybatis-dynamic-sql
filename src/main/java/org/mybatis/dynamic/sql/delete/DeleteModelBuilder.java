@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteRenderer;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 
 public class DeleteModelBuilder {
@@ -45,8 +46,8 @@ public class DeleteModelBuilder {
         return DeleteModel.of(table);
     }
     
-    public DeleteSupport buildAndRender() {
-        return DeleteRenderer.of(build()).render();
+    public DeleteSupport buildAndRender(RenderingStrategy renderingStrategy) {
+        return DeleteRenderer.of(build()).render(renderingStrategy);
     }
     
     public static DeleteModelBuilder of(SqlTable table) {
@@ -63,8 +64,8 @@ public class DeleteModelBuilder {
             return DeleteModel.of(table, buildWhereModel());
         }
         
-        public DeleteSupport buildAndRender() {
-            return DeleteRenderer.of(build()).render();
+        public DeleteSupport buildAndRender(RenderingStrategy renderingStrategy) {
+            return DeleteRenderer.of(build()).render(renderingStrategy);
         }
         
         @Override

@@ -24,7 +24,7 @@ public class IsNotLike extends AbstractSingleValueCondition<String> {
     }
 
     @Override
-    protected String renderCondition(String columnName, String placeholder) {
+    public String renderCondition(String columnName, String placeholder) {
         return columnName + " not like " + placeholder; //$NON-NLS-1$
     }
     

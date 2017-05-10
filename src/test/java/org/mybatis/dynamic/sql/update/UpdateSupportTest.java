@@ -25,6 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class UpdateSupportTest {
@@ -44,13 +45,13 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
-        String expectedSetClause = "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null";
+        String expectedSetClause = "set firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, occupation = null";
                 
         softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
-        String expectedWhereClauses = "where id = {parameters.p1}";
+        String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER}";
         softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
         softly.assertThat(updateSupport.getParameters().size()).isEqualTo(3);
@@ -67,13 +68,13 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
-        String expectedSetClause = "set occupation = null, firstName = {parameters.up1}, lastName = {parameters.up2}";
+        String expectedSetClause = "set occupation = null, firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}";
                 
         softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
-        String expectedWhereClauses = "where id = {parameters.p1} and firstName = {parameters.p2}";
+        String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER} and firstName = #{parameters.p2,jdbcType=VARCHAR}";
         softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
         softly.assertThat(updateSupport.getParameters().size()).isEqualTo(4);
@@ -91,13 +92,13 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
-        String expectedSetClause = "set occupation = 'Y', firstName = {parameters.up1}, lastName = {parameters.up2}";
+        String expectedSetClause = "set occupation = 'Y', firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}";
                 
         softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
-        String expectedWhereClauses = "where id = {parameters.p1} and firstName = {parameters.p2}";
+        String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER} and firstName = #{parameters.p2,jdbcType=VARCHAR}";
         softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
         softly.assertThat(updateSupport.getParameters().size()).isEqualTo(4);
@@ -114,11 +115,11 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
         String expectedStatement = "update foo " 
-                + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null "
-                + "where id = {parameters.p1}";
+                + "set firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, occupation = null "
+                + "where id = #{parameters.p1,jdbcType=INTEGER}";
                 
         softly.assertThat(updateSupport.getFullUpdateStatement()).isEqualTo(expectedStatement);
         
@@ -134,10 +135,10 @@ public class UpdateSupportTest {
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
         
         String expectedStatement = "update foo " 
-                + "set firstName = {parameters.up1}, lastName = {parameters.up2}, occupation = null";
+                + "set firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, occupation = null";
                 
         softly.assertThat(updateSupport.getFullUpdateStatement()).isEqualTo(expectedStatement);
         

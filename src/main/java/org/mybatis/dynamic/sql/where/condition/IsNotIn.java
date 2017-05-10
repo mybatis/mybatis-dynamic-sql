@@ -27,7 +27,7 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
     }
 
     @Override
-    protected String renderCondition(String columnName, Stream<String> placeholders) {
+    public String renderCondition(String columnName, Stream<String> placeholders) {
         return columnName + " " + //$NON-NLS-1$
                 placeholders.collect(Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }

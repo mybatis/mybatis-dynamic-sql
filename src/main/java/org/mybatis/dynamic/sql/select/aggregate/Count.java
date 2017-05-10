@@ -34,6 +34,11 @@ public class Count<T> extends SqlColumn<T> {
         return "count(" + super.name() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
     
+    @Override
+    public String nameIncludingTableAlias() {
+        return tableAlias().map(a -> "count(" + a + "." + name + ")").orElse(name()); //$NON-NLS-1$
+    }
+    
     public static Count<Long> count() {
         return new Count<>();
     }

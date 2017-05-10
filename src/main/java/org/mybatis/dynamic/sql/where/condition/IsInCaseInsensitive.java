@@ -27,7 +27,7 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
     }
     
     @Override
-    protected String renderCondition(String columnName, Stream<String> placeholders) {
+    public String renderCondition(String columnName, Stream<String> placeholders) {
         return "upper(" + columnName + ") " + //$NON-NLS-1$ //$NON-NLS-2$
                 placeholders.collect(Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }

@@ -18,7 +18,9 @@ package org.mybatis.dynamic.sql.where.render;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
@@ -71,30 +73,32 @@ public abstract class CriterionRenderer {
     protected abstract <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion);
     protected abstract  <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion);
     
-    public static CriterionRenderer newRendererIgnoringTableAlias(AtomicInteger sequence) {
+    public static CriterionRenderer newRendererIgnoringTableAlias(AtomicInteger sequence, RenderingStrategy renderingStrategy) {
         return new CriterionRenderer() {
             @Override
             protected <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
-                return criterion.condition().renderIgnoringTableAlias(sequence, criterion.column());
+                WhereConditionVisitor<T> visitor = new WhereConditionVisitor<>(renderingStrategy, sequence, criterion.column(), SqlColumn::name);
+                return criterion.condition().accept(visitor);
             }
             
             @Override
             protected <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {
-                return CriterionRenderer.newRendererIgnoringTableAlias(sequence).render(subCriterion);
+                return CriterionRenderer.newRendererIgnoringTableAlias(sequence, renderingStrategy).render(subCriterion);
             }
         };
     }
 
-    public static CriterionRenderer newRendererIncludingTableAlias(AtomicInteger sequence) {
+    public static CriterionRenderer newRendererIncludingTableAlias(AtomicInteger sequence, RenderingStrategy renderingStrategy) {
         return new CriterionRenderer() {
             @Override
             protected <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
-                return criterion.condition().renderIncludingTableAlias(sequence, criterion.column());
+                WhereConditionVisitor<T> visitor = new WhereConditionVisitor<>(renderingStrategy, sequence, criterion.column(), SqlColumn::nameIncludingTableAlias);
+                return criterion.condition().accept(visitor);
             }
             
             @Override
             protected <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {
-                return CriterionRenderer.newRendererIncludingTableAlias(sequence).render(subCriterion);
+                return CriterionRenderer.newRendererIncludingTableAlias(sequence, renderingStrategy).render(subCriterion);
             }
         };
     }

@@ -24,7 +24,7 @@ public class IsLike extends AbstractSingleValueCondition<String> {
     }
 
     @Override
-    protected String renderCondition(String columnName, String placeholder) {
+    public String renderCondition(String columnName, String placeholder) {
         return columnName + " like " + placeholder; //$NON-NLS-1$
     }
     

@@ -16,13 +16,8 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.util.FragmentCollector.Triple;
 
 public abstract class AbstractListValueCondition<T> extends Condition<T> {
     private List<T> values;
@@ -31,8 +26,12 @@ public abstract class AbstractListValueCondition<T> extends Condition<T> {
         this.values = values.collect(Collectors.toList());
     }
     
-    protected final Stream<T> values() {
+    public final Stream<T> values() {
         return values.stream().map(this::transformValue);
+    }
+    
+    public <R> R accept(ConditionVisitor<T,R> visitor) {
+        return visitor.visit(this);
     }
 
     /**
@@ -50,21 +49,5 @@ public abstract class AbstractListValueCondition<T> extends Condition<T> {
         return value;
     }
     
-    @Override
-    protected FragmentAndParameters render(AtomicInteger sequence, SqlColumn<T> column, String columnName) {
-        FragmentCollector fc = values()
-                .map(v -> toTriple(sequence, column, v))
-                .collect(FragmentCollector.tripleCollector());
-        
-        return new FragmentAndParameters.Builder(renderCondition(columnName, fc.fragments()))
-                .withParameters(fc.parameters())
-                .build();
-    }
-    
-    private Triple toTriple(AtomicInteger sequence, SqlColumn<?> column, Object value) {
-        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
-        return Triple.of(mapKey, column.getFormattedJdbcPlaceholder(PARAMETERS_PREFIX, mapKey), value);
-    }
-
-    protected abstract String renderCondition(String columnName, Stream<String> placeholders);
+    public abstract String renderCondition(String columnName, Stream<String> placeholders);
 }

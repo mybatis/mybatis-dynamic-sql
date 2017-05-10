@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.update.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.ColumnAndValueVisitor;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -26,6 +27,11 @@ import org.mybatis.dynamic.sql.util.ValueMapping;
 public class SetPhraseVisitor implements ColumnAndValueVisitor<FragmentAndParameters> {
     
     private AtomicInteger sequence = new AtomicInteger(1);
+    private RenderingStrategy renderingStrategy;
+    
+    public SetPhraseVisitor(RenderingStrategy renderingStrategy) {
+        this.renderingStrategy = renderingStrategy;
+    }
 
     @Override
     public FragmentAndParameters visit(NullMapping mapping) {
@@ -40,7 +46,7 @@ public class SetPhraseVisitor implements ColumnAndValueVisitor<FragmentAndParame
     @Override
     public <T> FragmentAndParameters visit(ValueMapping<T> mapping) {
         String mapKey = "up" + sequence.getAndIncrement(); //$NON-NLS-1$
-        String jdbcPlaceholder = mapping.column().getFormattedJdbcPlaceholder("parameters", mapKey); //$NON-NLS-1$
+        String jdbcPlaceholder = renderingStrategy.getFormattedJdbcPlaceholder(mapping.column(), "parameters", mapKey); //$NON-NLS-1$
         String setPhrase = mapping.column().name() + " = " + jdbcPlaceholder; //$NON-NLS-1$
         
         return new FragmentAndParameters.Builder(setPhrase) //$NON-NLS-1$)

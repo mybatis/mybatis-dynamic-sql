@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.select.render;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -31,13 +32,13 @@ public class SelectRenderer {
         this.selectModel = selectModel;
     }
     
-    public SelectSupport render() {
-        return selectModel.whereModel().map(this::renderWithWhereClause)
+    public SelectSupport render(RenderingStrategy renderingStrategy) {
+        return selectModel.whereModel().map(wm -> renderWithWhereClause(wm, renderingStrategy))
                 .orElse(renderWithoutWhereClause());
     }
     
-    private SelectSupport renderWithWhereClause(WhereModel whereModel) {
-        WhereSupport whereSupport = WhereRenderer.of(whereModel).renderCriteriaIncludingTableAlias();
+    private SelectSupport renderWithWhereClause(WhereModel whereModel, RenderingStrategy renderingStrategy) {
+        WhereSupport whereSupport = WhereRenderer.of(whereModel, renderingStrategy).renderCriteriaIncludingTableAlias();
         
         return new SelectSupport.Builder()
                 .isDistinct(selectModel.isDistinct())

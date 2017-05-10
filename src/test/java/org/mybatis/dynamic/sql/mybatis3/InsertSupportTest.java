@@ -22,19 +22,20 @@ import java.sql.JDBCType;
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mybatis.dynamic.sql.MyBatis3Column;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 public class InsertSupportTest {
     @Rule
     public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     private static final SqlTable foo = SqlTable.of("foo");
-    private static final MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER);
-    private static final MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR);
-    private static final MyBatis3Column<String> lastName = MyBatis3Column.of("last_name", JDBCType.VARCHAR);
-    private static final MyBatis3Column<String> occupation = MyBatis3Column.of("occupation", JDBCType.VARCHAR);
+    private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
+    private static final SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR);
+    private static final SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR);
+    private static final SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR);
 
     @Test
     public void testFullInsertSupportBuilder() {
@@ -48,7 +49,7 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toProperty("occupation")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
@@ -72,7 +73,7 @@ public class InsertSupportTest {
                 .map(firstName).toPropertyWhenPresent("firstName")
                 .map(lastName).toPropertyWhenPresent("lastName")
                 .map(occupation).toPropertyWhenPresent("occupation")
-                .buildAndRender();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedColumnsPhrase = "(last_name, occupation)";
         softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
