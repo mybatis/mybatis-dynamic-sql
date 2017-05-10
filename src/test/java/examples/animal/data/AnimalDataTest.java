@@ -614,7 +614,7 @@ public class AnimalDataTest {
                     .from(animalData)
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             
-            Integer max = mapper.selectAnInteger(selectSupport);
+            Long max = mapper.selectALong(selectSupport);
             softly.assertThat(max).isEqualTo(65);
         } finally {
             sqlSession.close();
@@ -631,7 +631,7 @@ public class AnimalDataTest {
                     .from(animalData)
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             
-            Integer max = mapper.selectAnInteger(selectSupport);
+            Long max = mapper.selectALong(selectSupport);
             softly.assertThat(max).isEqualTo(1);
         } finally {
             sqlSession.close();
@@ -648,7 +648,26 @@ public class AnimalDataTest {
                     .from(animalData)
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             
-            Integer count = mapper.selectAnInteger(selectSupport);
+            Long count = mapper.selectALong(selectSupport);
+            softly.assertThat(count).isEqualTo(65);
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testCountColumn() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(count(bodyWeight))
+                    .from(animalData)
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
+            
+            softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(a.body_weight)");
+            
+            Long count = mapper.selectALong(selectSupport);
             softly.assertThat(count).isEqualTo(65);
         } finally {
             sqlSession.close();

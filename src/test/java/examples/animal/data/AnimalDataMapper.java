@@ -36,7 +36,7 @@ public interface AnimalDataMapper {
     @Select({
         "${fullSelectStatement}"
     })
-    Integer selectAnInteger(SelectSupport selectSupport);
+    Long selectALong(SelectSupport selectSupport);
     
     @Delete({
         "${fullDeleteStatement}"
