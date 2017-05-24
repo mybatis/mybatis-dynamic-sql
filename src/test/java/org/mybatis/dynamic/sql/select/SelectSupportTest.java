@@ -200,7 +200,7 @@ public class SelectSupportTest {
     public void testDistinct() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select().distinct(column1, column2)
+        SelectSupport selectSupport = selectDistinct(column1, column2)
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)

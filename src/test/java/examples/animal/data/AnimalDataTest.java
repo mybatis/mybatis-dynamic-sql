@@ -568,7 +568,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select().distinct(id, animalName, bodyWeight, brainWeight)
+            SelectSupport selectSupport = selectDistinct(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))

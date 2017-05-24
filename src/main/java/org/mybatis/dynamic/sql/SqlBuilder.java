@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql;
 
 import org.mybatis.dynamic.sql.delete.DeleteModelBuilder;
 import org.mybatis.dynamic.sql.insert.InsertModelBuilder;
-import org.mybatis.dynamic.sql.select.SelectDistinctBuilder;
 import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 
@@ -35,8 +34,8 @@ public interface SqlBuilder {
         return SelectModelBuilder.of(columns);
     }
     
-    public static SelectDistinctBuilder select() {
-        return new SelectDistinctBuilder();
+    public static SelectModelBuilder selectDistinct(SqlColumn<?>...columns) {
+        return SelectModelBuilder.ofDistinct(columns);
     }
     
     public static UpdateModelBuilder update(SqlTable table) {
