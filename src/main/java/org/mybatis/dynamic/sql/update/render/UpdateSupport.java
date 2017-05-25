@@ -15,13 +15,13 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 /**
  * This class combines a "set" clause and a "where" clause into one parameter object
@@ -32,14 +32,11 @@ import org.mybatis.dynamic.sql.SqlTable;
  */
 public class UpdateSupport extends AbstractSqlSupport {
     private String setClause;
-    private String whereClause;
+    private Optional<String> whereClause;
     private Map<String, Object> parameters;
 
-    private UpdateSupport (String setClause, String whereClause, Map<String, Object> parameters, SqlTable table) {
+    private UpdateSupport (SqlTable table) {
         super(table);
-        this.setClause = setClause;
-        this.whereClause = whereClause;
-        this.parameters = Collections.unmodifiableMap(new HashMap<>(parameters));
     }
 
     public String getSetClause() {
@@ -51,7 +48,7 @@ public class UpdateSupport extends AbstractSqlSupport {
     }
 
     public Optional<String> whereClause() {
-        return Optional.ofNullable(whereClause);
+        return whereClause;
     }
 
     public Map<String, Object> getParameters() {
@@ -66,7 +63,39 @@ public class UpdateSupport extends AbstractSqlSupport {
                 + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING);
     }
     
-    public static UpdateSupport of(String setClause, String whereClause, Map<String, Object> parameters, SqlTable table) {
-        return new UpdateSupport(setClause, whereClause, parameters, table);
+    public static class Builder {
+        private SqlTable table;
+        private String setClause;
+        private Optional<WhereSupport> whereSupport;
+        private Map<String, Object> parameters = new HashMap<>();
+        
+        public Builder withTable(SqlTable table) {
+            this.table = table;
+            return this;
+        }
+        
+        public Builder withSetClause(String setClause) {
+            this.setClause = setClause;
+            return this;
+        }
+        
+        public Builder withWhereSupport(Optional<WhereSupport> whereSupport) {
+            this.whereSupport = whereSupport;
+            return this;
+        }
+        
+        public Builder withParameters(Map<String, Object> parameters) {
+            this.parameters.putAll(parameters);
+            return this;
+        }
+        
+        public UpdateSupport build() {
+            UpdateSupport updateSupport = new UpdateSupport(table);
+            updateSupport.setClause = setClause;
+            updateSupport.whereClause = whereSupport.flatMap(ws -> Optional.of(ws.getWhereClause()));
+            whereSupport.ifPresent(ws -> parameters.putAll(ws.getParameters()));
+            updateSupport.parameters = parameters;
+            return updateSupport;
+        }
     }
 }

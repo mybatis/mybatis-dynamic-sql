@@ -18,6 +18,8 @@ package org.mybatis.dynamic.sql.util;
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector;
+import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector.Triple;
 
 public class FragmentCollectorTest {
 
@@ -26,12 +28,12 @@ public class FragmentCollectorTest {
     
     @Test
     public void testFragmentCollectorMerge() {
-        FragmentCollector fc1 = new FragmentCollector();
-        FragmentCollector.Triple t1 = FragmentCollector.Triple.of("p1",  ":p1",  1);
+        WhereFragmentCollector fc1 = new WhereFragmentCollector();
+        Triple t1 = Triple.of("p1",  ":p1",  1);
         fc1.add(t1);
         
-        FragmentCollector fc2 = new FragmentCollector();
-        FragmentCollector.Triple t2 = FragmentCollector.Triple.of("p2",  ":p2",  2);
+        WhereFragmentCollector fc2 = new WhereFragmentCollector();
+        Triple t2 = Triple.of("p2",  ":p2",  2);
         fc2.add(t2);
         
         fc1 = fc1.merge(fc2);

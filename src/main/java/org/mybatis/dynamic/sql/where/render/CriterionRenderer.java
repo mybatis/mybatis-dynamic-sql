@@ -16,15 +16,19 @@
 package org.mybatis.dynamic.sql.where.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
 
-public abstract class CriterionRenderer {
+public class CriterionRenderer {
+
+    private AtomicInteger sequence;
+    private RenderingStrategy renderingStrategy;
+    private Function<SqlColumn<?>, String> nameFunction;
     
     private CriterionRenderer() {
         super();
@@ -40,9 +44,9 @@ public abstract class CriterionRenderer {
     }
     
     private <T> FragmentAndParameters renderWithSubCriteria(SqlCriterion<T> criterion, FragmentAndParameters renderedCondition) {
-        FragmentCollector renderedSubCriteria = criterion.subCriteria()
+        WhereFragmentCollector renderedSubCriteria = criterion.subCriteria()
                 .map(this::renderSubCriterion)
-                .collect(FragmentCollector.fragmentAndParameterCollector());
+                .collect(WhereFragmentCollector.fragmentAndParameterCollector());
 
         String fragment = renderConnector(criterion)
                 + "("  //$NON-NLS-1$
@@ -70,36 +74,20 @@ public abstract class CriterionRenderer {
         return criterion.connector().map(c -> c + " ").orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
-    protected abstract <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion);
-    protected abstract  <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion);
-    
-    public static CriterionRenderer newRendererIgnoringTableAlias(AtomicInteger sequence, RenderingStrategy renderingStrategy) {
-        return new CriterionRenderer() {
-            @Override
-            protected <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
-                WhereConditionVisitor<T> visitor = new WhereConditionVisitor<>(renderingStrategy, sequence, criterion.column(), SqlColumn::name);
-                return criterion.condition().accept(visitor);
-            }
-            
-            @Override
-            protected <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {
-                return CriterionRenderer.newRendererIgnoringTableAlias(sequence, renderingStrategy).render(subCriterion);
-            }
-        };
+    private  <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {
+        return CriterionRenderer.of(sequence, renderingStrategy, nameFunction).render(subCriterion);
     }
-
-    public static CriterionRenderer newRendererIncludingTableAlias(AtomicInteger sequence, RenderingStrategy renderingStrategy) {
-        return new CriterionRenderer() {
-            @Override
-            protected <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
-                WhereConditionVisitor<T> visitor = new WhereConditionVisitor<>(renderingStrategy, sequence, criterion.column(), SqlColumn::nameIncludingTableAlias);
-                return criterion.condition().accept(visitor);
-            }
-            
-            @Override
-            protected <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {
-                return CriterionRenderer.newRendererIncludingTableAlias(sequence, renderingStrategy).render(subCriterion);
-            }
-        };
+    
+    private <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
+        WhereConditionVisitor<T> visitor = new WhereConditionVisitor<>(renderingStrategy, sequence, criterion.column(), nameFunction);
+        return criterion.condition().accept(visitor);
+    }
+    
+    public static CriterionRenderer of(AtomicInteger sequence, RenderingStrategy renderingStrategy, Function<SqlColumn<?>, String> nameFunction) {
+        CriterionRenderer criterionRenderer = new CriterionRenderer();
+        criterionRenderer.sequence = sequence;
+        criterionRenderer.renderingStrategy = renderingStrategy;
+        criterionRenderer.nameFunction = nameFunction;
+        return criterionRenderer;
     }
 }

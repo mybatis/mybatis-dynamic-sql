@@ -15,57 +15,37 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class UpdateRenderer {
     private UpdateModel updateModel;
-    private SetPhraseVisitor visitor;
     
     private UpdateRenderer(UpdateModel updateModel) {
         this.updateModel = updateModel;
     }
     
     public UpdateSupport render(RenderingStrategy renderingStrategy) {
-        visitor = new SetPhraseVisitor(renderingStrategy);
-        return updateModel.whereModel().map(wm ->renderWithWhereClause(wm, renderingStrategy))
-                .orElse(renderWithoutWhereClause());
-    }
-    
-    private UpdateSupport renderWithoutWhereClause() {
-        FragmentCollector setValuesCollector = renderSetValues();
-        return UpdateSupport.of(setValuesCollector.fragments().collect(Collectors.joining(", ", "set ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                null, setValuesCollector.parameters(), updateModel.table());
+        SetPhraseVisitor visitor = new SetPhraseVisitor(renderingStrategy);
+        Optional<WhereSupport> whereSupport = renderWhere(renderingStrategy);
         
-    }
-    
-    private UpdateSupport renderWithWhereClause(WhereModel whereModel, RenderingStrategy renderingStrategy) {
-        Map<String, Object> parameters = new HashMap<>();
-        FragmentCollector setValuesCollector = renderSetValues();
-        WhereSupport whereSupport = WhereRenderer.of(whereModel, renderingStrategy).renderCriteriaIgnoringTableAlias();
-        parameters.putAll(setValuesCollector.parameters());
-        parameters.putAll(whereSupport.getParameters());
-        return UpdateSupport.of(setValuesCollector.fragments().collect(Collectors.joining(", ", "set ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                whereSupport.getWhereClause(), parameters, updateModel.table());
-    }
-    
-    private FragmentCollector renderSetValues() {
         return updateModel.columnValues()
-                .map(this::transform)
-                .collect(FragmentCollector.fragmentAndParameterCollector());
+                .map(cv -> transform(cv, visitor))
+                .collect(UpdateFragmentCollector.toUpdateSupport(updateModel.table(), whereSupport));
     }
     
-    private FragmentAndParameters transform(AbstractColumnAndValue columnAndValue) {
+    private Optional<WhereSupport> renderWhere(RenderingStrategy renderingStrategy) {
+        return updateModel.whereModel().flatMap(
+                wm -> Optional.of(WhereRenderer.of(wm, renderingStrategy).renderCriteriaIgnoringTableAlias()));
+    }
+    
+    private FragmentAndParameters transform(AbstractColumnAndValue columnAndValue, SetPhraseVisitor visitor) {
         return columnAndValue.accept(visitor);
     }
     

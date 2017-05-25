@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public class FragmentCollector {
-    List<String> fragments = new ArrayList<>();
-    Map<String, Object> parameters = new HashMap<>();
+public abstract class FragmentCollector<T extends FragmentCollector<T>> {
+    protected List<String> fragments = new ArrayList<>();
+    protected Map<String, Object> parameters = new HashMap<>();
     
     public FragmentCollector() {
         super();
@@ -35,15 +34,10 @@ public class FragmentCollector {
         parameters.putAll(fragmentAndParameters.parameters());
     }
     
-    public void add(Triple triple) {
-        fragments.add(triple.jdbcPlaceholder());
-        parameters.put(triple.mapKey(), triple.value());
-    }
-    
-    public FragmentCollector merge(FragmentCollector other) {
+    public T merge(T other) {
         fragments.addAll(other.fragments);
         parameters.putAll(other.parameters);
-        return this;
+        return getThis();
     }
     
     public Stream<String> fragments() {
@@ -54,41 +48,6 @@ public class FragmentCollector {
         return parameters;
     }
     
-    public static Collector<Triple, FragmentCollector, FragmentCollector> tripleCollector() {
-        return Collector.of(FragmentCollector::new, FragmentCollector::add, FragmentCollector::merge);
-    }
+    public abstract T getThis();
     
-    public static Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> fragmentAndParameterCollector() {
-        return Collector.of(FragmentCollector::new, FragmentCollector::add, FragmentCollector::merge);
-    }
-    
-    public static class Triple {
-        private String mapKey;
-        private String jdbcPlaceholder;
-        private Object value;
-        
-        private Triple() {
-            super();
-        }
-        
-        public String mapKey() {
-            return mapKey;
-        }
-        
-        public String jdbcPlaceholder() {
-            return jdbcPlaceholder;
-        }
-        
-        public Object value() {
-            return value;
-        }
-        
-        public static Triple of(String mapKey, String jdbcPlaceholder, Object value) {
-            Triple triple = new Triple();
-            triple.mapKey = mapKey;
-            triple.jdbcPlaceholder = jdbcPlaceholder;
-            triple.value = value;
-            return triple;
-        }
-    }
 }

@@ -26,8 +26,7 @@ import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.util.FragmentCollector.Triple;
+import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector.Triple;
 
 public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
     
@@ -46,9 +45,9 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
-        FragmentCollector fc = condition.values()
+        WhereFragmentCollector fc = condition.values()
                 .map(this::toTriple)
-                .collect(FragmentCollector.tripleCollector());
+                .collect(WhereFragmentCollector.tripleCollector());
         
         return new FragmentAndParameters.Builder(condition.renderCondition(columnName(), fc.fragments()))
                 .withParameters(fc.parameters())

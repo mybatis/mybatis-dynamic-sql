@@ -16,13 +16,11 @@
 package org.mybatis.dynamic.sql.where.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class WhereRenderer {
@@ -36,26 +34,23 @@ public class WhereRenderer {
     }
     
     public WhereSupport renderCriteriaIncludingTableAlias() {
-        return renderCriteria(model.criteria().map(this::renderCriterionIncludingTableAlias));
+        return model.criteria()
+                .map(this::renderCriterionIncludingTableAlias)
+                .collect(WhereFragmentCollector.toWhereSupport());
     }
     
     public WhereSupport renderCriteriaIgnoringTableAlias() {
-        return renderCriteria(model.criteria().map(this::renderCriterionIgnoringTableAlias));
-    }
-    
-    private WhereSupport renderCriteria(Stream<FragmentAndParameters> stream) {
-        FragmentCollector fc = stream.collect(FragmentCollector.fragmentAndParameterCollector());
-
-        return WhereSupport.of(fc.fragments().collect(Collectors.joining(" ", "where ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                fc.parameters());
+        return model.criteria()
+                .map(this::renderCriterionIgnoringTableAlias)
+                .collect(WhereFragmentCollector.toWhereSupport());
     }
     
     private FragmentAndParameters renderCriterionIncludingTableAlias(SqlCriterion<?> criterion) {
-        return CriterionRenderer.newRendererIncludingTableAlias(sequence, renderingStrategy).render(criterion);
+        return CriterionRenderer.of(sequence, renderingStrategy, SqlColumn::nameIncludingTableAlias).render(criterion);
     }
     
     private FragmentAndParameters renderCriterionIgnoringTableAlias(SqlCriterion<?> criterion) {
-        return CriterionRenderer.newRendererIgnoringTableAlias(sequence, renderingStrategy).render(criterion);
+        return CriterionRenderer.of(sequence, renderingStrategy, SqlColumn::name).render(criterion);
     }
     
     public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy) {
