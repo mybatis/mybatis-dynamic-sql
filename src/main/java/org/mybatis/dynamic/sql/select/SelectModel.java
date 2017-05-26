@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -29,8 +28,8 @@ public class SelectModel {
     private boolean isDistinct;
     private List<SqlColumn<?>> columns = new ArrayList<>();
     private SqlTable table;
-    private WhereModel whereModel;
-    private List<SqlColumn<?>> orderByColumns = new ArrayList<>();
+    private Optional<WhereModel> whereModel;
+    private Optional<List<SqlColumn<?>>> orderByColumns;
 
     private SelectModel() {
         super();
@@ -49,44 +48,52 @@ public class SelectModel {
     }
     
     public Optional<WhereModel> whereModel() {
-        return Optional.ofNullable(whereModel);
+        return whereModel;
     }
     
-    public Stream<SqlColumn<?>> orderByColumns() {
-        return orderByColumns.stream();
+    public Optional<Stream<SqlColumn<?>>> orderByColumns() {
+        return orderByColumns.flatMap(cl -> Optional.of(cl.stream()));
     }
     
     public static class Builder {
-        private SelectModel selectModel = new SelectModel();
+        private boolean isDistinct;
+        private List<SqlColumn<?>> columns = new ArrayList<>();
+        private SqlTable table;
+        private WhereModel whereModel;
+        private List<SqlColumn<?>> orderByColumns;
         
         public Builder isDistinct(boolean isDistinct) {
-            selectModel.isDistinct = isDistinct;
+            this.isDistinct = isDistinct;
             return this;
         }
 
-        public Builder withColumns(SqlColumn<?>[] columns) {
-            selectModel.columns.addAll(Arrays.asList(columns));
+        public Builder withColumns(List<SqlColumn<?>> columns) {
+            this.columns.addAll(columns);
             return this;
         }
 
         public Builder withTable(SqlTable table) {
-            selectModel.table = table;
+            this.table = table;
             return this;
         }
 
         public Builder withWhereModel(WhereModel whereModel) {
-            selectModel.whereModel = whereModel;
+            this.whereModel = whereModel;
             return this;
         }
 
-        public Builder withOrderByColumns(SqlColumn<?>[] columns) {
-            if (columns != null) {
-                selectModel.orderByColumns.addAll(Arrays.asList(columns));
-            }
+        public Builder withOrderByColumns(List<SqlColumn<?>> columns) {
+            orderByColumns = columns;
             return this;
         }
         
         public SelectModel build() {
+            SelectModel selectModel = new SelectModel();
+            selectModel.columns = columns;
+            selectModel.isDistinct = isDistinct;
+            selectModel.orderByColumns = Optional.ofNullable(orderByColumns);
+            selectModel.table = table;
+            selectModel.whereModel = Optional.ofNullable(whereModel);
             return selectModel;
         }
     }

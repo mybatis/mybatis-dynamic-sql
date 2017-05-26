@@ -15,6 +15,10 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -28,13 +32,13 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class SelectModelBuilder {
 
     private boolean isDistinct;
-    private SqlColumn<?>[] columns;
+    private List<SqlColumn<?>> columns = new ArrayList<>();
     private SqlTable table;
     private WhereModel whereModel;
-    private SqlColumn<?>[] orderByColumns;
+    private List<SqlColumn<?>> orderByColumns;
     
     private SelectModelBuilder(SqlColumn<?>...columns) {
-        this.columns = columns;
+        this.columns.addAll(Arrays.asList(columns));
     }
     
     public SelectSupportAfterFromBuilder from(SqlTable table) {
@@ -77,7 +81,7 @@ public class SelectModelBuilder {
         }
 
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
-            orderByColumns = columns;
+            orderByColumns = Arrays.asList(columns);
             return new SelectSupportAfterOrderByBuilder();
         }
         
@@ -97,7 +101,7 @@ public class SelectModelBuilder {
         
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
             whereModel = buildWhereModel();
-            orderByColumns = columns;
+            orderByColumns = Arrays.asList(columns);
             return new SelectSupportAfterOrderByBuilder();
         }
         

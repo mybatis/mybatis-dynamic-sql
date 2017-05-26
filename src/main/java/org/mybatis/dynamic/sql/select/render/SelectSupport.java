@@ -27,10 +27,10 @@ public class SelectSupport extends AbstractSqlSupport {
     private static final String DISTINCT_STRING = "distinct"; //$NON-NLS-1$
 
     private String columnList;
-    private String whereClause;
+    private Optional<String> whereClause;
     private Map<String, Object> parameters = new HashMap<>();
     private String distinct;
-    private String orderByClause;
+    private Optional<String> orderByClause;
     
     private SelectSupport(SqlTable table) {
         super(table);
@@ -45,11 +45,11 @@ public class SelectSupport extends AbstractSqlSupport {
     }
     
     public String getWhereClause() {
-        return whereClause().orElse(EMPTY_STRING);
+        return whereClause.orElse(EMPTY_STRING);
     }
 
     public Optional<String> whereClause() {
-        return Optional.ofNullable(whereClause);
+        return whereClause;
     }
 
     public Map<String, Object> getParameters() {
@@ -57,11 +57,11 @@ public class SelectSupport extends AbstractSqlSupport {
     }
     
     public String getOrderByClause() {
-        return orderByClause().orElse(EMPTY_STRING);
+        return orderByClause.orElse(EMPTY_STRING);
     }
     
     public Optional<String> orderByClause() {
-        return Optional.ofNullable(orderByClause);
+        return orderByClause;
     }
     
     public String getColumnList() {
@@ -117,11 +117,12 @@ public class SelectSupport extends AbstractSqlSupport {
             this.table = table;
             return this;
         }
+        
         public SelectSupport build() {
             SelectSupport selectSupport = new SelectSupport(table);
             selectSupport.distinct = distinct;
-            selectSupport.orderByClause = orderByClause;
-            selectSupport.whereClause = whereClause;
+            selectSupport.orderByClause = Optional.ofNullable(orderByClause);
+            selectSupport.whereClause = Optional.ofNullable(whereClause);
             selectSupport.parameters = parameters;
             selectSupport.columnList = columnList;
             return selectSupport;

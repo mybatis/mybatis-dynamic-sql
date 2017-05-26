@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -66,18 +67,17 @@ public class SelectRenderer {
     }
     
     private String calculateOrderByPhrase() {
-        String orderBy = selectModel.orderByColumns()
-                .map(SqlColumn::orderByPhrase)
+        return selectModel.orderByColumns()
+                .map(this::calculateOrderByPhrase)
+                .orElse(null);
+    }
+    
+    private String calculateOrderByPhrase(Stream<SqlColumn<?>> columns) {
+        return columns.map(SqlColumn::orderByPhrase)
                 .collect(CustomCollectors.joining(", ", "order by ", "", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        return trimToNull(orderBy);
     }
     
     public static SelectRenderer of(SelectModel selectModel) {
         return new SelectRenderer(selectModel);
-    }
-    
-    private String trimToNull(String in) {
-        String out = in.trim();
-        return out.length() == 0 ? null : out;
     }
 }
