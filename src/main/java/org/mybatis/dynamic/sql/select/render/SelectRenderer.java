@@ -22,7 +22,6 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
-import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
@@ -34,30 +33,19 @@ public class SelectRenderer {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
-        return selectModel.whereModel().map(wm -> renderWithWhereClause(wm, renderingStrategy))
-                .orElse(renderWithoutWhereClause());
-    }
-    
-    private SelectSupport renderWithWhereClause(WhereModel whereModel, RenderingStrategy renderingStrategy) {
-        WhereSupport whereSupport = WhereRenderer.of(whereModel, renderingStrategy).renderCriteriaIncludingTableAlias();
+        SelectSupport.Builder builder = new SelectSupport.Builder()
+                .isDistinct(selectModel.isDistinct())
+                .withColumnList(calculateColumnList())
+                .withTable(selectModel.table())
+                .withOrderByClause(calculateOrderByPhrase());
+
+        selectModel.whereModel().ifPresent(wm -> {
+            WhereSupport whereSupport = WhereRenderer.of(wm, renderingStrategy).renderCriteriaIncludingTableAlias();
+            builder.withWhereClause(whereSupport.getWhereClause())
+                .withParameters(whereSupport.getParameters());
+        });
         
-        return new SelectSupport.Builder()
-                .isDistinct(selectModel.isDistinct())
-                .withColumnList(calculateColumnList())
-                .withTable(selectModel.table())
-                .withWhereClause(whereSupport.getWhereClause())
-                .withParameters(whereSupport.getParameters())
-                .withOrderByClause(calculateOrderByPhrase())
-                .build();
-    }
-    
-    private SelectSupport renderWithoutWhereClause() {
-        return new SelectSupport.Builder()
-                .isDistinct(selectModel.isDistinct())
-                .withColumnList(calculateColumnList())
-                .withTable(selectModel.table())
-                .withOrderByClause(calculateOrderByPhrase())
-                .build();
+        return builder.build();
     }
     
     private String calculateColumnList() {
