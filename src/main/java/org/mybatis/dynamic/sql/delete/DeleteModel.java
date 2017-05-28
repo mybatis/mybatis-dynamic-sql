@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteModel {
     private SqlTable table;
-    private WhereModel whereModel;
+    private Optional<WhereModel> whereModel;
     
     private DeleteModel() {
         super();
@@ -33,17 +33,28 @@ public class DeleteModel {
     }
     
     public Optional<WhereModel> whereModel() {
-        return Optional.ofNullable(whereModel);
+        return whereModel;
     }
     
-    public static DeleteModel of(SqlTable table) {
-        return of(table, null);
-    }
-
-    public static DeleteModel of(SqlTable table, WhereModel whereModel) {
-        DeleteModel deleteModel = new DeleteModel();
-        deleteModel.table = table;
-        deleteModel.whereModel = whereModel;
-        return deleteModel;
+    public static class Builder {
+        private SqlTable table;
+        private WhereModel whereModel;
+        
+        public Builder withTable(SqlTable table) {
+            this.table = table;
+            return this;
+        }
+        
+        public Builder withWhereModel(WhereModel whereModel) {
+            this.whereModel = whereModel;
+            return this;
+        }
+        
+        public DeleteModel build() {
+            DeleteModel deleteModel = new DeleteModel();
+            deleteModel.table = table;
+            deleteModel.whereModel = Optional.ofNullable(whereModel);
+            return deleteModel;
+        }
     }
 }

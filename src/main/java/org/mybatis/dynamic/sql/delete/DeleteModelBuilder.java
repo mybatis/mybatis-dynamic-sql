@@ -43,7 +43,9 @@ public class DeleteModelBuilder {
      * @return
      */
     public DeleteModel build() {
-        return DeleteModel.of(table);
+        return new DeleteModel.Builder()
+                .withTable(table)
+                .build();
     }
     
     public DeleteSupport buildAndRender(RenderingStrategy renderingStrategy) {
@@ -61,7 +63,10 @@ public class DeleteModelBuilder {
         }
         
         public DeleteModel build() {
-            return DeleteModel.of(table, buildWhereModel());
+            return new DeleteModel.Builder()
+                    .withTable(table)
+                    .withWhereModel(buildWhereModel())
+                    .build();
         }
         
         public DeleteSupport buildAndRender(RenderingStrategy renderingStrategy) {

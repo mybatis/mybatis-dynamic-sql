@@ -57,7 +57,7 @@ public class SelectModel {
     
     public static class Builder {
         private boolean isDistinct;
-        private List<SqlColumn<?>> columns = new ArrayList<>();
+        private List<SqlColumn<?>> columns;
         private SqlTable table;
         private WhereModel whereModel;
         private List<SqlColumn<?>> orderByColumns;
@@ -68,7 +68,7 @@ public class SelectModel {
         }
 
         public Builder withColumns(List<SqlColumn<?>> columns) {
-            this.columns.addAll(columns);
+            this.columns = columns;
             return this;
         }
 

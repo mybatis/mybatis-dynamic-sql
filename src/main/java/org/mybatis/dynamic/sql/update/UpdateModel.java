@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.update;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -26,7 +25,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
     private SqlTable table;
-    private WhereModel whereModel;
+    private Optional<WhereModel> whereModel;
     private List<AbstractColumnAndValue> columnValues;
     
     private UpdateModel() {
@@ -38,22 +37,39 @@ public class UpdateModel {
     }
     
     public Optional<WhereModel> whereModel() {
-        return Optional.ofNullable(whereModel);
+        return whereModel;
     }
     
     public Stream<AbstractColumnAndValue> columnValues() {
         return columnValues.stream();
     }
     
-    public static UpdateModel of(SqlTable table, Stream<AbstractColumnAndValue> columnValues) {
-        return of(table, null, columnValues);
-    }
-
-    public static UpdateModel of(SqlTable table, WhereModel whereModel, Stream<AbstractColumnAndValue> columnValues) {
-        UpdateModel model = new UpdateModel();
-        model.table = table;
-        model.columnValues = columnValues.collect(Collectors.toList());
-        model.whereModel = whereModel;
-        return model;
+    public static class Builder {
+        private SqlTable table;
+        private WhereModel whereModel;
+        private List<AbstractColumnAndValue> columnValues;
+        
+        public Builder withTable(SqlTable table) {
+            this.table = table;
+            return this;
+        }
+        
+        public Builder withColumnValues(List<AbstractColumnAndValue> columnValues) {
+            this.columnValues = columnValues;
+            return this;
+        }
+        
+        public Builder withWhereModel(WhereModel whereModel) {
+            this.whereModel = whereModel;
+            return this;
+        }
+        
+        public UpdateModel build() {
+            UpdateModel model = new UpdateModel();
+            model.table = table;
+            model.columnValues = columnValues;
+            model.whereModel = Optional.ofNullable(whereModel);
+            return model;
+        }
     }
 }

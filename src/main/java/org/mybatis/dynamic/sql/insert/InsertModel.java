@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.insert;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -43,11 +42,33 @@ public class InsertModel<T> {
         return table;
     }
     
-    public static <T> InsertModel<T> of (SqlTable table, T record, Stream<AbstractColumnAndValue> columnMappings) {
-        InsertModel<T> insertModel = new InsertModel<>();
-        insertModel.table = table;
-        insertModel.record = record;
-        insertModel.columnMappings = columnMappings.collect(Collectors.toList());
-        return insertModel;
+    public static class Builder<T> {
+        private SqlTable table;
+        private T record;
+        private List<AbstractColumnAndValue> columnMappings;
+        
+        public Builder<T> withTable(SqlTable table) {
+            this.table = table;
+            return this;
+        }
+        
+        public Builder<T> withRecord(T record) {
+            this.record = record;
+            return this;
+        }
+        
+        public Builder<T> withColumnMappings(List<AbstractColumnAndValue> columnMappings) {
+            this.columnMappings = columnMappings;
+            return this;
+        }
+        
+        public InsertModel<T> build() {
+            InsertModel<T> insertModel = new InsertModel<>();
+            insertModel.table = table;
+            insertModel.record = record;
+            insertModel.columnMappings = columnMappings;
+            return insertModel;
+        }
+        
     }
 }

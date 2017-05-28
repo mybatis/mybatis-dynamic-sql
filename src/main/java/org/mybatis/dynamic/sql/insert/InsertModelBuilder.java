@@ -59,7 +59,11 @@ public class InsertModelBuilder<T> {
         }
         
         public InsertModel<T> build() {
-            return InsertModel.of(table, record, columnMappings.stream());
+            return new InsertModel.Builder<T>()
+                    .withTable(table)
+                    .withRecord(record)
+                    .withColumnMappings(columnMappings)
+                    .build();
         }
         
         public InsertSupport<T> buildAndRender(RenderingStrategy renderingStrategy) {

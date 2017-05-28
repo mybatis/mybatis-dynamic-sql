@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,13 +31,13 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class SelectModelBuilder {
 
     private boolean isDistinct;
-    private List<SqlColumn<?>> columns = new ArrayList<>();
+    private List<SqlColumn<?>> columns;
     private SqlTable table;
     private WhereModel whereModel;
     private List<SqlColumn<?>> orderByColumns;
     
     private SelectModelBuilder(SqlColumn<?>...columns) {
-        this.columns.addAll(Arrays.asList(columns));
+        this.columns = Arrays.asList(columns);
     }
     
     public SelectSupportAfterFromBuilder from(SqlTable table) {

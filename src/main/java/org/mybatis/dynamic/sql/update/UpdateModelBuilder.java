@@ -55,7 +55,10 @@ public class UpdateModelBuilder {
      * @return
      */
     public UpdateModel build() {
-        return UpdateModel.of(table, columnsAndValues.stream());
+        return new UpdateModel.Builder()
+                .withTable(table)
+                .withColumnValues(columnsAndValues)
+                .build();
     }
     
     public UpdateSupport buildAndRender(RenderingStrategy renderingStrategy) {
@@ -104,7 +107,11 @@ public class UpdateModelBuilder {
         }
         
         public UpdateModel build() {
-            return UpdateModel.of(table, buildWhereModel(), columnsAndValues.stream());
+            return new UpdateModel.Builder()
+                    .withTable(table)
+                    .withColumnValues(columnsAndValues)
+                    .withWhereModel(buildWhereModel())
+                    .build();
         }
         
         public UpdateSupport buildAndRender(RenderingStrategy renderingStrategy) {
