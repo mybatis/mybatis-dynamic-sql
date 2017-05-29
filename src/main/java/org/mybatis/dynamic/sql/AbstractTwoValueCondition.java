@@ -32,6 +32,7 @@ public abstract class AbstractTwoValueCondition<T> extends Condition<T> {
         return value2;
     }
 
+    @Override
     public <R> R accept(ConditionVisitor<T,R> visitor) {
         return visitor.visit(this);
     }

@@ -70,6 +70,7 @@ public class SpringTest {
         
         List<GeneratedAlwaysRecord> records = template.query(selectSupport.getFullSelectStatement(), selectSupport.getParameters(),
                 new RowMapper<GeneratedAlwaysRecord>(){
+                    @Override
                     public GeneratedAlwaysRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
                         GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
                         record.setId(rs.getInt(1));

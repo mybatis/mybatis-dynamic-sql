@@ -28,6 +28,7 @@ public class WhereFragmentCollector extends FragmentCollector<WhereFragmentColle
                 parameters);
     }
     
+    @Override
     public WhereFragmentCollector getThis() {
         return this;
     }

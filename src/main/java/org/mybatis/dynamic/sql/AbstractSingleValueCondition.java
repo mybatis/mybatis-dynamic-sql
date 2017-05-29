@@ -26,6 +26,7 @@ public abstract class AbstractSingleValueCondition<T> extends Condition<T> {
         return value;
     }
     
+    @Override
     public <R> R accept(ConditionVisitor<T,R> visitor) {
         return visitor.visit(this);
     }

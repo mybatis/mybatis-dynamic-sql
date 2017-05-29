@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql;
 
 public abstract class AbstractNoValueCondition <T> extends Condition<T> {
 
+    @Override
     public <R> R accept(ConditionVisitor<T,R> visitor) {
         return visitor.visit(this);
     }

@@ -43,6 +43,7 @@ public class UpdateFragmentCollector extends FragmentCollector<UpdateFragmentCol
                 .build();
     }
     
+    @Override
     public UpdateFragmentCollector getThis() {
         return this;
     }

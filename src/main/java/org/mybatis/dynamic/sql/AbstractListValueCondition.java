@@ -30,6 +30,7 @@ public abstract class AbstractListValueCondition<T> extends Condition<T> {
         return values.stream().map(this::transformValue);
     }
     
+    @Override
     public <R> R accept(ConditionVisitor<T,R> visitor) {
         return visitor.visit(this);
     }
