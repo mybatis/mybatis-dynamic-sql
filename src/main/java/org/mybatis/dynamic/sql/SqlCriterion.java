@@ -15,28 +15,48 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Optional;
 
 public class SqlCriterion<T> extends AbstractCriterion<T, SqlColumn<T>, SqlCriterion<?>> {
     
-    private SqlCriterion(Stream<SqlCriterion<?>> subCriteria) {
-        super(subCriteria);
+    private SqlCriterion() {
+        super();
     }
     
-    public static <T> SqlCriterion<T> of(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.of(null,  column, condition, subCriteria);
-    }
-    
-    public static <T> SqlCriterion<T> of(String connector, SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.of(connector, column, condition, Arrays.stream(subCriteria));
-    }
-
-    public static <T> SqlCriterion<T> of(String connector, SqlColumn<T> column, Condition<T> condition, Stream<SqlCriterion<?>> subCriteria) {
-        SqlCriterion<T> criterion = new SqlCriterion<>(subCriteria);
-        criterion.column = column;
-        criterion.condition = condition;
-        criterion.connector = connector;
-        return criterion;
+    public static class Builder<T> {
+        private String connector;
+        private SqlColumn<T> column;
+        private Condition<T> condition;
+        private List<SqlCriterion<?>> subCriteria;
+        
+        public Builder<T> withConnector(String connector) {
+            this.connector = connector;
+            return this;
+        }
+        
+        public Builder<T> withColumn(SqlColumn<T> column) {
+            this.column = column;
+            return this;
+        }
+        
+        public Builder<T> withCondition(Condition<T> condition) {
+            this.condition = condition;
+            return this;
+        }
+        
+        public Builder<T> withSubCriteria(List<SqlCriterion<?>> subCriteria) {
+            this.subCriteria = subCriteria;
+            return this;
+        }
+        
+        public SqlCriterion<T> build() {
+            SqlCriterion<T> sqlCriterion = new SqlCriterion<>();
+            sqlCriterion.connector = Optional.ofNullable(connector);
+            sqlCriterion.column = column;
+            sqlCriterion.condition = condition;
+            sqlCriterion.subCriteria = Optional.ofNullable(subCriteria);
+            return sqlCriterion;
+        }
     }
 }

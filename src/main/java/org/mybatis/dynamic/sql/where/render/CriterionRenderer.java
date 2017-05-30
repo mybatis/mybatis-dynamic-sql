@@ -15,9 +15,11 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -36,38 +38,38 @@ public class CriterionRenderer {
     
     public <T> FragmentAndParameters render(SqlCriterion<T> criterion) {
         FragmentAndParameters renderedCondition = renderCondition(criterion);
-        if (criterion.hasSubCriteria()) {
-            return renderWithSubCriteria(criterion, renderedCondition);
-        } else {
-            return renderWithoutSubCriteria(criterion, renderedCondition);
-        }
+        String connector = renderConnector(criterion);
+        
+        Optional<WhereFragmentCollector> renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
+        
+        String fragment = renderedSubCriteria.map(wfc -> calculateFragment(wfc, renderedCondition, connector))
+                .orElse(calculateFragment(renderedCondition, connector));
+        
+        FragmentAndParameters.Builder builder = new FragmentAndParameters.Builder(fragment)
+                .withParameters(renderedCondition.parameters());
+        
+        renderedSubCriteria.ifPresent(wfc -> builder.withParameters(wfc.parameters()));
+        
+        return builder.build();
+    }
+
+    private Optional<WhereFragmentCollector> renderSubCriteria(Optional<Stream<SqlCriterion<?>>> subCriteria) {
+        return subCriteria
+                .flatMap(sc -> Optional.of(sc.map(this::renderSubCriterion)
+                        .collect(WhereFragmentCollector.fragmentAndParameterCollector())));
     }
     
-    private <T> FragmentAndParameters renderWithSubCriteria(SqlCriterion<T> criterion, FragmentAndParameters renderedCondition) {
-        WhereFragmentCollector renderedSubCriteria = criterion.subCriteria()
-                .map(this::renderSubCriterion)
-                .collect(WhereFragmentCollector.fragmentAndParameterCollector());
-
-        String fragment = renderConnector(criterion)
+    private String calculateFragment(WhereFragmentCollector renderedSubCriteria, FragmentAndParameters renderedCondition, String connector) {
+        return connector
                 + "("  //$NON-NLS-1$
                 + renderedCondition.fragment()
                 + " " //$NON-NLS-1$
                 + renderedSubCriteria.fragments().collect(Collectors.joining(" ")) //$NON-NLS-1$
                 + ")"; //$NON-NLS-1$
-        
-        return new FragmentAndParameters.Builder(fragment)
-                .withParameters(renderedCondition.parameters())
-                .withParameters(renderedSubCriteria.parameters())
-                .build();
     }
     
-    private <T> FragmentAndParameters renderWithoutSubCriteria(SqlCriterion<T> criterion, FragmentAndParameters renderedCondition) {
-        String fragment = renderConnector(criterion)
-                + renderedCondition.fragment();
-        
-        return new FragmentAndParameters.Builder(fragment)
-                .withParameters(renderedCondition.parameters())
-                .build();
+    private String calculateFragment(FragmentAndParameters renderedCondition, String connector) {
+        return connector + renderedCondition.fragment();
     }
     
     private String renderConnector(SqlCriterion<?> criterion) {

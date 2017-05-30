@@ -40,7 +40,10 @@ public class CriterionRendererTest {
         SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
         
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
+        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, SqlColumn::name);
         
@@ -54,7 +57,10 @@ public class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo").withAlias("a");
         SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
+        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, SqlColumn::nameIncludingTableAlias);
         
@@ -67,7 +73,10 @@ public class CriterionRendererTest {
     public void testNoAliasWithIgnore() {
         SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
+        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, SqlColumn::name);
         
@@ -80,7 +89,10 @@ public class CriterionRendererTest {
     public void testNoAliasWithoutIgnore() {
         SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
+        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, SqlColumn::nameIncludingTableAlias);
         
@@ -93,7 +105,10 @@ public class CriterionRendererTest {
     public void testTypeHandler() {
         SqlColumn<Date> column = SqlColumn.of("id", JDBCType.DATE).withTypeHandler("foo.Bar");
         IsEqualTo<Date> condition = IsEqualTo.of(new Date());
-        SqlCriterion<Date> criterion = SqlCriterion.of(column, condition);
+        SqlCriterion<Date> criterion = new SqlCriterion.Builder<Date>()
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, SqlColumn::name);
         
@@ -107,7 +122,10 @@ public class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo").withAlias("a");
         SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).withTypeHandler("foo.Bar").inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = SqlCriterion.of(column, condition);
+        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
         AtomicInteger sequence = new AtomicInteger(1);
         CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, SqlColumn::nameIncludingTableAlias);
         

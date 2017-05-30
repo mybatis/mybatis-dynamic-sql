@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
@@ -38,12 +39,38 @@ import org.mybatis.dynamic.sql.where.condition.IsNull;
 
 public interface SqlConditions {
     // connectors
+    static <T> SqlCriterion<T> or(SqlColumn<T> column, Condition<T> condition) {
+        return new SqlCriterion.Builder<T>()
+                .withConnector("or") //$NON-NLS-1$
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
+    }
+
     static <T> SqlCriterion<T> or(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.of("or", column, condition, subCriteria); //$NON-NLS-1$
+        return new SqlCriterion.Builder<T>()
+                .withConnector("or") //$NON-NLS-1$
+                .withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+    }
+
+    static <T> SqlCriterion<T> and(SqlColumn<T> column, Condition<T> condition) {
+        return new SqlCriterion.Builder<T>()
+                .withConnector("and") //$NON-NLS-1$
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
     }
 
     static <T> SqlCriterion<T> and(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.of("and", column, condition, subCriteria); //$NON-NLS-1$
+        return new SqlCriterion.Builder<T>()
+                .withConnector("and") //$NON-NLS-1$
+                .withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
     }
 
     // for all data types

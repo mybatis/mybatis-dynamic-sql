@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.Condition;
@@ -25,19 +26,61 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuilder<T>> {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();
     
+    protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, Condition<S> condition) {
+        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
+        addCriterion(criterion);
+    }
+    
     protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = SqlCriterion.of(column, condition, subCriteria);
+        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
+                .withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
         addCriterion(criterion);
     }
 
+    public <S> T and(SqlColumn<S> column, Condition<S> condition) {
+        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
+                .withConnector("and") //$NON-NLS-1$
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
+        addCriterion(criterion);
+        return getThis();
+    }
+    
     public <S> T and(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = SqlCriterion.of("and", column, condition, subCriteria); //$NON-NLS-1$
+        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
+                .withConnector("and") //$NON-NLS-1$
+                .withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+        addCriterion(criterion);
+        return getThis();
+    }
+    
+    public <S> T or(SqlColumn<S> column, Condition<S> condition) {
+        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
+                .withConnector("or") //$NON-NLS-1$
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
         addCriterion(criterion);
         return getThis();
     }
     
     public <S> T or(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = SqlCriterion.of("or", column, condition, subCriteria); //$NON-NLS-1$
+        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
+                .withConnector("or") //$NON-NLS-1$
+                .withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
         addCriterion(criterion);
         return getThis();
     }

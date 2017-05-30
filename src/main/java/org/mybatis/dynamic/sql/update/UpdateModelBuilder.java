@@ -44,6 +44,10 @@ public class UpdateModelBuilder {
         return new UpdateSupportBuilderFinisher<>(column);
     }
     
+    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition) {
+        return new UpdateSupportWhereBuilder(column, condition);
+    }
+    
     public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
         return new UpdateSupportWhereBuilder(column, condition, subCriteria);
     }
@@ -101,6 +105,10 @@ public class UpdateModelBuilder {
     }
 
     public class UpdateSupportWhereBuilder extends AbstractWhereModelBuilder<UpdateSupportWhereBuilder> {
+        
+        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition) {
+            super(column, condition);
+        }
         
         public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);

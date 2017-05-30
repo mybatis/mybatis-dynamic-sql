@@ -17,21 +17,16 @@ package org.mybatis.dynamic.sql;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AbstractCriterion<T, S extends AbstractColumn<T>, R extends AbstractCriterion<?, ?, ?>> {
     protected S column;
     protected Condition<T> condition;
-    protected String connector;
-    protected List<R> subCriteria;
-    
-    protected AbstractCriterion(Stream<R> subCriteria) {
-        this.subCriteria = subCriteria.collect(Collectors.toList());
-    }
+    protected Optional<String> connector;
+    protected Optional<List<R>> subCriteria;
     
     public Optional<String> connector() {
-        return Optional.ofNullable(connector);
+        return connector;
     }
     
     public S column() {
@@ -42,11 +37,7 @@ public abstract class AbstractCriterion<T, S extends AbstractColumn<T>, R extend
         return condition;
     }
     
-    public boolean hasSubCriteria() {
-        return !subCriteria.isEmpty();
-    }
- 
-    public Stream<R> subCriteria() {
-        return subCriteria.stream();
+    public Optional<Stream<R>> subCriteria() {
+        return subCriteria.flatMap(sc -> Optional.of(sc.stream()));
     }
 }

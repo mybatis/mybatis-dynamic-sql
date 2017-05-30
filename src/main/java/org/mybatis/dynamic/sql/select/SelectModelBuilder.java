@@ -75,10 +75,14 @@ public class SelectModelBuilder {
             super();
         }
         
+        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition) {
+            return new SelectSupportWhereBuilder(column, condition);
+        }
+
         public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             return new SelectSupportWhereBuilder(column, condition, subCriteria);
         }
-
+        
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
             orderByColumns = Arrays.asList(columns);
             return new SelectSupportAfterOrderByBuilder();
@@ -94,6 +98,10 @@ public class SelectModelBuilder {
     }
     
     public class SelectSupportWhereBuilder extends AbstractWhereModelBuilder<SelectSupportWhereBuilder> {
+        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition) {
+            super(column, condition);
+        }
+        
         private <T> SelectSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
