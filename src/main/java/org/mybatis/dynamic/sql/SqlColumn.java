@@ -22,12 +22,16 @@ import java.util.Optional;
  * 
  * @author Jeff Butler
  *
- */
-public class SqlColumn<T> extends AbstractColumn<T> {
+ * @param <T> - even though the type is not directly used in this class,
+ *  it is used by the compiler to match columns with conditions so it should
+ *  not be removed.
+*/
+public class SqlColumn<T> {
     
     private static final String ASCENDING = "ASC"; //$NON-NLS-1$
     protected static final String DESCENDING = "DESC"; //$NON-NLS-1$
 
+    protected String name;
     protected SqlTable table;
     protected JDBCType jdbcType;
     protected String sortOrder = ASCENDING;
@@ -35,7 +39,7 @@ public class SqlColumn<T> extends AbstractColumn<T> {
     protected String typeHandler;
     
     protected SqlColumn(SqlColumn<?> sqlColumn) {
-        super(sqlColumn.name);
+        this.name = sqlColumn.name;
         this.table = sqlColumn.table;
         this.jdbcType = sqlColumn.jdbcType;
         this.sortOrder = sqlColumn.sortOrder;
@@ -44,8 +48,12 @@ public class SqlColumn<T> extends AbstractColumn<T> {
     }
     
     protected SqlColumn(String name, JDBCType jdbcType) {
-        super(name);
+        this.name = name;
         this.jdbcType = jdbcType;
+    }
+    
+    public String name() {
+        return name;
     }
     
     public String nameIncludingTableAlias() {

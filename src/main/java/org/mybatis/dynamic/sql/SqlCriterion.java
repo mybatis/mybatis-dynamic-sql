@@ -17,13 +17,35 @@ package org.mybatis.dynamic.sql;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-public class SqlCriterion<T> extends AbstractCriterion<T, SqlColumn<T>, SqlCriterion<?>> {
+public class SqlCriterion<T> {
+    
+    private SqlColumn<T> column;
+    private Condition<T> condition;
+    private Optional<String> connector;
+    private Optional<List<SqlCriterion<?>>> subCriteria;
     
     private SqlCriterion() {
         super();
     }
     
+    public Optional<String> connector() {
+        return connector;
+    }
+    
+    public SqlColumn<T> column() {
+        return column;
+    }
+    
+    public Condition<T> condition() {
+        return condition;
+    }
+    
+    public Optional<Stream<SqlCriterion<?>>> subCriteria() {
+        return subCriteria.flatMap(sc -> Optional.of(sc.stream()));
+    }
+
     public static class Builder<T> {
         private String connector;
         private SqlColumn<T> column;
