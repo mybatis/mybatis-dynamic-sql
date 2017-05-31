@@ -20,6 +20,7 @@ import org.mybatis.dynamic.sql.util.ColumnAndValueVisitor;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
+import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class ValuePhraseVisitor implements ColumnAndValueVisitor<FieldAndValue> {
     
@@ -39,6 +40,11 @@ public class ValuePhraseVisitor implements ColumnAndValueVisitor<FieldAndValue> 
         return FieldAndValue.of(mapping.column().name(), mapping.constant());
     }
 
+    @Override
+    public FieldAndValue visit(StringConstantMapping mapping) {
+        return FieldAndValue.of(mapping.column().name(), "'" + mapping.constant() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
     @Override
     public FieldAndValue visit(PropertyMapping mapping) {
         return FieldAndValue.of(mapping.column().name(),

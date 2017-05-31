@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.util.BeanPropertyGetter;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
+import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class InsertModelBuilder<T> {
 
@@ -96,6 +97,11 @@ public class InsertModelBuilder<T> {
             
             public InsertModelMappingBuilder toConstant(String constant) {
                 columnMappings.add(ConstantMapping.of(column, constant));
+                return InsertModelMappingBuilder.this;
+            }
+            
+            public InsertModelMappingBuilder toStringConstant(String constant) {
+                columnMappings.add(StringConstantMapping.of(column, constant));
                 return InsertModelMappingBuilder.this;
             }
         }

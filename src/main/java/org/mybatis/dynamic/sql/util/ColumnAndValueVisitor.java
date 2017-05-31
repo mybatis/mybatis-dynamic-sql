@@ -20,6 +20,8 @@ public interface ColumnAndValueVisitor<T> {
 
     T visit(ConstantMapping mapping);
 
+    T visit(StringConstantMapping mapping);
+    
     default T visit(PropertyMapping mapping) {
         return null;
     }

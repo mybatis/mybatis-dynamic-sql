@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.util.ColumnAndValueVisitor;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 
 public class SetPhraseVisitor implements ColumnAndValueVisitor<FragmentAndParameters> {
@@ -35,14 +36,22 @@ public class SetPhraseVisitor implements ColumnAndValueVisitor<FragmentAndParame
 
     @Override
     public FragmentAndParameters visit(NullMapping mapping) {
-        return new FragmentAndParameters.Builder(mapping.column().name() + " = null").build();
+        return new FragmentAndParameters.Builder(mapping.column().name() + " = null").build(); //$NON-NLS-1$
     }
 
     @Override
     public FragmentAndParameters visit(ConstantMapping mapping) {
-        return new FragmentAndParameters.Builder(mapping.column().name() + " = " + mapping.constant()).build();
+        String fragment = mapping.column().name() + " = " + mapping.constant(); //$NON-NLS-1$
+        return new FragmentAndParameters.Builder(fragment).build();
     }
 
+    @Override
+    public FragmentAndParameters visit(StringConstantMapping mapping) {
+        String fragment = mapping.column().name() + " = " //$NON-NLS-1$
+                + "'" + mapping.constant() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+        return new FragmentAndParameters.Builder(fragment).build();
+    }
+    
     @Override
     public <T> FragmentAndParameters visit(ValueMapping<T> mapping) {
         String mapKey = "up" + sequence.getAndIncrement(); //$NON-NLS-1$

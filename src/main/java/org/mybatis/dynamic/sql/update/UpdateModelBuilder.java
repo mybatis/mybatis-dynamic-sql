@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 
@@ -88,6 +89,11 @@ public class UpdateModelBuilder {
 
         public UpdateModelBuilder equalToConstant(String constant) {
             columnsAndValues.add(ConstantMapping.of(column, constant));
+            return UpdateModelBuilder.this;
+        }
+        
+        public UpdateModelBuilder equalToStringConstant(String constant) {
+            columnsAndValues.add(StringConstantMapping.of(column, constant));
             return UpdateModelBuilder.this;
         }
         

@@ -18,16 +18,16 @@ package org.mybatis.dynamic.sql.util;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 /**
- * This class represents a mapping between a column and a constant.  The constant should be rendered
- * exactly as specified here.
+ * This class represents a mapping between a column and a string constant.  The constant should be rendered
+ * surrounded by single quotes for SQL.
  * 
  * @author Jeff Butler
  *
  */
-public class ConstantMapping extends AbstractColumnAndValue {
+public class StringConstantMapping extends AbstractColumnAndValue {
     private String constant;
     
-    private ConstantMapping(SqlColumn<?> column) {
+    private StringConstantMapping(SqlColumn<?> column) {
         super(column);
     }
 
@@ -40,8 +40,8 @@ public class ConstantMapping extends AbstractColumnAndValue {
         return constant;
     }
     
-    public static ConstantMapping of(SqlColumn<?> column, String constant) {
-        ConstantMapping mapping = new ConstantMapping(column);
+    public static StringConstantMapping of(SqlColumn<?> column, String constant) {
+        StringConstantMapping mapping = new StringConstantMapping(column);
         mapping.constant = constant;
         return mapping;
     }

@@ -92,16 +92,16 @@ public class InsertSupportTest {
         
         InsertSupport<TestRecord> insertSupport = insert(record)
                 .into(foo)
-                .map(id).toProperty("id")
+                .map(id).toConstant("3")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
-                .map(occupation).toConstant("'Y'")
+                .map(occupation).toStringConstant("Y")
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, 'Y')";
+        String expectedValuesPhrase = "values (3, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, 'Y')";
         softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
     }
     

@@ -87,14 +87,15 @@ public class UpdateSupportTest {
     @Test
     public void testUpdateParameterStartWithConstant() {
         UpdateSupport updateSupport = update(foo)
-                .set(occupation).equalToConstant("'Y'")
+                .set(occupation).equalToStringConstant("Y")
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
+                .set(id).equalToConstant("4")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
                 .buildAndRender(RenderingStrategy.MYBATIS3);
         
-        String expectedSetClause = "set occupation = 'Y', firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}";
+        String expectedSetClause = "set occupation = 'Y', firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, id = 4";
                 
         softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
