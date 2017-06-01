@@ -17,25 +17,15 @@ package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class PropertyMapping extends AbstractColumnMapping implements InsertMapping {
-    private String property;
+public abstract class AbstractColumnMapping {
+    protected SqlColumn<?> column;
     
-    private PropertyMapping(SqlColumn<?> column) {
-        super(column);
+    protected AbstractColumnMapping(SqlColumn<?> column) {
+        this.column = column;
     }
     
-    public String property() {
-        return property;
-    }
-
-    @Override
-    public <S> S accept(InsertMappingVisitor<S> visitor) {
-        return visitor.visit(this);
-    }
-    
-    public static PropertyMapping of (SqlColumn<?> column, String property) {
-        PropertyMapping mapping = new PropertyMapping(column);
-        mapping.property = property;
-        return mapping;
+    public SqlColumn<?> column() {
+        return column;
     }
 }
+ 

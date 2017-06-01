@@ -24,18 +24,13 @@ import org.mybatis.dynamic.sql.SqlColumn;
  * @author Jeff Butler
  *
  */
-public class StringConstantMapping extends AbstractColumnAndValue {
+public class StringConstantMapping extends AbstractColumnMapping implements InsertMapping, UpdateMapping {
     private String constant;
     
     private StringConstantMapping(SqlColumn<?> column) {
         super(column);
     }
 
-    @Override
-    public <S> S accept(ColumnAndValueVisitor<S> visitor) {
-        return visitor.visit(this);
-    }
-    
     public String constant() {
         return constant;
     }
@@ -44,5 +39,15 @@ public class StringConstantMapping extends AbstractColumnAndValue {
         StringConstantMapping mapping = new StringConstantMapping(column);
         mapping.constant = constant;
         return mapping;
+    }
+
+    @Override
+    public <R> R accept(UpdateMappingVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
+    public <R> R accept(InsertMappingVisitor<R> visitor) {
+        return visitor.visit(this);
     }
 }

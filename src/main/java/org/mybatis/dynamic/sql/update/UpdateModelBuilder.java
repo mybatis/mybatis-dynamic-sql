@@ -25,16 +25,16 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
-import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
+import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 
 public class UpdateModelBuilder {
 
-    private List<AbstractColumnAndValue> columnsAndValues = new ArrayList<>();
+    private List<UpdateMapping> columnsAndValues = new ArrayList<>();
     private SqlTable table;
     
     private UpdateModelBuilder(SqlTable table) {

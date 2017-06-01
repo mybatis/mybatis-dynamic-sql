@@ -15,18 +15,9 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public interface ColumnAndValueVisitor<T> {
-    T visit(NullMapping mapping);
+import org.mybatis.dynamic.sql.SqlColumn;
 
-    T visit(ConstantMapping mapping);
-
-    T visit(StringConstantMapping mapping);
-    
-    default T visit(PropertyMapping mapping) {
-        return null;
-    }
-
-    default <S> T visit(ValueMapping<S> mapping) {
-        return null;
-    }
+public interface InsertMapping {
+    SqlColumn<?> column();
+    <R> R accept(InsertMappingVisitor<R> visitor);
 }

@@ -15,19 +15,12 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+public interface UpdateMappingVisitor<T> {
+    T visit(NullMapping mapping);
 
-public abstract class AbstractColumnAndValue {
-    protected SqlColumn<?> column;
-    
-    protected AbstractColumnAndValue(SqlColumn<?> column) {
-        this.column = column;
-    }
-    
-    public SqlColumn<?> column() {
-        return column;
-    }
-    
-    public abstract <R> R accept(ColumnAndValueVisitor<R> visitor);
+    T visit(ConstantMapping mapping);
+
+    T visit(StringConstantMapping mapping);
+
+    <S> T visit(ValueMapping<S> mapping);
 }
- 

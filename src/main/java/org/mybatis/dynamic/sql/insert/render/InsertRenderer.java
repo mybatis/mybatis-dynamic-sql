@@ -17,11 +17,10 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
+import org.mybatis.dynamic.sql.util.InsertMapping;
 
 public class InsertRenderer<T> {
 
-    private ValuePhraseVisitor visitor;
     private InsertModel<T> model;
     
     private InsertRenderer(InsertModel<T> model) {
@@ -29,13 +28,13 @@ public class InsertRenderer<T> {
     }
     
     public InsertSupport<T> render(RenderingStrategy renderingStrategy) {
-        visitor = new ValuePhraseVisitor(renderingStrategy);
+        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         return model.columnMappings()
-                .map(this::transform)
+                .map(cv -> transform(cv, visitor))
                 .collect(FieldAndValueCollector.toInsertSupport(model.record(), model.table()));
     }
     
-    private FieldAndValue transform(AbstractColumnAndValue mapping) {
+    private FieldAndValue transform(InsertMapping mapping, ValuePhraseVisitor visitor) {
         return mapping.accept(visitor);
     }
     

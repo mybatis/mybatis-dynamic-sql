@@ -24,25 +24,30 @@ import org.mybatis.dynamic.sql.SqlColumn;
  * @author Jeff Butler
  *
  */
-public class ConstantMapping extends AbstractColumnAndValue {
+public class ConstantMapping extends AbstractColumnMapping implements InsertMapping, UpdateMapping {
     private String constant;
-    
+
     private ConstantMapping(SqlColumn<?> column) {
         super(column);
     }
 
-    @Override
-    public <S> S accept(ColumnAndValueVisitor<S> visitor) {
-        return visitor.visit(this);
-    }
-    
     public String constant() {
         return constant;
     }
-    
+
     public static ConstantMapping of(SqlColumn<?> column, String constant) {
         ConstantMapping mapping = new ConstantMapping(column);
         mapping.constant = constant;
         return mapping;
+    }
+
+    @Override
+    public <R> R accept(UpdateMappingVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
+    public <R> R accept(InsertMappingVisitor<R> visitor) {
+        return visitor.visit(this);
     }
 }

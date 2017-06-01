@@ -23,9 +23,9 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 import org.mybatis.dynamic.sql.util.BeanPropertyGetter;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.InsertMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
@@ -49,7 +49,7 @@ public class InsertModelBuilder<T> {
     }
     
     public class InsertModelMappingBuilder {
-        private List<AbstractColumnAndValue> columnMappings = new ArrayList<>();
+        private List<InsertMapping> columnMappings = new ArrayList<>();
         
         private InsertModelMappingBuilder() {
             super();

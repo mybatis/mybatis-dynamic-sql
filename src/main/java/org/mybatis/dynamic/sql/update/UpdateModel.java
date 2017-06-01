@@ -20,13 +20,13 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
+import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
     private SqlTable table;
     private Optional<WhereModel> whereModel;
-    private List<AbstractColumnAndValue> columnValues;
+    private List<UpdateMapping> columnValues;
     
     private UpdateModel() {
         super();
@@ -40,21 +40,21 @@ public class UpdateModel {
         return whereModel;
     }
     
-    public Stream<AbstractColumnAndValue> columnValues() {
+    public Stream<UpdateMapping> columnValues() {
         return columnValues.stream();
     }
     
     public static class Builder {
         private SqlTable table;
         private WhereModel whereModel;
-        private List<AbstractColumnAndValue> columnValues;
+        private List<UpdateMapping> columnValues;
         
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
         
-        public Builder withColumnValues(List<AbstractColumnAndValue> columnValues) {
+        public Builder withColumnValues(List<UpdateMapping> columnValues) {
             this.columnValues = columnValues;
             return this;
         }

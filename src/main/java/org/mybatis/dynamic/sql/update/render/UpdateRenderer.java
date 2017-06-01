@@ -19,8 +19,8 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.UpdateModel;
-import org.mybatis.dynamic.sql.util.AbstractColumnAndValue;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
@@ -45,7 +45,7 @@ public class UpdateRenderer {
                 wm -> Optional.of(WhereRenderer.of(wm, renderingStrategy).renderCriteriaIgnoringTableAlias()));
     }
     
-    private FragmentAndParameters transform(AbstractColumnAndValue columnAndValue, SetPhraseVisitor visitor) {
+    private FragmentAndParameters transform(UpdateMapping columnAndValue, SetPhraseVisitor visitor) {
         return columnAndValue.accept(visitor);
     }
     

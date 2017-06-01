@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ValueMapping<T> extends AbstractColumnAndValue {
+public class ValueMapping<T> extends AbstractColumnMapping implements UpdateMapping {
 
     private T value;
     
@@ -30,7 +30,7 @@ public class ValueMapping<T> extends AbstractColumnAndValue {
     }
 
     @Override
-    public <R> R accept(ColumnAndValueVisitor<R> visitor) {
+    public <R> R accept(UpdateMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 

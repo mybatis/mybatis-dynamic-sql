@@ -16,13 +16,13 @@
 package org.mybatis.dynamic.sql.insert.render;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.ColumnAndValueVisitor;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.InsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class ValuePhraseVisitor implements ColumnAndValueVisitor<FieldAndValue> {
+public class ValuePhraseVisitor implements InsertMappingVisitor<FieldAndValue> {
     
     private RenderingStrategy renderingStrategy;
     
