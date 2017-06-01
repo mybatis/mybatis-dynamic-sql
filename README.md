@@ -93,7 +93,8 @@ Typically these should be defined as public static variables in a class or inter
 1. The Java type
 2. The table's actual column name
 3. The JDBC type
-4. (optional) The name of a type handler to use in MyBatis if the default type handler is not desired
+4. (optional) An alias for the column
+5. (optional) The name of a type handler to use in MyBatis if the default type handler is not desired
 
 For example:
 
@@ -103,17 +104,17 @@ package examples.simple;
 import java.sql.JDBCType;
 import java.util.Date;
 
-import org.mybatis.dynamic.sql.MyBatis3Column;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public interface SimpleTableDynamicSqlSupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
-    MyBatis3Column<Integer> id = MyBatis3Column.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
-    MyBatis3Column<String> firstName = MyBatis3Column.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
-    MyBatis3Column<String> lastName = MyBatis3Column.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
-    MyBatis3Column<Date> birthDate = MyBatis3Column.of("birth_date", JDBCType.DATE).inTable(simpleTable);
-    MyBatis3Column<Boolean> employed = MyBatis3Column.of("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler").inTable(simpleTable);
-    MyBatis3Column<String> occupation = MyBatis3Column.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
+    SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
+    SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
+    SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
+    SqlColumn<Date> birthDate = SqlColumn.of("birth_date", JDBCType.DATE).inTable(simpleTable);
+    SqlColumn<Boolean> employed = SqlColumn.of("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler").inTable(simpleTable);
+    SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
 }
 ```
 
@@ -193,7 +194,7 @@ For example, a very simple condition can be defined like this:
         SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
-                .build();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 ```
 
 Or this:
@@ -202,7 +203,7 @@ Or this:
         SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isNull())
-                .build();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 ```
 
 The "between" condition is also expressive:
@@ -211,7 +212,7 @@ The "between" condition is also expressive:
         SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isBetween(1).and(4))
-                .build();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 ```
 
 More complex expressions can be built using the "and" and "or" conditions as follows:
@@ -221,7 +222,7 @@ More complex expressions can be built using the "and" and "or" conditions as fol
                 .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .build();
+                .buildAndRender(RenderingStrategy.MYBATIS3);
 ```
 
 All of these statements rely on a set of expressive static methods.  It is typical to import the following:
@@ -249,7 +250,7 @@ an example from ```examples.simple.SimpleTableXmlMapperTest```:
             SelectSupport selectSupport = selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
-                    .build();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
