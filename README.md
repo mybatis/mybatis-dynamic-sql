@@ -57,7 +57,7 @@ One capability is that very expressive dynamic queries can be generated.  Here's
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
                     .orderBy(id.descending(), bodyWeight)
-                    .build();
+                    .buildAndRender(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size(), is(4));
@@ -134,8 +134,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
-import org.mybatis.dynamic.sql.delete.DeleteSupport;
-import org.mybatis.dynamic.sql.select.SelectSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SimpleTableAnnotatedMapper {
     
