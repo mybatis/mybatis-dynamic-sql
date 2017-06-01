@@ -46,14 +46,14 @@ public class SelectSupportTest {
 
         SelectSupport selectSupport = select(column1, column2)
                 .from(table)
-                .where(column1, isEqualTo(d))
+                .where(column1, isEqualTo(d), and(column2, isEqualTo(33)))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
         softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
         softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
-        softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
+        softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where (a.column1 = #{parameters.p1,jdbcType=DATE} and a.column2 = #{parameters.p2,jdbcType=INTEGER}) or a.column2 = #{parameters.p3,jdbcType=INTEGER} and a.column2 < #{parameters.p4,jdbcType=INTEGER}");
         softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("");
         
         String expectedFullStatement = "select "
@@ -65,8 +65,9 @@ public class SelectSupportTest {
         
         Map<String, Object> parameters = selectSupport.getParameters();
         softly.assertThat(parameters.get("p1")).isEqualTo(d);
-        softly.assertThat(parameters.get("p2")).isEqualTo(4);
-        softly.assertThat(parameters.get("p3")).isEqualTo(3);
+        softly.assertThat(parameters.get("p2")).isEqualTo(33);
+        softly.assertThat(parameters.get("p3")).isEqualTo(4);
+        softly.assertThat(parameters.get("p4")).isEqualTo(3);
     }
 
     @Test

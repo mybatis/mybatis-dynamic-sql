@@ -66,8 +66,8 @@ public class SelectModelBuilder {
                 .build();
     }
     
-    protected SelectSupport buildModelAndRender(RenderingStrategy renderingStrategy) {
-        return SelectRenderer.of(buildModel()).render(renderingStrategy);
+    protected SelectSupport render(SelectModel model, RenderingStrategy renderingStrategy) {
+        return SelectRenderer.of(model).render(renderingStrategy);
     }
     
     public class SelectSupportAfterFromBuilder {
@@ -93,7 +93,7 @@ public class SelectModelBuilder {
         }
 
         public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
-            return buildModelAndRender(renderingStrategy);
+            return render(build(), renderingStrategy);
         }
     }
     
@@ -118,8 +118,7 @@ public class SelectModelBuilder {
         }
         
         public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
-            whereModel = buildWhereModel();
-            return buildModelAndRender(renderingStrategy);
+            return render(build(), renderingStrategy);
         }
 
         @Override
@@ -138,7 +137,7 @@ public class SelectModelBuilder {
         }
 
         public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
-            return buildModelAndRender(renderingStrategy);
+            return render(build(), renderingStrategy);
         }
     }
 }

@@ -117,16 +117,16 @@ public class SelectSupportTest {
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
-                .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
-                .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
+                .or(column2, isEqualTo(4), and(column2, isEqualTo(6), or(column2, isEqualTo(7))))
+                .and(column2, isLessThan(3), or(column1, isEqualTo(d), and(column2, isEqualTo(88))))
                 .buildAndRender(RenderingStrategy.MYBATIS3);
         
 
         String expected = "where a.column1 = #{parameters.p1,jdbcType=DATE}" +
                 " or a.column2 = #{parameters.p2,jdbcType=INTEGER}" +
                 " and a.column2 < #{parameters.p3,jdbcType=INTEGER}" +
-                " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})" +
-                " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
+                " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and (a.column2 = #{parameters.p5,jdbcType=INTEGER} or a.column2 = #{parameters.p6,jdbcType=INTEGER}))" +
+                " and (a.column2 < #{parameters.p7,jdbcType=INTEGER} or (a.column1 = #{parameters.p8,jdbcType=DATE} and a.column2 = #{parameters.p9,jdbcType=INTEGER}))";
         
         softly.assertThat(selectSupport.getWhereClause()).isEqualTo(expected);
         
@@ -136,7 +136,9 @@ public class SelectSupportTest {
         softly.assertThat(parameters.get("p3")).isEqualTo(3);
         softly.assertThat(parameters.get("p4")).isEqualTo(4);
         softly.assertThat(parameters.get("p5")).isEqualTo(6);
-        softly.assertThat(parameters.get("p6")).isEqualTo(3);
-        softly.assertThat(parameters.get("p7")).isEqualTo(d);
+        softly.assertThat(parameters.get("p6")).isEqualTo(7);
+        softly.assertThat(parameters.get("p7")).isEqualTo(3);
+        softly.assertThat(parameters.get("p8")).isEqualTo(d);
+        softly.assertThat(parameters.get("p9")).isEqualTo(88);
     }
 }

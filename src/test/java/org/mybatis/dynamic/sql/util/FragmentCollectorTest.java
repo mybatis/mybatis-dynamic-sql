@@ -15,9 +15,13 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.Optional;
+
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.update.render.UpdateFragmentCollector;
 import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector;
 import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector.Triple;
 
@@ -27,7 +31,7 @@ public class FragmentCollectorTest {
     public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
     
     @Test
-    public void testFragmentCollectorMerge() {
+    public void testWhereFragmentCollectorMerge() {
         WhereFragmentCollector fc1 = new WhereFragmentCollector();
         Triple t1 = Triple.of("p1",  ":p1",  1);
         fc1.add(t1);
@@ -45,5 +49,25 @@ public class FragmentCollectorTest {
         softly.assertThat(fc1.parameters.size()).isEqualTo(2);
         softly.assertThat(fc1.parameters.get("p1")).isEqualTo(1);
         softly.assertThat(fc1.parameters.get("p2")).isEqualTo(2);
+    }
+
+    @Test
+    public void testUpdateFragmentCollectorMerge() {
+        SqlTable myTable = SqlTable.of("my_table");
+        UpdateFragmentCollector fc1 = new UpdateFragmentCollector(myTable, Optional.empty());
+        FragmentAndParameters fp1 = new FragmentAndParameters.Builder("fragment1").build();
+        fc1.add(fp1);
+        
+        UpdateFragmentCollector fc2 = new UpdateFragmentCollector(myTable, Optional.empty());
+        FragmentAndParameters fp2 = new FragmentAndParameters.Builder("fragment2").build();
+        fc2.add(fp2);
+        
+        fc1 = fc1.merge(fc2);
+        
+        softly.assertThat(fc1.fragments.size()).isEqualTo(2);
+        softly.assertThat(fc1.fragments.get(0)).isEqualTo("fragment1");
+        softly.assertThat(fc1.fragments.get(1)).isEqualTo("fragment2");
+        
+        softly.assertThat(fc1.parameters.size()).isEqualTo(0);
     }
 }

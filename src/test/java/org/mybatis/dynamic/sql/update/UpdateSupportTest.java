@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.update;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
 import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.or;
 
 import java.sql.JDBCType;
 
@@ -39,27 +40,53 @@ public class UpdateSupportTest {
     private static final SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR);
 
     @Test
-    public void testUpdateParameter() {
+    public void testUpdateParameterWithMultipleCriteria() {
         UpdateSupport updateSupport = update(foo)
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
-                .where(id, isEqualTo(3))
+                .where(id, isEqualTo(3), or(id, isEqualTo(4)), or(id, isEqualTo(5)))
                 .buildAndRender(RenderingStrategy.MYBATIS3);
         
         String expectedSetClause = "set firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, occupation = null";
                 
         softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
-        String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER}";
+        String expectedWhereClauses = "where (id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} or id = #{parameters.p3,jdbcType=INTEGER})";
         softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
-        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(3);
+        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(5);
         softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
         softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
         softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+        softly.assertThat(updateSupport.getParameters().get("p2")).isEqualTo(4);
+        softly.assertThat(updateSupport.getParameters().get("p3")).isEqualTo(5);
     }
 
+    @Test
+    public void testUpdateParameterWithMultipleNestedCriteria() {
+        UpdateSupport updateSupport = update(foo)
+                .set(firstName).equalTo("fred")
+                .set(lastName).equalTo("jones")
+                .set(occupation).equalToNull()
+                .where(id, isEqualTo(3), or(id, isEqualTo(4), or(id, isEqualTo(5))))
+                .buildAndRender(RenderingStrategy.MYBATIS3);
+        
+        String expectedSetClause = "set firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, occupation = null";
+                
+        softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
+        
+        String expectedWhereClauses = "where (id = #{parameters.p1,jdbcType=INTEGER} or (id = #{parameters.p2,jdbcType=INTEGER} or id = #{parameters.p3,jdbcType=INTEGER}))";
+        softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
+        
+        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(5);
+        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+        softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+        softly.assertThat(updateSupport.getParameters().get("p2")).isEqualTo(4);
+        softly.assertThat(updateSupport.getParameters().get("p3")).isEqualTo(5);
+    }
+    
     @Test
     public void testUpdateParameterStartWithNull() {
         UpdateSupport updateSupport = update(foo)

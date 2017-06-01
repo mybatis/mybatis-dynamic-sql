@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.delete;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.SqlConditions.and;
 import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlConditions.isLikeCaseInsensitive;
 
@@ -40,19 +41,20 @@ public class DeleteSupportTest {
     @Test
     public void testFullStatement() {
         DeleteSupport deleteSupport = deleteFrom(foo)
-                .where(id, isEqualTo(3))
+                .where(id, isEqualTo(3), and(firstName, isEqualTo("Betty")))
                 .or(firstName, isLikeCaseInsensitive("%Fr%"))
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
-        String expectedWhereClause = "where id = #{parameters.p1,jdbcType=INTEGER} or upper(first_name) like #{parameters.p2,jdbcType=VARCHAR}";
+        String expectedWhereClause = "where (id = #{parameters.p1,jdbcType=INTEGER} and first_name = #{parameters.p2,jdbcType=VARCHAR}) or upper(first_name) like #{parameters.p3,jdbcType=VARCHAR}";
         softly.assertThat(deleteSupport.getWhereClause()).isEqualTo(expectedWhereClause);
 
-        String expectedFullStatement = "delete from foo where id = #{parameters.p1,jdbcType=INTEGER} or upper(first_name) like #{parameters.p2,jdbcType=VARCHAR}";
+        String expectedFullStatement = "delete from foo where (id = #{parameters.p1,jdbcType=INTEGER} and first_name = #{parameters.p2,jdbcType=VARCHAR}) or upper(first_name) like #{parameters.p3,jdbcType=VARCHAR}";
         softly.assertThat(deleteSupport.getFullDeleteStatement()).isEqualTo(expectedFullStatement);
         
-        softly.assertThat(deleteSupport.getParameters().size()).isEqualTo(2);
+        softly.assertThat(deleteSupport.getParameters().size()).isEqualTo(3);
         softly.assertThat(deleteSupport.getParameters().get("p1")).isEqualTo(3);
-        softly.assertThat(deleteSupport.getParameters().get("p2")).isEqualTo("%FR%");
+        softly.assertThat(deleteSupport.getParameters().get("p2")).isEqualTo("Betty");
+        softly.assertThat(deleteSupport.getParameters().get("p3")).isEqualTo("%FR%");
     }
 
     @Test

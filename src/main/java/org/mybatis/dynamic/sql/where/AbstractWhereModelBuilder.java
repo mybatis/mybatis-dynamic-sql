@@ -31,7 +31,7 @@ public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuil
                 .withColumn(column)
                 .withCondition(condition)
                 .build();
-        addCriterion(criterion);
+        criteria.add(criterion);
     }
     
     protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
@@ -40,52 +40,45 @@ public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuil
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
-        addCriterion(criterion);
+        criteria.add(criterion);
     }
-
+    
     public <S> T and(SqlColumn<S> column, Condition<S> condition) {
-        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
-                .withConnector("and") //$NON-NLS-1$
-                .withColumn(column)
-                .withCondition(condition)
-                .build();
-        addCriterion(criterion);
+        addCriterion("and", column, condition); //$NON-NLS-1$
         return getThis();
     }
     
     public <S> T and(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
-                .withConnector("and") //$NON-NLS-1$
-                .withColumn(column)
-                .withCondition(condition)
-                .withSubCriteria(Arrays.asList(subCriteria))
-                .build();
-        addCriterion(criterion);
+        addCriterion("and", column, condition, subCriteria); //$NON-NLS-1$
         return getThis();
     }
     
     public <S> T or(SqlColumn<S> column, Condition<S> condition) {
-        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
-                .withConnector("or") //$NON-NLS-1$
-                .withColumn(column)
-                .withCondition(condition)
-                .build();
-        addCriterion(criterion);
+        addCriterion("or", column, condition); //$NON-NLS-1$
         return getThis();
     }
     
     public <S> T or(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+        addCriterion("or", column, condition, subCriteria); //$NON-NLS-1$
+        return getThis();
+    }
+    
+    private <S> void addCriterion(String connector, SqlColumn<S> column, Condition<S> condition) {
         SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
-                .withConnector("or") //$NON-NLS-1$
+                .withConnector(connector)
+                .withColumn(column)
+                .withCondition(condition)
+                .build();
+        criteria.add(criterion);
+    }
+    
+    private <S> void addCriterion(String connector, SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
+                .withConnector(connector)
                 .withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
-        addCriterion(criterion);
-        return getThis();
-    }
-    
-    private <S> void addCriterion(SqlCriterion<S> criterion) {
         criteria.add(criterion);
     }
     
