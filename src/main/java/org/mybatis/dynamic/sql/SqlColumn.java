@@ -109,8 +109,8 @@ public class SqlColumn<T> {
         return column;
     }
     
-    public String orderByPhrase() {
-        return columnAlias().orElseGet(this::name) + " " + sortOrder; //$NON-NLS-1$
+    public String sortOrder() {
+        return sortOrder;
     }
     
     public static <T> SqlColumn<T> of(String name, JDBCType jdbcType) {

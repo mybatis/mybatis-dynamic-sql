@@ -61,8 +61,12 @@ public class SelectRenderer {
     }
     
     private String calculateOrderByPhrase(Stream<SqlColumn<?>> columns) {
-        return columns.map(SqlColumn::orderByPhrase)
+        return columns.map(this::orderByPhrase)
                 .collect(CustomCollectors.joining(", ", "order by ", "", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    }
+    
+    private String orderByPhrase(SqlColumn<?> column) {
+        return column.columnAlias().orElse(column.name()) + " " + column.sortOrder(); //$NON-NLS-1$
     }
     
     public static SelectRenderer of(SelectModel selectModel) {
