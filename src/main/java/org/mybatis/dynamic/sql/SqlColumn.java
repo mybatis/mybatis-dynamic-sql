@@ -29,14 +29,14 @@ import java.util.Optional;
 public class SqlColumn<T> {
     
     private static final String ASCENDING = "ASC"; //$NON-NLS-1$
-    protected static final String DESCENDING = "DESC"; //$NON-NLS-1$
+    private static final String DESCENDING = "DESC"; //$NON-NLS-1$
 
     protected String name;
-    protected SqlTable table;
+    protected Optional<SqlTable> table = Optional.empty();
     protected JDBCType jdbcType;
     protected String sortOrder = ASCENDING;
-    protected String alias;
-    protected String typeHandler;
+    protected Optional<String> alias = Optional.empty();
+    protected Optional<String> typeHandler = Optional.empty();
     
     protected SqlColumn(SqlColumn<?> sqlColumn) {
         this.name = sqlColumn.name;
@@ -70,7 +70,7 @@ public class SqlColumn<T> {
     }
 
     public Optional<SqlTable> table() {
-        return Optional.ofNullable(table);
+        return table;
     }
     
     public Optional<String> tableAlias() {
@@ -78,16 +78,16 @@ public class SqlColumn<T> {
     }
     
     public Optional<String> columnAlias() {
-        return Optional.ofNullable(alias);
+        return alias;
     }
     
     public Optional<String> typeHandler() {
-        return Optional.ofNullable(typeHandler);
+        return typeHandler;
     }
     
     public <S> SqlColumn<S> inTable(SqlTable table) {
         SqlColumn<S> column = new SqlColumn<>(this);
-        column.table = table;
+        column.table = Optional.of(table);
         return column;
     }
     
@@ -99,13 +99,13 @@ public class SqlColumn<T> {
     
     public <S> SqlColumn<S> withAlias(String alias) {
         SqlColumn<S> column = new SqlColumn<>(this);
-        column.alias = alias;
+        column.alias = Optional.of(alias);
         return column;
     }
     
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
         SqlColumn<S> column = new SqlColumn<>(this);
-        column.typeHandler = typeHandler;
+        column.typeHandler = Optional.of(typeHandler);
         return column;
     }
     

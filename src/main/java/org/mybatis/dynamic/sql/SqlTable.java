@@ -20,7 +20,7 @@ import java.util.Optional;
 public class SqlTable {
 
     private String name;
-    private String alias;
+    private Optional<String> alias = Optional.empty();
     
     private SqlTable(String name) {
         this.name = name;
@@ -31,16 +31,16 @@ public class SqlTable {
     }
     
     public String nameIncludingAlias() {
-        return alias().map(a -> name + " " + a).orElse(name); //$NON-NLS-1$
+        return alias.map(a -> name + " " + a).orElse(name); //$NON-NLS-1$
     }
     
     public Optional<String> alias() {
-        return Optional.ofNullable(alias);
+        return alias;
     }
     
     public SqlTable withAlias(String alias) {
         SqlTable sqlTable = new SqlTable(name);
-        sqlTable.alias = alias;
+        sqlTable.alias = Optional.of(alias);
         return sqlTable;
     }
 
