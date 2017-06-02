@@ -74,7 +74,7 @@ public class SqlColumn<T> {
     }
     
     public Optional<String> tableAlias() {
-        return table().map(SqlTable::alias).orElse(Optional.empty());
+        return table().flatMap(SqlTable::alias);
     }
     
     public Optional<String> columnAlias() {
