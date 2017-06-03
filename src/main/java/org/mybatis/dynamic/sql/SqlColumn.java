@@ -23,8 +23,8 @@ import java.util.Optional;
  * @author Jeff Butler
  *
  * @param <T> - even though the type is not directly used in this class,
- *  it is used by the compiler to match columns with conditions so it should
- *  not be removed.
+ *     it is used by the compiler to match columns with conditions so it should
+ *     not be removed.
 */
 public class SqlColumn<T> {
     

@@ -35,7 +35,7 @@ public class UpdateSupport extends AbstractSqlSupport {
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
 
-    private UpdateSupport (SqlTable table) {
+    private UpdateSupport(Optional<SqlTable> table) {
         super(table);
     }
 
@@ -66,7 +66,7 @@ public class UpdateSupport extends AbstractSqlSupport {
     public static class Builder {
         private SqlTable table;
         private String setClause;
-        private Optional<WhereSupport> whereSupport;
+        private Optional<WhereSupport> whereSupport = Optional.empty();
         private Map<String, Object> parameters = new HashMap<>();
         
         public Builder withTable(SqlTable table) {
@@ -90,7 +90,7 @@ public class UpdateSupport extends AbstractSqlSupport {
         }
         
         public UpdateSupport build() {
-            UpdateSupport updateSupport = new UpdateSupport(table);
+            UpdateSupport updateSupport = new UpdateSupport(Optional.ofNullable(table));
             updateSupport.setClause = setClause;
             updateSupport.whereClause = whereSupport.flatMap(ws -> Optional.of(ws.getWhereClause()));
             whereSupport.ifPresent(ws -> parameters.putAll(ws.getParameters()));

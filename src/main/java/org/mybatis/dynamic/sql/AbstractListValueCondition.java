@@ -40,10 +40,10 @@ public abstract class AbstractListValueCondition<T> extends Condition<T> {
      * into the parameter map.  An example of this is when the case insensitive
      * conditions will change a value to upper case.
      * 
-     * We do not expose the values stream because we cannot allow subclasses
+     * <p>We do not expose the values stream because we cannot allow subclasses
      * to change the order or number of values.
      *  
-     * @param value
+     * @param value the value
      * @return the transformed value - in most cases the value is not changed
      */
     protected T transformValue(T value) {

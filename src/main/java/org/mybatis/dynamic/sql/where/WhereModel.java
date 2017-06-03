@@ -24,8 +24,8 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 public class WhereModel {
     private List<SqlCriterion<?>> criteria;
     
-    private WhereModel() {
-        super();
+    private WhereModel(List<SqlCriterion<?>> criteria) {
+        this.criteria = criteria;
     }
     
     public Stream<SqlCriterion<?>> criteria() {
@@ -33,8 +33,6 @@ public class WhereModel {
     }
 
     public static WhereModel of(Stream<SqlCriterion<?>> criteria) {
-        WhereModel model = new WhereModel();
-        model.criteria = criteria.collect(Collectors.toList());
-        return model;
+        return new WhereModel(criteria.collect(Collectors.toList()));
     }
 }

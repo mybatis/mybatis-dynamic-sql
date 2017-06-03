@@ -21,10 +21,10 @@ import java.util.stream.Collector;
 public interface CustomCollectors {
 
     static Collector<CharSequence, StringJoiner, String> joining(CharSequence delimiter, CharSequence prefix,
-            CharSequence suffix, CharSequence emptyValue) {
+            CharSequence suffix) {
         return Collector.of(() -> {
             StringJoiner sj = new StringJoiner(delimiter, prefix, suffix);
-            sj.setEmptyValue(emptyValue);
+            sj.setEmptyValue(""); //$NON-NLS-1$
             return sj;
         }, StringJoiner::add, StringJoiner::merge, StringJoiner::toString);
     }

@@ -36,7 +36,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private SqlColumn<T> column;
     private Function<SqlColumn<?>, String> nameFunction;
     
-    public WhereConditionVisitor(RenderingStrategy renderingStrategy, AtomicInteger sequence, SqlColumn<T> column, Function<SqlColumn<?>, String> nameFunction) {
+    public WhereConditionVisitor(RenderingStrategy renderingStrategy, AtomicInteger sequence, SqlColumn<T> column,
+            Function<SqlColumn<?>, String> nameFunction) {
         this.renderingStrategy = renderingStrategy;
         this.sequence = sequence;
         this.column = column;
@@ -54,15 +55,6 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
                 .build();
     }
 
-    private Triple toTriple(Object value) {
-        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
-        return Triple.of(mapKey, getFormattedJdbcPlaceholder(mapKey), value);
-    }
-
-    protected String formatParameterMapKey(int number) {
-        return "p" + number; //$NON-NLS-1$
-    }
-    
     @Override
     public FragmentAndParameters visit(AbstractNoValueCondition<T> condition) {
         return new FragmentAndParameters.Builder(condition.renderCondition(columnName())).build();
@@ -91,6 +83,15 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
                 .withParameter(mapKey1, condition.value1())
                 .withParameter(mapKey2, condition.value2())
                 .build();
+    }
+    
+    private Triple toTriple(Object value) {
+        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
+        return Triple.of(mapKey, getFormattedJdbcPlaceholder(mapKey), value);
+    }
+
+    protected String formatParameterMapKey(int number) {
+        return "p" + number; //$NON-NLS-1$
     }
     
     private String getFormattedJdbcPlaceholder(String mapKey) {

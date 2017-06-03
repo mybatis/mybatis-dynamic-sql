@@ -24,6 +24,8 @@ import org.mybatis.dynamic.sql.reflection.ReflectionException;
 import org.mybatis.dynamic.sql.reflection.property.PropertyTokenizer;
 
 /**
+ * Base class of wrappers (classes that will retrieve values). 
+ * 
  * @author Clinton Begin (initial work)
  * @author Jeff Butler (derivation)
  */
@@ -51,7 +53,8 @@ public abstract class ObjectWrapper {
                 return Array.get(collection, i);
             } else {
                 throw new ReflectionException(
-                        "The '" + prop.getName() + "' property of " + collection + " is not a List or Array."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        "The '" + prop.getName() + "' property of " //$NON-NLS-1$ //$NON-NLS-2$
+                                + collection + " is not a List or Array."); //$NON-NLS-1$
             }
         }
     }

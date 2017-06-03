@@ -22,14 +22,14 @@ public abstract class AbstractSqlSupport {
     public static final String ONE_SPACE = " "; //$NON-NLS-1$
     private static final String UNKNOWN_TABLE = "<<unknown>>"; //$NON-NLS-1$
 
-    private SqlTable table;
+    private Optional<SqlTable> table;
 
-    public AbstractSqlSupport(SqlTable table) {
+    public AbstractSqlSupport(Optional<SqlTable> table) {
         this.table = table;
     }
 
     private Optional<SqlTable> table() {
-        return Optional.ofNullable(table);
+        return table;
     }
     
     protected String tableName() {

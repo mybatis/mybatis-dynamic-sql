@@ -59,7 +59,8 @@ public class CriterionRenderer {
                         .collect(WhereFragmentCollector.fragmentAndParameterCollector())));
     }
     
-    private String calculateFragment(WhereFragmentCollector renderedSubCriteria, FragmentAndParameters renderedCondition, String connector) {
+    private String calculateFragment(WhereFragmentCollector renderedSubCriteria,
+            FragmentAndParameters renderedCondition, String connector) {
         return connector
                 + "("  //$NON-NLS-1$
                 + renderedCondition.fragment()
@@ -81,11 +82,13 @@ public class CriterionRenderer {
     }
     
     private <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
-        WhereConditionVisitor<T> visitor = new WhereConditionVisitor<>(renderingStrategy, sequence, criterion.column(), nameFunction);
+        WhereConditionVisitor<T> visitor = new WhereConditionVisitor<>(renderingStrategy, sequence,
+                criterion.column(), nameFunction);
         return criterion.condition().accept(visitor);
     }
     
-    public static CriterionRenderer of(AtomicInteger sequence, RenderingStrategy renderingStrategy, Function<SqlColumn<?>, String> nameFunction) {
+    public static CriterionRenderer of(AtomicInteger sequence, RenderingStrategy renderingStrategy,
+            Function<SqlColumn<?>, String> nameFunction) {
         CriterionRenderer criterionRenderer = new CriterionRenderer();
         criterionRenderer.sequence = sequence;
         criterionRenderer.renderingStrategy = renderingStrategy;

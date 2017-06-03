@@ -24,7 +24,9 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 public class WhereFragmentCollector extends FragmentCollector<WhereFragmentCollector> {
     
     public WhereSupport buildWhereSupport() {
-        return WhereSupport.of(fragments().collect(Collectors.joining(" ", "where ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return WhereSupport.of(
+                fragments()
+                .collect(Collectors.joining(" ", "where ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 parameters);
     }
     
@@ -49,7 +51,7 @@ public class WhereFragmentCollector extends FragmentCollector<WhereFragmentColle
                 WhereFragmentCollector::buildWhereSupport);
     }
 
-    public static Collector<FragmentAndParameters, WhereFragmentCollector, WhereFragmentCollector> fragmentAndParameterCollector() {
+    public static Collector<FragmentAndParameters, ?, WhereFragmentCollector> fragmentAndParameterCollector() {
         return Collector.of(WhereFragmentCollector::new, WhereFragmentCollector::add, WhereFragmentCollector::merge);
     }
     

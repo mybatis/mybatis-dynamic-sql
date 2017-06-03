@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>28</version>
+    <version>29-SNAPSHOT</version>
   </parent>
   <groupId>org.mybatis.dynamic.sql</groupId>
   <artifactId>mybatis-dynamic-sql</artifactId>
@@ -51,6 +51,13 @@
             </configuration>
           </reportSet>
         </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>

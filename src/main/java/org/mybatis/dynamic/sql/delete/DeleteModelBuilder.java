@@ -36,7 +36,8 @@ public class DeleteModelBuilder {
         return new DeleteSupportWhereBuilder(column, condition);
     }
     
-    public <T> DeleteSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+    public <T> DeleteSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition,
+            SqlCriterion<?>...subCriteria) {
         return new DeleteSupportWhereBuilder(column, condition, subCriteria);
     }
     
@@ -44,7 +45,7 @@ public class DeleteModelBuilder {
      * WARNING! Calling this method could result in an delete statement that deletes
      * all rows in a table.
      * 
-     * @return
+     * @return the model class
      */
     public DeleteModel build() {
         return new DeleteModel.Builder()
@@ -66,7 +67,8 @@ public class DeleteModelBuilder {
             super(column, condition);
         }
         
-        private <T> DeleteSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        private <T> DeleteSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition,
+                SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
         

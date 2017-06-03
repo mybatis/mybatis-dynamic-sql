@@ -18,6 +18,8 @@ package org.mybatis.dynamic.sql.reflection.invoker;
 import java.lang.reflect.Field;
 
 /**
+ * Invoker that will return the value of a field.
+ * 
  * @author Clinton Begin (initial work)
  * @author Jeff Butler (derivation)
  */

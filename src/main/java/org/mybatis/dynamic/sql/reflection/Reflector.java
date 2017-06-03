@@ -58,11 +58,13 @@ public class Reflector {
 
         uniqueMethods.values().stream()
                 .filter(Reflector::isAnIsGetter)
-                .collect(Collectors.toMap(Reflector::extractIsPropertyName, MethodInvoker::new, (m1, m2) -> m1, () -> getMethods));
+                .collect(Collectors.toMap(Reflector::extractIsPropertyName,
+                        MethodInvoker::new, (m1, m2) -> m1, () -> getMethods));
         
         uniqueMethods.values().stream()
                 .filter(Reflector::isAGetter)
-                .collect(Collectors.toMap(Reflector::extractGetPropertyName, MethodInvoker::new, (m1, m2) -> m1, () -> getMethods));
+                .collect(Collectors.toMap(Reflector::extractGetPropertyName,
+                        MethodInvoker::new, (m1, m2) -> m1, () -> getMethods));
     }
 
     private static boolean isAnIsGetter(Method method) {
@@ -93,20 +95,25 @@ public class Reflector {
     
     static String fixPropertyCase(String propertyName) {
         String fixedPropertyName = propertyName;
-        if (propertyName.length() == 1 || (propertyName.length() > 1 && !Character.isUpperCase(propertyName.charAt(1)))) {
+        if (propertyShouldBeLowerCased(propertyName)) {
             fixedPropertyName = propertyName.substring(0, 1).toLowerCase(Locale.ENGLISH) + propertyName.substring(1);
         }
 
         return fixedPropertyName;
     }
     
+    private static boolean propertyShouldBeLowerCased(String propertyName) {
+        return propertyName.length() == 1
+                || propertyName.length() > 1 && !Character.isUpperCase(propertyName.charAt(1));
+    }
+    
     private void addFields(Class<?> clazz) {
         Arrays.stream(clazz.getDeclaredFields())
-        .filter(this::hasNoGetterMethod)
-        .filter(Reflector::isValidPropertyName)
-        .map(Reflector::setAccessible)
-        .filter(Reflector::isAccessible)
-        .collect(Collectors.toMap(Field::getName, GetFieldInvoker::new,  (f1, f2) -> f1, () -> getMethods));
+            .filter(this::hasNoGetterMethod)
+            .filter(Reflector::isValidPropertyName)
+            .map(Reflector::setAccessible)
+            .filter(Reflector::isAccessible)
+            .collect(Collectors.toMap(Field::getName, GetFieldInvoker::new,  (f1, f2) -> f1, () -> getMethods));
         
         if (clazz.getSuperclass() != null) {
             addFields(clazz.getSuperclass());
@@ -121,6 +128,13 @@ public class Reflector {
         return isValidPropertyName(field.getName());
     }
     
+    static boolean isValidPropertyName(String name) {
+        return !name.isEmpty()
+                && !name.startsWith("$") //$NON-NLS-1$
+                && !"serialVersionUID".equals(name) //$NON-NLS-1$
+                && ! "class".equals(name); //$NON-NLS-1$
+    }
+
     private static boolean isAccessible(Field field) {
         return field.isAccessible() || Modifier.isPublic(field.getModifiers());
     }
@@ -129,13 +143,6 @@ public class Reflector {
         return method.isAccessible() || Modifier.isPublic(method.getModifiers());
     }
     
-    static boolean isValidPropertyName(String name) {
-        return !name.isEmpty()
-                && !name.startsWith("$") //$NON-NLS-1$
-                && !"serialVersionUID".equals(name) //$NON-NLS-1$
-                && ! "class".equals(name); //$NON-NLS-1$
-    }
-
     /*
      * This method returns a map containing all methods declared in this
      * class and any superclass. We use this method, instead of the simpler
@@ -155,9 +162,10 @@ public class Reflector {
         
         // add interface methods because the class may be abstract
         Arrays.stream(clazz.getInterfaces())
-        .map(Class::getMethods)
-        .flatMap(Arrays::stream)
-        .collect(Collectors.toMap(Reflector::getMethodSignature, Function.identity(), (m1, m2) -> m1, () -> uniqueMethods));
+                .map(Class::getMethods)
+                .flatMap(Arrays::stream)
+                .collect(Collectors.toMap(Reflector::getMethodSignature,
+                        Function.identity(), (m1, m2) -> m1, () -> uniqueMethods));
         
         // add methods from the superclass if there is one
         if (clazz.getSuperclass() != null) {
@@ -173,7 +181,8 @@ public class Reflector {
             method.setAccessible(true);
         } catch (Exception e) {
             // Ignored. If the method isn't accessible, it will be filtered out later in the pipeline.
-            log.log(Level.FINEST, "Exception making method " + method.toString() + " accessible.", e); //$NON-NLS-1$ //$NON-NLS-2$
+            log.log(Level.FINEST,
+                    "Exception making method " + method.toString() + " accessible.", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return method;
     }
@@ -183,7 +192,8 @@ public class Reflector {
             field.setAccessible(true);
         } catch (Exception e) {
             // Ignored. If the method isn't accessible, it will be filtered out later in the pipeline.
-            log.log(Level.FINEST, "Exception making field " + field.toString() + " accessible.", e); //$NON-NLS-1$ //$NON-NLS-2$
+            log.log(Level.FINEST,
+                    "Exception making field " + field.toString() + " accessible.", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return field;
     }
@@ -194,7 +204,7 @@ public class Reflector {
                 + method.getName()
                 + Arrays.stream(method.getParameterTypes())
                 .map(Class::getName)
-                .collect(CustomCollectors.joining(",", ":", "", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                .collect(CustomCollectors.joining(",", ":", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     public Optional<Invoker> getGetInvoker(String propertyName) {

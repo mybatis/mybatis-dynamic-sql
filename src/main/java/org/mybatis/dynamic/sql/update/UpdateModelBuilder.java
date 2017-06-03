@@ -49,7 +49,8 @@ public class UpdateModelBuilder {
         return new UpdateSupportWhereBuilder(column, condition);
     }
     
-    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition,
+            SqlCriterion<?>...subCriteria) {
         return new UpdateSupportWhereBuilder(column, condition, subCriteria);
     }
     
@@ -57,7 +58,7 @@ public class UpdateModelBuilder {
      * WARNING! Calling this method could result in an update statement that updates
      * all rows in a table.
      * 
-     * @return
+     * @return the update model
      */
     public UpdateModel build() {
         return new UpdateModel.Builder()
@@ -116,7 +117,8 @@ public class UpdateModelBuilder {
             super(column, condition);
         }
         
-        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition,
+                SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
         

@@ -17,7 +17,10 @@ package org.mybatis.dynamic.sql;
 
 public interface ConditionVisitor<T, R> {
     R visit(AbstractListValueCondition<T> condition);
+
     R visit(AbstractNoValueCondition<T> condition);
+
     R visit(AbstractSingleValueCondition<T> condition);
+
     R visit(AbstractTwoValueCondition<T> condition);
 }

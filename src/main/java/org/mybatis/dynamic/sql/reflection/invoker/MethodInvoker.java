@@ -18,6 +18,8 @@ package org.mybatis.dynamic.sql.reflection.invoker;
 import java.lang.reflect.Method;
 
 /**
+ * Invoker that will return the value from invoking a method.
+ * 
  * @author Clinton Begin (initial work)
  * @author Jeff Butler (derivation)
  */

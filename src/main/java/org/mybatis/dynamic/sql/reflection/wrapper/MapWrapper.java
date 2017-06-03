@@ -21,6 +21,8 @@ import org.mybatis.dynamic.sql.reflection.MetaObject;
 import org.mybatis.dynamic.sql.reflection.property.PropertyTokenizer;
 
 /**
+ * Wrapper that retrieves values from a map.
+ * 
  * @author Clinton Begin (initial work)
  * @author Jeff Butler (derivation)
  */

@@ -47,7 +47,8 @@ public class ValuePhraseVisitor implements InsertMappingVisitor<FieldAndValue> {
     
     @Override
     public FieldAndValue visit(PropertyMapping mapping) {
-        return FieldAndValue.of(mapping.column().name(),
-                renderingStrategy.getFormattedJdbcPlaceholder(mapping.column(), "record", mapping.property())); //$NON-NLS-1$
+        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder(mapping.column(),
+                "record", mapping.property()); //$NON-NLS-1$
+        return FieldAndValue.of(mapping.column().name(), placeholder);
     }
 }

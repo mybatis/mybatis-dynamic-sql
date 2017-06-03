@@ -32,7 +32,7 @@ public class SelectSupport extends AbstractSqlSupport {
     private String distinct;
     private Optional<String> orderByClause;
     
-    private SelectSupport(SqlTable table) {
+    private SelectSupport(Optional<SqlTable> table) {
         super(table);
     }
     
@@ -119,7 +119,7 @@ public class SelectSupport extends AbstractSqlSupport {
         }
         
         public SelectSupport build() {
-            SelectSupport selectSupport = new SelectSupport(table);
+            SelectSupport selectSupport = new SelectSupport(Optional.ofNullable(table));
             selectSupport.distinct = distinct;
             selectSupport.orderByClause = Optional.ofNullable(orderByClause);
             selectSupport.whereClause = Optional.ofNullable(whereClause);

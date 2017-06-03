@@ -16,6 +16,8 @@
 package org.mybatis.dynamic.sql.reflection.property;
 
 /**
+ * Utility to trace through an OGNL like expression.
+ * 
  * @author Clinton Begin (initial work)
  * @author Jeff Butler (derivation)
  */

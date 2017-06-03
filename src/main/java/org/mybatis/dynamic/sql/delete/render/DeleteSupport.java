@@ -27,11 +27,11 @@ public class DeleteSupport extends AbstractSqlSupport {
     private String whereClause;
     private Map<String, Object> parameters = new HashMap<>();
     
-    private DeleteSupport(SqlTable table) {
+    private DeleteSupport(Optional<SqlTable> table) {
         super(table);
     }
     
-    private DeleteSupport(String whereClause, Map<String, Object> parameters, SqlTable table) {
+    private DeleteSupport(String whereClause, Map<String, Object> parameters, Optional<SqlTable> table) {
         super(table);
         this.whereClause = whereClause;
         this.parameters.putAll(parameters);
@@ -56,10 +56,10 @@ public class DeleteSupport extends AbstractSqlSupport {
     }
 
     public static DeleteSupport of(SqlTable table) {
-        return new DeleteSupport(table);
+        return new DeleteSupport(Optional.of(table));
     }
     
     public static DeleteSupport of(String whereClause, Map<String, Object> parameters, SqlTable table) {
-        return new DeleteSupport(whereClause, parameters, table);
+        return new DeleteSupport(whereClause, parameters, Optional.of(table));
     }
 }

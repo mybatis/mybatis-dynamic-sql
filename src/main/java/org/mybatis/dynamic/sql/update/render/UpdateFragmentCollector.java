@@ -36,7 +36,8 @@ public class UpdateFragmentCollector extends FragmentCollector<UpdateFragmentCol
     
     public UpdateSupport buildUpdateSupport() {
         return new UpdateSupport.Builder()
-                .withSetClause(fragments().collect(Collectors.joining(", ", "set ", ""))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .withSetClause(fragments()
+                        .collect(Collectors.joining(", ", "set ", ""))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 .withWhereSupport(whereSupport)
                 .withParameters(parameters)
                 .withTable(table)
@@ -48,7 +49,8 @@ public class UpdateFragmentCollector extends FragmentCollector<UpdateFragmentCol
         return this;
     }
     
-    public static Collector<FragmentAndParameters, UpdateFragmentCollector, UpdateSupport> toUpdateSupport(SqlTable table, Optional<WhereSupport> whereSupport) {
+    public static Collector<FragmentAndParameters, ?, UpdateSupport> toUpdateSupport(SqlTable table,
+            Optional<WhereSupport> whereSupport) {
         return Collector.of(() -> new UpdateFragmentCollector(table, whereSupport),
                 UpdateFragmentCollector::add,
                 UpdateFragmentCollector::merge,

@@ -34,7 +34,8 @@ public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuil
         criteria.add(criterion);
     }
     
-    protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+    protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, Condition<S> condition,
+            SqlCriterion<?>...subCriteria) {
         SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
                 .withColumn(column)
                 .withCondition(condition)
@@ -72,7 +73,8 @@ public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuil
         criteria.add(criterion);
     }
     
-    private <S> void addCriterion(String connector, SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+    private <S> void addCriterion(String connector, SqlColumn<S> column, Condition<S> condition,
+            SqlCriterion<?>...subCriteria) {
         SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
                 .withConnector(connector)
                 .withColumn(column)

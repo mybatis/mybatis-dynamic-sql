@@ -59,7 +59,8 @@ public class FieldAndValueCollector<T> {
         return InsertSupport.of(columnsPhrase(), valuesPhrase(), record, table);
     }
     
-    public static <T> Collector<FieldAndValue, FieldAndValueCollector<T>, InsertSupport<T>> toInsertSupport(T record, SqlTable table) {
+    public static <T> Collector<FieldAndValue, FieldAndValueCollector<T>, InsertSupport<T>> toInsertSupport(T record,
+            SqlTable table) {
         return Collector.of(() -> new FieldAndValueCollector<>(record, table),
                 FieldAndValueCollector::add,
                 FieldAndValueCollector::merge,

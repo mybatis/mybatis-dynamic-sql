@@ -25,6 +25,8 @@ import org.mybatis.dynamic.sql.reflection.invoker.Invoker;
 import org.mybatis.dynamic.sql.reflection.property.PropertyTokenizer;
 
 /**
+ * Wrapper that retrieves values from a Java bean.
+ * 
  * @author Clinton Begin (original work)
  * @author Jeff Butler (derivation)
  */
@@ -61,7 +63,8 @@ public class BeanWrapper extends ObjectWrapper {
         try {
             return invoker.invoke(object, NO_ARGUMENTS);
         } catch (ReflectiveOperationException e) {
-            log.log(Level.WARNING, "Invoker exception while retrieving property value, returning null", e); //$NON-NLS-1$
+            log.log(Level.WARNING,
+                    "Invoker exception while retrieving property value, returning null", e); //$NON-NLS-1$
             return null;
         }
     }

@@ -33,7 +33,7 @@ public class PropertyMapping extends AbstractColumnMapping implements InsertMapp
         return visitor.visit(this);
     }
     
-    public static PropertyMapping of (SqlColumn<?> column, String property) {
+    public static PropertyMapping of(SqlColumn<?> column, String property) {
         PropertyMapping mapping = new PropertyMapping(column);
         mapping.property = property;
         return mapping;

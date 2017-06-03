@@ -16,6 +16,8 @@
 package org.mybatis.dynamic.sql.reflection;
 
 /**
+ * Exception class for reporting any unexpected issues in reflection.
+ * 
  * @author Clinton Begin (initial work)
  * @author Jeff Butler (derivation)
  */

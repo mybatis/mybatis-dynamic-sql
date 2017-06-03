@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import java.util.Optional;
+
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 import org.mybatis.dynamic.sql.SqlTable;
 
@@ -24,7 +26,7 @@ public class InsertSupport<T> extends AbstractSqlSupport {
     private String valuesPhrase;
     private T record;
     
-    private InsertSupport(String columnsPhrase, String valuesPhrase, T record, SqlTable table) {
+    private InsertSupport(String columnsPhrase, String valuesPhrase, T record, Optional<SqlTable> table) {
         super(table);
         this.columnsPhrase = columnsPhrase;
         this.valuesPhrase = valuesPhrase;
@@ -53,6 +55,6 @@ public class InsertSupport<T> extends AbstractSqlSupport {
     }
 
     public static <T> InsertSupport<T> of(String columnsPhrase, String valuesPhrase, T record, SqlTable table) {
-        return new InsertSupport<>(columnsPhrase, valuesPhrase, record, table);
+        return new InsertSupport<>(columnsPhrase, valuesPhrase, record, Optional.of(table));
     }
 }

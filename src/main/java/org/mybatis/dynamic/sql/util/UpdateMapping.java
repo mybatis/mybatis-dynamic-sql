@@ -19,5 +19,6 @@ import org.mybatis.dynamic.sql.SqlColumn;
 
 public interface UpdateMapping {
     SqlColumn<?> column();
+
     <R> R accept(UpdateMappingVisitor<R> visitor);
 }

@@ -16,10 +16,13 @@
 package org.mybatis.dynamic.sql.reflection.invoker;
 
 /**
+ * Defines methods for retrieving values from methods or fields.
+ * 
  * @author Clinton Begin (original)
  * @author Jeff Butler (derivation)
  */
 public interface Invoker {
     Object invoke(Object target, Object[] args) throws ReflectiveOperationException;
+
     Class<?> getDeclaringClass();
 }

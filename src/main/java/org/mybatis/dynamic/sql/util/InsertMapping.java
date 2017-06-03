@@ -19,5 +19,6 @@ import org.mybatis.dynamic.sql.SqlColumn;
 
 public interface InsertMapping {
     SqlColumn<?> column();
+
     <R> R accept(InsertMappingVisitor<R> visitor);
 }

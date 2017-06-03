@@ -111,15 +111,15 @@ public interface SqlConditions {
         return isIn(Stream.of(values));
     }
 
+    static <T> IsIn<T> isIn(Stream<T> values) {
+        return IsIn.of(values);
+    }
+
     @SafeVarargs
     static <T> IsNotIn<T> isNotIn(T...values) {
         return isNotIn(Stream.of(values));
     }
     
-    static <T> IsIn<T> isIn(Stream<T> values) {
-        return IsIn.of(values);
-    }
-
     static <T> IsNotIn<T> isNotIn(Stream<T> values) {
         return IsNotIn.of(values);
     }

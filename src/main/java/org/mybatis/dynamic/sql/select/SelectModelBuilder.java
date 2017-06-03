@@ -79,7 +79,8 @@ public class SelectModelBuilder {
             return new SelectSupportWhereBuilder(column, condition);
         }
 
-        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition,
+                SqlCriterion<?>...subCriteria) {
             return new SelectSupportWhereBuilder(column, condition, subCriteria);
         }
         
@@ -102,7 +103,8 @@ public class SelectModelBuilder {
             super(column, condition);
         }
         
-        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition,
+                SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
         

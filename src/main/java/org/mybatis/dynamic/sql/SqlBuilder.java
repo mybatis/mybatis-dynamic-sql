@@ -22,23 +22,23 @@ import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 
 public interface SqlBuilder {
 
-    public static DeleteModelBuilder deleteFrom(SqlTable table) {
+    static DeleteModelBuilder deleteFrom(SqlTable table) {
         return DeleteModelBuilder.of(table);
     }
 
-    public static <T> InsertModelBuilder<T> insert(T record) {
+    static <T> InsertModelBuilder<T> insert(T record) {
         return InsertModelBuilder.insert(record);
     }
     
-    public static SelectModelBuilder select(SqlColumn<?>...columns) {
+    static SelectModelBuilder select(SqlColumn<?>...columns) {
         return SelectModelBuilder.of(columns);
     }
     
-    public static SelectModelBuilder selectDistinct(SqlColumn<?>...columns) {
+    static SelectModelBuilder selectDistinct(SqlColumn<?>...columns) {
         return SelectModelBuilder.ofDistinct(columns);
     }
     
-    public static UpdateModelBuilder update(SqlTable table) {
+    static UpdateModelBuilder update(SqlTable table) {
         return UpdateModelBuilder.of(table);
     }
 }
