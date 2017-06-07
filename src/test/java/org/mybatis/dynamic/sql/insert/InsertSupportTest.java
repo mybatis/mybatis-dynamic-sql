@@ -23,9 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
 
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValue;
@@ -34,8 +33,6 @@ import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 public class InsertSupportTest {
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
@@ -59,10 +56,12 @@ public class InsertSupportTest {
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";
-        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+            String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";
+            softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+        });
     }
 
     @Test
@@ -78,11 +77,13 @@ public class InsertSupportTest {
                 .map(occupation).toNull()
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
-        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, null)";
-        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+            String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, null)";
+            softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+        });
     }
 
     @Test
@@ -98,11 +99,13 @@ public class InsertSupportTest {
                 .map(occupation).toStringConstant("Y")
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
-        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values (3, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, 'Y')";
-        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+            String expectedValuesPhrase = "values (3, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, 'Y')";
+            softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+        });
     }
     
     @Test
@@ -119,11 +122,13 @@ public class InsertSupportTest {
                 .map(occupation).toPropertyWhenPresent("occupation")
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
-        String expectedColumnsPhrase = "(last_name, occupation)";
-        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedColumnsPhrase = "(last_name, occupation)";
+            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values (#{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";
-        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+            String expectedValuesPhrase = "values (#{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";
+            softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+        });
     }
 
     @Test
@@ -146,11 +151,13 @@ public class InsertSupportTest {
                         FieldAndValueCollector::add,
                         FieldAndValueCollector::merge));
                 
-        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        softly.assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase);
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+            softly.assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
-        softly.assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase);
+            String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
+            softly.assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase);
+        });
     }
     
     @Test

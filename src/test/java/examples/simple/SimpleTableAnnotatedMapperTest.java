@@ -15,10 +15,27 @@
  */
 package examples.simple;
 
-import static examples.simple.SimpleTableDynamicSqlSupport.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildDeleteByPrimaryKeySupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildFullInsertSupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildFullUpdateByPrimaryKeySupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildSelectByPrimaryKeySupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildSelectiveInsertSupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildSelectiveUpdateByPrimaryKeySupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.employed;
+import static examples.simple.SimpleTableDynamicSqlSupport.firstName;
+import static examples.simple.SimpleTableDynamicSqlSupport.id;
+import static examples.simple.SimpleTableDynamicSqlSupport.occupation;
+import static examples.simple.SimpleTableDynamicSqlSupport.selectByExample;
+import static examples.simple.SimpleTableDynamicSqlSupport.simpleTable;
+import static examples.simple.SimpleTableDynamicSqlSupport.updateByExample;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.update;
+import static org.mybatis.dynamic.sql.SqlConditions.count;
+import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isIn;
+import static org.mybatis.dynamic.sql.SqlConditions.isNull;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,10 +48,9 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -43,15 +59,12 @@ import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class SimpleTableAnnotatedMapperTest {
 
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
-
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
     
     private SqlSessionFactory sqlSessionFactory;
     
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/simple/CreateSimpleDB.sql");
@@ -98,9 +111,11 @@ public class SimpleTableAnnotatedMapperTest {
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
-            softly.assertThat(rows.size()).isEqualTo(2);
-            softly.assertThat(rows.get(0).getId()).isEqualTo(3);
-            softly.assertThat(rows.get(1).getId()).isEqualTo(6);
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(rows.size()).isEqualTo(2);
+                softly.assertThat(rows.get(0).getId()).isEqualTo(3);
+                softly.assertThat(rows.get(1).getId()).isEqualTo(6);
+            });
         } finally {
             session.close();
         }
@@ -168,11 +183,13 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             InsertSupport<SimpleTableRecord> insertSupport = buildFullInsertSupport(record);
-            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo("(id, first_name, last_name, birth_date, employed, occupation)");
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo("(id, first_name, last_name, birth_date, employed, occupation)");
             
-            int rows = mapper.insert(insertSupport);
+                int rows = mapper.insert(insertSupport);
             
-            softly.     assertThat(rows).isEqualTo(1);
+                softly.assertThat(rows).isEqualTo(1);
+            });
         } finally {
             session.close();
         }
@@ -191,11 +208,13 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(false);
             
             InsertSupport<SimpleTableRecord> insertSupport = buildSelectiveInsertSupport(record);
-            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo("(id, first_name, last_name, birth_date, employed)");
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo("(id, first_name, last_name, birth_date, employed)");
             
-            int rows = mapper.insert(insertSupport);
+                int rows = mapper.insert(insertSupport);
             
-            softly.assertThat(rows).isEqualTo(1);
+                softly.assertThat(rows).isEqualTo(1);
+            });
         } finally {
             session.close();
         }
@@ -214,16 +233,17 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildFullInsertSupport(record));
-            softly.assertThat(rows).isEqualTo(1);
+            SoftAssertions.assertSoftly(softly -> {
+                int rows = mapper.insert(buildFullInsertSupport(record));
+                softly.assertThat(rows).isEqualTo(1);
             
-            record.setOccupation("Programmer");
-            rows = mapper.update(buildFullUpdateByPrimaryKeySupport(record));
-            softly.assertThat(rows).isEqualTo(1);
+                record.setOccupation("Programmer");
+                rows = mapper.update(buildFullUpdateByPrimaryKeySupport(record));
+                softly.assertThat(rows).isEqualTo(1);
             
-            SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-            
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
+            });
         } finally {
             session.close();
         }
@@ -242,18 +262,20 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildFullInsertSupport(record));
-            softly.assertThat(rows).isEqualTo(1);
+            SoftAssertions.assertSoftly(softly -> {
+                int rows = mapper.insert(buildFullInsertSupport(record));
+                softly.assertThat(rows).isEqualTo(1);
 
-            SimpleTableRecord updateRecord = new SimpleTableRecord();
-            updateRecord.setId(100);
-            updateRecord.setOccupation("Programmer");
-            rows = mapper.update(buildSelectiveUpdateByPrimaryKeySupport(updateRecord));
-            softly.assertThat(rows).isEqualTo(1);
-            
-            SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-            softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
+                SimpleTableRecord updateRecord = new SimpleTableRecord();
+                updateRecord.setId(100);
+                updateRecord.setOccupation("Programmer");
+                rows = mapper.update(buildSelectiveUpdateByPrimaryKeySupport(updateRecord));
+                softly.assertThat(rows).isEqualTo(1);
+
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
+                softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
+            });
             
         } finally {
             session.close();
@@ -273,23 +295,21 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildFullInsertSupport(record));
-            softly.assertThat(rows).isEqualTo(1);
+            SoftAssertions.assertSoftly(softly -> {
+                int rows = mapper.insert(buildFullInsertSupport(record));
+                softly.assertThat(rows).isEqualTo(1);
 
-            UpdateSupport updateSupport = update(simpleTable)
-                    .set(occupation).equalToNull()
-                    .set(employed).equalTo(false)
-                    .where(id, isEqualTo(100))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
-                    
-            rows = mapper.update(updateSupport);
-            softly.assertThat(rows).isEqualTo(1);
-            
-            SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            softly.assertThat(newRecord.getOccupation()).isNull();
-            softly.assertThat(newRecord.getEmployed()).isEqualTo(false);
-            softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
-            
+                UpdateSupport updateSupport = update(simpleTable).set(occupation).equalToNull().set(employed)
+                        .equalTo(false).where(id, isEqualTo(100)).buildAndRender(RenderingStrategy.MYBATIS3);
+
+                rows = mapper.update(updateSupport);
+                softly.assertThat(rows).isEqualTo(1);
+
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                softly.assertThat(newRecord.getOccupation()).isNull();
+                softly.assertThat(newRecord.getEmployed()).isEqualTo(false);
+                softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
+            });
         } finally {
             session.close();
         }
@@ -308,21 +328,20 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildFullInsertSupport(record));
-            softly.assertThat(rows).isEqualTo(1);
-            
-            record.setOccupation("Programmer");
-            UpdateSupport updateSupport = updateByExample(record)
-                .where(id, isEqualTo(100))
-                .and(firstName, isEqualTo("Joe"))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
-            
-            rows = mapper.update(updateSupport);
-            softly.assertThat(rows).isEqualTo(1);
-            
-            SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-            
+            SoftAssertions.assertSoftly(softly -> {
+                int rows = mapper.insert(buildFullInsertSupport(record));
+                softly.assertThat(rows).isEqualTo(1);
+
+                record.setOccupation("Programmer");
+                UpdateSupport updateSupport = updateByExample(record).where(id, isEqualTo(100))
+                        .and(firstName, isEqualTo("Joe")).buildAndRender(RenderingStrategy.MYBATIS3);
+
+                rows = mapper.update(updateSupport);
+                softly.assertThat(rows).isEqualTo(1);
+
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
+            });
         } finally {
             session.close();
         }

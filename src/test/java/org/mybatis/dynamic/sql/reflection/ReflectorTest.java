@@ -19,15 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.reflection.invoker.Invoker;
 
 public class ReflectorTest {
-
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     @Test
     public void testMethodSignatureWithGetter() throws Exception {
@@ -60,8 +56,10 @@ public class ReflectorTest {
         Optional<Invoker> inv = reflector.getGetInvoker("name");
         Invoker invoker = inv.get();
         Object answer = invoker.invoke(tc, new Object[0]);
-        softly.assertThat(answer).isEqualTo("fred");
-        softly.assertThat(invoker.getDeclaringClass()).isEqualTo(TestClass.class);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(answer).isEqualTo("fred");
+            softly.assertThat(invoker.getDeclaringClass()).isEqualTo(TestClass.class);
+        });
     }
 
     @Test
@@ -71,8 +69,10 @@ public class ReflectorTest {
         Optional<Invoker> inv = reflector.getGetInvoker("privateField");
         Invoker invoker = inv.get();
         Object answer = invoker.invoke(tc, new Object[0]);
-        softly.assertThat(answer).isEqualTo("Test");
-        softly.assertThat(invoker.getDeclaringClass()).isEqualTo(TestClass.class);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(answer).isEqualTo("Test");
+            softly.assertThat(invoker.getDeclaringClass()).isEqualTo(TestClass.class);
+        });
     }
     
     @Test
@@ -133,11 +133,13 @@ public class ReflectorTest {
     @Test
     public void someTestSetAccessible() {
         Reflector r = new Reflector(TestClass.class);
-        softly.assertThat(r.getGetInvoker("firstName").isPresent()).isEqualTo(true);
-        softly.assertThat(r.getGetInvoker("privateField").isPresent()).isEqualTo(true);
-        softly.assertThat(r.getGetInvoker("name").isPresent()).isEqualTo(true);
-        softly.assertThat(r.getGetInvoker("publicField").isPresent()).isEqualTo(true);
-        softly.assertThat(r.getGetInvoker("ignored").isPresent()).isEqualTo(false);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(r.getGetInvoker("firstName").isPresent()).isEqualTo(true);
+            softly.assertThat(r.getGetInvoker("privateField").isPresent()).isEqualTo(true);
+            softly.assertThat(r.getGetInvoker("name").isPresent()).isEqualTo(true);
+            softly.assertThat(r.getGetInvoker("publicField").isPresent()).isEqualTo(true);
+            softly.assertThat(r.getGetInvoker("ignored").isPresent()).isEqualTo(false);
+        });
     }
     
     @Test
@@ -146,11 +148,13 @@ public class ReflectorTest {
         System.setSecurityManager(new DenyingSecurityManager());
         Reflector r = new Reflector(TestClass.class);
         System.setSecurityManager(oldSm);
-        softly.assertThat(r.getGetInvoker("firstName").isPresent()).isEqualTo(false);
-        softly.assertThat(r.getGetInvoker("privateField").isPresent()).isEqualTo(false);
-        // public methods and fields should still be available
-        softly.assertThat(r.getGetInvoker("publicField").isPresent()).isEqualTo(true);
-        softly.assertThat(r.getGetInvoker("name").isPresent()).isEqualTo(true);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(r.getGetInvoker("firstName").isPresent()).isEqualTo(false);
+            softly.assertThat(r.getGetInvoker("privateField").isPresent()).isEqualTo(false);
+            // public methods and fields should still be available
+            softly.assertThat(r.getGetInvoker("publicField").isPresent()).isEqualTo(true);
+            softly.assertThat(r.getGetInvoker("name").isPresent()).isEqualTo(true);
+        });
     }
     
     public static class BaseClass<T> {

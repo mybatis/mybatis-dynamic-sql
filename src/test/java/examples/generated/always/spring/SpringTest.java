@@ -18,17 +18,17 @@ package examples.generated.always.spring;
 import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.buildInsertSupport;
 import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.id;
 import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.selectByExample;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlConditions.isGreaterThan;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
@@ -43,12 +43,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 public class SpringTest {
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
-
     private EmbeddedDatabase db;
     
-    @Before
+    @BeforeEach
     public void setup() {
         db = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.HSQL)
@@ -66,7 +63,7 @@ public class SpringTest {
                 .orderBy(id.descending())
                 .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
         
-        softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.id as A_ID, a.first_name, a.last_name, a.full_name");
+        assertThat(selectSupport.getColumnList()).isEqualTo("a.id as A_ID, a.first_name, a.last_name, a.full_name");
         
         List<GeneratedAlwaysRecord> records = template.query(selectSupport.getFullSelectStatement(), selectSupport.getParameters(),
                 new RowMapper<GeneratedAlwaysRecord>(){
@@ -80,10 +77,12 @@ public class SpringTest {
                     }
                 });
         
-        softly.assertThat(records.size()).isEqualTo(3);
-        softly.assertThat(records.get(0).getId()).isEqualTo(6);
-        softly.assertThat(records.get(1).getId()).isEqualTo(5);
-        softly.assertThat(records.get(2).getId()).isEqualTo(4);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(records.size()).isEqualTo(3);
+            softly.assertThat(records.get(0).getId()).isEqualTo(6);
+            softly.assertThat(records.get(1).getId()).isEqualTo(5);
+            softly.assertThat(records.get(2).getId()).isEqualTo(4);
+        });
     }
     
     @Test
@@ -102,11 +101,13 @@ public class SpringTest {
         
         int rows = template.update(insertSupport.getFullInsertStatement(), ps, kh);
         
-        softly.assertThat(rows).isEqualTo(1);
-        softly.assertThat(kh.getKeys().get("FULL_NAME")).isEqualTo("Bob Jones");
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(rows).isEqualTo(1);
+            softly.assertThat(kh.getKeys().get("FULL_NAME")).isEqualTo("Bob Jones");
+        });
     }
     
-    @After
+    @AfterEach
     public void teardown() {
         db.shutdown();
     }

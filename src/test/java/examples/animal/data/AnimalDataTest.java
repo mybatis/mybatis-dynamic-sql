@@ -15,10 +15,37 @@
  */
 package examples.animal.data;
 
-import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.animalData;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.animalName;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.bodyWeight;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.brainWeight;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.id;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.SqlBuilder.insert;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
+import static org.mybatis.dynamic.sql.SqlBuilder.update;
+import static org.mybatis.dynamic.sql.SqlConditions.and;
+import static org.mybatis.dynamic.sql.SqlConditions.count;
+import static org.mybatis.dynamic.sql.SqlConditions.isBetween;
+import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isGreaterThan;
+import static org.mybatis.dynamic.sql.SqlConditions.isGreaterThanOrEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isIn;
+import static org.mybatis.dynamic.sql.SqlConditions.isInCaseInsensitive;
+import static org.mybatis.dynamic.sql.SqlConditions.isLessThan;
+import static org.mybatis.dynamic.sql.SqlConditions.isLessThanOrEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isLike;
+import static org.mybatis.dynamic.sql.SqlConditions.isLikeCaseInsensitive;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotBetween;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotIn;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotInCaseInsensitive;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotLike;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotLikeCaseInsensitive;
+import static org.mybatis.dynamic.sql.SqlConditions.isNotNull;
+import static org.mybatis.dynamic.sql.SqlConditions.isNull;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,10 +61,9 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
@@ -47,15 +73,12 @@ import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class AnimalDataTest {
     
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
-
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
     
     private SqlSessionFactory sqlSessionFactory;
     
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/animal/data/CreateAnimalData.sql");
@@ -81,8 +104,10 @@ public class AnimalDataTest {
                     .from(animalData)
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            softly.assertThat(animals.size()).isEqualTo(65);
-            softly.assertThat(animals.get(0).getId()).isEqualTo(1);
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(animals.size()).isEqualTo(65);
+                softly.assertThat(animals.get(0).getId()).isEqualTo(1);
+            });
         } finally {
             sqlSession.close();
         }
@@ -98,8 +123,10 @@ public class AnimalDataTest {
                     .orderBy(id.descending())
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            softly.assertThat(animals.size()).isEqualTo(65);
-            softly.assertThat(animals.get(0).getId()).isEqualTo(65);
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(animals.size()).isEqualTo(65);
+                softly.assertThat(animals.get(0).getId()).isEqualTo(65);
+            });
         } finally {
             sqlSession.close();
         }
@@ -576,8 +603,10 @@ public class AnimalDataTest {
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<AnimalData> rows = mapper.selectMany(selectSupport);
-            softly.assertThat(rows.size()).isEqualTo(14);
-            softly.assertThat(rows.get(0).getId()).isEqualTo(65);
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(rows.size()).isEqualTo(14);
+                softly.assertThat(rows.get(0).getId()).isEqualTo(65);
+            });
         } finally {
             sqlSession.close();
         }
@@ -597,8 +626,10 @@ public class AnimalDataTest {
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<AnimalData> rows = mapper.selectMany(selectSupport);
-            softly.assertThat(rows.size()).isEqualTo(14);
-            softly.assertThat(rows.get(0).getId()).isEqualTo(65);
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(rows.size()).isEqualTo(14);
+                softly.assertThat(rows.get(0).getId()).isEqualTo(65);
+            });
         } finally {
             sqlSession.close();
         }
@@ -614,11 +645,13 @@ public class AnimalDataTest {
                     .from(animalData)
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
-            softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) from AnimalData a");
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) from AnimalData a");
             
-            Long count = mapper.selectALong(selectSupport);
-            softly.assertThat(count).isEqualTo(65);
+                Long count = mapper.selectALong(selectSupport);
+                softly.assertThat(count).isEqualTo(65);
+            });
         } finally {
             sqlSession.close();
         }
@@ -636,7 +669,7 @@ public class AnimalDataTest {
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             
             Long count = mapper.selectALong(selectSupport);
-            softly.assertThat(count).isEqualTo(65);
+            assertThat(count).isEqualTo(65);
         } finally {
             sqlSession.close();
         }

@@ -15,22 +15,18 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.reflection.ReflectionException;
 
 import examples.simple.SimpleTableRecord;
 
 public class BeanPropertyGetterTest {
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
-
     @Test
     public void testSimpleProperty() {
         SimpleTableRecord record = new SimpleTableRecord();
@@ -39,12 +35,14 @@ public class BeanPropertyGetterTest {
         assertThat(BeanPropertyGetter.instance().getPropertyValue(record, "id")).isEqualTo(22);
     }
 
-    @Test(expected=ReflectionException.class)
+    @Test
     public void testIndexOnNonIndexedProperty() {
         SimpleTableRecord record = new SimpleTableRecord();
         record.setId(22);
         
-        assertThat(BeanPropertyGetter.instance().getPropertyValue(record, "id[3]")).isEqualTo(22);
+        assertThatThrownBy(() -> {
+            BeanPropertyGetter.instance().getPropertyValue(record, "id[3]");
+        }).isInstanceOf(ReflectionException.class);
     }
     
     @Test
@@ -62,17 +60,22 @@ public class BeanPropertyGetterTest {
         innerMap.put("id", 33);
         testMap.put("innerMap", innerMap);
         
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testMap, "innerMap.id")).isEqualTo(33);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testMap, "innerMap[id]")).isEqualTo(33);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testMap, "innerMap")).isInstanceOf(HashMap.class);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testMap, "innerMap.id")).isEqualTo(33);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testMap, "innerMap[id]")).isEqualTo(33);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testMap, "innerMap"))
+                    .isInstanceOf(HashMap.class);
+        });
     }
 
     @Test
     public void testPrimitiveValue() {
         ClassWithPrimitiveProperties testClass = new ClassWithPrimitiveProperties(2, 3);
         
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testClass, "id")).isEqualTo(2);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testClass, "privateId")).isEqualTo(3);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testClass, "id")).isEqualTo(2);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(testClass, "privateId")).isEqualTo(3);
+        });
     }
     
     @Test
@@ -84,28 +87,30 @@ public class BeanPropertyGetterTest {
     public void testComplexObject() {
         ComplexObject complexObject = new ComplexObject();
         
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "b")).isEqualTo(true);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "dummy")).isNull();
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "id")).isEqualTo(3);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "description")).isEqualTo("Outer Class");
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "names.Fred")).isEqualTo("Flintstone");
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.dummy")).isNull();
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.dummy.dummy")).isNull();
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.id")).isEqualTo(33);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.description")).isEqualTo("Inner Class");
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.names.Barney")).isEqualTo("Rubble");
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.names[Barney]")).isEqualTo("Rubble");
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.ints[0]")).isEqualTo(44);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.ints[1]")).isEqualTo(55);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.active")).isEqualTo(true);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.firstName")).isEqualTo("Bamm Bamm");
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.a")).isEqualTo("a");
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassList[0].ints[0]")).isEqualTo(44);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassList[2].ints[1]")).isEqualTo(55);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassMap[first].ints[0]")).isEqualTo(44);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassMap[second].ints[1]")).isEqualTo(55);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassMap.first.ints[0]")).isEqualTo(44);
-        softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClasses[1].id")).isEqualTo(33);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "b")).isEqualTo(true);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "dummy")).isNull();
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "id")).isEqualTo(3);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "description")).isEqualTo("Outer Class");
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "names.Fred")).isEqualTo("Flintstone");
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.dummy")).isNull();
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.dummy.dummy")).isNull();
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.id")).isEqualTo(33);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.description")).isEqualTo("Inner Class");
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.names.Barney")).isEqualTo("Rubble");
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.names[Barney]")).isEqualTo("Rubble");
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.ints[0]")).isEqualTo(44);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.ints[1]")).isEqualTo(55);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.active")).isEqualTo(true);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.firstName")).isEqualTo("Bamm Bamm");
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClass.a")).isEqualTo("a");
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassList[0].ints[0]")).isEqualTo(44);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassList[2].ints[1]")).isEqualTo(55);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassMap[first].ints[0]")).isEqualTo(44);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassMap[second].ints[1]")).isEqualTo(55);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClassMap.first.ints[0]")).isEqualTo(44);
+            softly.assertThat(BeanPropertyGetter.instance().getPropertyValue(complexObject, "innerClasses[1].id")).isEqualTo(33);
+        });
     }
     
     @Test

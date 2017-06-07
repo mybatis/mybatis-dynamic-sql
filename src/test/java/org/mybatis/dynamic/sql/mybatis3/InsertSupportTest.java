@@ -19,18 +19,14 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 
 import java.sql.JDBCType;
 
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 public class InsertSupportTest {
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
-
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR);
@@ -51,14 +47,15 @@ public class InsertSupportTest {
                 .map(occupation).toProperty("occupation")
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
-        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, "
-                + "#{record.firstName,jdbcType=VARCHAR}, "
-                + "#{record.lastName,jdbcType=VARCHAR}, "
-                + "#{record.occupation,jdbcType=VARCHAR})";
-        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+            String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, "
+                    + "#{record.firstName,jdbcType=VARCHAR}, " + "#{record.lastName,jdbcType=VARCHAR}, "
+                    + "#{record.occupation,jdbcType=VARCHAR})";
+            softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+        });
     }
 
     @Test
@@ -75,12 +72,14 @@ public class InsertSupportTest {
                 .map(occupation).toPropertyWhenPresent("occupation")
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
-        String expectedColumnsPhrase = "(last_name, occupation)";
-        softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedColumnsPhrase = "(last_name, occupation)";
+            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
 
-        String expectedValuesPhrase = "values (#{record.lastName,jdbcType=VARCHAR}, "
-                + "#{record.occupation,jdbcType=VARCHAR})";
-        softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+            String expectedValuesPhrase = "values (#{record.lastName,jdbcType=VARCHAR}, "
+                    + "#{record.occupation,jdbcType=VARCHAR})";
+            softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
+        });
     }
 
     public static class TestRecord {

@@ -22,18 +22,14 @@ import static org.mybatis.dynamic.sql.SqlConditions.isLikeCaseInsensitive;
 
 import java.sql.JDBCType;
 
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 public class DeleteSupportTest {
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
-
     private static final SqlTable foo = SqlTable.of("foo").withAlias("A");
     private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR);
@@ -46,15 +42,17 @@ public class DeleteSupportTest {
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedWhereClause = "where (id = #{parameters.p1,jdbcType=INTEGER} and first_name = #{parameters.p2,jdbcType=VARCHAR}) or upper(first_name) like #{parameters.p3,jdbcType=VARCHAR}";
-        softly.assertThat(deleteSupport.getWhereClause()).isEqualTo(expectedWhereClause);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(deleteSupport.getWhereClause()).isEqualTo(expectedWhereClause);
 
-        String expectedFullStatement = "delete from foo where (id = #{parameters.p1,jdbcType=INTEGER} and first_name = #{parameters.p2,jdbcType=VARCHAR}) or upper(first_name) like #{parameters.p3,jdbcType=VARCHAR}";
-        softly.assertThat(deleteSupport.getFullDeleteStatement()).isEqualTo(expectedFullStatement);
-        
-        softly.assertThat(deleteSupport.getParameters().size()).isEqualTo(3);
-        softly.assertThat(deleteSupport.getParameters().get("p1")).isEqualTo(3);
-        softly.assertThat(deleteSupport.getParameters().get("p2")).isEqualTo("Betty");
-        softly.assertThat(deleteSupport.getParameters().get("p3")).isEqualTo("%FR%");
+            String expectedFullStatement = "delete from foo where (id = #{parameters.p1,jdbcType=INTEGER} and first_name = #{parameters.p2,jdbcType=VARCHAR}) or upper(first_name) like #{parameters.p3,jdbcType=VARCHAR}";
+            softly.assertThat(deleteSupport.getFullDeleteStatement()).isEqualTo(expectedFullStatement);
+
+            softly.assertThat(deleteSupport.getParameters().size()).isEqualTo(3);
+            softly.assertThat(deleteSupport.getParameters().get("p1")).isEqualTo(3);
+            softly.assertThat(deleteSupport.getParameters().get("p2")).isEqualTo("Betty");
+            softly.assertThat(deleteSupport.getParameters().get("p3")).isEqualTo("%FR%");
+        });
     }
 
     @Test
@@ -63,10 +61,12 @@ public class DeleteSupportTest {
                 .buildAndRender(RenderingStrategy.MYBATIS3);
 
         String expectedWhereClause = "";
-        softly.assertThat(deleteSupport.getWhereClause()).isEqualTo(expectedWhereClause);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(deleteSupport.getWhereClause()).isEqualTo(expectedWhereClause);
 
-        String expectedFullStatement = "delete from foo";
-        softly.assertThat(deleteSupport.getFullDeleteStatement()).isEqualTo(expectedFullStatement);
-        softly.assertThat(deleteSupport.getParameters().size()).isEqualTo(0);
+            String expectedFullStatement = "delete from foo";
+            softly.assertThat(deleteSupport.getFullDeleteStatement()).isEqualTo(expectedFullStatement);
+            softly.assertThat(deleteSupport.getParameters().size()).isEqualTo(0);
+        });
     }
 }

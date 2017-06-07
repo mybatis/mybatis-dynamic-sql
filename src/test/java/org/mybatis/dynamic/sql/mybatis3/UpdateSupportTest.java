@@ -20,18 +20,14 @@ import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
 
 import java.sql.JDBCType;
 
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class UpdateSupportTest {
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
-    
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = SqlColumn.of("firstName", JDBCType.VARCHAR);
@@ -51,15 +47,17 @@ public class UpdateSupportTest {
                 + "lastName = #{parameters.up2,jdbcType=VARCHAR}, "
                 + "occupation = null";
                 
-        softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
-        String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER}";
-        softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
+            String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER}";
+            softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
-        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(3);
-        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
-        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
-        softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+            softly.assertThat(updateSupport.getParameters().size()).isEqualTo(3);
+            softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+            softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+            softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+        });
     }
 
     @Test
@@ -76,16 +74,18 @@ public class UpdateSupportTest {
                 + "firstName = #{parameters.up1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.up2,jdbcType=VARCHAR}";
                 
-        softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
         
-        String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER} "
-                + "and firstName = #{parameters.p2,jdbcType=VARCHAR}";
-        softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
+            String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER} "
+                    + "and firstName = #{parameters.p2,jdbcType=VARCHAR}";
+            softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
         
-        softly.assertThat(updateSupport.getParameters().size()).isEqualTo(4);
-        softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
-        softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
-        softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
-        softly.assertThat(updateSupport.getParameters().get("p2")).isEqualTo("barney");
+            softly.assertThat(updateSupport.getParameters().size()).isEqualTo(4);
+            softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+            softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+            softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+            softly.assertThat(updateSupport.getParameters().get("p2")).isEqualTo("barney");
+        });
     }
 }

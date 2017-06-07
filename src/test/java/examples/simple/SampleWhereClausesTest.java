@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 

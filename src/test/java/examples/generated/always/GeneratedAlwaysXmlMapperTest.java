@@ -30,25 +30,21 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public class GeneratedAlwaysXmlMapperTest {
 
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
-
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
     
     private SqlSessionFactory sqlSessionFactory;
     
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         Class.forName(JDBC_DRIVER).newInstance();
         InputStream is = getClass().getResourceAsStream("/examples/generated/always/CreateGeneratedAlwaysDB.sql");
@@ -112,8 +108,10 @@ public class GeneratedAlwaysXmlMapperTest {
             
             int rows = mapper.insert(buildInsertSupport(record));
             
-            softly.assertThat(rows).isEqualTo(1);
-            softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(rows).isEqualTo(1);
+                softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
+            });
         } finally {
             session.close();
         }
@@ -131,8 +129,10 @@ public class GeneratedAlwaysXmlMapperTest {
             
             int rows = mapper.insert(buildInsertSelectiveSupport(record));
             
-            softly.assertThat(rows).isEqualTo(1);
-            softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(rows).isEqualTo(1);
+                softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
+            });
         } finally {
             session.close();
         }
@@ -148,16 +148,18 @@ public class GeneratedAlwaysXmlMapperTest {
             record.setFirstName("Joe");
             record.setLastName("Jones");
             
-            int rows = mapper.insert(buildInsertSupport(record));
-            softly.assertThat(rows).isEqualTo(1);
-            softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
+            SoftAssertions.assertSoftly(softly -> {
+                int rows = mapper.insert(buildInsertSupport(record));
+                softly.assertThat(rows).isEqualTo(1);
+                softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
             
-            record.setLastName("Smith");
-            rows = mapper.update(buildUpdateByPrimaryKeySupport(record));
-            softly.assertThat(rows).isEqualTo(1);
+                record.setLastName("Smith");
+                rows = mapper.update(buildUpdateByPrimaryKeySupport(record));
+                softly.assertThat(rows).isEqualTo(1);
             
-            GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(100);
-            softly.assertThat(newRecord.getFullName()).isEqualTo("Joe Smith");
+                GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(100);
+                softly.assertThat(newRecord.getFullName()).isEqualTo("Joe Smith");
+            });
         } finally {
             session.close();
         }
@@ -185,10 +187,12 @@ public class GeneratedAlwaysXmlMapperTest {
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             
             List<GeneratedAlwaysRecord> records = mapper.selectByExample(selectSupport);
-            softly.assertThat(records.size()).isEqualTo(3);
-            softly.assertThat(records.get(0).getFullName()).isEqualTo("Fred Jones");
-            softly.assertThat(records.get(1).getFullName()).isEqualTo("Pebbles Jones");
-            softly.assertThat(records.get(2).getFullName()).isEqualTo("Wilma Jones");
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(records.size()).isEqualTo(3);
+                softly.assertThat(records.get(0).getFullName()).isEqualTo("Fred Jones");
+                softly.assertThat(records.get(1).getFullName()).isEqualTo("Pebbles Jones");
+                softly.assertThat(records.get(2).getFullName()).isEqualTo("Wilma Jones");
+            });
         } finally {
             session.close();
         }
@@ -214,10 +218,11 @@ public class GeneratedAlwaysXmlMapperTest {
             assertThat(rows).isEqualTo(1);
             
             GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(100);
-            softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
-            softly.assertThat(newRecord.getLastName()).isEqualTo("Smith");
-            softly.assertThat(newRecord.getFullName()).isEqualTo("Joe Smith");
-            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
+                softly.assertThat(newRecord.getLastName()).isEqualTo("Smith");
+                softly.assertThat(newRecord.getFullName()).isEqualTo("Joe Smith");
+            });
         } finally {
             session.close();
         }

@@ -15,10 +15,25 @@
  */
 package examples.simple;
 
-import static examples.simple.SimpleTableDynamicSqlSupport.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildDeleteByPrimaryKeySupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildFullInsertSupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildFullUpdateByPrimaryKeySupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildSelectByPrimaryKeySupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildSelectiveInsertSupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.buildSelectiveUpdateByPrimaryKeySupport;
+import static examples.simple.SimpleTableDynamicSqlSupport.employed;
+import static examples.simple.SimpleTableDynamicSqlSupport.firstName;
+import static examples.simple.SimpleTableDynamicSqlSupport.id;
+import static examples.simple.SimpleTableDynamicSqlSupport.occupation;
+import static examples.simple.SimpleTableDynamicSqlSupport.selectByExample;
+import static examples.simple.SimpleTableDynamicSqlSupport.simpleTable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlConditions.count;
+import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlConditions.isIn;
+import static org.mybatis.dynamic.sql.SqlConditions.isNull;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,24 +46,21 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SimpleTableXmlMapperTest {
-    @Rule
-    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
     
     private SqlSessionFactory sqlSessionFactory;
     
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/simple/CreateSimpleDB.sql");
@@ -94,9 +106,11 @@ public class SimpleTableXmlMapperTest {
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
-            softly.assertThat(rows.size()).isEqualTo(2);
-            softly.assertThat(rows.get(0).getId()).isEqualTo(3);
-            softly.assertThat(rows.get(1).getId()).isEqualTo(6);
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(rows.size()).isEqualTo(2);
+                softly.assertThat(rows.get(0).getId()).isEqualTo(3);
+                softly.assertThat(rows.get(1).getId()).isEqualTo(6);
+            });
         } finally {
             session.close();
         }
@@ -183,11 +197,13 @@ public class SimpleTableXmlMapperTest {
             record.setBirthDate(new Date());
             record.setEmployed(false);
             
-            int rows = mapper.insert(buildSelectiveInsertSupport(record));
-            softly.assertThat(rows).isEqualTo(1);
-            
-            SimpleTableRecord returnedRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            softly.assertThat(returnedRecord.getOccupation()).isNull();
+            SoftAssertions.assertSoftly(softly -> {
+                int rows = mapper.insert(buildSelectiveInsertSupport(record));
+                softly.assertThat(rows).isEqualTo(1);
+
+                SimpleTableRecord returnedRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                softly.assertThat(returnedRecord.getOccupation()).isNull();
+            });
         } finally {
             session.close();
         }
@@ -206,16 +222,17 @@ public class SimpleTableXmlMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildFullInsertSupport(record));
-            softly.assertThat(rows).isEqualTo(1);
-            
-            record.setOccupation("Programmer");
-            rows = mapper.update(buildFullUpdateByPrimaryKeySupport(record));
-            softly.assertThat(rows).isEqualTo(1);
-            
-            SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-            
+            SoftAssertions.assertSoftly(softly -> {
+                int rows = mapper.insert(buildFullInsertSupport(record));
+                softly.assertThat(rows).isEqualTo(1);
+
+                record.setOccupation("Programmer");
+                rows = mapper.update(buildFullUpdateByPrimaryKeySupport(record));
+                softly.assertThat(rows).isEqualTo(1);
+
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
+            });
         } finally {
             session.close();
         }
@@ -234,19 +251,20 @@ public class SimpleTableXmlMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildFullInsertSupport(record));
-            softly.assertThat(rows).isEqualTo(1);
+            SoftAssertions.assertSoftly(softly -> {
+                int rows = mapper.insert(buildFullInsertSupport(record));
+                softly.assertThat(rows).isEqualTo(1);
 
-            SimpleTableRecord updateRecord = new SimpleTableRecord();
-            updateRecord.setId(100);
-            updateRecord.setOccupation("Programmer");
-            rows = mapper.update(buildSelectiveUpdateByPrimaryKeySupport(updateRecord));
-            softly.assertThat(rows).isEqualTo(1);
-            
-            SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
-            softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-            softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
-            
+                SimpleTableRecord updateRecord = new SimpleTableRecord();
+                updateRecord.setId(100);
+                updateRecord.setOccupation("Programmer");
+                rows = mapper.update(buildSelectiveUpdateByPrimaryKeySupport(updateRecord));
+                softly.assertThat(rows).isEqualTo(1);
+
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
+                softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
+            });
         } finally {
             session.close();
         }
