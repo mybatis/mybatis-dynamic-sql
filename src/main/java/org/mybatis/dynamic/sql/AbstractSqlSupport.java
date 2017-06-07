@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.render.RenderingUtilities;
+
 public abstract class AbstractSqlSupport {
     public static final String EMPTY_STRING = ""; //$NON-NLS-1$
     public static final String ONE_SPACE = " "; //$NON-NLS-1$
@@ -37,6 +39,6 @@ public abstract class AbstractSqlSupport {
     }
 
     protected String tableNameIncludingAlias() {
-        return table().map(SqlTable::nameIncludingAlias).orElse(UNKNOWN_TABLE);
+        return table().map(RenderingUtilities::nameIncludingAlias).orElse(UNKNOWN_TABLE);
     }
 }

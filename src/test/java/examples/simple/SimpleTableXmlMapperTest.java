@@ -19,7 +19,6 @@ import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
-import static org.mybatis.dynamic.sql.select.aggregate.Aggregates.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

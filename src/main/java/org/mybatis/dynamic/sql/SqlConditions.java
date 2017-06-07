@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThan;
@@ -73,6 +74,11 @@ public interface SqlConditions {
                 .build();
     }
 
+    // count support
+    static Count count() {
+        return new Count();
+    }
+    
     // for all data types
     static <T> IsNull<T> isNull() {
         return new IsNull<>();

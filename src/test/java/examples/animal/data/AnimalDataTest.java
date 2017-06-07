@@ -19,7 +19,6 @@ import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
-import static org.mybatis.dynamic.sql.select.aggregate.Aggregates.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,6 +38,7 @@ import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -605,40 +605,6 @@ public class AnimalDataTest {
     }
     
     @Test
-    public void testMax() {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        try {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
-            SelectSupport selectSupport = select(max(id))
-                    .from(animalData)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
-            
-            Long max = mapper.selectALong(selectSupport);
-            softly.assertThat(max).isEqualTo(65);
-        } finally {
-            sqlSession.close();
-        }
-    }
-
-    @Test
-    public void testMin() {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        try {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
-            SelectSupport selectSupport = select(min(id))
-                    .from(animalData)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
-            
-            Long max = mapper.selectALong(selectSupport);
-            softly.assertThat(max).isEqualTo(1);
-        } finally {
-            sqlSession.close();
-        }
-    }
-
-    @Test
     public void testCount() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
@@ -648,6 +614,9 @@ public class AnimalDataTest {
                     .from(animalData)
                     .buildAndRender(RenderingStrategy.MYBATIS3);
             
+            softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
+            softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) from AnimalData a");
+            
             Long count = mapper.selectALong(selectSupport);
             softly.assertThat(count).isEqualTo(65);
         } finally {
@@ -656,16 +625,15 @@ public class AnimalDataTest {
     }
 
     @Test
-    public void testCountColumn() {
+    public void testCountNoAlias() {
+        SqlTable animalDataNoAlias = SqlTable.of("AnimalData");
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(count(bodyWeight))
-                    .from(animalData)
+            SelectSupport selectSupport = select(count())
+                    .from(animalDataNoAlias)
                     .buildAndRender(RenderingStrategy.MYBATIS3);
-            
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(a.body_weight)");
             
             Long count = mapper.selectALong(selectSupport);
             softly.assertThat(count).isEqualTo(65);

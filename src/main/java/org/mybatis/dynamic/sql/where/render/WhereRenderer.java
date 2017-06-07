@@ -17,9 +17,9 @@ package org.mybatis.dynamic.sql.where.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -46,11 +46,11 @@ public class WhereRenderer {
     }
     
     private FragmentAndParameters renderCriterionIncludingTableAlias(SqlCriterion<?> criterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, SqlColumn::nameIncludingTableAlias).render(criterion);
+        return CriterionRenderer.of(sequence, renderingStrategy, RenderingUtilities::nameIncludingTableAlias).render(criterion);
     }
     
     private FragmentAndParameters renderCriterionIgnoringTableAlias(SqlCriterion<?> criterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, SqlColumn::name).render(criterion);
+        return CriterionRenderer.of(sequence, renderingStrategy, RenderingUtilities::nameIgnoringTableAlias).render(criterion);
     }
     
     public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy) {

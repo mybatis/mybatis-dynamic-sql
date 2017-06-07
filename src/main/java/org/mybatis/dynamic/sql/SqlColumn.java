@@ -56,15 +56,6 @@ public class SqlColumn<T> {
         return name;
     }
     
-    public String nameIncludingTableAlias() {
-        return tableAlias().map(a -> a + "." + name()).orElse(name()); //$NON-NLS-1$
-    }
-    
-    public String nameIncludingTableAndColumnAlias() {
-        return columnAlias().map(a -> nameIncludingTableAlias() + " as " + a) //$NON-NLS-1$
-                .orElse(nameIncludingTableAlias());
-    }
-    
     public JDBCType jdbcType() {
         return jdbcType;
     }
@@ -73,11 +64,7 @@ public class SqlColumn<T> {
         return table;
     }
     
-    public Optional<String> tableAlias() {
-        return table().flatMap(SqlTable::alias);
-    }
-    
-    public Optional<String> columnAlias() {
+    public Optional<String> alias() {
         return alias;
     }
     

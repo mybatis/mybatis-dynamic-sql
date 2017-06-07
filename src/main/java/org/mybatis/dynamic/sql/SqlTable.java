@@ -30,10 +30,6 @@ public class SqlTable {
         return name;
     }
     
-    public String nameIncludingAlias() {
-        return alias.map(a -> name + " " + a).orElse(name); //$NON-NLS-1$
-    }
-    
     public Optional<String> alias() {
         return alias;
     }

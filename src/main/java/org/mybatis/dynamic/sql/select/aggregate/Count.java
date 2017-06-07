@@ -19,31 +19,9 @@ import java.sql.JDBCType;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Count<T> extends SqlColumn<T> {
+public class Count extends SqlColumn<Long> {
 
-    private Count() {
-        super("*", JDBCType.INTEGER); //$NON-NLS-1$
-    }
-    
-    private Count(SqlColumn<T> column) {
-        super(column);
-    }
-    
-    @Override
-    public String name() {
-        return "count(" + super.name() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    
-    @Override
-    public String nameIncludingTableAlias() {
-        return tableAlias().map(a -> "count(" + a + "." + name + ")").orElse(name()); //$NON-NLS-1$
-    }
-    
-    public static Count<Long> count() {
-        return new Count<>();
-    }
-    
-    public static <T> Count<T> count(SqlColumn<T> column) {
-        return new Count<>(column);
+    public Count() {
+        super("count(*)", JDBCType.INTEGER); //$NON-NLS-1$
     }
 }
