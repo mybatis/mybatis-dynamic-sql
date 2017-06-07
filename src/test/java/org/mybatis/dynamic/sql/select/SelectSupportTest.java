@@ -17,11 +17,7 @@ package org.mybatis.dynamic.sql.select;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
-import static org.mybatis.dynamic.sql.SqlConditions.and;
-import static org.mybatis.dynamic.sql.SqlConditions.count;
-import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlConditions.isLessThan;
-import static org.mybatis.dynamic.sql.SqlConditions.or;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.sql.JDBCType;
 import java.util.Date;

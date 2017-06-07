@@ -46,11 +46,13 @@ public class WhereRenderer {
     }
     
     private FragmentAndParameters renderCriterionIncludingTableAlias(SqlCriterion<?> criterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, RenderingUtilities::nameIncludingTableAlias).render(criterion);
+        return CriterionRenderer.of(sequence, renderingStrategy, RenderingUtilities::nameIncludingTableAlias)
+                .render(criterion);
     }
     
     private FragmentAndParameters renderCriterionIgnoringTableAlias(SqlCriterion<?> criterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, RenderingUtilities::nameIgnoringTableAlias).render(criterion);
+        return CriterionRenderer.of(sequence, renderingStrategy, RenderingUtilities::nameIgnoringTableAlias)
+                .render(criterion);
     }
     
     public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy) {

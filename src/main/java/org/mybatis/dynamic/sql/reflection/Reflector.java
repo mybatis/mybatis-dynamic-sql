@@ -132,7 +132,7 @@ public class Reflector {
         return !name.isEmpty()
                 && !name.startsWith("$") //$NON-NLS-1$
                 && !"serialVersionUID".equals(name) //$NON-NLS-1$
-                && ! "class".equals(name); //$NON-NLS-1$
+                && !"class".equals(name); //$NON-NLS-1$
     }
 
     private static boolean isAccessible(Field field) {
@@ -143,7 +143,7 @@ public class Reflector {
         return method.isAccessible() || Modifier.isPublic(method.getModifiers());
     }
     
-    /*
+    /**
      * This method returns a map containing all methods declared in this
      * class and any superclass. We use this method, instead of the simpler
      * Class.getMethods(), because we want to look for private methods as well.

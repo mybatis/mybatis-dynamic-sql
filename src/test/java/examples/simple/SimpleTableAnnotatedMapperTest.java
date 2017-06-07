@@ -15,27 +15,10 @@
  */
 package examples.simple;
 
-import static examples.simple.SimpleTableDynamicSqlSupport.buildDeleteByPrimaryKeySupport;
-import static examples.simple.SimpleTableDynamicSqlSupport.buildFullInsertSupport;
-import static examples.simple.SimpleTableDynamicSqlSupport.buildFullUpdateByPrimaryKeySupport;
-import static examples.simple.SimpleTableDynamicSqlSupport.buildSelectByPrimaryKeySupport;
-import static examples.simple.SimpleTableDynamicSqlSupport.buildSelectiveInsertSupport;
-import static examples.simple.SimpleTableDynamicSqlSupport.buildSelectiveUpdateByPrimaryKeySupport;
-import static examples.simple.SimpleTableDynamicSqlSupport.employed;
-import static examples.simple.SimpleTableDynamicSqlSupport.firstName;
-import static examples.simple.SimpleTableDynamicSqlSupport.id;
-import static examples.simple.SimpleTableDynamicSqlSupport.occupation;
-import static examples.simple.SimpleTableDynamicSqlSupport.selectByExample;
-import static examples.simple.SimpleTableDynamicSqlSupport.simpleTable;
-import static examples.simple.SimpleTableDynamicSqlSupport.updateByExample;
+import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
-import static org.mybatis.dynamic.sql.SqlBuilder.update;
-import static org.mybatis.dynamic.sql.SqlConditions.count;
-import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlConditions.isIn;
-import static org.mybatis.dynamic.sql.SqlConditions.isNull;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

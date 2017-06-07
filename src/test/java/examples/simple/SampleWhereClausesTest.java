@@ -16,7 +16,6 @@
 package examples.simple;
 
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
-import static examples.simple.SimpleTableDynamicSqlSupport.occupation;
 import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;

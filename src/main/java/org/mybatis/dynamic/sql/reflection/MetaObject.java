@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.reflection.wrapper.MapWrapper;
 import org.mybatis.dynamic.sql.reflection.wrapper.ObjectWrapper;
 
 /**
- * Utility class that will retrieve a vale from a class.
+ * Utility class that will retrieve a value from a class.
  * 
  * @author Clinton Begin (initial work)
  * @author Jeff Butler (derivation)

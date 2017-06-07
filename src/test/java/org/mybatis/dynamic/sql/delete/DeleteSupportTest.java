@@ -16,9 +16,7 @@
 package org.mybatis.dynamic.sql.delete;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
-import static org.mybatis.dynamic.sql.SqlConditions.and;
-import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlConditions.isLikeCaseInsensitive;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.sql.JDBCType;
 
