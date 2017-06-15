@@ -21,12 +21,8 @@ import java.util.stream.Collector;
 public interface CustomCollectors {
 
     /**
-     * Returns a {@code Collector} that concatenates the input elements,
-     * separated by the specified delimiter, with the specified prefix and
-     * suffix, in encounter order.
-     * 
-     * <p>This collector returns an empty string if there are no elements
-     * to collect.
+     * Returns a {@code Collector} similar to the standard JDK joining collector, except that
+     * this collector returns an empty string if there are no elements to collect.
      *
      * @param delimiter the delimiter to be used between each element
      * @param  prefix the sequence of characters to be used at the beginning
@@ -34,7 +30,7 @@ public interface CustomCollectors {
      * @param  suffix the sequence of characters to be used at the end
      *                of the joined result
      * @return A {@code Collector} which concatenates CharSequence elements,
-     * separated by the specified delimiter, in encounter order
+     *     separated by the specified delimiter, in encounter order
      */
     static Collector<CharSequence, StringJoiner, String> joining(CharSequence delimiter, CharSequence prefix,
             CharSequence suffix) {

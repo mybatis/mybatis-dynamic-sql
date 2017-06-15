@@ -144,7 +144,7 @@ public class Reflector {
     }
     
     /**
-     * This method returns a map containing all methods declared in this
+     * Returns a map containing all methods declared in this
      * class and any superclass. We use this method, instead of the simpler
      * Class.getMethods(), because we want to look for private methods as well.
      *
