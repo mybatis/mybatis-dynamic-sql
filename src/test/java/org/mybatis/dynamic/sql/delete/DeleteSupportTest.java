@@ -22,11 +22,14 @@ import java.sql.JDBCType;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
+@RunWith(JUnitPlatform.class)
 public class DeleteSupportTest {
     private static final SqlTable foo = SqlTable.of("foo").withAlias("A");
     private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);

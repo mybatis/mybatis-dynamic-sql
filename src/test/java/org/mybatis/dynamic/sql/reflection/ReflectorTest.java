@@ -21,8 +21,11 @@ import java.util.Optional;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.reflection.invoker.Invoker;
 
+@RunWith(JUnitPlatform.class)
 public class ReflectorTest {
 
     @Test
