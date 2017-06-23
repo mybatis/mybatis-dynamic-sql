@@ -24,11 +24,14 @@ import java.util.Map;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
+@RunWith(JUnitPlatform.class)
 public class SelectSupportTest {
     public static final SqlTable table = SqlTable.of("foo").withAlias("a");
     public static final SqlColumn<Date> column1 = SqlColumn.of("column1", JDBCType.DATE).inTable(table);

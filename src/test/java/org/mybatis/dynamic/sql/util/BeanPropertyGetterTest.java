@@ -22,10 +22,13 @@ import java.util.Map;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.reflection.ReflectionException;
 
 import examples.simple.SimpleTableRecord;
 
+@RunWith(JUnitPlatform.class)
 public class BeanPropertyGetterTest {
     @Test
     public void testSimpleProperty() {

@@ -19,11 +19,14 @@ import java.util.Optional;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.update.render.UpdateFragmentCollector;
 import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector;
 import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector.Triple;
 
+@RunWith(JUnitPlatform.class)
 public class FragmentCollectorTest {
 
     @Test
