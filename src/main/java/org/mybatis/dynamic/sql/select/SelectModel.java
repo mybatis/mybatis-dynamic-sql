@@ -22,7 +22,10 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.select.render.SelectRenderer;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class SelectModel {
@@ -59,6 +62,10 @@ public class SelectModel {
     
     public Optional<Stream<SqlColumn<?>>> orderByColumns() {
         return orderByColumns.flatMap(cl -> Optional.of(cl.stream()));
+    }
+    
+    public SelectSupport render(RenderingStrategy renderingStrategy) {
+        return SelectRenderer.of(this).render(renderingStrategy);
     }
     
     public static class Builder {

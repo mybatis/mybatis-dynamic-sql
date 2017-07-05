@@ -45,7 +45,8 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3), or(id, isEqualTo(4)), or(id, isEqualTo(5)))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         String expectedSetClause = "set firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, occupation = null";
                 
@@ -71,7 +72,8 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3), or(id, isEqualTo(4), or(id, isEqualTo(5))))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         String expectedSetClause = "set firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, occupation = null";
                 
@@ -98,7 +100,8 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         String expectedSetClause = "set occupation = null, firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}";
                 
@@ -125,7 +128,8 @@ public class UpdateSupportTest {
                 .set(id).equalToConstant("4")
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         String expectedSetClause = "set occupation = 'Y', firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, id = 4";
                 
@@ -150,7 +154,8 @@ public class UpdateSupportTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         String expectedStatement = "update foo " 
                 + "set firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, occupation = null "
@@ -172,7 +177,8 @@ public class UpdateSupportTest {
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         String expectedStatement = "update foo " 
                 + "set firstName = #{parameters.up1,jdbcType=VARCHAR}, lastName = #{parameters.up2,jdbcType=VARCHAR}, occupation = null";

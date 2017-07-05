@@ -22,12 +22,9 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.join.AbstractJoinModelBuilder;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
-import org.mybatis.dynamic.sql.select.render.SelectRenderer;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -71,10 +68,6 @@ public class SelectModelBuilder {
                 .build();
     }
     
-    protected SelectSupport render(SelectModel model, RenderingStrategy renderingStrategy) {
-        return SelectRenderer.of(model).render(renderingStrategy);
-    }
-    
     public class SelectSupportAfterFromBuilder {
         private SelectSupportAfterFromBuilder() {
             super();
@@ -96,10 +89,6 @@ public class SelectModelBuilder {
         
         public SelectModel build() {
             return buildModel();
-        }
-
-        public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
-            return render(build(), renderingStrategy);
         }
 
         public JoinBuilder join(SqlTable joinTable) {
@@ -128,10 +117,6 @@ public class SelectModelBuilder {
             return buildModel();
         }
         
-        public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
-            return render(build(), renderingStrategy);
-        }
-
         @Override
         protected SelectSupportWhereBuilder getThis() {
             return this;
@@ -166,11 +151,6 @@ public class SelectModelBuilder {
             return buildModel();
         }
         
-        public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
-            joinModel = buildJoinModel();
-            return render(build(), renderingStrategy);
-        }
-
         public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition) {
             joinModel = buildJoinModel();
             return new SelectSupportWhereBuilder(column, condition);
@@ -196,10 +176,6 @@ public class SelectModelBuilder {
         
         public SelectModel build() {
             return buildModel();
-        }
-
-        public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
-            return render(build(), renderingStrategy);
         }
     }
 }

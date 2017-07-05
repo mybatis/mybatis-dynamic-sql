@@ -70,7 +70,8 @@ public class GeneratedAlwaysXmlMapperTest {
             SelectSupport selectSupport = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
                     .where(id, isEqualTo(1))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<GeneratedAlwaysRecord> rows = mapper.selectByExample(selectSupport);
             
@@ -89,7 +90,8 @@ public class GeneratedAlwaysXmlMapperTest {
             SelectSupport selectSupport = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
                     .where(firstName, isIn("Fred", "Barney"))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<GeneratedAlwaysRecord> rows = mapper.selectByExample(selectSupport);
             
@@ -178,7 +180,8 @@ public class GeneratedAlwaysXmlMapperTest {
             
             UpdateSupport updateSupport = updateByExampleSelective(record)
                     .where(lastName, isEqualTo("Flintstone"))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             int rows = mapper.update(updateSupport);
             assertThat(rows).isEqualTo(3);
@@ -187,7 +190,8 @@ public class GeneratedAlwaysXmlMapperTest {
                     .from(generatedAlways)
                     .where(lastName, isEqualTo("Jones"))
                     .orderBy(firstName)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<GeneratedAlwaysRecord> records = mapper.selectByExample(selectSupport);
             SoftAssertions.assertSoftly(softly -> {

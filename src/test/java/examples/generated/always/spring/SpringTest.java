@@ -64,7 +64,8 @@ public class SpringTest {
         SelectSupport selectSupport = selectByExample()
                 .where(id, isGreaterThan(3))
                 .orderBy(id.descending())
-                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
         
         assertThat(selectSupport.getColumnList()).isEqualTo("a.id as A_ID, a.first_name, a.last_name, a.full_name");
         

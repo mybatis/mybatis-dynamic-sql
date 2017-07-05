@@ -78,7 +78,8 @@ public class AnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(animals.size()).isEqualTo(65);
@@ -97,7 +98,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .orderBy(id.descending())
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(animals.size()).isEqualTo(65);
@@ -117,7 +119,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(20))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(19);
@@ -135,7 +138,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isBetween(30).and(40))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(11);
@@ -153,7 +157,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotBetween(10).and(60))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(14);
@@ -171,7 +176,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotBetween(10).and(60))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(14);
@@ -189,7 +195,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isEqualTo(5))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(1);
@@ -207,7 +214,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotEqualTo(5))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(64);
@@ -225,7 +233,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isGreaterThanOrEqualTo(60))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(6);
@@ -243,7 +252,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThanOrEqualTo(10))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(10);
@@ -261,7 +271,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(5, 8, 10))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(3);
@@ -279,7 +290,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isInCaseInsensitive("yellow-bellied marmot", "verbet"))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(2);
@@ -297,7 +309,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotIn(5, 8, 10))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(62);
@@ -315,7 +328,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotInCaseInsensitive("yellow-bellied marmot", "verbet"))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(63);
@@ -333,7 +347,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isLike("%squirrel"))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(2);
@@ -351,7 +366,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isLikeCaseInsensitive("%squirrel"))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(2);
@@ -369,7 +385,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotLike("%squirrel"))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(63);
@@ -387,7 +404,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotLikeCaseInsensitive("%squirrel"))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(63);
@@ -404,7 +422,8 @@ public class AnimalDataTest {
             
             DeleteSupport deleteSupport = deleteFrom(animalData)
                     .where(id, isIn(5, 8, 10))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             int rowCount = mapper.delete(deleteSupport);
             assertThat(rowCount).isEqualTo(3);
@@ -422,7 +441,8 @@ public class AnimalDataTest {
             DeleteSupport deleteSupport = deleteFrom(animalData)
                     .where(id, isLessThan(10))
                     .or(id, isGreaterThan(60))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             int rowCount = mapper.delete(deleteSupport);
             assertThat(rowCount).isEqualTo(14);
@@ -440,7 +460,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNull())
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(0);
@@ -458,7 +479,8 @@ public class AnimalDataTest {
             SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotNull())
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(65);
@@ -480,7 +502,8 @@ public class AnimalDataTest {
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
                     .orderBy(id.descending(), bodyWeight)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(4);
@@ -504,7 +527,8 @@ public class AnimalDataTest {
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             int rows = mapper.update(updateSupport);
             assertThat(rows).isEqualTo(4);
@@ -530,7 +554,8 @@ public class AnimalDataTest {
                     .map(animalName).toProperty("animalName")
                     .map(bodyWeight).toProperty("bodyWeight")
                     .map(brainWeight).toProperty("brainWeight")
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             int rows = mapper.insert(insertSupport);
             assertThat(rows).isEqualTo(1);
@@ -556,7 +581,8 @@ public class AnimalDataTest {
                     .map(animalName).toNull()
                     .map(bodyWeight).toProperty("bodyWeight")
                     .map(brainWeight).toProperty("brainWeight")
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             int rows = mapper.insert(insertSupport);
             assertThat(rows).isEqualTo(1);
@@ -576,7 +602,8 @@ public class AnimalDataTest {
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))
                     .orderBy(id.descending(), animalName)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<AnimalData> rows = mapper.selectMany(selectSupport);
             SoftAssertions.assertSoftly(softly -> {
@@ -599,7 +626,8 @@ public class AnimalDataTest {
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))
                     .orderBy(id.descending())
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<AnimalData> rows = mapper.selectMany(selectSupport);
             SoftAssertions.assertSoftly(softly -> {
@@ -619,7 +647,8 @@ public class AnimalDataTest {
             
             SelectSupport selectSupport = select(count())
                     .from(animalData)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
@@ -642,7 +671,8 @@ public class AnimalDataTest {
             
             SelectSupport selectSupport = select(count())
                     .from(animalDataNoAlias)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             Long count = mapper.selectALong(selectSupport);
             assertThat(count).isEqualTo(65);

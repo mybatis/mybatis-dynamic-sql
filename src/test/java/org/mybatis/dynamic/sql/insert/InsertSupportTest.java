@@ -56,7 +56,8 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toProperty("occupation")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         SoftAssertions.assertSoftly(softly -> {
@@ -78,7 +79,8 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toNull()
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
@@ -100,7 +102,8 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toStringConstant("Y")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
@@ -123,7 +126,8 @@ public class InsertSupportTest {
                 .map(firstName).toPropertyWhenPresent("firstName")
                 .map(lastName).toPropertyWhenPresent("lastName")
                 .map(occupation).toPropertyWhenPresent("occupation")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             String expectedColumnsPhrase = "(last_name, occupation)";
@@ -176,7 +180,8 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toProperty("occupation")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         String expectedStatement = "insert into foo "
                 + "(id, first_name, last_name, occupation) "

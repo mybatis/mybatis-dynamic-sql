@@ -40,7 +40,8 @@ public class DeleteSupportTest {
         DeleteSupport deleteSupport = deleteFrom(foo)
                 .where(id, isEqualTo(3), and(firstName, isEqualTo("Betty")))
                 .or(firstName, isLikeCaseInsensitive("%Fr%"))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         String expectedWhereClause = "where (id = #{parameters.p1,jdbcType=INTEGER} and first_name = #{parameters.p2,jdbcType=VARCHAR}) or upper(first_name) like #{parameters.p3,jdbcType=VARCHAR}";
         SoftAssertions.assertSoftly(softly -> {
@@ -59,7 +60,8 @@ public class DeleteSupportTest {
     @Test
     public void testFullStatementWithoutWhere() {
         DeleteSupport deleteSupport = deleteFrom(foo)
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         String expectedWhereClause = "";
         SoftAssertions.assertSoftly(softly -> {

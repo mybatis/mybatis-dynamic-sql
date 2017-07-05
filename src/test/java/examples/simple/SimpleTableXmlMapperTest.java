@@ -71,7 +71,8 @@ public class SimpleTableXmlMapperTest {
             SelectSupport selectSupport = selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -90,7 +91,8 @@ public class SimpleTableXmlMapperTest {
             SelectSupport selectSupport = selectByExample()
                     .where(employed, isEqualTo(false))
                     .orderBy(id)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -112,7 +114,8 @@ public class SimpleTableXmlMapperTest {
             
             SelectSupport selectSupport = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
@@ -129,7 +132,8 @@ public class SimpleTableXmlMapperTest {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             DeleteSupport deleteSupport = deleteFrom(simpleTable)
                     .where(occupation, isNull())
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             int rows = mapper.delete(deleteSupport);
             
             assertThat(rows).isEqualTo(2);
@@ -267,7 +271,8 @@ public class SimpleTableXmlMapperTest {
             SelectSupport selectSupport = select(count())
                     .from(simpleTable)
                     .where(occupation, isNull())
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             long rows = mapper.count(selectSupport);
             
             assertThat(rows).isEqualTo(2L);

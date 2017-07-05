@@ -20,9 +20,6 @@ import java.util.List;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.InsertRenderer;
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.BeanPropertyGetter;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.InsertMapping;
@@ -65,10 +62,6 @@ public class InsertModelBuilder<T> {
                     .withRecord(record)
                     .withColumnMappings(columnMappings)
                     .build();
-        }
-        
-        public InsertSupport<T> buildAndRender(RenderingStrategy renderingStrategy) {
-            return InsertRenderer.of(build()).render(renderingStrategy);
         }
         
         public class InsertSupportMappingBuilderFinisher<F> {

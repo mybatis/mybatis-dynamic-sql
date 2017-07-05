@@ -81,7 +81,8 @@ public class JoinMapperTest {
             SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
                     .from(orderMaster)
                     .join(orderDetail).on(orderId, equalTo(orderId_od))
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
                     + " from OrderMaster om join OrderDetail od on om.order_id = od.order_id";
