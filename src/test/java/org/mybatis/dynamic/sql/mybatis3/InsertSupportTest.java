@@ -45,7 +45,8 @@ public class InsertSupportTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toProperty("occupation")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
@@ -70,7 +71,8 @@ public class InsertSupportTest {
                 .map(firstName).toPropertyWhenPresent("firstName")
                 .map(lastName).toPropertyWhenPresent("lastName")
                 .map(occupation).toPropertyWhenPresent("occupation")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             String expectedColumnsPhrase = "(last_name, occupation)";

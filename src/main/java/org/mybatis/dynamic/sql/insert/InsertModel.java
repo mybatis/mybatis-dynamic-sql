@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.insert.render.InsertRenderer;
+import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.InsertMapping;
 
 public class InsertModel<T> {
@@ -40,6 +43,10 @@ public class InsertModel<T> {
     
     public SqlTable table() {
         return table;
+    }
+    
+    public InsertSupport<T> render(RenderingStrategy renderingStrategy) {
+        return InsertRenderer.of(this).render(renderingStrategy);
     }
     
     public static class Builder<T> {

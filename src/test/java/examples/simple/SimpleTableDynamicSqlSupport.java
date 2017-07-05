@@ -49,7 +49,8 @@ public interface SimpleTableDynamicSqlSupport {
                 .map(birthDate).toProperty("birthDate")
                 .map(employed).toProperty("employed")
                 .map(occupation).toProperty("occupation")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
     }
 
     static InsertSupport<SimpleTableRecord> buildSelectiveInsertSupport(SimpleTableRecord record) {
@@ -61,7 +62,8 @@ public interface SimpleTableDynamicSqlSupport {
                 .map(birthDate).toPropertyWhenPresent("birthDate")
                 .map(employed).toPropertyWhenPresent("employed")
                 .map(occupation).toPropertyWhenPresent("occupation")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
     }
     
     static UpdateSupport buildFullUpdateByPrimaryKeySupport(SimpleTableRecord record) {
@@ -72,7 +74,8 @@ public interface SimpleTableDynamicSqlSupport {
                 .set(employed).equalTo(record.getEmployed())
                 .set(occupation).equalTo(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
     }
 
     static UpdateSupport buildSelectiveUpdateByPrimaryKeySupport(SimpleTableRecord record) {
@@ -83,7 +86,8 @@ public interface SimpleTableDynamicSqlSupport {
                 .set(employed).equalToWhenPresent(record.getEmployed())
                 .set(occupation).equalToWhenPresent(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
     }
 
     static UpdateModelBuilder updateByExample(SimpleTableRecord record) {
@@ -109,7 +113,8 @@ public interface SimpleTableDynamicSqlSupport {
     static DeleteSupport buildDeleteByPrimaryKeySupport(Integer id_) {
         return deleteFrom(simpleTable)
                 .where(id, isEqualTo(id_))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
     }
     
     static SelectSupportAfterFromBuilder selectByExample() {
@@ -121,6 +126,7 @@ public interface SimpleTableDynamicSqlSupport {
         return select(id, firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)
             .where(id, isEqualTo(id_))
-            .buildAndRender(RenderingStrategy.MYBATIS3);
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
     }
 }

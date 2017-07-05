@@ -31,7 +31,8 @@ public class SampleWhereClausesTest {
         SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         assertThat(selectSupport.getWhereClause())
                 .isEqualTo("where a.id = #{parameters.p1,jdbcType=INTEGER}");
@@ -42,7 +43,8 @@ public class SampleWhereClausesTest {
         SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isNull())
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         assertThat(selectSupport.getWhereClause()).isEqualTo("where a.id is null");
     }
@@ -52,7 +54,8 @@ public class SampleWhereClausesTest {
         SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isBetween(1).and(4))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         assertThat(selectSupport.getWhereClause())
             .isEqualTo("where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}");
@@ -64,7 +67,8 @@ public class SampleWhereClausesTest {
                 .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
         assertThat(selectSupport.getWhereClause())
             .isEqualTo("where a.id > #{parameters.p1,jdbcType=INTEGER} or (a.occupation is null and a.id < #{parameters.p2,jdbcType=INTEGER})");

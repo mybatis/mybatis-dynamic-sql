@@ -57,10 +57,11 @@ One capability is that very expressive dynamic queries can be generated.  Here's
                     .or(id, isGreaterThan(60))
                     .and(bodyWeight, isBetween(1.0).and(3.0))
                     .orderBy(id.descending(), bodyWeight)
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectSupport);
-            assertThat(animals.size(), is(4));
+            assertThat(animals.size()).isEqualTo(4);
         } finally {
             sqlSession.close();
         }
@@ -194,7 +195,8 @@ For example, a very simple condition can be defined like this:
         SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 ```
 
 Or this:
@@ -203,7 +205,8 @@ Or this:
         SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isNull())
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 ```
 
 The "between" condition is also expressive:
@@ -212,7 +215,8 @@ The "between" condition is also expressive:
         SelectSupport selectSupport = select().count()
                 .from(simpleTable)
                 .where(id, isBetween(1).and(4))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 ```
 
 More complex expressions can be built using the "and" and "or" conditions as follows:
@@ -222,7 +226,8 @@ More complex expressions can be built using the "and" and "or" conditions as fol
                 .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 ```
 
 All of these statements rely on a set of expressive static methods.  It is typical to import the following:
@@ -250,11 +255,12 @@ an example from ```examples.simple.SimpleTableXmlMapperTest```:
             SelectSupport selectSupport = selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
-                    .buildAndRender(RenderingStrategy.MYBATIS3);
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
             
-            assertThat(rows.size(), is(3));
+            assertThat(rows.size()).isEqualTo(3);
         } finally {
             session.close();
         }

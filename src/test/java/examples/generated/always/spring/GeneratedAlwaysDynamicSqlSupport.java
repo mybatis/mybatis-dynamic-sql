@@ -41,7 +41,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
-                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
@@ -50,7 +51,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .map(id).toPropertyWhenPresent("id")
                 .map(firstName).toPropertyWhenPresent("firstName")
                 .map(lastName).toPropertyWhenPresent("lastName")
-                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
     
     static UpdateSupport buildUpdateByPrimaryKeySupport(GeneratedAlwaysRecord record) {
@@ -58,7 +60,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
     static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(GeneratedAlwaysRecord record) {
@@ -66,7 +69,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
     static UpdateModelBuilder updateByExample(GeneratedAlwaysRecord record) {

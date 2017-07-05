@@ -40,7 +40,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
     }
 
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
@@ -49,7 +50,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .map(id).toPropertyWhenPresent("id")
                 .map(firstName).toPropertyWhenPresent("firstName")
                 .map(lastName).toPropertyWhenPresent("lastName")
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
     }
     
     static UpdateSupport buildUpdateByPrimaryKeySupport(GeneratedAlwaysRecord record) {
@@ -57,7 +59,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
     }
 
     static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(GeneratedAlwaysRecord record) {
@@ -65,7 +68,8 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
     }
 
     static UpdateModelBuilder updateByExample(GeneratedAlwaysRecord record) {

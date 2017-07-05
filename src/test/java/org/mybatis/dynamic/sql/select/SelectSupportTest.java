@@ -45,7 +45,8 @@ public class SelectSupportTest {
                 .where(column1, isEqualTo(d), and(column2, isEqualTo(33)))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
@@ -78,7 +79,8 @@ public class SelectSupportTest {
                 .and(column2, isLessThan(3))
                 .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
                 .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
         
 
         SoftAssertions.assertSoftly(softly -> {
@@ -118,7 +120,8 @@ public class SelectSupportTest {
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column1)
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
@@ -149,7 +152,8 @@ public class SelectSupportTest {
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending())
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
@@ -179,7 +183,8 @@ public class SelectSupportTest {
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
@@ -209,7 +214,8 @@ public class SelectSupportTest {
                 .from(table)
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("distinct");
@@ -238,7 +244,8 @@ public class SelectSupportTest {
         SelectSupport selectSupport = select(count())
                 .from(table)
                 .where(column1, isEqualTo(d))
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
@@ -262,7 +269,8 @@ public class SelectSupportTest {
     public void testNoWhere() {
         SelectSupport selectSupport = select(count())
                 .from(table)
-                .buildAndRender(RenderingStrategy.MYBATIS3);
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");

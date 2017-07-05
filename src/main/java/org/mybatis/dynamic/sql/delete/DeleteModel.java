@@ -18,6 +18,9 @@ package org.mybatis.dynamic.sql.delete;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.delete.render.DeleteRenderer;
+import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteModel {
@@ -34,6 +37,10 @@ public class DeleteModel {
     
     public Optional<WhereModel> whereModel() {
         return whereModel;
+    }
+    
+    public DeleteSupport render(RenderingStrategy renderingStrategy) {
+        return DeleteRenderer.of(this).render(renderingStrategy);
     }
     
     public static class Builder {
