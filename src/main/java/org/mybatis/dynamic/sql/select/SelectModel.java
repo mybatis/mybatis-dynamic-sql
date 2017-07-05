@@ -22,12 +22,14 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class SelectModel {
     private boolean isDistinct;
     private List<SqlColumn<?>> columns = new ArrayList<>();
     private SqlTable table;
+    private Optional<JoinModel> joinModel;
     private Optional<WhereModel> whereModel;
     private Optional<List<SqlColumn<?>>> orderByColumns;
 
@@ -51,6 +53,10 @@ public class SelectModel {
         return whereModel;
     }
     
+    public Optional<JoinModel> joinModel() {
+        return joinModel;
+    }
+    
     public Optional<Stream<SqlColumn<?>>> orderByColumns() {
         return orderByColumns.flatMap(cl -> Optional.of(cl.stream()));
     }
@@ -61,6 +67,7 @@ public class SelectModel {
         private SqlTable table;
         private WhereModel whereModel;
         private List<SqlColumn<?>> orderByColumns;
+        private JoinModel joinModel;
         
         public Builder isDistinct(boolean isDistinct) {
             this.isDistinct = isDistinct;
@@ -87,6 +94,11 @@ public class SelectModel {
             return this;
         }
         
+        public Builder withJoinModel(JoinModel joinModel) {
+            this.joinModel = joinModel;
+            return this;
+        }
+        
         public SelectModel build() {
             SelectModel selectModel = new SelectModel();
             selectModel.columns = columns;
@@ -94,6 +106,7 @@ public class SelectModel {
             selectModel.orderByColumns = Optional.ofNullable(orderByColumns);
             selectModel.table = table;
             selectModel.whereModel = Optional.ofNullable(whereModel);
+            selectModel.joinModel = Optional.ofNullable(joinModel);
             return selectModel;
         }
     }

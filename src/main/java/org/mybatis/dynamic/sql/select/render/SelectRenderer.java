@@ -38,8 +38,9 @@ public class SelectRenderer {
                 .isDistinct(selectModel.isDistinct())
                 .withColumnList(calculateColumnList())
                 .withTable(selectModel.table())
-                .withOrderByClause(calculateOrderByPhrase());
-
+                .withOrderByClause(calculateOrderByPhrase())
+                .withJoinClause(selectModel.joinModel().map(jm -> JoinRenderer.of(jm).render()));
+        
         selectModel.whereModel().ifPresent(wm -> {
             WhereSupport whereSupport = WhereRenderer.of(wm, renderingStrategy).renderCriteriaIncludingTableAlias();
             builder.withWhereClause(whereSupport.getWhereClause())

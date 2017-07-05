@@ -31,6 +31,7 @@ public class SelectSupport extends AbstractSqlSupport {
     private Map<String, Object> parameters = new HashMap<>();
     private String distinct;
     private Optional<String> orderByClause;
+    private Optional<String> joinClause;
     
     private SelectSupport(Optional<SqlTable> table) {
         super(table);
@@ -64,6 +65,10 @@ public class SelectSupport extends AbstractSqlSupport {
         return orderByClause;
     }
     
+    public Optional<String> joinClause() {
+        return joinClause;
+    }
+    
     public String getColumnList() {
         return columnList;
     }
@@ -74,6 +79,7 @@ public class SelectSupport extends AbstractSqlSupport {
                 + getColumnList()
                 + " from " //$NON-NLS-1$
                 + tableNameIncludingAlias()
+                + joinClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING)
                 + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING)
                 + orderByClause().map(o -> ONE_SPACE + o).orElse(EMPTY_STRING);
     }
@@ -85,6 +91,7 @@ public class SelectSupport extends AbstractSqlSupport {
         private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
         private SqlTable table;
+        private Optional<String> joinClause;
         
         public Builder isDistinct(boolean isDistinct) {
             if (isDistinct) {
@@ -118,11 +125,17 @@ public class SelectSupport extends AbstractSqlSupport {
             return this;
         }
         
+        public Builder withJoinClause(Optional<String> joinClause) {
+            this.joinClause = joinClause;
+            return this;
+        }
+        
         public SelectSupport build() {
             SelectSupport selectSupport = new SelectSupport(Optional.ofNullable(table));
             selectSupport.distinct = distinct;
             selectSupport.orderByClause = Optional.ofNullable(orderByClause);
             selectSupport.whereClause = Optional.ofNullable(whereClause);
+            selectSupport.joinClause = joinClause;
             selectSupport.parameters = parameters;
             selectSupport.columnList = columnList;
             return selectSupport;

@@ -23,6 +23,9 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.join.AbstractJoinModelBuilder;
+import org.mybatis.dynamic.sql.select.join.JoinCondition;
+import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
@@ -35,6 +38,7 @@ public class SelectModelBuilder {
     private SqlTable table;
     private WhereModel whereModel;
     private List<SqlColumn<?>> orderByColumns;
+    private JoinModel joinModel;
     
     private SelectModelBuilder(SqlColumn<?>...columns) {
         this.columns = Arrays.asList(columns);
@@ -63,6 +67,7 @@ public class SelectModelBuilder {
                 .withTable(table)
                 .withWhereModel(whereModel)
                 .withOrderByColumns(orderByColumns)
+                .withJoinModel(joinModel)
                 .build();
     }
     
@@ -96,6 +101,10 @@ public class SelectModelBuilder {
         public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
             return render(build(), renderingStrategy);
         }
+
+        public JoinBuilder join(SqlTable joinTable) {
+            return new JoinBuilder(joinTable);
+        }
     }
     
     public class SelectSupportWhereBuilder extends AbstractWhereModelBuilder<SelectSupportWhereBuilder> {
@@ -126,6 +135,57 @@ public class SelectModelBuilder {
         @Override
         protected SelectSupportWhereBuilder getThis() {
             return this;
+        }
+    }
+    
+    public class JoinBuilder {
+        private SqlTable joinTable;
+        
+        public JoinBuilder(SqlTable joinTable) {
+            this.joinTable = joinTable;
+        }
+
+        public <T> SelectSupportJoinBuilder on(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+            return new SelectSupportJoinBuilder(joinTable, joinColumn, joinCondition);
+        }
+    }
+
+    public class SelectSupportJoinBuilder extends AbstractJoinModelBuilder<SelectSupportJoinBuilder> {
+
+        public <T> SelectSupportJoinBuilder(SqlTable joinTable, SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+            super(joinTable, joinColumn, joinCondition);
+        }
+
+        @Override
+        protected SelectSupportJoinBuilder getThis() {
+            return this;
+        }
+
+        public SelectModel build() {
+            joinModel = buildJoinModel();
+            return buildModel();
+        }
+        
+        public SelectSupport buildAndRender(RenderingStrategy renderingStrategy) {
+            joinModel = buildJoinModel();
+            return render(build(), renderingStrategy);
+        }
+
+        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition) {
+            joinModel = buildJoinModel();
+            return new SelectSupportWhereBuilder(column, condition);
+        }
+
+        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition,
+                SqlCriterion<?>...subCriteria) {
+            joinModel = buildJoinModel();
+            return new SelectSupportWhereBuilder(column, condition, subCriteria);
+        }
+
+        public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
+            joinModel = buildJoinModel();
+            orderByColumns = Arrays.asList(columns);
+            return new SelectSupportAfterOrderByBuilder();
         }
     }
     
