@@ -34,8 +34,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
     <maven.compiler.testSource>1.8</maven.compiler.testSource>
-    <junit.jupiter.version>5.0.0-M4</junit.jupiter.version>
-    <junit.platform.version>1.0.0-M4</junit.platform.version>
+    <junit.jupiter.version>5.0.0-M5</junit.jupiter.version>
+    <junit.platform.version>1.0.0-M5</junit.platform.version>
   </properties>
   
   <reporting>
