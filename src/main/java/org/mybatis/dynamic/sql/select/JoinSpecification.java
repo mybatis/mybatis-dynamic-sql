@@ -15,13 +15,12 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.select.join.JoinCondition;
 
 public class JoinSpecification {
 
@@ -45,11 +44,19 @@ public class JoinSpecification {
         return subsequentJoinColumnsAndConditions.map(List::stream);
     }
     
-    public static <T> JoinSpecification of(SqlTable table, SqlColumn<T> column, JoinCondition<T> joinCondition) {
+    public static <T> JoinSpecification of(SqlTable table, JoinColumnAndCondition<T> joinColumnAndCondition) {
         JoinSpecification joinModel = new JoinSpecification();
         joinModel.table = table;
-        joinModel.firstJoinColumnAndCondition = JoinColumnAndCondition.of(column, joinCondition);
+        joinModel.firstJoinColumnAndCondition = joinColumnAndCondition;
         joinModel.subsequentJoinColumnsAndConditions = Optional.empty();
+        return joinModel;
+    }
+
+    public static <T> JoinSpecification of(SqlTable table, JoinColumnAndCondition<T> joinColumnAndCondition, JoinColumnAndCondition<?>...joinColumnsAndConditions) {
+        JoinSpecification joinModel = new JoinSpecification();
+        joinModel.table = table;
+        joinModel.firstJoinColumnAndCondition = joinColumnAndCondition;
+        joinModel.subsequentJoinColumnsAndConditions = Optional.of(Arrays.asList(joinColumnsAndConditions));
         return joinModel;
     }
 }

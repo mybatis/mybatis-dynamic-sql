@@ -16,9 +16,14 @@
 package org.mybatis.dynamic.sql.select.join;
 
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.select.JoinColumnAndCondition;
 
 public interface JoinConditions {
 
+    static <T> JoinColumnAndCondition<T> and(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+        return JoinColumnAndCondition.of(joinColumn, joinCondition);
+    }
+    
     static <T> EqualTo<T> equalTo(SqlColumn<T> column) {
         return new EqualTo<>(column);
     }

@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +23,6 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.select.join.AbstractJoinModelBuilder;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
@@ -92,7 +92,7 @@ public class SelectModelBuilder {
         }
 
         public JoinBuilder join(SqlTable joinTable) {
-            return new JoinBuilder(joinTable);
+            return new JoinBuilder(this, joinTable);
         }
     }
     
@@ -125,27 +125,41 @@ public class SelectModelBuilder {
     
     public class JoinBuilder {
         private SqlTable joinTable;
+        private SelectSupportJoinBuilder joinBuilder;
         
-        public JoinBuilder(SqlTable joinTable) {
+        public JoinBuilder(SelectSupportAfterFromBuilder ancestorBuilder, SqlTable joinTable) {
             this.joinTable = joinTable;
+            joinBuilder = new SelectSupportJoinBuilder(ancestorBuilder);
         }
 
         public <T> SelectSupportJoinBuilder on(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-            return new SelectSupportJoinBuilder(joinTable, joinColumn, joinCondition);
+            joinBuilder.addJoinSpecification(JoinSpecification.of(joinTable, JoinColumnAndCondition.of(joinColumn, joinCondition)));
+            return joinBuilder;
+        }
+
+        public <T> SelectSupportJoinBuilder on(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition, JoinColumnAndCondition<?>...joinColumnsAndConditions) {
+            joinBuilder.addJoinSpecification(JoinSpecification.of(joinTable, JoinColumnAndCondition.of(joinColumn, joinCondition), joinColumnsAndConditions));
+            return joinBuilder;
         }
     }
 
-    public class SelectSupportJoinBuilder extends AbstractJoinModelBuilder<SelectSupportJoinBuilder> {
+    public class SelectSupportJoinBuilder {
 
-        public <T> SelectSupportJoinBuilder(SqlTable joinTable, SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-            super(joinTable, joinColumn, joinCondition);
+        private List<JoinSpecification> joinSpecifications = new ArrayList<>();
+        private SelectSupportAfterFromBuilder ancestorBuilder;
+        
+        public void addJoinSpecification(JoinSpecification joinSpecification) {
+            joinSpecifications.add(joinSpecification);
+        }
+        
+        public <T> SelectSupportJoinBuilder(SelectSupportAfterFromBuilder ancestorBuilder) {
+            this.ancestorBuilder = ancestorBuilder;
         }
 
-        @Override
-        protected SelectSupportJoinBuilder getThis() {
-            return this;
+        protected JoinModel buildJoinModel() {
+            return JoinModel.of(joinSpecifications);
         }
-
+        
         public SelectModel build() {
             joinModel = buildJoinModel();
             return buildModel();
@@ -166,6 +180,10 @@ public class SelectModelBuilder {
             joinModel = buildJoinModel();
             orderByColumns = Arrays.asList(columns);
             return new SelectSupportAfterOrderByBuilder();
+        }
+
+        public <T> SelectSupportAfterFromBuilder and(SqlColumn<T> column, JoinCondition<T> joinCondition) {
+            return ancestorBuilder;
         }
     }
     

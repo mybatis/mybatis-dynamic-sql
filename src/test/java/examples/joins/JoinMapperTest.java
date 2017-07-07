@@ -73,7 +73,7 @@ public class JoinMapperTest {
     }
     
     @Test
-    public void testSelectByExample() {
+    public void testSelectSimpleJoin() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
@@ -107,5 +107,34 @@ public class JoinMapperTest {
         } finally {
             session.close();
         }
+    }
+    
+    @Test
+    public void testCompoundJoin1() {
+        // this is a nonsensical join, but it does test the "and" capability
+        SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
+                .from(orderMaster)
+                .join(orderDetail).on(orderId, equalTo(orderId_od), and(orderId, equalTo(orderId_od)))
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+        
+        String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
+                + " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
+        assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
+    }
+
+    @Test
+    public void testCompoundJoin2() {
+        // this is a nonsensical join, but it does test the "and" capability
+        SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
+                .from(orderMaster)
+                .join(orderDetail).on(orderId, equalTo(orderId_od))
+                .and(orderId, equalTo(orderId_od))
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+        
+        String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
+                + " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
+        assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
     }
 }
