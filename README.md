@@ -88,7 +88,7 @@ create table SimpleTable (
 ```
  
 ### First - Define database columns
-The class ```org.mybatis.dynamic.sql.MyBatis3Column``` is used to define columns for use in the library.
+The class ```org.mybatis.dynamic.sql.SqlColumn``` is used to define columns for use in the library.
 Typically these should be defined as public static variables in a class or interface.  A column definition includes:
 
 1. The Java type
@@ -192,7 +192,7 @@ All conditions can be accessed through expressive static methods in the ```org.m
 For example, a very simple condition can be defined like this:
 
 ```java
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build()
@@ -202,7 +202,7 @@ For example, a very simple condition can be defined like this:
 Or this:
 
 ```java
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isNull())
                 .build()
@@ -212,7 +212,7 @@ Or this:
 The "between" condition is also expressive:
 
 ```java
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isBetween(1).and(4))
                 .build()
@@ -222,7 +222,7 @@ The "between" condition is also expressive:
 More complex expressions can be built using the "and" and "or" conditions as follows:
 
 ```java
-        SelectSupport selectSupport = select().count()
+        SelectSupport selectSupport = select(count())
                 .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
