@@ -36,20 +36,18 @@ public class JoinRenderer {
     }
     
     private String render(JoinSpecification joinSpecification) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("join ");
-        buffer.append(RenderingUtilities.nameIncludingAlias(joinSpecification.table()));
-        buffer.append(render(joinSpecification.firstJoinColumnAndCondition()));
-        return buffer.toString();
+        return "join "
+                + RenderingUtilities.nameIncludingAlias(joinSpecification.table())
+                + render(joinSpecification.firstJoinColumnAndCondition());
     }
     
     private String render(JoinColumnAndCondition<?> joinColumnAndCondition) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(" on ");
-        buffer.append(RenderingUtilities.nameIncludingTableAlias(joinColumnAndCondition.column()));
-        buffer.append(" = ");
-        buffer.append(RenderingUtilities.nameIncludingTableAlias(joinColumnAndCondition.joinCondition().column()));
-        return buffer.toString();
+        return " on "
+                + RenderingUtilities.nameIncludingTableAlias(joinColumnAndCondition.column())
+                + " "
+                + joinColumnAndCondition.joinCondition().operator()
+                + " "
+                + RenderingUtilities.nameIncludingTableAlias(joinColumnAndCondition.joinCondition().column());
     }
     
     public static JoinRenderer of(JoinModel joinModel) {

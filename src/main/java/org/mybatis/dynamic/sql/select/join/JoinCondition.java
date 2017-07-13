@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.select.join;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class JoinCondition<T> {
+public abstract class JoinCondition<T> {
     private SqlColumn<T> column;
     
     public JoinCondition(SqlColumn<T> column) {
@@ -27,4 +27,6 @@ public class JoinCondition<T> {
     public SqlColumn<T> column() {
         return column;
     }
+    
+    public abstract String operator();
 }

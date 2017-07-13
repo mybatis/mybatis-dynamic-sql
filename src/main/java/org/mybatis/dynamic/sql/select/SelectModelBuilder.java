@@ -46,7 +46,6 @@ public class SelectModelBuilder {
         return new SelectSupportAfterFromBuilder();
     }
 
-
     public static SelectModelBuilder of(SqlColumn<?>...columns) {
         return new SelectModelBuilder(columns);
     }

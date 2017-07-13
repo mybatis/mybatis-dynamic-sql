@@ -22,4 +22,9 @@ public class EqualTo<T> extends JoinCondition<T> {
     public EqualTo(SqlColumn<T> column) {
         super(column);
     }
+
+    @Override
+    public String operator() {
+        return "=";
+    }
 }
