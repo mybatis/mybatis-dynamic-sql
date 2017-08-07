@@ -56,9 +56,8 @@ public class UpdateModel {
         private WhereModel whereModel;
         private List<UpdateMapping> columnValues;
         
-        public Builder withTable(SqlTable table) {
+        public Builder(SqlTable table) {
             this.table = table;
-            return this;
         }
         
         public Builder withColumnValues(List<UpdateMapping> columnValues) {

@@ -47,9 +47,8 @@ public class DeleteModel {
         private SqlTable table;
         private WhereModel whereModel;
         
-        public Builder withTable(SqlTable table) {
+        public Builder(SqlTable table) {
             this.table = table;
-            return this;
         }
         
         public Builder withWhereModel(WhereModel whereModel) {

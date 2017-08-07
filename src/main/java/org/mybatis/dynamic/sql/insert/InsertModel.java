@@ -54,9 +54,8 @@ public class InsertModel<T> {
         private T record;
         private List<InsertMapping> columnMappings;
         
-        public Builder<T> withTable(SqlTable table) {
+        public Builder(SqlTable table) {
             this.table = table;
-            return this;
         }
         
         public Builder<T> withRecord(T record) {

@@ -100,6 +100,10 @@ public class SqlColumn<T> {
         return sortOrder;
     }
     
+    public String nameIncludingTableAlias(Optional<String> tableAlias) {
+        return tableAlias.map(a -> a + "." + name()).orElse(name()); //$NON-NLS-1$
+    }
+    
     public static <T> SqlColumn<T> of(String name, JDBCType jdbcType) {
         return new SqlColumn<>(name, jdbcType);
     }

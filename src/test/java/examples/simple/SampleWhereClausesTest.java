@@ -32,7 +32,7 @@ public class SampleWhereClausesTest {
     @Test
     public void simpleClause1() {
         SelectSupport selectSupport = select(count())
-                .from(simpleTable)
+                .from(simpleTable, "a")
                 .where(id, isEqualTo(3))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
@@ -44,7 +44,7 @@ public class SampleWhereClausesTest {
     @Test
     public void simpleClause2() {
         SelectSupport selectSupport = select(count())
-                .from(simpleTable)
+                .from(simpleTable, "a")
                 .where(id, isNull())
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
@@ -55,7 +55,7 @@ public class SampleWhereClausesTest {
     @Test
     public void betweenClause() {
         SelectSupport selectSupport = select(count())
-                .from(simpleTable)
+                .from(simpleTable, "a")
                 .where(id, isBetween(1).and(4))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
@@ -67,7 +67,7 @@ public class SampleWhereClausesTest {
     @Test
     public void complexClause() {
         SelectSupport selectSupport = select(count())
-                .from(simpleTable)
+                .from(simpleTable, "a")
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
                 .build()

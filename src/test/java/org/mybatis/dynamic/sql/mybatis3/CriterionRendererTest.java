@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.mybatis3;
 
 import java.sql.JDBCType;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.SoftAssertions;
@@ -27,7 +28,6 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
@@ -36,7 +36,7 @@ import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
 public class CriterionRendererTest {
     @Test
     public void testAliasWithIgnore() {
-        SqlTable table = SqlTable.of("foo").withAlias("a");
+        SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
         
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
@@ -45,7 +45,7 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, SqlColumn::name);
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.empty());
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -56,7 +56,7 @@ public class CriterionRendererTest {
 
     @Test
     public void testAliasWithoutIgnore() {
-        SqlTable table = SqlTable.of("foo").withAlias("a");
+        SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
@@ -64,7 +64,7 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, RenderingUtilities::nameIncludingTableAlias);
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.of("a"));
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -82,7 +82,7 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, SqlColumn::name);
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.empty());
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -100,7 +100,7 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, RenderingUtilities::nameIncludingTableAlias);
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.empty());
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -118,7 +118,7 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, SqlColumn::name);
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.empty());
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -129,7 +129,7 @@ public class CriterionRendererTest {
 
     @Test
     public void testTypeHandlerAndAlias() {
-        SqlTable table = SqlTable.of("foo").withAlias("a");
+        SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).withTypeHandler("foo.Bar").inTable(table);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
@@ -137,7 +137,7 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, RenderingUtilities::nameIncludingTableAlias);
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.of("a"));
         
         FragmentAndParameters rc = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {

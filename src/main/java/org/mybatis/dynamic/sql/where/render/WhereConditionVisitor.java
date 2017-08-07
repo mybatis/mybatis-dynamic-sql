@@ -15,8 +15,8 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
@@ -34,14 +34,14 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
     private SqlColumn<T> column;
-    private Function<SqlColumn<?>, String> nameFunction;
+    private Optional<String> tableAlias;
     
     public WhereConditionVisitor(RenderingStrategy renderingStrategy, AtomicInteger sequence, SqlColumn<T> column,
-            Function<SqlColumn<?>, String> nameFunction) {
+            Optional<String> tableAlias) {
         this.renderingStrategy = renderingStrategy;
         this.sequence = sequence;
         this.column = column;
-        this.nameFunction = nameFunction;
+        this.tableAlias = tableAlias;
     }
 
     @Override
@@ -99,6 +99,6 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
     
     private String columnName() {
-        return nameFunction.apply(column);
+        return tableAlias.map(a -> a + "." + column.name()).orElse(column.name());
     }
 }

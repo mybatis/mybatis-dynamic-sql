@@ -31,6 +31,7 @@ public class SelectModel {
     private boolean isDistinct;
     private List<SqlColumn<?>> columns = new ArrayList<>();
     private SqlTable table;
+    private Optional<String> tableAlias;
     private Optional<WhereModel> whereModel;
     private Optional<List<SqlColumn<?>>> orderByColumns;
 
@@ -50,6 +51,10 @@ public class SelectModel {
         return table;
     }
     
+    public Optional<String> tableAlias() {
+        return tableAlias;
+    }
+    
     public Optional<WhereModel> whereModel() {
         return whereModel;
     }
@@ -66,8 +71,13 @@ public class SelectModel {
         private boolean isDistinct;
         private List<SqlColumn<?>> columns;
         private SqlTable table;
+        private String tableAlias;
         private WhereModel whereModel;
         private List<SqlColumn<?>> orderByColumns;
+        
+        public Builder(SqlTable table) {
+            this.table = table;
+        }
         
         public Builder isDistinct(boolean isDistinct) {
             this.isDistinct = isDistinct;
@@ -79,11 +89,11 @@ public class SelectModel {
             return this;
         }
 
-        public Builder withTable(SqlTable table) {
-            this.table = table;
+        public Builder withTableAlias(String tableAlias) {
+            this.tableAlias = tableAlias;
             return this;
         }
-
+        
         public Builder withWhereModel(WhereModel whereModel) {
             this.whereModel = whereModel;
             return this;
@@ -100,6 +110,7 @@ public class SelectModel {
             selectModel.isDistinct = isDistinct;
             selectModel.orderByColumns = Optional.ofNullable(orderByColumns);
             selectModel.table = table;
+            selectModel.tableAlias = Optional.ofNullable(tableAlias);
             selectModel.whereModel = Optional.ofNullable(whereModel);
             return selectModel;
         }

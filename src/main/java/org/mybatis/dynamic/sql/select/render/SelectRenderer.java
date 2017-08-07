@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
@@ -34,14 +33,14 @@ public class SelectRenderer {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
-        SelectSupport.Builder builder = new SelectSupport.Builder()
+        SelectSupport.Builder builder = new SelectSupport.Builder(selectModel.table())
                 .isDistinct(selectModel.isDistinct())
                 .withColumnList(calculateColumnList())
-                .withTable(selectModel.table())
+                .withTableAlias(selectModel.tableAlias().orElse(null))
                 .withOrderByClause(calculateOrderByPhrase());
 
         selectModel.whereModel().ifPresent(wm -> {
-            WhereSupport whereSupport = WhereRenderer.of(wm, renderingStrategy).renderCriteriaIncludingTableAlias();
+            WhereSupport whereSupport = WhereRenderer.of(wm, renderingStrategy, selectModel.tableAlias()).render();
             builder.withWhereClause(whereSupport.getWhereClause())
                 .withParameters(whereSupport.getParameters());
         });
@@ -51,8 +50,13 @@ public class SelectRenderer {
     
     private String calculateColumnList() {
         return selectModel.columns()
-                .map(RenderingUtilities::nameIncludingTableAndColumnAlias)
+                .map(this::nameIncludingTableAndColumnAlias)
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
+    }
+    
+    private String nameIncludingTableAndColumnAlias(SqlColumn<?> column) {
+        return column.alias().map(a -> column.nameIncludingTableAlias(selectModel.tableAlias()) + " as " + a) //$NON-NLS-1$
+                .orElse(column.nameIncludingTableAlias(selectModel.tableAlias()));
     }
     
     private String calculateOrderByPhrase() {

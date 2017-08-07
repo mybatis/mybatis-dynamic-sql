@@ -17,11 +17,9 @@ package org.mybatis.dynamic.sql.where.render;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -30,7 +28,7 @@ public class CriterionRenderer {
 
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private Function<SqlColumn<?>, String> nameFunction;
+    private Optional<String> tableAlias;
     
     private CriterionRenderer() {
         super();
@@ -78,21 +76,21 @@ public class CriterionRenderer {
     }
     
     private  <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, nameFunction).render(subCriterion);
+        return CriterionRenderer.of(sequence, renderingStrategy, tableAlias).render(subCriterion);
     }
     
     private <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
         WhereConditionVisitor<T> visitor = new WhereConditionVisitor<>(renderingStrategy, sequence,
-                criterion.column(), nameFunction);
+                criterion.column(), tableAlias);
         return criterion.condition().accept(visitor);
     }
     
     public static CriterionRenderer of(AtomicInteger sequence, RenderingStrategy renderingStrategy,
-            Function<SqlColumn<?>, String> nameFunction) {
+            Optional<String> tableAlias) {
         CriterionRenderer criterionRenderer = new CriterionRenderer();
         criterionRenderer.sequence = sequence;
         criterionRenderer.renderingStrategy = renderingStrategy;
-        criterionRenderer.nameFunction = nameFunction;
+        criterionRenderer.tableAlias = tableAlias;
         return criterionRenderer;
     }
 }

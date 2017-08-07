@@ -42,7 +42,7 @@ public class UpdateRenderer {
     
     private Optional<WhereSupport> renderWhere(RenderingStrategy renderingStrategy) {
         return updateModel.whereModel().flatMap(
-                wm -> Optional.of(WhereRenderer.of(wm, renderingStrategy).renderCriteriaIgnoringTableAlias()));
+                wm -> Optional.of(WhereRenderer.of(wm, renderingStrategy, Optional.empty()).render()));
     }
     
     private FragmentAndParameters transform(UpdateMapping columnAndValue, SetPhraseVisitor visitor) {

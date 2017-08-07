@@ -646,7 +646,7 @@ public class AnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
             SelectSupport selectSupport = select(count())
-                    .from(animalData)
+                    .from(animalData, "a")
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             

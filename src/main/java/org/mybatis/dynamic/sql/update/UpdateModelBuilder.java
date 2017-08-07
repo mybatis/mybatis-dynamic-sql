@@ -58,8 +58,7 @@ public class UpdateModelBuilder {
      * @return the update model
      */
     public UpdateModel build() {
-        return new UpdateModel.Builder()
-                .withTable(table)
+        return new UpdateModel.Builder(table)
                 .withColumnValues(columnsAndValues)
                 .build();
     }
@@ -116,8 +115,7 @@ public class UpdateModelBuilder {
         }
         
         public UpdateModel build() {
-            return new UpdateModel.Builder()
-                    .withTable(table)
+            return new UpdateModel.Builder(table)
                     .withColumnValues(columnsAndValues)
                     .withWhereModel(buildWhereModel())
                     .build();

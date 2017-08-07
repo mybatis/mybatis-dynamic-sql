@@ -15,12 +15,9 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Optional;
-
 public class SqlTable {
 
     private String name;
-    private Optional<String> alias = Optional.empty();
     
     private SqlTable(String name) {
         this.name = name;
@@ -30,16 +27,6 @@ public class SqlTable {
         return name;
     }
     
-    public Optional<String> alias() {
-        return alias;
-    }
-    
-    public SqlTable withAlias(String alias) {
-        SqlTable sqlTable = new SqlTable(name);
-        sqlTable.alias = Optional.of(alias);
-        return sqlTable;
-    }
-
     public static SqlTable of(String name) {
         return new SqlTable(name);
     }

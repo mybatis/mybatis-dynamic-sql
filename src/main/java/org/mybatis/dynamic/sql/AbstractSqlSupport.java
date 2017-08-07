@@ -15,30 +15,17 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Optional;
-
-import org.mybatis.dynamic.sql.render.RenderingUtilities;
-
 public abstract class AbstractSqlSupport {
     public static final String EMPTY_STRING = ""; //$NON-NLS-1$
     public static final String ONE_SPACE = " "; //$NON-NLS-1$
-    private static final String UNKNOWN_TABLE = "<<unknown>>"; //$NON-NLS-1$
 
-    private Optional<SqlTable> table;
+    private SqlTable table;
 
-    public AbstractSqlSupport(Optional<SqlTable> table) {
+    public AbstractSqlSupport(SqlTable table) {
         this.table = table;
     }
-
-    private Optional<SqlTable> table() {
-        return table;
-    }
     
-    protected String tableName() {
-        return table().map(SqlTable::name).orElse(UNKNOWN_TABLE);
-    }
-
-    protected String tableNameIncludingAlias() {
-        return table().map(RenderingUtilities::nameIncludingAlias).orElse(UNKNOWN_TABLE);
+    public SqlTable table() {
+        return table;
     }
 }

@@ -35,12 +35,11 @@ public class UpdateFragmentCollector extends FragmentCollector<UpdateFragmentCol
     }
     
     public UpdateSupport buildUpdateSupport() {
-        return new UpdateSupport.Builder()
+        return new UpdateSupport.Builder(table)
                 .withSetClause(fragments()
                         .collect(Collectors.joining(", ", "set ", ""))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 .withWhereSupport(whereSupport)
                 .withParameters(parameters)
-                .withTable(table)
                 .build();
     }
     

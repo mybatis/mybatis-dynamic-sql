@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface SimpleTableDynamicSqlSupport {
-    SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
+    SqlTable simpleTable = SqlTable.of("SimpleTable");
     SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
     SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
     SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);

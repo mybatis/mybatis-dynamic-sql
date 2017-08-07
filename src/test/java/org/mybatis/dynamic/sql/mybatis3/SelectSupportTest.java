@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 @RunWith(JUnitPlatform.class)
 public class SelectSupportTest {
-    public static final SqlTable table = SqlTable.of("foo").withAlias("a");
+    public static final SqlTable table = SqlTable.of("foo");
     public static final SqlColumn<Date> column1 = SqlColumn.of("column1", JDBCType.DATE).inTable(table);
     public static final SqlColumn<Integer> column2 = SqlColumn.of("column2", JDBCType.INTEGER).inTable(table);
 
@@ -42,7 +42,7 @@ public class SelectSupportTest {
         Date d = new Date();
 
         SelectSupport selectSupport = select(column1, column2)
-                .from(table)
+                .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
@@ -65,7 +65,7 @@ public class SelectSupportTest {
         Date d = new Date();
 
         SelectSupport selectSupport = select(column1, column2)
-                .from(table)
+                .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
@@ -100,7 +100,7 @@ public class SelectSupportTest {
         Date d = new Date();
 
         SelectSupport selectSupport = select(column1, column2)
-                .from(table)
+                .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
@@ -123,7 +123,7 @@ public class SelectSupportTest {
         Date d = new Date();
 
         SelectSupport selectSupport = select(column1, column2)
-                .from(table)
+                .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
                 .and(column2, isLessThan(3))
