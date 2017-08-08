@@ -60,8 +60,17 @@ public class SelectRenderer {
     }
     
     private String nameIncludingTableAndColumnAlias(SqlColumn<?> column) {
-        return column.alias().map(a -> column.nameIncludingTableAlias(selectModel.tableAlias(column.table())) + " as " + a) //$NON-NLS-1$
-                .orElse(column.nameIncludingTableAlias(selectModel.tableAlias(column.table())));
+        StringBuilder buffer = new StringBuilder(calculateColumnNameAndTableAlias(column));
+        column.alias().ifPresent(a -> {
+            buffer.append(" as "); //$NON-NLS-1$
+            buffer.append(a);
+        });
+        
+        return buffer.toString();
+    }
+    
+    private String calculateColumnNameAndTableAlias(SqlColumn<?> column) {
+        return column.nameIncludingTableAlias(selectModel.tableAlias(column.table()));
     }
     
     private Optional<String> calculateOrderByPhrase() {

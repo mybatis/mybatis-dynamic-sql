@@ -47,7 +47,8 @@ public class WhereRenderer {
                 .render(criterion);
     }
     
-    public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy, Map<SqlTable, String> tableAliases) {
+    public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy,
+            Map<SqlTable, String> tableAliases) {
         return new WhereRenderer(model, renderingStrategy, tableAliases);
     }
 }
