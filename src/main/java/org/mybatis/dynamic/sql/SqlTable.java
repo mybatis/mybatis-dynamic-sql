@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.sql.JDBCType;
+
 public class SqlTable {
 
     private String name;
@@ -25,6 +27,10 @@ public class SqlTable {
 
     public String name() {
         return name;
+    }
+    
+    public <T> SqlColumn<T> column(String name, JDBCType jdbcType) {
+        return SqlColumn.of(this, name, jdbcType);
     }
 
     public static SqlTable of(String name) {

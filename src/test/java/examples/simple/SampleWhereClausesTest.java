@@ -32,13 +32,13 @@ public class SampleWhereClausesTest {
     @Test
     public void simpleClause1() {
         SelectSupport selectSupport = select(count())
-                .from(simpleTable, "a")
+                .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
         assertThat(selectSupport.getWhereClause())
-                .isEqualTo("where a.id = #{parameters.p1,jdbcType=INTEGER}");
+                .isEqualTo("where id = #{parameters.p1,jdbcType=INTEGER}");
     }
     
     @Test

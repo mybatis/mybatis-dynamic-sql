@@ -109,19 +109,15 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public interface SimpleTableDynamicSqlSupport {
-    SqlTable simpleTable = SqlTable.of("SimpleTable").withAlias("a");
-    SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
-    SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
-    SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
-    SqlColumn<Date> birthDate = SqlColumn.of("birth_date", JDBCType.DATE).inTable(simpleTable);
-    SqlColumn<Boolean> employed = SqlColumn.of("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler").inTable(simpleTable);
-    SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
+    SqlTable simpleTable = SqlTable.of("SimpleTable");
+    SqlColumn<Integer> id = simpleTable.column("id", JDBCType.INTEGER).withAlias("A_ID");
+    SqlColumn<String> firstName = simpleTable.column("first_name", JDBCType.VARCHAR);
+    SqlColumn<String> lastName = simpleTable.column("last_name", JDBCType.VARCHAR);
+    SqlColumn<Date> birthDate = simpleTable.column("birth_date", JDBCType.DATE);
+    SqlColumn<Boolean> employed = simpleTable.column("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler");
+    SqlColumn<String> occupation = simpleTable.column("occupation", JDBCType.VARCHAR);
 }
 ```
-
-Note that the table definition is not required unless you want to give an alias to the table in the
-SQL.  In that case, the table definition allows you to specify a table alias.  The library will ignore
-the alias for DELETE, INSERT, and UPDATE statements, but will honor the alias for SELECT statements. 
 
 ### Second - Write XML or annotated mappers that will use the generated where clause
 The library will create support classes that will be used as input to an annotated or XML mapper.  These classes include the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that these objects be the one and only parameter to a MyBatis method.
@@ -199,11 +195,11 @@ For example, a very simple condition can be defined like this:
                 .render(RenderingStrategy.MYBATIS3);
 ```
 
-Or this:
+Or this (also note that you can give a table an alias):
 
 ```java
         SelectSupport selectSupport = select(count())
-                .from(simpleTable)
+                .from(simpleTable, "a")
                 .where(id, isNull())
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
