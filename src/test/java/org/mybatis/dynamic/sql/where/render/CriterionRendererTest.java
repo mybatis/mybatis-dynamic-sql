@@ -18,7 +18,9 @@ package org.mybatis.dynamic.sql.where.render;
 import static org.assertj.core.api.Assertions.*;
 
 import java.sql.JDBCType;
-import java.util.Optional;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
@@ -37,7 +39,7 @@ public class CriterionRendererTest {
     @Test
     public void testAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
+        SqlColumn<Integer> column = SqlColumn.of(table, "id", JDBCType.INTEGER);
         
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
@@ -45,7 +47,7 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.empty());
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Collections.emptyMap());
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
@@ -56,14 +58,18 @@ public class CriterionRendererTest {
     @Test
     public void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER).inTable(table);
+        SqlColumn<Integer> column = SqlColumn.of(table, "id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
                 .withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.of("a"));
+        
+        Map<SqlTable, String> tableAliases = new HashMap<>();
+        tableAliases.put(table, "a");
+        
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, tableAliases);
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
@@ -73,14 +79,15 @@ public class CriterionRendererTest {
 
     @Test
     public void testNoAliasWithIgnore() {
-        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER);
+        SqlTable table = SqlTable.of("foo");
+        SqlColumn<Integer> column = SqlColumn.of(table, "id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
                 .withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.empty());
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Collections.emptyMap());
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
@@ -90,14 +97,15 @@ public class CriterionRendererTest {
 
     @Test
     public void testNoAliasWithoutIgnore() {
-        SqlColumn<Integer> column = SqlColumn.of("id", JDBCType.INTEGER);
+        SqlTable table = SqlTable.of("foo");
+        SqlColumn<Integer> column = SqlColumn.of(table, "id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
                 .withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Optional.empty());
+        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Collections.emptyMap());
         
         FragmentAndParameters fp = renderer.render(criterion);
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");

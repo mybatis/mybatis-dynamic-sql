@@ -16,7 +16,9 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -31,12 +33,12 @@ public class SelectModel {
     private boolean isDistinct;
     private List<SqlColumn<?>> columns = new ArrayList<>();
     private SqlTable table;
-    private Optional<String> tableAlias;
+    private Map<SqlTable, String> tableAliases = new HashMap<>();
     private Optional<WhereModel> whereModel;
     private Optional<List<SqlColumn<?>>> orderByColumns;
 
-    private SelectModel() {
-        super();
+    private SelectModel(SqlTable table) {
+        this.table = table;
     }
     
     public boolean isDistinct() {
@@ -51,10 +53,14 @@ public class SelectModel {
         return table;
     }
     
-    public Optional<String> tableAlias() {
-        return tableAlias;
+    public Optional<String> tableAlias(Optional<SqlTable> table) {
+        return table.flatMap(t -> Optional.ofNullable(tableAliases.get(t)));
     }
     
+    public Map<SqlTable, String> tableAliases() {
+        return tableAliases;
+    }
+
     public Optional<WhereModel> whereModel() {
         return whereModel;
     }
@@ -69,9 +75,9 @@ public class SelectModel {
     
     public static class Builder {
         private boolean isDistinct;
-        private List<SqlColumn<?>> columns;
+        private List<SqlColumn<?>> columns = new ArrayList<>();
         private SqlTable table;
-        private String tableAlias;
+        private Map<SqlTable, String> tableAliases = new HashMap<>();
         private WhereModel whereModel;
         private List<SqlColumn<?>> orderByColumns;
         
@@ -85,12 +91,12 @@ public class SelectModel {
         }
 
         public Builder withColumns(List<SqlColumn<?>> columns) {
-            this.columns = columns;
+            this.columns.addAll(columns);
             return this;
         }
 
         public Builder withTableAlias(String tableAlias) {
-            this.tableAlias = tableAlias;
+            tableAliases.put(table, tableAlias);
             return this;
         }
         
@@ -105,12 +111,11 @@ public class SelectModel {
         }
         
         public SelectModel build() {
-            SelectModel selectModel = new SelectModel();
-            selectModel.columns = columns;
+            SelectModel selectModel = new SelectModel(table);
+            selectModel.columns.addAll(columns);
             selectModel.isDistinct = isDistinct;
             selectModel.orderByColumns = Optional.ofNullable(orderByColumns);
-            selectModel.table = table;
-            selectModel.tableAlias = Optional.ofNullable(tableAlias);
+            selectModel.tableAliases.putAll(tableAliases);
             selectModel.whereModel = Optional.ofNullable(whereModel);
             return selectModel;
         }

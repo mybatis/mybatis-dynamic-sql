@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,16 +37,20 @@ public class SelectRenderer {
         SelectSupport.Builder builder = new SelectSupport.Builder(selectModel.table())
                 .isDistinct(selectModel.isDistinct())
                 .withColumnList(calculateColumnList())
-                .withTableAlias(selectModel.tableAlias().orElse(null))
+                .withTableAlias(calculateAlias())
                 .withOrderByClause(calculateOrderByPhrase());
-
+        
         selectModel.whereModel().ifPresent(wm -> {
-            WhereSupport whereSupport = WhereRenderer.of(wm, renderingStrategy, selectModel.tableAlias()).render();
+            WhereSupport whereSupport = WhereRenderer.of(wm, renderingStrategy, selectModel.tableAliases()).render();
             builder.withWhereClause(whereSupport.getWhereClause())
                 .withParameters(whereSupport.getParameters());
         });
         
         return builder.build();
+    }
+    
+    private Optional<String> calculateAlias() {
+        return selectModel.tableAlias(Optional.of(selectModel.table()));
     }
     
     private String calculateColumnList() {
@@ -55,14 +60,13 @@ public class SelectRenderer {
     }
     
     private String nameIncludingTableAndColumnAlias(SqlColumn<?> column) {
-        return column.alias().map(a -> column.nameIncludingTableAlias(selectModel.tableAlias()) + " as " + a) //$NON-NLS-1$
-                .orElse(column.nameIncludingTableAlias(selectModel.tableAlias()));
+        return column.alias().map(a -> column.nameIncludingTableAlias(selectModel.tableAlias(column.table())) + " as " + a) //$NON-NLS-1$
+                .orElse(column.nameIncludingTableAlias(selectModel.tableAlias(column.table())));
     }
     
-    private String calculateOrderByPhrase() {
+    private Optional<String> calculateOrderByPhrase() {
         return selectModel.orderByColumns()
-                .map(this::calculateOrderByPhrase)
-                .orElse(null);
+                .flatMap(c -> Optional.of(calculateOrderByPhrase(c)));
     }
     
     private String calculateOrderByPhrase(Stream<SqlColumn<?>> columns) {

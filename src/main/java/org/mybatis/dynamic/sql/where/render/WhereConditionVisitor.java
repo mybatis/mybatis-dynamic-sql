@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -24,6 +25,7 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector.Triple;
@@ -34,14 +36,14 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
     private SqlColumn<T> column;
-    private Optional<String> tableAlias;
+    private Map<SqlTable, String> tableAliases;
     
     public WhereConditionVisitor(RenderingStrategy renderingStrategy, AtomicInteger sequence, SqlColumn<T> column,
-            Optional<String> tableAlias) {
+            Map<SqlTable, String> tableAliases) {
         this.renderingStrategy = renderingStrategy;
         this.sequence = sequence;
         this.column = column;
-        this.tableAlias = tableAlias;
+        this.tableAliases = tableAliases;
     }
 
     @Override
@@ -99,6 +101,11 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
     
     private String columnName() {
-        return tableAlias.map(a -> a + "." + column.name()).orElse(column.name());
+        return column.nameIncludingTableAlias(tableAlias());
+    }
+    
+    private Optional<String> tableAlias() {
+        return column.table()
+                .flatMap(t -> Optional.ofNullable(tableAliases.get(t)));
     }
 }

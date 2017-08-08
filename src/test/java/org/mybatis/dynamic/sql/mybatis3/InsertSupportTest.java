@@ -31,10 +31,10 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 @RunWith(JUnitPlatform.class)
 public class InsertSupportTest {
     private static final SqlTable foo = SqlTable.of("foo");
-    private static final SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER);
-    private static final SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR);
-    private static final SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR);
-    private static final SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR);
+    private static final SqlColumn<Integer> id = SqlColumn.of(foo, "id", JDBCType.INTEGER);
+    private static final SqlColumn<String> firstName = SqlColumn.of(foo, "first_name", JDBCType.VARCHAR);
+    private static final SqlColumn<String> lastName = SqlColumn.of(foo, "last_name", JDBCType.VARCHAR);
+    private static final SqlColumn<String> occupation = SqlColumn.of(foo, "occupation", JDBCType.VARCHAR);
 
     @Test
     public void testFullInsertSupportBuilder() {

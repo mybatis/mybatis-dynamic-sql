@@ -22,8 +22,8 @@ import org.mybatis.dynamic.sql.SqlTable;
 
 public interface AnimalDataDynamicSqlSupport {
     SqlTable animalData = SqlTable.of("AnimalData");
-    SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER).inTable(animalData); 
-    SqlColumn<String> animalName = SqlColumn.of("animal_name", JDBCType.VARCHAR).inTable(animalData);
-    SqlColumn<Double> bodyWeight = SqlColumn.of("body_weight", JDBCType.DOUBLE).inTable(animalData);
-    SqlColumn<Double> brainWeight = SqlColumn.of("brain_weight", JDBCType.DOUBLE).inTable(animalData);
+    SqlColumn<Integer> id = SqlColumn.of(animalData, "id", JDBCType.INTEGER); 
+    SqlColumn<String> animalName = SqlColumn.of(animalData, "animal_name", JDBCType.VARCHAR);
+    SqlColumn<Double> bodyWeight = SqlColumn.of(animalData, "body_weight", JDBCType.DOUBLE);
+    SqlColumn<Double> brainWeight = SqlColumn.of(animalData, "brain_weight", JDBCType.DOUBLE);
 }

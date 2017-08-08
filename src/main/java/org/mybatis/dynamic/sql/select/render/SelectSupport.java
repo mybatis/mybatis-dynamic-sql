@@ -84,9 +84,9 @@ public class SelectSupport extends AbstractSqlSupport {
     }
     
     public static class Builder {
-        private String tableAlias;
+        private Optional<String> tableAlias = Optional.empty();
         private String distinct;
-        private String orderByClause;
+        private Optional<String> orderByClause = Optional.empty();
         private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
@@ -103,7 +103,7 @@ public class SelectSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withOrderByClause(String orderByClause) {
+        public Builder withOrderByClause(Optional<String> orderByClause) {
             this.orderByClause = orderByClause;
             return this;
         }
@@ -123,16 +123,16 @@ public class SelectSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withTableAlias(String tableAlias) {
+        public Builder withTableAlias(Optional<String> tableAlias) {
             this.tableAlias = tableAlias;
             return this;
         }
         
         public SelectSupport build() {
             SelectSupport selectSupport = new SelectSupport(table);
-            selectSupport.tableAlias = Optional.ofNullable(tableAlias);
+            selectSupport.tableAlias = tableAlias;
             selectSupport.distinct = distinct;
-            selectSupport.orderByClause = Optional.ofNullable(orderByClause);
+            selectSupport.orderByClause = orderByClause;
             selectSupport.whereClause = Optional.ofNullable(whereClause);
             selectSupport.parameters = parameters;
             selectSupport.columnList = columnList;

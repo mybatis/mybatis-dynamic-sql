@@ -15,10 +15,11 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.Optional;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -27,12 +28,12 @@ public class WhereRenderer {
     private WhereModel model;
     private AtomicInteger sequence = new AtomicInteger(1);
     private RenderingStrategy renderingStrategy;
-    private Optional<String> tableAlias;
+    private Map<SqlTable, String> tableAliases;
     
-    private WhereRenderer(WhereModel model, RenderingStrategy renderingStrategy, Optional<String> tableAlias) {
+    private WhereRenderer(WhereModel model, RenderingStrategy renderingStrategy, Map<SqlTable, String> tableAliases) {
         this.model = model;
         this.renderingStrategy = renderingStrategy;
-        this.tableAlias = tableAlias;
+        this.tableAliases = tableAliases;
     }
     
     public WhereSupport render() {
@@ -42,11 +43,11 @@ public class WhereRenderer {
     }
     
     private FragmentAndParameters render(SqlCriterion<?> criterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, tableAlias)
+        return CriterionRenderer.of(sequence, renderingStrategy, tableAliases)
                 .render(criterion);
     }
     
-    public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy, Optional<String> tableAlias) {
-        return new WhereRenderer(model, renderingStrategy, tableAlias);
+    public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy, Map<SqlTable, String> tableAliases) {
+        return new WhereRenderer(model, renderingStrategy, tableAliases);
     }
 }

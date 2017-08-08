@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface SimpleTableDynamicSqlSupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable");
-    SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER).inTable(simpleTable).withAlias("A_ID");
-    SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR).inTable(simpleTable);
-    SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR).inTable(simpleTable);
-    SqlColumn<Date> birthDate = SqlColumn.of("birth_date", JDBCType.DATE).inTable(simpleTable);
-    SqlColumn<Boolean> employed = SqlColumn.of("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler").inTable(simpleTable);
-    SqlColumn<String> occupation = SqlColumn.of("occupation", JDBCType.VARCHAR).inTable(simpleTable);
+    SqlColumn<Integer> id = SqlColumn.of(simpleTable, "id", JDBCType.INTEGER).withAlias("A_ID");
+    SqlColumn<String> firstName = SqlColumn.of(simpleTable, "first_name", JDBCType.VARCHAR);
+    SqlColumn<String> lastName = SqlColumn.of(simpleTable, "last_name", JDBCType.VARCHAR);
+    SqlColumn<Date> birthDate = SqlColumn.of(simpleTable, "birth_date", JDBCType.DATE);
+    SqlColumn<Boolean> employed = SqlColumn.of(simpleTable, "employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler");
+    SqlColumn<String> occupation = SqlColumn.of(simpleTable, "occupation", JDBCType.VARCHAR);
     
     static InsertSupport<SimpleTableRecord> buildFullInsertSupport(SimpleTableRecord record) {
         return insert(record)

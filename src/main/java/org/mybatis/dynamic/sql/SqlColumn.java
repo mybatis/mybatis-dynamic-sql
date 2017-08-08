@@ -32,7 +32,7 @@ public class SqlColumn<T> {
     private static final String DESCENDING = "DESC"; //$NON-NLS-1$
 
     protected String name;
-    protected Optional<SqlTable> table = Optional.empty();
+    protected Optional<SqlTable> table;
     protected JDBCType jdbcType;
     protected String sortOrder = ASCENDING;
     protected Optional<String> alias = Optional.empty();
@@ -47,7 +47,14 @@ public class SqlColumn<T> {
         this.typeHandler = sqlColumn.typeHandler;
     }
     
+    protected SqlColumn(SqlTable table, String name, JDBCType jdbcType) {
+        this.table = Optional.of(table);
+        this.name = name;
+        this.jdbcType = jdbcType;
+    }
+    
     protected SqlColumn(String name, JDBCType jdbcType) {
+        this.table = Optional.empty();
         this.name = name;
         this.jdbcType = jdbcType;
     }
@@ -70,12 +77,6 @@ public class SqlColumn<T> {
     
     public Optional<String> typeHandler() {
         return typeHandler;
-    }
-    
-    public <S> SqlColumn<S> inTable(SqlTable table) {
-        SqlColumn<S> column = new SqlColumn<>(this);
-        column.table = Optional.of(table);
-        return column;
     }
     
     public <S> SqlColumn<S> descending() {
@@ -104,7 +105,7 @@ public class SqlColumn<T> {
         return tableAlias.map(a -> a + "." + name()).orElse(name()); //$NON-NLS-1$
     }
     
-    public static <T> SqlColumn<T> of(String name, JDBCType jdbcType) {
-        return new SqlColumn<>(name, jdbcType);
+    public static <T> SqlColumn<T> of(SqlTable table, String name, JDBCType jdbcType) {
+        return new SqlColumn<>(table, name, jdbcType);
     }
 }
