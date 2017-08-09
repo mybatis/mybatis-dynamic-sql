@@ -15,12 +15,12 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
@@ -34,15 +34,15 @@ public class SelectRenderer {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
-        SelectSupport.Builder builder = new SelectSupport.Builder()
+        SelectSupport.Builder builder = new SelectSupport.Builder(selectModel.table())
                 .isDistinct(selectModel.isDistinct())
                 .withColumnList(calculateColumnList())
-                .withTable(selectModel.table())
+                .withTableAlias(calculateAlias())
                 .withOrderByClause(calculateOrderByPhrase())
-                .withJoinClause(selectModel.joinModel().map(jm -> JoinRenderer.of(jm).render()));
+                .withJoinClause(selectModel.joinModel().map(jm -> JoinRenderer.of(jm, selectModel.tableAliases()).render()));
         
         selectModel.whereModel().ifPresent(wm -> {
-            WhereSupport whereSupport = WhereRenderer.of(wm, renderingStrategy).renderCriteriaIncludingTableAlias();
+            WhereSupport whereSupport = WhereRenderer.of(wm, renderingStrategy, selectModel.tableAliases()).render();
             builder.withWhereClause(whereSupport.getWhereClause())
                 .withParameters(whereSupport.getParameters());
         });
@@ -50,16 +50,33 @@ public class SelectRenderer {
         return builder.build();
     }
     
+    private Optional<String> calculateAlias() {
+        return selectModel.tableAlias(Optional.of(selectModel.table()));
+    }
+    
     private String calculateColumnList() {
         return selectModel.columns()
-                .map(RenderingUtilities::nameIncludingTableAndColumnAlias)
+                .map(this::nameIncludingTableAndColumnAlias)
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
     }
     
-    private String calculateOrderByPhrase() {
+    private String nameIncludingTableAndColumnAlias(SqlColumn<?> column) {
+        StringBuilder buffer = new StringBuilder(calculateColumnNameAndTableAlias(column));
+        column.alias().ifPresent(a -> {
+            buffer.append(" as "); //$NON-NLS-1$
+            buffer.append(a);
+        });
+        
+        return buffer.toString();
+    }
+    
+    private String calculateColumnNameAndTableAlias(SqlColumn<?> column) {
+        return column.nameIncludingTableAlias(selectModel.tableAlias(column.table()));
+    }
+    
+    private Optional<String> calculateOrderByPhrase() {
         return selectModel.orderByColumns()
-                .map(this::calculateOrderByPhrase)
-                .orElse(null);
+                .flatMap(c -> Optional.of(calculateOrderByPhrase(c)));
     }
     
     private String calculateOrderByPhrase(Stream<SqlColumn<?>> columns) {

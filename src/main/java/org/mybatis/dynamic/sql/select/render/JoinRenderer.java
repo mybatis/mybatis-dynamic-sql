@@ -15,8 +15,10 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.select.JoinColumnAndCondition;
 import org.mybatis.dynamic.sql.select.JoinSpecification;
@@ -24,9 +26,11 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 
 public class JoinRenderer {
     private JoinModel joinModel;
+    private Map<SqlTable, String> tableAliases;
     
-    private JoinRenderer(JoinModel joinModel) {
+    private JoinRenderer(JoinModel joinModel, Map<SqlTable, String> tableAliases) {
         this.joinModel = joinModel;
+        this.tableAliases = tableAliases;
     }
     
     public String render() {
@@ -37,7 +41,7 @@ public class JoinRenderer {
     
     private String render(JoinSpecification joinSpecification) {
         return "join "
-                + RenderingUtilities.nameIncludingAlias(joinSpecification.table())
+                + RenderingUtilities.tableNameIncludingAlias(joinSpecification.table())
                 + render(joinSpecification.firstJoinColumnAndCondition());
     }
     
@@ -50,7 +54,7 @@ public class JoinRenderer {
                 + RenderingUtilities.nameIncludingTableAlias(joinColumnAndCondition.joinCondition().column());
     }
     
-    public static JoinRenderer of(JoinModel joinModel) {
-        return new JoinRenderer(joinModel);
+    public static JoinRenderer of(JoinModel joinModel, Map<SqlTable, String> tableAliases) {
+        return new JoinRenderer(joinModel, tableAliases);
     }
 }

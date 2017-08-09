@@ -33,6 +33,7 @@ public class SelectModelBuilder {
     private boolean isDistinct;
     private List<SqlColumn<?>> columns;
     private SqlTable table;
+    private String tableAlias;
     private WhereModel whereModel;
     private List<SqlColumn<?>> orderByColumns;
     private JoinModel joinModel;
@@ -43,6 +44,12 @@ public class SelectModelBuilder {
     
     public SelectSupportAfterFromBuilder from(SqlTable table) {
         this.table = table;
+        return new SelectSupportAfterFromBuilder();
+    }
+
+    public SelectSupportAfterFromBuilder from(SqlTable table, String tableAlias) {
+        this.table = table;
+        this.tableAlias = tableAlias;
         return new SelectSupportAfterFromBuilder();
     }
 
@@ -57,10 +64,10 @@ public class SelectModelBuilder {
     }
     
     protected SelectModel buildModel() {
-        return new SelectModel.Builder()
+        return new SelectModel.Builder(table)
                 .isDistinct(isDistinct)
                 .withColumns(columns)
-                .withTable(table)
+                .withTableAlias(tableAlias)
                 .withWhereModel(whereModel)
                 .withOrderByColumns(orderByColumns)
                 .withJoinModel(joinModel)

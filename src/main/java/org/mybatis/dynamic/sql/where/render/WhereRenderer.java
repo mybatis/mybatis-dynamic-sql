@@ -15,11 +15,12 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -27,35 +28,27 @@ public class WhereRenderer {
     private WhereModel model;
     private AtomicInteger sequence = new AtomicInteger(1);
     private RenderingStrategy renderingStrategy;
+    private Map<SqlTable, String> tableAliases;
     
-    private WhereRenderer(WhereModel model, RenderingStrategy renderingStrategy) {
+    private WhereRenderer(WhereModel model, RenderingStrategy renderingStrategy, Map<SqlTable, String> tableAliases) {
         this.model = model;
         this.renderingStrategy = renderingStrategy;
+        this.tableAliases = tableAliases;
     }
     
-    public WhereSupport renderCriteriaIncludingTableAlias() {
+    public WhereSupport render() {
         return model.criteria()
-                .map(this::renderCriterionIncludingTableAlias)
+                .map(this::render)
                 .collect(WhereFragmentCollector.toWhereSupport());
     }
     
-    public WhereSupport renderCriteriaIgnoringTableAlias() {
-        return model.criteria()
-                .map(this::renderCriterionIgnoringTableAlias)
-                .collect(WhereFragmentCollector.toWhereSupport());
-    }
-    
-    private FragmentAndParameters renderCriterionIncludingTableAlias(SqlCriterion<?> criterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, RenderingUtilities::nameIncludingTableAlias)
+    private FragmentAndParameters render(SqlCriterion<?> criterion) {
+        return CriterionRenderer.of(sequence, renderingStrategy, tableAliases)
                 .render(criterion);
     }
     
-    private FragmentAndParameters renderCriterionIgnoringTableAlias(SqlCriterion<?> criterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, RenderingUtilities::nameIgnoringTableAlias)
-                .render(criterion);
-    }
-    
-    public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy) {
-        return new WhereRenderer(model, renderingStrategy);
+    public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy,
+            Map<SqlTable, String> tableAliases) {
+        return new WhereRenderer(model, renderingStrategy, tableAliases);
     }
 }

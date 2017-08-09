@@ -15,32 +15,59 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Optional;
+import java.sql.JDBCType;
 
 public class SqlTable {
 
     private String name;
-    private Optional<String> alias = Optional.empty();
-    
+
     private SqlTable(String name) {
         this.name = name;
     }
-    
+
     public String name() {
         return name;
     }
     
-    public Optional<String> alias() {
-        return alias;
-    }
-    
-    public SqlTable withAlias(String alias) {
-        SqlTable sqlTable = new SqlTable(name);
-        sqlTable.alias = Optional.of(alias);
-        return sqlTable;
+    public <T> SqlColumn<T> column(String name, JDBCType jdbcType) {
+        return SqlColumn.of(this, name, jdbcType);
     }
 
     public static SqlTable of(String name) {
         return new SqlTable(name);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        SqlTable other = (SqlTable) obj;
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+
+        return true;
     }
 }

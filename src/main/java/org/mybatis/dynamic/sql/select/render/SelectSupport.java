@@ -21,11 +21,13 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingUtilities;
 
 public class SelectSupport extends AbstractSqlSupport {
     
     private static final String DISTINCT_STRING = "distinct"; //$NON-NLS-1$
 
+    private Optional<String> tableAlias;
     private String columnList;
     private Optional<String> whereClause;
     private Map<String, Object> parameters = new HashMap<>();
@@ -33,7 +35,7 @@ public class SelectSupport extends AbstractSqlSupport {
     private Optional<String> orderByClause;
     private Optional<String> joinClause;
     
-    private SelectSupport(Optional<SqlTable> table) {
+    private SelectSupport(SqlTable table) {
         super(table);
     }
     
@@ -78,20 +80,29 @@ public class SelectSupport extends AbstractSqlSupport {
                 + distinct().map(d -> d + ONE_SPACE).orElse(EMPTY_STRING)
                 + getColumnList()
                 + " from " //$NON-NLS-1$
-                + tableNameIncludingAlias()
+                + tableNameIncludingAlias(tableAlias)
                 + joinClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING)
                 + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING)
                 + orderByClause().map(o -> ONE_SPACE + o).orElse(EMPTY_STRING);
     }
     
+    private String tableNameIncludingAlias(Optional<String> tableAlias) {
+        return RenderingUtilities.tableNameIncludingAlias(table(), tableAlias);
+    }
+    
     public static class Builder {
+        private Optional<String> tableAlias = Optional.empty();
         private String distinct;
-        private String orderByClause;
+        private Optional<String> orderByClause = Optional.empty();
         private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
         private SqlTable table;
         private Optional<String> joinClause;
+        
+        public Builder(SqlTable table) {
+            this.table = table;
+        }
         
         public Builder isDistinct(boolean isDistinct) {
             if (isDistinct) {
@@ -100,7 +111,7 @@ public class SelectSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withOrderByClause(String orderByClause) {
+        public Builder withOrderByClause(Optional<String> orderByClause) {
             this.orderByClause = orderByClause;
             return this;
         }
@@ -120,8 +131,8 @@ public class SelectSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withTable(SqlTable table) {
-            this.table = table;
+        public Builder withTableAlias(Optional<String> tableAlias) {
+            this.tableAlias = tableAlias;
             return this;
         }
         
@@ -131,9 +142,10 @@ public class SelectSupport extends AbstractSqlSupport {
         }
         
         public SelectSupport build() {
-            SelectSupport selectSupport = new SelectSupport(Optional.ofNullable(table));
+            SelectSupport selectSupport = new SelectSupport(table);
+            selectSupport.tableAlias = tableAlias;
             selectSupport.distinct = distinct;
-            selectSupport.orderByClause = Optional.ofNullable(orderByClause);
+            selectSupport.orderByClause = orderByClause;
             selectSupport.whereClause = Optional.ofNullable(whereClause);
             selectSupport.joinClause = joinClause;
             selectSupport.parameters = parameters;

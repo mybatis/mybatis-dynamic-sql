@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.aggregate;
 
 import java.sql.JDBCType;
+import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
@@ -23,5 +24,10 @@ public class Count extends SqlColumn<Long> {
 
     public Count() {
         super("count(*)", JDBCType.INTEGER); //$NON-NLS-1$
+    }
+
+    @Override
+    public String nameIncludingTableAlias(Optional<String> tableAlias) {
+        return name();
     }
 }

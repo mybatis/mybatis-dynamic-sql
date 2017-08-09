@@ -43,15 +43,15 @@ import org.mybatis.dynamic.sql.select.render.SelectSupport;
 @RunWith(JUnitPlatform.class)
 public class JoinMapperTest {
 
-    private static final SqlTable orderMaster = SqlTable.of("OrderMaster").withAlias("om");
-    private static final SqlColumn<Integer> orderId = SqlColumn.of("order_id", JDBCType.INTEGER).inTable(orderMaster);
-    private static final SqlColumn<Date> orderDate = SqlColumn.of("order_date", JDBCType.DATE).inTable(orderMaster);
+    private static final SqlTable orderMaster = SqlTable.of("OrderMaster");
+    private static final SqlColumn<Integer> orderId = orderMaster.column("order_id", JDBCType.INTEGER);
+    private static final SqlColumn<Date> orderDate = orderMaster.column("order_date", JDBCType.DATE);
     
-    private static final SqlTable orderDetail = SqlTable.of("OrderDetail").withAlias("od");
-    private static final SqlColumn<Integer> orderId_od = SqlColumn.of("order_id", JDBCType.INTEGER).inTable(orderDetail);
-    private static final SqlColumn<Integer> lineNumber = SqlColumn.of("line_number", JDBCType.INTEGER).inTable(orderDetail);
-    private static final SqlColumn<String> description = SqlColumn.of("description", JDBCType.VARCHAR).inTable(orderDetail);
-    private static final SqlColumn<Integer> quantity = SqlColumn.of("quantity", JDBCType.INTEGER).inTable(orderDetail);
+    private static final SqlTable orderDetail = SqlTable.of("OrderDetail");
+    private static final SqlColumn<Integer> orderId_od = orderDetail.column("order_id", JDBCType.INTEGER);
+    private static final SqlColumn<Integer> lineNumber = orderDetail.column("line_number", JDBCType.INTEGER);
+    private static final SqlColumn<String> description = orderDetail.column("description", JDBCType.VARCHAR);
+    private static final SqlColumn<Integer> quantity = orderDetail.column("quantity", JDBCType.INTEGER);
     
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
@@ -113,8 +113,8 @@ public class JoinMapperTest {
     public void testCompoundJoin1() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
-                .from(orderMaster)
-                .join(orderDetail).on(orderId, equalTo(orderId_od), and(orderId, equalTo(orderId_od)))
+                .from(orderMaster, "om")
+                .join(orderDetail, "od").on(orderId, equalTo(orderId_od), and(orderId, equalTo(orderId_od)))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
@@ -127,8 +127,8 @@ public class JoinMapperTest {
     public void testCompoundJoin2() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
-                .from(orderMaster)
-                .join(orderDetail).on(orderId, equalTo(orderId_od)).and(orderId, equalTo(orderId_od))
+                .from(orderMaster, "om")
+                .join(orderDetail, "od").on(orderId, equalTo(orderId_od)).and(orderId, equalTo(orderId_od))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         

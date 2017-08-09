@@ -57,8 +57,7 @@ public class InsertModelBuilder<T> {
         }
         
         public InsertModel<T> build() {
-            return new InsertModel.Builder<T>()
-                    .withTable(table)
+            return new InsertModel.Builder<T>(table)
                     .withRecord(record)
                     .withColumnMappings(columnMappings)
                     .build();

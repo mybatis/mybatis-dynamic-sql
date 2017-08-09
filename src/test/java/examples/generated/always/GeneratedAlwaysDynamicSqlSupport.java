@@ -28,11 +28,11 @@ import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface GeneratedAlwaysDynamicSqlSupport {
-    SqlTable generatedAlways = SqlTable.of("GeneratedAlways").withAlias("a");
-    SqlColumn<Integer> id = SqlColumn.of("id", JDBCType.INTEGER).inTable(generatedAlways);
-    SqlColumn<String> firstName = SqlColumn.of("first_name", JDBCType.VARCHAR).inTable(generatedAlways);
-    SqlColumn<String> lastName = SqlColumn.of("last_name", JDBCType.VARCHAR).inTable(generatedAlways);
-    SqlColumn<String> fullName = SqlColumn.of("full_name", JDBCType.VARCHAR).inTable(generatedAlways);
+    SqlTable generatedAlways = SqlTable.of("GeneratedAlways");
+    SqlColumn<Integer> id = SqlColumn.of(generatedAlways, "id", JDBCType.INTEGER);
+    SqlColumn<String> firstName = SqlColumn.of(generatedAlways, "first_name", JDBCType.VARCHAR);
+    SqlColumn<String> lastName = SqlColumn.of(generatedAlways, "last_name", JDBCType.VARCHAR);
+    SqlColumn<String> fullName = SqlColumn.of(generatedAlways, "full_name", JDBCType.VARCHAR);
     
     static InsertSupport<GeneratedAlwaysRecord> buildInsertSupport(GeneratedAlwaysRecord record) {
         return insert(record)
