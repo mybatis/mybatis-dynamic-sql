@@ -19,13 +19,13 @@ public abstract class AbstractSqlSupport {
     public static final String EMPTY_STRING = ""; //$NON-NLS-1$
     public static final String ONE_SPACE = " "; //$NON-NLS-1$
 
-    private SqlTable table;
+    private String tableName;
 
-    public AbstractSqlSupport(SqlTable table) {
-        this.table = table;
+    public AbstractSqlSupport(String tableName) {
+        this.tableName = tableName;
     }
     
-    public SqlTable table() {
-        return table;
+    public String tableName() {
+        return tableName;
     }
 }

@@ -56,7 +56,7 @@ public class FieldAndValueCollector<T> {
     }
     
     public InsertSupport<T> toInsertSupport() {
-        return InsertSupport.of(columnsPhrase(), valuesPhrase(), record, table);
+        return InsertSupport.of(table.name(), columnsPhrase(), valuesPhrase(), record);
     }
     
     public static <T> Collector<FieldAndValue, FieldAndValueCollector<T>, InsertSupport<T>> toInsertSupport(T record,

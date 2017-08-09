@@ -32,13 +32,13 @@ public class DeleteRenderer {
     
     public DeleteSupport render(RenderingStrategy renderingStrategy) {
         return deleteModel.whereModel().map(wm -> renderWithWhereClause(wm, renderingStrategy))
-                .orElse(DeleteSupport.of(deleteModel.table()));
+                .orElse(DeleteSupport.of(deleteModel.table().name()));
     }
     
     private DeleteSupport renderWithWhereClause(WhereModel whereModel, RenderingStrategy renderingStrategy) {
         WhereRenderer whereRenderer = WhereRenderer.of(whereModel, renderingStrategy, Collections.emptyMap());
         WhereSupport whereSupport = whereRenderer.render();
-        return DeleteSupport.of(whereSupport.getWhereClause(), whereSupport.getParameters(), deleteModel.table());
+        return DeleteSupport.of(deleteModel.table().name(), whereSupport.getWhereClause(), whereSupport.getParameters());
     }
     
     public static DeleteRenderer of(DeleteModel deleteModel) {

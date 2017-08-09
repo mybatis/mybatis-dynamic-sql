@@ -20,19 +20,18 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.SqlTable;
 
 public class DeleteSupport extends AbstractSqlSupport {
 
     private String whereClause;
     private Map<String, Object> parameters = new HashMap<>();
     
-    private DeleteSupport(SqlTable table) {
-        super(table);
+    private DeleteSupport(String tableName) {
+        super(tableName);
     }
     
-    private DeleteSupport(String whereClause, Map<String, Object> parameters, SqlTable table) {
-        super(table);
+    private DeleteSupport(String tableName, String whereClause, Map<String, Object> parameters) {
+        super(tableName);
         this.whereClause = whereClause;
         this.parameters.putAll(parameters);
     }
@@ -51,15 +50,15 @@ public class DeleteSupport extends AbstractSqlSupport {
     
     public String getFullDeleteStatement() {
         return "delete from " //$NON-NLS-1$
-                + table().name()
+                + tableName()
                 + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING);
     }
 
-    public static DeleteSupport of(SqlTable table) {
-        return new DeleteSupport(table);
+    public static DeleteSupport of(String tableName) {
+        return new DeleteSupport(tableName);
     }
     
-    public static DeleteSupport of(String whereClause, Map<String, Object> parameters, SqlTable table) {
-        return new DeleteSupport(whereClause, parameters, table);
+    public static DeleteSupport of(String tableName, String whereClause, Map<String, Object> parameters) {
+        return new DeleteSupport(tableName, whereClause, parameters);
     }
 }

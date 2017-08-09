@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 /**
@@ -35,8 +34,8 @@ public class UpdateSupport extends AbstractSqlSupport {
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
 
-    private UpdateSupport(SqlTable table) {
-        super(table);
+    private UpdateSupport(String tableName) {
+        super(tableName);
     }
 
     public String getSetClause() {
@@ -57,20 +56,20 @@ public class UpdateSupport extends AbstractSqlSupport {
 
     public String getFullUpdateStatement() {
         return "update " //$NON-NLS-1$
-                + table().name()
+                + tableName()
                 + ONE_SPACE
                 + getSetClause()
                 + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING);
     }
     
     public static class Builder {
-        private SqlTable table;
+        private String tableName;
         private String setClause;
         private Optional<WhereSupport> whereSupport = Optional.empty();
         private Map<String, Object> parameters = new HashMap<>();
         
-        public Builder(SqlTable table) {
-            this.table = table;
+        public Builder(String tableName) {
+            this.tableName = tableName;
         }
         
         public Builder withSetClause(String setClause) {
@@ -89,7 +88,7 @@ public class UpdateSupport extends AbstractSqlSupport {
         }
         
         public UpdateSupport build() {
-            UpdateSupport updateSupport = new UpdateSupport(table);
+            UpdateSupport updateSupport = new UpdateSupport(tableName);
             updateSupport.setClause = setClause;
             updateSupport.whereClause = whereSupport.flatMap(ws -> Optional.of(ws.getWhereClause()));
             whereSupport.ifPresent(ws -> parameters.putAll(ws.getParameters()));
