@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
@@ -34,10 +35,9 @@ public class SelectRenderer {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
-        SelectSupport.Builder builder = new SelectSupport.Builder(selectModel.table())
+        SelectSupport.Builder builder = new SelectSupport.Builder(calculateTableName(selectModel.table()))
                 .isDistinct(selectModel.isDistinct())
                 .withColumnList(calculateColumnList())
-                .withTableAlias(calculateAlias())
                 .withOrderByClause(calculateOrderByPhrase());
         
         selectModel.whereModel().ifPresent(wm -> {
@@ -49,8 +49,10 @@ public class SelectRenderer {
         return builder.build();
     }
     
-    private Optional<String> calculateAlias() {
-        return selectModel.tableAlias(Optional.of(selectModel.table()));
+    private String calculateTableName(SqlTable table) {
+        return selectModel.tableAlias(Optional.of(table))
+                .map(a -> table.name() + " " + a) //$NON-NLS-1$
+                .orElse(table.name());
     }
     
     private String calculateColumnList() {

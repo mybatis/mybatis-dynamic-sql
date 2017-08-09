@@ -20,21 +20,19 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.SqlTable;
 
 public class SelectSupport extends AbstractSqlSupport {
     
     private static final String DISTINCT_STRING = "distinct"; //$NON-NLS-1$
 
-    private Optional<String> tableAlias;
     private String columnList;
     private Optional<String> whereClause;
     private Map<String, Object> parameters = new HashMap<>();
-    private String distinct;
+    private Optional<String> distinct;
     private Optional<String> orderByClause;
     
-    private SelectSupport(SqlTable table) {
-        super(table);
+    private SelectSupport(String tableName) {
+        super(tableName);
     }
     
     public String getDistinct() {
@@ -42,7 +40,7 @@ public class SelectSupport extends AbstractSqlSupport {
     }
     
     private Optional<String> distinct() {
-        return Optional.ofNullable(distinct);
+        return distinct;
     }
     
     public String getWhereClause() {
@@ -74,32 +72,25 @@ public class SelectSupport extends AbstractSqlSupport {
                 + distinct().map(d -> d + ONE_SPACE).orElse(EMPTY_STRING)
                 + getColumnList()
                 + " from " //$NON-NLS-1$
-                + tableNameIncludingAlias(tableAlias)
+                + tableName()
                 + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING)
                 + orderByClause().map(o -> ONE_SPACE + o).orElse(EMPTY_STRING);
     }
     
-    private String tableNameIncludingAlias(Optional<String> tableAlias) {
-        return tableAlias.map(a -> table().name() + " " + a).orElse(table().name()); //$NON-NLS-1$
-    }
-    
     public static class Builder {
-        private Optional<String> tableAlias = Optional.empty();
+        private String tableName;
         private String distinct;
         private Optional<String> orderByClause = Optional.empty();
         private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
-        private SqlTable table;
         
-        public Builder(SqlTable table) {
-            this.table = table;
+        public Builder(String tableName) {
+            this.tableName = tableName;
         }
         
         public Builder isDistinct(boolean isDistinct) {
-            if (isDistinct) {
-                distinct = DISTINCT_STRING;
-            }
+            distinct = isDistinct ? DISTINCT_STRING : null;
             return this;
         }
         
@@ -123,15 +114,9 @@ public class SelectSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withTableAlias(Optional<String> tableAlias) {
-            this.tableAlias = tableAlias;
-            return this;
-        }
-        
         public SelectSupport build() {
-            SelectSupport selectSupport = new SelectSupport(table);
-            selectSupport.tableAlias = tableAlias;
-            selectSupport.distinct = distinct;
+            SelectSupport selectSupport = new SelectSupport(tableName);
+            selectSupport.distinct = Optional.ofNullable(distinct);
             selectSupport.orderByClause = orderByClause;
             selectSupport.whereClause = Optional.ofNullable(whereClause);
             selectSupport.parameters = parameters;

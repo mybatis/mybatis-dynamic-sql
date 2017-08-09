@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.insert.render;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.SqlTable;
 
 public class InsertSupport<T> extends AbstractSqlSupport {
     
@@ -24,8 +23,8 @@ public class InsertSupport<T> extends AbstractSqlSupport {
     private String valuesPhrase;
     private T record;
     
-    private InsertSupport(String columnsPhrase, String valuesPhrase, T record, SqlTable table) {
-        super(table);
+    private InsertSupport(String tableName, String columnsPhrase, String valuesPhrase, T record) {
+        super(tableName);
         this.columnsPhrase = columnsPhrase;
         this.valuesPhrase = valuesPhrase;
         this.record = record;
@@ -45,14 +44,14 @@ public class InsertSupport<T> extends AbstractSqlSupport {
     
     public String getFullInsertStatement() {
         return "insert into " //$NON-NLS-1$
-                + table().name()
+                + tableName()
                 + ONE_SPACE
                 + getColumnsPhrase()
                 + ONE_SPACE
                 + getValuesPhrase();
     }
 
-    public static <T> InsertSupport<T> of(String columnsPhrase, String valuesPhrase, T record, SqlTable table) {
-        return new InsertSupport<>(columnsPhrase, valuesPhrase, record, table);
+    public static <T> InsertSupport<T> of(String tableName, String columnsPhrase, String valuesPhrase, T record) {
+        return new InsertSupport<>(tableName, columnsPhrase, valuesPhrase, record);
     }
 }

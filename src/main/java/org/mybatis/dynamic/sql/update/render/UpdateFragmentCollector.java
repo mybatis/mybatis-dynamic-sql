@@ -35,7 +35,7 @@ public class UpdateFragmentCollector extends FragmentCollector<UpdateFragmentCol
     }
     
     public UpdateSupport buildUpdateSupport() {
-        return new UpdateSupport.Builder(table)
+        return new UpdateSupport.Builder(table.name())
                 .withSetClause(fragments()
                         .collect(Collectors.joining(", ", "set ", ""))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 .withWhereSupport(whereSupport)
