@@ -102,8 +102,8 @@ public class SelectModel {
             return this;
         }
 
-        public Builder withTableAlias(String tableAlias) {
-            tableAliases.put(table, tableAlias);
+        public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
+            this.tableAliases.putAll(tableAliases);
             return this;
         }
         

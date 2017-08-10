@@ -79,8 +79,8 @@ public class JoinMapperTest {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
-                    .from(orderMaster)
-                    .join(orderDetail).on(orderId, equalTo(orderId_od))
+                    .from(orderMaster, "om")
+                    .join(orderDetail, "od").on(orderId, equalTo(orderId_od))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
@@ -128,7 +128,8 @@ public class JoinMapperTest {
         // this is a nonsensical join, but it does test the "and" capability
         SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
                 .from(orderMaster, "om")
-                .join(orderDetail, "od").on(orderId, equalTo(orderId_od)).and(orderId, equalTo(orderId_od))
+                .join(orderDetail, "od").on(orderId, equalTo(orderId_od))
+                .and(orderId, equalTo(orderId_od))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         

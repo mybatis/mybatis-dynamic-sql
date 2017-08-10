@@ -41,17 +41,17 @@ public class JoinRenderer {
     
     private String render(JoinSpecification joinSpecification) {
         return "join "
-                + RenderingUtilities.tableNameIncludingAlias(joinSpecification.table())
+                + RenderingUtilities.tableNameIncludingAlias(joinSpecification.table(), tableAliases)
                 + render(joinSpecification.firstJoinColumnAndCondition());
     }
     
     private String render(JoinColumnAndCondition<?> joinColumnAndCondition) {
         return " on "
-                + RenderingUtilities.nameIncludingTableAlias(joinColumnAndCondition.column())
+                + RenderingUtilities.columnNameIncludingTableAlias(joinColumnAndCondition.column(), tableAliases)
                 + " "
                 + joinColumnAndCondition.joinCondition().operator()
                 + " "
-                + RenderingUtilities.nameIncludingTableAlias(joinColumnAndCondition.joinCondition().column());
+                + RenderingUtilities.columnNameIncludingTableAlias(joinColumnAndCondition.joinCondition().column(), tableAliases);
     }
     
     public static JoinRenderer of(JoinModel joinModel, Map<SqlTable, String> tableAliases) {

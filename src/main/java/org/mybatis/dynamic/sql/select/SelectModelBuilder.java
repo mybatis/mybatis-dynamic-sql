@@ -17,7 +17,9 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -33,7 +35,7 @@ public class SelectModelBuilder {
     private boolean isDistinct;
     private List<SqlColumn<?>> columns;
     private SqlTable table;
-    private String tableAlias;
+    private Map<SqlTable, String> tableAliases = new HashMap<>();
     private WhereModel whereModel;
     private List<SqlColumn<?>> orderByColumns;
     private JoinModel joinModel;
@@ -49,7 +51,7 @@ public class SelectModelBuilder {
 
     public SelectSupportAfterFromBuilder from(SqlTable table, String tableAlias) {
         this.table = table;
-        this.tableAlias = tableAlias;
+        tableAliases.put(table, tableAlias);
         return new SelectSupportAfterFromBuilder();
     }
 
@@ -67,7 +69,7 @@ public class SelectModelBuilder {
         return new SelectModel.Builder(table)
                 .isDistinct(isDistinct)
                 .withColumns(columns)
-                .withTableAlias(tableAlias)
+                .withTableAliases(tableAliases)
                 .withWhereModel(whereModel)
                 .withOrderByColumns(orderByColumns)
                 .withJoinModel(joinModel)
@@ -98,6 +100,11 @@ public class SelectModelBuilder {
         }
 
         public JoinBuilder join(SqlTable joinTable) {
+            return new JoinBuilder(this, joinTable);
+        }
+        
+        public JoinBuilder join(SqlTable joinTable, String tableAlias) {
+            tableAliases.put(joinTable, tableAlias);
             return new JoinBuilder(this, joinTable);
         }
     }

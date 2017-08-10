@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
@@ -52,9 +53,7 @@ public class SelectRenderer {
     }
     
     private String calculateTableName(SqlTable table) {
-        return selectModel.tableAlias(Optional.of(table))
-                .map(a -> table.name() + " " + a) //$NON-NLS-1$
-                .orElse(table.name());
+        return RenderingUtilities.tableNameIncludingAlias(table, selectModel.tableAliases());
     }
     
     private String calculateColumnList() {
