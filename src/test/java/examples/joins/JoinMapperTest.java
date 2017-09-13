@@ -15,6 +15,8 @@
  */
 package examples.joins;
 
+import static examples.joins.OrderDetailDynamicSQLSupport.*;
+import static examples.joins.OrderMasterDynamicSQLSupport.*;
 import static org.mybatis.dynamic.sql.select.join.JoinConditions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
@@ -23,8 +25,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.JDBCType;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -35,24 +35,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 @RunWith(JUnitPlatform.class)
 public class JoinMapperTest {
 
-    private static final SqlTable orderMaster = SqlTable.of("OrderMaster");
-    private static final SqlColumn<Integer> orderId = orderMaster.column("order_id", JDBCType.INTEGER);
-    private static final SqlColumn<Date> orderDate = orderMaster.column("order_date", JDBCType.DATE);
-    
-    private static final SqlTable orderDetail = SqlTable.of("OrderDetail");
-    private static final SqlColumn<Integer> orderId_od = orderDetail.column("order_id", JDBCType.INTEGER);
-    private static final SqlColumn<Integer> lineNumber = orderDetail.column("line_number", JDBCType.INTEGER);
-    private static final SqlColumn<String> description = orderDetail.column("description", JDBCType.VARCHAR);
-    private static final SqlColumn<Integer> quantity = orderDetail.column("quantity", JDBCType.INTEGER);
-    
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
     
@@ -78,9 +66,9 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
+            SelectSupport selectSupport = select(orderMaster.orderId, orderDate, lineNumber, description, quantity)
                     .from(orderMaster, "om")
-                    .join(orderDetail, "od").on(orderId, equalTo(orderId_od))
+                    .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
@@ -112,9 +100,9 @@ public class JoinMapperTest {
     @Test
     public void testCompoundJoin1() {
         // this is a nonsensical join, but it does test the "and" capability
-        SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
+        SelectSupport selectSupport = select(orderMaster.orderId, orderDate, lineNumber, description, quantity)
                 .from(orderMaster, "om")
-                .join(orderDetail, "od").on(orderId, equalTo(orderId_od), and(orderId, equalTo(orderId_od)))
+                .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
@@ -126,10 +114,10 @@ public class JoinMapperTest {
     @Test
     public void testCompoundJoin2() {
         // this is a nonsensical join, but it does test the "and" capability
-        SelectSupport selectSupport = select(orderId, orderDate, lineNumber, description, quantity)
+        SelectSupport selectSupport = select(orderMaster.orderId, orderDate, lineNumber, description, quantity)
                 .from(orderMaster, "om")
-                .join(orderDetail, "od").on(orderId, equalTo(orderId_od))
-                .and(orderId, equalTo(orderId_od))
+                .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
+                .and(orderMaster.orderId, equalTo(orderDetail.orderId))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
