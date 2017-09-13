@@ -99,13 +99,13 @@ public class SelectModelBuilder {
             return buildModel();
         }
 
-        public JoinBuilder join(SqlTable joinTable) {
-            return new JoinBuilder(this, joinTable);
+        public JoinSpecificationBuilder join(SqlTable joinTable) {
+            return new JoinSpecificationBuilder(this, joinTable);
         }
         
-        public JoinBuilder join(SqlTable joinTable, String tableAlias) {
+        public JoinSpecificationBuilder join(SqlTable joinTable, String tableAlias) {
             tableAliases.put(joinTable, tableAlias);
-            return new JoinBuilder(this, joinTable);
+            return new JoinSpecificationBuilder(this, joinTable);
         }
     }
     
@@ -136,11 +136,11 @@ public class SelectModelBuilder {
         }
     }
     
-    public class JoinBuilder {
+    public class JoinSpecificationBuilder {
         private SqlTable joinTable;
         private SelectSupportJoinBuilder joinBuilder;
         
-        public JoinBuilder(SelectSupportAfterFromBuilder ancestorBuilder, SqlTable joinTable) {
+        public JoinSpecificationBuilder(SelectSupportAfterFromBuilder ancestorBuilder, SqlTable joinTable) {
             this.joinTable = joinTable;
             joinBuilder = new SelectSupportJoinBuilder(ancestorBuilder);
         }

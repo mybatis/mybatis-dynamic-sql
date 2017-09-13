@@ -21,7 +21,7 @@ public class SqlTable {
 
     private String name;
 
-    private SqlTable(String name) {
+    protected SqlTable(String name) {
         this.name = name;
     }
 
