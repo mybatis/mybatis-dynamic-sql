@@ -32,10 +32,14 @@ import org.mybatis.dynamic.sql.where.render.WhereSupport;
 public class UpdateSupport extends AbstractSqlSupport {
     private String setClause;
     private Optional<String> whereClause;
-    private Map<String, Object> parameters;
+    private Map<String, Object> parameters = new HashMap<>();
 
-    private UpdateSupport(String tableName) {
-        super(tableName);
+    private UpdateSupport(Builder builder) {
+        super(builder.tableName);
+        setClause = builder.setClause;
+        whereClause = builder.whereSupport.flatMap(ws -> Optional.of(ws.getWhereClause()));
+        builder.whereSupport.ifPresent(ws -> parameters.putAll(ws.getParameters()));
+        parameters.putAll(builder.parameters);
     }
 
     public String getSetClause() {
@@ -88,12 +92,7 @@ public class UpdateSupport extends AbstractSqlSupport {
         }
         
         public UpdateSupport build() {
-            UpdateSupport updateSupport = new UpdateSupport(tableName);
-            updateSupport.setClause = setClause;
-            updateSupport.whereClause = whereSupport.flatMap(ws -> Optional.of(ws.getWhereClause()));
-            whereSupport.ifPresent(ws -> parameters.putAll(ws.getParameters()));
-            updateSupport.parameters = parameters;
-            return updateSupport;
+            return new UpdateSupport(this);
         }
     }
 }

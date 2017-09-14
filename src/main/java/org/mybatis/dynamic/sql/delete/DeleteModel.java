@@ -27,8 +27,9 @@ public class DeleteModel {
     private SqlTable table;
     private Optional<WhereModel> whereModel;
     
-    private DeleteModel() {
-        super();
+    private DeleteModel(Builder builder) {
+        table = builder.table;
+        whereModel = Optional.ofNullable(builder.whereModel);
     }
     
     public SqlTable table() {
@@ -57,10 +58,7 @@ public class DeleteModel {
         }
         
         public DeleteModel build() {
-            DeleteModel deleteModel = new DeleteModel();
-            deleteModel.table = table;
-            deleteModel.whereModel = Optional.ofNullable(whereModel);
-            return deleteModel;
+            return new DeleteModel(this);
         }
     }
 }

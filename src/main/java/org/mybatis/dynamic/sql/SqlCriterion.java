@@ -26,8 +26,11 @@ public class SqlCriterion<T> {
     private Optional<String> connector;
     private Optional<List<SqlCriterion<?>>> subCriteria;
     
-    private SqlCriterion() {
-        super();
+    private SqlCriterion(Builder<T> builder) {
+        connector = Optional.ofNullable(builder.connector);
+        column = builder.column;
+        condition = builder.condition;
+        subCriteria = Optional.ofNullable(builder.subCriteria);
     }
     
     public Optional<String> connector() {
@@ -73,12 +76,7 @@ public class SqlCriterion<T> {
         }
         
         public SqlCriterion<T> build() {
-            SqlCriterion<T> sqlCriterion = new SqlCriterion<>();
-            sqlCriterion.connector = Optional.ofNullable(connector);
-            sqlCriterion.column = column;
-            sqlCriterion.condition = condition;
-            sqlCriterion.subCriteria = Optional.ofNullable(subCriteria);
-            return sqlCriterion;
+            return new SqlCriterion<>(this);
         }
     }
 }

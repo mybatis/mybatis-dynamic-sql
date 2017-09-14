@@ -23,8 +23,9 @@ public class FragmentAndParameters {
     private String fragment;
     private Map<String, Object> parameters = new HashMap<>();
     
-    private FragmentAndParameters() {
-        super();
+    private FragmentAndParameters(Builder builder) {
+        fragment = builder.fragment;
+        parameters.putAll(builder.parameters);
     }
     
     public String fragment() {
@@ -36,24 +37,25 @@ public class FragmentAndParameters {
     }
     
     public static class Builder {
-        private FragmentAndParameters fragmentAndParameters = new FragmentAndParameters();
+        private String fragment;
+        private Map<String, Object> parameters = new HashMap<>();
         
         public Builder(String fragment) {
-            fragmentAndParameters.fragment = fragment;
+            this.fragment = fragment;
         }
         
         public Builder withParameter(String key, Object value) {
-            fragmentAndParameters.parameters.put(key, value);
+            parameters.put(key, value);
             return this;
         }
         
         public Builder withParameters(Map<String, Object> parameters) {
-            fragmentAndParameters.parameters.putAll(parameters);
+            this.parameters.putAll(parameters);
             return this;
         }
         
         public FragmentAndParameters build() {
-            return fragmentAndParameters;
+            return new FragmentAndParameters(this);
         }
     }
 }

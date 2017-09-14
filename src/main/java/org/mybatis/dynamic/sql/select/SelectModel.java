@@ -37,8 +37,13 @@ public class SelectModel {
     private Optional<WhereModel> whereModel;
     private Optional<List<SqlColumn<?>>> orderByColumns;
 
-    private SelectModel(SqlTable table) {
-        this.table = table;
+    private SelectModel(Builder builder) {
+        isDistinct = builder.isDistinct;
+        columns.addAll(builder.columns);
+        table = builder.table;
+        tableAliases.putAll(builder.tableAliases);
+        whereModel = Optional.ofNullable(builder.whereModel);
+        orderByColumns = Optional.ofNullable(builder.orderByColumns);
     }
     
     public boolean isDistinct() {
@@ -111,13 +116,7 @@ public class SelectModel {
         }
         
         public SelectModel build() {
-            SelectModel selectModel = new SelectModel(table);
-            selectModel.columns.addAll(columns);
-            selectModel.isDistinct = isDistinct;
-            selectModel.orderByColumns = Optional.ofNullable(orderByColumns);
-            selectModel.tableAliases.putAll(tableAliases);
-            selectModel.whereModel = Optional.ofNullable(whereModel);
-            return selectModel;
+            return new SelectModel(this);
         }
     }
 }
