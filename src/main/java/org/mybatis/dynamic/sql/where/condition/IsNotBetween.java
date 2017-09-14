@@ -19,8 +19,8 @@ import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
 public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
 
-    protected IsNotBetween(T value1, T value2) {
-        super(value1, value2);
+    protected IsNotBetween(Builder<T> builder) {
+        super(builder.value1, builder.value2);
     }
     
     @Override
@@ -30,13 +30,15 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
 
     public static class Builder<T> {
         private T value1;
+        private T value2;
         
         private Builder(T value1) {
             this.value1 = value1;
         }
         
         public IsNotBetween<T> and(T value2) {
-            return new IsNotBetween<>(value1, value2);
+            this.value2 = value2;
+            return new IsNotBetween<>(this);
         }
     }
     

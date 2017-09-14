@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.insert;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -27,10 +28,12 @@ import org.mybatis.dynamic.sql.util.InsertMapping;
 public class InsertModel<T> {
     private SqlTable table;
     private T record;
-    private List<InsertMapping> columnMappings;
+    private List<InsertMapping> columnMappings = new ArrayList<>();
     
-    private InsertModel() {
-        super();
+    private InsertModel(Builder<T> builder) {
+        table = builder.table;
+        record = builder.record;
+        columnMappings.addAll(builder.columnMappings);
     }
 
     public Stream<InsertMapping> columnMappings() {
@@ -52,7 +55,7 @@ public class InsertModel<T> {
     public static class Builder<T> {
         private SqlTable table;
         private T record;
-        private List<InsertMapping> columnMappings;
+        private List<InsertMapping> columnMappings = new ArrayList<>();
         
         public Builder(SqlTable table) {
             this.table = table;
@@ -64,16 +67,12 @@ public class InsertModel<T> {
         }
         
         public Builder<T> withColumnMappings(List<InsertMapping> columnMappings) {
-            this.columnMappings = columnMappings;
+            this.columnMappings.addAll(columnMappings);
             return this;
         }
         
         public InsertModel<T> build() {
-            InsertModel<T> insertModel = new InsertModel<>();
-            insertModel.table = table;
-            insertModel.record = record;
-            insertModel.columnMappings = columnMappings;
-            return insertModel;
+            return new InsertModel<>(this);
         }
     }
 }

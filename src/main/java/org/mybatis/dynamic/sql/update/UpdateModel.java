@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.update;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -29,10 +30,12 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class UpdateModel {
     private SqlTable table;
     private Optional<WhereModel> whereModel;
-    private List<UpdateMapping> columnValues;
+    private List<UpdateMapping> columnValues = new ArrayList<>();
     
-    private UpdateModel() {
-        super();
+    private UpdateModel(Builder builder) {
+        table = builder.table;
+        whereModel = Optional.ofNullable(builder.whereModel);
+        columnValues.addAll(builder.columnValues);
     }
     
     public SqlTable table() {
@@ -54,14 +57,14 @@ public class UpdateModel {
     public static class Builder {
         private SqlTable table;
         private WhereModel whereModel;
-        private List<UpdateMapping> columnValues;
+        private List<UpdateMapping> columnValues = new ArrayList<>();
         
         public Builder(SqlTable table) {
             this.table = table;
         }
         
         public Builder withColumnValues(List<UpdateMapping> columnValues) {
-            this.columnValues = columnValues;
+            this.columnValues.addAll(columnValues);
             return this;
         }
         
@@ -71,11 +74,7 @@ public class UpdateModel {
         }
         
         public UpdateModel build() {
-            UpdateModel model = new UpdateModel();
-            model.table = table;
-            model.columnValues = columnValues;
-            model.whereModel = Optional.ofNullable(whereModel);
-            return model;
+            return new UpdateModel(this);
         }
     }
 }

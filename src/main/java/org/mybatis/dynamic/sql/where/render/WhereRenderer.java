@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.where.render;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -26,14 +27,15 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class WhereRenderer {
     private WhereModel model;
-    private AtomicInteger sequence = new AtomicInteger(1);
+    private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
     private Map<SqlTable, String> tableAliases;
     
-    private WhereRenderer(WhereModel model, RenderingStrategy renderingStrategy, Map<SqlTable, String> tableAliases) {
-        this.model = model;
-        this.renderingStrategy = renderingStrategy;
-        this.tableAliases = tableAliases;
+    private WhereRenderer(Builder builder) {
+        model = builder.model;
+        renderingStrategy = builder.renderingStrategy;
+        tableAliases = builder.tableAliases;
+        sequence = builder.sequence().orElse(new AtomicInteger(1));
     }
     
     public WhereSupport render() {
@@ -47,8 +49,30 @@ public class WhereRenderer {
                 .render(criterion);
     }
     
-    public static WhereRenderer of(WhereModel model, RenderingStrategy renderingStrategy,
-            Map<SqlTable, String> tableAliases) {
-        return new WhereRenderer(model, renderingStrategy, tableAliases);
+    public static class Builder {
+        private WhereModel model;
+        private RenderingStrategy renderingStrategy;
+        private Map<SqlTable, String> tableAliases;
+        private AtomicInteger sequence;
+        
+        public Builder(WhereModel model, RenderingStrategy renderingStrategy,
+                Map<SqlTable, String> tableAliases) {
+            this.model = model;
+            this.renderingStrategy = renderingStrategy;
+            this.tableAliases = tableAliases;
+        }
+        
+        public Builder withSequence(AtomicInteger sequence) {
+            this.sequence = sequence;
+            return this;
+        }
+        
+        private Optional<AtomicInteger> sequence() {
+            return Optional.ofNullable(sequence);
+        }
+        
+        public WhereRenderer build() {
+            return new WhereRenderer(this);
+        }
     }
 }

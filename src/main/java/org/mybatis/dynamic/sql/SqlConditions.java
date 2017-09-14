@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
@@ -25,6 +26,7 @@ import org.mybatis.dynamic.sql.where.condition.IsGreaterThan;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
 import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitive;
+import org.mybatis.dynamic.sql.where.condition.IsInWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLessThan;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsLike;
@@ -33,6 +35,7 @@ import org.mybatis.dynamic.sql.where.condition.IsNotBetween;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsNotIn;
 import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive;
+import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsNotLike;
 import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitive;
 import org.mybatis.dynamic.sql.where.condition.IsNotNull;
@@ -120,6 +123,10 @@ public interface SqlConditions {
     static <T> IsIn<T> isIn(Stream<T> values) {
         return IsIn.of(values);
     }
+    
+    static <T> IsInWithSubselect<T> isIn(SelectModelBuilder.Buildable selectModelBuilder) {
+        return IsInWithSubselect.of(selectModelBuilder);
+    }
 
     @SafeVarargs
     static <T> IsNotIn<T> isNotIn(T...values) {
@@ -130,6 +137,10 @@ public interface SqlConditions {
         return IsNotIn.of(values);
     }
     
+    static <T> IsNotInWithSubselect<T> isNotIn(SelectModelBuilder.Buildable selectModelBuilder) {
+        return IsNotInWithSubselect.of(selectModelBuilder);
+    }
+
     static <T> IsBetween.Builder<T> isBetween(T value1) {
         return IsBetween.isBetween(value1);
     }

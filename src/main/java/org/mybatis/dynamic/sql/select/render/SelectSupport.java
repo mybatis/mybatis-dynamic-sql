@@ -32,8 +32,14 @@ public class SelectSupport extends AbstractSqlSupport {
     private Optional<String> orderByClause;
     private Optional<String> joinClause;
     
-    private SelectSupport(String tableName) {
-        super(tableName);
+    private SelectSupport(Builder builder) {
+        super(builder.tableName);
+        columnList = builder.columnList;
+        whereClause = Optional.ofNullable(builder.whereClause);
+        parameters.putAll(builder.parameters);
+        distinct = Optional.ofNullable(builder.distinct);
+        orderByClause = builder.orderByClause;
+        joinClause = builder.joinClause;
     }
     
     public String getDistinct() {
@@ -127,14 +133,7 @@ public class SelectSupport extends AbstractSqlSupport {
         }
         
         public SelectSupport build() {
-            SelectSupport selectSupport = new SelectSupport(tableName);
-            selectSupport.distinct = Optional.ofNullable(distinct);
-            selectSupport.orderByClause = orderByClause;
-            selectSupport.whereClause = Optional.ofNullable(whereClause);
-            selectSupport.joinClause = joinClause;
-            selectSupport.parameters = parameters;
-            selectSupport.columnList = columnList;
-            return selectSupport;
+            return new SelectSupport(this);
         }
     }
 }

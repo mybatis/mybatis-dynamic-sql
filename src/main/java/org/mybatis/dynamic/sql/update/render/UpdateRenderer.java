@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
+import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
@@ -42,8 +43,15 @@ public class UpdateRenderer {
     }
     
     private Optional<WhereSupport> renderWhere(RenderingStrategy renderingStrategy) {
-        return updateModel.whereModel().flatMap(
-                wm -> Optional.of(WhereRenderer.of(wm, renderingStrategy, Collections.emptyMap()).render()));
+        return updateModel.whereModel()
+                .flatMap(wm -> renderWhere(wm, renderingStrategy));
+    }
+    
+    private Optional<WhereSupport> renderWhere(WhereModel whereModel, RenderingStrategy renderingStrategy) {
+        WhereSupport whereSupport = new WhereRenderer.Builder(whereModel, renderingStrategy, Collections.emptyMap())
+                .build()
+                .render();
+        return Optional.of(whereSupport);
     }
     
     private FragmentAndParameters transform(UpdateMapping columnAndValue, SetPhraseVisitor visitor) {
