@@ -69,7 +69,12 @@ public class SelectModelBuilder {
                 .build();
     }
     
-    public class SelectSupportAfterFromBuilder {
+    @FunctionalInterface
+    public interface Buildable {
+        SelectModel build();
+    }
+    
+    public class SelectSupportAfterFromBuilder implements Buildable {
         private SelectSupportAfterFromBuilder() {
             super();
         }
@@ -88,12 +93,14 @@ public class SelectModelBuilder {
             return new SelectSupportAfterOrderByBuilder();
         }
         
+        @Override
         public SelectModel build() {
             return buildModel();
         }
     }
     
-    public class SelectSupportWhereBuilder extends AbstractWhereModelBuilder<SelectSupportWhereBuilder> {
+    public class SelectSupportWhereBuilder extends AbstractWhereModelBuilder<SelectSupportWhereBuilder> 
+            implements Buildable {
         private <T> SelectSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition) {
             super(column, condition);
         }
@@ -109,6 +116,7 @@ public class SelectModelBuilder {
             return new SelectSupportAfterOrderByBuilder();
         }
         
+        @Override
         public SelectModel build() {
             whereModel = buildWhereModel();
             return buildModel();
@@ -120,11 +128,12 @@ public class SelectModelBuilder {
         }
     }
     
-    public class SelectSupportAfterOrderByBuilder {
+    public class SelectSupportAfterOrderByBuilder implements Buildable {
         private SelectSupportAfterOrderByBuilder() {
             super();
         }
         
+        @Override
         public SelectModel build() {
             return buildModel();
         }

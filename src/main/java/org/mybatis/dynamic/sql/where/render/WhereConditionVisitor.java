@@ -22,11 +22,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
+import org.mybatis.dynamic.sql.AbstractSubselectCondition;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.SelectRenderer;
+import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector.Triple;
 
@@ -84,6 +87,16 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         return new FragmentAndParameters.Builder(fragment)
                 .withParameter(mapKey1, condition.value1())
                 .withParameter(mapKey2, condition.value2())
+                .build();
+    }
+    
+
+    @Override
+    public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
+        SelectSupport ss = SelectRenderer.of(condition.selectModel()).render(renderingStrategy, sequence);
+        
+        return new FragmentAndParameters.Builder(condition.renderCondition(columnName(), ss.getFullSelectStatement()))
+                .withParameters(ss.getParameters())
                 .build();
     }
     

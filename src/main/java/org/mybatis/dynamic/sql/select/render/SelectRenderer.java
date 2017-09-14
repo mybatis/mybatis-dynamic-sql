@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,13 +36,21 @@ public class SelectRenderer {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
+        return render(renderingStrategy, null);
+    }
+    
+    public SelectSupport render(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
         SelectSupport.Builder builder = new SelectSupport.Builder(calculateTableName(selectModel.table()))
                 .isDistinct(selectModel.isDistinct())
                 .withColumnList(calculateColumnList())
                 .withOrderByClause(calculateOrderByPhrase());
         
         selectModel.whereModel().ifPresent(wm -> {
-            WhereSupport whereSupport = WhereRenderer.of(wm, renderingStrategy, selectModel.tableAliases()).render();
+            WhereSupport whereSupport = new WhereRenderer.Builder(wm, renderingStrategy, selectModel.tableAliases())
+                    .withSequence(sequence)
+                    .build()
+                    .render();
+            
             builder.withWhereClause(whereSupport.getWhereClause())
                 .withParameters(whereSupport.getParameters());
         });

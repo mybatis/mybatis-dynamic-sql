@@ -15,14 +15,24 @@
  */
 package org.mybatis.dynamic.sql;
 
-public interface ConditionVisitor<T, R> {
-    R visit(AbstractListValueCondition<T> condition);
+import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 
-    R visit(AbstractNoValueCondition<T> condition);
+public abstract class AbstractSubselectCondition<T> extends Condition<T> {
+    private SelectModel selectModel;
+    
+    protected AbstractSubselectCondition (SelectModelBuilder.Buildable selectModelBuilder) {
+        this.selectModel = selectModelBuilder.build();
+    }
+    
+    public SelectModel selectModel() {
+        return selectModel;
+    }
 
-    R visit(AbstractSingleValueCondition<T> condition);
+    @Override
+    public <R> R accept(ConditionVisitor<T, R> visitor) {
+        return visitor.visit(this);
+    }
 
-    R visit(AbstractTwoValueCondition<T> condition);
-
-    R visit(AbstractSubselectCondition<T> condition);
+    public abstract String renderCondition(String columnName, String renderedSelectStatement);
 }
