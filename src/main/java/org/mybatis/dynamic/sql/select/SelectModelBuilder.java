@@ -158,7 +158,8 @@ public class SelectModelBuilder {
             return new JoinSpecificationFinisher(joinTable, joinColumn, joinConditionR);
         }
 
-        public <T> JoinSpecificationFinisher on(SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR, JoinCondition<?>...joinConditions) {
+        public <T> JoinSpecificationFinisher on(SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR,
+                JoinCondition<?>...joinConditions) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, joinConditionR, joinConditions);
         }
     }
@@ -168,7 +169,8 @@ public class SelectModelBuilder {
         private SqlTable joinTable;
         private List<JoinCondition<?>> joinConditions = new ArrayList<>();
         
-        public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR) {
+        public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn,
+                JoinConditionR<T> joinConditionR) {
             this.joinTable = table;
 
             JoinCondition<T> joinCondition = new JoinCondition.Builder<>(joinColumn, joinConditionR)
@@ -178,7 +180,8 @@ public class SelectModelBuilder {
             joinConditions.add(joinCondition);
         }
 
-        public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR, JoinCondition<?>...joinConditions) {
+        public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn,
+                JoinConditionR<T> joinConditionR, JoinCondition<?>...joinConditions) {
             this.joinTable = table;
 
             JoinCondition<T> joinCondition = new JoinCondition.Builder<>(joinColumn, joinConditionR)

@@ -25,6 +25,6 @@ public class EqualTo<T> extends JoinConditionR<T> {
 
     @Override
     public String operator() {
-        return "=";
+        return "="; //$NON-NLS-1$
     }
 }

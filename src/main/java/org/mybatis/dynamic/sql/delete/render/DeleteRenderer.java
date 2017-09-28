@@ -39,7 +39,9 @@ public class DeleteRenderer {
         WhereSupport whereSupport = new WhereRenderer.Builder(whereModel, renderingStrategy, Collections.emptyMap())
                 .build()
                 .render();
-        return DeleteSupport.of(deleteModel.table().name(), whereSupport.getWhereClause(), whereSupport.getParameters());
+        return DeleteSupport.of(deleteModel.table().name(),
+                whereSupport.getWhereClause(),
+                whereSupport.getParameters());
     }
     
     public static DeleteRenderer of(DeleteModel deleteModel) {

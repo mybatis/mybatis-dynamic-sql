@@ -45,7 +45,8 @@ public class SelectRenderer {
                 .isDistinct(selectModel.isDistinct())
                 .withColumnList(calculateColumnList())
                 .withOrderByClause(calculateOrderByPhrase())
-                .withJoinClause(selectModel.joinModel().map(jm -> JoinRenderer.of(jm, selectModel.tableAliases()).render()))
+                .withJoinClause(selectModel.joinModel()
+                        .map(jm -> JoinRenderer.of(jm, selectModel.tableAliases()).render()))
                 .withOrderByClause(calculateOrderByPhrase());
         
         selectModel.whereModel().ifPresent(wm -> {
