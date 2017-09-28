@@ -18,10 +18,10 @@ package org.mybatis.dynamic.sql.select.join;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 // TODO - Better Name!!!
-public abstract class JoinConditionR<T> {
+public abstract class JoinCondition<T> {
     private SqlColumn<T> rightColumn;
     
-    public JoinConditionR(SqlColumn<T> rightColumn) {
+    public JoinCondition(SqlColumn<T> rightColumn) {
         this.rightColumn = rightColumn;
     }
     

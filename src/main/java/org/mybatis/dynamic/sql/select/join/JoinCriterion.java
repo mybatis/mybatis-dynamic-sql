@@ -21,12 +21,12 @@ public class JoinCriterion<T> {
 
     private String connector;
     private SqlColumn<T> leftColumn;
-    private JoinConditionR<T> joinConditionR;
+    private JoinCondition<T> joinCondition;
     
     private JoinCriterion(Builder<T> builder) {
         connector = builder.connector;
         leftColumn = builder.leftColumn;
-        joinConditionR = builder.joinConditionR;
+        joinCondition = builder.joinCondition;
     }
 
     public String connector() {
@@ -38,21 +38,21 @@ public class JoinCriterion<T> {
     }
     
     public SqlColumn<T> rightColumn() {
-        return joinConditionR.rightColumn();
+        return joinCondition.rightColumn();
     }
     
     public String operator() {
-        return joinConditionR.operator();
+        return joinCondition.operator();
     }
     
     public static class Builder<T> {
         private SqlColumn<T> leftColumn;
-        private JoinConditionR<T> joinConditionR;
+        private JoinCondition<T> joinCondition;
         private String connector;
         
-        public Builder(SqlColumn<T> leftColumn, JoinConditionR<T> joinCondition) {
+        public Builder(SqlColumn<T> leftColumn, JoinCondition<T> joinCondition) {
             this.leftColumn = leftColumn;
-            this.joinConditionR = joinCondition;
+            this.joinCondition = joinCondition;
         }
         
         public Builder<T> withConnector(String connector) {
