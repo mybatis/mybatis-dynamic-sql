@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mybatis.dynamic.sql.Condition;
+import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -89,11 +89,11 @@ public class SelectModelBuilder {
             super();
         }
         
-        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition) {
+        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
             return new SelectSupportWhereBuilder(column, condition);
         }
 
-        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition,
+        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             return new SelectSupportWhereBuilder(column, condition, subCriteria);
         }
@@ -120,11 +120,11 @@ public class SelectModelBuilder {
     
     public class SelectSupportWhereBuilder extends AbstractWhereModelBuilder<SelectSupportWhereBuilder> 
             implements Buildable {
-        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition) {
+        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
         }
         
-        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition,
+        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
@@ -207,12 +207,12 @@ public class SelectModelBuilder {
             return buildModel();
         }
         
-        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition) {
+        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
             joinModel = buildJoinModel();
             return new SelectSupportWhereBuilder(column, condition);
         }
 
-        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition,
+        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             joinModel = buildJoinModel();
             return new SelectSupportWhereBuilder(column, condition, subCriteria);

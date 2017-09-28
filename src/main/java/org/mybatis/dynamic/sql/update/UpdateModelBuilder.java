@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.update;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mybatis.dynamic.sql.Condition;
+import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -42,11 +42,11 @@ public class UpdateModelBuilder {
         return new UpdateSupportBuilderFinisher<>(column);
     }
     
-    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition) {
+    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
         return new UpdateSupportWhereBuilder(column, condition);
     }
     
-    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, Condition<T> condition,
+    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
         return new UpdateSupportWhereBuilder(column, condition, subCriteria);
     }
@@ -105,11 +105,11 @@ public class UpdateModelBuilder {
 
     public class UpdateSupportWhereBuilder extends AbstractWhereModelBuilder<UpdateSupportWhereBuilder> {
         
-        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition) {
+        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
         }
         
-        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, Condition<T> condition,
+        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }

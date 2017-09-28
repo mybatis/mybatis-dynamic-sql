@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql;
 
-public abstract class Condition<T> {
-    
-    public abstract <R> R accept(ConditionVisitor<T,R> visitor);
+@FunctionalInterface
+public interface VisitableCondition<T> {
+    <R> R accept(ConditionVisitor<T,R> visitor);
 }

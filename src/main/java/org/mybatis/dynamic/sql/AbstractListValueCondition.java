@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractListValueCondition<T> extends Condition<T> {
+public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
     private List<T> values;
 
     protected AbstractListValueCondition(Stream<T> values) {

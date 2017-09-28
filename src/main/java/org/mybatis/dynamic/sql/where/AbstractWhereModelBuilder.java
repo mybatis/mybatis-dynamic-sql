@@ -19,14 +19,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.mybatis.dynamic.sql.Condition;
+import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 
 public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuilder<T>> {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();
     
-    protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, Condition<S> condition) {
+    protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, VisitableCondition<S> condition) {
         SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
                 .withColumn(column)
                 .withCondition(condition)
@@ -34,7 +34,7 @@ public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuil
         criteria.add(criterion);
     }
     
-    protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, Condition<S> condition,
+    protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, VisitableCondition<S> condition,
             SqlCriterion<?>...subCriteria) {
         SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
                 .withColumn(column)
@@ -44,27 +44,27 @@ public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuil
         criteria.add(criterion);
     }
     
-    public <S> T and(SqlColumn<S> column, Condition<S> condition) {
+    public <S> T and(SqlColumn<S> column, VisitableCondition<S> condition) {
         addCriterion("and", column, condition); //$NON-NLS-1$
         return getThis();
     }
     
-    public <S> T and(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+    public <S> T and(SqlColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
         addCriterion("and", column, condition, subCriteria); //$NON-NLS-1$
         return getThis();
     }
     
-    public <S> T or(SqlColumn<S> column, Condition<S> condition) {
+    public <S> T or(SqlColumn<S> column, VisitableCondition<S> condition) {
         addCriterion("or", column, condition); //$NON-NLS-1$
         return getThis();
     }
     
-    public <S> T or(SqlColumn<S> column, Condition<S> condition, SqlCriterion<?>...subCriteria) {
+    public <S> T or(SqlColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
         addCriterion("or", column, condition, subCriteria); //$NON-NLS-1$
         return getThis();
     }
     
-    private <S> void addCriterion(String connector, SqlColumn<S> column, Condition<S> condition) {
+    private <S> void addCriterion(String connector, SqlColumn<S> column, VisitableCondition<S> condition) {
         SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
                 .withConnector(connector)
                 .withColumn(column)
@@ -73,7 +73,7 @@ public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuil
         criteria.add(criterion);
     }
     
-    private <S> void addCriterion(String connector, SqlColumn<S> column, Condition<S> condition,
+    private <S> void addCriterion(String connector, SqlColumn<S> column, VisitableCondition<S> condition,
             SqlCriterion<?>...subCriteria) {
         SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
                 .withConnector(connector)

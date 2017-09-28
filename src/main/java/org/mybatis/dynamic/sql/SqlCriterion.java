@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public class SqlCriterion<T> {
     
     private SqlColumn<T> column;
-    private Condition<T> condition;
+    private VisitableCondition<T> condition;
     private Optional<String> connector;
     private Optional<List<SqlCriterion<?>>> subCriteria;
     
@@ -41,7 +41,7 @@ public class SqlCriterion<T> {
         return column;
     }
     
-    public Condition<T> condition() {
+    public VisitableCondition<T> condition() {
         return condition;
     }
     
@@ -52,7 +52,7 @@ public class SqlCriterion<T> {
     public static class Builder<T> {
         private String connector;
         private SqlColumn<T> column;
-        private Condition<T> condition;
+        private VisitableCondition<T> condition;
         private List<SqlCriterion<?>> subCriteria;
         
         public Builder<T> withConnector(String connector) {
@@ -65,7 +65,7 @@ public class SqlCriterion<T> {
             return this;
         }
         
-        public Builder<T> withCondition(Condition<T> condition) {
+        public Builder<T> withCondition(VisitableCondition<T> condition) {
             this.condition = condition;
             return this;
         }

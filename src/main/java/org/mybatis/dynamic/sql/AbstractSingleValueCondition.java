@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql;
 
-public abstract class AbstractSingleValueCondition<T> extends Condition<T> {
+public abstract class AbstractSingleValueCondition<T> implements VisitableCondition<T> {
     private T value;
     
     protected AbstractSingleValueCondition(T value) {

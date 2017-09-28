@@ -43,7 +43,7 @@ import org.mybatis.dynamic.sql.where.condition.IsNull;
 
 public interface SqlConditions {
     // connectors
-    static <T> SqlCriterion<T> or(SqlColumn<T> column, Condition<T> condition) {
+    static <T> SqlCriterion<T> or(SqlColumn<T> column, VisitableCondition<T> condition) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("or") //$NON-NLS-1$
                 .withColumn(column)
@@ -51,7 +51,7 @@ public interface SqlConditions {
                 .build();
     }
 
-    static <T> SqlCriterion<T> or(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+    static <T> SqlCriterion<T> or(SqlColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("or") //$NON-NLS-1$
                 .withColumn(column)
@@ -60,7 +60,7 @@ public interface SqlConditions {
                 .build();
     }
 
-    static <T> SqlCriterion<T> and(SqlColumn<T> column, Condition<T> condition) {
+    static <T> SqlCriterion<T> and(SqlColumn<T> column, VisitableCondition<T> condition) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("and") //$NON-NLS-1$
                 .withColumn(column)
@@ -68,7 +68,7 @@ public interface SqlConditions {
                 .build();
     }
 
-    static <T> SqlCriterion<T> and(SqlColumn<T> column, Condition<T> condition, SqlCriterion<?>...subCriteria) {
+    static <T> SqlCriterion<T> and(SqlColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("and") //$NON-NLS-1$
                 .withColumn(column)
