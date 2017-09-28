@@ -17,10 +17,10 @@ package org.mybatis.dynamic.sql.select.join;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class EqualTo<T> extends JoinCondition<T> {
+public class EqualTo<T> extends JoinConditionR<T> {
 
-    public EqualTo(SqlColumn<T> column) {
-        super(column);
+    public EqualTo(SqlColumn<T> rightColumn) {
+        super(rightColumn);
     }
 
     @Override

@@ -18,8 +18,6 @@ package org.mybatis.dynamic.sql.select.join;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.select.JoinSpecification;
-
 public class JoinModel {
     private List<JoinSpecification> joinSpecifications;
     

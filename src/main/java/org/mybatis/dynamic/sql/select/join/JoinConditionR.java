@@ -17,15 +17,17 @@ package org.mybatis.dynamic.sql.select.join;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public interface JoinConditions {
-
-    static <T> JoinCondition<T> and(SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR) {
-        return new JoinCondition.Builder<>(joinColumn, joinConditionR)
-                .withConnector("and") //$NON-NLS-1$
-                .build();
+// TODO - Better Name!!!
+public abstract class JoinConditionR<T> {
+    private SqlColumn<T> rightColumn;
+    
+    public JoinConditionR(SqlColumn<T> rightColumn) {
+        this.rightColumn = rightColumn;
     }
     
-    static <T> EqualTo<T> equalTo(SqlColumn<T> column) {
-        return new EqualTo<>(column);
+    public SqlColumn<T> rightColumn() {
+        return rightColumn;
     }
+    
+    public abstract String operator();
 }

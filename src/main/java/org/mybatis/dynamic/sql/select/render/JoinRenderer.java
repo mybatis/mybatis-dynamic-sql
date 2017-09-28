@@ -17,12 +17,13 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingUtilities;
-import org.mybatis.dynamic.sql.select.JoinColumnAndCondition;
-import org.mybatis.dynamic.sql.select.JoinSpecification;
+import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 
 public class JoinRenderer {
     private JoinModel joinModel;
@@ -36,22 +37,29 @@ public class JoinRenderer {
     public String render() {
         return joinModel.joinSpecifications()
                 .map(this::render)
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
     
     private String render(JoinSpecification joinSpecification) {
-        return "join "
+        return "join " //$NON-NLS-1$
                 + RenderingUtilities.tableNameIncludingAlias(joinSpecification.table(), tableAliases)
-                + render(joinSpecification.firstJoinColumnAndCondition());
+                + " " //$NON-NLS-1$
+                + render(joinSpecification.joinConditions());
     }
     
-    private String render(JoinColumnAndCondition<?> joinColumnAndCondition) {
-        return " on "
-                + RenderingUtilities.columnNameIncludingTableAlias(joinColumnAndCondition.column(), tableAliases)
-                + " "
-                + joinColumnAndCondition.joinCondition().operator()
-                + " "
-                + RenderingUtilities.columnNameIncludingTableAlias(joinColumnAndCondition.joinCondition().column(), tableAliases);
+    private String render(Stream<JoinCondition<?>> joinConditions) {
+        return joinConditions.map(this::render)
+                .collect(Collectors.joining(" ")); //$NON-NLS-1$
+    }
+    
+    private String render(JoinCondition<?> joinCondition) {
+        return joinCondition.connector()
+                + " " //$NON-NLS-1$
+                + RenderingUtilities.columnNameIncludingTableAlias(joinCondition.leftColumn(), tableAliases)
+                + " " //$NON-NLS-1$
+                + joinCondition.operator()
+                + " " //$NON-NLS-1$
+                + RenderingUtilities.columnNameIncludingTableAlias(joinCondition.rightColumn(), tableAliases);
     }
     
     public static JoinRenderer of(JoinModel joinModel, Map<SqlTable, String> tableAliases) {

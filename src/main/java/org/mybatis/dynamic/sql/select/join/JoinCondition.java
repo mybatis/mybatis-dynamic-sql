@@ -17,16 +17,51 @@ package org.mybatis.dynamic.sql.select.join;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public abstract class JoinCondition<T> {
-    private SqlColumn<T> column;
+public class JoinCondition<T> {
+
+    private String connector;
+    private SqlColumn<T> leftColumn;
+    private JoinConditionR<T> joinCondition;
     
-    public JoinCondition(SqlColumn<T> column) {
-        this.column = column;
+    private JoinCondition(Builder<T> builder) {
+        connector = builder.connector;
+        leftColumn = builder.leftColumn;
+        joinCondition = builder.joinCondition;
+    }
+
+    public String connector() {
+        return connector;
     }
     
-    public SqlColumn<T> column() {
-        return column;
+    public SqlColumn<T> leftColumn() {
+        return leftColumn;
     }
     
-    public abstract String operator();
+    public SqlColumn<T> rightColumn() {
+        return joinCondition.rightColumn();
+    }
+    
+    public String operator() {
+        return joinCondition.operator();
+    }
+    
+    public static class Builder<T> {
+        private SqlColumn<T> leftColumn;
+        private JoinConditionR<T> joinCondition;
+        private String connector;
+        
+        public Builder(SqlColumn<T> leftColumn, JoinConditionR<T> joinCondition) {
+            this.leftColumn = leftColumn;
+            this.joinCondition = joinCondition;
+        }
+        
+        public Builder<T> withConnector(String connector) {
+            this.connector = connector;
+            return this;
+        }
+        
+        public JoinCondition<T> build() {
+            return new JoinCondition<>(this);
+        }
+    }
 }

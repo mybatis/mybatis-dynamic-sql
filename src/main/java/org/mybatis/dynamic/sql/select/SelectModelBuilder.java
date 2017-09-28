@@ -26,7 +26,9 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
+import org.mybatis.dynamic.sql.select.join.JoinConditionR;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -39,6 +41,7 @@ public class SelectModelBuilder {
     private WhereModel whereModel;
     private List<SqlColumn<?>> orderByColumns;
     private JoinModel joinModel;
+    private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
     private SelectModelBuilder(SqlColumn<?>...columns) {
         this.columns = Arrays.asList(columns);
@@ -105,13 +108,13 @@ public class SelectModelBuilder {
             return buildModel();
         }
 
-        public JoinSpecificationBuilder join(SqlTable joinTable) {
-            return new JoinSpecificationBuilder(this, joinTable);
+        public JoinSpecificationStarter join(SqlTable joinTable) {
+            return new JoinSpecificationStarter(joinTable);
         }
         
-        public JoinSpecificationBuilder join(SqlTable joinTable, String tableAlias) {
+        public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
             tableAliases.put(joinTable, tableAlias);
-            return new JoinSpecificationBuilder(this, joinTable);
+            return new JoinSpecificationStarter(joinTable);
         }
     }
     
@@ -144,40 +147,54 @@ public class SelectModelBuilder {
         }
     }
     
-    public class JoinSpecificationBuilder {
+    public class JoinSpecificationStarter {
         private SqlTable joinTable;
-        private SelectSupportJoinBuilder joinBuilder;
         
-        public JoinSpecificationBuilder(SelectSupportAfterFromBuilder ancestorBuilder, SqlTable joinTable) {
+        public JoinSpecificationStarter(SqlTable joinTable) {
             this.joinTable = joinTable;
-            joinBuilder = new SelectSupportJoinBuilder(ancestorBuilder);
         }
 
-        public <T> SelectSupportJoinBuilder on(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-            joinBuilder.addJoinSpecification(JoinSpecification.of(joinTable, JoinColumnAndCondition.of(joinColumn, joinCondition)));
-            return joinBuilder;
+        public <T> JoinSpecificationFinisher on(SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR) {
+            return new JoinSpecificationFinisher(joinTable, joinColumn, joinConditionR);
         }
 
-        public <T> SelectSupportJoinBuilder on(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition, JoinColumnAndCondition<?>...joinColumnsAndConditions) {
-            joinBuilder.addJoinSpecification(JoinSpecification.of(joinTable, JoinColumnAndCondition.of(joinColumn, joinCondition), joinColumnsAndConditions));
-            return joinBuilder;
+        public <T> JoinSpecificationFinisher on(SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR, JoinCondition<?>...joinConditions) {
+            return new JoinSpecificationFinisher(joinTable, joinColumn, joinConditionR, joinConditions);
         }
     }
 
-    public class SelectSupportJoinBuilder implements Buildable {
+    public class JoinSpecificationFinisher implements Buildable {
 
-        private List<JoinSpecification> joinSpecifications = new ArrayList<>();
-        private SelectSupportAfterFromBuilder ancestorBuilder;
+        private SqlTable joinTable;
+        private List<JoinCondition<?>> joinConditions = new ArrayList<>();
         
-        public void addJoinSpecification(JoinSpecification joinSpecification) {
-            joinSpecifications.add(joinSpecification);
+        public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR) {
+            this.joinTable = table;
+
+            JoinCondition<T> joinCondition = new JoinCondition.Builder<>(joinColumn, joinConditionR)
+                    .withConnector("on") //$NON-NLS-1$
+                    .build();
+            
+            joinConditions.add(joinCondition);
+        }
+
+        public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR, JoinCondition<?>...joinConditions) {
+            this.joinTable = table;
+
+            JoinCondition<T> joinCondition = new JoinCondition.Builder<>(joinColumn, joinConditionR)
+                    .withConnector("on") //$NON-NLS-1$
+                    .build();
+            
+            this.joinConditions.add(joinCondition);
+            this.joinConditions.addAll(Arrays.asList(joinConditions));
         }
         
-        public <T> SelectSupportJoinBuilder(SelectSupportAfterFromBuilder ancestorBuilder) {
-            this.ancestorBuilder = ancestorBuilder;
+        protected JoinSpecification buildJoinSpecification() {
+            return new JoinSpecification.Builder(joinTable, joinConditions).build();
         }
-
+        
         protected JoinModel buildJoinModel() {
+            joinSpecifications.add(buildJoinSpecification());
             return JoinModel.of(joinSpecifications);
         }
         
@@ -204,8 +221,23 @@ public class SelectModelBuilder {
             return new SelectSupportAfterOrderByBuilder();
         }
 
-        public <T> SelectSupportAfterFromBuilder and(SqlColumn<T> column, JoinCondition<T> joinCondition) {
-            return ancestorBuilder;
+        public <T> JoinSpecificationFinisher and(SqlColumn<T> column, JoinConditionR<T> joinConditionR) {
+            JoinCondition<T> joinCondition = new JoinCondition.Builder<>(column, joinConditionR)
+                    .withConnector("and") //$NON-NLS-1$
+                    .build();
+            this.joinConditions.add(joinCondition);
+            return this;
+        }
+
+        public JoinSpecificationStarter join(SqlTable joinTable) {
+            joinSpecifications.add(buildJoinSpecification());
+            return new JoinSpecificationStarter(joinTable);
+        }
+        
+        public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
+            joinSpecifications.add(buildJoinSpecification());
+            tableAliases.put(joinTable, tableAlias);
+            return new JoinSpecificationStarter(joinTable);
         }
     }
     
