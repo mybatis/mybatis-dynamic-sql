@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingUtilities;
@@ -44,11 +43,12 @@ public class JoinRenderer {
         return "join " //$NON-NLS-1$
                 + RenderingUtilities.tableNameIncludingAlias(joinSpecification.table(), tableAliases)
                 + " " //$NON-NLS-1$
-                + render(joinSpecification.joinConditions());
+                + renderConditions(joinSpecification);
     }
     
-    private String render(Stream<JoinCondition<?>> joinConditions) {
-        return joinConditions.map(this::render)
+    private String renderConditions(JoinSpecification joinSpecification) {
+        return joinSpecification.joinConditions()
+                .map(this::render)
                 .collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
     
