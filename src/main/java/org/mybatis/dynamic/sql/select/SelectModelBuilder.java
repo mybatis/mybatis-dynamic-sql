@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.Condition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.select.join.JoinCondition;
+import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinConditionR;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -159,41 +159,41 @@ public class SelectModelBuilder {
         }
 
         public <T> JoinSpecificationFinisher on(SqlColumn<T> joinColumn, JoinConditionR<T> joinConditionR,
-                JoinCondition<?>...joinConditions) {
-            return new JoinSpecificationFinisher(joinTable, joinColumn, joinConditionR, joinConditions);
+                JoinCriterion<?>...joinCriteria) {
+            return new JoinSpecificationFinisher(joinTable, joinColumn, joinConditionR, joinCriteria);
         }
     }
 
     public class JoinSpecificationFinisher implements Buildable {
 
         private SqlTable joinTable;
-        private List<JoinCondition<?>> joinConditions = new ArrayList<>();
+        private List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
         
         public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn,
                 JoinConditionR<T> joinConditionR) {
             this.joinTable = table;
 
-            JoinCondition<T> joinCondition = new JoinCondition.Builder<>(joinColumn, joinConditionR)
+            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<>(joinColumn, joinConditionR)
                     .withConnector("on") //$NON-NLS-1$
                     .build();
             
-            joinConditions.add(joinCondition);
+            joinCriteria.add(joinCriterion);
         }
 
         public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn,
-                JoinConditionR<T> joinConditionR, JoinCondition<?>...joinConditions) {
+                JoinConditionR<T> joinConditionR, JoinCriterion<?>...joinCriteria) {
             this.joinTable = table;
 
-            JoinCondition<T> joinCondition = new JoinCondition.Builder<>(joinColumn, joinConditionR)
+            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<>(joinColumn, joinConditionR)
                     .withConnector("on") //$NON-NLS-1$
                     .build();
             
-            this.joinConditions.add(joinCondition);
-            this.joinConditions.addAll(Arrays.asList(joinConditions));
+            this.joinCriteria.add(joinCriterion);
+            this.joinCriteria.addAll(Arrays.asList(joinCriteria));
         }
         
         protected JoinSpecification buildJoinSpecification() {
-            return new JoinSpecification.Builder(joinTable, joinConditions).build();
+            return new JoinSpecification.Builder(joinTable, joinCriteria).build();
         }
         
         protected JoinModel buildJoinModel() {
@@ -225,10 +225,10 @@ public class SelectModelBuilder {
         }
 
         public <T> JoinSpecificationFinisher and(SqlColumn<T> column, JoinConditionR<T> joinConditionR) {
-            JoinCondition<T> joinCondition = new JoinCondition.Builder<>(column, joinConditionR)
+            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<>(column, joinConditionR)
                     .withConnector("and") //$NON-NLS-1$
                     .build();
-            this.joinConditions.add(joinCondition);
+            this.joinCriteria.add(joinCriterion);
             return this;
         }
 

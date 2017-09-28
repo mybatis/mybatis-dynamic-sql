@@ -17,13 +17,13 @@ package org.mybatis.dynamic.sql.select.join;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class JoinCondition<T> {
+public class JoinCriterion<T> {
 
     private String connector;
     private SqlColumn<T> leftColumn;
     private JoinConditionR<T> joinConditionR;
     
-    private JoinCondition(Builder<T> builder) {
+    private JoinCriterion(Builder<T> builder) {
         connector = builder.connector;
         leftColumn = builder.leftColumn;
         joinConditionR = builder.joinConditionR;
@@ -60,8 +60,8 @@ public class JoinCondition<T> {
             return this;
         }
         
-        public JoinCondition<T> build() {
-            return new JoinCondition<>(this);
+        public JoinCriterion<T> build() {
+            return new JoinCriterion<>(this);
         }
     }
 }

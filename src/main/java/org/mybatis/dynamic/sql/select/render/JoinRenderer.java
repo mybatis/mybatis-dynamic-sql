@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingUtilities;
-import org.mybatis.dynamic.sql.select.join.JoinCondition;
+import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 
@@ -47,19 +47,19 @@ public class JoinRenderer {
     }
     
     private String renderConditions(JoinSpecification joinSpecification) {
-        return joinSpecification.joinConditions()
+        return joinSpecification.joinCriteria()
                 .map(this::render)
                 .collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
     
-    private String render(JoinCondition<?> joinCondition) {
-        return joinCondition.connector()
+    private String render(JoinCriterion<?> joinCriterion) {
+        return joinCriterion.connector()
                 + " " //$NON-NLS-1$
-                + RenderingUtilities.columnNameIncludingTableAlias(joinCondition.leftColumn(), tableAliases)
+                + RenderingUtilities.columnNameIncludingTableAlias(joinCriterion.leftColumn(), tableAliases)
                 + " " //$NON-NLS-1$
-                + joinCondition.operator()
+                + joinCriterion.operator()
                 + " " //$NON-NLS-1$
-                + RenderingUtilities.columnNameIncludingTableAlias(joinCondition.rightColumn(), tableAliases);
+                + RenderingUtilities.columnNameIncludingTableAlias(joinCriterion.rightColumn(), tableAliases);
     }
     
     public static JoinRenderer of(JoinModel joinModel, Map<SqlTable, String> tableAliases) {

@@ -24,28 +24,28 @@ import org.mybatis.dynamic.sql.SqlTable;
 public class JoinSpecification {
 
     private SqlTable table;
-    private List<JoinCondition<?>> joinConditions = new ArrayList<>();
+    private List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
     
     private JoinSpecification(Builder builder) {
         table = builder.table;
-        joinConditions.addAll(builder.joinConditions);
+        joinCriteria.addAll(builder.joinCriteria);
     }
     
     public SqlTable table() {
         return table;
     }
     
-    public Stream<JoinCondition<?>> joinConditions() {
-        return joinConditions.stream();
+    public Stream<JoinCriterion<?>> joinCriteria() {
+        return joinCriteria.stream();
     }
     
     public static class Builder {
         private SqlTable table;
-        private List<JoinCondition<?>> joinConditions = new ArrayList<>();
+        private List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
         
-        public Builder(SqlTable table, List<JoinCondition<?>> joinConditions) {
+        public Builder(SqlTable table, List<JoinCriterion<?>> joinCriteria) {
             this.table = table;
-            this.joinConditions.addAll(joinConditions);
+            this.joinCriteria.addAll(joinCriteria);
         }
         
         public JoinSpecification build() {
