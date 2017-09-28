@@ -15,8 +15,11 @@
  */
 package examples.joins;
 
+import static examples.joins.ItemMasterDynamicSQLSupport.*;
 import static examples.joins.OrderDetailDynamicSQLSupport.*;
+import static examples.joins.OrderLineDynamicSQLSupport.*;
 import static examples.joins.OrderMasterDynamicSQLSupport.*;
+import static org.mybatis.dynamic.sql.SqlConditions.*;
 import static org.mybatis.dynamic.sql.select.join.JoinConditions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
@@ -66,7 +69,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectSupport selectSupport = select(orderMaster.orderId, orderDate, lineNumber, description, quantity)
+            SelectSupport selectSupport = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                     .from(orderMaster, "om")
                     .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
                     .build()
@@ -100,7 +103,7 @@ public class JoinMapperTest {
     @Test
     public void testCompoundJoin1() {
         // this is a nonsensical join, but it does test the "and" capability
-        SelectSupport selectSupport = select(orderMaster.orderId, orderDate, lineNumber, description, quantity)
+        SelectSupport selectSupport = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
                 .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
                 .build()
@@ -114,7 +117,7 @@ public class JoinMapperTest {
     @Test
     public void testCompoundJoin2() {
         // this is a nonsensical join, but it does test the "and" capability
-        SelectSupport selectSupport = select(orderMaster.orderId, orderDate, lineNumber, description, quantity)
+        SelectSupport selectSupport = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
                 .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
                 .and(orderMaster.orderId, equalTo(orderDetail.orderId))
@@ -124,5 +127,111 @@ public class JoinMapperTest {
         String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
                 + " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
         assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
+    }
+    
+    @Test
+    public void testCompoundJoin3() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectSupport selectSupport = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .where(orderMaster.orderId, isEqualTo(2))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
+                    + " where om.order_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<OrderMaster> rows = mapper.selectMany(selectSupport);
+
+            assertThat(rows.size()).isEqualTo(1);
+            OrderMaster orderMaster = rows.get(0);
+            assertThat(orderMaster.getId()).isEqualTo(2);
+            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            OrderDetail orderDetail = orderMaster.getDetails().get(0);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+            orderDetail = orderMaster.getDetails().get(1);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(2);
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testCompoundJoin4() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectSupport selectSupport = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .where(orderMaster.orderId, isEqualTo(2), and(orderLine.lineNumber, isEqualTo(2)))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
+                    + " where (om.order_id = #{parameters.p1,jdbcType=INTEGER} and ol.line_number = #{parameters.p2,jdbcType=INTEGER})";
+            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<OrderMaster> rows = mapper.selectMany(selectSupport);
+
+            assertThat(rows.size()).isEqualTo(1);
+            OrderMaster orderMaster = rows.get(0);
+            assertThat(orderMaster.getId()).isEqualTo(2);
+            assertThat(orderMaster.getDetails().size()).isEqualTo(1);
+            OrderDetail orderDetail = orderMaster.getDetails().get(0);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(2);
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testCompoundJoin5() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectSupport selectSupport = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .orderBy(orderMaster.orderId)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
+                    + " order by order_id ASC";
+            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<OrderMaster> rows = mapper.selectMany(selectSupport);
+
+            assertThat(rows.size()).isEqualTo(2);
+            OrderMaster orderMaster = rows.get(0);
+            assertThat(orderMaster.getId()).isEqualTo(1);
+            assertThat(orderMaster.getDetails().size()).isEqualTo(1);
+            OrderDetail orderDetail = orderMaster.getDetails().get(0);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+
+            orderMaster = rows.get(1);
+            assertThat(orderMaster.getId()).isEqualTo(2);
+            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            orderDetail = orderMaster.getDetails().get(0);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+            orderDetail = orderMaster.getDetails().get(1);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(2);
+        } finally {
+            session.close();
+        }
     }
 }

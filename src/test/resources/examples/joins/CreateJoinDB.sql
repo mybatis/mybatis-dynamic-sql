@@ -43,6 +43,7 @@ create table ItemMaster (
 create table OrderLine (
    order_id int not null,
    item_id int not null,
+   line_number int not null,
    quantity int not null,
    primary key(order_id, item_id),
    foreign key(order_id) references OrderMaster(order_id),
@@ -60,7 +61,7 @@ insert into ItemMaster(item_id, description) values(22, 'Helmet');
 insert into ItemMaster(item_id, description) values(33, 'First Base Glove');
 insert into ItemMaster(item_id, description) values(44, 'Outfield Glove');
 
-insert into OrderLine(order_id, item_id, quantity) values(1, 33, 1);
-insert into OrderLine(order_id, item_id, quantity) values(2, 22, 2);
-insert into OrderLine(order_id, item_id, quantity) values(2, 44, 3);
+insert into OrderLine(order_id, item_id, line_number, quantity) values(1, 33, 1, 5);
+insert into OrderLine(order_id, item_id, line_number, quantity) values(2, 22, 1, 6);
+insert into OrderLine(order_id, item_id, line_number, quantity) values(2, 44, 2, 7);
 

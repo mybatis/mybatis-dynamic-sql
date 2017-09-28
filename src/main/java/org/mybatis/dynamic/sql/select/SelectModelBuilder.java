@@ -114,7 +114,7 @@ public class SelectModelBuilder {
         
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
             tableAliases.put(joinTable, tableAlias);
-            return new JoinSpecificationStarter(joinTable);
+            return join(joinTable);
         }
     }
     
@@ -238,9 +238,8 @@ public class SelectModelBuilder {
         }
         
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
-            joinSpecifications.add(buildJoinSpecification());
             tableAliases.put(joinTable, tableAlias);
-            return new JoinSpecificationStarter(joinTable);
+            return join(joinTable);
         }
     }
     
