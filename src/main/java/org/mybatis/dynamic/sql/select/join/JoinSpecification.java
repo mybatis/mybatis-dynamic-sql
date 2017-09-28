@@ -26,7 +26,7 @@ public class JoinSpecification {
     private SqlTable table;
     private List<JoinCondition<?>> joinConditions = new ArrayList<>();
     
-    private <T> JoinSpecification(Builder builder) {
+    private JoinSpecification(Builder builder) {
         table = builder.table;
         joinConditions.addAll(builder.joinConditions);
     }
