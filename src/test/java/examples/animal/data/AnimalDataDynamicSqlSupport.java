@@ -20,10 +20,21 @@ import java.sql.JDBCType;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
-public interface AnimalDataDynamicSqlSupport {
-    SqlTable animalData = SqlTable.of("AnimalData");
-    SqlColumn<Integer> id = animalData.column("id", JDBCType.INTEGER); 
-    SqlColumn<String> animalName = animalData.column("animal_name", JDBCType.VARCHAR);
-    SqlColumn<Double> bodyWeight = animalData.column("body_weight", JDBCType.DOUBLE);
-    SqlColumn<Double> brainWeight = animalData.column("brain_weight", JDBCType.DOUBLE);
+public class AnimalDataDynamicSqlSupport {
+    public static final AnimalData animalData = new AnimalData();
+    public static final SqlColumn<Integer> id = animalData.id; 
+    public static final SqlColumn<String> animalName = animalData.animalName;
+    public static final SqlColumn<Double> bodyWeight = animalData.bodyWeight;
+    public static final SqlColumn<Double> brainWeight = animalData.brainWeight;
+    
+    public static class AnimalData extends SqlTable {
+        public AnimalData() {
+            super("AnimalData");
+        }
+
+        public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER); 
+        public final SqlColumn<String> animalName = column("animal_name", JDBCType.VARCHAR);
+        public final SqlColumn<Double> bodyWeight = column("body_weight", JDBCType.DOUBLE);
+        public final SqlColumn<Double> brainWeight = column("brain_weight", JDBCType.DOUBLE);
+    }
 }

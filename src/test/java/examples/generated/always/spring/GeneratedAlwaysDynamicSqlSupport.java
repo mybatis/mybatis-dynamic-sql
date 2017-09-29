@@ -28,14 +28,25 @@ import org.mybatis.dynamic.sql.select.SelectModelBuilder.SelectSupportAfterFromB
 import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
-public interface GeneratedAlwaysDynamicSqlSupport {
-    SqlTable generatedAlways = SqlTable.of("GeneratedAlways");
-    SqlColumn<Integer> id = SqlColumn.of(generatedAlways, "id", JDBCType.INTEGER).withAlias("A_ID");
-    SqlColumn<String> firstName = SqlColumn.of(generatedAlways, "first_name", JDBCType.VARCHAR);
-    SqlColumn<String> lastName = SqlColumn.of(generatedAlways, "last_name", JDBCType.VARCHAR);
-    SqlColumn<String> fullName = SqlColumn.of(generatedAlways, "full_name", JDBCType.VARCHAR);
+public class GeneratedAlwaysDynamicSqlSupport {
+    public static final GeneratedAlways generatedAlways = new GeneratedAlways();
+    public static final SqlColumn<Integer> id = generatedAlways.id;
+    public static final SqlColumn<String> firstName = generatedAlways.firstName;
+    public static final SqlColumn<String> lastName = generatedAlways.lastName;
+    public static final SqlColumn<String> fullName = generatedAlways.fullName;
     
-    static InsertSupport<GeneratedAlwaysRecord> buildInsertSupport(GeneratedAlwaysRecord record) {
+    public static class GeneratedAlways extends SqlTable {
+        public GeneratedAlways() {
+            super("GeneratedAlways");
+        }
+
+        public SqlColumn<Integer> id = column("id", JDBCType.INTEGER).withAlias("A_ID");
+        public SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
+        public SqlColumn<String> lastName = column("last_name", JDBCType.VARCHAR);
+        public SqlColumn<String> fullName = column("full_name", JDBCType.VARCHAR);
+    }
+    
+    public static InsertSupport<GeneratedAlwaysRecord> buildInsertSupport(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
@@ -45,7 +56,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
-    static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
+    public static InsertSupport<GeneratedAlwaysRecord> buildInsertSelectiveSupport(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
                 .map(id).toPropertyWhenPresent("id")
@@ -55,7 +66,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
     
-    static UpdateSupport buildUpdateByPrimaryKeySupport(GeneratedAlwaysRecord record) {
+    public static UpdateSupport buildUpdateByPrimaryKeySupport(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
@@ -64,7 +75,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
-    static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(GeneratedAlwaysRecord record) {
+    public static UpdateSupport buildUpdateByPrimaryKeySelectiveSupport(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
@@ -73,21 +84,21 @@ public interface GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
-    static UpdateModelBuilder updateByExample(GeneratedAlwaysRecord record) {
+    public static UpdateModelBuilder updateByExample(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName());
     }
 
-    static UpdateModelBuilder updateByExampleSelective(GeneratedAlwaysRecord record) {
+    public static UpdateModelBuilder updateByExampleSelective(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName());
     }
 
-    static SelectSupportAfterFromBuilder selectByExample() {
+    public static SelectSupportAfterFromBuilder selectByExample() {
         return select(id, firstName, lastName, fullName)
             .from(generatedAlways, "a");
     }
