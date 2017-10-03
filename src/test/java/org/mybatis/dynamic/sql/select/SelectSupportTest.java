@@ -36,14 +36,14 @@ import org.mybatis.dynamic.sql.select.render.SelectSupport;
 public class SelectSupportTest {
     
     public static final SqlTable table = SqlTable.of("foo");
-    public static final SqlColumn<Date> column1 = SqlColumn.of(table, "column1", JDBCType.DATE).withAlias("A_COLUMN1");
+    public static final SqlColumn<Date> column1 = SqlColumn.of(table, "column1", JDBCType.DATE);
     public static final SqlColumn<Integer> column2 = SqlColumn.of(table, "column2", JDBCType.INTEGER);
 
     @Test
     public void testSimpleCriteria() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select(column1, column2)
+        SelectSupport selectSupport = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d), and(column2, isEqualTo(33)))
                 .or(column2, isEqualTo(4))
@@ -75,7 +75,7 @@ public class SelectSupportTest {
     public void testComplexCriteria() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select(column1, column2)
+        SelectSupport selectSupport = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
@@ -119,7 +119,7 @@ public class SelectSupportTest {
     public void testOrderBySingleColumnAscending() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select(column1, column2)
+        SelectSupport selectSupport = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .orderBy(column1)
@@ -131,7 +131,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause())
                 .isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by A_COLUMN1 ASC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by column1 ASC");
 
             String expectedFullStatement = "select "
                     + selectSupport.getColumnList()
@@ -151,7 +151,7 @@ public class SelectSupportTest {
     public void testOrderBySingleColumnDescending() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select(column1, column2)
+        SelectSupport selectSupport = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending())
@@ -182,7 +182,7 @@ public class SelectSupportTest {
     public void testOrderByMultipleColumns() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select(column1, column2)
+        SelectSupport selectSupport = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)
@@ -193,7 +193,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by column2 DESC, A_COLUMN1 ASC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by column2 DESC, column1 ASC");
         
             String expectedFullStatement = "select "
                     + selectSupport.getColumnList()
@@ -213,7 +213,7 @@ public class SelectSupportTest {
     public void testDistinct() {
         Date d = new Date();
 
-        SelectSupport selectSupport = selectDistinct(column1, column2)
+        SelectSupport selectSupport = selectDistinct(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)
@@ -224,7 +224,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("distinct");
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by column2 DESC, A_COLUMN1 ASC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by column2 DESC, column1 ASC");
         
             String expectedFullStatement = "select distinct "
                     + selectSupport.getColumnList()

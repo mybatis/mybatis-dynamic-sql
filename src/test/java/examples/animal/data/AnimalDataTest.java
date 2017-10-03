@@ -17,6 +17,7 @@ package examples.animal.data;
 
 import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
@@ -39,7 +40,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -645,14 +645,14 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(count())
+            SelectSupport selectSupport = select(count().as("total"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) from AnimalData a");
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*) as total");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) as total from AnimalData a");
             
                 Long count = mapper.selectALong(selectSupport);
                 softly.assertThat(count).isEqualTo(65);
@@ -663,19 +663,235 @@ public class AnimalDataTest {
     }
 
     @Test
+    public void testCountField() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(count(brainWeight).as("total"))
+                    .from(animalData, "a")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(a.brain_weight) as total");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(a.brain_weight) as total from AnimalData a");
+            
+                Long count = mapper.selectALong(selectSupport);
+                softly.assertThat(count).isEqualTo(65);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
     public void testCountNoAlias() {
-        SqlTable animalDataNoAlias = SqlTable.of("AnimalData");
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
             SelectSupport selectSupport = select(count())
-                    .from(animalDataNoAlias)
+                    .from(animalData)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            Long count = mapper.selectALong(selectSupport);
-            assertThat(count).isEqualTo(65);
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) from AnimalData");
+            
+                Long count = mapper.selectALong(selectSupport);
+                softly.assertThat(count).isEqualTo(65);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testMax() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(max(brainWeight).as("total"))
+                    .from(animalData, "a")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("max(a.brain_weight) as total");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select max(a.brain_weight) as total from AnimalData a");
+            
+                Double max = mapper.selectADouble(selectSupport);
+                softly.assertThat(max).isEqualTo(87000.0);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testMaxNoAlias() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(max(brainWeight))
+                    .from(animalData)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("max(brain_weight)");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select max(brain_weight) from AnimalData");
+            
+                Double max = mapper.selectADouble(selectSupport);
+                softly.assertThat(max).isEqualTo(87000.0);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testMaxSubselect() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "a")
+                    .where(brainWeight, isEqualTo(select(max(brainWeight)).from(animalData, "b")))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight = (select max(b.brain_weight) from AnimalData b)");
+            
+                List<AnimalData> records = mapper.selectMany(selectSupport);
+                softly.assertThat(records.size()).isEqualTo(1);
+                AnimalData record = records.get(0);
+                softly.assertThat(record.getAnimalName()).isEqualTo("Brachiosaurus");
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testMin() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(min(brainWeight).as("total"))
+                    .from(animalData, "a")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("min(a.brain_weight) as total");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select min(a.brain_weight) as total from AnimalData a");
+            
+                Double min = mapper.selectADouble(selectSupport);
+                softly.assertThat(min).isEqualTo(0.005);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testMinNoAlias() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(min(brainWeight))
+                    .from(animalData)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("min(brain_weight)");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select min(brain_weight) from AnimalData");
+            
+                Double min = mapper.selectADouble(selectSupport);
+                softly.assertThat(min).isEqualTo(0.005);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testMinSubselectNoAlias() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(brainWeight, isNotEqualTo(select(min(brainWeight)).from(animalData)))
+                    .orderBy(animalName)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where brain_weight <> (select min(brain_weight) from AnimalData) order by animal_name ASC");
+            
+                List<AnimalData> records = mapper.selectMany(selectSupport);
+                softly.assertThat(records.size()).isEqualTo(64);
+                AnimalData record = records.get(0);
+                softly.assertThat(record.getAnimalName()).isEqualTo("African elephant");
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testAvg() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(avg(brainWeight).as("average"))
+                    .from(animalData, "a")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("avg(a.brain_weight) as average");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select avg(a.brain_weight) as average from AnimalData a");
+            
+                Double average = mapper.selectADouble(selectSupport);
+                softly.assertThat(average).isEqualTo(1852.69, within(.01));
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testSum() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(sum(brainWeight).as("total"))
+                    .from(animalData)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getColumnList()).isEqualTo("sum(brain_weight) as total");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select sum(brain_weight) as total from AnimalData");
+            
+                Double total = mapper.selectADouble(selectSupport);
+                softly.assertThat(total).isEqualTo(120424.97, within(.01));
+            });
         } finally {
             sqlSession.close();
         }

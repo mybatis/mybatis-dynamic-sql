@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface SimpleTableDynamicSqlSupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable");
-    SqlColumn<Integer> id = simpleTable.column("id", JDBCType.INTEGER).withAlias("A_ID");
+    SqlColumn<Integer> id = simpleTable.column("id", JDBCType.INTEGER);
     SqlColumn<String> firstName = simpleTable.column("first_name", JDBCType.VARCHAR);
     SqlColumn<String> lastName = simpleTable.column("last_name", JDBCType.VARCHAR);
     SqlColumn<Date> birthDate = simpleTable.column("birth_date", JDBCType.DATE);
@@ -118,12 +118,12 @@ public interface SimpleTableDynamicSqlSupport {
     }
     
     static SelectSupportAfterFromBuilder selectByExample() {
-        return select(id, firstName, lastName, birthDate, employed, occupation)
+        return select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }
 
     static SelectSupport buildSelectByPrimaryKeySupport(Integer id_) {
-        return select(id, firstName, lastName, birthDate, employed, occupation)
+        return select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)
             .where(id, isEqualTo(id_))
             .build()

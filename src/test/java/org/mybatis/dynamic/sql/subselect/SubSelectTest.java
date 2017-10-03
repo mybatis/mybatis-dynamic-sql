@@ -35,14 +35,14 @@ import org.mybatis.dynamic.sql.select.render.SelectSupport;
 public class SubSelectTest {
     
     public static final SqlTable table = SqlTable.of("foo");
-    public static final SqlColumn<Date> column1 = SqlColumn.of(table, "column1", JDBCType.DATE).withAlias("A_COLUMN1");
+    public static final SqlColumn<Date> column1 = SqlColumn.of(table, "column1", JDBCType.DATE);
     public static final SqlColumn<Integer> column2 = SqlColumn.of(table, "column2", JDBCType.INTEGER);
 
     @Test
     public void testInSubSelect() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select(column1, column2)
+        SelectSupport selectSupport = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column2, isIn(select(column2).from(table).where(column2, isEqualTo(3))))
                 .and(column1, isLessThan(d))
@@ -75,7 +75,7 @@ public class SubSelectTest {
     public void testNotInSubSelect() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select(column1, column2)
+        SelectSupport selectSupport = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column2, isNotIn(select(column2).from(table).where(column2, isEqualTo(3))))
                 .and(column1, isLessThan(d))

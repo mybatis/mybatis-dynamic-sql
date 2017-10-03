@@ -21,39 +21,17 @@ import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
-/**
- * Count seems like the other aggregates, but it is special because the column is optional.
- * Rather than dealing with a useless and confusing abstraction, we simply implement
- * SelectListItem directly.
- *  
- * @author Jeff Butler
- *
- * @param <T>
- */
-public class Count<T> implements SelectListItem {
-    
-    private Optional<SqlColumn<T>> column;
-    private Optional<String> alias = Optional.empty();
+public abstract class AbstractAggregate<S, T extends AbstractAggregate<S, T>> implements SelectListItem {
+    protected SqlColumn<S> column;
+    protected Optional<String> alias = Optional.empty();
 
-    public Count() {
-        column = Optional.empty();
-    }
-
-    public Count(SqlColumn<T> column) {
-        this.column = Optional.of(column);
-    }
-    
-    @Override
-    public String nameIncludingTableAlias(Optional<String> tableAlias) {
-        return "count(" //$NON-NLS-1$
-                + column.map(c -> c.nameIncludingTableAlias(tableAlias))
-                .orElse("*") //$NON-NLS-1$
-                + ")"; //$NON-NLS-1$
+    protected AbstractAggregate(SqlColumn<S> column) {
+        this.column = column;
     }
 
     @Override
     public Optional<SqlTable> table() {
-        return column.flatMap(SqlColumn::table);
+        return column.table();
     }
 
     @Override
@@ -61,10 +39,17 @@ public class Count<T> implements SelectListItem {
         return alias;
     }
 
-    public Count<T> as(String alias) {
-        Count<T> copy = new Count<>();
-        copy.column = this.column;
+    @Override
+    public String nameIncludingTableAlias(Optional<String> tableAlias) {
+        return render(column.nameIncludingTableAlias(tableAlias));
+    }
+
+    public T as(String alias) {
+        T copy = copy();
         copy.alias = Optional.of(alias);
         return copy;
     }
+
+    protected abstract T copy();
+    protected abstract String render(String columnName);
 }

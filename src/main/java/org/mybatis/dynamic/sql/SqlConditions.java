@@ -19,9 +19,14 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.select.SelectModelBuilder;
+import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
+import org.mybatis.dynamic.sql.select.aggregate.Max;
+import org.mybatis.dynamic.sql.select.aggregate.Min;
+import org.mybatis.dynamic.sql.select.aggregate.Sum;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThan;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
@@ -33,6 +38,7 @@ import org.mybatis.dynamic.sql.where.condition.IsLike;
 import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitive;
 import org.mybatis.dynamic.sql.where.condition.IsNotBetween;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsNotIn;
 import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive;
 import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect;
@@ -77,11 +83,31 @@ public interface SqlConditions {
                 .build();
     }
 
-    // count support
-    static Count count() {
-        return new Count();
+    // aggregate support
+    static <T> Count<T> count() {
+        return new Count<>();
     }
     
+    static <T> Count<T> count(SqlColumn<T> column) {
+        return new Count<>(column);
+    }
+    
+    static <T> Max<T> max(SqlColumn<T> column) {
+        return new Max<>(column);
+    }
+    
+    static <T> Min<T> min(SqlColumn<T> column) {
+        return new Min<>(column);
+    }
+
+    static <T> Avg<T> avg(SqlColumn<T> column) {
+        return new Avg<>(column);
+    }
+
+    static <T> Sum<T> sum(SqlColumn<T> column) {
+        return new Sum<>(column);
+    }
+
     // for all data types
     static <T> IsNull<T> isNull() {
         return new IsNull<>();
@@ -95,8 +121,16 @@ public interface SqlConditions {
         return IsEqualTo.of(value);
     }
 
+    static <T> IsEqualToWithSubselect<T> isEqualTo(SelectModelBuilder.Buildable selectModelBuilder) {
+        return IsEqualToWithSubselect.of(selectModelBuilder);
+    }
+
     static <T> IsNotEqualTo<T> isNotEqualTo(T value) {
         return IsNotEqualTo.of(value);
+    }
+
+    static <T> IsNotEqualToWithSubselect<T> isNotEqualTo(SelectModelBuilder.Buildable selectModelBuilder) {
+        return IsNotEqualToWithSubselect.of(selectModelBuilder);
     }
 
     static <T> IsGreaterThan<T> isGreaterThan(T value) {

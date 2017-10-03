@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -31,7 +32,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class SelectModel {
     private boolean isDistinct;
-    private List<SqlColumn<?>> columns = new ArrayList<>();
+    private List<SelectListItem> selectList = new ArrayList<>();
     private SqlTable table;
     private Map<SqlTable, String> tableAliases = new HashMap<>();
     private Optional<WhereModel> whereModel;
@@ -39,7 +40,7 @@ public class SelectModel {
 
     private SelectModel(Builder builder) {
         isDistinct = builder.isDistinct;
-        columns.addAll(builder.columns);
+        selectList.addAll(builder.selectList);
         table = builder.table;
         tableAliases.putAll(builder.tableAliases);
         whereModel = Optional.ofNullable(builder.whereModel);
@@ -50,8 +51,8 @@ public class SelectModel {
         return isDistinct;
     }
     
-    public Stream<SqlColumn<?>> columns() {
-        return columns.stream();
+    public Stream<SelectListItem> columns() {
+        return selectList.stream();
     }
     
     public SqlTable table() {
@@ -80,7 +81,7 @@ public class SelectModel {
     
     public static class Builder {
         private boolean isDistinct;
-        private List<SqlColumn<?>> columns = new ArrayList<>();
+        private List<SelectListItem> selectList = new ArrayList<>();
         private SqlTable table;
         private Map<SqlTable, String> tableAliases = new HashMap<>();
         private WhereModel whereModel;
@@ -95,8 +96,8 @@ public class SelectModel {
             return this;
         }
 
-        public Builder withColumns(List<SqlColumn<?>> columns) {
-            this.columns.addAll(columns);
+        public Builder withColumns(List<SelectListItem> selectList) {
+            this.selectList.addAll(selectList);
             return this;
         }
 

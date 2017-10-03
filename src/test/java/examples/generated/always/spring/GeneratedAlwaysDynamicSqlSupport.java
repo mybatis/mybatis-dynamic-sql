@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface GeneratedAlwaysDynamicSqlSupport {
     SqlTable generatedAlways = SqlTable.of("GeneratedAlways");
-    SqlColumn<Integer> id = SqlColumn.of(generatedAlways, "id", JDBCType.INTEGER).withAlias("A_ID");
+    SqlColumn<Integer> id = SqlColumn.of(generatedAlways, "id", JDBCType.INTEGER);
     SqlColumn<String> firstName = SqlColumn.of(generatedAlways, "first_name", JDBCType.VARCHAR);
     SqlColumn<String> lastName = SqlColumn.of(generatedAlways, "last_name", JDBCType.VARCHAR);
     SqlColumn<String> fullName = SqlColumn.of(generatedAlways, "full_name", JDBCType.VARCHAR);
@@ -88,7 +88,7 @@ public interface GeneratedAlwaysDynamicSqlSupport {
     }
 
     static SelectSupportAfterFromBuilder selectByExample() {
-        return select(id, firstName, lastName, fullName)
+        return select(id.as("A_ID"), firstName, lastName, fullName)
             .from(generatedAlways, "a");
     }
 }
