@@ -839,7 +839,7 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <> (select min(b.brain_weight) from AnimalData b) order by a.animal_name ASC");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <> (select min(b.brain_weight) from AnimalData b) order by a.animal_name");
             
                 List<AnimalData> records = mapper.selectMany(selectSupport);
                 softly.assertThat(records.size()).isEqualTo(64);
@@ -865,7 +865,7 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where brain_weight <> (select min(brain_weight) from AnimalData) order by animal_name ASC");
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where brain_weight <> (select min(brain_weight) from AnimalData) order by animal_name");
             
                 List<AnimalData> records = mapper.selectMany(selectSupport);
                 softly.assertThat(records.size()).isEqualTo(64);

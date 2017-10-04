@@ -96,7 +96,11 @@ public class SelectRenderer {
     }
     
     private String orderByPhrase(SqlColumn<?> column) {
-        return column.alias().orElse(calculateColumnNameAndTableAlias(column)) + " " + column.sortOrder(); //$NON-NLS-1$
+        String phrase = column.alias().orElse(calculateColumnNameAndTableAlias(column));
+        if (column.isDescending()) {
+            phrase = phrase + " DESC"; //$NON-NLS-1$
+        }
+        return phrase;
     }
     
     public static SelectRenderer of(SelectModel selectModel) {

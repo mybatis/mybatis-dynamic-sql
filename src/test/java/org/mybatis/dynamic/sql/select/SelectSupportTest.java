@@ -131,7 +131,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause())
                 .isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column1 ASC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column1");
 
             String expectedFullStatement = "select "
                     + selectSupport.getColumnList()
@@ -193,7 +193,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1 ASC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1");
         
             String expectedFullStatement = "select "
                     + selectSupport.getColumnList()
@@ -224,7 +224,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("distinct");
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1 ASC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1");
         
             String expectedFullStatement = "select distinct "
                     + selectSupport.getColumnList()

@@ -28,13 +28,10 @@ import java.util.Optional;
 */
 public class SqlColumn<T> implements SelectListItem {
     
-    private static final String ASCENDING = "ASC"; //$NON-NLS-1$
-    private static final String DESCENDING = "DESC"; //$NON-NLS-1$
-
     protected String name;
     protected SqlTable table;
     protected JDBCType jdbcType;
-    protected String sortOrder = ASCENDING;
+    protected boolean isDescending = false;
     protected Optional<String> alias = Optional.empty();
     protected Optional<String> typeHandler = Optional.empty();
     
@@ -42,7 +39,7 @@ public class SqlColumn<T> implements SelectListItem {
         this.name = sqlColumn.name;
         this.table = sqlColumn.table;
         this.jdbcType = sqlColumn.jdbcType;
-        this.sortOrder = sqlColumn.sortOrder;
+        this.isDescending = sqlColumn.isDescending;
         this.alias = sqlColumn.alias;
         this.typeHandler = sqlColumn.typeHandler;
     }
@@ -77,7 +74,7 @@ public class SqlColumn<T> implements SelectListItem {
     
     public <S> SqlColumn<S> descending() {
         SqlColumn<S> column = new SqlColumn<>(this);
-        column.sortOrder = DESCENDING;
+        column.isDescending = true;
         return column;
     }
     
@@ -93,8 +90,8 @@ public class SqlColumn<T> implements SelectListItem {
         return column;
     }
     
-    public String sortOrder() {
-        return sortOrder;
+    public boolean isDescending() {
+        return isDescending;
     }
     
     @Override
