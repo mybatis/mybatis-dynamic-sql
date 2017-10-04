@@ -51,5 +51,6 @@ public abstract class AbstractAggregate<S, T extends AbstractAggregate<S, T>> im
     }
 
     protected abstract T copy();
+    
     protected abstract String render(String columnName);
 }

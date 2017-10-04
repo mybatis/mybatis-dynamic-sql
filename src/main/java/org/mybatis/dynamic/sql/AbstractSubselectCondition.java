@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 public abstract class AbstractSubselectCondition<T> extends Condition<T> {
     private SelectModel selectModel;
     
-    protected AbstractSubselectCondition (SelectModelBuilder.Buildable selectModelBuilder) {
+    protected AbstractSubselectCondition(SelectModelBuilder.Buildable selectModelBuilder) {
         this.selectModel = selectModelBuilder.build();
     }
     
