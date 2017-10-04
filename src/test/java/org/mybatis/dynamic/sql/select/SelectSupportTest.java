@@ -131,7 +131,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause())
                 .isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by column1 ASC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column1 ASC");
 
             String expectedFullStatement = "select "
                     + selectSupport.getColumnList()
@@ -162,7 +162,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by column2 DESC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC");
         
             String expectedFullStatement = "select "
                     + selectSupport.getColumnList()
@@ -193,7 +193,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by column2 DESC, column1 ASC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1 ASC");
         
             String expectedFullStatement = "select "
                     + selectSupport.getColumnList()
@@ -224,7 +224,7 @@ public class SelectSupportTest {
             softly.assertThat(selectSupport.getDistinct()).isEqualTo("distinct");
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by column2 DESC, column1 ASC");
+            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1 ASC");
         
             String expectedFullStatement = "select distinct "
                     + selectSupport.getColumnList()

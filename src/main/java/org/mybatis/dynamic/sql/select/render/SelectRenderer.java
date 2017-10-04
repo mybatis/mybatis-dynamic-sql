@@ -96,7 +96,7 @@ public class SelectRenderer {
     }
     
     private String orderByPhrase(SqlColumn<?> column) {
-        return column.alias().orElse(column.name()) + " " + column.sortOrder(); //$NON-NLS-1$
+        return column.alias().orElse(calculateColumnNameAndTableAlias(column)) + " " + column.sortOrder(); //$NON-NLS-1$
     }
     
     public static SelectRenderer of(SelectModel selectModel) {

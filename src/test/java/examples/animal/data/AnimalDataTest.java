@@ -826,6 +826,32 @@ public class AnimalDataTest {
     }
 
     @Test
+    public void testMinSubselect() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "a")
+                    .where(brainWeight, isNotEqualTo(select(min(brainWeight)).from(animalData, "b")))
+                    .orderBy(animalName)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <> (select min(b.brain_weight) from AnimalData b) order by a.animal_name ASC");
+            
+                List<AnimalData> records = mapper.selectMany(selectSupport);
+                softly.assertThat(records.size()).isEqualTo(64);
+                AnimalData record = records.get(0);
+                softly.assertThat(record.getAnimalName()).isEqualTo("African elephant");
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
     public void testMinSubselectNoAlias() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
