@@ -15,56 +15,21 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import java.util.Optional;
-
-import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
 
-/**
- * Count seems like the other aggregates, but it is special because the column is optional.
- * Rather than dealing with a useless and confusing abstraction, we simply implement
- * SelectListItem directly.
- *  
- * @author Jeff Butler
- *
- * @param <T>
- */
-public class Count<T> implements SelectListItem {
+public class Count<T> extends AbstractAggregate<T, Count<T>> {
     
-    private Optional<SqlColumn<T>> column;
-    private Optional<String> alias = Optional.empty();
-
-    public Count() {
-        column = Optional.empty();
-    }
-
     public Count(SqlColumn<T> column) {
-        this.column = Optional.of(column);
+        super(column);
     }
     
     @Override
-    public String nameIncludingTableAlias(Optional<String> tableAlias) {
-        return "count(" //$NON-NLS-1$
-                + column.map(c -> c.nameIncludingTableAlias(tableAlias))
-                .orElse("*") //$NON-NLS-1$
-                + ")"; //$NON-NLS-1$
+    public String render(String columnName) {
+        return "count(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
-    public Optional<SqlTable> table() {
-        return column.flatMap(SqlColumn::table);
-    }
-
-    @Override
-    public Optional<String> alias() {
-        return alias;
-    }
-
-    public Count<T> as(String alias) {
-        Count<T> copy = new Count<>();
-        copy.column = this.column;
-        copy.alias = Optional.of(alias);
-        return copy;
+    protected Count<T> copy() {
+        return new Count<>(column);
     }
 }

@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
+import org.mybatis.dynamic.sql.select.aggregate.CountAll;
 import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
@@ -84,8 +85,8 @@ public interface SqlConditions {
     }
 
     // aggregate support
-    static <T> Count<T> count() {
-        return new Count<>();
+    static CountAll count() {
+        return new CountAll();
     }
     
     static <T> Count<T> count(SqlColumn<T> column) {
