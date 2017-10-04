@@ -21,10 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -35,7 +36,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class SelectModelBuilder {
 
     private boolean isDistinct;
-    private List<SqlColumn<?>> columns;
+    private List<SelectListItem> selectList;
     private SqlTable table;
     private Map<SqlTable, String> tableAliases = new HashMap<>();
     private WhereModel whereModel;
@@ -43,8 +44,8 @@ public class SelectModelBuilder {
     private JoinModel joinModel;
     private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
-    private SelectModelBuilder(SqlColumn<?>...columns) {
-        this.columns = Arrays.asList(columns);
+    private SelectModelBuilder(SelectListItem...selectList) {
+        this.selectList = Arrays.asList(selectList);
     }
     
     public SelectSupportAfterFromBuilder from(SqlTable table) {
@@ -58,12 +59,12 @@ public class SelectModelBuilder {
         return new SelectSupportAfterFromBuilder();
     }
 
-    public static SelectModelBuilder of(SqlColumn<?>...columns) {
-        return new SelectModelBuilder(columns);
+    public static SelectModelBuilder of(SelectListItem...selectList) {
+        return new SelectModelBuilder(selectList);
     }
     
-    public static SelectModelBuilder ofDistinct(SqlColumn<?>...columns) {
-        SelectModelBuilder builder = SelectModelBuilder.of(columns);
+    public static SelectModelBuilder ofDistinct(SelectListItem...selectList) {
+        SelectModelBuilder builder = SelectModelBuilder.of(selectList);
         builder.isDistinct = true;
         return builder;
     }
@@ -71,7 +72,7 @@ public class SelectModelBuilder {
     protected SelectModel buildModel() {
         return new SelectModel.Builder(table)
                 .isDistinct(isDistinct)
-                .withColumns(columns)
+                .withColumns(selectList)
                 .withTableAliases(tableAliases)
                 .withWhereModel(whereModel)
                 .withOrderByColumns(orderByColumns)

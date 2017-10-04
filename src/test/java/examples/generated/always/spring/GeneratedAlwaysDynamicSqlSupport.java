@@ -40,7 +40,7 @@ public class GeneratedAlwaysDynamicSqlSupport {
             super("GeneratedAlways");
         }
 
-        public SqlColumn<Integer> id = column("id", JDBCType.INTEGER).withAlias("A_ID");
+        public SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
         public SqlColumn<String> lastName = column("last_name", JDBCType.VARCHAR);
         public SqlColumn<String> fullName = column("full_name", JDBCType.VARCHAR);
@@ -99,7 +99,7 @@ public class GeneratedAlwaysDynamicSqlSupport {
     }
 
     public static SelectSupportAfterFromBuilder selectByExample() {
-        return select(id, firstName, lastName, fullName)
+        return select(id.as("A_ID"), firstName, lastName, fullName)
             .from(generatedAlways, "a");
     }
 }

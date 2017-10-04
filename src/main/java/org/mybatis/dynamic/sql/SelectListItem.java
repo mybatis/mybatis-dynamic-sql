@@ -13,23 +13,15 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.aggregate;
+package org.mybatis.dynamic.sql;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import java.util.Optional;
 
-public class Count<T> extends AbstractAggregate<T, Count<T>> {
-    
-    public Count(SqlColumn<T> column) {
-        super(column);
-    }
-    
-    @Override
-    public String render(String columnName) {
-        return "count(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-    }
+public interface SelectListItem {
 
-    @Override
-    protected Count<T> copy() {
-        return new Count<>(column);
-    }
+    Optional<String> alias();
+
+    Optional<SqlTable> table();
+
+    String nameIncludingTableAlias(Optional<String> tableAlias);
 }

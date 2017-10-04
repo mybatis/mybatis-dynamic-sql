@@ -26,15 +26,12 @@ import java.util.Optional;
  *     it is used by the compiler to match columns with conditions so it should
  *     not be removed.
 */
-public class SqlColumn<T> {
+public class SqlColumn<T> implements SelectListItem {
     
-    private static final String ASCENDING = "ASC"; //$NON-NLS-1$
-    private static final String DESCENDING = "DESC"; //$NON-NLS-1$
-
     protected String name;
-    protected Optional<SqlTable> table;
+    protected SqlTable table;
     protected JDBCType jdbcType;
-    protected String sortOrder = ASCENDING;
+    protected boolean isDescending = false;
     protected Optional<String> alias = Optional.empty();
     protected Optional<String> typeHandler = Optional.empty();
     
@@ -42,19 +39,13 @@ public class SqlColumn<T> {
         this.name = sqlColumn.name;
         this.table = sqlColumn.table;
         this.jdbcType = sqlColumn.jdbcType;
-        this.sortOrder = sqlColumn.sortOrder;
+        this.isDescending = sqlColumn.isDescending;
         this.alias = sqlColumn.alias;
         this.typeHandler = sqlColumn.typeHandler;
     }
     
     protected SqlColumn(SqlTable table, String name, JDBCType jdbcType) {
-        this.table = Optional.of(table);
-        this.name = name;
-        this.jdbcType = jdbcType;
-    }
-    
-    protected SqlColumn(String name, JDBCType jdbcType) {
-        this.table = Optional.empty();
+        this.table = table;
         this.name = name;
         this.jdbcType = jdbcType;
     }
@@ -67,10 +58,12 @@ public class SqlColumn<T> {
         return jdbcType;
     }
 
+    @Override
     public Optional<SqlTable> table() {
-        return table;
+        return Optional.of(table);
     }
     
+    @Override
     public Optional<String> alias() {
         return alias;
     }
@@ -81,12 +74,12 @@ public class SqlColumn<T> {
     
     public <S> SqlColumn<S> descending() {
         SqlColumn<S> column = new SqlColumn<>(this);
-        column.sortOrder = DESCENDING;
+        column.isDescending = true;
         return column;
     }
     
-    public <S> SqlColumn<S> withAlias(String alias) {
-        SqlColumn<S> column = new SqlColumn<>(this);
+    public SqlColumn<T> as(String alias) {
+        SqlColumn<T> column = new SqlColumn<>(this);
         column.alias = Optional.of(alias);
         return column;
     }
@@ -97,10 +90,11 @@ public class SqlColumn<T> {
         return column;
     }
     
-    public String sortOrder() {
-        return sortOrder;
+    public boolean isDescending() {
+        return isDescending;
     }
     
+    @Override
     public String nameIncludingTableAlias(Optional<String> tableAlias) {
         return tableAlias.map(a -> a + "." + name()).orElse(name()); //$NON-NLS-1$
     }

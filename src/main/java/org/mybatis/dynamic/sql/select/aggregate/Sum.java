@@ -17,19 +17,19 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Count<T> extends AbstractAggregate<T, Count<T>> {
-    
-    public Count(SqlColumn<T> column) {
+public class Sum<T> extends AbstractAggregate<T, Sum<T>> {
+
+    public Sum(SqlColumn<T> column) {
         super(column);
     }
     
     @Override
     public String render(String columnName) {
-        return "count(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "sum(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
-    protected Count<T> copy() {
-        return new Count<>(column);
+    protected Sum<T> copy() {
+        return new Sum<>(column);
     }
 }

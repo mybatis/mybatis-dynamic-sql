@@ -34,8 +34,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
     <maven.compiler.testSource>1.8</maven.compiler.testSource>
-    <junit.jupiter.version>5.0.0</junit.jupiter.version>
-    <junit.platform.version>1.0.0</junit.platform.version>
+    <junit.jupiter.version>5.0.1</junit.jupiter.version>
+    <junit.platform.version>1.0.1</junit.platform.version>
   </properties>
   
   <reporting>
@@ -153,7 +153,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>4.3.11.RELEASE</version>
+      <version>5.0.0.RELEASE</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

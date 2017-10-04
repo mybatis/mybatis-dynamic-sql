@@ -30,12 +30,12 @@ public interface SqlBuilder {
         return InsertModelBuilder.insert(record);
     }
     
-    static SelectModelBuilder select(SqlColumn<?>...columns) {
-        return SelectModelBuilder.of(columns);
+    static SelectModelBuilder select(SelectListItem...selectList) {
+        return SelectModelBuilder.of(selectList);
     }
     
-    static SelectModelBuilder selectDistinct(SqlColumn<?>...columns) {
-        return SelectModelBuilder.ofDistinct(columns);
+    static SelectModelBuilder selectDistinct(SelectListItem...selectList) {
+        return SelectModelBuilder.ofDistinct(selectList);
     }
     
     static UpdateModelBuilder update(SqlTable table) {

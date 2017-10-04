@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -72,9 +73,9 @@ public class SelectRenderer {
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
     }
     
-    private String nameIncludingTableAndColumnAlias(SqlColumn<?> column) {
-        StringBuilder buffer = new StringBuilder(calculateColumnNameAndTableAlias(column));
-        column.alias().ifPresent(a -> {
+    private String nameIncludingTableAndColumnAlias(SelectListItem selectListItem) {
+        StringBuilder buffer = new StringBuilder(calculateColumnNameAndTableAlias(selectListItem));
+        selectListItem.alias().ifPresent(a -> {
             buffer.append(" as "); //$NON-NLS-1$
             buffer.append(a);
         });
@@ -82,8 +83,8 @@ public class SelectRenderer {
         return buffer.toString();
     }
     
-    private String calculateColumnNameAndTableAlias(SqlColumn<?> column) {
-        return column.nameIncludingTableAlias(selectModel.tableAlias(column.table()));
+    private String calculateColumnNameAndTableAlias(SelectListItem selectListItem) {
+        return selectListItem.nameIncludingTableAlias(selectModel.tableAlias(selectListItem.table()));
     }
     
     private Optional<String> calculateOrderByPhrase() {
@@ -97,7 +98,11 @@ public class SelectRenderer {
     }
     
     private String orderByPhrase(SqlColumn<?> column) {
-        return column.alias().orElse(column.name()) + " " + column.sortOrder(); //$NON-NLS-1$
+        String phrase = column.alias().orElse(calculateColumnNameAndTableAlias(column));
+        if (column.isDescending()) {
+            phrase = phrase + " DESC"; //$NON-NLS-1$
+        }
+        return phrase;
     }
     
     public static SelectRenderer of(SelectModel selectModel) {

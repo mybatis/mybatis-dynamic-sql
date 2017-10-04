@@ -212,7 +212,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
-                    + " order by order_id ASC";
+                    + " order by om.order_id";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<OrderMaster> rows = mapper.selectMany(selectSupport);

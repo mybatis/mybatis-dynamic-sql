@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
@@ -31,12 +33,23 @@ public interface AnimalDataMapper {
     @Select({
         "${fullSelectStatement}"
     })
+    @Results({
+        @Result(column="id", property="id"),
+        @Result(column="animal_name", property="animalName"),
+        @Result(column="brain_weight", property="brainWeight"),
+        @Result(column="body_weight", property="bodyWeight")
+    })
     List<AnimalData> selectMany(SelectSupport selectSupport);
 
     @Select({
         "${fullSelectStatement}"
     })
     Long selectALong(SelectSupport selectSupport);
+    
+    @Select({
+        "${fullSelectStatement}"
+    })
+    Double selectADouble(SelectSupport selectSupport);
     
     @Delete({
         "${fullDeleteStatement}"

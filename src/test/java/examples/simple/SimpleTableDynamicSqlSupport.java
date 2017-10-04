@@ -45,7 +45,7 @@ public class SimpleTableDynamicSqlSupport {
             super("SimpleTable");
         }
 
-        public SqlColumn<Integer> id = column("id", JDBCType.INTEGER).withAlias("A_ID");
+        public SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
         public SqlColumn<String> lastName = column("last_name", JDBCType.VARCHAR);
         public SqlColumn<Date> birthDate = column("birth_date", JDBCType.DATE);
@@ -131,12 +131,12 @@ public class SimpleTableDynamicSqlSupport {
     }
     
     static SelectSupportAfterFromBuilder selectByExample() {
-        return select(id, firstName, lastName, birthDate, employed, occupation)
+        return select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }
 
     static SelectSupport buildSelectByPrimaryKeySupport(Integer id_) {
-        return select(id, firstName, lastName, birthDate, employed, occupation)
+        return select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)
             .where(id, isEqualTo(id_))
             .build()
