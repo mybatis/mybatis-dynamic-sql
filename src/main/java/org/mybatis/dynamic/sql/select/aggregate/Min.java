@@ -17,9 +17,9 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Min<T> extends AbstractAggregate<T, Min<T>> {
+public class Min extends AbstractAggregate<Min> {
 
-    public Min(SqlColumn<T> column) {
+    public Min(SqlColumn<?> column) {
         super(column);
     }
     
@@ -29,7 +29,7 @@ public class Min<T> extends AbstractAggregate<T, Min<T>> {
     }
 
     @Override
-    protected Min<T> copy() {
-        return new Min<>(column);
+    protected Min copy() {
+        return new Min(column);
     }
 }

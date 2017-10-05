@@ -17,9 +17,9 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Count<T> extends AbstractAggregate<T, Count<T>> {
+public class Count extends AbstractAggregate<Count> {
     
-    public Count(SqlColumn<T> column) {
+    public Count(SqlColumn<?> column) {
         super(column);
     }
     
@@ -29,7 +29,7 @@ public class Count<T> extends AbstractAggregate<T, Count<T>> {
     }
 
     @Override
-    protected Count<T> copy() {
-        return new Count<>(column);
+    protected Count copy() {
+        return new Count(column);
     }
 }

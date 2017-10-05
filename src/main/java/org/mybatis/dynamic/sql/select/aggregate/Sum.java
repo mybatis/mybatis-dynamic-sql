@@ -17,9 +17,9 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Sum<T> extends AbstractAggregate<T, Sum<T>> {
+public class Sum extends AbstractAggregate<Sum> {
 
-    public Sum(SqlColumn<T> column) {
+    public Sum(SqlColumn<?> column) {
         super(column);
     }
     
@@ -29,7 +29,7 @@ public class Sum<T> extends AbstractAggregate<T, Sum<T>> {
     }
 
     @Override
-    protected Sum<T> copy() {
-        return new Sum<>(column);
+    protected Sum copy() {
+        return new Sum(column);
     }
 }
