@@ -17,9 +17,9 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Avg<T> extends AbstractAggregate<T, Avg<T>> {
+public class Avg extends AbstractAggregate<Avg> {
 
-    public Avg(SqlColumn<T> column) {
+    public Avg(SqlColumn<?> column) {
         super(column);
     }
     
@@ -29,7 +29,7 @@ public class Avg<T> extends AbstractAggregate<T, Avg<T>> {
     }
 
     @Override
-    protected Avg<T> copy() {
-        return new Avg<>(column);
+    protected Avg copy() {
+        return new Avg(column);
     }
 }

@@ -89,24 +89,24 @@ public interface SqlConditions {
         return new CountAll();
     }
     
-    static <T> Count<T> count(SqlColumn<T> column) {
-        return new Count<>(column);
+    static Count count(SqlColumn<?> column) {
+        return new Count(column);
     }
     
-    static <T> Max<T> max(SqlColumn<T> column) {
-        return new Max<>(column);
+    static Max max(SqlColumn<?> column) {
+        return new Max(column);
     }
     
-    static <T> Min<T> min(SqlColumn<T> column) {
-        return new Min<>(column);
+    static Min min(SqlColumn<?> column) {
+        return new Min(column);
     }
 
-    static <T> Avg<T> avg(SqlColumn<T> column) {
-        return new Avg<>(column);
+    static Avg avg(SqlColumn<?> column) {
+        return new Avg(column);
     }
 
-    static <T> Sum<T> sum(SqlColumn<T> column) {
-        return new Sum<>(column);
+    static Sum sum(SqlColumn<?> column) {
+        return new Sum(column);
     }
 
     // for all data types

@@ -17,9 +17,9 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Max<T> extends AbstractAggregate<T, Max<T>> {
+public class Max extends AbstractAggregate<Max> {
 
-    public Max(SqlColumn<T> column) {
+    public Max(SqlColumn<?> column) {
         super(column);
     }
     
@@ -29,7 +29,7 @@ public class Max<T> extends AbstractAggregate<T, Max<T>> {
     }
 
     @Override
-    protected Max<T> copy() {
-        return new Max<>(column);
+    protected Max copy() {
+        return new Max(column);
     }
 }

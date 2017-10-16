@@ -51,7 +51,7 @@ public class WhereFragmentCollector extends FragmentCollector<WhereFragmentColle
                 WhereFragmentCollector::buildWhereSupport);
     }
 
-    public static Collector<FragmentAndParameters, ?, WhereFragmentCollector> fragmentAndParameterCollector() {
+    public static Collector<FragmentAndParameters, WhereFragmentCollector, WhereFragmentCollector> fragmentAndParameterCollector() {
         return Collector.of(WhereFragmentCollector::new, WhereFragmentCollector::add, WhereFragmentCollector::merge);
     }
     

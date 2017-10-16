@@ -21,11 +21,11 @@ import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
-public abstract class AbstractAggregate<S, T extends AbstractAggregate<S, T>> implements SelectListItem {
-    protected SqlColumn<S> column;
+public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implements SelectListItem {
+    protected SqlColumn<?> column;
     protected Optional<String> alias = Optional.empty();
 
-    protected AbstractAggregate(SqlColumn<S> column) {
+    protected AbstractAggregate(SqlColumn<?> column) {
         this.column = column;
     }
 
