@@ -54,9 +54,12 @@ public class CriterionRenderer {
     }
 
     private Optional<WhereFragmentCollector> renderSubCriteria(Optional<Stream<SqlCriterion<?>>> subCriteria) {
-        return subCriteria
-                .flatMap(sc -> Optional.of(sc.map(this::renderSubCriterion)
-                        .collect(WhereFragmentCollector.fragmentAndParameterCollector())));
+        return subCriteria.flatMap(sc -> Optional.of(renderSubCriteria(sc)));
+    }
+    
+    private WhereFragmentCollector renderSubCriteria(Stream<SqlCriterion<?>> subCriteria) {
+        return subCriteria.map(this::renderSubCriterion)
+                .collect(WhereFragmentCollector.collect());
     }
     
     private String calculateFragment(WhereFragmentCollector renderedSubCriteria,

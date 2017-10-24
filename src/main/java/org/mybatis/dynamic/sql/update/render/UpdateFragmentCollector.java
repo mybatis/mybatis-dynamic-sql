@@ -48,8 +48,8 @@ public class UpdateFragmentCollector extends FragmentCollector<UpdateFragmentCol
         return this;
     }
     
-    public static Collector<FragmentAndParameters, UpdateFragmentCollector, UpdateSupport> toUpdateSupport(SqlTable table,
-            Optional<WhereSupport> whereSupport) {
+    public static Collector<FragmentAndParameters, UpdateFragmentCollector, UpdateSupport> toUpdateSupport(
+            SqlTable table, Optional<WhereSupport> whereSupport) {
         return Collector.of(() -> new UpdateFragmentCollector(table, whereSupport),
                 UpdateFragmentCollector::add,
                 UpdateFragmentCollector::merge,

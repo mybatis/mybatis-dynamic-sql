@@ -75,7 +75,8 @@ public interface SqlConditions {
                 .build();
     }
 
-    static <T> SqlCriterion<T> and(SqlColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
+    static <T> SqlCriterion<T> and(SqlColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion<?>...subCriteria) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("and") //$NON-NLS-1$
                 .withColumn(column)

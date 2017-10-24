@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.VisitableCondition;
 
 public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuilder<T>> {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();

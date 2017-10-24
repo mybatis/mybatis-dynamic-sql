@@ -18,10 +18,10 @@ package org.mybatis.dynamic.sql.update;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;

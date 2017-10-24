@@ -53,7 +53,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
         WhereFragmentCollector fc = condition.values()
                 .map(this::toTriple)
-                .collect(WhereFragmentCollector.tripleCollector());
+                .collect(WhereFragmentCollector.collectTriples());
         
         return new FragmentAndParameters.Builder(condition.renderCondition(columnName(), fc.fragments()))
                 .withParameters(fc.parameters())

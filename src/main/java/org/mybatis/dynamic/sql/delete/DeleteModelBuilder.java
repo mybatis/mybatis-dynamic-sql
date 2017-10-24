@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 
 public class DeleteModelBuilder {

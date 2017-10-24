@@ -48,11 +48,11 @@ public class JoinRenderer {
     
     private String renderConditions(JoinSpecification joinSpecification) {
         return joinSpecification.joinCriteria()
-                .map(this::render)
+                .map(this::renderCriterion)
                 .collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
     
-    private String render(JoinCriterion<?> joinCriterion) {
+    private String renderCriterion(JoinCriterion<?> joinCriterion) {
         return joinCriterion.connector()
                 + " " //$NON-NLS-1$
                 + RenderingUtilities.columnNameIncludingTableAlias(joinCriterion.leftColumn(), tableAliases)

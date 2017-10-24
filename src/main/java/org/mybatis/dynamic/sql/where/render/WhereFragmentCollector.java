@@ -40,8 +40,10 @@ public class WhereFragmentCollector extends FragmentCollector<WhereFragmentColle
         parameters.put(triple.mapKey(), triple.value());
     }
     
-    public static Collector<Triple, WhereFragmentCollector, WhereFragmentCollector> tripleCollector() {
-        return Collector.of(WhereFragmentCollector::new, WhereFragmentCollector::add, WhereFragmentCollector::merge);
+    public static Collector<Triple, WhereFragmentCollector, WhereFragmentCollector> collectTriples() {
+        return Collector.of(WhereFragmentCollector::new,
+                WhereFragmentCollector::add,
+                WhereFragmentCollector::merge);
     }
     
     public static Collector<FragmentAndParameters, WhereFragmentCollector, WhereSupport> toWhereSupport() {
@@ -51,8 +53,10 @@ public class WhereFragmentCollector extends FragmentCollector<WhereFragmentColle
                 WhereFragmentCollector::buildWhereSupport);
     }
 
-    public static Collector<FragmentAndParameters, WhereFragmentCollector, WhereFragmentCollector> fragmentAndParameterCollector() {
-        return Collector.of(WhereFragmentCollector::new, WhereFragmentCollector::add, WhereFragmentCollector::merge);
+    public static Collector<FragmentAndParameters, WhereFragmentCollector, WhereFragmentCollector> collect() {
+        return Collector.of(WhereFragmentCollector::new,
+                WhereFragmentCollector::add,
+                WhereFragmentCollector::merge);
     }
     
     public static class Triple {
