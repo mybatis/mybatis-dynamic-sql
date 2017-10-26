@@ -32,8 +32,8 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 @RunWith(JUnitPlatform.class)
 public class DeleteSupportTest {
     private static final SqlTable foo = SqlTable.of("foo");
-    private static final SqlColumn<Integer> id = SqlColumn.of(foo, "id", JDBCType.INTEGER);
-    private static final SqlColumn<String> firstName = SqlColumn.of(foo, "first_name", JDBCType.VARCHAR);
+    private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
+    private static final SqlColumn<String> firstName = foo.column("first_name", JDBCType.VARCHAR);
 
     @Test
     public void testFullStatement() {

@@ -32,10 +32,10 @@ import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 @RunWith(JUnitPlatform.class)
 public class UpdateSupportTest {
     private static final SqlTable foo = SqlTable.of("foo");
-    private static final SqlColumn<Integer> id = SqlColumn.of(foo, "id", JDBCType.INTEGER);
-    private static final SqlColumn<String> firstName = SqlColumn.of(foo, "firstName", JDBCType.VARCHAR);
-    private static final SqlColumn<String> lastName = SqlColumn.of(foo, "lastName", JDBCType.VARCHAR);
-    private static final SqlColumn<String> occupation = SqlColumn.of(foo, "occupation", JDBCType.VARCHAR);
+    private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
+    private static final SqlColumn<String> firstName = foo.column("firstName", JDBCType.VARCHAR);
+    private static final SqlColumn<String> lastName = foo.column("lastName", JDBCType.VARCHAR);
+    private static final SqlColumn<String> occupation = foo.column("occupation", JDBCType.VARCHAR);
 
     @Test
     public void testUpdateParameter() {

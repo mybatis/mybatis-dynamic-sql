@@ -33,7 +33,14 @@ public class SqlColumn<T> implements SelectListItem {
     protected JDBCType jdbcType;
     protected boolean isDescending = false;
     protected Optional<String> alias = Optional.empty();
-    protected Optional<String> typeHandler = Optional.empty();
+    protected Optional<String> typeHandler;
+    
+    private SqlColumn(Builder builder) {
+        this.name = builder.name;
+        this.jdbcType = builder.jdbcType;
+        this.table = builder.table;
+        this.typeHandler = Optional.ofNullable(builder.typeHandler);
+    }
     
     protected SqlColumn(SqlColumn<?> sqlColumn) {
         this.name = sqlColumn.name;
@@ -42,12 +49,6 @@ public class SqlColumn<T> implements SelectListItem {
         this.isDescending = sqlColumn.isDescending;
         this.alias = sqlColumn.alias;
         this.typeHandler = sqlColumn.typeHandler;
-    }
-    
-    protected SqlColumn(SqlTable table, String name, JDBCType jdbcType) {
-        this.table = table;
-        this.name = name;
-        this.jdbcType = jdbcType;
     }
     
     public String name() {
@@ -72,8 +73,8 @@ public class SqlColumn<T> implements SelectListItem {
         return typeHandler;
     }
     
-    public <S> SqlColumn<S> descending() {
-        SqlColumn<S> column = new SqlColumn<>(this);
+    public SqlColumn<T> descending() {
+        SqlColumn<T> column = new SqlColumn<>(this);
         column.isDescending = true;
         return column;
     }
@@ -81,12 +82,6 @@ public class SqlColumn<T> implements SelectListItem {
     public SqlColumn<T> as(String alias) {
         SqlColumn<T> column = new SqlColumn<>(this);
         column.alias = Optional.of(alias);
-        return column;
-    }
-    
-    public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
-        SqlColumn<S> column = new SqlColumn<>(this);
-        column.typeHandler = Optional.of(typeHandler);
         return column;
     }
     
@@ -99,7 +94,34 @@ public class SqlColumn<T> implements SelectListItem {
         return tableAlias.map(a -> a + "." + name()).orElse(name()); //$NON-NLS-1$
     }
     
-    public static <T> SqlColumn<T> of(SqlTable table, String name, JDBCType jdbcType) {
-        return new SqlColumn<>(table, name, jdbcType);
+    public static class Builder {
+        private SqlTable table;
+        private String name;
+        private JDBCType jdbcType;
+        private String typeHandler;
+        
+        public Builder withTable(SqlTable table) {
+            this.table = table;
+            return this;
+        }
+        
+        public Builder withName(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public Builder withJdbcType(JDBCType jdbcType) {
+            this.jdbcType = jdbcType;
+            return this;
+        }
+        
+        public Builder withTypeHandler(String typeHandler) {
+            this.typeHandler = typeHandler;
+            return this;
+        }
+        
+        public <T> SqlColumn<T> build() {
+            return new SqlColumn<>(this);
+        }
     }
 }

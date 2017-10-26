@@ -39,7 +39,7 @@ public class CriterionRendererTest {
     @Test
     public void testAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Integer> column = SqlColumn.of(table, "id", JDBCType.INTEGER);
+        SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
@@ -59,7 +59,7 @@ public class CriterionRendererTest {
     @Test
     public void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Integer> column = SqlColumn.of(table, "id", JDBCType.INTEGER);
+        SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
                 .withColumn(column)
@@ -80,7 +80,7 @@ public class CriterionRendererTest {
     @Test
     public void testNoAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Integer> column = SqlColumn.of(table, "id", JDBCType.INTEGER);
+        SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
                 .withColumn(column)
@@ -99,7 +99,7 @@ public class CriterionRendererTest {
     @Test
     public void testNoAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Integer> column = SqlColumn.of(table, "id", JDBCType.INTEGER);
+        SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
                 .withColumn(column)
@@ -118,7 +118,7 @@ public class CriterionRendererTest {
     @Test
     public void testTypeHandler() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Date> column = SqlColumn.of(table, "id", JDBCType.DATE).withTypeHandler("foo.Bar");
+        SqlColumn<Date> column = table.column("id", JDBCType.DATE, "foo.Bar");
         IsEqualTo<Date> condition = IsEqualTo.of(new Date());
         SqlCriterion<Date> criterion = new SqlCriterion.Builder<Date>()
                 .withColumn(column)
@@ -137,7 +137,7 @@ public class CriterionRendererTest {
     @Test
     public void testTypeHandlerAndAlias() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Integer> column = SqlColumn.of(table, "id", JDBCType.INTEGER).withTypeHandler("foo.Bar");
+        SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER, "foo.Bar");
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
         SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
                 .withColumn(column)

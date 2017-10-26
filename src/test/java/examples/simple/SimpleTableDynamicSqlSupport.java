@@ -49,7 +49,7 @@ public class SimpleTableDynamicSqlSupport {
         public SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
         public SqlColumn<String> lastName = column("last_name", JDBCType.VARCHAR);
         public SqlColumn<Date> birthDate = column("birth_date", JDBCType.DATE);
-        public SqlColumn<Boolean> employed = column("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler");
+        public SqlColumn<Boolean> employed = column("employed", JDBCType.VARCHAR, "examples.simple.YesNoTypeHandler");
         public SqlColumn<String> occupation = column("occupation", JDBCType.VARCHAR);
     }
     

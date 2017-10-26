@@ -30,9 +30,22 @@ public class SqlTable {
     }
     
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType) {
-        return SqlColumn.of(this, name, jdbcType);
+        return new SqlColumn.Builder()
+                .withName(name)
+                .withJdbcType(jdbcType)
+                .withTable(this)
+                .build();
     }
 
+    public <T> SqlColumn<T> column(String name, JDBCType jdbcType, String typeHandler) {
+        return new SqlColumn.Builder()
+                .withName(name)
+                .withJdbcType(jdbcType)
+                .withTypeHandler(typeHandler)
+                .withTable(this)
+                .build();
+    }
+    
     public static SqlTable of(String name) {
         return new SqlTable(name);
     }

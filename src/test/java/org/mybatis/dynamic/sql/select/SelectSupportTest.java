@@ -36,8 +36,8 @@ import org.mybatis.dynamic.sql.select.render.SelectSupport;
 public class SelectSupportTest {
     
     public static final SqlTable table = SqlTable.of("foo");
-    public static final SqlColumn<Date> column1 = SqlColumn.of(table, "column1", JDBCType.DATE);
-    public static final SqlColumn<Integer> column2 = SqlColumn.of(table, "column2", JDBCType.INTEGER);
+    public static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
+    public static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
 
     @Test
     public void testSimpleCriteria() {
