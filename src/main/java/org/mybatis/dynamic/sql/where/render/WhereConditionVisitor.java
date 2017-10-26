@@ -118,7 +118,6 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
     
     private Optional<String> tableAlias() {
-        return column.table()
-                .flatMap(t -> Optional.ofNullable(tableAliases.get(t)));
+        return column.table().map(tableAliases::get);
     }
 }

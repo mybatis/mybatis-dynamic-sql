@@ -63,7 +63,7 @@ public class SelectModel {
     }
     
     public Optional<String> tableAlias(Optional<SqlTable> table) {
-        return table.flatMap(t -> Optional.ofNullable(tableAliases.get(t)));
+        return table.map(tableAliases::get);
     }
     
     public Map<SqlTable, String> tableAliases() {
