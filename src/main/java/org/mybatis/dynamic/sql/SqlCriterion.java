@@ -46,7 +46,7 @@ public class SqlCriterion<T> {
     }
     
     public Optional<Stream<SqlCriterion<?>>> subCriteria() {
-        return subCriteria.flatMap(sc -> Optional.of(sc.stream()));
+        return subCriteria.map(List::stream);
     }
 
     public static class Builder<T> {

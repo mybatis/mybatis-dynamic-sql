@@ -44,14 +44,13 @@ public class UpdateRenderer {
     
     private Optional<WhereSupport> renderWhere(RenderingStrategy renderingStrategy) {
         return updateModel.whereModel()
-                .flatMap(wm -> renderWhere(wm, renderingStrategy));
+                .map(wm -> renderWhere(wm, renderingStrategy));
     }
     
-    private Optional<WhereSupport> renderWhere(WhereModel whereModel, RenderingStrategy renderingStrategy) {
-        WhereSupport whereSupport = new WhereRenderer.Builder(whereModel, renderingStrategy, Collections.emptyMap())
+    private WhereSupport renderWhere(WhereModel whereModel, RenderingStrategy renderingStrategy) {
+        return  new WhereRenderer.Builder(whereModel, renderingStrategy, Collections.emptyMap())
                 .build()
                 .render();
-        return Optional.of(whereSupport);
     }
     
     private FragmentAndParameters transform(UpdateMapping columnAndValue, SetPhraseVisitor visitor) {

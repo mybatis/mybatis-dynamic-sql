@@ -37,7 +37,7 @@ public class UpdateSupport extends AbstractSqlSupport {
     private UpdateSupport(Builder builder) {
         super(builder.tableName);
         setClause = builder.setClause;
-        whereClause = builder.whereSupport.flatMap(ws -> Optional.of(ws.getWhereClause()));
+        whereClause = builder.whereSupport.map(WhereSupport::getWhereClause);
         builder.whereSupport.ifPresent(ws -> parameters.putAll(ws.getParameters()));
         parameters.putAll(builder.parameters);
     }

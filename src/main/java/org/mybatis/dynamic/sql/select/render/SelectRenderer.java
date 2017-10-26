@@ -89,7 +89,7 @@ public class SelectRenderer {
     
     private Optional<String> calculateOrderByPhrase() {
         return selectModel.orderByColumns()
-                .flatMap(c -> Optional.of(calculateOrderByPhrase(c)));
+                .map(this::calculateOrderByPhrase);
     }
     
     private String calculateOrderByPhrase(Stream<SqlColumn<?>> columns) {

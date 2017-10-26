@@ -79,7 +79,7 @@ public class SelectModel {
     }
     
     public Optional<Stream<SqlColumn<?>>> orderByColumns() {
-        return orderByColumns.flatMap(cl -> Optional.of(cl.stream()));
+        return orderByColumns.map(List::stream);
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
