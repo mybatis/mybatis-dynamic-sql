@@ -26,13 +26,13 @@ public interface RenderingUtilities {
     static String tableNameIncludingAlias(SqlTable table, Map<SqlTable, String> tableAliases) {
         return tableAlias(table, tableAliases)
                 .map(a -> table.name() + " " + a) //$NON-NLS-1$
-                .orElse(table.name());
+                .orElseGet(table::name);
     }
     
     static String columnNameIncludingTableAlias(SqlColumn<?> column, Map<SqlTable, String> tableAliases) {
         return column.table()
                 .map(t -> column.nameIncludingTableAlias(tableAlias(t, tableAliases)))
-                .orElse(column.name());
+                .orElseGet(column::name);
     }
     
     static Optional<String> tableAlias(SqlTable table, Map<SqlTable, String> tableAliases) {
