@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -28,7 +29,7 @@ public class DeleteModel {
     private Optional<WhereModel> whereModel;
     
     private DeleteModel(Builder builder) {
-        table = builder.table;
+        table = Objects.requireNonNull(builder.table);
         whereModel = Optional.ofNullable(builder.whereModel);
     }
     
@@ -48,8 +49,9 @@ public class DeleteModel {
         private SqlTable table;
         private WhereModel whereModel;
         
-        public Builder(SqlTable table) {
+        public Builder withTable(SqlTable table) {
             this.table = table;
+            return this;
         }
         
         public Builder withWhereModel(WhereModel whereModel) {

@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
@@ -34,12 +35,12 @@ public class SelectSupport extends AbstractSqlSupport {
     
     private SelectSupport(Builder builder) {
         super(builder.tableName);
-        columnList = builder.columnList;
+        columnList = Objects.requireNonNull(builder.columnList);
         whereClause = Optional.ofNullable(builder.whereClause);
         parameters.putAll(builder.parameters);
         distinct = Optional.ofNullable(builder.distinct);
-        orderByClause = builder.orderByClause;
-        joinClause = builder.joinClause;
+        orderByClause = Optional.ofNullable(builder.orderByClause);
+        joinClause = Optional.ofNullable(builder.joinClause);
     }
     
     public String getDistinct() {
@@ -92,14 +93,15 @@ public class SelectSupport extends AbstractSqlSupport {
     public static class Builder {
         private String tableName;
         private String distinct;
-        private Optional<String> orderByClause = Optional.empty();
+        private String orderByClause;
         private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
-        private Optional<String> joinClause;
+        private String joinClause;
         
-        public Builder(String tableName) {
+        public Builder withTableName(String tableName) {
             this.tableName = tableName;
+            return this;
         }
         
         public Builder isDistinct(boolean isDistinct) {
@@ -107,7 +109,7 @@ public class SelectSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withOrderByClause(Optional<String> orderByClause) {
+        public Builder withOrderByClause(String orderByClause) {
             this.orderByClause = orderByClause;
             return this;
         }
@@ -127,7 +129,7 @@ public class SelectSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withJoinClause(Optional<String> joinClause) {
+        public Builder withJoinClause(String joinClause) {
             this.joinClause = joinClause;
             return this;
         }

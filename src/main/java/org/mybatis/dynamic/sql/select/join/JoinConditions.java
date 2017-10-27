@@ -20,7 +20,9 @@ import org.mybatis.dynamic.sql.SqlColumn;
 public interface JoinConditions {
 
     static <T> JoinCriterion<T> and(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-        return new JoinCriterion.Builder<>(joinColumn, joinCondition)
+        return new JoinCriterion.Builder<T>()
+                .withJoinColumn(joinColumn)
+                .withJoinCondition(joinCondition)
                 .withConnector("and") //$NON-NLS-1$
                 .build();
     }

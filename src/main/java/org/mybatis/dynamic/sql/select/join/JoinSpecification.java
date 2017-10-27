@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.join;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -27,7 +28,7 @@ public class JoinSpecification {
     private List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
     
     private JoinSpecification(Builder builder) {
-        table = builder.table;
+        table = Objects.requireNonNull(builder.table);
         joinCriteria.addAll(builder.joinCriteria);
     }
     
@@ -43,9 +44,14 @@ public class JoinSpecification {
         private SqlTable table;
         private List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
         
-        public Builder(SqlTable table, List<JoinCriterion<?>> joinCriteria) {
+        public Builder withJoinTable(SqlTable table) {
             this.table = table;
+            return this;
+        }
+        
+        public Builder withJoinCriteria(List<JoinCriterion<?>> joinCriteria) {
             this.joinCriteria.addAll(joinCriteria);
+            return this;
         }
         
         public JoinSpecification build() {

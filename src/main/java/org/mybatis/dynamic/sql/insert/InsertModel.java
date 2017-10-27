@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -31,8 +32,8 @@ public class InsertModel<T> {
     private List<InsertMapping> columnMappings = new ArrayList<>();
     
     private InsertModel(Builder<T> builder) {
-        table = builder.table;
-        record = builder.record;
+        table = Objects.requireNonNull(builder.table);
+        record = Objects.requireNonNull(builder.record);
         columnMappings.addAll(builder.columnMappings);
     }
 
@@ -57,8 +58,9 @@ public class InsertModel<T> {
         private T record;
         private List<InsertMapping> columnMappings = new ArrayList<>();
         
-        public Builder(SqlTable table) {
+        public Builder<T> withTable(SqlTable table) {
             this.table = table;
+            return this;
         }
         
         public Builder<T> withRecord(T record) {

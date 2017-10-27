@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -28,8 +29,8 @@ public class SqlCriterion<T> {
     
     private SqlCriterion(Builder<T> builder) {
         connector = Optional.ofNullable(builder.connector);
-        column = builder.column;
-        condition = builder.condition;
+        column = Objects.requireNonNull(builder.column);
+        condition = Objects.requireNonNull(builder.condition);
         subCriteria = Optional.ofNullable(builder.subCriteria);
     }
     

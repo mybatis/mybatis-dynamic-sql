@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,6 +25,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
@@ -42,12 +42,11 @@ public class SelectRenderer {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
-        SelectSupport.Builder builder = new SelectSupport.Builder(calculateTableName(selectModel.table()))
+        SelectSupport.Builder builder = new SelectSupport.Builder()
                 .isDistinct(selectModel.isDistinct())
                 .withColumnList(calculateColumnList())
-                .withOrderByClause(calculateOrderByPhrase())
-                .withJoinClause(selectModel.joinModel()
-                        .map(jm -> JoinRenderer.of(jm, selectModel.tableAliases()).render()))
+                .withTableName(calculateTableName(selectModel.table()))
+                .withJoinClause(calculateJoinClause())
                 .withOrderByClause(calculateOrderByPhrase());
         
         selectModel.whereModel().ifPresent(wm -> {
@@ -62,7 +61,7 @@ public class SelectRenderer {
         
         return builder.build();
     }
-    
+
     private String calculateTableName(SqlTable table) {
         return RenderingUtilities.tableNameIncludingAlias(table, selectModel.tableAliases());
     }
@@ -87,9 +86,21 @@ public class SelectRenderer {
         return selectListItem.nameIncludingTableAlias(selectModel.tableAlias(selectListItem.table()));
     }
     
-    private Optional<String> calculateOrderByPhrase() {
+    private String calculateJoinClause() {
+        return selectModel.joinModel()
+                .map(this::calculateJoinClause)
+                .orElse(null);
+    }
+    
+    private String calculateJoinClause(JoinModel joinModel) {
+        return JoinRenderer.of(joinModel, selectModel.tableAliases())
+                .render();
+    }
+    
+    private String calculateOrderByPhrase() {
         return selectModel.orderByColumns()
-                .map(this::calculateOrderByPhrase);
+                .map(this::calculateOrderByPhrase)
+                .orElse(null);
     }
     
     private String calculateOrderByPhrase(Stream<SqlColumn<?>> columns) {

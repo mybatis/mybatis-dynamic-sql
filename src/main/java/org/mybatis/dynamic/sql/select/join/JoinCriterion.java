@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
+import java.util.Objects;
+
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class JoinCriterion<T> {
@@ -24,9 +26,9 @@ public class JoinCriterion<T> {
     private JoinCondition<T> joinCondition;
     
     private JoinCriterion(Builder<T> builder) {
-        connector = builder.connector;
-        leftColumn = builder.leftColumn;
-        joinCondition = builder.joinCondition;
+        connector = Objects.requireNonNull(builder.connector);
+        leftColumn = Objects.requireNonNull(builder.joinColumn);
+        joinCondition = Objects.requireNonNull(builder.joinCondition);
     }
 
     public String connector() {
@@ -46,13 +48,18 @@ public class JoinCriterion<T> {
     }
     
     public static class Builder<T> {
-        private SqlColumn<T> leftColumn;
+        private SqlColumn<T> joinColumn;
         private JoinCondition<T> joinCondition;
         private String connector;
         
-        public Builder(SqlColumn<T> leftColumn, JoinCondition<T> joinCondition) {
-            this.leftColumn = leftColumn;
+        public Builder<T> withJoinColumn(SqlColumn<T> joinColumn) {
+            this.joinColumn = joinColumn;
+            return this;
+        }
+        
+        public Builder<T> withJoinCondition(JoinCondition<T> joinCondition) {
             this.joinCondition = joinCondition;
+            return this;
         }
         
         public Builder<T> withConnector(String connector) {

@@ -45,7 +45,8 @@ public class DeleteModelBuilder {
      * @return the model class
      */
     public DeleteModel build() {
-        return new DeleteModel.Builder(table)
+        return new DeleteModel.Builder()
+                .withTable(table)
                 .build();
     }
     
@@ -65,7 +66,8 @@ public class DeleteModelBuilder {
         }
         
         public DeleteModel build() {
-            return new DeleteModel.Builder(table)
+            return new DeleteModel.Builder()
+                    .withTable(table)
                     .withWhereModel(buildWhereModel())
                     .build();
         }

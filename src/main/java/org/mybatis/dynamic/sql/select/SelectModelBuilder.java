@@ -174,7 +174,9 @@ public class SelectModelBuilder {
                 JoinCondition<T> joinCondition) {
             this.joinTable = table;
 
-            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<>(joinColumn, joinCondition)
+            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
+                    .withJoinColumn(joinColumn)
+                    .withJoinCondition(joinCondition)
                     .withConnector("on") //$NON-NLS-1$
                     .build();
             
@@ -185,7 +187,9 @@ public class SelectModelBuilder {
                 JoinCondition<T> joinCondition, JoinCriterion<?>...joinCriteria) {
             this.joinTable = table;
 
-            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<>(joinColumn, joinCondition)
+            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
+                    .withJoinColumn(joinColumn)
+                    .withJoinCondition(joinCondition)
                     .withConnector("on") //$NON-NLS-1$
                     .build();
             
@@ -194,7 +198,10 @@ public class SelectModelBuilder {
         }
         
         protected JoinSpecification buildJoinSpecification() {
-            return new JoinSpecification.Builder(joinTable, joinCriteria).build();
+            return new JoinSpecification.Builder()
+                    .withJoinCriteria(joinCriteria)
+                    .withJoinTable(joinTable)
+                    .build();
         }
         
         protected JoinModel buildJoinModel() {
@@ -225,8 +232,10 @@ public class SelectModelBuilder {
             return new SelectSupportAfterOrderByBuilder();
         }
 
-        public <T> JoinSpecificationFinisher and(SqlColumn<T> column, JoinCondition<T> joinCondition) {
-            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<>(column, joinCondition)
+        public <T> JoinSpecificationFinisher and(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
+                    .withJoinColumn(joinColumn)
+                    .withJoinCondition(joinCondition)
                     .withConnector("and") //$NON-NLS-1$
                     .build();
             this.joinCriteria.add(joinCriterion);
