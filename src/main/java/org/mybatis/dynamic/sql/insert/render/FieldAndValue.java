@@ -15,12 +15,15 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import java.util.Objects;
+
 public class FieldAndValue {
     private String fieldName;
     private String valuePhrase;
     
-    private FieldAndValue() {
-        super();
+    private FieldAndValue(String fieldName, String valuePhrase) {
+        this.fieldName = Objects.requireNonNull(fieldName);
+        this.valuePhrase = Objects.requireNonNull(valuePhrase);
     }
     
     public String fieldName() {
@@ -32,9 +35,6 @@ public class FieldAndValue {
     }
     
     public static FieldAndValue of(String fieldName, String valuePhrase) {
-        FieldAndValue fieldAndValue = new FieldAndValue();
-        fieldAndValue.fieldName = fieldName;
-        fieldAndValue.valuePhrase = valuePhrase;
-        return fieldAndValue;
+        return new FieldAndValue(fieldName, valuePhrase);
     }
 }

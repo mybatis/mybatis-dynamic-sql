@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import java.util.Objects;
+
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.InsertMapping;
@@ -24,7 +26,7 @@ public class InsertRenderer<T> {
     private InsertModel<T> model;
     
     private InsertRenderer(InsertModel<T> model) {
-        this.model = model;
+        this.model = Objects.requireNonNull(model);
     }
     
     public InsertSupport<T> render(RenderingStrategy renderingStrategy) {

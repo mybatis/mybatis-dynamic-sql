@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import java.util.Objects;
+
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 
 public class InsertSupport<T> extends AbstractSqlSupport {
@@ -23,11 +25,11 @@ public class InsertSupport<T> extends AbstractSqlSupport {
     private String valuesPhrase;
     private T record;
     
-    private InsertSupport(String tableName, String columnsPhrase, String valuesPhrase, T record) {
-        super(tableName);
-        this.columnsPhrase = columnsPhrase;
-        this.valuesPhrase = valuesPhrase;
-        this.record = record;
+    private InsertSupport(Builder<T> builder) {
+        super(builder.tableName);
+        this.columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
+        this.valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
+        this.record = Objects.requireNonNull(builder.record);
     }
     
     public String getColumnsPhrase() {
@@ -51,7 +53,34 @@ public class InsertSupport<T> extends AbstractSqlSupport {
                 + getValuesPhrase();
     }
 
-    public static <T> InsertSupport<T> of(String tableName, String columnsPhrase, String valuesPhrase, T record) {
-        return new InsertSupport<>(tableName, columnsPhrase, valuesPhrase, record);
+    public static class Builder<T> {
+        private String tableName;
+        private String columnsPhrase;
+        private String valuesPhrase;
+        private T record;
+        
+        public Builder<T> withTableName(String tableName) {
+            this.tableName = tableName;
+            return this;
+        }
+
+        public Builder<T> withColumnsPhrase(String columnsPhrase) {
+            this.columnsPhrase = columnsPhrase;
+            return this;
+        }
+        
+        public Builder<T> withValuesPhrase(String valuesPhrase) {
+            this.valuesPhrase = valuesPhrase;
+            return this;
+        }
+        
+        public Builder<T> withRecord(T record) {
+            this.record = record;
+            return this;
+        }
+        
+        public InsertSupport<T> build() {
+            return new InsertSupport<>(this);
+        }
     }
 }
