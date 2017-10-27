@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql;
 
 import java.sql.JDBCType;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -36,9 +37,9 @@ public class SqlColumn<T> implements SelectListItem {
     protected Optional<String> typeHandler;
     
     private SqlColumn(Builder builder) {
-        this.name = builder.name;
-        this.jdbcType = builder.jdbcType;
-        this.table = builder.table;
+        this.name = Objects.requireNonNull(builder.name);
+        this.jdbcType = Objects.requireNonNull(builder.jdbcType);
+        this.table = Objects.requireNonNull(builder.table);
         this.typeHandler = Optional.ofNullable(builder.typeHandler);
     }
     
