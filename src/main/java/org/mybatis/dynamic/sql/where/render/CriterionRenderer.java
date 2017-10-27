@@ -15,7 +15,9 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -30,10 +32,12 @@ public class CriterionRenderer {
 
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private Map<SqlTable, String> tableAliases;
+    private Map<SqlTable, String> tableAliases = new HashMap<>();;
     
-    private CriterionRenderer() {
-        super();
+    private CriterionRenderer(Builder builder) {
+        this.sequence = Objects.requireNonNull(builder.sequence);
+        this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        this.tableAliases.putAll(builder.tableAliases);
     }
     
     public <T> FragmentAndParameters render(SqlCriterion<T> criterion) {
@@ -81,21 +85,46 @@ public class CriterionRenderer {
     }
     
     private  <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, tableAliases).render(subCriterion);
+        return new CriterionRenderer.Builder()
+                .withSequence(sequence)
+                .withRenderingStrategy(renderingStrategy)
+                .withTableAliases(tableAliases)
+                .build()
+                .render(subCriterion);
     }
     
     private <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
-        WhereConditionVisitor<T> visitor = new WhereConditionVisitor<>(renderingStrategy, sequence,
-                criterion.column(), tableAliases);
+        WhereConditionVisitor<T> visitor = new WhereConditionVisitor.Builder<T>()
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(sequence)
+                .withColumn(criterion.column())
+                .withTableAliases(tableAliases)
+                .build();
         return criterion.condition().accept(visitor);
     }
     
-    public static CriterionRenderer of(AtomicInteger sequence, RenderingStrategy renderingStrategy,
-            Map<SqlTable, String> tableAliases) {
-        CriterionRenderer criterionRenderer = new CriterionRenderer();
-        criterionRenderer.sequence = sequence;
-        criterionRenderer.renderingStrategy = renderingStrategy;
-        criterionRenderer.tableAliases = tableAliases;
-        return criterionRenderer;
+    public static class Builder {
+        private AtomicInteger sequence;
+        private RenderingStrategy renderingStrategy;
+        private Map<SqlTable, String> tableAliases = new HashMap<>();;
+        
+        public Builder withSequence(AtomicInteger sequence) {
+            this.sequence = sequence;
+            return this;
+        }
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+        
+        public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
+            this.tableAliases.putAll(tableAliases);
+            return this;
+        }
+        
+        public CriterionRenderer build() {
+            return new CriterionRenderer(this);
+        }
     }
 }

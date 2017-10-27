@@ -15,7 +15,9 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,14 +41,13 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
     private SqlColumn<T> column;
-    private Map<SqlTable, String> tableAliases;
+    private Map<SqlTable, String> tableAliases = new HashMap<>();
     
-    public WhereConditionVisitor(RenderingStrategy renderingStrategy, AtomicInteger sequence, SqlColumn<T> column,
-            Map<SqlTable, String> tableAliases) {
-        this.renderingStrategy = renderingStrategy;
-        this.sequence = sequence;
-        this.column = column;
-        this.tableAliases = tableAliases;
+    private WhereConditionVisitor(Builder<T> builder) {
+        this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        this.sequence = Objects.requireNonNull(builder.sequence);
+        this.column = Objects.requireNonNull(builder.column);
+        this.tableAliases.putAll(builder.tableAliases);
     }
 
     @Override
@@ -119,5 +120,36 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     
     private Optional<String> tableAlias() {
         return column.table().map(tableAliases::get);
+    }
+
+    public static class Builder<T> {
+        private RenderingStrategy renderingStrategy;
+        private AtomicInteger sequence;
+        private SqlColumn<T> column;
+        private Map<SqlTable, String> tableAliases = new HashMap<>();
+        
+        public Builder<T> withSequence(AtomicInteger sequence) {
+            this.sequence = sequence;
+            return this;
+        }
+        
+        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+        
+        public Builder<T> withColumn(SqlColumn<T> column) {
+            this.column = column;
+            return this;
+        }
+        
+        public Builder<T> withTableAliases(Map<SqlTable, String> tableAliases) {
+            this.tableAliases.putAll(tableAliases);
+            return this;
+        }
+        
+        public WhereConditionVisitor<T> build() {
+            return new WhereConditionVisitor<>(this);
+        }
     }
 }

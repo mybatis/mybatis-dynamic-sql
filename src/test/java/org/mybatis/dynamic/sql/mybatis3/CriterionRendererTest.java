@@ -47,7 +47,11 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Collections.emptyMap());
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withSequence(sequence)
+                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withTableAliases(Collections.emptyMap())
+                .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -68,7 +72,11 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, tableAliases);
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withSequence(sequence)
+                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withTableAliases(tableAliases)
+                .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -87,7 +95,11 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Collections.emptyMap());
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withSequence(sequence)
+                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withTableAliases(Collections.emptyMap())
+                .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -106,7 +118,11 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Collections.emptyMap());
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withSequence(sequence)
+                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withTableAliases(Collections.emptyMap())
+                .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -125,7 +141,11 @@ public class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, Collections.emptyMap());
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withSequence(sequence)
+                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withTableAliases(Collections.emptyMap())
+                .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
@@ -147,7 +167,11 @@ public class CriterionRendererTest {
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
         
-        CriterionRenderer renderer = CriterionRenderer.of(sequence, RenderingStrategy.MYBATIS3, tableAliases);
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withSequence(sequence)
+                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withTableAliases(tableAliases)
+                .build();
         
         FragmentAndParameters rc = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {

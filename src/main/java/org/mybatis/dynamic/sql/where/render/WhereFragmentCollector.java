@@ -23,11 +23,20 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class WhereFragmentCollector extends FragmentCollector<WhereFragmentCollector> {
     
+    public WhereFragmentCollector() {
+        super();
+    }
+    
     public WhereSupport buildWhereSupport() {
-        return WhereSupport.of(
-                fragments()
-                .collect(Collectors.joining(" ", "where ", "")), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                parameters);
+        return new WhereSupport.Builder()
+                .withWhereClause(calculateWhereClause())
+                .withParameters(parameters)
+                .build();
+    }
+    
+    private String calculateWhereClause() {
+        return fragments()
+                .collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     @Override

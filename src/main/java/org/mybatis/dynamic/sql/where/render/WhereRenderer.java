@@ -45,7 +45,11 @@ public class WhereRenderer {
     }
     
     private FragmentAndParameters render(SqlCriterion<?> criterion) {
-        return CriterionRenderer.of(sequence, renderingStrategy, tableAliases)
+        return new CriterionRenderer.Builder()
+                .withSequence(sequence)
+                .withRenderingStrategy(renderingStrategy)
+                .withTableAliases(tableAliases)
+                .build()
                 .render(criterion);
     }
     

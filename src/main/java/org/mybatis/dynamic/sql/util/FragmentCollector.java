@@ -25,7 +25,7 @@ public abstract class FragmentCollector<T extends FragmentCollector<T>> {
     protected List<String> fragments = new ArrayList<>();
     protected Map<String, Object> parameters = new HashMap<>();
     
-    public FragmentCollector() {
+    protected FragmentCollector() {
         super();
     }
     

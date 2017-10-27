@@ -18,14 +18,15 @@ package org.mybatis.dynamic.sql.where.render;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class WhereSupport {
     private String whereClause;
     private Map<String, Object> parameters = new HashMap<>();
 
-    private WhereSupport(String whereClause, Map<String, Object> parameters) {
-        this.whereClause = whereClause;
-        this.parameters.putAll(parameters);
+    private WhereSupport(Builder builder) {
+        this.whereClause = Objects.requireNonNull(builder.whereClause);
+        this.parameters.putAll(builder.parameters);
     }
     
     public Map<String, Object> getParameters() {
@@ -36,7 +37,22 @@ public class WhereSupport {
         return whereClause;
     }
     
-    public static WhereSupport of(String whereClause, Map<String, Object> parameters) {
-        return new WhereSupport(whereClause, parameters);
+    public static class Builder {
+        private String whereClause;
+        private Map<String, Object> parameters = new HashMap<>();
+
+        public Builder withWhereClause(String whereClause) {
+            this.whereClause = whereClause;
+            return this;
+        }
+        
+        public Builder withParameters(Map<String, Object> parameters) {
+            this.parameters.putAll(parameters);
+            return this;
+        }
+        
+        public WhereSupport build() {
+            return new WhereSupport(this);
+        }
     }
 }
