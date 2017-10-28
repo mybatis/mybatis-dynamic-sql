@@ -36,20 +36,29 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
 
     @Override
     public FragmentAndParameters visit(NullMapping mapping) {
-        return new FragmentAndParameters.Builder(mapping.column().name() + " = null").build(); //$NON-NLS-1$
+        return new FragmentAndParameters.Builder()
+                .withFragment(mapping.column().name() + " = null") //$NON-NLS-1$
+                .build();
     }
 
     @Override
     public FragmentAndParameters visit(ConstantMapping mapping) {
         String fragment = mapping.column().name() + " = " + mapping.constant(); //$NON-NLS-1$
-        return new FragmentAndParameters.Builder(fragment).build();
+        return new FragmentAndParameters.Builder()
+                .withFragment(fragment)
+                .build();
     }
 
     @Override
     public FragmentAndParameters visit(StringConstantMapping mapping) {
-        String fragment = mapping.column().name() + " = " //$NON-NLS-1$
-                + "'" + mapping.constant() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
-        return new FragmentAndParameters.Builder(fragment).build();
+        String fragment = mapping.column().name()
+                + " = '" //$NON-NLS-1$
+                + mapping.constant()
+                + "'"; //$NON-NLS-1$
+        
+        return new FragmentAndParameters.Builder()
+                .withFragment(fragment)
+                .build();
     }
     
     @Override
@@ -57,9 +66,12 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
         String mapKey = "up" + sequence.getAndIncrement(); //$NON-NLS-1$
         String jdbcPlaceholder =
                 renderingStrategy.getFormattedJdbcPlaceholder(mapping.column(), "parameters", mapKey); //$NON-NLS-1$
-        String setPhrase = mapping.column().name() + " = " + jdbcPlaceholder; //$NON-NLS-1$
+        String setPhrase = mapping.column().name()
+                + " = "  //$NON-NLS-1$
+                + jdbcPlaceholder;
         
-        return new FragmentAndParameters.Builder(setPhrase) //$NON-NLS-1$)
+        return new FragmentAndParameters.Builder()
+                .withFragment(setPhrase)
                 .withParameter(mapKey, mapping.value())
                 .build();
     }

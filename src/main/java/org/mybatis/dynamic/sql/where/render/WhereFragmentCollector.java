@@ -44,17 +44,6 @@ public class WhereFragmentCollector extends FragmentCollector<WhereFragmentColle
         return this;
     }
     
-    public void add(Triple triple) {
-        fragments.add(triple.jdbcPlaceholder());
-        parameters.put(triple.mapKey(), triple.value());
-    }
-    
-    public static Collector<Triple, WhereFragmentCollector, WhereFragmentCollector> collectTriples() {
-        return Collector.of(WhereFragmentCollector::new,
-                WhereFragmentCollector::add,
-                WhereFragmentCollector::merge);
-    }
-    
     public static Collector<FragmentAndParameters, WhereFragmentCollector, WhereSupport> toWhereSupport() {
         return Collector.of(WhereFragmentCollector::new,
                 WhereFragmentCollector::add,
@@ -66,35 +55,5 @@ public class WhereFragmentCollector extends FragmentCollector<WhereFragmentColle
         return Collector.of(WhereFragmentCollector::new,
                 WhereFragmentCollector::add,
                 WhereFragmentCollector::merge);
-    }
-    
-    public static class Triple {
-        private String mapKey;
-        private String jdbcPlaceholder;
-        private Object value;
-        
-        private Triple() {
-            super();
-        }
-        
-        public String mapKey() {
-            return mapKey;
-        }
-        
-        public String jdbcPlaceholder() {
-            return jdbcPlaceholder;
-        }
-        
-        public Object value() {
-            return value;
-        }
-        
-        public static Triple of(String mapKey, String jdbcPlaceholder, Object value) {
-            Triple triple = new Triple();
-            triple.mapKey = mapKey;
-            triple.jdbcPlaceholder = jdbcPlaceholder;
-            triple.value = value;
-            return triple;
-        }
     }
 }

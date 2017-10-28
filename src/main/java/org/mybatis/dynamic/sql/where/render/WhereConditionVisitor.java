@@ -33,7 +33,6 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector.Triple;
 
 public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
     
@@ -53,17 +52,20 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     @Override
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
         WhereFragmentCollector fc = condition.values()
-                .map(this::toTriple)
-                .collect(WhereFragmentCollector.collectTriples());
+                .map(this::toFragmentAndParameters)
+                .collect(WhereFragmentCollector.collect());
         
-        return new FragmentAndParameters.Builder(condition.renderCondition(columnName(), fc.fragments()))
+        return new FragmentAndParameters.Builder()
+                .withFragment(condition.renderCondition(columnName(), fc.fragments()))
                 .withParameters(fc.parameters())
                 .build();
     }
 
     @Override
     public FragmentAndParameters visit(AbstractNoValueCondition<T> condition) {
-        return new FragmentAndParameters.Builder(condition.renderCondition(columnName())).build();
+        return new FragmentAndParameters.Builder()
+                .withFragment(condition.renderCondition(columnName()))
+                .build();
     }
 
     @Override
@@ -72,7 +74,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         String fragment = condition.renderCondition(columnName(),
                 getFormattedJdbcPlaceholder(mapKey));
 
-        return new FragmentAndParameters.Builder(fragment)
+        return new FragmentAndParameters.Builder()
+                .withFragment(fragment)
                 .withParameter(mapKey, condition.value())
                 .build();
     }
@@ -85,7 +88,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
                 getFormattedJdbcPlaceholder(mapKey1),
                 getFormattedJdbcPlaceholder(mapKey2));
                 
-        return new FragmentAndParameters.Builder(fragment)
+        return new FragmentAndParameters.Builder()
+                .withFragment(fragment)
                 .withParameter(mapKey1, condition.value1())
                 .withParameter(mapKey2, condition.value2())
                 .build();
@@ -96,14 +100,19 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
         SelectSupport ss = SelectRenderer.of(condition.selectModel()).render(renderingStrategy, sequence);
         
-        return new FragmentAndParameters.Builder(condition.renderCondition(columnName(), ss.getFullSelectStatement()))
+        return new FragmentAndParameters.Builder()
+                .withFragment(condition.renderCondition(columnName(), ss.getFullSelectStatement()))
                 .withParameters(ss.getParameters())
                 .build();
     }
     
-    private Triple toTriple(Object value) {
+    private FragmentAndParameters toFragmentAndParameters(Object value) {
         String mapKey = formatParameterMapKey(sequence.getAndIncrement());
-        return Triple.of(mapKey, getFormattedJdbcPlaceholder(mapKey), value);
+        
+        return new FragmentAndParameters.Builder()
+                .withFragment(getFormattedJdbcPlaceholder(mapKey))
+                .withParameter(mapKey, value)
+                .build();
     }
 
     protected String formatParameterMapKey(int number) {

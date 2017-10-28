@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.update.render.UpdateFragmentCollector;
 import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector;
-import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector.Triple;
 
 @RunWith(JUnitPlatform.class)
 public class FragmentCollectorTest {
@@ -33,12 +32,18 @@ public class FragmentCollectorTest {
     public void testWhereFragmentCollectorMerge() {
         SoftAssertions.assertSoftly(softly -> {
             WhereFragmentCollector fc1 = new WhereFragmentCollector();
-            Triple t1 = Triple.of("p1", ":p1", 1);
-            fc1.add(t1);
+            FragmentAndParameters fp1 = new FragmentAndParameters.Builder()
+                    .withFragment(":p1")
+                    .withParameter("p1", 1)
+                    .build();
+            fc1.add(fp1);
 
             WhereFragmentCollector fc2 = new WhereFragmentCollector();
-            Triple t2 = Triple.of("p2", ":p2", 2);
-            fc2.add(t2);
+            FragmentAndParameters fp2 = new FragmentAndParameters.Builder()
+                    .withFragment(":p2")
+                    .withParameter("p2", 2)
+                    .build();
+            fc2.add(fp2);
 
             fc1 = fc1.merge(fc2);
 
@@ -57,11 +62,15 @@ public class FragmentCollectorTest {
         SoftAssertions.assertSoftly(softly -> {
             SqlTable myTable = SqlTable.of("my_table");
             UpdateFragmentCollector fc1 = new UpdateFragmentCollector(myTable, Optional.empty());
-            FragmentAndParameters fp1 = new FragmentAndParameters.Builder("fragment1").build();
+            FragmentAndParameters fp1 = new FragmentAndParameters.Builder()
+                    .withFragment("fragment1")
+                    .build();
             fc1.add(fp1);
 
             UpdateFragmentCollector fc2 = new UpdateFragmentCollector(myTable, Optional.empty());
-            FragmentAndParameters fp2 = new FragmentAndParameters.Builder("fragment2").build();
+            FragmentAndParameters fp2 = new FragmentAndParameters.Builder()
+                    .withFragment("fragment2")
+                    .build();
             fc2.add(fp2);
 
             fc1 = fc1.merge(fc2);

@@ -32,7 +32,7 @@ public class CriterionRenderer {
 
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private Map<SqlTable, String> tableAliases = new HashMap<>();;
+    private Map<SqlTable, String> tableAliases = new HashMap<>();
     
     private CriterionRenderer(Builder builder) {
         this.sequence = Objects.requireNonNull(builder.sequence);
@@ -49,7 +49,8 @@ public class CriterionRenderer {
         String fragment = renderedSubCriteria.map(wfc -> calculateFragment(wfc, renderedCondition, connector))
                 .orElse(calculateFragment(renderedCondition, connector));
         
-        FragmentAndParameters.Builder builder = new FragmentAndParameters.Builder(fragment)
+        FragmentAndParameters.Builder builder = new FragmentAndParameters.Builder()
+                .withFragment(fragment)
                 .withParameters(renderedCondition.parameters());
         
         renderedSubCriteria.ifPresent(wfc -> builder.withParameters(wfc.parameters()));
@@ -106,7 +107,7 @@ public class CriterionRenderer {
     public static class Builder {
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
-        private Map<SqlTable, String> tableAliases = new HashMap<>();;
+        private Map<SqlTable, String> tableAliases = new HashMap<>();
         
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
