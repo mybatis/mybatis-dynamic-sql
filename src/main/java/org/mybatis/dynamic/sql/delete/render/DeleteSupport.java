@@ -23,25 +23,21 @@ import org.mybatis.dynamic.sql.AbstractSqlSupport;
 
 public class DeleteSupport extends AbstractSqlSupport {
 
-    private String whereClause;
+    private Optional<String> whereClause;
     private Map<String, Object> parameters = new HashMap<>();
     
-    private DeleteSupport(String tableName) {
-        super(tableName);
+    private DeleteSupport(Builder builder) {
+        super(builder.tableName);
+        whereClause = Optional.ofNullable(builder.whereClause);
+        parameters.putAll(builder.parameters);
     }
     
-    private DeleteSupport(String tableName, String whereClause, Map<String, Object> parameters) {
-        super(tableName);
-        this.whereClause = whereClause;
-        this.parameters.putAll(parameters);
-    }
-
     public String getWhereClause() {
-        return whereClause().orElse(EMPTY_STRING);
+        return whereClause.orElse(EMPTY_STRING);
     }
 
     public Optional<String> whereClause() {
-        return Optional.ofNullable(whereClause);
+        return whereClause;
     }
 
     public Map<String, Object> getParameters() {
@@ -54,11 +50,28 @@ public class DeleteSupport extends AbstractSqlSupport {
                 + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING);
     }
 
-    public static DeleteSupport of(String tableName) {
-        return new DeleteSupport(tableName);
-    }
-    
-    public static DeleteSupport of(String tableName, String whereClause, Map<String, Object> parameters) {
-        return new DeleteSupport(tableName, whereClause, parameters);
+    public static class Builder {
+        private String tableName;
+        private String whereClause;
+        private Map<String, Object> parameters = new HashMap<>();
+        
+        public Builder withTableName(String tableName) {
+            this.tableName = tableName;
+            return this;
+        }
+        
+        public Builder withWhereClause(String whereClause) {
+            this.whereClause = whereClause;
+            return this;
+        }
+        
+        public Builder withParameters(Map<String, Object> parameters) {
+            this.parameters.putAll(parameters);
+            return this;
+        }
+        
+        public DeleteSupport build() {
+            return new DeleteSupport(this);
+        }
     }
 }

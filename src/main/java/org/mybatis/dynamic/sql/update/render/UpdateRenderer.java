@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.update.render;
 
 import java.util.Collections;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -42,11 +41,14 @@ public class UpdateRenderer {
                 .map(cv -> transform(cv, visitor))
                 .collect(FragmentCollector.collect());
         
-        return new UpdateSupport.Builder(updateModel.table().name())
+        UpdateSupport.Builder builder = new UpdateSupport.Builder()
+                .withTableName(updateModel.table().name())
                 .withSetClause(calculateSetPhrase(fc))
-                .withWhereSupport(renderWhere(renderingStrategy))
-                .withParameters(fc.parameters())
-                .build();
+                .withParameters(fc.parameters());
+        
+        updateModel.whereModel().ifPresent(wm -> applyWhere(builder, wm, renderingStrategy));
+        
+        return builder.build();
     }
 
     private String calculateSetPhrase(FragmentCollector collector) {
@@ -54,15 +56,13 @@ public class UpdateRenderer {
                 .collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    private Optional<WhereSupport> renderWhere(RenderingStrategy renderingStrategy) {
-        return updateModel.whereModel()
-                .map(wm -> renderWhere(wm, renderingStrategy));
-    }
-    
-    private WhereSupport renderWhere(WhereModel whereModel, RenderingStrategy renderingStrategy) {
-        return  new WhereRenderer.Builder(whereModel, renderingStrategy, Collections.emptyMap())
+    private void applyWhere(UpdateSupport.Builder builder, WhereModel whereModel, RenderingStrategy renderingStrategy) {
+        WhereSupport whereSupport = new WhereRenderer.Builder(whereModel, renderingStrategy, Collections.emptyMap())
                 .build()
                 .render();
+        
+        builder.withWhereClause(whereSupport.getWhereClause());
+        builder.withParameters(whereSupport.getParameters());
     }
     
     private FragmentAndParameters transform(UpdateMapping columnAndValue, SetPhraseVisitor visitor) {

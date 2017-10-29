@@ -17,10 +17,10 @@ package org.mybatis.dynamic.sql.update.render;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 /**
  * This class combines a "set" clause and a "where" clause into one parameter object
@@ -36,9 +36,8 @@ public class UpdateSupport extends AbstractSqlSupport {
 
     private UpdateSupport(Builder builder) {
         super(builder.tableName);
-        setClause = builder.setClause;
-        whereClause = builder.whereSupport.map(WhereSupport::getWhereClause);
-        builder.whereSupport.ifPresent(ws -> parameters.putAll(ws.getParameters()));
+        setClause = Objects.requireNonNull(builder.setClause);
+        whereClause = Optional.ofNullable(builder.whereClause);
         parameters.putAll(builder.parameters);
     }
 
@@ -69,11 +68,12 @@ public class UpdateSupport extends AbstractSqlSupport {
     public static class Builder {
         private String tableName;
         private String setClause;
-        private Optional<WhereSupport> whereSupport = Optional.empty();
+        private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
         
-        public Builder(String tableName) {
+        public Builder withTableName(String tableName) {
             this.tableName = tableName;
+            return this;
         }
         
         public Builder withSetClause(String setClause) {
@@ -81,8 +81,8 @@ public class UpdateSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withWhereSupport(Optional<WhereSupport> whereSupport) {
-            this.whereSupport = whereSupport;
+        public Builder withWhereClause(String whereClause) {
+            this.whereClause = whereClause;
             return this;
         }
         

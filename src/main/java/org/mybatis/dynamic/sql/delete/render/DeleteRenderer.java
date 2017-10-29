@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.delete.render;
 
 import java.util.Collections;
+import java.util.Objects;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -27,21 +28,25 @@ public class DeleteRenderer {
     private DeleteModel deleteModel;
     
     private DeleteRenderer(DeleteModel deleteModel) {
-        this.deleteModel = deleteModel;
+        this.deleteModel = Objects.requireNonNull(deleteModel);
     }
     
     public DeleteSupport render(RenderingStrategy renderingStrategy) {
-        return deleteModel.whereModel().map(wm -> renderWithWhereClause(wm, renderingStrategy))
-                .orElse(DeleteSupport.of(deleteModel.table().name()));
+        DeleteSupport.Builder builder = new DeleteSupport.Builder()
+                .withTableName(deleteModel.table().name());
+        
+        deleteModel.whereModel().ifPresent(wm -> applyWhere(builder, wm, renderingStrategy));
+        
+        return builder.build();
     }
     
-    private DeleteSupport renderWithWhereClause(WhereModel whereModel, RenderingStrategy renderingStrategy) {
+    private void applyWhere(DeleteSupport.Builder builder, WhereModel whereModel, RenderingStrategy renderingStrategy) {
         WhereSupport whereSupport = new WhereRenderer.Builder(whereModel, renderingStrategy, Collections.emptyMap())
                 .build()
                 .render();
-        return DeleteSupport.of(deleteModel.table().name(),
-                whereSupport.getWhereClause(),
-                whereSupport.getParameters());
+        
+        builder.withWhereClause(whereSupport.getWhereClause());
+        builder.withParameters(whereSupport.getParameters());
     }
     
     public static DeleteRenderer of(DeleteModel deleteModel) {

@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,6 +28,7 @@ import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
+import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
@@ -34,7 +36,7 @@ public class SelectRenderer {
     private SelectModel selectModel;
     
     private SelectRenderer(SelectModel selectModel) {
-        this.selectModel = selectModel;
+        this.selectModel = Objects.requireNonNull(selectModel);
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
@@ -45,31 +47,23 @@ public class SelectRenderer {
         SelectSupport.Builder builder = new SelectSupport.Builder()
                 .isDistinct(selectModel.isDistinct())
                 .withColumnList(calculateColumnList())
-                .withTableName(calculateTableName(selectModel.table()))
-                .withJoinClause(calculateJoinClause())
-                .withOrderByClause(calculateOrderByPhrase());
+                .withTableName(calculateTableName(selectModel.table()));
         
-        selectModel.whereModel().ifPresent(wm -> {
-            WhereSupport whereSupport = new WhereRenderer.Builder(wm, renderingStrategy, selectModel.tableAliases())
-                    .withSequence(sequence)
-                    .build()
-                    .render();
-            
-            builder.withWhereClause(whereSupport.getWhereClause())
-                .withParameters(whereSupport.getParameters());
-        });
+        selectModel.joinModel().ifPresent(jm -> applyJoin(builder, jm));
+        selectModel.whereModel().ifPresent(wm -> applyWhere(builder, wm, renderingStrategy, sequence));
+        selectModel.orderByColumns().ifPresent(cs -> applyOrderBy(builder, cs));
         
         return builder.build();
     }
 
-    private String calculateTableName(SqlTable table) {
-        return RenderingUtilities.tableNameIncludingAlias(table, selectModel.tableAliases());
-    }
-    
     private String calculateColumnList() {
         return selectModel.columns()
                 .map(this::nameIncludingTableAndColumnAlias)
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
+    }
+
+    private String calculateTableName(SqlTable table) {
+        return RenderingUtilities.tableNameIncludingAlias(table, selectModel.tableAliases());
     }
     
     private String nameIncludingTableAndColumnAlias(SelectListItem selectListItem) {
@@ -86,26 +80,29 @@ public class SelectRenderer {
         return selectListItem.nameIncludingTableAlias(selectModel.tableAlias(selectListItem.table()));
     }
     
-    private String calculateJoinClause() {
-        return selectModel.joinModel()
-                .map(this::calculateJoinClause)
-                .orElse(null);
-    }
-    
-    private String calculateJoinClause(JoinModel joinModel) {
-        return JoinRenderer.of(joinModel, selectModel.tableAliases())
+    private void applyJoin(SelectSupport.Builder builder, JoinModel joinModel) {
+        String joinClause = JoinRenderer.of(joinModel, selectModel.tableAliases())
                 .render();
+        
+        builder.withJoinClause(joinClause);
     }
     
-    private String calculateOrderByPhrase() {
-        return selectModel.orderByColumns()
-                .map(this::calculateOrderByPhrase)
-                .orElse(null);
+    private void applyWhere(SelectSupport.Builder builder, WhereModel whereModel, RenderingStrategy renderingStrategy,
+            AtomicInteger sequence) {
+        WhereSupport whereSupport = new WhereRenderer.Builder(whereModel, renderingStrategy, selectModel.tableAliases())
+                .withSequence(sequence)
+                .build()
+                .render();
+        
+        builder.withWhereClause(whereSupport.getWhereClause());
+        builder.withParameters(whereSupport.getParameters());
     }
     
-    private String calculateOrderByPhrase(Stream<SqlColumn<?>> columns) {
-        return columns.map(this::orderByPhrase)
+    private void applyOrderBy(SelectSupport.Builder builder, Stream<SqlColumn<?>> columns) {
+        String orderByClause = columns.map(this::orderByPhrase)
                 .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
+        builder.withOrderByClause(orderByClause);
     }
     
     private String orderByPhrase(SqlColumn<?> column) {
