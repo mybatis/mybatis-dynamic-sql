@@ -15,24 +15,24 @@
  */
 package org.mybatis.dynamic.sql.where;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
 
 public class WhereModel {
-    private List<SqlCriterion<?>> criteria;
+    private List<SqlCriterion<?>> criteria = new ArrayList<>();
     
     private WhereModel(List<SqlCriterion<?>> criteria) {
-        this.criteria = criteria;
+        this.criteria.addAll(criteria);
     }
     
     public Stream<SqlCriterion<?>> criteria() {
         return criteria.stream();
     }
 
-    public static WhereModel of(Stream<SqlCriterion<?>> criteria) {
-        return new WhereModel(criteria.collect(Collectors.toList()));
+    public static WhereModel of(List<SqlCriterion<?>> criteria) {
+        return new WhereModel(criteria);
     }
 }

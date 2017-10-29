@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.update;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -35,7 +36,7 @@ public class UpdateModelBuilder {
     private SqlTable table;
     
     private UpdateModelBuilder(SqlTable table) {
-        this.table = table;
+        this.table = Objects.requireNonNull(table);
     }
     
     public <T> UpdateSupportBuilderFinisher<T> set(SqlColumn<T> column) {

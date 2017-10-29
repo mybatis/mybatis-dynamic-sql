@@ -15,14 +15,15 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class JoinModel {
-    private List<JoinSpecification> joinSpecifications;
+    private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
     private JoinModel(List<JoinSpecification> joinSpecifications) {
-        this.joinSpecifications = joinSpecifications;
+        this.joinSpecifications.addAll(joinSpecifications);
     }
 
     public Stream<JoinSpecification> joinSpecifications() {

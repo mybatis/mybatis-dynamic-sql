@@ -85,7 +85,7 @@ public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuil
     }
     
     protected WhereModel buildWhereModel() {
-        return WhereModel.of(criteria.stream());
+        return WhereModel.of(criteria);
     }
     
     protected abstract T getThis();

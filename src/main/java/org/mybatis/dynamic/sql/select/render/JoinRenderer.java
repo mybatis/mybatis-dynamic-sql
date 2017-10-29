@@ -15,7 +15,9 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -26,11 +28,11 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 
 public class JoinRenderer {
     private JoinModel joinModel;
-    private Map<SqlTable, String> tableAliases;
+    private Map<SqlTable, String> tableAliases = new HashMap<>();
     
     private JoinRenderer(JoinModel joinModel, Map<SqlTable, String> tableAliases) {
-        this.joinModel = joinModel;
-        this.tableAliases = tableAliases;
+        this.joinModel = Objects.requireNonNull(joinModel);
+        this.tableAliases.putAll(tableAliases);
     }
     
     public String render() {
