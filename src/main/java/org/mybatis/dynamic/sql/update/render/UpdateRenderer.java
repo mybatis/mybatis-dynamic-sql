@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.update.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -46,7 +47,7 @@ public class UpdateRenderer {
                 .withSetClause(calculateSetPhrase(fc))
                 .withParameters(fc.parameters());
         
-        updateModel.whereModel().ifPresent(wm -> applyWhere(builder, wm, renderingStrategy));
+        updateModel.whereModel().ifPresent(applyWhere(builder, renderingStrategy));
         
         return builder.build();
     }
@@ -56,7 +57,11 @@ public class UpdateRenderer {
                 .collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    private void applyWhere(UpdateSupport.Builder builder, WhereModel whereModel, RenderingStrategy renderingStrategy) {
+    private Consumer<WhereModel> applyWhere(UpdateSupport.Builder builder, RenderingStrategy renderingStrategy) {
+        return whereModel -> applyWhere(builder, renderingStrategy, whereModel); 
+    }
+    
+    private void applyWhere(UpdateSupport.Builder builder, RenderingStrategy renderingStrategy, WhereModel whereModel) {
         WhereSupport whereSupport = new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)

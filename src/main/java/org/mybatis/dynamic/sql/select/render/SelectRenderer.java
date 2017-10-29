@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,9 +50,9 @@ public class SelectRenderer {
                 .withColumnList(calculateColumnList())
                 .withTableName(calculateTableName(selectModel.table()));
         
-        selectModel.joinModel().ifPresent(jm -> applyJoin(builder, jm));
-        selectModel.whereModel().ifPresent(wm -> applyWhere(builder, wm, renderingStrategy, sequence));
-        selectModel.mapOrderByColumns(this::orderByPhrase).ifPresent(cs -> applyOrderBy(builder, cs));
+        selectModel.joinModel().ifPresent(applyJoin(builder));
+        selectModel.whereModel().ifPresent(applyWhere(builder, renderingStrategy, sequence));
+        selectModel.mapOrderByColumns(this::orderByPhrase).ifPresent(applyOrderBy(builder));
         
         return builder.build();
     }
@@ -80,6 +81,10 @@ public class SelectRenderer {
         return selectListItem.nameIncludingTableAlias(selectModel.tableAlias(selectListItem.table()));
     }
     
+    private Consumer<JoinModel> applyJoin(SelectSupport.Builder builder) {
+        return joinModel -> applyJoin(builder, joinModel);
+    }
+    
     private void applyJoin(SelectSupport.Builder builder, JoinModel joinModel) {
         String joinClause = JoinRenderer.of(joinModel, selectModel.tableAliases())
                 .render();
@@ -87,8 +92,13 @@ public class SelectRenderer {
         builder.withJoinClause(joinClause);
     }
     
-    private void applyWhere(SelectSupport.Builder builder, WhereModel whereModel, RenderingStrategy renderingStrategy,
+    private Consumer<WhereModel> applyWhere(SelectSupport.Builder builder, RenderingStrategy renderingStrategy,
             AtomicInteger sequence) {
+        return whereModel -> applyWhere(builder, renderingStrategy, sequence, whereModel);
+    }
+    
+    private void applyWhere(SelectSupport.Builder builder, RenderingStrategy renderingStrategy,
+            AtomicInteger sequence, WhereModel whereModel) {
         WhereSupport whereSupport = new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
@@ -99,6 +109,10 @@ public class SelectRenderer {
         
         builder.withWhereClause(whereSupport.getWhereClause());
         builder.withParameters(whereSupport.getParameters());
+    }
+    
+    private Consumer<Stream<String>> applyOrderBy(SelectSupport.Builder builder) {
+        return columns -> applyOrderBy(builder, columns);
     }
     
     private void applyOrderBy(SelectSupport.Builder builder, Stream<String> columns) {

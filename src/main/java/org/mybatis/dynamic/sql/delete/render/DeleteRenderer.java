@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -35,12 +36,16 @@ public class DeleteRenderer {
         DeleteSupport.Builder builder = new DeleteSupport.Builder()
                 .withTableName(deleteModel.table().name());
         
-        deleteModel.whereModel().ifPresent(wm -> applyWhere(builder, wm, renderingStrategy));
+        deleteModel.whereModel().ifPresent(applyWhere(builder, renderingStrategy));
         
         return builder.build();
     }
     
-    private void applyWhere(DeleteSupport.Builder builder, WhereModel whereModel, RenderingStrategy renderingStrategy) {
+    private Consumer<WhereModel> applyWhere(DeleteSupport.Builder builder, RenderingStrategy renderingStrategy) {
+        return whereModel -> applyWhere(builder, renderingStrategy, whereModel);
+    }
+    
+    private void applyWhere(DeleteSupport.Builder builder, RenderingStrategy renderingStrategy, WhereModel whereModel) {
         WhereSupport whereSupport = new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
