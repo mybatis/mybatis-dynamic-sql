@@ -20,16 +20,14 @@ import org.mybatis.dynamic.sql.SqlColumn;
 public class MyBatis3RenderingStrategy extends RenderingStrategy {
     @Override
     public String getFormattedJdbcPlaceholder(SqlColumn<?> column, String prefix, String parameterName) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("#{"); //$NON-NLS-1$
-        buffer.append(prefix);
-        buffer.append('.');
-        buffer.append(parameterName);
-        buffer.append(",jdbcType="); //$NON-NLS-1$
-        buffer.append(column.jdbcType().getName());
-        buffer.append(column.typeHandler().map(th -> ",typeHandler=" + th) //$NON-NLS-1$
-                .orElse("")); //$NON-NLS-1$
-        buffer.append('}');
-        return buffer.toString();
+        return "#{" //$NON-NLS-1$
+                + prefix
+                + "." //$NON-NLS-1$
+                + parameterName
+                + ",jdbcType=" //$NON-NLS-1$
+                + column.jdbcType().getName()
+                + column.typeHandler().map(th -> ",typeHandler=" + th) //$NON-NLS-1$
+                    .orElse("") //$NON-NLS-1$
+                + "}"; //$NON-NLS-1$
     }
 }

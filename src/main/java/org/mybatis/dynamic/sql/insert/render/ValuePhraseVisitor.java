@@ -35,26 +35,37 @@ public class ValuePhraseVisitor implements InsertMappingVisitor<FieldAndValue> {
 
     @Override
     public FieldAndValue visit(NullMapping mapping) {
-        return FieldAndValue.of(mapping.mapColumn(SqlColumn::name), "null"); //$NON-NLS-1$
+        return new FieldAndValue.Builder()
+                .withFieldName(mapping.mapColumn(SqlColumn::name))
+                .withValuePhrase("null") //$NON-NLS-1$
+                .build();
     }
 
     @Override
     public FieldAndValue visit(ConstantMapping mapping) {
-        return FieldAndValue.of(mapping.mapColumn(SqlColumn::name), mapping.constant());
+        return new FieldAndValue.Builder()
+                .withFieldName(mapping.mapColumn(SqlColumn::name))
+                .withValuePhrase(mapping.constant())
+                .build();
     }
 
     @Override
     public FieldAndValue visit(StringConstantMapping mapping) {
-        return FieldAndValue.of(mapping.mapColumn(SqlColumn::name), "'" + mapping.constant() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        return new FieldAndValue.Builder()
+                .withFieldName(mapping.mapColumn(SqlColumn::name))
+                .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
+                .build();
     }
     
     @Override
     public FieldAndValue visit(PropertyMapping mapping) {
-        String placeholder = mapping.mapColumn(getColumnMapper(mapping.property()));
-        return FieldAndValue.of(mapping.mapColumn(SqlColumn::name), placeholder);
+        return new FieldAndValue.Builder()
+                .withFieldName(mapping.mapColumn(SqlColumn::name))
+                .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
+                .build();
     }
     
-    private Function<SqlColumn<?>, String> getColumnMapper(String parameterName) {
+    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
         return column -> renderingStrategy.getFormattedJdbcPlaceholder(column, "record", parameterName); //$NON-NLS-1$
     }
 }

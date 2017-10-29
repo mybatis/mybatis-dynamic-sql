@@ -67,7 +67,7 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
     public <T> FragmentAndParameters visit(ValueMapping<T> mapping) {
         String mapKey = "up" + sequence.getAndIncrement(); //$NON-NLS-1$
 
-        String jdbcPlaceholder = mapping.mapColumn(getColumnMapper(mapKey));
+        String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
         String setPhrase = mapping.mapColumn(SqlColumn::name)
                 + " = "  //$NON-NLS-1$
                 + jdbcPlaceholder;
@@ -78,7 +78,8 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
                 .build();
     }
 
-    private Function<SqlColumn<?>, String> getColumnMapper(String parameterName) {
-        return column -> renderingStrategy.getFormattedJdbcPlaceholder(column, "parameters", parameterName); //$NON-NLS-1$
+    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
+        return column -> renderingStrategy
+                .getFormattedJdbcPlaceholder(column, "parameters", parameterName); //$NON-NLS-1$
     }
 }

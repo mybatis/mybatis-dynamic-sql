@@ -21,9 +21,9 @@ public class FieldAndValue {
     private String fieldName;
     private String valuePhrase;
     
-    private FieldAndValue(String fieldName, String valuePhrase) {
-        this.fieldName = Objects.requireNonNull(fieldName);
-        this.valuePhrase = Objects.requireNonNull(valuePhrase);
+    private FieldAndValue(Builder builder) {
+        fieldName = Objects.requireNonNull(builder.fieldName);
+        valuePhrase = Objects.requireNonNull(builder.valuePhrase);
     }
     
     public String fieldName() {
@@ -34,7 +34,22 @@ public class FieldAndValue {
         return valuePhrase;
     }
     
-    public static FieldAndValue of(String fieldName, String valuePhrase) {
-        return new FieldAndValue(fieldName, valuePhrase);
+    public static class Builder {
+        private String fieldName;
+        private String valuePhrase;
+
+        public Builder withFieldName(String fieldName) {
+            this.fieldName = fieldName;
+            return this;
+        }
+        
+        public Builder withValuePhrase(String valuePhrase) {
+            this.valuePhrase = valuePhrase;
+            return this;
+        }
+        
+        public FieldAndValue build() {
+            return new FieldAndValue(this);
+        }
     }
 }

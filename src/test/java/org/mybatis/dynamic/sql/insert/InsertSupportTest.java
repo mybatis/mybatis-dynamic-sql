@@ -147,10 +147,10 @@ public class InsertSupportTest {
         
         List<FieldAndValue> mappings = new ArrayList<>();
         
-        mappings.add(FieldAndValue.of(id.name(), "{record.id}"));
-        mappings.add(FieldAndValue.of(firstName.name(), "{record.firstName}"));
-        mappings.add(FieldAndValue.of(lastName.name(), "{record.lastName}"));
-        mappings.add(FieldAndValue.of(occupation.name(), "{record.occupation}"));
+        mappings.add(newFieldAndValue(id.name(), "{record.id}"));
+        mappings.add(newFieldAndValue(firstName.name(), "{record.firstName}"));
+        mappings.add(newFieldAndValue(lastName.name(), "{record.lastName}"));
+        mappings.add(newFieldAndValue(occupation.name(), "{record.occupation}"));
         
         FieldAndValueCollector<TestRecord> collector = 
                 mappings.parallelStream().collect(Collector.of(
@@ -165,6 +165,13 @@ public class InsertSupportTest {
             String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
             softly.assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase);
         });
+    }
+    
+    private FieldAndValue newFieldAndValue(String fieldName, String valuePhrase) {
+        return new FieldAndValue.Builder()
+                .withFieldName(fieldName)
+                .withValuePhrase(valuePhrase)
+                .build();
     }
     
     @Test
