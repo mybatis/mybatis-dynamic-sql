@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,13 +26,13 @@ public class SqlCriterion<T> {
     private SqlColumn<T> column;
     private VisitableCondition<T> condition;
     private Optional<String> connector;
-    private Optional<List<SqlCriterion<?>>> subCriteria;
+    private List<SqlCriterion<?>> subCriteria = new ArrayList<>();
     
     private SqlCriterion(Builder<T> builder) {
         connector = Optional.ofNullable(builder.connector);
         column = Objects.requireNonNull(builder.column);
         condition = Objects.requireNonNull(builder.condition);
-        subCriteria = Optional.ofNullable(builder.subCriteria);
+        subCriteria.addAll(builder.subCriteria);
     }
     
     public Optional<String> connector() {
@@ -46,15 +47,19 @@ public class SqlCriterion<T> {
         return condition;
     }
     
-    public Optional<Stream<SqlCriterion<?>>> subCriteria() {
-        return subCriteria.map(List::stream);
+    public boolean hasSubCriteria() {
+        return subCriteria.size() > 0;
+    }
+    
+    public Stream<SqlCriterion<?>> subCriteria() {
+        return subCriteria.stream();
     }
 
     public static class Builder<T> {
         private String connector;
         private SqlColumn<T> column;
         private VisitableCondition<T> condition;
-        private List<SqlCriterion<?>> subCriteria;
+        private List<SqlCriterion<?>> subCriteria = new ArrayList<>();
         
         public Builder<T> withConnector(String connector) {
             this.connector = connector;
@@ -72,7 +77,7 @@ public class SqlCriterion<T> {
         }
         
         public Builder<T> withSubCriteria(List<SqlCriterion<?>> subCriteria) {
-            this.subCriteria = subCriteria;
+            this.subCriteria.addAll(subCriteria);
             return this;
         }
         
