@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.util;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
@@ -26,8 +27,8 @@ public abstract class AbstractColumnMapping {
         this.column = Objects.requireNonNull(column);
     }
     
-    public SqlColumn<?> column() {
-        return column;
+    public <R> R mapColumn(Function<SqlColumn<?>, R> mapper) {
+        return mapper.apply(column);
     }
 }
  

@@ -16,7 +16,9 @@
 package org.mybatis.dynamic.sql.update.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -37,13 +39,13 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
     @Override
     public FragmentAndParameters visit(NullMapping mapping) {
         return new FragmentAndParameters.Builder()
-                .withFragment(mapping.column().name() + " = null") //$NON-NLS-1$
+                .withFragment(mapping.mapColumn(SqlColumn::name) + " = null") //$NON-NLS-1$
                 .build();
     }
 
     @Override
     public FragmentAndParameters visit(ConstantMapping mapping) {
-        String fragment = mapping.column().name() + " = " + mapping.constant(); //$NON-NLS-1$
+        String fragment = mapping.mapColumn(SqlColumn::name) + " = " + mapping.constant(); //$NON-NLS-1$
         return new FragmentAndParameters.Builder()
                 .withFragment(fragment)
                 .build();
@@ -51,7 +53,7 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
 
     @Override
     public FragmentAndParameters visit(StringConstantMapping mapping) {
-        String fragment = mapping.column().name()
+        String fragment = mapping.mapColumn(SqlColumn::name)
                 + " = '" //$NON-NLS-1$
                 + mapping.constant()
                 + "'"; //$NON-NLS-1$
@@ -64,9 +66,9 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
     @Override
     public <T> FragmentAndParameters visit(ValueMapping<T> mapping) {
         String mapKey = "up" + sequence.getAndIncrement(); //$NON-NLS-1$
-        String jdbcPlaceholder =
-                renderingStrategy.getFormattedJdbcPlaceholder(mapping.column(), "parameters", mapKey); //$NON-NLS-1$
-        String setPhrase = mapping.column().name()
+
+        String jdbcPlaceholder = mapping.mapColumn(getColumnMapper(mapKey));
+        String setPhrase = mapping.mapColumn(SqlColumn::name)
                 + " = "  //$NON-NLS-1$
                 + jdbcPlaceholder;
         
@@ -74,5 +76,9 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
                 .withFragment(setPhrase)
                 .withParameter(mapKey, mapping.value())
                 .build();
+    }
+
+    private Function<SqlColumn<?>, String> getColumnMapper(String parameterName) {
+        return column -> renderingStrategy.getFormattedJdbcPlaceholder(column, "parameters", parameterName); //$NON-NLS-1$
     }
 }

@@ -15,6 +15,9 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import java.util.function.Function;
+
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.InsertMappingVisitor;
@@ -32,23 +35,26 @@ public class ValuePhraseVisitor implements InsertMappingVisitor<FieldAndValue> {
 
     @Override
     public FieldAndValue visit(NullMapping mapping) {
-        return FieldAndValue.of(mapping.column().name(), "null"); //$NON-NLS-1$
+        return FieldAndValue.of(mapping.mapColumn(SqlColumn::name), "null"); //$NON-NLS-1$
     }
 
     @Override
     public FieldAndValue visit(ConstantMapping mapping) {
-        return FieldAndValue.of(mapping.column().name(), mapping.constant());
+        return FieldAndValue.of(mapping.mapColumn(SqlColumn::name), mapping.constant());
     }
 
     @Override
     public FieldAndValue visit(StringConstantMapping mapping) {
-        return FieldAndValue.of(mapping.column().name(), "'" + mapping.constant() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        return FieldAndValue.of(mapping.mapColumn(SqlColumn::name), "'" + mapping.constant() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     @Override
     public FieldAndValue visit(PropertyMapping mapping) {
-        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder(mapping.column(),
-                "record", mapping.property()); //$NON-NLS-1$
-        return FieldAndValue.of(mapping.column().name(), placeholder);
+        String placeholder = mapping.mapColumn(getColumnMapper(mapping.property()));
+        return FieldAndValue.of(mapping.mapColumn(SqlColumn::name), placeholder);
+    }
+    
+    private Function<SqlColumn<?>, String> getColumnMapper(String parameterName) {
+        return column -> renderingStrategy.getFormattedJdbcPlaceholder(column, "record", parameterName); //$NON-NLS-1$
     }
 }
