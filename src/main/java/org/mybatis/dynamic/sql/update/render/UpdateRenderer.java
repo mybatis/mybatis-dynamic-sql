@@ -17,10 +17,12 @@ package org.mybatis.dynamic.sql.update.render;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
@@ -35,11 +37,21 @@ public class UpdateRenderer {
     
     public UpdateSupport render(RenderingStrategy renderingStrategy) {
         SetPhraseVisitor visitor = new SetPhraseVisitor(renderingStrategy);
-        Optional<WhereSupport> whereSupport = renderWhere(renderingStrategy);
-        
-        return updateModel.columnValues()
+
+        FragmentCollector fc = updateModel.columnValues()
                 .map(cv -> transform(cv, visitor))
-                .collect(UpdateFragmentCollector.toUpdateSupport(updateModel.table(), whereSupport));
+                .collect(FragmentCollector.collect());
+        
+        return new UpdateSupport.Builder(updateModel.table().name())
+                .withSetClause(calculateSetPhrase(fc))
+                .withWhereSupport(renderWhere(renderingStrategy))
+                .withParameters(fc.parameters())
+                .build();
+    }
+
+    private String calculateSetPhrase(FragmentCollector collector) {
+        return collector.fragments()
+                .collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     private Optional<WhereSupport> renderWhere(RenderingStrategy renderingStrategy) {

@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class CriterionRenderer {
 
@@ -51,7 +52,7 @@ public class CriterionRenderer {
         String connector = renderConnector(criterion);
         FragmentAndParameters renderedCondition = renderCondition(criterion);
         
-        WhereFragmentCollector renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
+        FragmentCollector renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
         String fragment = calculateFragment(connector, renderedCondition, renderedSubCriteria);
         
         return new FragmentAndParameters.Builder()
@@ -73,9 +74,9 @@ public class CriterionRenderer {
                 .build();
     }
     
-    private WhereFragmentCollector renderSubCriteria(Stream<SqlCriterion<?>> subCriteria) {
+    private FragmentCollector renderSubCriteria(Stream<SqlCriterion<?>> subCriteria) {
         return subCriteria.map(this::renderSubCriterion)
-                .collect(WhereFragmentCollector.collect());
+                .collect(FragmentCollector.collect());
     }
     
     private String calculateFragment(String connector, FragmentAndParameters renderedCondition) {
@@ -83,7 +84,7 @@ public class CriterionRenderer {
     }
     
     private String calculateFragment(String connector, FragmentAndParameters renderedCondition,
-            WhereFragmentCollector renderedSubCriteria) {
+            FragmentCollector renderedSubCriteria) {
         return connector
                 + "("  //$NON-NLS-1$
                 + renderedCondition.fragment()

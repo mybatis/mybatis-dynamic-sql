@@ -19,13 +19,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public abstract class FragmentCollector<T extends FragmentCollector<T>> {
-    protected List<String> fragments = new ArrayList<>();
-    protected Map<String, Object> parameters = new HashMap<>();
+public class FragmentCollector {
+    List<String> fragments = new ArrayList<>();
+    Map<String, Object> parameters = new HashMap<>();
     
-    protected FragmentCollector() {
+    FragmentCollector() {
         super();
     }
     
@@ -34,10 +35,10 @@ public abstract class FragmentCollector<T extends FragmentCollector<T>> {
         parameters.putAll(fragmentAndParameters.parameters());
     }
     
-    public T merge(T other) {
+    public FragmentCollector merge(FragmentCollector other) {
         fragments.addAll(other.fragments);
         parameters.putAll(other.parameters);
-        return getThis();
+        return this;
     }
     
     public Stream<String> fragments() {
@@ -48,6 +49,9 @@ public abstract class FragmentCollector<T extends FragmentCollector<T>> {
         return parameters;
     }
     
-    public abstract T getThis();
-    
+    public static Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> collect() {
+        return Collector.of(FragmentCollector::new,
+                FragmentCollector::add,
+                FragmentCollector::merge);
+    }
 }

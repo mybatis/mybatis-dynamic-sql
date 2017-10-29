@@ -18,11 +18,13 @@ package org.mybatis.dynamic.sql.where.render;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class WhereRenderer {
@@ -39,9 +41,14 @@ public class WhereRenderer {
     }
     
     public WhereSupport render() {
-        return model.criteria()
+        FragmentCollector fc = model.criteria()
                 .map(this::render)
-                .collect(WhereFragmentCollector.toWhereSupport());
+                .collect(FragmentCollector.collect());
+
+        return new WhereSupport.Builder()
+                .withWhereClause(calculateWhereClause(fc))
+                .withParameters(fc.parameters())
+                .build();
     }
     
     private FragmentAndParameters render(SqlCriterion<?> criterion) {
@@ -53,6 +60,10 @@ public class WhereRenderer {
                 .render(criterion);
     }
     
+    private String calculateWhereClause(FragmentCollector collector) {
+        return collector.fragments()
+                .collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
     public static class Builder {
         private WhereModel model;
         private RenderingStrategy renderingStrategy;

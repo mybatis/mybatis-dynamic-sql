@@ -15,15 +15,10 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import java.util.Optional;
-
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.update.render.UpdateFragmentCollector;
-import org.mybatis.dynamic.sql.where.render.WhereFragmentCollector;
 
 @RunWith(JUnitPlatform.class)
 public class FragmentCollectorTest {
@@ -31,14 +26,14 @@ public class FragmentCollectorTest {
     @Test
     public void testWhereFragmentCollectorMerge() {
         SoftAssertions.assertSoftly(softly -> {
-            WhereFragmentCollector fc1 = new WhereFragmentCollector();
+            FragmentCollector fc1 = new FragmentCollector();
             FragmentAndParameters fp1 = new FragmentAndParameters.Builder()
                     .withFragment(":p1")
                     .withParameter("p1", 1)
                     .build();
             fc1.add(fp1);
 
-            WhereFragmentCollector fc2 = new WhereFragmentCollector();
+            FragmentCollector fc2 = new FragmentCollector();
             FragmentAndParameters fp2 = new FragmentAndParameters.Builder()
                     .withFragment(":p2")
                     .withParameter("p2", 2)
@@ -54,31 +49,6 @@ public class FragmentCollectorTest {
             softly.assertThat(fc1.parameters.size()).isEqualTo(2);
             softly.assertThat(fc1.parameters.get("p1")).isEqualTo(1);
             softly.assertThat(fc1.parameters.get("p2")).isEqualTo(2);
-        });
-    }
-
-    @Test
-    public void testUpdateFragmentCollectorMerge() {
-        SoftAssertions.assertSoftly(softly -> {
-            SqlTable myTable = SqlTable.of("my_table");
-            UpdateFragmentCollector fc1 = new UpdateFragmentCollector(myTable, Optional.empty());
-            FragmentAndParameters fp1 = new FragmentAndParameters.Builder()
-                    .withFragment("fragment1")
-                    .build();
-            fc1.add(fp1);
-
-            UpdateFragmentCollector fc2 = new UpdateFragmentCollector(myTable, Optional.empty());
-            FragmentAndParameters fp2 = new FragmentAndParameters.Builder()
-                    .withFragment("fragment2")
-                    .build();
-            fc2.add(fp2);
-
-            fc1 = fc1.merge(fc2);
-
-            softly.assertThat(fc1.fragments.size()).isEqualTo(2);
-            softly.assertThat(fc1.fragments.get(0)).isEqualTo("fragment1");
-            softly.assertThat(fc1.fragments.get(1)).isEqualTo("fragment2");
-            softly.assertThat(fc1.parameters.size()).isEqualTo(0);
         });
     }
 }

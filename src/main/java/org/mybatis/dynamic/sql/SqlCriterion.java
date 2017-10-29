@@ -48,7 +48,7 @@ public class SqlCriterion<T> {
     }
     
     public boolean hasSubCriteria() {
-        return subCriteria.size() > 0;
+        return !subCriteria.isEmpty();
     }
     
     public Stream<SqlCriterion<?>> subCriteria() {

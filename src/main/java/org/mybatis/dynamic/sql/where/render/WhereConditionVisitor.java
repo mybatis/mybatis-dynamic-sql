@@ -33,6 +33,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
     
@@ -51,9 +52,9 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
-        WhereFragmentCollector fc = condition.values()
+        FragmentCollector fc = condition.values()
                 .map(this::toFragmentAndParameters)
-                .collect(WhereFragmentCollector.collect());
+                .collect(FragmentCollector.collect());
         
         return new FragmentAndParameters.Builder()
                 .withFragment(condition.renderCondition(columnName(), fc.fragments()))
