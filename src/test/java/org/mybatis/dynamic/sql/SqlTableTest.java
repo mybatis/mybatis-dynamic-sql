@@ -25,12 +25,6 @@ import org.junit.runner.RunWith;
 public class SqlTableTest {
 
     @Test
-    public void testHahCodeNull() {
-        SqlTable table = SqlTable.of(null);
-        assertThat(table.hashCode()).isEqualTo(31);
-    }
-    
-    @Test
     public void testEqualsNull() {
         SqlTable table = SqlTable.of("fred");
         assertThat(table.equals(null)).isFalse();
@@ -60,26 +54,5 @@ public class SqlTableTest {
     public void testEqualsDifferentObject() {
         SqlTable table = SqlTable.of("fred");
         assertThat(table.equals(1)).isFalse();
-    }
-
-    @Test
-    public void testEqualsNullNonNull() {
-        SqlTable table1 = SqlTable.of(null);
-        SqlTable table2 = SqlTable.of("fred");
-        assertThat(table1.equals(table2)).isFalse();
-    }
-
-    @Test
-    public void testEqualsNonNullNull() {
-        SqlTable table1 = SqlTable.of("fred");
-        SqlTable table2 = SqlTable.of(null);
-        assertThat(table1.equals(table2)).isFalse();
-    }
-
-    @Test
-    public void testEqualsNullNull() {
-        SqlTable table1 = SqlTable.of(null);
-        SqlTable table2 = SqlTable.of(null);
-        assertThat(table1.equals(table2)).isTrue();
     }
 }

@@ -16,13 +16,14 @@
 package org.mybatis.dynamic.sql;
 
 import java.sql.JDBCType;
+import java.util.Objects;
 
 public class SqlTable {
 
     private String name;
 
     protected SqlTable(String name) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name);
     }
 
     public String name() {
@@ -52,10 +53,7 @@ public class SqlTable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+        return Objects.hashCode(name);
     }
 
     @Override
@@ -64,23 +62,11 @@ public class SqlTable {
             return true;
         }
 
-        if (obj == null) {
-            return false;
-        }
-
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof SqlTable)) {
             return false;
         }
 
         SqlTable other = (SqlTable) obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(name, other.name);
     }
 }
