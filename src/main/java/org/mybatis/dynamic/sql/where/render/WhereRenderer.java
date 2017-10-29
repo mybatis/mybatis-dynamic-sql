@@ -65,6 +65,7 @@ public class WhereRenderer {
         return collector.fragments()
                 .collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
+    
     public static class Builder {
         private WhereModel whereModel;
         private RenderingStrategy renderingStrategy;
