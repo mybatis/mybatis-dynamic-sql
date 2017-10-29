@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.update;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -46,8 +47,8 @@ public class UpdateModel {
         return whereModel;
     }
     
-    public Stream<UpdateMapping> columnValues() {
-        return columnValues.stream();
+    public <R> Stream<R> mapColumnValues(Function<UpdateMapping, R> mapper) {
+        return columnValues.stream().map(mapper);
     }
     
     public UpdateSupport render(RenderingStrategy renderingStrategy) {

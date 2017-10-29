@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.join;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class JoinModel {
@@ -26,8 +27,8 @@ public class JoinModel {
         this.joinSpecifications.addAll(joinSpecifications);
     }
 
-    public Stream<JoinSpecification> joinSpecifications() {
-        return joinSpecifications.stream();
+    public <R> Stream<R> mapJoinSpecifications(Function<JoinSpecification, R> mapper) {
+        return joinSpecifications.stream().map(mapper);
     }
     
     public static JoinModel of(List<JoinSpecification> joinSpecifications) {

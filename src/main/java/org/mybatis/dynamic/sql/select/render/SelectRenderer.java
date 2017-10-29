@@ -58,8 +58,7 @@ public class SelectRenderer {
     }
 
     private String calculateColumnList() {
-        return selectModel.columns()
-                .map(this::nameIncludingTableAndColumnAlias)
+        return selectModel.mapColumns(this::nameIncludingTableAndColumnAlias)
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
@@ -68,13 +67,11 @@ public class SelectRenderer {
     }
     
     private String nameIncludingTableAndColumnAlias(SelectListItem selectListItem) {
-        StringBuilder buffer = new StringBuilder(calculateColumnNameAndTableAlias(selectListItem));
-        selectListItem.alias().ifPresent(a -> {
-            buffer.append(" as "); //$NON-NLS-1$
-            buffer.append(a);
-        });
+        String nameAndTableAlias = calculateColumnNameAndTableAlias(selectListItem);
         
-        return buffer.toString();
+        return selectListItem.alias()
+                .map(a -> nameAndTableAlias + " as " + a) //$NON-NLS-1$
+                .orElse(nameAndTableAlias);
     }
     
     private String calculateColumnNameAndTableAlias(SelectListItem selectListItem) {

@@ -36,12 +36,11 @@ public class JoinRenderer {
     }
     
     public String render() {
-        return joinModel.joinSpecifications()
-                .map(this::render)
+        return joinModel.mapJoinSpecifications(this::toRenderedString)
                 .collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
     
-    private String render(JoinSpecification joinSpecification) {
+    private String toRenderedString(JoinSpecification joinSpecification) {
         return "join " //$NON-NLS-1$
                 + RenderingUtilities.tableNameIncludingAlias(joinSpecification.table(), tableAliases)
                 + " " //$NON-NLS-1$

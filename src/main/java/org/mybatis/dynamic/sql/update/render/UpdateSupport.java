@@ -62,7 +62,7 @@ public class UpdateSupport extends AbstractSqlSupport {
                 + tableName()
                 + ONE_SPACE
                 + getSetClause()
-                + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING);
+                + spaceBefore(whereClause());
     }
     
     public static class Builder {

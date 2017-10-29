@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.update.render;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -38,8 +39,7 @@ public class UpdateRenderer {
     public UpdateSupport render(RenderingStrategy renderingStrategy) {
         SetPhraseVisitor visitor = new SetPhraseVisitor(renderingStrategy);
 
-        FragmentCollector fc = updateModel.columnValues()
-                .map(cv -> transform(cv, visitor))
+        FragmentCollector fc = updateModel.mapColumnValues(toFragmentAndParameters(visitor))
                 .collect(FragmentCollector.collect());
         
         UpdateSupport.Builder builder = new UpdateSupport.Builder()
@@ -73,8 +73,12 @@ public class UpdateRenderer {
         builder.withParameters(whereSupport.getParameters());
     }
     
-    private FragmentAndParameters transform(UpdateMapping columnAndValue, SetPhraseVisitor visitor) {
-        return columnAndValue.accept(visitor);
+    private Function<UpdateMapping, FragmentAndParameters> toFragmentAndParameters(SetPhraseVisitor visitor) {
+        return updateMapping -> toFragmentAndParameters(visitor, updateMapping);
+    }
+    
+    private FragmentAndParameters toFragmentAndParameters(SetPhraseVisitor visitor, UpdateMapping updateMapping) {
+        return updateMapping.accept(visitor);
     }
     
     public static UpdateRenderer of(UpdateModel updateModel) {

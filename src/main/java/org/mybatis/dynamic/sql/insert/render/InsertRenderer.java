@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.insert.render;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -31,13 +32,16 @@ public class InsertRenderer<T> {
     
     public InsertSupport<T> render(RenderingStrategy renderingStrategy) {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
-        return model.columnMappings()
-                .map(cv -> transform(cv, visitor))
+        return model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.toInsertSupport(model.record(), model.table()));
     }
+
+    private Function<InsertMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {
+        return insertMapping -> toFieldAndValue(visitor, insertMapping);
+    }
     
-    private FieldAndValue transform(InsertMapping mapping, ValuePhraseVisitor visitor) {
-        return mapping.accept(visitor);
+    private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, InsertMapping insertMapping) {
+        return insertMapping.accept(visitor);
     }
     
     public static <T> InsertRenderer<T> of(InsertModel<T> model) {

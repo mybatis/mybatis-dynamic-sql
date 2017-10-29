@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public abstract class AbstractSqlSupport {
     public static final String EMPTY_STRING = ""; //$NON-NLS-1$
@@ -29,5 +30,9 @@ public abstract class AbstractSqlSupport {
     
     public String tableName() {
         return tableName;
+    }
+
+    protected String spaceBefore(Optional<String> in) {
+        return in.map(s -> ONE_SPACE + s).orElse(EMPTY_STRING);
     }
 }

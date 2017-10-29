@@ -80,14 +80,15 @@ public class SelectSupport extends AbstractSqlSupport {
     }
     
     public String getFullSelectStatement() {
-        return "select " //$NON-NLS-1$
-                + distinct().map(d -> d + ONE_SPACE).orElse(EMPTY_STRING)
+        return "select" //$NON-NLS-1$
+                + spaceBefore(distinct())
+                + ONE_SPACE
                 + getColumnList()
                 + " from " //$NON-NLS-1$
                 + tableName()
-                + joinClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING)
-                + whereClause().map(w -> ONE_SPACE + w).orElse(EMPTY_STRING)
-                + orderByClause().map(o -> ONE_SPACE + o).orElse(EMPTY_STRING);
+                + spaceBefore(joinClause())
+                + spaceBefore(whereClause())
+                + spaceBefore(orderByClause());
     }
     
     public static class Builder {

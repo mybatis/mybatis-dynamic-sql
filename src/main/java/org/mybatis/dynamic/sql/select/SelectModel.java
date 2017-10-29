@@ -55,8 +55,8 @@ public class SelectModel {
         return isDistinct;
     }
     
-    public Stream<SelectListItem> columns() {
-        return selectList.stream();
+    public <R> Stream<R> mapColumns(Function<SelectListItem, R> mapper) {
+        return selectList.stream().map(mapper);
     }
     
     public SqlTable table() {
