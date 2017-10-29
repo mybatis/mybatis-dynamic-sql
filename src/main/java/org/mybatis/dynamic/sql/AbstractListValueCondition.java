@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,12 +27,14 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
         this.values = values.collect(Collectors.toList());
     }
     
-    public final Stream<T> values() {
-        return values.stream().map(this::transformValue);
+    public final <R> Stream<R> mapValues(Function<T, R> mapper) {
+        return values.stream()
+                .map(this::mapValue)
+                .map(mapper);
     }
     
     @Override
-    public <R> R accept(ConditionVisitor<T,R> visitor) {
+    public <R> R accept(ConditionVisitor<T, R> visitor) {
         return visitor.visit(this);
     }
 
@@ -44,9 +47,9 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
      * to change the order or number of values.
      *  
      * @param value the value
-     * @return the transformed value - in most cases the value is not changed
+     * @return the mapped value - in most cases the value is not changed
      */
-    protected T transformValue(T value) {
+    protected T mapValue(T value) {
         return value;
     }
     

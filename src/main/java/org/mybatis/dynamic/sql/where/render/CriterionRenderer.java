@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -52,7 +51,8 @@ public class CriterionRenderer {
         String connector = renderConnector(criterion);
         FragmentAndParameters renderedCondition = renderCondition(criterion);
         
-        FragmentCollector renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
+        FragmentCollector renderedSubCriteria = criterion.mapSubCriteria(this::renderSubCriterion)
+                .collect(FragmentCollector.collect());
         String fragment = calculateFragment(connector, renderedCondition, renderedSubCriteria);
         
         return new FragmentAndParameters.Builder()
@@ -72,11 +72,6 @@ public class CriterionRenderer {
                 .withFragment(fragment)
                 .withParameters(renderedCondition.parameters())
                 .build();
-    }
-    
-    private FragmentCollector renderSubCriteria(Stream<SqlCriterion<?>> subCriteria) {
-        return subCriteria.map(this::renderSubCriterion)
-                .collect(FragmentCollector.collect());
     }
     
     private String calculateFragment(String connector, FragmentAndParameters renderedCondition) {

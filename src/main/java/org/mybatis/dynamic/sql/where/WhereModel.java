@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -28,8 +29,8 @@ public class WhereModel {
         this.criteria.addAll(criteria);
     }
     
-    public Stream<SqlCriterion<?>> criteria() {
-        return criteria.stream();
+    public <R> Stream<R> mapCriteria(Function<SqlCriterion<?>, R> mapper) {
+        return criteria.stream().map(mapper);
     }
 
     public static WhereModel of(List<SqlCriterion<?>> criteria) {

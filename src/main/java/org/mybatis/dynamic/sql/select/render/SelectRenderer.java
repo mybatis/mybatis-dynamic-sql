@@ -51,7 +51,7 @@ public class SelectRenderer {
         
         selectModel.joinModel().ifPresent(jm -> applyJoin(builder, jm));
         selectModel.whereModel().ifPresent(wm -> applyWhere(builder, wm, renderingStrategy, sequence));
-        selectModel.orderByColumns().ifPresent(cs -> applyOrderBy(builder, cs));
+        selectModel.mapOrderByColumns(this::orderByPhrase).ifPresent(cs -> applyOrderBy(builder, cs));
         
         return builder.build();
     }
@@ -101,8 +101,8 @@ public class SelectRenderer {
         builder.withParameters(whereSupport.getParameters());
     }
     
-    private void applyOrderBy(SelectSupport.Builder builder, Stream<SqlColumn<?>> columns) {
-        String orderByClause = columns.map(this::orderByPhrase)
+    private void applyOrderBy(SelectSupport.Builder builder, Stream<String> columns) {
+        String orderByClause = columns
                 .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         
         builder.withOrderByClause(orderByClause);

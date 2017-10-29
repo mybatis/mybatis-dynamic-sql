@@ -52,8 +52,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
-        FragmentCollector fc = condition.values()
-                .map(this::toFragmentAndParameters)
+        FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters)
                 .collect(FragmentCollector.collect());
         
         return new FragmentAndParameters.Builder()

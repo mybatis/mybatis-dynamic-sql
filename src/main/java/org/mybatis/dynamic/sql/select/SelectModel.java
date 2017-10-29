@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SelectListItem;
@@ -78,8 +79,8 @@ public class SelectModel {
         return joinModel;
     }
     
-    public Optional<Stream<SqlColumn<?>>> orderByColumns() {
-        return orderByColumns.map(List::stream);
+    public <R> Optional<Stream<R>> mapOrderByColumns(Function<SqlColumn<?>, R> mapper) {
+        return orderByColumns.map(sc -> sc.stream().map(mapper));
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {

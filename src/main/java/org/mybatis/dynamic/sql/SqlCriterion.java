@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class SqlCriterion<T> {
@@ -51,8 +52,8 @@ public class SqlCriterion<T> {
         return !subCriteria.isEmpty();
     }
     
-    public Stream<SqlCriterion<?>> subCriteria() {
-        return subCriteria.stream();
+    public <R> Stream<R> mapSubCriteria(Function<SqlCriterion<?>, R> mapper) {
+        return subCriteria.stream().map(mapper);
     }
 
     public static class Builder<T> {

@@ -42,8 +42,7 @@ public class WhereRenderer {
     }
     
     public WhereSupport render() {
-        FragmentCollector fc = whereModel.criteria()
-                .map(this::render)
+        FragmentCollector fc = whereModel.mapCriteria(this::render)
                 .collect(FragmentCollector.collect());
 
         return new WhereSupport.Builder()

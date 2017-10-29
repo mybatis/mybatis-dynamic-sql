@@ -34,7 +34,7 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
     }
 
     @Override
-    protected String transformValue(String value) {
+    protected String mapValue(String value) {
         return value.toUpperCase();
     }
     

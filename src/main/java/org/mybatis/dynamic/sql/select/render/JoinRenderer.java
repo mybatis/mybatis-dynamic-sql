@@ -49,8 +49,7 @@ public class JoinRenderer {
     }
     
     private String renderConditions(JoinSpecification joinSpecification) {
-        return joinSpecification.joinCriteria()
-                .map(this::renderCriterion)
+        return joinSpecification.mapJoinCriteria(this::renderCriterion)
                 .collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
     
