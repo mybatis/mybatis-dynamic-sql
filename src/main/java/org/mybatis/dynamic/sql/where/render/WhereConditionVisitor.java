@@ -61,6 +61,15 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
                 .build();
     }
 
+    private FragmentAndParameters toFragmentAndParameters(Object value) {
+        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
+        
+        return new FragmentAndParameters.Builder()
+                .withFragment(getFormattedJdbcPlaceholder(mapKey))
+                .withParameter(mapKey, value)
+                .build();
+    }
+
     @Override
     public FragmentAndParameters visit(AbstractNoValueCondition<T> condition) {
         return new FragmentAndParameters.Builder()
@@ -106,16 +115,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
                 .build();
     }
     
-    private FragmentAndParameters toFragmentAndParameters(Object value) {
-        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
-        
-        return new FragmentAndParameters.Builder()
-                .withFragment(getFormattedJdbcPlaceholder(mapKey))
-                .withParameter(mapKey, value)
-                .build();
-    }
-
-    protected String formatParameterMapKey(int number) {
+    private String formatParameterMapKey(int number) {
         return "p" + number; //$NON-NLS-1$
     }
     
