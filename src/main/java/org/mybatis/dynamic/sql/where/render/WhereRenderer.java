@@ -15,8 +15,9 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -28,20 +29,20 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class WhereRenderer {
-    private WhereModel model;
+    private WhereModel whereModel;
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private Map<SqlTable, String> tableAliases;
+    private Map<SqlTable, String> tableAliases = new HashMap<>();
     
     private WhereRenderer(Builder builder) {
-        model = builder.model;
-        renderingStrategy = builder.renderingStrategy;
-        tableAliases = builder.tableAliases;
-        sequence = builder.sequence().orElse(new AtomicInteger(1));
+        whereModel = Objects.requireNonNull(builder.whereModel);
+        sequence = Objects.requireNonNull(builder.sequence);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        tableAliases.putAll(builder.tableAliases);
     }
     
     public WhereSupport render() {
-        FragmentCollector fc = model.criteria()
+        FragmentCollector fc = whereModel.criteria()
                 .map(this::render)
                 .collect(FragmentCollector.collect());
 
@@ -65,25 +66,29 @@ public class WhereRenderer {
                 .collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     public static class Builder {
-        private WhereModel model;
+        private WhereModel whereModel;
         private RenderingStrategy renderingStrategy;
-        private Map<SqlTable, String> tableAliases;
+        private Map<SqlTable, String> tableAliases = new HashMap<>();
         private AtomicInteger sequence;
         
-        public Builder(WhereModel model, RenderingStrategy renderingStrategy,
-                Map<SqlTable, String> tableAliases) {
-            this.model = model;
+        public Builder withWhereModel(WhereModel whereModel) {
+            this.whereModel = whereModel;
+            return this;
+        }
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
-            this.tableAliases = tableAliases;
+            return this;
+        }
+        
+        public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
+            this.tableAliases.putAll(tableAliases);
+            return this;
         }
         
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
             return this;
-        }
-        
-        private Optional<AtomicInteger> sequence() {
-            return Optional.ofNullable(sequence);
         }
         
         public WhereRenderer build() {

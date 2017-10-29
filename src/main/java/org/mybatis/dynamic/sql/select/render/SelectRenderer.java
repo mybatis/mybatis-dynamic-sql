@@ -40,7 +40,7 @@ public class SelectRenderer {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
-        return render(renderingStrategy, null);
+        return render(renderingStrategy, new AtomicInteger(1));
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
@@ -89,7 +89,10 @@ public class SelectRenderer {
     
     private void applyWhere(SelectSupport.Builder builder, WhereModel whereModel, RenderingStrategy renderingStrategy,
             AtomicInteger sequence) {
-        WhereSupport whereSupport = new WhereRenderer.Builder(whereModel, renderingStrategy, selectModel.tableAliases())
+        WhereSupport whereSupport = new WhereRenderer.Builder()
+                .withWhereModel(whereModel)
+                .withRenderingStrategy(renderingStrategy)
+                .withTableAliases(selectModel.tableAliases())
                 .withSequence(sequence)
                 .build()
                 .render();
