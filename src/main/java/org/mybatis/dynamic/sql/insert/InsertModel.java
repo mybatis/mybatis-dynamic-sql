@@ -30,12 +30,12 @@ import org.mybatis.dynamic.sql.util.InsertMapping;
 public class InsertModel<T> {
     private SqlTable table;
     private T record;
-    private List<InsertMapping> columnMappings = new ArrayList<>();
+    private List<InsertMapping> columnMappings;
     
     private InsertModel(Builder<T> builder) {
         table = Objects.requireNonNull(builder.table);
         record = Objects.requireNonNull(builder.record);
-        columnMappings.addAll(builder.columnMappings);
+        columnMappings = Objects.requireNonNull(builder.columnMappings);
     }
 
     public <R> Stream<R> mapColumnMappings(Function<InsertMapping, R> mapper) {

@@ -35,7 +35,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -237,7 +236,6 @@ public class JoinMapperTest {
     }
 
     @Test
-    @Disabled("Disabled until we have a solution for no aliases")
     public void testMultibleTableJoinNoAliasWithOrderBy() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
@@ -247,28 +245,24 @@ public class JoinMapperTest {
                     .from(orderMaster)
                     .join(orderLine).on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .join(itemMaster).on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .where(orderMaster.orderId, isEqualTo(2))
                     .orderBy(orderMaster.orderId)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            String expectedStatment = "select order_id, order_date, line_number, description, quantity"
-                    + " from OrderMaster join OrderLine on order_id = order_id join ItemMaster on item_id = item_id"
-                    + " order by order_id";
+            String expectedStatment = "select OrderMaster.order_id, OrderMaster.order_date, OrderLine.line_number, ItemMaster.description, OrderLine.quantity"
+                    + " from OrderMaster join OrderLine on OrderMaster.order_id = OrderLine.order_id join ItemMaster on OrderLine.item_id = ItemMaster.item_id"
+                    + " where OrderMaster.order_id = #{parameters.p1,jdbcType=INTEGER}"
+                    + " order by OrderMaster.order_id";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<OrderMaster> rows = mapper.selectMany(selectSupport);
 
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows.size()).isEqualTo(1);
             OrderMaster orderMaster = rows.get(0);
-            assertThat(orderMaster.getId()).isEqualTo(1);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(1);
-            OrderDetail orderDetail = orderMaster.getDetails().get(0);
-            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
-
-            orderMaster = rows.get(1);
             assertThat(orderMaster.getId()).isEqualTo(2);
             assertThat(orderMaster.getDetails().size()).isEqualTo(2);
-            orderDetail = orderMaster.getDetails().get(0);
+            OrderDetail orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
             assertThat(orderDetail.getLineNumber()).isEqualTo(2);

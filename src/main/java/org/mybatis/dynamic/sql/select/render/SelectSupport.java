@@ -28,7 +28,7 @@ public class SelectSupport extends AbstractSqlSupport {
 
     private String columnList;
     private Optional<String> whereClause;
-    private Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> parameters;
     private Optional<String> distinct;
     private Optional<String> orderByClause;
     private Optional<String> joinClause;
@@ -37,7 +37,7 @@ public class SelectSupport extends AbstractSqlSupport {
         super(builder.tableName);
         columnList = Objects.requireNonNull(builder.columnList);
         whereClause = Optional.ofNullable(builder.whereClause);
-        parameters.putAll(builder.parameters);
+        parameters = Objects.requireNonNull(builder.parameters);
         distinct = Optional.ofNullable(builder.distinct);
         orderByClause = Optional.ofNullable(builder.orderByClause);
         joinClause = Optional.ofNullable(builder.joinClause);

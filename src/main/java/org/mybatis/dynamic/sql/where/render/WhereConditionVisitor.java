@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,13 +40,13 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
     private SqlColumn<T> column;
-    private Map<SqlTable, String> tableAliases = new HashMap<>();
+    private Map<SqlTable, String> tableAliases;
     
     private WhereConditionVisitor(Builder<T> builder) {
         this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         this.sequence = Objects.requireNonNull(builder.sequence);
         this.column = Objects.requireNonNull(builder.column);
-        this.tableAliases.putAll(builder.tableAliases);
+        this.tableAliases = Objects.requireNonNull(builder.tableAliases);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         private SqlColumn<T> column;
-        private Map<SqlTable, String> tableAliases = new HashMap<>();
+        private Map<SqlTable, String> tableAliases;
         
         public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -153,7 +152,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         }
         
         public Builder<T> withTableAliases(Map<SqlTable, String> tableAliases) {
-            this.tableAliases.putAll(tableAliases);
+            this.tableAliases = tableAliases;
             return this;
         }
         

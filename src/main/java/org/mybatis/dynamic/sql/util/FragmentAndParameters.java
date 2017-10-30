@@ -22,11 +22,11 @@ import java.util.Objects;
 public class FragmentAndParameters {
     
     private String fragment;
-    private Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> parameters;
     
     private FragmentAndParameters(Builder builder) {
         fragment = Objects.requireNonNull(builder.fragment);
-        parameters.putAll(builder.parameters);
+        parameters = Objects.requireNonNull(builder.parameters);
     }
     
     public String fragment() {

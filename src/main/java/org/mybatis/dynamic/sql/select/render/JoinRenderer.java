@@ -28,11 +28,13 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 
 public class JoinRenderer {
     private JoinModel joinModel;
-    private Map<SqlTable, String> tableAliases = new HashMap<>();
+    private Map<SqlTable, String> tableAliases;
+    private Map<SqlTable, String> tableAliasesForColumns;
     
-    private JoinRenderer(JoinModel joinModel, Map<SqlTable, String> tableAliases) {
-        this.joinModel = Objects.requireNonNull(joinModel);
-        this.tableAliases.putAll(tableAliases);
+    private JoinRenderer(Builder builder) {
+        joinModel = Objects.requireNonNull(builder.joinModel);
+        tableAliases = Objects.requireNonNull(builder.tableAliases);
+        tableAliasesForColumns = new GuaranteedAliasMap(tableAliases);
     }
     
     public String render() {
@@ -55,14 +57,29 @@ public class JoinRenderer {
     private String renderCriterion(JoinCriterion<?> joinCriterion) {
         return joinCriterion.connector()
                 + " " //$NON-NLS-1$
-                + RenderingUtilities.columnNameIncludingTableAlias(joinCriterion.leftColumn(), tableAliases)
+                + RenderingUtilities.columnNameIncludingTableAlias(joinCriterion.leftColumn(), tableAliasesForColumns)
                 + " " //$NON-NLS-1$
                 + joinCriterion.operator()
                 + " " //$NON-NLS-1$
-                + RenderingUtilities.columnNameIncludingTableAlias(joinCriterion.rightColumn(), tableAliases);
+                + RenderingUtilities.columnNameIncludingTableAlias(joinCriterion.rightColumn(), tableAliasesForColumns);
     }
     
-    public static JoinRenderer of(JoinModel joinModel, Map<SqlTable, String> tableAliases) {
-        return new JoinRenderer(joinModel, tableAliases);
+    public static class Builder {
+        private JoinModel joinModel;
+        private Map<SqlTable, String> tableAliases = new HashMap<>();
+        
+        public Builder withJoinModel(JoinModel joinModel) {
+            this.joinModel = joinModel;
+            return this;
+        }
+        
+        public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
+            this.tableAliases.putAll(tableAliases);
+            return this;
+        }
+        
+        public JoinRenderer build() {
+            return new JoinRenderer(this);
+        }
     }
 }

@@ -26,11 +26,11 @@ import org.mybatis.dynamic.sql.SqlTable;
 public class JoinSpecification {
 
     private SqlTable table;
-    private List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
+    private List<JoinCriterion<?>> joinCriteria;
     
     private JoinSpecification(Builder builder) {
         table = Objects.requireNonNull(builder.table);
-        joinCriteria.addAll(builder.joinCriteria);
+        joinCriteria = Objects.requireNonNull(builder.joinCriteria);
     }
     
     public SqlTable table() {

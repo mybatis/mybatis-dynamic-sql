@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,12 +30,12 @@ public class CriterionRenderer {
 
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private Map<SqlTable, String> tableAliases = new HashMap<>();
+    private Map<SqlTable, String> tableAliases;
     
     private CriterionRenderer(Builder builder) {
         this.sequence = Objects.requireNonNull(builder.sequence);
         this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        this.tableAliases.putAll(builder.tableAliases);
+        this.tableAliases = Objects.requireNonNull(builder.tableAliases);
     }
     
     public <T> FragmentAndParameters render(SqlCriterion<T> criterion) {
@@ -114,7 +113,7 @@ public class CriterionRenderer {
     public static class Builder {
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
-        private Map<SqlTable, String> tableAliases = new HashMap<>();
+        private Map<SqlTable, String> tableAliases;
         
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -127,7 +126,7 @@ public class CriterionRenderer {
         }
         
         public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
-            this.tableAliases.putAll(tableAliases);
+            this.tableAliases = tableAliases;
             return this;
         }
         

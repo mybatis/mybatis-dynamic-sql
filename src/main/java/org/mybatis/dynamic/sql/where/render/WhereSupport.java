@@ -22,11 +22,11 @@ import java.util.Objects;
 
 public class WhereSupport {
     private String whereClause;
-    private Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> parameters;
 
     private WhereSupport(Builder builder) {
         this.whereClause = Objects.requireNonNull(builder.whereClause);
-        this.parameters.putAll(builder.parameters);
+        this.parameters = Objects.requireNonNull(builder.parameters);
     }
     
     public Map<String, Object> getParameters() {

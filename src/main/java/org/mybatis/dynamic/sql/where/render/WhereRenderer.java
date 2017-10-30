@@ -15,9 +15,10 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -32,13 +33,13 @@ public class WhereRenderer {
     private WhereModel whereModel;
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private Map<SqlTable, String> tableAliases = new HashMap<>();
+    private Map<SqlTable, String> tableAliases;
     
     private WhereRenderer(Builder builder) {
         whereModel = Objects.requireNonNull(builder.whereModel);
         sequence = Objects.requireNonNull(builder.sequence);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        tableAliases.putAll(builder.tableAliases);
+        tableAliases = builder.tableAliases.orElse(Collections.emptyMap());
     }
     
     public WhereSupport render() {
@@ -68,7 +69,7 @@ public class WhereRenderer {
     public static class Builder {
         private WhereModel whereModel;
         private RenderingStrategy renderingStrategy;
-        private Map<SqlTable, String> tableAliases = new HashMap<>();
+        private Optional<Map<SqlTable, String>> tableAliases = Optional.empty();
         private AtomicInteger sequence;
         
         public Builder withWhereModel(WhereModel whereModel) {
@@ -82,7 +83,7 @@ public class WhereRenderer {
         }
         
         public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
-            this.tableAliases.putAll(tableAliases);
+            this.tableAliases = Optional.of(tableAliases);
             return this;
         }
         

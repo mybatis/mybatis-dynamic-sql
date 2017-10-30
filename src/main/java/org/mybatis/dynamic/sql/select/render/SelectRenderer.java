@@ -15,7 +15,9 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -35,9 +37,17 @@ import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class SelectRenderer {
     private SelectModel selectModel;
+    private Map<SqlTable, String> tableAliasesForColumns;
     
     private SelectRenderer(SelectModel selectModel) {
         this.selectModel = Objects.requireNonNull(selectModel);
+        
+        tableAliasesForColumns = selectModel.joinModel().map(jm -> guaranteedAliasMap())
+                .orElse(selectModel.tableAliases());
+    }
+    
+    private Map<SqlTable, String> guaranteedAliasMap() {
+        return new GuaranteedAliasMap(selectModel.tableAliases());
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
@@ -75,7 +85,11 @@ public class SelectRenderer {
     }
     
     private String calculateColumnNameAndTableAlias(SelectListItem selectListItem) {
-        return selectListItem.nameIncludingTableAlias(selectModel.tableAlias(selectListItem.table()));
+        return selectListItem.nameIncludingTableAlias(tableAlias(selectListItem.table()));
+    }
+    
+    private Optional<String> tableAlias(Optional<SqlTable> table) {
+        return table.map(t -> tableAliasesForColumns.get(t));
     }
     
     private Consumer<JoinModel> applyJoin(SelectSupport.Builder builder) {
@@ -83,7 +97,10 @@ public class SelectRenderer {
     }
     
     private void applyJoin(SelectSupport.Builder builder, JoinModel joinModel) {
-        String joinClause = JoinRenderer.of(joinModel, selectModel.tableAliases())
+        String joinClause = new JoinRenderer.Builder()
+                .withJoinModel(joinModel)
+                .withTableAliases(selectModel.tableAliases())
+                .build()
                 .render();
         
         builder.withJoinClause(joinClause);
@@ -99,7 +116,7 @@ public class SelectRenderer {
         WhereSupport whereSupport = new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
-                .withTableAliases(selectModel.tableAliases())
+                .withTableAliases(tableAliasesForColumns)
                 .withSequence(sequence)
                 .build()
                 .render();

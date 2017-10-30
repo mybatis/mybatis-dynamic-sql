@@ -27,13 +27,13 @@ public class SqlCriterion<T> {
     private SqlColumn<T> column;
     private VisitableCondition<T> condition;
     private Optional<String> connector;
-    private List<SqlCriterion<?>> subCriteria = new ArrayList<>();
+    private List<SqlCriterion<?>> subCriteria;
     
     private SqlCriterion(Builder<T> builder) {
         connector = Optional.ofNullable(builder.connector);
         column = Objects.requireNonNull(builder.column);
         condition = Objects.requireNonNull(builder.condition);
-        subCriteria.addAll(builder.subCriteria);
+        subCriteria = Objects.requireNonNull(builder.subCriteria);
     }
     
     public Optional<String> connector() {

@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
@@ -24,12 +25,12 @@ import org.mybatis.dynamic.sql.AbstractSqlSupport;
 public class DeleteSupport extends AbstractSqlSupport {
 
     private Optional<String> whereClause;
-    private Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> parameters;
     
     private DeleteSupport(Builder builder) {
         super(builder.tableName);
         whereClause = Optional.ofNullable(builder.whereClause);
-        parameters.putAll(builder.parameters);
+        parameters = Objects.requireNonNull(builder.parameters);
     }
     
     public String getWhereClause() {

@@ -32,13 +32,13 @@ import org.mybatis.dynamic.sql.AbstractSqlSupport;
 public class UpdateSupport extends AbstractSqlSupport {
     private String setClause;
     private Optional<String> whereClause;
-    private Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> parameters;
 
     private UpdateSupport(Builder builder) {
         super(builder.tableName);
         setClause = Objects.requireNonNull(builder.setClause);
         whereClause = Optional.ofNullable(builder.whereClause);
-        parameters.putAll(builder.parameters);
+        parameters = Objects.requireNonNull(builder.parameters);
     }
 
     public String getSetClause() {
