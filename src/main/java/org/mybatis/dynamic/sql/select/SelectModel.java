@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,7 +46,7 @@ public class SelectModel {
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);
         joinModel = Optional.ofNullable(builder.joinModel);
-        tableAliases = Objects.requireNonNull(builder.tableAliases);
+        tableAliases = Collections.unmodifiableMap(builder.tableAliases);
         whereModel = Optional.ofNullable(builder.whereModel);
         orderByModel = Optional.ofNullable(builder.orderByModel);
     }
