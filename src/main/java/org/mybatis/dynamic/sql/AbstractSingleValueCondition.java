@@ -15,11 +15,13 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.util.Objects;
+
 public abstract class AbstractSingleValueCondition<T> implements VisitableCondition<T> {
     private T value;
     
     protected AbstractSingleValueCondition(T value) {
-        this.value = value;
+        this.value = Objects.requireNonNull(value);
     }
     
     public T value() {

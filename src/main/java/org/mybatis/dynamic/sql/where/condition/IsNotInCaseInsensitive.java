@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,7 +23,7 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
 
-    protected IsNotInCaseInsensitive(Stream<String> values) {
+    protected IsNotInCaseInsensitive(List<String> values) {
         super(values);
     }
     
@@ -38,7 +39,7 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
         return value.toUpperCase();
     }
     
-    public static IsNotInCaseInsensitive of(Stream<String> values) {
+    public static IsNotInCaseInsensitive of(List<String> values) {
         return new IsNotInCaseInsensitive(values);
     }
 }

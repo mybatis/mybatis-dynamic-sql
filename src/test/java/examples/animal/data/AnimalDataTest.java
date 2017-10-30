@@ -922,4 +922,96 @@ public class AnimalDataTest {
             sqlSession.close();
         }
     }
+
+    @Test
+    public void testLessThanSubselect() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "a")
+                    .where(brainWeight, isLessThan(select(max(brainWeight)).from(animalData, "b")))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight < (select max(b.brain_weight) from AnimalData b)");
+            
+                List<AnimalData> records = mapper.selectMany(selectSupport);
+                softly.assertThat(records.size()).isEqualTo(64);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testLessThanOrEqualToSubselect() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "a")
+                    .where(brainWeight, isLessThanOrEqualTo(select(max(brainWeight)).from(animalData, "b")))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <= (select max(b.brain_weight) from AnimalData b)");
+            
+                List<AnimalData> records = mapper.selectMany(selectSupport);
+                softly.assertThat(records.size()).isEqualTo(65);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testGreaterThanSubselect() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "a")
+                    .where(brainWeight, isGreaterThan(select(min(brainWeight)).from(animalData, "b")))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight > (select min(b.brain_weight) from AnimalData b)");
+            
+                List<AnimalData> records = mapper.selectMany(selectSupport);
+                softly.assertThat(records.size()).isEqualTo(64);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testGreaterThanOrEqualToSubselect() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "a")
+                    .where(brainWeight, isGreaterThanOrEqualTo(select(min(brainWeight)).from(animalData, "b")))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight >= (select min(b.brain_weight) from AnimalData b)");
+            
+                List<AnimalData> records = mapper.selectMany(selectSupport);
+                softly.assertThat(records.size()).isEqualTo(65);
+            });
+        } finally {
+            sqlSession.close();
+        }
+    }
 }

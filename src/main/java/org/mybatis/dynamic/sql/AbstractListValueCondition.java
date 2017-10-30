@@ -15,16 +15,16 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
-    private List<T> values;
+    private List<T> values = new ArrayList<>();
 
-    protected AbstractListValueCondition(Stream<T> values) {
-        this.values = values.collect(Collectors.toList());
+    protected AbstractListValueCondition(List<T> values) {
+        this.values.addAll(values);
     }
     
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {

@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,7 +23,7 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsIn<T> extends AbstractListValueCondition<T> {
 
-    protected IsIn(Stream<T> values) {
+    protected IsIn(List<T> values) {
         super(values);
     }
     
@@ -32,7 +33,7 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
                 placeholders.collect(Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    public static <T> IsIn<T> of(Stream<T> values) {
+    public static <T> IsIn<T> of(List<T> values) {
         return new IsIn<>(values);
     }
 }

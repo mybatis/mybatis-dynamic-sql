@@ -15,26 +15,21 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.mybatis.dynamic.sql.AbstractSubselectCondition;
+import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 
-import org.mybatis.dynamic.sql.AbstractListValueCondition;
+public class IsLessThanWithSubselect<T> extends AbstractSubselectCondition<T> {
+    
+    protected IsLessThanWithSubselect(SelectModelBuilder.Buildable selectModelBuilder) {
+        super(selectModelBuilder);
+    }
 
-public class IsNotIn<T> extends AbstractListValueCondition<T> {
-
-    protected IsNotIn(List<T> values) {
-        super(values);
+    public static <T> IsLessThanWithSubselect<T> of(SelectModelBuilder.Buildable selectModelBuilder) {
+        return new IsLessThanWithSubselect<>(selectModelBuilder);
     }
 
     @Override
-    public String renderCondition(String columnName, Stream<String> placeholders) {
-        return columnName + " "//$NON-NLS-1$
-                + placeholders.collect(
-                        Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
-
-    public static <T> IsNotIn<T> of(List<T> values) {
-        return new IsNotIn<>(values);
+    public String renderCondition(String columnName, String renderedSelectStatement) {
+        return columnName + " < (" + renderedSelectStatement + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

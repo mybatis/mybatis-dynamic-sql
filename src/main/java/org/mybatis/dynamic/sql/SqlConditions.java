@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.List;
 
 import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
@@ -30,11 +30,15 @@ import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThan;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
 import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitive;
 import org.mybatis.dynamic.sql.where.condition.IsInWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLessThan;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLike;
 import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitive;
 import org.mybatis.dynamic.sql.where.condition.IsNotBetween;
@@ -139,24 +143,40 @@ public interface SqlConditions {
         return IsGreaterThan.of(value);
     }
     
+    static <T> IsGreaterThanWithSubselect<T> isGreaterThan(SelectModelBuilder.Buildable selectModelBuilder) {
+        return IsGreaterThanWithSubselect.of(selectModelBuilder);
+    }
+    
     static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(T value) {
         return IsGreaterThanOrEqualTo.of(value);
+    }
+    
+    static <T> IsGreaterThanOrEqualToWithSubselect<T> isGreaterThanOrEqualTo(SelectModelBuilder.Buildable selectModelBuilder) {
+        return IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);
     }
     
     static <T> IsLessThan<T> isLessThan(T value) {
         return IsLessThan.of(value);
     }
     
+    static <T> IsLessThanWithSubselect<T> isLessThan(SelectModelBuilder.Buildable selectModelBuilder) {
+        return IsLessThanWithSubselect.of(selectModelBuilder);
+    }
+    
     static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(T value) {
         return IsLessThanOrEqualTo.of(value);
     }
     
+    static <T> IsLessThanOrEqualToWithSubselect<T> isLessThanOrEqualTo(SelectModelBuilder.Buildable selectModelBuilder) {
+        return IsLessThanOrEqualToWithSubselect.of(selectModelBuilder);
+    }
+    
     @SafeVarargs
     static <T> IsIn<T> isIn(T...values) {
-        return isIn(Stream.of(values));
+        return isIn(Arrays.asList(values));
     }
 
-    static <T> IsIn<T> isIn(Stream<T> values) {
+    static <T> IsIn<T> isIn(List<T> values) {
         return IsIn.of(values);
     }
     
@@ -166,10 +186,10 @@ public interface SqlConditions {
 
     @SafeVarargs
     static <T> IsNotIn<T> isNotIn(T...values) {
-        return isNotIn(Stream.of(values));
+        return isNotIn(Arrays.asList(values));
     }
     
-    static <T> IsNotIn<T> isNotIn(Stream<T> values) {
+    static <T> IsNotIn<T> isNotIn(List<T> values) {
         return IsNotIn.of(values);
     }
     
@@ -203,10 +223,10 @@ public interface SqlConditions {
     }
 
     static IsInCaseInsensitive isInCaseInsensitive(String...values) {
-        return IsInCaseInsensitive.of(Stream.of(values));
+        return IsInCaseInsensitive.of(Arrays.asList(values));
     }
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
-        return IsNotInCaseInsensitive.of(Stream.of(values));
+        return IsNotInCaseInsensitive.of(Arrays.asList(values));
     }
 }
