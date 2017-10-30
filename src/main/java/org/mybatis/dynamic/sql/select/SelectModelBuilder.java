@@ -40,7 +40,7 @@ public class SelectModelBuilder {
     private SqlTable table;
     private Map<SqlTable, String> tableAliases = new HashMap<>();
     private WhereModel whereModel;
-    private List<SqlColumn<?>> orderByColumns;
+    private OrderByModel orderByModel;
     private JoinModel joinModel;
     private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
@@ -75,7 +75,7 @@ public class SelectModelBuilder {
                 .withColumns(selectList)
                 .withTableAliases(tableAliases)
                 .withWhereModel(whereModel)
-                .withOrderByColumns(orderByColumns)
+                .withOrderByModel(orderByModel)
                 .withJoinModel(joinModel)
                 .build();
     }
@@ -100,7 +100,7 @@ public class SelectModelBuilder {
         }
         
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
-            orderByColumns = Arrays.asList(columns);
+            orderByModel = OrderByModel.of(Arrays.asList(columns));
             return new SelectSupportAfterOrderByBuilder();
         }
         
@@ -132,7 +132,7 @@ public class SelectModelBuilder {
         
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
             whereModel = buildWhereModel();
-            orderByColumns = Arrays.asList(columns);
+            orderByModel = OrderByModel.of(Arrays.asList(columns));
             return new SelectSupportAfterOrderByBuilder();
         }
         
@@ -228,7 +228,7 @@ public class SelectModelBuilder {
 
         public SelectSupportAfterOrderByBuilder orderBy(SqlColumn<?>...columns) {
             joinModel = buildJoinModel();
-            orderByColumns = Arrays.asList(columns);
+            orderByModel = OrderByModel.of(Arrays.asList(columns));
             return new SelectSupportAfterOrderByBuilder();
         }
 

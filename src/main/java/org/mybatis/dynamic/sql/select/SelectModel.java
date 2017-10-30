@@ -24,7 +24,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -39,7 +38,7 @@ public class SelectModel {
     private Optional<JoinModel> joinModel;
     private Map<SqlTable, String> tableAliases;
     private Optional<WhereModel> whereModel;
-    private Optional<List<SqlColumn<?>>> orderByColumns;
+    private Optional<OrderByModel> orderByModel;
 
     private SelectModel(Builder builder) {
         isDistinct = builder.isDistinct;
@@ -48,7 +47,7 @@ public class SelectModel {
         joinModel = Optional.ofNullable(builder.joinModel);
         tableAliases = Objects.requireNonNull(builder.tableAliases);
         whereModel = Optional.ofNullable(builder.whereModel);
-        orderByColumns = Optional.ofNullable(builder.orderByColumns);
+        orderByModel = Optional.ofNullable(builder.orderByModel);
     }
     
     public boolean isDistinct() {
@@ -75,8 +74,8 @@ public class SelectModel {
         return joinModel;
     }
     
-    public <R> Optional<Stream<R>> mapOrderByColumns(Function<SqlColumn<?>, R> mapper) {
-        return orderByColumns.map(sc -> sc.stream().map(mapper));
+    public Optional<OrderByModel> orderByModel() {
+        return orderByModel;
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
@@ -89,7 +88,7 @@ public class SelectModel {
         private SqlTable table;
         private Map<SqlTable, String> tableAliases;
         private WhereModel whereModel;
-        private List<SqlColumn<?>> orderByColumns;
+        private OrderByModel orderByModel;
         private JoinModel joinModel;
         
         public Builder(SqlTable table) {
@@ -116,8 +115,8 @@ public class SelectModel {
             return this;
         }
 
-        public Builder withOrderByColumns(List<SqlColumn<?>> columns) {
-            orderByColumns = columns;
+        public Builder withOrderByModel(OrderByModel orderByModel) {
+            this.orderByModel = orderByModel;
             return this;
         }
         

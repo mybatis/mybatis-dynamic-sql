@@ -21,13 +21,13 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.RenderingUtilities;
+import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
@@ -62,7 +62,7 @@ public class SelectRenderer {
         
         selectModel.joinModel().ifPresent(applyJoin(builder));
         selectModel.whereModel().ifPresent(applyWhere(builder, renderingStrategy, sequence));
-        selectModel.mapOrderByColumns(this::orderByPhrase).ifPresent(applyOrderBy(builder));
+        selectModel.orderByModel().ifPresent(applyOrderBy(builder));
         
         return builder.build();
     }
@@ -125,12 +125,12 @@ public class SelectRenderer {
         builder.withParameters(whereSupport.getParameters());
     }
     
-    private Consumer<Stream<String>> applyOrderBy(SelectSupport.Builder builder) {
-        return columns -> applyOrderBy(builder, columns);
+    private Consumer<OrderByModel> applyOrderBy(SelectSupport.Builder builder) {
+        return orderByModel -> applyOrderBy(builder, orderByModel);
     }
     
-    private void applyOrderBy(SelectSupport.Builder builder, Stream<String> columns) {
-        String orderByClause = columns
+    private void applyOrderBy(SelectSupport.Builder builder, OrderByModel orderByModel) {
+        String orderByClause = orderByModel.mapColumns(this::orderByPhrase)
                 .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         
         builder.withOrderByClause(orderByClause);
