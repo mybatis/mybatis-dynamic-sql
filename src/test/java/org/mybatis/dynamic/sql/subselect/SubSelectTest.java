@@ -51,7 +51,7 @@ public class SubSelectTest {
         
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
+            softly.assertThat(selectSupport.isDistinct()).isFalse();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
 
             String expectedWhereClause = "where a.column2 in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER})"
@@ -84,7 +84,7 @@ public class SubSelectTest {
         
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
+            softly.assertThat(selectSupport.isDistinct()).isFalse();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
 
             String expectedWhereClause = "where a.column2 not in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER})"

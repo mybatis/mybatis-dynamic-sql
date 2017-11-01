@@ -33,4 +33,8 @@
   <select id="selectMany" resultMap="SimpleJoinResult">
     ${fullSelectStatement}
   </select>
+
+  <select id="generalSelect" resultType="map">
+    ${fullSelectStatement}
+  </select>
 </mapper>

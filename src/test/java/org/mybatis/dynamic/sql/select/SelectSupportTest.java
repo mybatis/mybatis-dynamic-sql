@@ -52,7 +52,7 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
+            softly.assertThat(selectSupport.isDistinct()).isFalse();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo(
                     "where (a.column1 = #{parameters.p1,jdbcType=DATE} and a.column2 = #{parameters.p2,jdbcType=INTEGER}) or a.column2 = #{parameters.p3,jdbcType=INTEGER} and a.column2 < #{parameters.p4,jdbcType=INTEGER}");
@@ -87,7 +87,7 @@ public class SelectSupportTest {
         
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
+            softly.assertThat(selectSupport.isDistinct()).isFalse();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
 
             String expectedWhereClause = "where a.column1 = #{parameters.p1,jdbcType=DATE}"
@@ -127,7 +127,7 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
+            softly.assertThat(selectSupport.isDistinct()).isFalse();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause())
                 .isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
@@ -159,7 +159,7 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
+            softly.assertThat(selectSupport.isDistinct()).isFalse();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
             softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC");
@@ -190,7 +190,7 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
+            softly.assertThat(selectSupport.isDistinct()).isFalse();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
             softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1");
@@ -221,7 +221,7 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("distinct");
+            softly.assertThat(selectSupport.isDistinct()).isTrue();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
             softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1");
@@ -251,7 +251,7 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
+            softly.assertThat(selectSupport.isDistinct()).isFalse();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
             softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("");
@@ -276,7 +276,7 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getDistinct()).isEqualTo("");
+            softly.assertThat(selectSupport.isDistinct()).isFalse();
             softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
             softly.assertThat(selectSupport.getWhereClause()).isEqualTo("");
             softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("");

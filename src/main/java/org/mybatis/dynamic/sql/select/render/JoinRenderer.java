@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
+import org.mybatis.dynamic.sql.select.join.JoinType;
 
 public class JoinRenderer {
     private JoinModel joinModel;
@@ -43,10 +44,17 @@ public class JoinRenderer {
     }
     
     private String toRenderedString(JoinSpecification joinSpecification) {
-        return "join " //$NON-NLS-1$
+        return renderJoinType(joinSpecification.joinType())
+                + "join " //$NON-NLS-1$
                 + RenderingUtilities.tableNameIncludingAlias(joinSpecification.table(), tableAliases)
                 + " " //$NON-NLS-1$
                 + renderConditions(joinSpecification);
+    }
+    
+    private String renderJoinType(JoinType joinType) {
+        return joinType.shortType()
+                .map(t -> t + " ") //$NON-NLS-1$
+                .orElse(""); //$NON-NLS-1$
     }
     
     private String renderConditions(JoinSpecification joinSpecification) {

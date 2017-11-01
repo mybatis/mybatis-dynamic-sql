@@ -30,6 +30,7 @@ import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
+import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -110,12 +111,39 @@ public class SelectModelBuilder {
         }
 
         public JoinSpecificationStarter join(SqlTable joinTable) {
-            return new JoinSpecificationStarter(joinTable);
+            return new JoinSpecificationStarter(joinTable, JoinType.INNER);
         }
         
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
             tableAliases.put(joinTable, tableAlias);
             return join(joinTable);
+        }
+
+        public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
+            return new JoinSpecificationStarter(joinTable, JoinType.LEFT);
+        }
+        
+        public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
+            tableAliases.put(joinTable, tableAlias);
+            return leftJoin(joinTable);
+        }
+
+        public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
+            return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);
+        }
+        
+        public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
+            tableAliases.put(joinTable, tableAlias);
+            return rightJoin(joinTable);
+        }
+
+        public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
+            return new JoinSpecificationStarter(joinTable, JoinType.FULL);
+        }
+        
+        public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
+            tableAliases.put(joinTable, tableAlias);
+            return fullJoin(joinTable);
         }
     }
     
@@ -150,18 +178,20 @@ public class SelectModelBuilder {
     
     public class JoinSpecificationStarter {
         private SqlTable joinTable;
+        private JoinType joinType;
         
-        public JoinSpecificationStarter(SqlTable joinTable) {
+        public JoinSpecificationStarter(SqlTable joinTable, JoinType joinType) {
             this.joinTable = joinTable;
+            this.joinType = joinType;
         }
 
         public <T> JoinSpecificationFinisher on(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition);
+            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);
         }
 
         public <T> JoinSpecificationFinisher on(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition,
                 JoinCriterion<?>...joinCriteria) {
-            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinCriteria);
+            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType, joinCriteria);
         }
     }
 
@@ -169,10 +199,12 @@ public class SelectModelBuilder {
 
         private SqlTable joinTable;
         private List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
+        private JoinType joinType;
         
         public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn,
-                JoinCondition<T> joinCondition) {
+                JoinCondition<T> joinCondition, JoinType joinType) {
             this.joinTable = table;
+            this.joinType = joinType;
 
             JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
                     .withJoinColumn(joinColumn)
@@ -184,8 +216,9 @@ public class SelectModelBuilder {
         }
 
         public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn,
-                JoinCondition<T> joinCondition, JoinCriterion<?>...joinCriteria) {
+                JoinCondition<T> joinCondition, JoinType joinType, JoinCriterion<?>...joinCriteria) {
             this.joinTable = table;
+            this.joinType = joinType;
 
             JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
                     .withJoinColumn(joinColumn)
@@ -201,6 +234,7 @@ public class SelectModelBuilder {
             return new JoinSpecification.Builder()
                     .withJoinCriteria(joinCriteria)
                     .withJoinTable(joinTable)
+                    .withJoinType(joinType)
                     .build();
         }
         
@@ -244,12 +278,42 @@ public class SelectModelBuilder {
 
         public JoinSpecificationStarter join(SqlTable joinTable) {
             joinSpecifications.add(buildJoinSpecification());
-            return new JoinSpecificationStarter(joinTable);
+            return new JoinSpecificationStarter(joinTable, JoinType.INNER);
         }
         
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
             tableAliases.put(joinTable, tableAlias);
             return join(joinTable);
+        }
+
+        public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
+            joinSpecifications.add(buildJoinSpecification());
+            return new JoinSpecificationStarter(joinTable, JoinType.LEFT);
+        }
+        
+        public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
+            tableAliases.put(joinTable, tableAlias);
+            return leftJoin(joinTable);
+        }
+
+        public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
+            joinSpecifications.add(buildJoinSpecification());
+            return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);
+        }
+        
+        public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
+            tableAliases.put(joinTable, tableAlias);
+            return rightJoin(joinTable);
+        }
+
+        public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
+            joinSpecifications.add(buildJoinSpecification());
+            return new JoinSpecificationStarter(joinTable, JoinType.FULL);
+        }
+        
+        public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
+            tableAliases.put(joinTable, tableAlias);
+            return fullJoin(joinTable);
         }
     }
     

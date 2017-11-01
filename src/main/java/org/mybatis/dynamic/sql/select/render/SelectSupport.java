@@ -24,12 +24,10 @@ import org.mybatis.dynamic.sql.AbstractSqlSupport;
 
 public class SelectSupport extends AbstractSqlSupport {
     
-    private static final String DISTINCT_STRING = "distinct"; //$NON-NLS-1$
-
     private String columnList;
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
-    private Optional<String> distinct;
+    private boolean isDistinct;
     private Optional<String> orderByClause;
     private Optional<String> joinClause;
     
@@ -38,17 +36,13 @@ public class SelectSupport extends AbstractSqlSupport {
         columnList = Objects.requireNonNull(builder.columnList);
         whereClause = Optional.ofNullable(builder.whereClause);
         parameters = Objects.requireNonNull(builder.parameters);
-        distinct = Optional.ofNullable(builder.distinct);
+        isDistinct = builder.isDistinct;
         orderByClause = Optional.ofNullable(builder.orderByClause);
         joinClause = Optional.ofNullable(builder.joinClause);
     }
     
-    public String getDistinct() {
-        return distinct().orElse(EMPTY_STRING);
-    }
-    
-    private Optional<String> distinct() {
-        return distinct;
+    public boolean isDistinct() {
+        return isDistinct;
     }
     
     public String getWhereClause() {
@@ -80,9 +74,8 @@ public class SelectSupport extends AbstractSqlSupport {
     }
     
     public String getFullSelectStatement() {
-        return "select" //$NON-NLS-1$
-                + spaceBefore(distinct())
-                + ONE_SPACE
+        return "select " //$NON-NLS-1$
+                + (isDistinct ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + getColumnList()
                 + " from " //$NON-NLS-1$
                 + tableName()
@@ -93,7 +86,7 @@ public class SelectSupport extends AbstractSqlSupport {
     
     public static class Builder {
         private String tableName;
-        private String distinct;
+        private boolean isDistinct;
         private String orderByClause;
         private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
@@ -106,7 +99,7 @@ public class SelectSupport extends AbstractSqlSupport {
         }
         
         public Builder isDistinct(boolean isDistinct) {
-            distinct = isDistinct ? DISTINCT_STRING : null;
+            this.isDistinct = isDistinct;
             return this;
         }
         

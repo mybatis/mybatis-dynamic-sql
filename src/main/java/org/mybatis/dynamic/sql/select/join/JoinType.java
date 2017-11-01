@@ -13,15 +13,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.joins;
+package org.mybatis.dynamic.sql.select.join;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
-
-public interface JoinMapper {
-    List<OrderMaster> selectMany(SelectSupport selectSupport);
+public enum JoinType {
+    INNER(),
+    LEFT("left"), //$NON-NLS-1$
+    RIGHT("right"), //$NON-NLS-1$
+    FULL("full"); //$NON-NLS-1$
     
-    List<Map<String, Object>> generalSelect(SelectSupport selectSupport);
+    private Optional<String> shortType;
+    
+    private JoinType() {
+        this.shortType = Optional.empty();
+    }
+    
+    private JoinType(String shortType) {
+        this.shortType = Optional.of(shortType);
+    }
+    
+    public Optional<String> shortType() {
+        return shortType;
+    }
 }

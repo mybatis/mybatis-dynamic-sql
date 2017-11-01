@@ -27,10 +27,12 @@ public class JoinSpecification {
 
     private SqlTable table;
     private List<JoinCriterion<?>> joinCriteria;
+    private JoinType joinType;
     
     private JoinSpecification(Builder builder) {
         table = Objects.requireNonNull(builder.table);
         joinCriteria = Objects.requireNonNull(builder.joinCriteria);
+        joinType = Objects.requireNonNull(builder.joinType);
     }
     
     public SqlTable table() {
@@ -41,9 +43,14 @@ public class JoinSpecification {
         return joinCriteria.stream().map(mapper);
     }
     
+    public JoinType joinType() {
+        return joinType;
+    }
+    
     public static class Builder {
         private SqlTable table;
         private List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
+        private JoinType joinType;
         
         public Builder withJoinTable(SqlTable table) {
             this.table = table;
@@ -52,6 +59,11 @@ public class JoinSpecification {
         
         public Builder withJoinCriteria(List<JoinCriterion<?>> joinCriteria) {
             this.joinCriteria.addAll(joinCriteria);
+            return this;
+        }
+        
+        public Builder withJoinType(JoinType joinType) {
+            this.joinType = joinType;
             return this;
         }
         
