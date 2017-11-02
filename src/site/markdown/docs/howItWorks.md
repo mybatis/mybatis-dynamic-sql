@@ -7,15 +7,41 @@ MyBatis does four main things:
 3. It maps JDBC result sets to objects
 4. It can generate dynamic SQL with special tags in XML, or through the use of various templating engines
 
-This library takes full advantage of the first three capabilities in MyBatis and essentialy becomes another
+This library takes full advantage of the first three capabilities in MyBatis and essentially becomes another
 templating engine for generating dynamic SQL.
 
 For example, MyBatis can execute an SQL string formatted like this:
 
 ```sql
-  select id, description from some_table where id = #{id,jdbcType=INTEGER} 
+  select id, description from table_codes where id = #{id,jdbcType=INTEGER} 
 ```
 
-This is standard SQL with a MyBatis twist - the parameter notation ```#{id,jdbcType=INTEGER}```
-tells MyBatis to take the ```id``` property of a parameter object and set it to a JDBC prepared statement
-parameter. 
+This is standard SQL with a MyBatis twist - the parameter notation `#{id,jdbcType=INTEGER}`
+tells MyBatis to take the `id` property of a parameter object and use it as a JDBC prepared statement
+parameter.
+
+Now suppose we have two Java classes like this:
+
+```java
+public class TableCode {
+  private Integer id;
+  private String description;
+  ... getters/setters
+}
+
+public class Paramater {
+  private String sql;
+  private Integer id;
+  ... getters/setters
+}
+```
+These classes can be used in conjunction with a MyBatis mapper like this:
+
+```java
+public interface Mapper {
+
+  @Select({
+    ${sql}
+  })
+  TableCode getTableCode(Parameter parameter);
+```
