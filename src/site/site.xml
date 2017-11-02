@@ -22,13 +22,19 @@
 
   <bannerLeft>
     <name>MyBatis Dynamic SQL</name>
-    <href>introduction.html</href>
+    <href>docs/introduction.html</href>
   </bannerLeft>
 
   <body>
     <menu name="User's Guide">
-      <item href="introduction.html" name="Introduction" />
-      <item href="quickStart.html" name="Quick Start" />
+      <item href="docs/introduction.html" name="Introduction" />
+      <item href="docs/quickStart.html" name="Quick Start" />
+      <item href="docs/howItWorks.html" name="How it Works" />
+      <item href="docs/select.html" name="Select Statements" />
+      <item href="docs/delete.html" name="Delete Statements" />
+      <item href="docs/insert.html" name="Insert Statements" />
+      <item href="docs/update.html" name="Update Statements" />
+      <item href="docs/codingStandards.html" name="Coding Standards" />
     </menu>
     
     <menu ref="reports"/>
