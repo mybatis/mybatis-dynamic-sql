@@ -25,6 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -81,6 +82,35 @@ public class SelectModel {
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
         return SelectRenderer.of(this).render(renderingStrategy);
+    }
+    
+    public String calculateTableNameIncludingAlias(SqlTable table) {
+        return tableAlias(table)
+                .map(a -> table.name() + " " + a) //$NON-NLS-1$
+                .orElseGet(table::name);
+    }
+    
+    public String calculateColumnNameIncludingAlias(SqlColumn<?> column) {
+        return joinModel.map(jm -> column.nameIncludingTableAlias(tableAliasOrTableName(column.table())))
+                .orElse(column.nameIncludingTableAlias(tableAlias(column.table())));
+    }
+    
+    private Optional<String> tableAliasOrTableName(Optional<SqlTable> table) {
+        return tableAlias(table).map(a -> Optional.of(a))
+                .orElse(t2(table));
+    }
+    
+    // TODO - ugly name
+    private Optional<String> t2(Optional<SqlTable> table) {
+        return table.map(t -> t.name());
+    }
+
+    private Optional<String> tableAlias(Optional<SqlTable> table) {
+        return table.flatMap(this::tableAlias);
+    }
+    
+    private Optional<String> tableAlias(SqlTable table) {
+        return Optional.ofNullable(tableAliases.get(table));
     }
     
     public static class Builder {

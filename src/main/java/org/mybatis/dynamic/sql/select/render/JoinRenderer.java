@@ -15,13 +15,10 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.render.RenderingUtilities;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -29,13 +26,11 @@ import org.mybatis.dynamic.sql.select.join.JoinType;
 
 public class JoinRenderer {
     private JoinModel joinModel;
-    private Map<SqlTable, String> tableAliases;
-    private Map<SqlTable, String> tableAliasesForColumns;
+    private SelectModel selectModel;
     
     private JoinRenderer(Builder builder) {
         joinModel = Objects.requireNonNull(builder.joinModel);
-        tableAliases = Objects.requireNonNull(builder.tableAliases);
-        tableAliasesForColumns = new GuaranteedAliasMap(tableAliases);
+        selectModel = Objects.requireNonNull(builder.selectModel);
     }
     
     public String render() {
@@ -46,7 +41,7 @@ public class JoinRenderer {
     private String toRenderedString(JoinSpecification joinSpecification) {
         return renderJoinType(joinSpecification.joinType())
                 + "join " //$NON-NLS-1$
-                + RenderingUtilities.tableNameIncludingAlias(joinSpecification.table(), tableAliases)
+                + selectModel.calculateTableNameIncludingAlias(joinSpecification.table())
                 + " " //$NON-NLS-1$
                 + renderConditions(joinSpecification);
     }
@@ -65,24 +60,24 @@ public class JoinRenderer {
     private String renderCriterion(JoinCriterion<?> joinCriterion) {
         return joinCriterion.connector()
                 + " " //$NON-NLS-1$
-                + RenderingUtilities.columnNameIncludingTableAlias(joinCriterion.leftColumn(), tableAliasesForColumns)
+                + selectModel.calculateColumnNameIncludingAlias(joinCriterion.leftColumn())
                 + " " //$NON-NLS-1$
                 + joinCriterion.operator()
                 + " " //$NON-NLS-1$
-                + RenderingUtilities.columnNameIncludingTableAlias(joinCriterion.rightColumn(), tableAliasesForColumns);
+                + selectModel.calculateColumnNameIncludingAlias(joinCriterion.rightColumn());
     }
     
     public static class Builder {
         private JoinModel joinModel;
-        private Map<SqlTable, String> tableAliases = new HashMap<>();
+        private SelectModel selectModel;
         
         public Builder withJoinModel(JoinModel joinModel) {
             this.joinModel = joinModel;
             return this;
         }
         
-        public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
-            this.tableAliases.putAll(tableAliases);
+        public Builder withSelectModel(SelectModel selectModel) {
+            this.selectModel = selectModel;
             return this;
         }
         

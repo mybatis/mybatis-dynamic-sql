@@ -26,7 +26,6 @@ import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.RenderingUtilities;
 import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -73,7 +72,7 @@ public class SelectRenderer {
     }
 
     private String calculateTableName(SqlTable table) {
-        return RenderingUtilities.tableNameIncludingAlias(table, selectModel.tableAliases());
+        return selectModel.calculateTableNameIncludingAlias(table);
     }
     
     private String nameIncludingTableAndColumnAlias(SelectListItem selectListItem) {
@@ -99,7 +98,7 @@ public class SelectRenderer {
     private void applyJoin(SelectSupport.Builder builder, JoinModel joinModel) {
         String joinClause = new JoinRenderer.Builder()
                 .withJoinModel(joinModel)
-                .withTableAliases(selectModel.tableAliases())
+                .withSelectModel(selectModel)
                 .build()
                 .render();
         
