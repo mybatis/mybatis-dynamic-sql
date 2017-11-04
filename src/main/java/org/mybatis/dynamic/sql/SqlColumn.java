@@ -91,11 +91,11 @@ public class SqlColumn<T> implements SelectListItem {
     }
     
     @Override
-    public String nameIncludingTableAlias(Optional<String> tableAlias) {
-        return tableAlias.map(this::nameIncludingTableAlias).orElseGet(this::name);
+    public String applyTableAliasToName(Optional<String> tableAlias) {
+        return tableAlias.map(this::applyTableAlias).orElseGet(this::name);
     }
     
-    private String nameIncludingTableAlias(String tableAlias) {
+    private String applyTableAlias(String tableAlias) {
         return tableAlias + "." + name(); //$NON-NLS-1$
     }
     

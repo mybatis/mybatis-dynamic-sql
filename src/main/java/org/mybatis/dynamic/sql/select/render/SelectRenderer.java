@@ -67,7 +67,7 @@ public class SelectRenderer {
     }
 
     private String calculateColumnList() {
-        return selectModel.mapColumns(this::nameIncludingTableAndColumnAlias)
+        return selectModel.mapColumns(this::applyTableAndColumnAlias)
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
@@ -75,20 +75,12 @@ public class SelectRenderer {
         return selectModel.calculateTableNameIncludingAlias(table);
     }
     
-    private String nameIncludingTableAndColumnAlias(SelectListItem selectListItem) {
-        String nameAndTableAlias = calculateColumnNameAndTableAlias(selectListItem);
-        
-        return selectListItem.alias()
-                .map(a -> nameAndTableAlias + " as " + a) //$NON-NLS-1$
-                .orElse(nameAndTableAlias);
+    private String applyTableAndColumnAlias(SelectListItem selectListItem) {
+        return selectListItem.applyTableAndColumnAliasToName(tableAlias(selectListItem));
     }
     
-    private String calculateColumnNameAndTableAlias(SelectListItem selectListItem) {
-        return selectListItem.nameIncludingTableAlias(tableAlias(selectListItem.table()));
-    }
-    
-    private Optional<String> tableAlias(Optional<SqlTable> table) {
-        return table.map(t -> tableAliasesForColumns.get(t));
+    private Optional<String> tableAlias(SelectListItem selectListItem) {
+        return selectListItem.table().map(t -> tableAliasesForColumns.get(t));
     }
     
     private Consumer<JoinModel> applyJoin(SelectSupport.Builder builder) {
@@ -136,11 +128,15 @@ public class SelectRenderer {
     }
     
     private String orderByPhrase(SqlColumn<?> column) {
-        String phrase = column.alias().orElse(calculateColumnNameAndTableAlias(column));
+        String phrase = column.alias().orElse(applyTableAlias(column));
         if (column.isDescending()) {
             phrase = phrase + " DESC"; //$NON-NLS-1$
         }
         return phrase;
+    }
+    
+    private String applyTableAlias(SqlColumn<?> column) {
+        return column.applyTableAliasToName(tableAlias(column));
     }
     
     public static SelectRenderer of(SelectModel selectModel) {

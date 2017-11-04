@@ -24,7 +24,8 @@ import org.mybatis.dynamic.sql.SqlTable;
  * This specialized HashMap will return the user specified alias for a table if there
  * is one, else it will return the table name.  This is used when there is is a select
  * with a join.  In that case we always alias the columns and tables regardless
- * of whether the caller specified and alias or not.
+ * of whether the caller specified and alias or not.  If they did not specify an alias,
+ * then we will use the table name itself as the alias.
  * 
  * @author Jeff Butler
  *

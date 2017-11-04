@@ -40,8 +40,8 @@ public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implemen
     }
 
     @Override
-    public String nameIncludingTableAlias(Optional<String> tableAlias) {
-        return render(column.nameIncludingTableAlias(tableAlias));
+    public String applyTableAliasToName(Optional<String> tableAlias) {
+        return render(column.applyTableAliasToName(tableAlias));
     }
 
     public T as(String alias) {

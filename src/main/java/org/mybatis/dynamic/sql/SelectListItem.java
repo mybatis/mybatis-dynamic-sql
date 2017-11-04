@@ -23,5 +23,26 @@ public interface SelectListItem {
 
     Optional<SqlTable> table();
 
-    String nameIncludingTableAlias(Optional<String> tableAlias);
+    /**
+     * Returns the name of the item aliased with a table name if appropriate.
+     * For example, "a.foo".  This is appropriate for where clauses and order by clauses.
+     * 
+     * @param tableAlias an optional table alias
+     * @return the item name with the table alias applied
+     */
+    String applyTableAliasToName(Optional<String> tableAlias);
+    
+    /**
+     * Returns the name of the item aliased with a table name and column alias if appropriate.
+     * For example, "a.foo as bar".  This is appropriate for select list clauses.
+     * 
+     * @param tableAlias an optional table alias
+     * @return the item name with the table and column aliases applied
+     */
+    default String applyTableAndColumnAliasToName(Optional<String> tableAlias) {
+        String nameAndTableAlias = applyTableAliasToName(tableAlias);
+        
+        return alias().map(a -> nameAndTableAlias + " as " + a) //$NON-NLS-1$
+                .orElse(nameAndTableAlias);
+    }
 }

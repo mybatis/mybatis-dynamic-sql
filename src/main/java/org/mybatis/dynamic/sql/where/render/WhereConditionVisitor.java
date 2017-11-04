@@ -123,7 +123,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
     
     private String columnName() {
-        return column.nameIncludingTableAlias(tableAlias());
+        return column.applyTableAliasToName(tableAlias());
     }
     
     private Optional<String> tableAlias() {

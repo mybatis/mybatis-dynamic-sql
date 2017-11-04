@@ -36,7 +36,7 @@ public class CountAll implements SelectListItem {
     }
 
     @Override
-    public String nameIncludingTableAlias(Optional<String> tableAlias) {
+    public String applyTableAliasToName(Optional<String> tableAlias) {
         return "count(*)"; //$NON-NLS-1$
     }
 
