@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.AliasMap;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
@@ -66,6 +67,7 @@ public class UpdateRenderer {
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
+                .withAliasMap(AliasMap.empty())
                 .build()
                 .render();
         

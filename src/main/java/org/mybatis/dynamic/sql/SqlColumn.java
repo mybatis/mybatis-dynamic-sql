@@ -19,6 +19,8 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.select.render.AliasMap;
+
 /**
  * 
  * @author Jeff Butler
@@ -61,11 +63,6 @@ public class SqlColumn<T> implements SelectListItem {
     }
 
     @Override
-    public Optional<SqlTable> table() {
-        return Optional.of(table);
-    }
-    
-    @Override
     public Optional<String> alias() {
         return alias;
     }
@@ -91,8 +88,10 @@ public class SqlColumn<T> implements SelectListItem {
     }
     
     @Override
-    public String applyTableAliasToName(Optional<String> tableAlias) {
-        return tableAlias.map(this::applyTableAlias).orElseGet(this::name);
+    public String applyTableAliasToName(AliasMap aliasMap) {
+        return aliasMap.aliasFor(table)
+                .map(this::applyTableAlias)
+                .orElseGet(this::name);
     }
     
     private String applyTableAlias(String tableAlias) {

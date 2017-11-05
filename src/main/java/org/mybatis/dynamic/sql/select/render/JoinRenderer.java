@@ -16,11 +16,9 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -71,19 +69,9 @@ public class JoinRenderer {
     }
     
     private String applyTableAlias(SqlColumn<?> column) {
-        return column.applyTableAliasToName(tableAliasOrTableName(column.table()));
+        return column.applyTableAliasToName(selectModel.aliasMapForColumns());
     }
     
-    private Optional<String> tableAliasOrTableName(Optional<SqlTable> table) {
-        return table.flatMap(selectModel::tableAlias)
-                .map(Optional::of)
-                .orElse(tableName(table));
-    }
-    
-    private Optional<String> tableName(Optional<SqlTable> table) {
-        return table.map(SqlTable::name);
-    }
-
     public static class Builder {
         private JoinModel joinModel;
         private SelectModel selectModel;

@@ -15,16 +15,13 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.AliasMap;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -33,13 +30,13 @@ public class WhereRenderer {
     private WhereModel whereModel;
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private Map<SqlTable, String> tableAliases;
+    private AliasMap aliasMap;
     
     private WhereRenderer(Builder builder) {
         whereModel = Objects.requireNonNull(builder.whereModel);
         sequence = Objects.requireNonNull(builder.sequence);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        tableAliases = builder.tableAliases.orElse(Collections.emptyMap());
+        aliasMap = Objects.requireNonNull(builder.aliasMap);
     }
     
     public WhereSupport render() {
@@ -56,7 +53,7 @@ public class WhereRenderer {
         return new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)
-                .withTableAliases(tableAliases)
+                .withAliasMap(aliasMap)
                 .build()
                 .render(criterion);
     }
@@ -69,7 +66,7 @@ public class WhereRenderer {
     public static class Builder {
         private WhereModel whereModel;
         private RenderingStrategy renderingStrategy;
-        private Optional<Map<SqlTable, String>> tableAliases = Optional.empty();
+        private AliasMap aliasMap;
         private AtomicInteger sequence;
         
         public Builder withWhereModel(WhereModel whereModel) {
@@ -82,8 +79,8 @@ public class WhereRenderer {
             return this;
         }
         
-        public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
-            this.tableAliases = Optional.of(tableAliases);
+        public Builder withAliasMap(AliasMap aliasMap) {
+            this.aliasMap = aliasMap;
             return this;
         }
         

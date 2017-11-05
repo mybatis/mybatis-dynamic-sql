@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.AliasMap;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
@@ -50,6 +51,7 @@ public class DeleteRenderer {
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
+                .withAliasMap(AliasMap.empty())
                 .build()
                 .render();
         

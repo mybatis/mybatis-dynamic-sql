@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.select.aggregate;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SelectListItem;
-import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.select.render.AliasMap;
 
 /**
  * CountAll seems like the other aggregates, but it is special because there is no column.
@@ -36,13 +36,8 @@ public class CountAll implements SelectListItem {
     }
 
     @Override
-    public String applyTableAliasToName(Optional<String> tableAlias) {
+    public String applyTableAliasToName(AliasMap aliasMap) {
         return "count(*)"; //$NON-NLS-1$
-    }
-
-    @Override
-    public Optional<SqlTable> table() {
-        return Optional.empty();
     }
 
     @Override

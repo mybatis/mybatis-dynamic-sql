@@ -15,14 +15,13 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.AliasMap;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
@@ -30,12 +29,12 @@ public class CriterionRenderer {
 
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private Map<SqlTable, String> tableAliases;
+    private AliasMap aliasMap;
     
     private CriterionRenderer(Builder builder) {
         this.sequence = Objects.requireNonNull(builder.sequence);
         this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        this.tableAliases = Objects.requireNonNull(builder.tableAliases);
+        this.aliasMap = Objects.requireNonNull(builder.aliasMap);
     }
     
     public <T> FragmentAndParameters render(SqlCriterion<T> criterion) {
@@ -95,7 +94,7 @@ public class CriterionRenderer {
         return new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)
-                .withTableAliases(tableAliases)
+                .withAliasMap(aliasMap)
                 .build()
                 .render(subCriterion);
     }
@@ -105,7 +104,7 @@ public class CriterionRenderer {
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
                 .withColumn(criterion.column())
-                .withTableAliases(tableAliases)
+                .withAliasMap(aliasMap)
                 .build();
         return criterion.condition().accept(visitor);
     }
@@ -113,7 +112,7 @@ public class CriterionRenderer {
     public static class Builder {
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
-        private Map<SqlTable, String> tableAliases;
+        private AliasMap aliasMap;
         
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -125,8 +124,8 @@ public class CriterionRenderer {
             return this;
         }
         
-        public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
-            this.tableAliases = tableAliases;
+        public Builder withAliasMap(AliasMap aliasMap) {
+            this.aliasMap = aliasMap;
             return this;
         }
         

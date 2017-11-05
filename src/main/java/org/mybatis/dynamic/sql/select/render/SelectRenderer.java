@@ -15,9 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -36,17 +34,9 @@ import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class SelectRenderer {
     private SelectModel selectModel;
-    private Map<SqlTable, String> tableAliasesForColumns;
     
     private SelectRenderer(SelectModel selectModel) {
         this.selectModel = Objects.requireNonNull(selectModel);
-        
-        tableAliasesForColumns = selectModel.joinModel().map(jm -> guaranteedAliasMap())
-                .orElse(selectModel.tableAliases());
-    }
-    
-    private Map<SqlTable, String> guaranteedAliasMap() {
-        return new GuaranteedAliasMap(selectModel.tableAliases());
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
@@ -76,11 +66,7 @@ public class SelectRenderer {
     }
     
     private String applyTableAndColumnAlias(SelectListItem selectListItem) {
-        return selectListItem.applyTableAndColumnAliasToName(tableAlias(selectListItem));
-    }
-    
-    private Optional<String> tableAlias(SelectListItem selectListItem) {
-        return selectListItem.table().map(t -> tableAliasesForColumns.get(t));
+        return selectListItem.applyTableAndColumnAliasToName(selectModel.aliasMapForColumns());
     }
     
     private Consumer<JoinModel> applyJoin(SelectSupport.Builder builder) {
@@ -107,7 +93,7 @@ public class SelectRenderer {
         WhereSupport whereSupport = new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
-                .withTableAliases(tableAliasesForColumns)
+                .withAliasMap(selectModel.aliasMapForColumns())
                 .withSequence(sequence)
                 .build()
                 .render();
@@ -136,7 +122,7 @@ public class SelectRenderer {
     }
     
     private String applyTableAlias(SqlColumn<?> column) {
-        return column.applyTableAliasToName(tableAlias(column));
+        return column.applyTableAliasToName(selectModel.aliasMapForColumns());
     }
     
     public static SelectRenderer of(SelectModel selectModel) {

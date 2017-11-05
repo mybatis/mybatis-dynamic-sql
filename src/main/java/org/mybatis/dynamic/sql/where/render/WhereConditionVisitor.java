@@ -15,9 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
@@ -27,8 +25,8 @@ import org.mybatis.dynamic.sql.AbstractSubselectCondition;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.AliasMap;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -40,13 +38,13 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
     private SqlColumn<T> column;
-    private Map<SqlTable, String> tableAliases;
+    private AliasMap aliasMap;
     
     private WhereConditionVisitor(Builder<T> builder) {
         this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         this.sequence = Objects.requireNonNull(builder.sequence);
         this.column = Objects.requireNonNull(builder.column);
-        this.tableAliases = Objects.requireNonNull(builder.tableAliases);
+        this.aliasMap = Objects.requireNonNull(builder.aliasMap);
     }
 
     @Override
@@ -123,18 +121,14 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
     
     private String columnName() {
-        return column.applyTableAliasToName(tableAlias());
+        return column.applyTableAliasToName(aliasMap);
     }
     
-    private Optional<String> tableAlias() {
-        return column.table().map(tableAliases::get);
-    }
-
     public static class Builder<T> {
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         private SqlColumn<T> column;
-        private Map<SqlTable, String> tableAliases;
+        private AliasMap aliasMap;
         
         public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -151,8 +145,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
             return this;
         }
         
-        public Builder<T> withTableAliases(Map<SqlTable, String> tableAliases) {
-            this.tableAliases = tableAliases;
+        public Builder<T> withAliasMap(AliasMap aliasMap) {
+            this.aliasMap = aliasMap;
             return this;
         }
         

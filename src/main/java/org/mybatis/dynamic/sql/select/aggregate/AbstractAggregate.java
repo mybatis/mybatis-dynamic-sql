@@ -15,23 +15,19 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.select.render.AliasMap;
 
 public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implements SelectListItem {
     protected SqlColumn<?> column;
     protected Optional<String> alias = Optional.empty();
 
     protected AbstractAggregate(SqlColumn<?> column) {
-        this.column = column;
-    }
-
-    @Override
-    public Optional<SqlTable> table() {
-        return column.table();
+        this.column = Objects.requireNonNull(column);
     }
 
     @Override
@@ -40,10 +36,10 @@ public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implemen
     }
 
     @Override
-    public String applyTableAliasToName(Optional<String> tableAlias) {
-        return render(column.applyTableAliasToName(tableAlias));
+    public String applyTableAliasToName(AliasMap aliasMap) {
+        return render(column.applyTableAliasToName(aliasMap));
     }
-
+    
     public T as(String alias) {
         T copy = copy();
         copy.alias = Optional.of(alias);

@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +27,8 @@ import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.select.render.AliasMap;
+import org.mybatis.dynamic.sql.select.render.GuaranteedAliasMap;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -38,6 +39,7 @@ public class SelectModel {
     private SqlTable table;
     private Optional<JoinModel> joinModel;
     private Map<SqlTable, String> tableAliases;
+    private AliasMap aliasMapForColumns;
     private Optional<WhereModel> whereModel;
     private Optional<OrderByModel> orderByModel;
 
@@ -46,7 +48,9 @@ public class SelectModel {
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);
         joinModel = Optional.ofNullable(builder.joinModel);
-        tableAliases = Collections.unmodifiableMap(builder.tableAliases);
+        tableAliases = Objects.requireNonNull(builder.tableAliases);
+        aliasMapForColumns = joinModel.map(jm -> (AliasMap) GuaranteedAliasMap.of(builder.tableAliases))
+                .orElse(AliasMap.of(builder.tableAliases));
         whereModel = Optional.ofNullable(builder.whereModel);
         orderByModel = Optional.ofNullable(builder.orderByModel);
     }
@@ -63,8 +67,8 @@ public class SelectModel {
         return table;
     }
     
-    public Map<SqlTable, String> tableAliases() {
-        return tableAliases;
+    public AliasMap aliasMapForColumns() {
+        return aliasMapForColumns;
     }
 
     public Optional<WhereModel> whereModel() {

@@ -17,30 +17,30 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.select.render.AliasMap;
+
 public interface SelectListItem {
 
     Optional<String> alias();
-
-    Optional<SqlTable> table();
 
     /**
      * Returns the name of the item aliased with a table name if appropriate.
      * For example, "a.foo".  This is appropriate for where clauses and order by clauses.
      * 
-     * @param tableAlias an optional table alias
+     * @param aliasMap the map of tables to aliases for the current statement
      * @return the item name with the table alias applied
      */
-    String applyTableAliasToName(Optional<String> tableAlias);
+    String applyTableAliasToName(AliasMap aliasMap);
     
     /**
      * Returns the name of the item aliased with a table name and column alias if appropriate.
      * For example, "a.foo as bar".  This is appropriate for select list clauses.
      * 
-     * @param tableAlias an optional table alias
+     * @param aliasMap the map of tables to aliases for the current statement
      * @return the item name with the table and column aliases applied
      */
-    default String applyTableAndColumnAliasToName(Optional<String> tableAlias) {
-        String nameAndTableAlias = applyTableAliasToName(tableAlias);
+    default String applyTableAndColumnAliasToName(AliasMap aliasMap) {
+        String nameAndTableAlias = applyTableAliasToName(aliasMap);
         
         return alias().map(a -> nameAndTableAlias + " as " + a) //$NON-NLS-1$
                 .orElse(nameAndTableAlias);
