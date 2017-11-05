@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.AliasMap;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
@@ -29,12 +29,12 @@ public class CriterionRenderer {
 
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private AliasMap aliasMap;
+    private TableAliasCalculator tableAliasCalculator;
     
     private CriterionRenderer(Builder builder) {
         this.sequence = Objects.requireNonNull(builder.sequence);
         this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        this.aliasMap = Objects.requireNonNull(builder.aliasMap);
+        this.tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
     }
     
     public <T> FragmentAndParameters render(SqlCriterion<T> criterion) {
@@ -94,7 +94,7 @@ public class CriterionRenderer {
         return new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)
-                .withAliasMap(aliasMap)
+                .withTableAliasCalculator(tableAliasCalculator)
                 .build()
                 .render(subCriterion);
     }
@@ -104,7 +104,7 @@ public class CriterionRenderer {
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
                 .withColumn(criterion.column())
-                .withAliasMap(aliasMap)
+                .withTableAliasCalculator(tableAliasCalculator)
                 .build();
         return criterion.condition().accept(visitor);
     }
@@ -112,7 +112,7 @@ public class CriterionRenderer {
     public static class Builder {
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
-        private AliasMap aliasMap;
+        private TableAliasCalculator tableAliasCalculator;
         
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -124,8 +124,8 @@ public class CriterionRenderer {
             return this;
         }
         
-        public Builder withAliasMap(AliasMap aliasMap) {
-            this.aliasMap = aliasMap;
+        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+            this.tableAliasCalculator = tableAliasCalculator;
             return this;
         }
         

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.AliasMap;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -30,13 +30,13 @@ public class WhereRenderer {
     private WhereModel whereModel;
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
-    private AliasMap aliasMap;
+    private TableAliasCalculator tableAliasCalculator;
     
     private WhereRenderer(Builder builder) {
         whereModel = Objects.requireNonNull(builder.whereModel);
         sequence = Objects.requireNonNull(builder.sequence);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        aliasMap = Objects.requireNonNull(builder.aliasMap);
+        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
     }
     
     public WhereSupport render() {
@@ -53,7 +53,7 @@ public class WhereRenderer {
         return new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)
-                .withAliasMap(aliasMap)
+                .withTableAliasCalculator(tableAliasCalculator)
                 .build()
                 .render(criterion);
     }
@@ -66,7 +66,7 @@ public class WhereRenderer {
     public static class Builder {
         private WhereModel whereModel;
         private RenderingStrategy renderingStrategy;
-        private AliasMap aliasMap;
+        private TableAliasCalculator tableAliasCalculator;
         private AtomicInteger sequence;
         
         public Builder withWhereModel(WhereModel whereModel) {
@@ -79,8 +79,8 @@ public class WhereRenderer {
             return this;
         }
         
-        public Builder withAliasMap(AliasMap aliasMap) {
-            this.aliasMap = aliasMap;
+        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+            this.tableAliasCalculator = tableAliasCalculator;
             return this;
         }
         

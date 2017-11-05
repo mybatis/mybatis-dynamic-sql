@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.select.render.AliasMap;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implements SelectListItem {
     protected SqlColumn<?> column;
@@ -36,8 +36,8 @@ public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implemen
     }
 
     @Override
-    public String applyTableAliasToName(AliasMap aliasMap) {
-        return render(column.applyTableAliasToName(aliasMap));
+    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+        return render(column.applyTableAliasToName(tableAliasCalculator));
     }
     
     public T as(String alias) {

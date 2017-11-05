@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.AliasMap;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
@@ -50,7 +50,7 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
-                .withAliasMap(AliasMap.empty())
+                .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
@@ -75,7 +75,7 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
-                .withAliasMap(AliasMap.of(tableAliases))
+                .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
                 .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
@@ -98,7 +98,7 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
-                .withAliasMap(AliasMap.empty())
+                .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
@@ -121,7 +121,7 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
-                .withAliasMap(AliasMap.empty())
+                .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
@@ -144,7 +144,7 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
-                .withAliasMap(AliasMap.empty())
+                .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build();
         
         FragmentAndParameters fp = renderer.render(criterion);
@@ -170,7 +170,7 @@ public class CriterionRendererTest {
         CriterionRenderer renderer = new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
-                .withAliasMap(AliasMap.of(tableAliases))
+                .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
                 .build();
         
         FragmentAndParameters rc = renderer.render(criterion);

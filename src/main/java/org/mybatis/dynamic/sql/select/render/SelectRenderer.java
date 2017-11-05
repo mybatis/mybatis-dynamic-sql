@@ -66,7 +66,7 @@ public class SelectRenderer {
     }
     
     private String applyTableAndColumnAlias(SelectListItem selectListItem) {
-        return selectListItem.applyTableAndColumnAliasToName(selectModel.aliasMapForColumns());
+        return selectListItem.applyTableAndColumnAliasToName(selectModel.tableAliasCalculator());
     }
     
     private Consumer<JoinModel> applyJoin(SelectSupport.Builder builder) {
@@ -93,7 +93,7 @@ public class SelectRenderer {
         WhereSupport whereSupport = new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
-                .withAliasMap(selectModel.aliasMapForColumns())
+                .withTableAliasCalculator(selectModel.tableAliasCalculator())
                 .withSequence(sequence)
                 .build()
                 .render();
@@ -122,7 +122,7 @@ public class SelectRenderer {
     }
     
     private String applyTableAlias(SqlColumn<?> column) {
-        return column.applyTableAliasToName(selectModel.aliasMapForColumns());
+        return column.applyTableAliasToName(selectModel.tableAliasCalculator());
     }
     
     public static SelectRenderer of(SelectModel selectModel) {

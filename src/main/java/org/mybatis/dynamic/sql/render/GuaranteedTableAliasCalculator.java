@@ -13,32 +13,34 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.render;
+package org.mybatis.dynamic.sql.render;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlTable;
 
-public class AliasMap {
-    
-    private Map<SqlTable, String> aliases;
+/**
+ * Returns the alias for a table if specified, or the table name itself.
+ * This is useful for join rendering when we always want to have an alias for the table.
+ * 
+ * @author Jeff Butler
+ * 
+ */
+public class GuaranteedTableAliasCalculator extends TableAliasCalculator {
 
-    protected AliasMap(Map<SqlTable, String> aliases) {
-        this.aliases = Objects.requireNonNull(aliases);
+    private GuaranteedTableAliasCalculator(Map<SqlTable, String> aliases) {
+        super(aliases);
     }
-    
+
+    @Override
     public Optional<String> aliasFor(SqlTable table) {
-        return Optional.ofNullable(aliases.get(table));
-    }
-
-    public static AliasMap of(Map<SqlTable, String> aliases) {
-        return new AliasMap(aliases);
+        return super.aliasFor(table)
+                .map(Optional::of)
+                .orElse(Optional.of(table.name()));
     }
     
-    public static AliasMap empty() {
-        return new AliasMap(Collections.emptyMap());
+    public static TableAliasCalculator of(Map<SqlTable, String> aliases) {
+        return new GuaranteedTableAliasCalculator(aliases);
     }
 }

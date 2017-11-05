@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.AliasMap;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -38,13 +38,13 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
     private SqlColumn<T> column;
-    private AliasMap aliasMap;
+    private TableAliasCalculator tableAliasCalculator;
     
     private WhereConditionVisitor(Builder<T> builder) {
         this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         this.sequence = Objects.requireNonNull(builder.sequence);
         this.column = Objects.requireNonNull(builder.column);
-        this.aliasMap = Objects.requireNonNull(builder.aliasMap);
+        this.tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
     }
 
     @Override
@@ -121,14 +121,14 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
     
     private String columnName() {
-        return column.applyTableAliasToName(aliasMap);
+        return column.applyTableAliasToName(tableAliasCalculator);
     }
     
     public static class Builder<T> {
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         private SqlColumn<T> column;
-        private AliasMap aliasMap;
+        private TableAliasCalculator tableAliasCalculator;
         
         public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -145,8 +145,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
             return this;
         }
         
-        public Builder<T> withAliasMap(AliasMap aliasMap) {
-            this.aliasMap = aliasMap;
+        public Builder<T> withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+            this.tableAliasCalculator = tableAliasCalculator;
             return this;
         }
         

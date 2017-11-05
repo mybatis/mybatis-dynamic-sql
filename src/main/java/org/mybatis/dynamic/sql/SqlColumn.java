@@ -19,7 +19,7 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.select.render.AliasMap;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 /**
  * 
@@ -88,8 +88,8 @@ public class SqlColumn<T> implements SelectListItem {
     }
     
     @Override
-    public String applyTableAliasToName(AliasMap aliasMap) {
-        return aliasMap.aliasFor(table)
+    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+        return tableAliasCalculator.aliasFor(table)
                 .map(this::applyTableAlias)
                 .orElseGet(this::name);
     }

@@ -69,7 +69,7 @@ public class JoinRenderer {
     }
     
     private String applyTableAlias(SqlColumn<?> column) {
-        return column.applyTableAliasToName(selectModel.aliasMapForColumns());
+        return column.applyTableAliasToName(selectModel.tableAliasCalculator());
     }
     
     public static class Builder {

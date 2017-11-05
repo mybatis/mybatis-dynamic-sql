@@ -25,10 +25,10 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
-import org.mybatis.dynamic.sql.select.render.AliasMap;
-import org.mybatis.dynamic.sql.select.render.GuaranteedAliasMap;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -39,7 +39,7 @@ public class SelectModel {
     private SqlTable table;
     private Optional<JoinModel> joinModel;
     private Map<SqlTable, String> tableAliases;
-    private AliasMap aliasMapForColumns;
+    private TableAliasCalculator tableAliasCalculator;
     private Optional<WhereModel> whereModel;
     private Optional<OrderByModel> orderByModel;
 
@@ -49,8 +49,8 @@ public class SelectModel {
         table = Objects.requireNonNull(builder.table);
         joinModel = Optional.ofNullable(builder.joinModel);
         tableAliases = Objects.requireNonNull(builder.tableAliases);
-        aliasMapForColumns = joinModel.map(jm -> (AliasMap) GuaranteedAliasMap.of(builder.tableAliases))
-                .orElse(AliasMap.of(builder.tableAliases));
+        tableAliasCalculator = joinModel.map(jm -> GuaranteedTableAliasCalculator.of(tableAliases))
+                .orElse(TableAliasCalculator.of(tableAliases));
         whereModel = Optional.ofNullable(builder.whereModel);
         orderByModel = Optional.ofNullable(builder.orderByModel);
     }
@@ -67,8 +67,8 @@ public class SelectModel {
         return table;
     }
     
-    public AliasMap aliasMapForColumns() {
-        return aliasMapForColumns;
+    public TableAliasCalculator tableAliasCalculator() {
+        return tableAliasCalculator;
     }
 
     public Optional<WhereModel> whereModel() {
