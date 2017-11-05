@@ -34,8 +34,8 @@ public class GuaranteedTableAliasCalculator extends TableAliasCalculator {
     }
 
     @Override
-    public Optional<String> aliasFor(SqlTable table) {
-        return super.aliasFor(table)
+    public Optional<String> aliasForColumn(SqlTable table) {
+        return super.aliasForColumn(table)
                 .map(Optional::of)
                 .orElse(Optional.of(table.name()));
     }

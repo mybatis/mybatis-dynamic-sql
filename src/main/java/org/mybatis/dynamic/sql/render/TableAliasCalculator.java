@@ -30,10 +30,14 @@ public class TableAliasCalculator {
         this.aliases = Objects.requireNonNull(aliases);
     }
     
-    public Optional<String> aliasFor(SqlTable table) {
+    public Optional<String> aliasForColumn(SqlTable table) {
         return Optional.ofNullable(aliases.get(table));
     }
 
+    public Optional<String> aliasForTable(SqlTable table) {
+        return Optional.ofNullable(aliases.get(table));
+    }
+    
     public static TableAliasCalculator of(Map<SqlTable, String> aliases) {
         return new TableAliasCalculator(aliases);
     }

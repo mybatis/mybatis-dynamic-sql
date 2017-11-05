@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,7 +39,6 @@ public class SelectModel {
     private List<SelectListItem> selectList;
     private SqlTable table;
     private Optional<JoinModel> joinModel;
-    private Map<SqlTable, String> tableAliases;
     private TableAliasCalculator tableAliasCalculator;
     private Optional<WhereModel> whereModel;
     private Optional<OrderByModel> orderByModel;
@@ -48,9 +48,8 @@ public class SelectModel {
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);
         joinModel = Optional.ofNullable(builder.joinModel);
-        tableAliases = Objects.requireNonNull(builder.tableAliases);
-        tableAliasCalculator = joinModel.map(jm -> GuaranteedTableAliasCalculator.of(tableAliases))
-                .orElse(TableAliasCalculator.of(tableAliases));
+        tableAliasCalculator = joinModel.map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
+                .orElse(TableAliasCalculator.of(builder.tableAliases));
         whereModel = Optional.ofNullable(builder.whereModel);
         orderByModel = Optional.ofNullable(builder.orderByModel);
     }
@@ -88,20 +87,16 @@ public class SelectModel {
     }
     
     public String calculateTableNameIncludingAlias(SqlTable table) {
-        return tableAlias(table)
+        return tableAliasCalculator.aliasForTable(table)
                 .map(a -> table.name() + " " + a) //$NON-NLS-1$
                 .orElseGet(table::name);
-    }
-    
-    public Optional<String> tableAlias(SqlTable table) {
-        return Optional.ofNullable(tableAliases.get(table));
     }
     
     public static class Builder {
         private boolean isDistinct;
         private List<SelectListItem> selectList = new ArrayList<>();
         private SqlTable table;
-        private Map<SqlTable, String> tableAliases;
+        private Map<SqlTable, String> tableAliases = new HashMap<>();
         private WhereModel whereModel;
         private OrderByModel orderByModel;
         private JoinModel joinModel;
@@ -121,7 +116,7 @@ public class SelectModel {
         }
 
         public Builder withTableAliases(Map<SqlTable, String> tableAliases) {
-            this.tableAliases = tableAliases;
+            this.tableAliases.putAll(tableAliases);
             return this;
         }
         

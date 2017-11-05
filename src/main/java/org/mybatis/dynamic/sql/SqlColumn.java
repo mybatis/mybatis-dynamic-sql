@@ -89,7 +89,7 @@ public class SqlColumn<T> implements SelectListItem {
     
     @Override
     public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
-        return tableAliasCalculator.aliasFor(table)
+        return tableAliasCalculator.aliasForColumn(table)
                 .map(this::applyTableAlias)
                 .orElseGet(this::name);
     }
