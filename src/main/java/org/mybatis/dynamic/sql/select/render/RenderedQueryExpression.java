@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.delete.render;
+package org.mybatis.dynamic.sql.select.render;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,38 +23,72 @@ import java.util.Optional;
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class DeleteSupport extends AbstractSqlSupport {
-
+public class RenderedQueryExpression extends AbstractSqlSupport {
+    
+    private String columnList;
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
+    private boolean isDistinct;
+    private Optional<String> joinClause;
     
-    private DeleteSupport(Builder builder) {
+    private RenderedQueryExpression(Builder builder) {
         super(builder.tableName);
+        columnList = Objects.requireNonNull(builder.columnList);
         whereClause = Optional.ofNullable(builder.whereClause);
         parameters = Objects.requireNonNull(builder.parameters);
+        isDistinct = builder.isDistinct;
+        joinClause = Optional.ofNullable(builder.joinClause);
+    }
+    
+    public boolean isDistinct() {
+        return isDistinct;
     }
     
     public String getWhereClause() {
         return whereClause.orElse(""); //$NON-NLS-1$
     }
 
+    public Optional<String> whereClause() {
+        return whereClause;
+    }
+
     public Map<String, Object> getParameters() {
         return parameters;
     }
     
-    public String getFullDeleteStatement() {
-        return "delete from " //$NON-NLS-1$
-                + tableName()
-                + StringUtilities.spaceBefore(whereClause);
+    public Optional<String> joinClause() {
+        return joinClause;
     }
-
+    
+    public String getColumnList() {
+        return columnList;
+    }
+    
+    public String getFullSelectStatement() {
+        return "select " //$NON-NLS-1$
+                + (isDistinct ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
+                + getColumnList()
+                + " from " //$NON-NLS-1$
+                + tableName()
+                + StringUtilities.spaceBefore(joinClause())
+                + StringUtilities.spaceBefore(whereClause());
+    }
+    
     public static class Builder {
         private String tableName;
+        private boolean isDistinct;
         private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
+        private String columnList;
+        private String joinClause;
         
         public Builder withTableName(String tableName) {
             this.tableName = tableName;
+            return this;
+        }
+        
+        public Builder isDistinct(boolean isDistinct) {
+            this.isDistinct = isDistinct;
             return this;
         }
         
@@ -68,8 +102,18 @@ public class DeleteSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public DeleteSupport build() {
-            return new DeleteSupport(this);
+        public Builder withColumnList(String columnList) {
+            this.columnList = columnList;
+            return this;
+        }
+        
+        public Builder withJoinClause(String joinClause) {
+            this.joinClause = joinClause;
+            return this;
+        }
+        
+        public RenderedQueryExpression build() {
+            return new RenderedQueryExpression(this);
         }
     }
 }

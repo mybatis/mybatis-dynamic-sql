@@ -71,13 +71,18 @@ public class SelectModelBuilder {
     }
     
     protected SelectModel buildModel() {
-        return new SelectModel.Builder(table)
+        QueryExpression queryExpression = new QueryExpression.Builder()
+                .withTable(table)
                 .isDistinct(isDistinct)
                 .withColumns(selectList)
                 .withTableAliases(tableAliases)
                 .withWhereModel(whereModel)
-                .withOrderByModel(orderByModel)
                 .withJoinModel(joinModel)
+                .build();
+                
+        return new SelectModel.Builder()
+                .withQueryExpression(queryExpression)
+                .withOrderByModel(orderByModel)
                 .build();
     }
     

@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.QueryExpression;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -27,11 +27,11 @@ import org.mybatis.dynamic.sql.select.join.JoinType;
 
 public class JoinRenderer {
     private JoinModel joinModel;
-    private SelectModel selectModel;
+    private QueryExpression queryExpression;
     
     private JoinRenderer(Builder builder) {
         joinModel = Objects.requireNonNull(builder.joinModel);
-        selectModel = Objects.requireNonNull(builder.selectModel);
+        queryExpression = Objects.requireNonNull(builder.queryExpression);
     }
     
     public String render() {
@@ -42,7 +42,7 @@ public class JoinRenderer {
     private String toRenderedString(JoinSpecification joinSpecification) {
         return renderJoinType(joinSpecification.joinType())
                 + "join " //$NON-NLS-1$
-                + selectModel.calculateTableNameIncludingAlias(joinSpecification.table())
+                + queryExpression.calculateTableNameIncludingAlias(joinSpecification.table())
                 + " " //$NON-NLS-1$
                 + renderConditions(joinSpecification);
     }
@@ -69,20 +69,20 @@ public class JoinRenderer {
     }
     
     private String applyTableAlias(SqlColumn<?> column) {
-        return column.applyTableAliasToName(selectModel.tableAliasCalculator());
+        return column.applyTableAliasToName(queryExpression.tableAliasCalculator());
     }
     
     public static class Builder {
         private JoinModel joinModel;
-        private SelectModel selectModel;
+        private QueryExpression queryExpression;
         
         public Builder withJoinModel(JoinModel joinModel) {
             this.joinModel = joinModel;
             return this;
         }
         
-        public Builder withSelectModel(SelectModel selectModel) {
-            this.selectModel = selectModel;
+        public Builder withQueryExpression(QueryExpression queryExpression) {
+            this.queryExpression = queryExpression;
             return this;
         }
         

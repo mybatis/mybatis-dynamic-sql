@@ -18,19 +18,12 @@ package org.mybatis.dynamic.sql.select.render;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
-import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
-import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereRenderer;
-import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class SelectRenderer {
     private SelectModel selectModel;
@@ -44,64 +37,17 @@ public class SelectRenderer {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
-        SelectSupport.Builder builder = new SelectSupport.Builder()
-                .isDistinct(selectModel.isDistinct())
-                .withColumnList(calculateColumnList())
-                .withTableName(calculateTableName(selectModel.table()));
+        RenderedQueryExpression rqe = QueryExpressionRenderer.of(selectModel.queryExpression())
+                .render(renderingStrategy, sequence);
         
-        selectModel.joinModel().ifPresent(applyJoin(builder));
-        selectModel.whereModel().ifPresent(applyWhere(builder, renderingStrategy, sequence));
+        SelectSupport.Builder builder = new SelectSupport.Builder()
+                .withRenderedQueryExpression(rqe);
+        
         selectModel.orderByModel().ifPresent(applyOrderBy(builder));
         
         return builder.build();
     }
 
-    private String calculateColumnList() {
-        return selectModel.mapColumns(this::applyTableAndColumnAlias)
-                .collect(Collectors.joining(", ")); //$NON-NLS-1$
-    }
-
-    private String calculateTableName(SqlTable table) {
-        return selectModel.calculateTableNameIncludingAlias(table);
-    }
-    
-    private String applyTableAndColumnAlias(SelectListItem selectListItem) {
-        return selectListItem.applyTableAndColumnAliasToName(selectModel.tableAliasCalculator());
-    }
-    
-    private Consumer<JoinModel> applyJoin(SelectSupport.Builder builder) {
-        return joinModel -> applyJoin(builder, joinModel);
-    }
-    
-    private void applyJoin(SelectSupport.Builder builder, JoinModel joinModel) {
-        String joinClause = new JoinRenderer.Builder()
-                .withJoinModel(joinModel)
-                .withSelectModel(selectModel)
-                .build()
-                .render();
-        
-        builder.withJoinClause(joinClause);
-    }
-    
-    private Consumer<WhereModel> applyWhere(SelectSupport.Builder builder, RenderingStrategy renderingStrategy,
-            AtomicInteger sequence) {
-        return whereModel -> applyWhere(builder, renderingStrategy, sequence, whereModel);
-    }
-    
-    private void applyWhere(SelectSupport.Builder builder, RenderingStrategy renderingStrategy,
-            AtomicInteger sequence, WhereModel whereModel) {
-        WhereSupport whereSupport = new WhereRenderer.Builder()
-                .withWhereModel(whereModel)
-                .withRenderingStrategy(renderingStrategy)
-                .withTableAliasCalculator(selectModel.tableAliasCalculator())
-                .withSequence(sequence)
-                .build()
-                .render();
-        
-        builder.withWhereClause(whereSupport.getWhereClause());
-        builder.withParameters(whereSupport.getParameters());
-    }
-    
     private Consumer<OrderByModel> applyOrderBy(SelectSupport.Builder builder) {
         return orderByModel -> applyOrderBy(builder, orderByModel);
     }
@@ -122,7 +68,7 @@ public class SelectRenderer {
     }
     
     private String applyTableAlias(SqlColumn<?> column) {
-        return column.applyTableAliasToName(selectModel.tableAliasCalculator());
+        return column.applyTableAliasToName(selectModel.queryExpression().tableAliasCalculator());
     }
     
     public static SelectRenderer of(SelectModel selectModel) {

@@ -15,116 +15,62 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AbstractSqlSupport;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class SelectSupport extends AbstractSqlSupport {
+public class SelectSupport {
     
-    private String columnList;
-    private Optional<String> whereClause;
-    private Map<String, Object> parameters;
-    private boolean isDistinct;
+    private RenderedQueryExpression renderedQueryExpression;
     private Optional<String> orderByClause;
-    private Optional<String> joinClause;
     
     private SelectSupport(Builder builder) {
-        super(builder.tableName);
-        columnList = Objects.requireNonNull(builder.columnList);
-        whereClause = Optional.ofNullable(builder.whereClause);
-        parameters = Objects.requireNonNull(builder.parameters);
-        isDistinct = builder.isDistinct;
+        renderedQueryExpression = Objects.requireNonNull(builder.renderedQueryExpression);
         orderByClause = Optional.ofNullable(builder.orderByClause);
-        joinClause = Optional.ofNullable(builder.joinClause);
     }
     
     public boolean isDistinct() {
-        return isDistinct;
+        return renderedQueryExpression.isDistinct();
     }
     
     public String getWhereClause() {
-        return whereClause.orElse(EMPTY_STRING);
-    }
-
-    public Optional<String> whereClause() {
-        return whereClause;
+        return renderedQueryExpression.getWhereClause();
     }
 
     public Map<String, Object> getParameters() {
-        return parameters;
+        return renderedQueryExpression.getParameters();
     }
     
     public String getOrderByClause() {
-        return orderByClause.orElse(EMPTY_STRING);
+        return orderByClause.orElse(""); //$NON-NLS-1$
     }
     
     public Optional<String> orderByClause() {
         return orderByClause;
     }
     
-    public Optional<String> joinClause() {
-        return joinClause;
-    }
-    
     public String getColumnList() {
-        return columnList;
+        return renderedQueryExpression.getColumnList();
     }
     
     public String getFullSelectStatement() {
-        return "select " //$NON-NLS-1$
-                + (isDistinct ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
-                + getColumnList()
-                + " from " //$NON-NLS-1$
-                + tableName()
-                + spaceBefore(joinClause())
-                + spaceBefore(whereClause())
-                + spaceBefore(orderByClause());
+        return renderedQueryExpression.getFullSelectStatement()
+                + StringUtilities.spaceBefore(orderByClause());
     }
     
     public static class Builder {
-        private String tableName;
-        private boolean isDistinct;
+        private RenderedQueryExpression renderedQueryExpression;
         private String orderByClause;
-        private String whereClause;
-        private Map<String, Object> parameters = new HashMap<>();
-        private String columnList;
-        private String joinClause;
         
-        public Builder withTableName(String tableName) {
-            this.tableName = tableName;
-            return this;
-        }
-        
-        public Builder isDistinct(boolean isDistinct) {
-            this.isDistinct = isDistinct;
+        public Builder withRenderedQueryExpression(RenderedQueryExpression renderedQueryExpression) {
+            this.renderedQueryExpression = renderedQueryExpression;
             return this;
         }
         
         public Builder withOrderByClause(String orderByClause) {
             this.orderByClause = orderByClause;
-            return this;
-        }
-        
-        public Builder withWhereClause(String whereClause) {
-            this.whereClause = whereClause;
-            return this;
-        }
-        
-        public Builder withParameters(Map<String, Object> parameters) {
-            this.parameters.putAll(parameters);
-            return this;
-        }
-        
-        public Builder withColumnList(String columnList) {
-            this.columnList = columnList;
-            return this;
-        }
-        
-        public Builder withJoinClause(String joinClause) {
-            this.joinClause = joinClause;
             return this;
         }
         

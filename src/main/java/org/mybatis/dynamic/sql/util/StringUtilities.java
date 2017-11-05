@@ -13,18 +13,13 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql;
+package org.mybatis.dynamic.sql.util;
 
-import java.util.Objects;
+import java.util.Optional;
 
-public abstract class AbstractSqlSupport {
-    private String tableName;
+public interface StringUtilities {
 
-    public AbstractSqlSupport(String tableName) {
-        this.tableName = Objects.requireNonNull(tableName);
-    }
-    
-    public String tableName() {
-        return tableName;
+    static String spaceBefore(Optional<String> in) {
+        return in.map(s -> " " + s).orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

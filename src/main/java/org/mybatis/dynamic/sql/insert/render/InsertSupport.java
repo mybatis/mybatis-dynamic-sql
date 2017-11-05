@@ -47,10 +47,10 @@ public class InsertSupport<T> extends AbstractSqlSupport {
     public String getFullInsertStatement() {
         return "insert into " //$NON-NLS-1$
                 + tableName()
-                + ONE_SPACE
-                + getColumnsPhrase()
-                + ONE_SPACE
-                + getValuesPhrase();
+                + " " //$NON-NLS-1$
+                + columnsPhrase
+                + " " //$NON-NLS-1$
+                + valuesPhrase;
     }
 
     public static class Builder<T> {

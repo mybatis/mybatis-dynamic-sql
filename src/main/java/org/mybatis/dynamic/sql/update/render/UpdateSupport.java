@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 /**
  * This class combines a "set" clause and a "where" clause into one parameter object
@@ -46,7 +47,7 @@ public class UpdateSupport extends AbstractSqlSupport {
     }
 
     public String getWhereClause() {
-        return whereClause().orElse(EMPTY_STRING);
+        return whereClause().orElse(""); //$NON-NLS-1$
     }
 
     public Optional<String> whereClause() {
@@ -60,9 +61,9 @@ public class UpdateSupport extends AbstractSqlSupport {
     public String getFullUpdateStatement() {
         return "update " //$NON-NLS-1$
                 + tableName()
-                + ONE_SPACE
+                + " " //$NON-NLS-1$
                 + getSetClause()
-                + spaceBefore(whereClause());
+                + StringUtilities.spaceBefore(whereClause());
     }
     
     public static class Builder {
