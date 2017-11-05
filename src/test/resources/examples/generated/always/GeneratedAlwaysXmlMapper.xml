@@ -27,16 +27,11 @@
   </resultMap>
 
   <insert id="insert" useGeneratedKeys="true" keyProperty="record.fullName">
-    insert into GeneratedAlways
-    ${columnsPhrase}
-    ${valuesPhrase}
+    ${fullInsertStatement}
   </insert>
   
-  <select id="selectByExample" resultMap="GeneratedAlwaysResult">
-    select ${distinct} a.id, a.first_name, a.last_name, a.full_name
-    from GeneratedAlways a
-    ${whereClause}
-    ${orderByClause}
+  <select id="selectMany" resultMap="GeneratedAlwaysResult">
+    ${fullSelectStatement}
   </select>
 
   <select id="selectByPrimaryKey" resultMap="GeneratedAlwaysResult">
@@ -46,8 +41,6 @@
   </select>
   
   <update id="update">
-    update GeneratedAlways
-    ${setClause}
-    ${whereClause}
+    ${fullUpdateStatement}
   </update>
 </mapper>

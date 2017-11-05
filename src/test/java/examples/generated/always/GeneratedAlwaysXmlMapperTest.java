@@ -73,7 +73,7 @@ public class GeneratedAlwaysXmlMapperTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<GeneratedAlwaysRecord> rows = mapper.selectByExample(selectSupport);
+            List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectSupport);
             
             assertThat(rows.size()).isEqualTo(1);
         } finally {
@@ -93,7 +93,7 @@ public class GeneratedAlwaysXmlMapperTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<GeneratedAlwaysRecord> rows = mapper.selectByExample(selectSupport);
+            List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectSupport);
             
             assertThat(rows.size()).isEqualTo(2);
         } finally {
@@ -193,7 +193,7 @@ public class GeneratedAlwaysXmlMapperTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<GeneratedAlwaysRecord> records = mapper.selectByExample(selectSupport);
+            List<GeneratedAlwaysRecord> records = mapper.selectMany(selectSupport);
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(records.size()).isEqualTo(3);
                 softly.assertThat(records.get(0).getFullName()).isEqualTo("Fred Jones");

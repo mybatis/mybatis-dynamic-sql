@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public interface GeneratedAlwaysXmlMapper {
-    List<GeneratedAlwaysRecord> selectByExample(SelectSupport selectSupport);
+    List<GeneratedAlwaysRecord> selectMany(SelectSupport selectSupport);
     GeneratedAlwaysRecord selectByPrimaryKey(int id);
     int insert(InsertSupport<GeneratedAlwaysRecord> insertSupport);
     int update(UpdateSupport updateSupport);
