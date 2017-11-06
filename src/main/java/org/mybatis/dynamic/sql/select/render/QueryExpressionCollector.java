@@ -23,8 +23,8 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class QueryExpressionCollector {
-    private List<String> queryExpressions = new ArrayList<>();
-    private Map<String, Object> parameters = new HashMap<>();
+    List<String> queryExpressions = new ArrayList<>();
+    Map<String, Object> parameters = new HashMap<>();
     
     QueryExpressionCollector() {
         super();
