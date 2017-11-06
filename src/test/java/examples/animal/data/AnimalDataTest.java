@@ -187,7 +187,7 @@ public class AnimalDataTest {
     }
 
     @Test
-    public void testUnionSelect() {
+    public void testUnionSelectWithWhere() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
@@ -202,8 +202,127 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
+            String expected = "select id, animal_name, body_weight, brain_weight "
+                    + "from AnimalData "
+                    + "where id < #{parameters.p1,jdbcType=INTEGER} "
+                    + "union "
+                    + "select id, animal_name, body_weight, brain_weight "
+                    + "from AnimalData "
+                    + "where id > #{parameters.p2,jdbcType=INTEGER}";
+
+            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            
             List<AnimalData> animals = mapper.selectMany(selectSupport);
             assertThat(animals.size()).isEqualTo(44);
+            assertThat(selectSupport.getParameters().size()).isEqualTo(2);
+            assertThat(selectSupport.getParameters().get("p1")).isEqualTo(20);
+            assertThat(selectSupport.getParameters().get("p2")).isEqualTo(40);
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testUnionSelectWithoutWhere() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .union()
+                    .selectDistinct(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select id, animal_name, body_weight, brain_weight "
+                    + "from AnimalData "
+                    + "union "
+                    + "select distinct id, animal_name, body_weight, brain_weight "
+                    + "from AnimalData "
+                    + "order by id";
+
+            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            assertThat(animals.size()).isEqualTo(65);
+            assertThat(selectSupport.getParameters().size()).isEqualTo(0);
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
+    public void testUnionSelectWithTableAliases() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "a")
+                    .where(id, isLessThan(20))
+                    .union()
+                    .select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "b")
+                    .where(id, isGreaterThan(40))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select a.id, a.animal_name, a.body_weight, a.brain_weight "
+                    + "from AnimalData a "
+                    + "where a.id < #{parameters.p1,jdbcType=INTEGER} "
+                    + "union "
+                    + "select b.id, b.animal_name, b.body_weight, b.brain_weight "
+                    + "from AnimalData b "
+                    + "where b.id > #{parameters.p2,jdbcType=INTEGER} "
+                    + "order by id";
+
+            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            assertThat(animals.size()).isEqualTo(44);
+            assertThat(selectSupport.getParameters().size()).isEqualTo(2);
+            assertThat(selectSupport.getParameters().get("p1")).isEqualTo(20);
+            assertThat(selectSupport.getParameters().get("p2")).isEqualTo(40);
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testUnionSelectWithTableAndColumnAliases() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id.as("animalId"), animalName, bodyWeight, brainWeight)
+                    .from(animalData, "a")
+                    .where(id, isLessThan(20))
+                    .union()
+                    .select(id.as("animalId"), animalName, bodyWeight, brainWeight)
+                    .from(animalData, "b")
+                    .where(id, isGreaterThan(40))
+                    .orderBy(id.as("animalId"))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select a.id as animalId, a.animal_name, a.body_weight, a.brain_weight "
+                    + "from AnimalData a "
+                    + "where a.id < #{parameters.p1,jdbcType=INTEGER} "
+                    + "union "
+                    + "select b.id as animalId, b.animal_name, b.body_weight, b.brain_weight "
+                    + "from AnimalData b "
+                    + "where b.id > #{parameters.p2,jdbcType=INTEGER} "
+                    + "order by animalId";
+
+            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            assertThat(animals.size()).isEqualTo(44);
+            assertThat(selectSupport.getParameters().size()).isEqualTo(2);
             assertThat(selectSupport.getParameters().get("p1")).isEqualTo(20);
             assertThat(selectSupport.getParameters().get("p2")).isEqualTo(40);
         } finally {

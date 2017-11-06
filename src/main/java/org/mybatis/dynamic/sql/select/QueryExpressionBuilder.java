@@ -35,7 +35,6 @@ import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-// TODO - union in more places
 public class QueryExpressionBuilder {
 
     private String connector;
@@ -169,6 +168,11 @@ public class QueryExpressionBuilder {
             selectModelBuilder.addQueryExpression(buildModel());
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
             return selectModelBuilder;
+        }
+
+        public UnionBuilder union() {
+            selectModelBuilder.addQueryExpression(buildModel());
+            return new UnionBuilder();
         }
     }
     
