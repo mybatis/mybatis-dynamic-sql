@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.subselect;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
@@ -50,25 +51,16 @@ public class SubSelectTest {
                 .render(RenderingStrategy.MYBATIS3);
         
 
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isFalse();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
+        String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "where a.column2 in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER}) "
+                + "and a.column1 < #{parameters.p2,jdbcType=DATE}";
 
-            String expectedWhereClause = "where a.column2 in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER})"
-                    + " and a.column1 < #{parameters.p2,jdbcType=DATE}";
+        assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
 
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo(expectedWhereClause);
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("");
-
-            String expectedFullStatement = "select " + selectSupport.getColumnList() + " from foo a "
-                    + selectSupport.getWhereClause();
-
-            softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
-
-            Map<String, Object> parameters = selectSupport.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(3);
-            softly.assertThat(parameters.get("p2")).isEqualTo(d);
-        });
+        Map<String, Object> parameters = selectSupport.getParameters();
+        assertThat(parameters.get("p1")).isEqualTo(3);
+        assertThat(parameters.get("p2")).isEqualTo(d);
     }
 
     @Test
@@ -84,17 +76,10 @@ public class SubSelectTest {
         
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isFalse();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
-
-            String expectedWhereClause = "where a.column2 not in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER})"
+            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                    + "from foo a "
+                    + "where a.column2 not in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER})"
                     + " and a.column1 < #{parameters.p2,jdbcType=DATE}";
-
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo(expectedWhereClause);
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("");
-
-            String expectedFullStatement = "select " + selectSupport.getColumnList() + " from foo a "
-                    + selectSupport.getWhereClause();
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
 

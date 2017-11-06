@@ -18,7 +18,8 @@ package org.mybatis.dynamic.sql;
 import java.util.Arrays;
 import java.util.List;
 
-import org.mybatis.dynamic.sql.select.SelectModelBuilder;
+import org.mybatis.dynamic.sql.select.Buildable;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
@@ -127,7 +128,7 @@ public interface SqlConditions {
         return IsEqualTo.of(value);
     }
 
-    static <T> IsEqualToWithSubselect<T> isEqualTo(SelectModelBuilder.Buildable selectModelBuilder) {
+    static <T> IsEqualToWithSubselect<T> isEqualTo(Buildable<SelectModel> selectModelBuilder) {
         return IsEqualToWithSubselect.of(selectModelBuilder);
     }
 
@@ -135,7 +136,7 @@ public interface SqlConditions {
         return IsNotEqualTo.of(value);
     }
 
-    static <T> IsNotEqualToWithSubselect<T> isNotEqualTo(SelectModelBuilder.Buildable selectModelBuilder) {
+    static <T> IsNotEqualToWithSubselect<T> isNotEqualTo(Buildable<SelectModel> selectModelBuilder) {
         return IsNotEqualToWithSubselect.of(selectModelBuilder);
     }
 
@@ -143,7 +144,7 @@ public interface SqlConditions {
         return IsGreaterThan.of(value);
     }
     
-    static <T> IsGreaterThanWithSubselect<T> isGreaterThan(SelectModelBuilder.Buildable selectModelBuilder) {
+    static <T> IsGreaterThanWithSubselect<T> isGreaterThan(Buildable<SelectModel> selectModelBuilder) {
         return IsGreaterThanWithSubselect.of(selectModelBuilder);
     }
     
@@ -151,7 +152,7 @@ public interface SqlConditions {
         return IsGreaterThanOrEqualTo.of(value);
     }
     
-    static <T> IsGreaterThanOrEqualToWithSubselect<T> isGreaterThanOrEqualTo(SelectModelBuilder.Buildable selectModelBuilder) {
+    static <T> IsGreaterThanOrEqualToWithSubselect<T> isGreaterThanOrEqualTo(Buildable<SelectModel> selectModelBuilder) {
         return IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);
     }
     
@@ -159,7 +160,7 @@ public interface SqlConditions {
         return IsLessThan.of(value);
     }
     
-    static <T> IsLessThanWithSubselect<T> isLessThan(SelectModelBuilder.Buildable selectModelBuilder) {
+    static <T> IsLessThanWithSubselect<T> isLessThan(Buildable<SelectModel> selectModelBuilder) {
         return IsLessThanWithSubselect.of(selectModelBuilder);
     }
     
@@ -167,7 +168,7 @@ public interface SqlConditions {
         return IsLessThanOrEqualTo.of(value);
     }
     
-    static <T> IsLessThanOrEqualToWithSubselect<T> isLessThanOrEqualTo(SelectModelBuilder.Buildable selectModelBuilder) {
+    static <T> IsLessThanOrEqualToWithSubselect<T> isLessThanOrEqualTo(Buildable<SelectModel> selectModelBuilder) {
         return IsLessThanOrEqualToWithSubselect.of(selectModelBuilder);
     }
     
@@ -180,7 +181,7 @@ public interface SqlConditions {
         return IsIn.of(values);
     }
     
-    static <T> IsInWithSubselect<T> isIn(SelectModelBuilder.Buildable selectModelBuilder) {
+    static <T> IsInWithSubselect<T> isIn(Buildable<SelectModel> selectModelBuilder) {
         return IsInWithSubselect.of(selectModelBuilder);
     }
 
@@ -193,7 +194,7 @@ public interface SqlConditions {
         return IsNotIn.of(values);
     }
     
-    static <T> IsNotInWithSubselect<T> isNotIn(SelectModelBuilder.Buildable selectModelBuilder) {
+    static <T> IsNotInWithSubselect<T> isNotIn(Buildable<SelectModel> selectModelBuilder) {
         return IsNotInWithSubselect.of(selectModelBuilder);
     }
 

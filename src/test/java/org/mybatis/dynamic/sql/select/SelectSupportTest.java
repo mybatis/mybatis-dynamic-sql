@@ -52,14 +52,9 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isFalse();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo(
-                    "where (a.column1 = #{parameters.p1,jdbcType=DATE} and a.column2 = #{parameters.p2,jdbcType=INTEGER}) or a.column2 = #{parameters.p3,jdbcType=INTEGER} and a.column2 < #{parameters.p4,jdbcType=INTEGER}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("");
-
-            String expectedFullStatement = "select " + selectSupport.getColumnList() + " from foo a "
-                    + selectSupport.getWhereClause();
+            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                    + "from foo a "
+                    + "where (a.column1 = #{parameters.p1,jdbcType=DATE} and a.column2 = #{parameters.p2,jdbcType=INTEGER}) or a.column2 = #{parameters.p3,jdbcType=INTEGER} and a.column2 < #{parameters.p4,jdbcType=INTEGER}";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
 
@@ -87,20 +82,13 @@ public class SelectSupportTest {
         
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isFalse();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
-
-            String expectedWhereClause = "where a.column1 = #{parameters.p1,jdbcType=DATE}"
+            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                    + "from foo a "
+                    + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
                     + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
                     + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
                     + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})"
                     + " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
-
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo(expectedWhereClause);
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("");
-
-            String expectedFullStatement = "select " + selectSupport.getColumnList() + " from foo a "
-                    + selectSupport.getWhereClause();
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
 
@@ -127,18 +115,10 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isFalse();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
-            softly.assertThat(selectSupport.getWhereClause())
-                .isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column1");
-
-            String expectedFullStatement = "select "
-                    + selectSupport.getColumnList()
-                    + " from foo a "
-                    + selectSupport.getWhereClause()
-                    + " "
-                    + selectSupport.getOrderByClause();
+            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                    + "from foo a "
+                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                    + "order by a.column1";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
 
@@ -159,17 +139,10 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isFalse();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC");
-        
-            String expectedFullStatement = "select "
-                    + selectSupport.getColumnList()
-                    + " from foo a "
-                    + selectSupport.getWhereClause()
-                    + " "
-                    + selectSupport.getOrderByClause();
+            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                    + "from foo a "
+                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                    + "order by a.column2 DESC";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
         
@@ -190,17 +163,10 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isFalse();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1");
-        
-            String expectedFullStatement = "select "
-                    + selectSupport.getColumnList()
-                    + " from foo a "
-                    + selectSupport.getWhereClause()
-                    + " "
-                    + selectSupport.getOrderByClause();
+            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                    + "from foo a "
+                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                    + "order by a.column2 DESC, a.column1";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
         
@@ -221,17 +187,10 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isTrue();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("a.column1 as A_COLUMN1, a.column2");
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("order by a.column2 DESC, a.column1");
-        
-            String expectedFullStatement = "select distinct "
-                    + selectSupport.getColumnList()
-                    + " from foo a "
-                    + selectSupport.getWhereClause()
-                    + " "
-                    + selectSupport.getOrderByClause();
+            String expectedFullStatement = "select distinct a.column1 as A_COLUMN1, a.column2 "
+                    + "from foo a "
+                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                    + "order by a.column2 DESC, a.column1";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
         
@@ -251,15 +210,9 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isFalse();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo("where a.column1 = #{parameters.p1,jdbcType=DATE}");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("");
-        
-            String expectedFullStatement = "select "
-                    + selectSupport.getColumnList()
-                    + " from foo a "
-                    + selectSupport.getWhereClause();
+            String expectedFullStatement = "select count(*) "
+                    + "from foo a "
+                    + "where a.column1 = #{parameters.p1,jdbcType=DATE}";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
         
@@ -276,14 +229,8 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.isDistinct()).isFalse();
-            softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo("");
-            softly.assertThat(selectSupport.getOrderByClause()).isEqualTo("");
-        
-            String expectedFullStatement = "select "
-                    + selectSupport.getColumnList()
-                    + " from foo a";
+            String expectedFullStatement = "select count(*) "
+                    + "from foo a";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
         

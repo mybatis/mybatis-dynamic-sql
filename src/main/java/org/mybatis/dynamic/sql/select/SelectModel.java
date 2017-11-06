@@ -15,24 +15,29 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SelectModel {
-    private QueryExpression queryExpression;
+    private List<QueryExpression> queryExpressions;
     private Optional<OrderByModel> orderByModel;
 
     private SelectModel(Builder builder) {
-        queryExpression = Objects.requireNonNull(builder.queryExpression);
+        queryExpressions = Objects.requireNonNull(builder.queryExpressions);
         orderByModel = Optional.ofNullable(builder.orderByModel);
     }
     
-    public QueryExpression queryExpression() {
-        return queryExpression;
+    public <R> Stream<R> mapQueryExpressions(Function<QueryExpression, R> mapper) {
+        return queryExpressions.stream().map(mapper);
     }
     
     public Optional<OrderByModel> orderByModel() {
@@ -43,12 +48,20 @@ public class SelectModel {
         return SelectRenderer.of(this).render(renderingStrategy);
     }
     
+    public TableAliasCalculator tableAliasCalculator() {
+        if (queryExpressions.size() != 1) {
+            throw new RuntimeException("Union queries must use strings for the order by phrase.  SqlColumns are not supported");
+        }
+        
+        return queryExpressions.get(0).tableAliasCalculator();
+    }
+    
     public static class Builder {
-        private QueryExpression queryExpression;
+        private List<QueryExpression> queryExpressions = new ArrayList<>();
         private OrderByModel orderByModel;
         
-        public Builder withQueryExpression(QueryExpression queryExpression) {
-            this.queryExpression = queryExpression;
+        public Builder withQueryExpressions(List<QueryExpression> queryExpressions) {
+            this.queryExpressions.addAll(queryExpressions);
             return this;
         }
         

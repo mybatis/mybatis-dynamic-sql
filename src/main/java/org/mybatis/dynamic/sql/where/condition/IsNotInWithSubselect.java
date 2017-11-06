@@ -16,15 +16,16 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import org.mybatis.dynamic.sql.AbstractSubselectCondition;
-import org.mybatis.dynamic.sql.select.SelectModelBuilder;
+import org.mybatis.dynamic.sql.select.Buildable;
+import org.mybatis.dynamic.sql.select.SelectModel;
 
 public class IsNotInWithSubselect<T> extends AbstractSubselectCondition<T> {
     
-    protected IsNotInWithSubselect(SelectModelBuilder.Buildable selectModelBuilder) {
+    protected IsNotInWithSubselect(Buildable<SelectModel> selectModelBuilder) {
         super(selectModelBuilder);
     }
 
-    public static <T> IsNotInWithSubselect<T> of(SelectModelBuilder.Buildable selectModelBuilder) {
+    public static <T> IsNotInWithSubselect<T> of(Buildable<SelectModel> selectModelBuilder) {
         return new IsNotInWithSubselect<>(selectModelBuilder);
     }
 

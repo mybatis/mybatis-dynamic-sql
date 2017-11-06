@@ -67,7 +67,12 @@ public class SpringTest {
                 .build()
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
         
-        assertThat(selectSupport.getColumnList()).isEqualTo("a.id as A_ID, a.first_name, a.last_name, a.full_name");
+        String expected = "select a.id as A_ID, a.first_name, a.last_name, a.full_name "
+                + "from GeneratedAlways a "
+                + "where a.id > :p1 "
+                + "order by a.id DESC";
+        
+        assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
         
         List<GeneratedAlwaysRecord> records = template.query(selectSupport.getFullSelectStatement(), selectSupport.getParameters(),
                 new RowMapper<GeneratedAlwaysRecord>(){

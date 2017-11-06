@@ -187,6 +187,31 @@ public class AnimalDataTest {
     }
 
     @Test
+    public void testUnionSelect() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, isLessThan(20))
+                    .union()
+                    .select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, isGreaterThan(40))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            assertThat(animals.size()).isEqualTo(44);
+            assertThat(selectSupport.getParameters().get("p1")).isEqualTo(20);
+            assertThat(selectSupport.getParameters().get("p2")).isEqualTo(40);
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
     public void testIsEqualCondition() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
@@ -651,7 +676,6 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*) as total");
                 softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) as total from AnimalData a");
             
                 Long count = mapper.selectALong(selectSupport);
@@ -674,7 +698,6 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(a.brain_weight) as total");
                 softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(a.brain_weight) as total from AnimalData a");
             
                 Long count = mapper.selectALong(selectSupport);
@@ -697,7 +720,6 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("count(*)");
                 softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) from AnimalData");
             
                 Long count = mapper.selectALong(selectSupport);
@@ -720,7 +742,6 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("max(a.brain_weight) as total");
                 softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select max(a.brain_weight) as total from AnimalData a");
             
                 Double max = mapper.selectADouble(selectSupport);
@@ -743,7 +764,6 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("max(brain_weight)");
                 softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select max(brain_weight) from AnimalData");
             
                 Double max = mapper.selectADouble(selectSupport);
@@ -791,7 +811,6 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("min(a.brain_weight) as total");
                 softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select min(a.brain_weight) as total from AnimalData a");
             
                 Double min = mapper.selectADouble(selectSupport);
@@ -814,7 +833,6 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("min(brain_weight)");
                 softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select min(brain_weight) from AnimalData");
             
                 Double min = mapper.selectADouble(selectSupport);
@@ -889,7 +907,6 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("avg(a.brain_weight) as average");
                 softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select avg(a.brain_weight) as average from AnimalData a");
             
                 Double average = mapper.selectADouble(selectSupport);
@@ -912,7 +929,6 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getColumnList()).isEqualTo("sum(brain_weight) as total");
                 softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select sum(brain_weight) as total from AnimalData");
             
                 Double total = mapper.selectADouble(selectSupport);

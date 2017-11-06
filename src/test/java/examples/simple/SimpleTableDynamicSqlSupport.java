@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.SelectModelBuilder.SelectSupportAfterFromBuilder;
+import org.mybatis.dynamic.sql.select.QueryExpressionBuilder.QueryExpressionAfterFromBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
@@ -130,7 +130,7 @@ public class SimpleTableDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
     
-    static SelectSupportAfterFromBuilder selectByExample() {
+    static QueryExpressionAfterFromBuilder selectByExample() {
         return select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }

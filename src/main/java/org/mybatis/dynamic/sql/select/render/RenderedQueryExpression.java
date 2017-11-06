@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class RenderedQueryExpression extends AbstractSqlSupport {
     
+    private Optional<String> connector;
     private String columnList;
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
@@ -33,6 +34,7 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
     
     private RenderedQueryExpression(Builder builder) {
         super(builder.tableName);
+        connector = Objects.requireNonNull(builder.connector);
         columnList = Objects.requireNonNull(builder.columnList);
         whereClause = Optional.ofNullable(builder.whereClause);
         parameters = Objects.requireNonNull(builder.parameters);
@@ -65,7 +67,8 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
     }
     
     public String getFullSelectStatement() {
-        return "select " //$NON-NLS-1$
+        return connector.map(c -> c + " ").orElse("") //$NON-NLS-1$ //$NON-NLS-2$
+                + "select " //$NON-NLS-1$
                 + (isDistinct ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + getColumnList()
                 + " from " //$NON-NLS-1$
@@ -75,12 +78,18 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
     }
     
     public static class Builder {
+        private Optional<String> connector;
         private String tableName;
         private boolean isDistinct;
         private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
         private String joinClause;
+        
+        public Builder withConnector(Optional<String> connector) {
+            this.connector = connector;
+            return this;
+        }
         
         public Builder withTableName(String tableName) {
             this.tableName = tableName;

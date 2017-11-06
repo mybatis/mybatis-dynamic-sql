@@ -32,6 +32,7 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpression {
+    private Optional<String> connector;
     private boolean isDistinct;
     private List<SelectListItem> selectList;
     private SqlTable table;
@@ -40,6 +41,7 @@ public class QueryExpression {
     private Optional<WhereModel> whereModel;
 
     private QueryExpression(Builder builder) {
+        this.connector = Optional.ofNullable(builder.connector);
         isDistinct = builder.isDistinct;
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);
@@ -47,6 +49,10 @@ public class QueryExpression {
         tableAliasCalculator = joinModel.map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
                 .orElse(TableAliasCalculator.of(builder.tableAliases));
         whereModel = Optional.ofNullable(builder.whereModel);
+    }
+    
+    public Optional<String> connector() {
+        return connector;
     }
     
     public boolean isDistinct() {
@@ -80,12 +86,18 @@ public class QueryExpression {
     }
     
     public static class Builder {
+        private String connector;
         private boolean isDistinct;
         private List<SelectListItem> selectList = new ArrayList<>();
         private SqlTable table;
         private Map<SqlTable, String> tableAliases = new HashMap<>();
         private WhereModel whereModel;
         private JoinModel joinModel;
+        
+        public Builder withConnector(String connector) {
+            this.connector = connector;
+            return this;
+        }
         
         public Builder withTable(SqlTable table) {
             this.table = table;

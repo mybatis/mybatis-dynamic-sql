@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.mybatis3;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlConditions.*;
 
@@ -49,15 +50,13 @@ public class SelectSupportTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo(
-                    "where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
+        assertThat(selectSupport.getFullSelectStatement()).isEqualTo(
+                "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
 
-            Map<String, Object> parameters = selectSupport.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-            softly.assertThat(parameters.get("p2")).isEqualTo(4);
-            softly.assertThat(parameters.get("p3")).isEqualTo(3);
-        });
+        Map<String, Object> parameters = selectSupport.getParameters();
+        assertThat(parameters.get("p1")).isEqualTo(d);
+        assertThat(parameters.get("p2")).isEqualTo(4);
+        assertThat(parameters.get("p3")).isEqualTo(3);
     }
 
     @Test
@@ -75,14 +74,16 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
         
 
-        String expected = "where a.column1 = #{parameters.p1,jdbcType=DATE}" +
-                " or a.column2 = #{parameters.p2,jdbcType=INTEGER}" +
-                " and a.column2 < #{parameters.p3,jdbcType=INTEGER}" +
-                " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})" +
-                " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
+        String expected = "select a.column1, a.column2 "
+                + "from foo a " 
+                + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
+                + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
+                + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
+                + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})"
+                + " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
         
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo(expected);
+            softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
 
             Map<String, Object> parameters = selectSupport.getParameters();
             softly.assertThat(parameters.get("p1")).isEqualTo(d);
@@ -108,8 +109,8 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo(
-                    "where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
+            softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(
+                    "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
 
             Map<String, Object> parameters = selectSupport.getParameters();
             softly.assertThat(parameters.get("p1")).isEqualTo(d);
@@ -133,14 +134,16 @@ public class SelectSupportTest {
                 .render(RenderingStrategy.MYBATIS3);
         
 
-        String expected = "where a.column1 = #{parameters.p1,jdbcType=DATE}" +
-                " or a.column2 = #{parameters.p2,jdbcType=INTEGER}" +
-                " and a.column2 < #{parameters.p3,jdbcType=INTEGER}" +
-                " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and (a.column2 = #{parameters.p5,jdbcType=INTEGER} or a.column2 = #{parameters.p6,jdbcType=INTEGER}))" +
-                " and (a.column2 < #{parameters.p7,jdbcType=INTEGER} or (a.column1 = #{parameters.p8,jdbcType=DATE} and a.column2 = #{parameters.p9,jdbcType=INTEGER}))";
+        String expected = "select a.column1, a.column2 "
+                + "from foo a "
+                + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
+                + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
+                + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
+                + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and (a.column2 = #{parameters.p5,jdbcType=INTEGER} or a.column2 = #{parameters.p6,jdbcType=INTEGER}))"
+                + " and (a.column2 < #{parameters.p7,jdbcType=INTEGER} or (a.column1 = #{parameters.p8,jdbcType=DATE} and a.column2 = #{parameters.p9,jdbcType=INTEGER}))";
         
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectSupport.getWhereClause()).isEqualTo(expected);
+            softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
 
             Map<String, Object> parameters = selectSupport.getParameters();
             softly.assertThat(parameters.get("p1")).isEqualTo(d);

@@ -15,57 +15,49 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class SelectSupport {
     
-    private RenderedQueryExpression renderedQueryExpression;
+    private List<RenderedQueryExpression> renderedQueryExpressions;
     private Optional<String> orderByClause;
     
     private SelectSupport(Builder builder) {
-        renderedQueryExpression = Objects.requireNonNull(builder.renderedQueryExpression);
+        renderedQueryExpressions = builder.renderedQueryExpressions;
         orderByClause = Optional.ofNullable(builder.orderByClause);
     }
     
-    public boolean isDistinct() {
-        return renderedQueryExpression.isDistinct();
-    }
-    
-    public String getWhereClause() {
-        return renderedQueryExpression.getWhereClause();
-    }
-
     public Map<String, Object> getParameters() {
-        return renderedQueryExpression.getParameters();
-    }
-    
-    public String getOrderByClause() {
-        return orderByClause.orElse(""); //$NON-NLS-1$
-    }
-    
-    public Optional<String> orderByClause() {
-        return orderByClause;
-    }
-    
-    public String getColumnList() {
-        return renderedQueryExpression.getColumnList();
+        // TODO - this should be better
+        Map<String, Object> parameters = new HashMap<>();
+        
+        renderedQueryExpressions.stream()
+        .map(RenderedQueryExpression::getParameters)
+        .forEach(parameters::putAll);
+        
+        return parameters;
     }
     
     public String getFullSelectStatement() {
-        return renderedQueryExpression.getFullSelectStatement()
-                + StringUtilities.spaceBefore(orderByClause());
+        return renderedQueryExpressions.stream()
+                .map(RenderedQueryExpression::getFullSelectStatement)
+                .collect(Collectors.joining(" "))
+                + StringUtilities.spaceBefore(orderByClause);
     }
     
     public static class Builder {
-        private RenderedQueryExpression renderedQueryExpression;
+        private List<RenderedQueryExpression> renderedQueryExpressions = new ArrayList<>();
         private String orderByClause;
         
-        public Builder withRenderedQueryExpression(RenderedQueryExpression renderedQueryExpression) {
-            this.renderedQueryExpression = renderedQueryExpression;
+        public Builder withRenderedQueryExpressions(List<RenderedQueryExpression> renderedQueryExpressions) {
+            this.renderedQueryExpressions.addAll(renderedQueryExpressions);
             return this;
         }
         

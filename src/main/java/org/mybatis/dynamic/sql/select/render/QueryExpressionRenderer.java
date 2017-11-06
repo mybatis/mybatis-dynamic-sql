@@ -38,6 +38,7 @@ public class QueryExpressionRenderer {
     
     public RenderedQueryExpression render(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
         RenderedQueryExpression.Builder builder = new RenderedQueryExpression.Builder()
+                .withConnector(queryExpression.connector())
                 .isDistinct(queryExpression.isDistinct())
                 .withColumnList(calculateColumnList())
                 .withTableName(calculateTableName(queryExpression.table()));

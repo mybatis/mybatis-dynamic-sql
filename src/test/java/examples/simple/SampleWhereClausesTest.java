@@ -37,8 +37,8 @@ public class SampleWhereClausesTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        assertThat(selectSupport.getWhereClause())
-                .isEqualTo("where id = #{parameters.p1,jdbcType=INTEGER}");
+        assertThat(selectSupport.getFullSelectStatement())
+                .isEqualTo("select count(*) from SimpleTable where id = #{parameters.p1,jdbcType=INTEGER}");
     }
     
     @Test
@@ -49,7 +49,7 @@ public class SampleWhereClausesTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        assertThat(selectSupport.getWhereClause()).isEqualTo("where a.id is null");
+        assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) from SimpleTable a where a.id is null");
     }
     
     @Test
@@ -60,8 +60,8 @@ public class SampleWhereClausesTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        assertThat(selectSupport.getWhereClause())
-            .isEqualTo("where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}");
+        assertThat(selectSupport.getFullSelectStatement())
+            .isEqualTo("select count(*) from SimpleTable a where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class SampleWhereClausesTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        assertThat(selectSupport.getWhereClause())
-            .isEqualTo("where a.id > #{parameters.p1,jdbcType=INTEGER} or (a.occupation is null and a.id < #{parameters.p2,jdbcType=INTEGER})");
+        assertThat(selectSupport.getFullSelectStatement())
+            .isEqualTo("select count(*) from SimpleTable a where a.id > #{parameters.p1,jdbcType=INTEGER} or (a.occupation is null and a.id < #{parameters.p2,jdbcType=INTEGER})");
     }
 }
