@@ -15,54 +15,51 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class SelectSupport {
     
-    private List<RenderedQueryExpression> renderedQueryExpressions;
+    private String queryExpression;
+    private Map<String, Object> parameters;
     private Optional<String> orderByClause;
     
     private SelectSupport(Builder builder) {
-        renderedQueryExpressions = builder.renderedQueryExpressions;
+        queryExpression = Objects.requireNonNull(builder.queryExpression);
         orderByClause = Optional.ofNullable(builder.orderByClause);
+        parameters = Collections.unmodifiableMap(Objects.requireNonNull(builder.parameters));
     }
     
     public Map<String, Object> getParameters() {
-        // TODO - this should be better
-        Map<String, Object> parameters = new HashMap<>();
-        
-        renderedQueryExpressions.stream()
-        .map(RenderedQueryExpression::getParameters)
-        .forEach(parameters::putAll);
-        
         return parameters;
     }
     
     public String getFullSelectStatement() {
-        return renderedQueryExpressions.stream()
-                .map(RenderedQueryExpression::getFullSelectStatement)
-                .collect(Collectors.joining(" "))
-                + StringUtilities.spaceBefore(orderByClause);
+        return queryExpression + StringUtilities.spaceBefore(orderByClause);
     }
     
     public static class Builder {
-        private List<RenderedQueryExpression> renderedQueryExpressions = new ArrayList<>();
+        private String queryExpression;
         private String orderByClause;
+        private Map<String, Object> parameters = new HashMap<>();
         
-        public Builder withRenderedQueryExpressions(List<RenderedQueryExpression> renderedQueryExpressions) {
-            this.renderedQueryExpressions.addAll(renderedQueryExpressions);
+        public Builder withQueryExpression(String queryExpression) {
+            this.queryExpression = queryExpression;
             return this;
         }
         
         public Builder withOrderByClause(String orderByClause) {
             this.orderByClause = orderByClause;
+            return this;
+        }
+        
+        public Builder withParameters(Map<String, Object> parameters) {
+            this.parameters.putAll(parameters);
             return this;
         }
         

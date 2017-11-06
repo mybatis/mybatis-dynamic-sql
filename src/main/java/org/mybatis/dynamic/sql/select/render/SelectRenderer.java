@@ -15,12 +15,10 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -41,24 +39,20 @@ public class SelectRenderer {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
-        List<RenderedQueryExpression> expressions = selectModel
-                .mapQueryExpressions(doIt(renderingStrategy, sequence))
-                .collect(Collectors.toList());
-        
-        SelectSupport.Builder builder = new SelectSupport.Builder()
-                .withRenderedQueryExpressions(expressions);
+        SelectSupport.Builder builder = selectModel
+                .mapQueryExpressions(renderQueryExpression(renderingStrategy, sequence))
+                .collect(QueryExpressionCollector.collect());
         
         selectModel.orderByModel().ifPresent(applyOrderBy(builder));
         
         return builder.build();
     }
 
-    // TODO - bad name
-    private Function<QueryExpression, RenderedQueryExpression> doIt(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
-        return queryExpression -> render(renderingStrategy, sequence, queryExpression);
+    private Function<QueryExpression, RenderedQueryExpression> renderQueryExpression(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
+        return queryExpression -> renderQueryExpression(renderingStrategy, sequence, queryExpression);
     }
     
-    private RenderedQueryExpression render(RenderingStrategy renderingStrategy, AtomicInteger sequence, QueryExpression queryExpression) {
+    private RenderedQueryExpression renderQueryExpression(RenderingStrategy renderingStrategy, AtomicInteger sequence, QueryExpression queryExpression) {
         return QueryExpressionRenderer.of(queryExpression)
                 .render(renderingStrategy, sequence);
     }
@@ -83,7 +77,9 @@ public class SelectRenderer {
     }
     
     private String applyTableAlias(SqlColumn<?> column) {
-        return column.applyTableAliasToName(selectModel.tableAliasCalculator());
+        return selectModel.tableAliasCalculator()
+                .map(column::applyTableAliasToName)
+                .orElse(column.name());
     }
     
     public static SelectRenderer of(SelectModel selectModel) {

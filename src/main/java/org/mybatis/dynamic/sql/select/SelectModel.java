@@ -48,12 +48,14 @@ public class SelectModel {
         return SelectRenderer.of(this).render(renderingStrategy);
     }
     
-    public TableAliasCalculator tableAliasCalculator() {
-        if (queryExpressions.size() != 1) {
-            throw new RuntimeException("Union queries must use strings for the order by phrase.  SqlColumns are not supported");
+    public Optional<TableAliasCalculator> tableAliasCalculator() {
+        // if there is more than one query expression, then this is a union query.
+        // table aliases generally don't work correctly in union queries
+        if (queryExpressions.size() == 1) {
+            return Optional.of(queryExpressions.get(0).tableAliasCalculator());
+        } else {
+            return Optional.empty();
         }
-        
-        return queryExpressions.get(0).tableAliasCalculator();
     }
     
     public static class Builder {

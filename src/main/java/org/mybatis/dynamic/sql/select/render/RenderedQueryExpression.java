@@ -42,39 +42,19 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
         joinClause = Optional.ofNullable(builder.joinClause);
     }
     
-    public boolean isDistinct() {
-        return isDistinct;
-    }
-    
-    public String getWhereClause() {
-        return whereClause.orElse(""); //$NON-NLS-1$
-    }
-
-    public Optional<String> whereClause() {
-        return whereClause;
-    }
-
-    public Map<String, Object> getParameters() {
+    public Map<String, Object> parameters() {
         return parameters;
     }
     
-    public Optional<String> joinClause() {
-        return joinClause;
-    }
-    
-    public String getColumnList() {
-        return columnList;
-    }
-    
-    public String getFullSelectStatement() {
+    public String queryExpression() {
         return connector.map(c -> c + " ").orElse("") //$NON-NLS-1$ //$NON-NLS-2$
                 + "select " //$NON-NLS-1$
                 + (isDistinct ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
-                + getColumnList()
+                + columnList
                 + " from " //$NON-NLS-1$
                 + tableName()
-                + StringUtilities.spaceBefore(joinClause())
-                + StringUtilities.spaceBefore(whereClause());
+                + StringUtilities.spaceBefore(joinClause)
+                + StringUtilities.spaceBefore(whereClause);
     }
     
     public static class Builder {
