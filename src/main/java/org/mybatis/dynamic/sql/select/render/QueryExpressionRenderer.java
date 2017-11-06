@@ -76,8 +76,8 @@ public class QueryExpressionRenderer {
         builder.withJoinClause(joinClause);
     }
     
-    private Consumer<WhereModel> applyWhere(RenderedQueryExpression.Builder builder, RenderingStrategy renderingStrategy,
-            AtomicInteger sequence) {
+    private Consumer<WhereModel> applyWhere(RenderedQueryExpression.Builder builder,
+            RenderingStrategy renderingStrategy, AtomicInteger sequence) {
         return whereModel -> applyWhere(builder, renderingStrategy, sequence, whereModel);
     }
     

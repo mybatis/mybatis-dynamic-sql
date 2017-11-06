@@ -152,7 +152,8 @@ public interface SqlConditions {
         return IsGreaterThanOrEqualTo.of(value);
     }
     
-    static <T> IsGreaterThanOrEqualToWithSubselect<T> isGreaterThanOrEqualTo(Buildable<SelectModel> selectModelBuilder) {
+    static <T> IsGreaterThanOrEqualToWithSubselect<T> isGreaterThanOrEqualTo(
+            Buildable<SelectModel> selectModelBuilder) {
         return IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);
     }
     

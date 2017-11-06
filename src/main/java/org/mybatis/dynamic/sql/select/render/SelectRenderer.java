@@ -48,11 +48,13 @@ public class SelectRenderer {
         return builder.build();
     }
 
-    private Function<QueryExpression, RenderedQueryExpression> renderQueryExpression(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
+    private Function<QueryExpression, RenderedQueryExpression> renderQueryExpression(
+            RenderingStrategy renderingStrategy, AtomicInteger sequence) {
         return queryExpression -> renderQueryExpression(renderingStrategy, sequence, queryExpression);
     }
     
-    private RenderedQueryExpression renderQueryExpression(RenderingStrategy renderingStrategy, AtomicInteger sequence, QueryExpression queryExpression) {
+    private RenderedQueryExpression renderQueryExpression(RenderingStrategy renderingStrategy, AtomicInteger sequence,
+            QueryExpression queryExpression) {
         return QueryExpressionRenderer.of(queryExpression)
                 .render(renderingStrategy, sequence);
     }
