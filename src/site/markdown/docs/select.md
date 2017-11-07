@@ -22,6 +22,14 @@ At this time, we do not support the following:
 5. Calculated columns in select lists or anywhere else in a statement - although this can be supported with
    custom implementations of SelectListItem and/or SqlColumn
 
+## Order By
+
+Order by phrases can be difficult to calculate when there are aliased columns, aliased tables, unions, and joins.
+This library has taken a simple approach - the library will either write the column alias or the column
+name into the order by phrase.  For the order by phrase, the table alias (if there is one) will be ignored.
+
+In our testing, this caused an issue in only one case.  When there is an outer join and the select list contains
+both the left and right join column.  In that case, the workaround is to supply a column alias for both columns. 
 
 ## General Selects
 

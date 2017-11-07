@@ -71,17 +71,11 @@ public class SelectRenderer {
     }
     
     private String orderByPhrase(SqlColumn<?> column) {
-        String phrase = column.alias().orElse(applyTableAlias(column));
+        String phrase = column.alias().orElse(column.name());
         if (column.isDescending()) {
             phrase = phrase + " DESC"; //$NON-NLS-1$
         }
         return phrase;
-    }
-    
-    private String applyTableAlias(SqlColumn<?> column) {
-        return selectModel.tableAliasCalculator()
-                .map(column::applyTableAliasToName)
-                .orElse(column.name());
     }
     
     public static SelectRenderer of(SelectModel selectModel) {

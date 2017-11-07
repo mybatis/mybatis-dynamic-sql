@@ -118,7 +118,7 @@ public class SelectSupportTest {
             String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                     + "from foo a "
                     + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "order by a.column1";
+                    + "order by column1";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
 
@@ -142,7 +142,7 @@ public class SelectSupportTest {
             String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                     + "from foo a "
                     + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "order by a.column2 DESC";
+                    + "order by column2 DESC";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
         
@@ -166,7 +166,7 @@ public class SelectSupportTest {
             String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                     + "from foo a "
                     + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "order by a.column2 DESC, a.column1";
+                    + "order by column2 DESC, column1";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
         
@@ -190,7 +190,7 @@ public class SelectSupportTest {
             String expectedFullStatement = "select distinct a.column1 as A_COLUMN1, a.column2 "
                     + "from foo a "
                     + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "order by a.column2 DESC, a.column1";
+                    + "order by column2 DESC, column1";
 
             softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
         

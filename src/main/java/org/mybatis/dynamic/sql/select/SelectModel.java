@@ -23,7 +23,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
@@ -46,16 +45,6 @@ public class SelectModel {
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
         return SelectRenderer.of(this).render(renderingStrategy);
-    }
-    
-    public Optional<TableAliasCalculator> tableAliasCalculator() {
-        // if there is more than one query expression, then this is a union query.
-        // table aliases generally don't work correctly in union queries
-        if (queryExpressions.size() == 1) {
-            return Optional.of(queryExpressions.get(0).tableAliasCalculator());
-        } else {
-            return Optional.empty();
-        }
     }
     
     public static class Builder {

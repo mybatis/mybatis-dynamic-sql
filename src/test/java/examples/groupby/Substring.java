@@ -30,7 +30,7 @@ public class Substring extends AbstractSelectListItem<Substring> {
     }
     
     @Override
-    public String render(String columnName) {
+    protected String render(String columnName) {
         return "substring(" //$NON-NLS-1$
                 + columnName
                 + ", " //$NON-NLS-1$

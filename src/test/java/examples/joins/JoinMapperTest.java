@@ -212,7 +212,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
-                    + " order by om.order_id";
+                    + " order by order_id";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<OrderMaster> rows = mapper.selectMany(selectSupport);
@@ -254,7 +254,7 @@ public class JoinMapperTest {
             String expectedStatment = "select OrderMaster.order_id, OrderMaster.order_date, OrderLine.line_number, ItemMaster.description, OrderLine.quantity"
                     + " from OrderMaster join OrderLine on OrderMaster.order_id = OrderLine.order_id join ItemMaster on OrderLine.item_id = ItemMaster.item_id"
                     + " where OrderMaster.order_id = #{parameters.p1,jdbcType=INTEGER}"
-                    + " order by OrderMaster.order_id";
+                    + " order by order_id";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<OrderMaster> rows = mapper.selectMany(selectSupport);
@@ -287,7 +287,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from OrderLine ol right join ItemMaster im on ol.item_id = im.item_id"
-                    + " order by im.item_id";
+                    + " order by item_id";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);
@@ -326,7 +326,7 @@ public class JoinMapperTest {
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
                     + " right join ItemMaster im on ol.item_id = im.item_id"
-                    + " order by ol.order_id, im.item_id";
+                    + " order by order_id, item_id";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);
@@ -363,7 +363,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
-                    + " order by im.item_id";
+                    + " order by item_id";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);
@@ -402,7 +402,7 @@ public class JoinMapperTest {
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
                     + " left join ItemMaster im on ol.item_id = im.item_id"
-                    + " order by ol.order_id, im.item_id";
+                    + " order by order_id, item_id";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);
@@ -430,16 +430,16 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectSupport selectSupport = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId, itemMaster.description)
+            SelectSupport selectSupport = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
                     .from(itemMaster, "im")
                     .fullJoin(orderLine, "ol").on(itemMaster.itemId, equalTo(orderLine.itemId))
-                    .orderBy(itemMaster.itemId)
+                    .orderBy(itemMaster.itemId.as("im_itemid"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            String expectedStatment = "select ol.order_id, ol.quantity, ol.item_id as ol_itemid, im.item_id, im.description"
+            String expectedStatment = "select ol.order_id, ol.quantity, ol.item_id as ol_itemid, im.item_id as im_itemid, im.description"
                     + " from ItemMaster im full join OrderLine ol on im.item_id = ol.item_id"
-                    + " order by im.item_id";
+                    + " order by im_itemid";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);
@@ -450,19 +450,19 @@ public class JoinMapperTest {
             assertThat(row.get("QUANTITY")).isEqualTo(6);
             assertThat(row.get("OL_ITEMID")).isEqualTo(66);
             assertThat(row.get("DESCRIPTION")).isNull();
-            assertThat(row.get("ITEM_ID")).isNull();
+            assertThat(row.get("IM_ITEMID")).isNull();
 
             row = rows.get(3);
             assertThat(row.get("ORDER_ID")).isEqualTo(1);
             assertThat(row.get("QUANTITY")).isEqualTo(1);
             assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(33);
+            assertThat(row.get("IM_ITEMID")).isEqualTo(33);
 
             row = rows.get(5);
             assertThat(row.get("ORDER_ID")).isNull();
             assertThat(row.get("QUANTITY")).isNull();
             assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+            assertThat(row.get("IM_ITEMID")).isEqualTo(55);
         } finally {
             session.close();
         }
@@ -485,7 +485,7 @@ public class JoinMapperTest {
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
                     + " full join ItemMaster im on ol.item_id = im.item_id"
-                    + " order by ol.order_id, im.item_id";
+                    + " order by order_id, item_id";
             assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);

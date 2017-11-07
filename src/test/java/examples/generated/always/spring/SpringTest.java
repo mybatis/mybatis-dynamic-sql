@@ -70,7 +70,7 @@ public class SpringTest {
         String expected = "select a.id as A_ID, a.first_name, a.last_name, a.full_name "
                 + "from GeneratedAlways a "
                 + "where a.id > :p1 "
-                + "order by a.id DESC";
+                + "order by id DESC";
         
         assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
         
