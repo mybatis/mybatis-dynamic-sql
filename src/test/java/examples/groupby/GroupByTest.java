@@ -157,7 +157,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testBasicGroupByOrderByWithAggregateAndTableAlias() {
+    public void testBasicGroupByOrderByWithCalculatedColumnAndTableAlias() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);

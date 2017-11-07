@@ -96,23 +96,23 @@ public interface SqlConditions {
     }
     
     static Count count(SqlColumn<?> column) {
-        return new Count(column);
+        return Count.of(column);
     }
     
     static Max max(SqlColumn<?> column) {
-        return new Max(column);
+        return Max.of(column);
     }
     
     static Min min(SqlColumn<?> column) {
-        return new Min(column);
+        return Min.of(column);
     }
 
     static Avg avg(SqlColumn<?> column) {
-        return new Avg(column);
+        return Avg.of(column);
     }
 
     static Sum sum(SqlColumn<?> column) {
-        return new Sum(column);
+        return Sum.of(column);
     }
 
     // for all data types

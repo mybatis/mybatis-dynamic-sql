@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.aggregate;
+package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -22,11 +22,11 @@ import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implements SelectListItem {
+public abstract class AbstractSelectListItem<T extends AbstractSelectListItem<T>> implements SelectListItem {
     protected SqlColumn<?> column;
     protected Optional<String> alias = Optional.empty();
 
-    protected AbstractAggregate(SqlColumn<?> column) {
+    protected AbstractSelectListItem(SqlColumn<?> column) {
         this.column = Objects.requireNonNull(column);
     }
 
@@ -48,5 +48,12 @@ public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implemen
 
     protected abstract T copy();
     
+    /**
+     * Return the rendered string for the select list.
+     * 
+     * @param columnName the calculated column name.  It will have the table alias already applied
+     *   if applicable.
+     * @return
+     */
     protected abstract String render(String columnName);
 }

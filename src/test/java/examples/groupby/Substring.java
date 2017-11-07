@@ -15,11 +15,10 @@
  */
 package examples.groupby;
 
+import org.mybatis.dynamic.sql.AbstractSelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.select.aggregate.AbstractAggregate;
 
-// TODO - make a better base class for extensibility
-public class Substring extends AbstractAggregate<Substring> {
+public class Substring extends AbstractSelectListItem<Substring> {
 
     private int offset;
     private int length;

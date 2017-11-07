@@ -15,21 +15,26 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import org.mybatis.dynamic.sql.AbstractSelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Count extends AbstractAggregate<Count> {
+public class Count extends AbstractSelectListItem<Count> {
     
-    public Count(SqlColumn<?> column) {
+    private Count(SqlColumn<?> column) {
         super(column);
     }
     
     @Override
-    public String render(String columnName) {
+    protected String render(String columnName) {
         return "count(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     protected Count copy() {
+        return new Count(column);
+    }
+    
+    public static Count of(SqlColumn<?> column) {
         return new Count(column);
     }
 }

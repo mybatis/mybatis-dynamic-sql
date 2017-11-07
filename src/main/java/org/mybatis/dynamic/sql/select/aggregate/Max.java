@@ -15,21 +15,26 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import org.mybatis.dynamic.sql.AbstractSelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Max extends AbstractAggregate<Max> {
+public class Max extends AbstractSelectListItem<Max> {
 
-    public Max(SqlColumn<?> column) {
+    private Max(SqlColumn<?> column) {
         super(column);
     }
     
     @Override
-    public String render(String columnName) {
+    protected String render(String columnName) {
         return "max(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     protected Max copy() {
+        return new Max(column);
+    }
+    
+    public static Max of(SqlColumn<?> column) {
         return new Max(column);
     }
 }

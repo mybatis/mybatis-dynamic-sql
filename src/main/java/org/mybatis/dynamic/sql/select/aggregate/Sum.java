@@ -15,21 +15,26 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import org.mybatis.dynamic.sql.AbstractSelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Sum extends AbstractAggregate<Sum> {
+public class Sum extends AbstractSelectListItem<Sum> {
 
-    public Sum(SqlColumn<?> column) {
+    private Sum(SqlColumn<?> column) {
         super(column);
     }
     
     @Override
-    public String render(String columnName) {
+    protected String render(String columnName) {
         return "sum(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     protected Sum copy() {
+        return new Sum(column);
+    }
+    
+    public static Sum of(SqlColumn<?> column) {
         return new Sum(column);
     }
 }

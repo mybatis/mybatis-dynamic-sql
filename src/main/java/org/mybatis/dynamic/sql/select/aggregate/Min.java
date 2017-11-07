@@ -15,21 +15,26 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import org.mybatis.dynamic.sql.AbstractSelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Min extends AbstractAggregate<Min> {
+public class Min extends AbstractSelectListItem<Min> {
 
-    public Min(SqlColumn<?> column) {
+    private Min(SqlColumn<?> column) {
         super(column);
     }
     
     @Override
-    public String render(String columnName) {
+    protected String render(String columnName) {
         return "min(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     protected Min copy() {
+        return new Min(column);
+    }
+    
+    public static Min of(SqlColumn<?> column) {
         return new Min(column);
     }
 }

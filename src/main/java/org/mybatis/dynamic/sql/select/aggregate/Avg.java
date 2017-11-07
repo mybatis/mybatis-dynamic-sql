@@ -15,21 +15,26 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import org.mybatis.dynamic.sql.AbstractSelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class Avg extends AbstractAggregate<Avg> {
+public class Avg extends AbstractSelectListItem<Avg> {
 
-    public Avg(SqlColumn<?> column) {
+    private Avg(SqlColumn<?> column) {
         super(column);
     }
     
     @Override
-    public String render(String columnName) {
+    protected String render(String columnName) {
         return "avg(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     protected Avg copy() {
+        return new Avg(column);
+    }
+    
+    public static Avg of(SqlColumn<?> column) {
         return new Avg(column);
     }
 }
