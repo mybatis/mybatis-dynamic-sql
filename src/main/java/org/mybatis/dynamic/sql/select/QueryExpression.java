@@ -39,6 +39,7 @@ public class QueryExpression {
     private Optional<JoinModel> joinModel;
     private TableAliasCalculator tableAliasCalculator;
     private Optional<WhereModel> whereModel;
+    private Optional<GroupByModel> groupByModel;
 
     private QueryExpression(Builder builder) {
         this.connector = Optional.ofNullable(builder.connector);
@@ -49,6 +50,7 @@ public class QueryExpression {
         tableAliasCalculator = joinModel.map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
                 .orElse(TableAliasCalculator.of(builder.tableAliases));
         whereModel = Optional.ofNullable(builder.whereModel);
+        groupByModel = Optional.ofNullable(builder.groupByModel);
     }
     
     public Optional<String> connector() {
@@ -79,6 +81,10 @@ public class QueryExpression {
         return joinModel;
     }
     
+    public Optional<GroupByModel> groupByModel() {
+        return groupByModel;
+    }
+    
     public String calculateTableNameIncludingAlias(SqlTable table) {
         return tableAliasCalculator.aliasForTable(table)
                 .map(a -> table.name() + " " + a) //$NON-NLS-1$
@@ -93,6 +99,7 @@ public class QueryExpression {
         private Map<SqlTable, String> tableAliases = new HashMap<>();
         private WhereModel whereModel;
         private JoinModel joinModel;
+        private GroupByModel groupByModel;
         
         public Builder withConnector(String connector) {
             this.connector = connector;
@@ -126,6 +133,11 @@ public class QueryExpression {
 
         public Builder withJoinModel(JoinModel joinModel) {
             this.joinModel = joinModel;
+            return this;
+        }
+        
+        public Builder withGroupByModel(GroupByModel groupByModel) {
+            this.groupByModel = groupByModel;
             return this;
         }
         

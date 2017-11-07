@@ -23,8 +23,10 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.select.QueryExpression;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
@@ -45,6 +47,7 @@ public class QueryExpressionRenderer {
         
         queryExpression.joinModel().ifPresent(applyJoin(builder));
         queryExpression.whereModel().ifPresent(applyWhere(builder, renderingStrategy, sequence));
+        queryExpression.groupByModel().ifPresent(applyGroupBy(builder));
         
         return builder.build();
     }
@@ -93,6 +96,22 @@ public class QueryExpressionRenderer {
         
         builder.withWhereClause(whereSupport.getWhereClause());
         builder.withParameters(whereSupport.getParameters());
+    }
+    
+    private Consumer<GroupByModel> applyGroupBy(RenderedQueryExpression.Builder builder) {
+        return groupByModel -> applyGroupBy(builder, groupByModel);
+    }
+    
+    private void applyGroupBy(RenderedQueryExpression.Builder builder, GroupByModel groupByModel) {
+        String groupByClause = groupByModel.mapColumns(this::applyTableAlias)
+                .collect(CustomCollectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
+        builder.withGroupByClause(groupByClause);
+        
+    }
+    
+    private String applyTableAlias(SelectListItem column) {
+        return column.applyTableAliasToName(queryExpression.tableAliasCalculator());
     }
     
     public static QueryExpressionRenderer of(QueryExpression queryExpression) {

@@ -5,7 +5,7 @@ select statements, but purposely does not cover every possibility.
 
 In general, the following are supported:
 
-1. The typical parts of a select statement including SELECT, DISTINCT, FROM, WHERE, GROUP BY, HAVING, UNION,
+1. The typical parts of a select statement including SELECT, DISTINCT, FROM, WHERE, GROUP BY, UNION,
    ORDER BY
 2. Tables can be aliased per select statement
 3. Columns can be aliased per select statement
@@ -16,14 +16,18 @@ In general, the following are supported:
 At this time, we do not support the following:
 
 1. WITH expressions
-2. Select from another select.  For example `select count(*) from (select foo from foos where id < 36)`
-3. INTERSECT, EXCEPT, etc.
-4. Calculated columns in select lists or anywhere else in a statement - although this can be supported with
+2. HAVING expressions
+3. Select from another select.  For example `select count(*) from (select foo from foos where id < 36)`
+4. INTERSECT, EXCEPT, etc.
+5. Calculated columns in select lists or anywhere else in a statement - although this can be supported with
    custom implementations of SelectListItem and/or SqlColumn
 
+
+## General Selects
 
 ## Subselects
 
 ## Joins
 
-## General Selects
+## Union Queries
+

@@ -31,6 +31,7 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
     private Map<String, Object> parameters;
     private boolean isDistinct;
     private Optional<String> joinClause;
+    private Optional<String> groupByClause;
     
     private RenderedQueryExpression(Builder builder) {
         super(builder.tableName);
@@ -40,6 +41,7 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
         parameters = Objects.requireNonNull(builder.parameters);
         isDistinct = builder.isDistinct;
         joinClause = Optional.ofNullable(builder.joinClause);
+        groupByClause = Optional.ofNullable(builder.groupByClause);
     }
     
     public Map<String, Object> parameters() {
@@ -54,7 +56,8 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
                 + " from " //$NON-NLS-1$
                 + tableName()
                 + StringUtilities.spaceBefore(joinClause)
-                + StringUtilities.spaceBefore(whereClause);
+                + StringUtilities.spaceBefore(whereClause)
+                + StringUtilities.spaceBefore(groupByClause);
     }
     
     public static class Builder {
@@ -65,6 +68,7 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
         private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
         private String joinClause;
+        private String groupByClause;
         
         public Builder withConnector(Optional<String> connector) {
             this.connector = connector;
@@ -98,6 +102,11 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
         
         public Builder withJoinClause(String joinClause) {
             this.joinClause = joinClause;
+            return this;
+        }
+        
+        public Builder withGroupByClause(String groupByClause) {
+            this.groupByClause = groupByClause;
             return this;
         }
         

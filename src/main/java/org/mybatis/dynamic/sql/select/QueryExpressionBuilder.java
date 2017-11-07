@@ -44,6 +44,7 @@ public class QueryExpressionBuilder {
     private SqlTable table;
     private Map<SqlTable, String> tableAliases = new HashMap<>();
     private WhereModel whereModel;
+    private GroupByModel groupByModel;
     private JoinModel joinModel;
     private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
@@ -105,6 +106,7 @@ public class QueryExpressionBuilder {
                 .withTableAliases(tableAliases)
                 .withWhereModel(whereModel)
                 .withJoinModel(joinModel)
+                .withGroupByModel(groupByModel)
                 .build();
     }
     
@@ -164,6 +166,12 @@ public class QueryExpressionBuilder {
             return fullJoin(joinTable);
         }
 
+        public GroupByFinisher groupBy(SelectListItem...columns) {
+            groupByModel = GroupByModel.of(columns);
+            selectModelBuilder.addQueryExpression(buildModel());
+            return new GroupByFinisher();
+        }
+        
         public SelectModelBuilder orderBy(SqlColumn<?>...columns) {
             selectModelBuilder.addQueryExpression(buildModel());
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
@@ -353,6 +361,18 @@ public class QueryExpressionBuilder {
             selectModelBuilder.addQueryExpression(buildModel());
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
             return selectModelBuilder;
+        }
+    }
+    
+    public class GroupByFinisher implements Buildable<SelectModel> {
+        public SelectModelBuilder orderBy(SqlColumn<?>...columns) {
+            selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
+            return selectModelBuilder;
+        }
+
+        @Override
+        public SelectModel build() {
+            return selectModelBuilder.build();
         }
     }
     
