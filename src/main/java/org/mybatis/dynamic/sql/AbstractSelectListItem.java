@@ -22,6 +22,13 @@ import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
+/**
+ * This class is the base class for aggregate functions and calculated columns.
+ * 
+ * @author Jeff Butler
+ *
+ * @param <T> the subclass type
+ */
 public abstract class AbstractSelectListItem<T extends AbstractSelectListItem<T>> implements SelectListItem {
     protected SqlColumn<?> column;
     protected Optional<String> alias = Optional.empty();
@@ -49,11 +56,11 @@ public abstract class AbstractSelectListItem<T extends AbstractSelectListItem<T>
     protected abstract T copy();
     
     /**
-     * Return the rendered string for the select list.
+     * Calculate the rendered string for the select list.
      * 
      * @param columnName the calculated column name.  It will have the table alias already applied
-     *   if applicable.
-     * @return
+     *     if applicable.
+     * @return the rendered string for the select list
      */
     protected abstract String render(String columnName);
 }
