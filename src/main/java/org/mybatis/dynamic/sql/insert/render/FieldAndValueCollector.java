@@ -20,18 +20,13 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SqlTable;
-
 public class FieldAndValueCollector<T> {
     
     private List<String> columnNames = new ArrayList<>();
     private List<String> valuePhrases = new ArrayList<>();
-    private T record;
-    private SqlTable table;
     
-    public FieldAndValueCollector(T record, SqlTable table) {
-        this.record = record;
-        this.table = table;
+    public FieldAndValueCollector() {
+        super();
     }
     
     public void add(FieldAndValue fieldAndValue) {
@@ -55,20 +50,9 @@ public class FieldAndValueCollector<T> {
                 .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    public InsertSupport<T> toInsertSupport() {
-        return new InsertSupport.Builder<T>()
-                .withTableName(table.name())
-                .withColumnsPhrase(columnsPhrase())
-                .withValuesPhrase(valuesPhrase())
-                .withRecord(record)
-                .build();
-    }
-    
-    public static <T> Collector<FieldAndValue, FieldAndValueCollector<T>, InsertSupport<T>> toInsertSupport(T record,
-            SqlTable table) {
-        return Collector.of(() -> new FieldAndValueCollector<>(record, table),
+    public static <T> Collector<FieldAndValue, FieldAndValueCollector<T>, FieldAndValueCollector<T>> collect() {
+        return Collector.of(FieldAndValueCollector::new,
                 FieldAndValueCollector::add,
-                FieldAndValueCollector::merge,
-                FieldAndValueCollector::toInsertSupport);
+                FieldAndValueCollector::merge);
     }
 }

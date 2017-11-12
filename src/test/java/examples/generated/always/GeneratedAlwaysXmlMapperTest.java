@@ -24,9 +24,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -35,6 +37,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
+import org.mybatis.dynamic.sql.insert.render.InsertBatchSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
@@ -120,6 +123,98 @@ public class GeneratedAlwaysXmlMapperTest {
         } finally {
             session.close();
         }
+    }
+
+    @Test
+    public void testInsertBatchWithList() {
+        SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH);
+        try {
+            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            List<GeneratedAlwaysRecord> records = getTestRecords();
+            
+            InsertBatchSupport<GeneratedAlwaysRecord> support = insert(records)
+                    .into(generatedAlways)
+                    .map(id).toProperty("id")
+                    .map(firstName).toProperty("firstName")
+                    .map(lastName).toProperty("lastName")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            support.insertSupports().stream().forEach(mapper::insert);
+            
+            session.commit();
+            
+            assertThat(records.get(0).getFullName()).isEqualTo("George Jetson");
+            assertThat(records.get(1).getFullName()).isEqualTo("Jane Jetson");
+            assertThat(records.get(2).getFullName()).isEqualTo("Judy Jetson");
+            assertThat(records.get(3).getFullName()).isEqualTo("Elroy Jetson");
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testInsertBatchWithArray() {
+        SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH);
+        try {
+            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+
+            GeneratedAlwaysRecord record1 = new GeneratedAlwaysRecord();
+            record1.setId(1000);
+            record1.setFirstName("George");
+            record1.setLastName("Jetson");
+
+            GeneratedAlwaysRecord record2 = new GeneratedAlwaysRecord();
+            record2.setId(1001);
+            record2.setFirstName("Jane");
+            record2.setLastName("Jetson");
+            
+            InsertBatchSupport<GeneratedAlwaysRecord> support = insert(record1, record2)
+                    .into(generatedAlways)
+                    .map(id).toProperty("id")
+                    .map(firstName).toProperty("firstName")
+                    .map(lastName).toProperty("lastName")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            support.insertSupports().stream().forEach(mapper::insert);
+            
+            session.commit();
+            
+            assertThat(record1.getFullName()).isEqualTo("George Jetson");
+            assertThat(record2.getFullName()).isEqualTo("Jane Jetson");
+        } finally {
+            session.close();
+        }
+    }
+    
+    private List<GeneratedAlwaysRecord> getTestRecords() {
+        List<GeneratedAlwaysRecord> records = new ArrayList<>();
+        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+        record.setId(1000);
+        record.setFirstName("George");
+        record.setLastName("Jetson");
+        records.add(record);
+
+        record = new GeneratedAlwaysRecord();
+        record.setId(1001);
+        record.setFirstName("Jane");
+        record.setLastName("Jetson");
+        records.add(record);
+
+        record = new GeneratedAlwaysRecord();
+        record.setId(1002);
+        record.setFirstName("Judy");
+        record.setLastName("Jetson");
+        records.add(record);
+
+        record = new GeneratedAlwaysRecord();
+        record.setId(1003);
+        record.setFirstName("Elroy");
+        record.setLastName("Jetson");
+        records.add(record);
+
+        return records;
     }
 
     @Test

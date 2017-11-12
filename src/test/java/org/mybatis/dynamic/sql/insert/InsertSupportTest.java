@@ -154,7 +154,7 @@ public class InsertSupportTest {
         
         FieldAndValueCollector<TestRecord> collector = 
                 mappings.parallelStream().collect(Collector.of(
-                        () -> new FieldAndValueCollector<>(record, foo),
+                        () -> new FieldAndValueCollector<>(),
                         FieldAndValueCollector::add,
                         FieldAndValueCollector::merge));
                 

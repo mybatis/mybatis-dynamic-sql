@@ -18,27 +18,27 @@ package org.mybatis.dynamic.sql.insert.render;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.insert.InsertModel;
+import org.mybatis.dynamic.sql.insert.InsertBatchModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.InsertMapping;
 
-public class InsertRenderer<T> {
+public class InsertBatchRenderer<T> {
 
-    private InsertModel<T> model;
+    private InsertBatchModel<T> model;
     
-    private InsertRenderer(InsertModel<T> model) {
+    private InsertBatchRenderer(InsertBatchModel<T> model) {
         this.model = Objects.requireNonNull(model);
     }
     
-    public InsertSupport<T> render(RenderingStrategy renderingStrategy) {
+    public InsertBatchSupport<T> render(RenderingStrategy renderingStrategy) {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
-        return new InsertSupport.Builder<T>()
+        return new InsertBatchSupport.Builder<T>()
                 .withTableName(model.table().name())
                 .withColumnsPhrase(collector.columnsPhrase())
                 .withValuesPhrase(collector.valuesPhrase())
-                .withRecord(model.record())
+                .withRecords(model.records())
                 .build();
     }
 
@@ -50,7 +50,7 @@ public class InsertRenderer<T> {
         return insertMapping.accept(visitor);
     }
     
-    public static <T> InsertRenderer<T> of(InsertModel<T> model) {
-        return new InsertRenderer<>(model);
+    public static <T> InsertBatchRenderer<T> of(InsertBatchModel<T> model) {
+        return new InsertBatchRenderer<>(model);
     }
 }
