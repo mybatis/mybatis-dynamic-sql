@@ -110,11 +110,11 @@ import org.mybatis.dynamic.sql.SqlTable;
 
 public interface SimpleTableDynamicSqlSupport {
     SqlTable simpleTable = SqlTable.of("SimpleTable");
-    SqlColumn<Integer> id = simpleTable.column("id", JDBCType.INTEGER).withAlias("A_ID");
+    SqlColumn<Integer> id = simpleTable.column("id", JDBCType.INTEGER);
     SqlColumn<String> firstName = simpleTable.column("first_name", JDBCType.VARCHAR);
     SqlColumn<String> lastName = simpleTable.column("last_name", JDBCType.VARCHAR);
     SqlColumn<Date> birthDate = simpleTable.column("birth_date", JDBCType.DATE);
-    SqlColumn<Boolean> employed = simpleTable.column("employed", JDBCType.VARCHAR).withTypeHandler("examples.simple.YesNoTypeHandler");
+    SqlColumn<Boolean> employed = simpleTable.column("employed", JDBCType.VARCHAR, "examples.simple.YesNoTypeHandler");
     SqlColumn<String> occupation = simpleTable.column("occupation", JDBCType.VARCHAR);
 }
 ```
@@ -163,7 +163,7 @@ An XML mapper might look like this:
 <mapper namespace="examples.simple.SimpleTableXmlMapper">
 
   <resultMap id="SimpleTableResult" type="examples.simple.SimpleTableRecord">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="A_ID" jdbcType="INTEGER" property="id" />
     <result column="first_name" jdbcType="VARCHAR" property="firstName" />
     <result column="last_name" jdbcType="VARCHAR" property="lastName" />
     <result column="birth_date" jdbcType="DATE" property="birthDate" />
@@ -248,7 +248,8 @@ an example from ```examples.simple.SimpleTableXmlMapperTest```:
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            SelectSupport selectSupport = selectByExample()
+            SelectSupport selectSupport = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+                    .from(simpleTable)
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
