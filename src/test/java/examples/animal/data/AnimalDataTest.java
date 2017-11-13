@@ -1273,8 +1273,12 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             String expected = "insert into AnimalDataCopy (id, animal_name, body_weight, brain_weight) "
-                    + "select id, animal_name, body_weight, brain_weight from AnimalData where id < #{parameters.p1,jdbcType=INTEGER}";
+                    + "select id, animal_name, body_weight, brain_weight "
+                    + "from AnimalData "
+                    + "where id < #{parameters.p1,jdbcType=INTEGER}";
             assertThat(insertSelectSupport.getFullInsertStatement()).isEqualTo(expected);
+            assertThat(insertSelectSupport.getParameters().size()).isEqualTo(1);
+            assertThat(insertSelectSupport.getParameters().get("p1")).isEqualTo(22);
 
             int rows = mapper.insertSelect(insertSelectSupport);
             assertThat(rows).isEqualTo(21);
