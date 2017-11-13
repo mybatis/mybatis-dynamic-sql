@@ -15,9 +15,9 @@
  */
 package org.mybatis.dynamic.sql.insert;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 
 public class InsertSelectModel {
     private SqlTable table;
-    private List<SqlColumn<?>> columns;
+    private Optional<List<SqlColumn<?>>> columns;
     private SelectModel selectModel;
     
     private InsertSelectModel(Builder builder) {
@@ -47,8 +47,8 @@ public class InsertSelectModel {
         return selectModel;
     }
     
-    public <R> Stream<R> mapColumns(Function<SqlColumn<?>, R> mapper) {
-        return columns.stream().map(mapper);
+    public <R> Optional<Stream<R>> mapColumns(Function<SqlColumn<?>, R> mapper) {
+        return columns.map(cl -> cl.stream().map(mapper));
     }
     
     public InsertSelectSupport render(RenderingStrategy renderingStrategy) {
@@ -57,7 +57,7 @@ public class InsertSelectModel {
     
     public static class Builder {
         private SqlTable table;
-        private List<SqlColumn<?>> columns = new ArrayList<>();
+        private Optional<List<SqlColumn<?>>> columns;
         private SelectModel selectModel;
         
         public Builder withTable(SqlTable table) {
@@ -65,8 +65,8 @@ public class InsertSelectModel {
             return this;
         }
         
-        public Builder withColumns(List<SqlColumn<?>> columns) {
-            this.columns.addAll(columns);
+        public Builder withColumns(Optional<List<SqlColumn<?>>> columns) {
+            this.columns = columns;
             return this;
         }
         

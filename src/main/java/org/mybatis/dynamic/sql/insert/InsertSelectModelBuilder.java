@@ -15,9 +15,9 @@
  */
 package org.mybatis.dynamic.sql.insert;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -27,12 +27,18 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 public class InsertSelectModelBuilder {
 
     private SqlTable table;
-    private List<SqlColumn<?>> columns = new ArrayList<>();
+    private Optional<List<SqlColumn<?>>> columns;
     private SelectModel selectModel;
     
     private InsertSelectModelBuilder(SqlTable table, List<SqlColumn<?>> columns, SelectModel selectModel) {
         this.table = table;
-        this.columns = columns;
+        this.columns = Optional.of(columns);
+        this.selectModel = selectModel;
+    }
+    
+    private InsertSelectModelBuilder(SqlTable table, SelectModel selectModel) {
+        this.table = table;
+        this.columns = Optional.empty();
         this.selectModel = selectModel;
     }
     
@@ -44,20 +50,36 @@ public class InsertSelectModelBuilder {
                 .build();
     }
     
-    public static SelectGatherer insertInto(SqlTable table, SqlColumn<?>...columns) {
-        return new SelectGatherer(table, Arrays.asList(columns));
+    public static InsertColumnGatherer insertInto(SqlTable table) {
+        return new InsertColumnGatherer(table);
     }
 
+    public static class InsertColumnGatherer {
+        private SqlTable table;
+        
+        private InsertColumnGatherer(SqlTable table) {
+            this.table = table;
+        }
+        
+        public SelectGatherer withColumnList(SqlColumn<?>...columns) {
+            return new SelectGatherer(table, Arrays.asList(columns));
+        }
+
+        public InsertSelectModelBuilder withSelectStatement(Buildable<SelectModel> selectModelBuilder) {
+            return new InsertSelectModelBuilder(table, selectModelBuilder.build());
+        }
+    }
+    
     public static class SelectGatherer {
         private SqlTable table;
-        private List<SqlColumn<?>> columns = new ArrayList<>();
+        private List<SqlColumn<?>> columns;
         
         private SelectGatherer(SqlTable table, List<SqlColumn<?>> columns) {
             this.table = table;
             this.columns = columns;
         }
         
-        public InsertSelectModelBuilder using(Buildable<SelectModel> selectModelBuilder) {
+        public InsertSelectModelBuilder withSelectStatement(Buildable<SelectModel> selectModelBuilder) {
             return new InsertSelectModelBuilder(table, columns, selectModelBuilder.build());
         }
     }

@@ -1260,15 +1260,16 @@ public class AnimalDataTest {
     }
     
     @Test
-    public void testInsertSelect() {
+    public void testInsertSelectWithColumnList() {
         SqlTable animalDataCopy = SqlTable.of("AnimalDataCopy");
         
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            InsertSelectSupport insertSelectSupport = insertInto(animalDataCopy, id, animalName, bodyWeight, brainWeight)
-                    .using(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(22)))
+            InsertSelectSupport insertSelectSupport = insertInto(animalDataCopy)
+                    .withColumnList(id, animalName, bodyWeight, brainWeight)
+                    .withSelectStatement(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(22)))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
@@ -1285,6 +1286,33 @@ public class AnimalDataTest {
         } finally {
             sqlSession.close();
         }
+    }
+
+    @Test
+    public void testInsertSelectWithoutColumnList() {
+        SqlTable animalDataCopy = SqlTable.of("AnimalDataCopy");
         
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            InsertSelectSupport insertSelectSupport = insertInto(animalDataCopy)
+                    .withSelectStatement(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(33)))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "insert into AnimalDataCopy "
+                    + "select id, animal_name, body_weight, brain_weight "
+                    + "from AnimalData "
+                    + "where id < #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(insertSelectSupport.getFullInsertStatement()).isEqualTo(expected);
+            assertThat(insertSelectSupport.getParameters().size()).isEqualTo(1);
+            assertThat(insertSelectSupport.getParameters().get("p1")).isEqualTo(33);
+
+            int rows = mapper.insertSelect(insertSelectSupport);
+            assertThat(rows).isEqualTo(32);
+        } finally {
+            sqlSession.close();
+        }
     }
 }

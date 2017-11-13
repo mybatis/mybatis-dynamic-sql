@@ -15,15 +15,18 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 
 public class InsertSelectSupport extends AbstractSqlSupport {
     
-    private String columnsPhrase;
+    private Optional<String> columnsPhrase;
     private String renderedSelectStatement;
     private Map<String, Object> parameters;
     
@@ -37,8 +40,7 @@ public class InsertSelectSupport extends AbstractSqlSupport {
     public String getFullInsertStatement() {
         return "insert into " //$NON-NLS-1$
                 + tableName()
-                + " " //$NON-NLS-1$
-                + columnsPhrase
+                + spaceBefore(columnsPhrase)
                 + " " //$NON-NLS-1$
                 + renderedSelectStatement;
     }
@@ -49,7 +51,7 @@ public class InsertSelectSupport extends AbstractSqlSupport {
 
     public static class Builder {
         private String tableName;
-        private String columnsPhrase;
+        private Optional<String> columnsPhrase;
         private String renderedSelectStatement;
         private Map<String, Object> parameters = new HashMap<>();
         
@@ -58,7 +60,7 @@ public class InsertSelectSupport extends AbstractSqlSupport {
             return this;
         }
 
-        public Builder withColumnsPhrase(String columnsPhrase) {
+        public Builder withColumnsPhrase(Optional<String> columnsPhrase) {
             this.columnsPhrase = columnsPhrase;
             return this;
         }

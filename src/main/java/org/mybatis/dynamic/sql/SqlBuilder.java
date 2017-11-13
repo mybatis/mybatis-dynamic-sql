@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.delete.DeleteModelBuilder;
 import org.mybatis.dynamic.sql.insert.InsertBatchModelBuilder;
 import org.mybatis.dynamic.sql.insert.InsertModelBuilder;
 import org.mybatis.dynamic.sql.insert.InsertSelectModelBuilder;
-import org.mybatis.dynamic.sql.insert.InsertSelectModelBuilder.SelectGatherer;
+import org.mybatis.dynamic.sql.insert.InsertSelectModelBuilder.InsertColumnGatherer;
 import org.mybatis.dynamic.sql.select.QueryExpressionBuilder;
 import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
@@ -45,8 +45,8 @@ public interface SqlBuilder {
         return InsertBatchModelBuilder.insert(records);
     }
     
-    static SelectGatherer insertInto(SqlTable table, SqlColumn<?>...columns) {
-        return InsertSelectModelBuilder.insertInto(table, columns);
+    static InsertColumnGatherer insertInto(SqlTable table) {
+        return InsertSelectModelBuilder.insertInto(table);
     }
     
     static QueryExpressionBuilder select(SelectListItem...selectList) {
