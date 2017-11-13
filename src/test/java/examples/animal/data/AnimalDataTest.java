@@ -25,12 +25,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -41,6 +43,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertBatchSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
@@ -735,6 +738,110 @@ public class AnimalDataTest {
         }
     }
     
+    @Test
+    public void testBulkInsert() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            List<AnimalData> records = new ArrayList<>();
+            AnimalData record = new AnimalData();
+            record.setId(100);
+            record.setAnimalName("Old Shep");
+            record.setBodyWeight(22.5);
+            records.add(record);
+            
+            record = new AnimalData();
+            record.setId(101);
+            record.setAnimalName("Old Dan");
+            record.setBodyWeight(22.5);
+            records.add(record);
+            
+            InsertBatchSupport<AnimalData> insertSupport = insert(records)
+                    .into(animalData)
+                    .map(id).toProperty("id")
+                    .map(animalName).toNull()
+                    .map(bodyWeight).toProperty("bodyWeight")
+                    .map(brainWeight).toConstant("1.2")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            insertSupport.insertSupports().stream().forEach(mapper::insert);
+            sqlSession.commit();
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, isIn(100, 101))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            assertThat(animals.size()).isEqualTo(2);
+            
+            assertThat(animals.get(0).getId()).isEqualTo(100);
+            assertThat(animals.get(0).getBrainWeight()).isEqualTo(1.2);
+            assertThat(animals.get(0).getAnimalName()).isNull();
+            
+            assertThat(animals.get(1).getId()).isEqualTo(101);
+            assertThat(animals.get(1).getBrainWeight()).isEqualTo(1.2);
+            assertThat(animals.get(1).getAnimalName()).isNull();
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
+    public void testBulkInsert2() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            List<AnimalData> records = new ArrayList<>();
+            AnimalData record = new AnimalData();
+            record.setId(100);
+            record.setAnimalName("Old Shep");
+            record.setBodyWeight(22.5);
+            records.add(record);
+            
+            record = new AnimalData();
+            record.setId(101);
+            record.setAnimalName("Old Dan");
+            record.setBodyWeight(22.5);
+            records.add(record);
+            
+            InsertBatchSupport<AnimalData> insertSupport = insert(records)
+                    .into(animalData)
+                    .map(id).toProperty("id")
+                    .map(animalName).toStringConstant("Old Fred")
+                    .map(bodyWeight).toProperty("bodyWeight")
+                    .map(brainWeight).toConstant("1.2")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            insertSupport.insertSupports().stream().forEach(mapper::insert);
+            sqlSession.commit();
+            
+            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, isIn(100, 101))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+
+            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            assertThat(animals.size()).isEqualTo(2);
+            
+            assertThat(animals.get(0).getId()).isEqualTo(100);
+            assertThat(animals.get(0).getBrainWeight()).isEqualTo(1.2);
+            assertThat(animals.get(0).getAnimalName()).isEqualTo("Old Fred");
+            
+            assertThat(animals.get(1).getId()).isEqualTo(101);
+            assertThat(animals.get(1).getBrainWeight()).isEqualTo(1.2);
+            assertThat(animals.get(1).getAnimalName()).isEqualTo("Old Fred");
+        } finally {
+            sqlSession.close();
+        }
+    }
+
     @Test
     public void testOrderByAndDistinct() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
