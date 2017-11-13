@@ -15,13 +15,14 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 
 /**
  * This class combines a "set" clause and a "where" clause into one parameter object
@@ -59,11 +60,10 @@ public class UpdateSupport extends AbstractSqlSupport {
     }
 
     public String getFullUpdateStatement() {
-        return "update " //$NON-NLS-1$
-                + tableName()
-                + " " //$NON-NLS-1$
-                + getSetClause()
-                + StringUtilities.spaceBefore(whereClause());
+        return "update" //$NON-NLS-1$
+                + spaceBefore(tableName())
+                + spaceBefore(getSetClause())
+                + spaceBefore(whereClause());
     }
     
     public static class Builder {

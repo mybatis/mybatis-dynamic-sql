@@ -15,13 +15,15 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class RenderedQueryExpression extends AbstractSqlSupport {
     
@@ -49,15 +51,15 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
     }
     
     public String queryExpression() {
-        return connector.map(c -> c + " ").orElse("") //$NON-NLS-1$ //$NON-NLS-2$
+        return spaceAfter(connector)
                 + "select " //$NON-NLS-1$
                 + (isDistinct ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + columnList
                 + " from " //$NON-NLS-1$
                 + tableName()
-                + StringUtilities.spaceBefore(joinClause)
-                + StringUtilities.spaceBefore(whereClause)
-                + StringUtilities.spaceBefore(groupByClause);
+                + spaceBefore(joinClause)
+                + spaceBefore(whereClause)
+                + spaceBefore(groupByClause);
     }
     
     public static class Builder {

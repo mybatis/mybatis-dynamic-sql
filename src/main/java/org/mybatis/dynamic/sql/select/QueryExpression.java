@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,9 +88,8 @@ public class QueryExpression {
     }
     
     public String calculateTableNameIncludingAlias(SqlTable table) {
-        return tableAliasCalculator.aliasForTable(table)
-                .map(a -> table.name() + " " + a) //$NON-NLS-1$
-                .orElseGet(table::name);
+        return table.name()
+                + spaceBefore(tableAliasCalculator.aliasForTable(table));
     }
     
     public static class Builder {

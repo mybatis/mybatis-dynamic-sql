@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,7 +31,7 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
 
     @Override
     public String renderCondition(String columnName, Stream<String> placeholders) {
-        return columnName + " "//$NON-NLS-1$
+        return spaceAfter(columnName)
                 + placeholders.collect(
                         Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }

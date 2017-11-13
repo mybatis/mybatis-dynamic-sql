@@ -15,6 +15,9 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -23,7 +26,6 @@ import org.mybatis.dynamic.sql.select.QueryExpression;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
-import org.mybatis.dynamic.sql.select.join.JoinType;
 
 public class JoinRenderer {
     private JoinModel joinModel;
@@ -40,17 +42,10 @@ public class JoinRenderer {
     }
     
     private String toRenderedString(JoinSpecification joinSpecification) {
-        return renderJoinType(joinSpecification.joinType())
-                + "join " //$NON-NLS-1$
-                + queryExpression.calculateTableNameIncludingAlias(joinSpecification.table())
-                + " " //$NON-NLS-1$
-                + renderConditions(joinSpecification);
-    }
-    
-    private String renderJoinType(JoinType joinType) {
-        return joinType.shortType()
-                .map(t -> t + " ") //$NON-NLS-1$
-                .orElse(""); //$NON-NLS-1$
+        return spaceAfter(joinSpecification.joinType().shortType())
+                + "join" //$NON-NLS-1$
+                + spaceBefore(queryExpression.calculateTableNameIncludingAlias(joinSpecification.table()))
+                + spaceBefore(renderConditions(joinSpecification));
     }
     
     private String renderConditions(JoinSpecification joinSpecification) {
@@ -60,12 +55,9 @@ public class JoinRenderer {
     
     private String renderCriterion(JoinCriterion<?> joinCriterion) {
         return joinCriterion.connector()
-                + " " //$NON-NLS-1$
-                + applyTableAlias(joinCriterion.leftColumn())
-                + " " //$NON-NLS-1$
-                + joinCriterion.operator()
-                + " " //$NON-NLS-1$
-                + applyTableAlias(joinCriterion.rightColumn());
+                + spaceBefore(applyTableAlias(joinCriterion.leftColumn()))
+                + spaceBefore(joinCriterion.operator())
+                + spaceBefore(applyTableAlias(joinCriterion.rightColumn()));
     }
     
     private String applyTableAlias(SqlColumn<?> column) {

@@ -38,11 +38,10 @@ public class InsertSelectSupport extends AbstractSqlSupport {
     }
     
     public String getFullInsertStatement() {
-        return "insert into " //$NON-NLS-1$
-                + tableName()
+        return "insert into" //$NON-NLS-1$
+                + spaceBefore(tableName())
                 + spaceBefore(columnsPhrase)
-                + " " //$NON-NLS-1$
-                + renderedSelectStatement;
+                + spaceBefore(renderedSelectStatement);
     }
     
     public Map<String, Object> getParameters() {

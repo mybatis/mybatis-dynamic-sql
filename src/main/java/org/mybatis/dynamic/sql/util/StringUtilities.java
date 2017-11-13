@@ -19,7 +19,21 @@ import java.util.Optional;
 
 public interface StringUtilities {
 
+    static String spaceAfter(Optional<String> in) {
+        return in.map(s -> s + " ") //$NON-NLS-1$
+                .orElse(""); //$NON-NLS-1$
+    }
+
+    static String spaceAfter(String in) {
+        return in + " "; //$NON-NLS-1$
+    }
+    
     static String spaceBefore(Optional<String> in) {
-        return in.map(s -> " " + s).orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
+        return in.map(s -> " " + s) //$NON-NLS-1$
+                .orElse(""); //$NON-NLS-1$
+    }
+
+    static String spaceBefore(String in) {
+        return " " + in; //$NON-NLS-1$
     }
 }

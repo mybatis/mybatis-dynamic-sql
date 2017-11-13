@@ -15,6 +15,9 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -81,13 +84,12 @@ public class CriterionRenderer {
         return connector
                 + "("  //$NON-NLS-1$
                 + renderedCondition.fragment()
-                + " " //$NON-NLS-1$
-                + renderedSubCriteria.fragments().collect(Collectors.joining(" ")) //$NON-NLS-1$
+                + spaceBefore(renderedSubCriteria.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
                 + ")"; //$NON-NLS-1$
     }
     
     private String renderConnector(SqlCriterion<?> criterion) {
-        return criterion.connector().map(c -> c + " ").orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
+        return spaceAfter(criterion.connector());
     }
     
     private  <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {

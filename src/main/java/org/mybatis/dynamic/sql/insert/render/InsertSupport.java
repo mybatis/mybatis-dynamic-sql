@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
@@ -45,12 +47,10 @@ public class InsertSupport<T> extends AbstractSqlSupport {
     }
     
     public String getFullInsertStatement() {
-        return "insert into " //$NON-NLS-1$
-                + tableName()
-                + " " //$NON-NLS-1$
-                + columnsPhrase
-                + " " //$NON-NLS-1$
-                + valuesPhrase;
+        return "insert into" //$NON-NLS-1$
+                + spaceBefore(tableName())
+                + spaceBefore(columnsPhrase)
+                + spaceBefore(valuesPhrase);
     }
 
     public static class Builder<T> {
