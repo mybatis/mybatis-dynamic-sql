@@ -24,6 +24,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
@@ -65,4 +66,9 @@ public interface AnimalDataMapper {
         "${fullInsertStatement}"
     })
     int insert(InsertSupport<AnimalData> insertSupport);
+
+    @Insert({
+        "${fullInsertStatement}"
+    })
+    int insertSelect(InsertSelectSupport insertSelectSupport);
 }

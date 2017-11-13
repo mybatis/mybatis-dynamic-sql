@@ -42,8 +42,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertBatchSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
@@ -1255,5 +1257,30 @@ public class AnimalDataTest {
         } finally {
             sqlSession.close();
         }
+    }
+    
+    @Test
+    public void testInsertSelect() {
+        SqlTable animalDataCopy = SqlTable.of("AnimalDataCopy");
+        
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            InsertSelectSupport insertSelectSupport = insertInto(animalDataCopy, id, animalName, bodyWeight, brainWeight)
+                    .using(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(22)))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "insert into AnimalDataCopy (id, animal_name, body_weight, brain_weight) "
+                    + "select id, animal_name, body_weight, brain_weight from AnimalData where id < #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(insertSelectSupport.getFullInsertStatement()).isEqualTo(expected);
+
+            int rows = mapper.insertSelect(insertSelectSupport);
+            assertThat(rows).isEqualTo(21);
+        } finally {
+            sqlSession.close();
+        }
+        
     }
 }
