@@ -34,12 +34,15 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
+@RunWith(JUnitPlatform.class)
 public class SimpleTableAnnotatedMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
@@ -68,7 +71,8 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
-            SelectSupport selectSupport = selectByExample()
+            SelectSupport selectSupport = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+                    .from(simpleTable)
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
