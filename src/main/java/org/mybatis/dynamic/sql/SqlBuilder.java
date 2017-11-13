@@ -18,8 +18,8 @@ package org.mybatis.dynamic.sql;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.delete.DeleteModelBuilder;
-import org.mybatis.dynamic.sql.insert.InsertModelBuilder;
 import org.mybatis.dynamic.sql.insert.InsertBatchModelBuilder;
+import org.mybatis.dynamic.sql.insert.InsertModelBuilder;
 import org.mybatis.dynamic.sql.select.QueryExpressionBuilder;
 import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
@@ -30,16 +30,16 @@ public interface SqlBuilder {
         return DeleteModelBuilder.of(table);
     }
 
-    static <T> InsertModelBuilder<T> insert(T record) {
+    static <T> InsertModelBuilder.IntoGatherer<T> insert(T record) {
         return InsertModelBuilder.insert(record);
     }
     
     @SafeVarargs
-    static <T> InsertBatchModelBuilder<T> insert(T...records) {
+    static <T> InsertBatchModelBuilder.IntoGatherer<T> insert(T...records) {
         return InsertBatchModelBuilder.insert(records);
     }
     
-    static <T> InsertBatchModelBuilder<T> insert(List<T> records) {
+    static <T> InsertBatchModelBuilder.IntoGatherer<T> insert(List<T> records) {
         return InsertBatchModelBuilder.insert(records);
     }
     

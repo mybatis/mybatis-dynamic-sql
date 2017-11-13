@@ -31,70 +31,71 @@ public class InsertBatchModelBuilder<T> {
 
     private List<T> records;
     private SqlTable table;
+    private List<InsertMapping> columnMappings = new ArrayList<>();
     
-    private InsertBatchModelBuilder(List<T> records) {
+    private InsertBatchModelBuilder(List<T> records, SqlTable table) {
         this.records = records;
-    }
-    
-    public InsertModelMappingBuilder into(SqlTable table) {
         this.table = table;
-        return new InsertModelMappingBuilder();
     }
     
+    public <F> BatchColumnMappingFinisher<F> map(SqlColumn<F> column) {
+        return new BatchColumnMappingFinisher<>(column);
+    }
+    
+    public InsertBatchModel<T> build() {
+        return new InsertBatchModel.Builder<T>()
+                .withTable(table)
+                .withRecords(records)
+                .withColumnMappings(columnMappings)
+                .build();
+    }
+
     @SafeVarargs
-    public static <T> InsertBatchModelBuilder<T> insert(T...records) {
-        return new InsertBatchModelBuilder<>(Arrays.asList(records));
+    public static <T> IntoGatherer<T> insert(T...records) {
+        return new IntoGatherer<>(Arrays.asList(records));
     }
     
-    public static <T> InsertBatchModelBuilder<T> insert(List<T> records) {
-        return new InsertBatchModelBuilder<>(records);
+    public static <T> IntoGatherer<T> insert(List<T> records) {
+        return new IntoGatherer<>(records);
     }
     
-    public class InsertModelMappingBuilder {
-        private List<InsertMapping> columnMappings = new ArrayList<>();
+    public static class IntoGatherer<T> {
+        private List<T> records;
         
-        private InsertModelMappingBuilder() {
-            super();
+        private IntoGatherer(List<T> records) {
+            this.records = records;
         }
-        
-        public <F> InsertSupportMappingBuilderFinisher<F> map(SqlColumn<F> column) {
-            return new InsertSupportMappingBuilderFinisher<>(column);
+
+        public InsertBatchModelBuilder<T> into(SqlTable table) {
+            return new InsertBatchModelBuilder<>(records, table);
         }
-        
-        public InsertBatchModel<T> build() {
-            return new InsertBatchModel.Builder<T>()
-                    .withTable(table)
-                    .withRecords(records)
-                    .withColumnMappings(columnMappings)
-                    .build();
+    }
+    
+    public class BatchColumnMappingFinisher<F> {
+        private SqlColumn<F> column;
+            
+        public BatchColumnMappingFinisher(SqlColumn<F> column) {
+            this.column = column;
         }
-        
-        public class InsertSupportMappingBuilderFinisher<F> {
-            private SqlColumn<F> column;
             
-            public InsertSupportMappingBuilderFinisher(SqlColumn<F> column) {
-                this.column = column;
-            }
+        public InsertBatchModelBuilder<T> toProperty(String property) {
+            columnMappings.add(PropertyMapping.of(column, property));
+            return InsertBatchModelBuilder.this;
+        }
             
-            public InsertModelMappingBuilder toProperty(String property) {
-                columnMappings.add(PropertyMapping.of(column, property));
-                return InsertModelMappingBuilder.this;
-            }
+        public InsertBatchModelBuilder<T> toNull() {
+            columnMappings.add(NullMapping.of(column));
+            return InsertBatchModelBuilder.this;
+        }
             
-            public InsertModelMappingBuilder toNull() {
-                columnMappings.add(NullMapping.of(column));
-                return InsertModelMappingBuilder.this;
-            }
+        public InsertBatchModelBuilder<T> toConstant(String constant) {
+            columnMappings.add(ConstantMapping.of(column, constant));
+            return InsertBatchModelBuilder.this;
+        }
             
-            public InsertModelMappingBuilder toConstant(String constant) {
-                columnMappings.add(ConstantMapping.of(column, constant));
-                return InsertModelMappingBuilder.this;
-            }
-            
-            public InsertModelMappingBuilder toStringConstant(String constant) {
-                columnMappings.add(StringConstantMapping.of(column, constant));
-                return InsertModelMappingBuilder.this;
-            }
+        public InsertBatchModelBuilder<T> toStringConstant(String constant) {
+            columnMappings.add(StringConstantMapping.of(column, constant));
+            return InsertBatchModelBuilder.this;
         }
     }
 }

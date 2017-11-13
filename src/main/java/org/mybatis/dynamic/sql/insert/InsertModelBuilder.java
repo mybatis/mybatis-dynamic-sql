@@ -31,72 +31,73 @@ public class InsertModelBuilder<T> {
 
     private T record;
     private SqlTable table;
+    private List<InsertMapping> columnMappings = new ArrayList<>();
     
-    private InsertModelBuilder(T record) {
+    private InsertModelBuilder(T record, SqlTable table) {
         this.record = record;
-    }
-    
-    public InsertModelMappingBuilder into(SqlTable table) {
         this.table = table;
-        return new InsertModelMappingBuilder();
     }
     
-    public static <T> InsertModelBuilder<T> insert(T record) {
-        return new InsertModelBuilder<>(record);
+    public <F> ColumnMappingFinisher<F> map(SqlColumn<F> column) {
+        return new ColumnMappingFinisher<>(column);
     }
     
-    public class InsertModelMappingBuilder {
-        private List<InsertMapping> columnMappings = new ArrayList<>();
+    public InsertModel<T> build() {
+        return new InsertModel.Builder<T>()
+                .withTable(table)
+                .withRecord(record)
+                .withColumnMappings(columnMappings)
+                .build();
+    }
+    
+    public static <T> IntoGatherer<T> insert(T record) {
+        return new IntoGatherer<>(record);
+    }
+
+    public static class IntoGatherer<T> {
+        private T record;
         
-        private InsertModelMappingBuilder() {
-            super();
+        private IntoGatherer(T record) {
+            this.record = record;
         }
-        
-        public <F> InsertSupportMappingBuilderFinisher<F> map(SqlColumn<F> column) {
-            return new InsertSupportMappingBuilderFinisher<>(column);
+
+        public InsertModelBuilder<T> into(SqlTable table) {
+            return new InsertModelBuilder<>(record, table);
         }
-        
-        public InsertModel<T> build() {
-            return new InsertModel.Builder<T>()
-                    .withTable(table)
-                    .withRecord(record)
-                    .withColumnMappings(columnMappings)
-                    .build();
+    }
+    
+    public class ColumnMappingFinisher<F> {
+        private SqlColumn<F> column;
+            
+        public ColumnMappingFinisher(SqlColumn<F> column) {
+            this.column = column;
         }
-        
-        public class InsertSupportMappingBuilderFinisher<F> {
-            private SqlColumn<F> column;
             
-            public InsertSupportMappingBuilderFinisher(SqlColumn<F> column) {
-                this.column = column;
-            }
+        public InsertModelBuilder<T> toProperty(String property) {
+            columnMappings.add(PropertyMapping.of(column, property));
+            return InsertModelBuilder.this;
+        }
             
-            public InsertModelMappingBuilder toProperty(String property) {
-                columnMappings.add(PropertyMapping.of(column, property));
-                return InsertModelMappingBuilder.this;
+        public InsertModelBuilder<T> toPropertyWhenPresent(String property) {
+            if (BeanPropertyGetter.instance().getPropertyValue(record, property) != null) {
+                toProperty(property);
             }
+            return InsertModelBuilder.this;
+        }
             
-            public InsertModelMappingBuilder toPropertyWhenPresent(String property) {
-                if (BeanPropertyGetter.instance().getPropertyValue(record, property) != null) {
-                    toProperty(property);
-                }
-                return InsertModelMappingBuilder.this;
-            }
+        public InsertModelBuilder<T> toNull() {
+            columnMappings.add(NullMapping.of(column));
+            return InsertModelBuilder.this;
+        }
             
-            public InsertModelMappingBuilder toNull() {
-                columnMappings.add(NullMapping.of(column));
-                return InsertModelMappingBuilder.this;
-            }
+        public InsertModelBuilder<T> toConstant(String constant) {
+            columnMappings.add(ConstantMapping.of(column, constant));
+            return InsertModelBuilder.this;
+        }
             
-            public InsertModelMappingBuilder toConstant(String constant) {
-                columnMappings.add(ConstantMapping.of(column, constant));
-                return InsertModelMappingBuilder.this;
-            }
-            
-            public InsertModelMappingBuilder toStringConstant(String constant) {
-                columnMappings.add(StringConstantMapping.of(column, constant));
-                return InsertModelMappingBuilder.this;
-            }
+        public InsertModelBuilder<T> toStringConstant(String constant) {
+            columnMappings.add(StringConstantMapping.of(column, constant));
+            return InsertModelBuilder.this;
         }
     }
 }
