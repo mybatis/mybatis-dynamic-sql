@@ -64,7 +64,7 @@ public class UpdateModelBuilder {
                 .build();
     }
     
-    public static UpdateModelBuilder of(SqlTable table) {
+    public static UpdateModelBuilder update(SqlTable table) {
         return new UpdateModelBuilder(table);
     }
     

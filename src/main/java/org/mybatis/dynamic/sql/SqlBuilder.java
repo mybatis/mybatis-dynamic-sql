@@ -52,6 +52,6 @@ public interface SqlBuilder {
     }
     
     static UpdateModelBuilder update(SqlTable table) {
-        return UpdateModelBuilder.of(table);
+        return UpdateModelBuilder.update(table);
     }
 }
