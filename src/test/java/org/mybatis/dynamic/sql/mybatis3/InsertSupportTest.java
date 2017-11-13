@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.mybatis3;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 
 import java.sql.JDBCType;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -51,15 +51,11 @@ public class InsertSupportTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
-
-            String expectedValuesPhrase = "values (#{record.id,jdbcType=INTEGER}, "
-                    + "#{record.firstName,jdbcType=VARCHAR}, " + "#{record.lastName,jdbcType=VARCHAR}, "
-                    + "#{record.occupation,jdbcType=VARCHAR})";
-            softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
-        });
+        String expected = "insert into foo (id, first_name, last_name, occupation) "
+                + "values (#{record.id,jdbcType=INTEGER}, "
+                + "#{record.firstName,jdbcType=VARCHAR}, " + "#{record.lastName,jdbcType=VARCHAR}, "
+                + "#{record.occupation,jdbcType=VARCHAR})";
+        assertThat(insertSupport.getFullInsertStatement()).isEqualTo(expected);
     }
 
     @Test
@@ -77,14 +73,10 @@ public class InsertSupportTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedColumnsPhrase = "(last_name, occupation)";
-            softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo(expectedColumnsPhrase);
-
-            String expectedValuesPhrase = "values (#{record.lastName,jdbcType=VARCHAR}, "
-                    + "#{record.occupation,jdbcType=VARCHAR})";
-            softly.assertThat(insertSupport.getValuesPhrase()).isEqualTo(expectedValuesPhrase);
-        });
+        String expected = "insert into foo (last_name, occupation) "
+                + "values (#{record.lastName,jdbcType=VARCHAR}, "
+                + "#{record.occupation,jdbcType=VARCHAR})";
+        assertThat(insertSupport.getFullInsertStatement()).isEqualTo(expected);
     }
 
     public static class TestRecord {

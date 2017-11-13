@@ -43,18 +43,6 @@ public class UpdateSupport extends AbstractSqlSupport {
         parameters = Objects.requireNonNull(builder.parameters);
     }
 
-    public String getSetClause() {
-        return setClause;
-    }
-
-    public String getWhereClause() {
-        return whereClause().orElse(""); //$NON-NLS-1$
-    }
-
-    public Optional<String> whereClause() {
-        return whereClause;
-    }
-
     public Map<String, Object> getParameters() {
         return parameters;
     }
@@ -62,8 +50,8 @@ public class UpdateSupport extends AbstractSqlSupport {
     public String getFullUpdateStatement() {
         return "update" //$NON-NLS-1$
                 + spaceBefore(tableName())
-                + spaceBefore(getSetClause())
-                + spaceBefore(whereClause());
+                + spaceBefore(setClause)
+                + spaceBefore(whereClause);
     }
     
     public static class Builder {

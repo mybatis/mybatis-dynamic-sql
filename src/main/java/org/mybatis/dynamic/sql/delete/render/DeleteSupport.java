@@ -15,13 +15,14 @@
  */
 package org.mybatis.dynamic.sql.delete.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class DeleteSupport extends AbstractSqlSupport {
 
@@ -34,18 +35,14 @@ public class DeleteSupport extends AbstractSqlSupport {
         parameters = Objects.requireNonNull(builder.parameters);
     }
     
-    public String getWhereClause() {
-        return whereClause.orElse(""); //$NON-NLS-1$
-    }
-
     public Map<String, Object> getParameters() {
         return parameters;
     }
     
     public String getFullDeleteStatement() {
-        return "delete from " //$NON-NLS-1$
-                + tableName()
-                + StringUtilities.spaceBefore(whereClause);
+        return "delete from" //$NON-NLS-1$
+                + spaceBefore(tableName())
+                + spaceBefore(whereClause);
     }
 
     public static class Builder {

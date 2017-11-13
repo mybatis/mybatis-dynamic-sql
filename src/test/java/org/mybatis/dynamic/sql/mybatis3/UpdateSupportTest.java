@@ -15,12 +15,12 @@
  */
 package org.mybatis.dynamic.sql.mybatis3;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
 import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
 
 import java.sql.JDBCType;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -47,21 +47,16 @@ public class UpdateSupportTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        String expectedSetClause = "set firstName = #{parameters.up1,jdbcType=VARCHAR}, "
+        String expected = "update foo set firstName = #{parameters.up1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.up2,jdbcType=VARCHAR}, "
-                + "occupation = null";
+                + "occupation = null "
+                + "where id = #{parameters.p1,jdbcType=INTEGER}";
                 
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
-        
-            String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER}";
-            softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
-        
-            softly.assertThat(updateSupport.getParameters().size()).isEqualTo(3);
-            softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
-            softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
-            softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
-        });
+        assertThat(updateSupport.getFullUpdateStatement()).isEqualTo(expected);
+        assertThat(updateSupport.getParameters().size()).isEqualTo(3);
+        assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+        assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
     }
 
     @Test
@@ -75,22 +70,17 @@ public class UpdateSupportTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        String expectedSetClause = "set occupation = null, "
+        String expectedSetClause = "update foo set occupation = null, "
                 + "firstName = #{parameters.up1,jdbcType=VARCHAR}, "
-                + "lastName = #{parameters.up2,jdbcType=VARCHAR}";
+                + "lastName = #{parameters.up2,jdbcType=VARCHAR} "
+                + "where id = #{parameters.p1,jdbcType=INTEGER} "
+                + "and firstName = #{parameters.p2,jdbcType=VARCHAR}";
                 
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(updateSupport.getSetClause()).isEqualTo(expectedSetClause);
-        
-            String expectedWhereClauses = "where id = #{parameters.p1,jdbcType=INTEGER} "
-                    + "and firstName = #{parameters.p2,jdbcType=VARCHAR}";
-            softly.assertThat(updateSupport.getWhereClause()).isEqualTo(expectedWhereClauses);
-        
-            softly.assertThat(updateSupport.getParameters().size()).isEqualTo(4);
-            softly.assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
-            softly.assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
-            softly.assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
-            softly.assertThat(updateSupport.getParameters().get("p2")).isEqualTo("barney");
-        });
+        assertThat(updateSupport.getFullUpdateStatement()).isEqualTo(expectedSetClause);
+        assertThat(updateSupport.getParameters().size()).isEqualTo(4);
+        assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
+        assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
+        assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+        assertThat(updateSupport.getParameters().get("p2")).isEqualTo("barney");
     }
 }

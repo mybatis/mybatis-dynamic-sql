@@ -34,14 +34,6 @@ public class InsertSupport<T> extends AbstractSqlSupport {
         this.record = Objects.requireNonNull(builder.record);
     }
     
-    public String getColumnsPhrase() {
-        return columnsPhrase;
-    }
-
-    public String getValuesPhrase() {
-        return valuesPhrase;
-    }
-
     public T getRecord() {
         return record;
     }

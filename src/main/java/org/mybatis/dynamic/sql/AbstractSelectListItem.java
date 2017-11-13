@@ -18,8 +18,6 @@ package org.mybatis.dynamic.sql;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.SelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 /**

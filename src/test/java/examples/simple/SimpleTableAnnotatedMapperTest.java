@@ -174,13 +174,8 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             InsertSupport<SimpleTableRecord> insertSupport = buildFullInsertSupport(record);
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo("(id, first_name, last_name, birth_date, employed, occupation)");
-            
-                int rows = mapper.insert(insertSupport);
-            
-                softly.assertThat(rows).isEqualTo(1);
-            });
+            int rows = mapper.insert(insertSupport);
+            assertThat(rows).isEqualTo(1);
         } finally {
             session.close();
         }
@@ -199,13 +194,8 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(false);
             
             InsertSupport<SimpleTableRecord> insertSupport = buildSelectiveInsertSupport(record);
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(insertSupport.getColumnsPhrase()).isEqualTo("(id, first_name, last_name, birth_date, employed)");
-            
-                int rows = mapper.insert(insertSupport);
-            
-                softly.assertThat(rows).isEqualTo(1);
-            });
+            int rows = mapper.insert(insertSupport);
+            assertThat(rows).isEqualTo(1);
         } finally {
             session.close();
         }
