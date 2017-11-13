@@ -42,7 +42,7 @@ public class FieldAndValueCollector<T> {
 
     public String columnsPhrase() {
         return columnNames.stream()
-                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
+                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public String valuesPhrase() {
