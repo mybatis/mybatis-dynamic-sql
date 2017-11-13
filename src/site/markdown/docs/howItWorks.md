@@ -52,7 +52,7 @@ These classes can be used in conjunction with a MyBatis mapper like this:
 public interface Mapper {
 
   @Select({
-    ${sql}
+    "${sql}"
   })
   TableCode getTableCode(Parameter parameter);
 }
@@ -65,7 +65,7 @@ Using this mapper with MyBatis looks like this:
   try {
     Mapper mapper = sqlSession.getMapper(Mapper.class);
     Parameter parameter = new Parameter(2);
-    TableCode tableCode = = mapper.getTableCode(parameter);
+    TableCode tableCode = mapper.getTableCode(parameter);
     assertThat(tableCode.getId()).isEqualTo(2);
   } finally {
     sqlSession.close();
@@ -74,7 +74,12 @@ Using this mapper with MyBatis looks like this:
 
 The parameter object has a property called `sql`. That SQL string will be prepared as a JDBC prepared statement
 in MyBatis. The SQL string also references a property called `id`. That property - from the same parameter object -
-will be used as the value of the prepared statement parameter. 
+will be used as the value of the prepared statement parameter.
+
+So the main idea is this - this library builds a version of the `Parameter` class shown above. The class includes
+the full SQL statement to execute, formatted for MyBatis, and any parameters referenced by the statement.
+There are different versions of these classes for the different types of SQL statements. But in every case, the class
+is designed to be the one single parameter for a MyBatis mapper method.
 
 ## What About SQL Injection?
 

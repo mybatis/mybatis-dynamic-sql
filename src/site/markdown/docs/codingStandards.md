@@ -2,28 +2,29 @@
 
 ## General Principles
 
-This library is coded in the pseudo-functional style that has become possible with Java 8.  We use
+This library is coded in the pseudo-functional style that has become possible with Java 8. We use
 these general principles for functional style coding in Java:
 
 - Immutability is the core concept of functional programming
 - Use private constructors for most classes
-- Use a static "of" method as a builder method if there are one or two attributes.  If there are two attributes,
+- Use a static "of" method as a builder method if there are one or two attributes. If there are two attributes,
   they may not be of the same type.  A Builder class is preferred with two attributes, but "of" may be used to make
   the code more compact or readable in some cases.
-- Use a static Builder class if more than one attribute is required to initialize a class
+- Generally use a static Builder class if more than one attribute is required to initialize a class
 - Builders only have a zero argument constructor.  All attributes set with "with" methods.
 - When using a Builder, private class constructors take the Builder as the only argument
 - Class constructors using a Builder should check for null if an attribute is required.
 - Avoid direct use of null. Any Class attribute that could be null in normal use should be wrapped in a
   java.util.Optional
 - In Builders, Lists should be initialized and then populated with add or addAll.  Classes
-  can directly reference the list in the builder.
+  may directly reference the list in the builder.
 - In Builders, Maps should be initialized and then populated with put or putAll.  Classes
-  can directly reference the map in the builder.
-- Builders can be mutable, other classes may not be mutable.
-- Classes never expose a modifiable List. Lists are exposed with Streams or, better, with a mapping method.
+  may directly reference the map in the builder.
+- Builders may be mutable, other classes may not be mutable.
+- Classes never expose a modifiable List. Lists are exposed with n unmodifiable List, or Streams or, better,
+  with a mapping method.
 - Classes never expose a modifiable Map. A Map may be exposed with an unmodifiable Map.
-- Avoid for loops - use map/filter/reduce/collect instead
+- Avoid for loops (imperative) - use map/filter/reduce/collect (declarative) instead
 - The only good function is a pure function
 - Classes with no internal attributes are usually a collection of utility functions. Use static methods in an
   interface instead.
