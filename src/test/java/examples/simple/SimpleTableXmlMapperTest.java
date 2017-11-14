@@ -18,7 +18,6 @@ package examples.simple;
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

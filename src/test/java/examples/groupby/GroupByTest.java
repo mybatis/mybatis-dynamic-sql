@@ -19,7 +19,6 @@ import static examples.groupby.PersonDynamicSqlSupport.*;
 import static examples.groupby.Substring.substring;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

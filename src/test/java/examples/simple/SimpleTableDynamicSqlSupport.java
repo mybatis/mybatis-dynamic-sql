@@ -16,7 +16,6 @@
 package examples.simple;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.sql.JDBCType;
 import java.util.Date;

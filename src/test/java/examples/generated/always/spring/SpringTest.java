@@ -19,7 +19,7 @@ import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.
 import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.id;
 import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.selectByExample;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlConditions.isGreaterThan;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

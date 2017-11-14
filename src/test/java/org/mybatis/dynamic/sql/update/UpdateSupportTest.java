@@ -16,9 +16,7 @@
 package org.mybatis.dynamic.sql.update;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.update;
-import static org.mybatis.dynamic.sql.SqlConditions.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlConditions.or;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 

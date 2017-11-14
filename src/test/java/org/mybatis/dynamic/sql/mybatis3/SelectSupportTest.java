@@ -16,8 +16,7 @@
 package org.mybatis.dynamic.sql.mybatis3;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.Date;

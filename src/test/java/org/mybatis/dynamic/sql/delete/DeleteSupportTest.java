@@ -15,8 +15,7 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 

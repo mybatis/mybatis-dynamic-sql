@@ -18,7 +18,6 @@ package examples.generated.always;
 import static examples.generated.always.GeneratedAlwaysDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

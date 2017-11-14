@@ -19,10 +19,8 @@ import static examples.joins.ItemMasterDynamicSQLSupport.*;
 import static examples.joins.OrderDetailDynamicSQLSupport.*;
 import static examples.joins.OrderLineDynamicSQLSupport.*;
 import static examples.joins.OrderMasterDynamicSQLSupport.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
-import static org.mybatis.dynamic.sql.select.join.JoinConditions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

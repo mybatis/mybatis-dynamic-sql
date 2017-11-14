@@ -19,7 +19,6 @@ import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

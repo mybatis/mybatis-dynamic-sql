@@ -18,7 +18,6 @@ package examples.simple;
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
 
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
