@@ -21,10 +21,10 @@ these general principles for functional style coding in Java:
 - In Builders, Maps should be initialized and then populated with put or putAll.  Classes
   may directly reference the map in the builder.
 - Builders may be mutable, other classes may not be mutable.
-- Classes never expose a modifiable List. Lists are exposed with n unmodifiable List, or Streams or, better,
-  with a mapping method.
+- Classes never expose a modifiable List. Lists are exposed with an unmodifiable List, or a Stream.
 - Classes never expose a modifiable Map. A Map may be exposed with an unmodifiable Map.
 - Avoid for loops (imperative) - use map/filter/reduce/collect (declarative) instead
+- Avoid Stream.forEach() - this method is only used for side effects, and we want no side-effects
 - The only good function is a pure function
 - Classes with no internal attributes are usually a collection of utility functions. Use static methods in an
   interface instead.

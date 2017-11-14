@@ -29,10 +29,11 @@
     <menu name="User's Guide">
       <item href="docs/introduction.html" name="Introduction" />
       <item href="docs/quickStart.html" name="Quick Start" />
-      <item href="docs/select.html" name="Select Statements" />
-      <item href="docs/delete.html" name="Delete Statements" />
-      <item href="docs/insert.html" name="Insert Statements" />
-      <item href="docs/update.html" name="Update Statements" />
+      <item href="docs/whereClauses.html" name="WHERE Clause Support" />
+      <item href="docs/select.html" name="SELECT Statements" />
+      <item href="docs/delete.html" name="DELETE Statements" />
+      <item href="docs/insert.html" name="INSERT Statements" />
+      <item href="docs/update.html" name="UPDATE Statements" />
       <item href="docs/howItWorks.html" name="How it Works" />
       <item href="docs/extending.html" name="Extending the Library" />
       <item href="docs/codingStandards.html" name="Coding Standards" />

@@ -9,5 +9,7 @@ Working with MyBatis Dynamic SQL requires the following steps:
 ## Defining Tables and Columns
 
 ## Creating MyBatis3 Mappers
+
 ## Executing SQL with MyBatis3
+
 ## Executing SQL with Spring JDBC Template
