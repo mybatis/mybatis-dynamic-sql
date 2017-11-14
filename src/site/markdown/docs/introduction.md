@@ -11,7 +11,7 @@ templates.
 The library works by implementing an SQL like DSL that creates an object containing a full SQL statement and any
 parameters required for that statement.  That object can be used directly by MyBatis as a parameter to a mapper method.
 
-The library will generate these types of SQL:
+The library will generate these types of SQL statements:
 
 - DELETE statements with flexible WHERE clauses
 - INSERT statements of several types:

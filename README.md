@@ -15,7 +15,7 @@ templates.
 The library works by implementing an SQL like DSL that creates an object containing a full SQL statement and any
 parameters required for that statement.  That object can be used directly by MyBatis as a parameter to a mapper method.
 
-The library will generate these types of SQL:
+The library will generate these types of SQL statements:
 
 - DELETE statements with flexible WHERE clauses
 - INSERT statements of several types:
@@ -78,8 +78,8 @@ One capability is that very expressive dynamic queries can be generated.  Here's
 
 ## How Do I Use It?
 The following discussion will walk through an example of using the library to generate a dynamic
-where clause for a SELECT or DELETE statement.  The full source code
-for this example is in ```src/test/java/examples/simple``` in this repo.
+SELECT or DELETE statement.  The full source code
+for this example is in `src/test/java/examples/simple` in this repo.
 
 The database table used in the example is defined as follows:
 
@@ -95,17 +95,23 @@ create table SimpleTable (
 );
 ```
  
-### First - Define database columns
-The class ```org.mybatis.dynamic.sql.SqlColumn``` is used to define columns for use in the library.
-Typically these should be defined as public static variables in a class or interface.  A column definition includes:
+### First - Define database table and columns
+The class `org.mybatis.dynamic.sql.SqlTable` is used to define a table. A table definition includes
+the actual name of the table (including schema or catalog if appropriate). A table alias can be applied in a
+select statement if desired.  Your table should be defined by extending the `SqlTable` class.
+
+The class `org.mybatis.dynamic.sql.SqlColumn` is used to define columns for use in the library.
+SqlColumns should be created using the builder methods in SqlTable.
+A column definition includes:
 
 1. The Java type
-2. The table's actual column name
+2. The actual column name (an alias can be applied in a select statement)
 3. The JDBC type
-4. (optional) An alias for the column
-5. (optional) The name of a type handler to use in MyBatis if the default type handler is not desired
+4. (optional) The name of a type handler to use in MyBatis if the default type handler is not desired
 
-For example:
+We suggest the following usage pattern to give maximum flexibility.  This pattern will allow you to use your
+table and columns in a "qualified" or "un-qualified" manner that looks like natural SQL. For example, in the
+following a column could be referred to as `firstName` or `simpleTable.firstName`.
 
 ```java
 package examples.simple;
@@ -117,17 +123,30 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public interface SimpleTableDynamicSqlSupport {
-    SqlTable simpleTable = SqlTable.of("SimpleTable");
-    SqlColumn<Integer> id = simpleTable.column("id", JDBCType.INTEGER);
-    SqlColumn<String> firstName = simpleTable.column("first_name", JDBCType.VARCHAR);
-    SqlColumn<String> lastName = simpleTable.column("last_name", JDBCType.VARCHAR);
-    SqlColumn<Date> birthDate = simpleTable.column("birth_date", JDBCType.DATE);
-    SqlColumn<Boolean> employed = simpleTable.column("employed", JDBCType.VARCHAR, "examples.simple.YesNoTypeHandler");
-    SqlColumn<String> occupation = simpleTable.column("occupation", JDBCType.VARCHAR);
+    public static final SimpleTable simpleTable = new SimpleTable();
+    public static final SqlColumn<Integer> id = simpleTable.id;
+    public static final SqlColumn<String> firstName = simpleTable.firstName;
+    public static final SqlColumn<String> lastName = simpleTable.lastName;
+    public static final SqlColumn<Date> birthDate = simpleTable.birthDate;
+    public static final SqlColumn<Boolean> employed = simpleTable.employed;
+    public static final SqlColumn<String> occupation = simpleTable.occupation;
+    
+    public static final class SimpleTable extends SqlTable {
+        public SimpleTable() {
+            super("SimpleTable");
+        }
+
+        public SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
+        public SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
+        public SqlColumn<String> lastName = column("last_name", JDBCType.VARCHAR);
+        public SqlColumn<Date> birthDate = column("birth_date", JDBCType.DATE);
+        public SqlColumn<Boolean> employed = column("employed", JDBCType.VARCHAR, "examples.simple.YesNoTypeHandler");
+        public SqlColumn<String> occupation = column("occupation", JDBCType.VARCHAR);
+    }
 }
 ```
 
-### Second - Write XML or annotated mappers that will use the generated where clause
+### Second - Write XML or annotated mappers that will use the generated statement
 The library will create support classes that will be used as input to an annotated or XML mapper.  These classes include the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that these objects be the one and only parameter to a MyBatis method.
 
 For example, an annotated mapper might look like this:
@@ -189,11 +208,12 @@ An XML mapper might look like this:
 </mapper>
 ```
 
-### Third - Create where clauses for your queries
-Where clauses are created by combining your column definition (from the first step above) with a condition for the column.  This library includes a large number of type safe conditions.
-All conditions can be accessed through expressive static methods in the ```org.mybatis.dynamic.sql.SqlConditions``` interface.
+### Third - Create dynamic statements
+Select statements are created by combining your column and table definitions (from the first step above) with
+condition for the column.  This library includes a large number of type safe conditions.
+All conditions can be accessed through expressive static methods in the ```org.mybatis.dynamic.sql.SqlBuilder``` interface.
 
-For example, a very simple condition can be defined like this:
+For example, a very simple select statement can be defined like this:
 
 ```java
         SelectSupport selectSupport = select(count())
@@ -209,6 +229,14 @@ Or this (also note that you can give a table an alias):
         SelectSupport selectSupport = select(count())
                 .from(simpleTable, "a")
                 .where(id, isNull())
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+```
+A delete statement looks like this:
+
+```java
+        DeleteSupport deleteSupport = deleteFrom(simpleTable)
+                .where(occupation, isNull())
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 ```
@@ -240,13 +268,12 @@ All of these statements rely on a set of expressive static methods.  It is typic
 // import all column definitions for your table
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
 
-// import the SQL builders and conditions
+// import the SQL builder
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlConditions.*;
 ```
 
-### Fourth - Use your where clauses
-In a DAO or service class, you can use the generated where clause as input to your mapper methods.  Here's
+### Fourth - Use your statements
+In a DAO or service class, you can use the generated statement as input to your mapper methods.  Here's
 an example from ```examples.simple.SimpleTableXmlMapperTest```:
 
 ```java
