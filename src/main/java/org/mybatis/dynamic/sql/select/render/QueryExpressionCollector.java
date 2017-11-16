@@ -23,38 +23,35 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class QueryExpressionCollector {
-    List<String> queryExpressions = new ArrayList<>();
-    Map<String, Object> parameters = new HashMap<>();
+    private List<String> queryExpressions = new ArrayList<>();
+    private Map<String, Object> parameters = new HashMap<>();
     
-    QueryExpressionCollector() {
+    private QueryExpressionCollector() {
         super();
     }
     
-    public void add(RenderedQueryExpression renderedQueryExpression) {
+    private void add(RenderedQueryExpression renderedQueryExpression) {
         queryExpressions.add(renderedQueryExpression.queryExpression());
         parameters.putAll(renderedQueryExpression.parameters());
     }
     
-    public QueryExpressionCollector merge(QueryExpressionCollector other) {
+    private QueryExpressionCollector merge(QueryExpressionCollector other) {
         queryExpressions.addAll(other.queryExpressions);
         parameters.putAll(other.parameters);
         return this;
     }
     
-    public SelectSupport.Builder toBuilder() {
-        return new SelectSupport.Builder()
-                .withQueryExpression(queryExpression())
-                .withParameters(parameters);
-    }
-    
-    private String queryExpression() {
+    public String queryExpression() {
         return queryExpressions.stream().collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
     
-    public static Collector<RenderedQueryExpression, QueryExpressionCollector, SelectSupport.Builder> collect() {
+    public Map<String, Object> parameters() {
+        return parameters;
+    }
+    
+    public static Collector<RenderedQueryExpression, QueryExpressionCollector, QueryExpressionCollector> collect() {
         return Collector.of(QueryExpressionCollector::new,
                 QueryExpressionCollector::add,
-                QueryExpressionCollector::merge,
-                QueryExpressionCollector::toBuilder);
+                QueryExpressionCollector::merge);
     }
 }

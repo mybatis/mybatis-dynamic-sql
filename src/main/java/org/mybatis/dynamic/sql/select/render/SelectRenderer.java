@@ -38,10 +38,13 @@ public class SelectRenderer {
     }
     
     public SelectSupport render() {
-        // TODO - this looks odd.  Consider breaking the toBuilder method out of the collector
-        return selectModel
+        QueryExpressionCollector collector = selectModel
                 .mapQueryExpressions(this::renderQueryExpression)
-                .collect(QueryExpressionCollector.collect())
+                .collect(QueryExpressionCollector.collect());
+        
+        return new SelectSupport.Builder()
+                .withQueryExpression(collector.queryExpression())
+                .withParameters(collector.parameters())
                 .withOrderByClause(selectModel.orderByModel().map(this::renderOrderBy))
                 .build();
     }

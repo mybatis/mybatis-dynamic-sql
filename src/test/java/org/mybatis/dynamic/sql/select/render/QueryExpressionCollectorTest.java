@@ -17,7 +17,9 @@ package org.mybatis.dynamic.sql.select.render;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,7 +32,8 @@ public class QueryExpressionCollectorTest {
 
     @Test
     public void testQueryExpressionCollectorMerge() {
-        QueryExpressionCollector fc1 = new QueryExpressionCollector();
+        List<RenderedQueryExpression> queryExpressions = new ArrayList<>();
+        
         Map<String, Object> parms1 = new HashMap<>();
         parms1.put("p1", 1);
         RenderedQueryExpression fp1 = new RenderedQueryExpression.Builder()
@@ -39,9 +42,8 @@ public class QueryExpressionCollectorTest {
                 .withTableName("bar")
                 .withParameters(parms1)
                 .build();
-        fc1.add(fp1);
+        queryExpressions.add(fp1);
 
-        QueryExpressionCollector fc2 = new QueryExpressionCollector();
         Map<String, Object> parms2 = new HashMap<>();
         parms2.put("p2", 2);
         RenderedQueryExpression fp2 = new RenderedQueryExpression.Builder()
@@ -50,16 +52,15 @@ public class QueryExpressionCollectorTest {
                 .withTableName("foo")
                 .withParameters(parms2)
                 .build();
-        fc2.add(fp2);
+        queryExpressions.add(fp2);
 
-        fc1 = fc1.merge(fc2);
-        
-        assertThat(fc1.queryExpressions.size()).isEqualTo(2);
-        assertThat(fc1.queryExpressions.get(0)).isEqualTo("select foo from bar");
-        assertThat(fc1.queryExpressions.get(1)).isEqualTo("union select bar from foo");
+        // parallelStream should trigger the merge
+        QueryExpressionCollector collector = queryExpressions.parallelStream()
+                .collect(QueryExpressionCollector.collect());
 
-        assertThat(fc1.parameters.size()).isEqualTo(2);
-        assertThat(fc1.parameters.get("p1")).isEqualTo(1);
-        assertThat(fc1.parameters.get("p2")).isEqualTo(2);
+        assertThat(collector.queryExpression()).isEqualTo("select foo from bar union select bar from foo");
+        assertThat(collector.parameters().size()).isEqualTo(2);
+        assertThat(collector.parameters().get("p1")).isEqualTo(1);
+        assertThat(collector.parameters().get("p2")).isEqualTo(2);
     }
 }
