@@ -42,7 +42,11 @@ public class DeleteModel {
     }
     
     public DeleteSupport render(RenderingStrategy renderingStrategy) {
-        return DeleteRenderer.of(this).render(renderingStrategy);
+        return new DeleteRenderer.Builder()
+                .withDeleteModer(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
     
     public static class Builder {

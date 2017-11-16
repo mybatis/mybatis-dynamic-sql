@@ -44,7 +44,11 @@ public class SelectModel {
     }
     
     public SelectSupport render(RenderingStrategy renderingStrategy) {
-        return SelectRenderer.of(this).render(renderingStrategy);
+        return new SelectRenderer.Builder()
+                .withSelectModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
     
     public static class Builder {

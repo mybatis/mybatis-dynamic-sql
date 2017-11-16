@@ -18,12 +18,14 @@ package org.mybatis.dynamic.sql.select.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
+import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class RenderedQueryExpression extends AbstractSqlSupport {
     
@@ -39,11 +41,11 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
         super(builder.tableName);
         connector = Objects.requireNonNull(builder.connector);
         columnList = Objects.requireNonNull(builder.columnList);
-        whereClause = Optional.ofNullable(builder.whereClause);
+        whereClause = Objects.requireNonNull(builder.whereClause);
         parameters = Objects.requireNonNull(builder.parameters);
         isDistinct = builder.isDistinct;
-        joinClause = Optional.ofNullable(builder.joinClause);
-        groupByClause = Optional.ofNullable(builder.groupByClause);
+        joinClause = Objects.requireNonNull(builder.joinClause);
+        groupByClause = Objects.requireNonNull(builder.groupByClause);
     }
     
     public Map<String, Object> parameters() {
@@ -66,11 +68,11 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
         private Optional<String> connector;
         private String tableName;
         private boolean isDistinct;
-        private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
-        private String joinClause;
-        private String groupByClause;
+        private Optional<String> joinClause = Optional.empty();
+        private Optional<String> whereClause = Optional.empty();
+        private Optional<String> groupByClause = Optional.empty();
         
         public Builder withConnector(Optional<String> connector) {
             this.connector = connector;
@@ -87,8 +89,9 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withWhereClause(String whereClause) {
-            this.whereClause = whereClause;
+        public Builder withWhereSupport(Optional<WhereSupport> whereSupport) {
+            whereClause = whereSupport.map(WhereSupport::getWhereClause);
+            parameters.putAll(whereSupport.map(WhereSupport::getParameters).orElse(Collections.emptyMap()));
             return this;
         }
         
@@ -102,12 +105,12 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withJoinClause(String joinClause) {
+        public Builder withJoinClause(Optional<String> joinClause) {
             this.joinClause = joinClause;
             return this;
         }
         
-        public Builder withGroupByClause(String groupByClause) {
+        public Builder withGroupByClause(Optional<String> groupByClause) {
             this.groupByClause = groupByClause;
             return this;
         }

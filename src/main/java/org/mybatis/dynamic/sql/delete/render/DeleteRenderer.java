@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -28,38 +27,46 @@ import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class DeleteRenderer {
     private DeleteModel deleteModel;
+    private RenderingStrategy renderingStrategy;
     
-    private DeleteRenderer(DeleteModel deleteModel) {
-        this.deleteModel = Objects.requireNonNull(deleteModel);
+    private DeleteRenderer(Builder builder) {
+        deleteModel = Objects.requireNonNull(builder.deleteModel);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public DeleteSupport render(RenderingStrategy renderingStrategy) {
-        DeleteSupport.Builder builder = new DeleteSupport.Builder()
-                .withTableName(deleteModel.table().name());
-        
-        deleteModel.whereModel().ifPresent(applyWhere(builder, renderingStrategy));
-        
-        return builder.build();
+    public DeleteSupport render() {
+        return new DeleteSupport.Builder()
+                .withTableName(deleteModel.table().name())
+                .withWhereSupport(deleteModel.whereModel().map(this::renderWhereModel))
+                .build();
     }
     
-    private Consumer<WhereModel> applyWhere(DeleteSupport.Builder builder, RenderingStrategy renderingStrategy) {
-        return whereModel -> applyWhere(builder, renderingStrategy, whereModel);
-    }
-    
-    private void applyWhere(DeleteSupport.Builder builder, RenderingStrategy renderingStrategy, WhereModel whereModel) {
-        WhereSupport whereSupport = new WhereRenderer.Builder()
+    private WhereSupport renderWhereModel(WhereModel whereModel) {
+        return new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
                 .render();
-        
-        builder.withWhereClause(whereSupport.getWhereClause());
-        builder.withParameters(whereSupport.getParameters());
     }
     
-    public static DeleteRenderer of(DeleteModel deleteModel) {
-        return new DeleteRenderer(deleteModel);
+    public static class Builder {
+        private DeleteModel deleteModel;
+        private RenderingStrategy renderingStrategy;
+
+        public Builder withDeleteModer(DeleteModel deleteModel) {
+            this.deleteModel = deleteModel;
+            return this;
+        }
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+        
+        public DeleteRenderer build() {
+            return new DeleteRenderer(this);
+        }
     }
 }

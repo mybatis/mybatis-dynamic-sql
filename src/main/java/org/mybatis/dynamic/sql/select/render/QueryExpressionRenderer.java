@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SelectListItem;
@@ -33,23 +32,25 @@ import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class QueryExpressionRenderer {
     private QueryExpression queryExpression;
+    private RenderingStrategy renderingStrategy;
+    private AtomicInteger sequence;
     
-    private QueryExpressionRenderer(QueryExpression queryExpression) {
-        this.queryExpression = Objects.requireNonNull(queryExpression);
+    private QueryExpressionRenderer(Builder builder) {
+        queryExpression = Objects.requireNonNull(builder.queryExpression);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        sequence = Objects.requireNonNull(builder.sequence);
     }
     
-    public RenderedQueryExpression render(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
-        RenderedQueryExpression.Builder builder = new RenderedQueryExpression.Builder()
+    public RenderedQueryExpression render() {
+        return new RenderedQueryExpression.Builder()
                 .withConnector(queryExpression.connector())
                 .isDistinct(queryExpression.isDistinct())
                 .withColumnList(calculateColumnList())
-                .withTableName(calculateTableName(queryExpression.table()));
-        
-        queryExpression.joinModel().ifPresent(applyJoin(builder));
-        queryExpression.whereModel().ifPresent(applyWhere(builder, renderingStrategy, sequence));
-        queryExpression.groupByModel().ifPresent(applyGroupBy(builder));
-        
-        return builder.build();
+                .withTableName(calculateTableName(queryExpression.table()))
+                .withJoinClause(queryExpression.joinModel().map(this::renderJoin))
+                .withWhereSupport(queryExpression.whereModel().map(this::renderWhere))
+                .withGroupByClause(queryExpression.groupByModel().map(this::renderGroupBy))
+                .build();
     }
 
     private String calculateColumnList() {
@@ -65,56 +66,55 @@ public class QueryExpressionRenderer {
         return selectListItem.applyTableAndColumnAliasToName(queryExpression.tableAliasCalculator());
     }
     
-    private Consumer<JoinModel> applyJoin(RenderedQueryExpression.Builder builder) {
-        return joinModel -> applyJoin(builder, joinModel);
-    }
-    
-    private void applyJoin(RenderedQueryExpression.Builder builder, JoinModel joinModel) {
-        String joinClause = new JoinRenderer.Builder()
+    private String renderJoin(JoinModel joinModel) {
+        return new JoinRenderer.Builder()
                 .withJoinModel(joinModel)
                 .withQueryExpression(queryExpression)
                 .build()
                 .render();
-        
-        builder.withJoinClause(joinClause);
     }
     
-    private Consumer<WhereModel> applyWhere(RenderedQueryExpression.Builder builder,
-            RenderingStrategy renderingStrategy, AtomicInteger sequence) {
-        return whereModel -> applyWhere(builder, renderingStrategy, sequence, whereModel);
-    }
-    
-    private void applyWhere(RenderedQueryExpression.Builder builder, RenderingStrategy renderingStrategy,
-            AtomicInteger sequence, WhereModel whereModel) {
-        WhereSupport whereSupport = new WhereRenderer.Builder()
+    private WhereSupport renderWhere(WhereModel whereModel) {
+        return new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(queryExpression.tableAliasCalculator())
                 .withSequence(sequence)
                 .build()
                 .render();
-        
-        builder.withWhereClause(whereSupport.getWhereClause());
-        builder.withParameters(whereSupport.getParameters());
     }
-    
-    private Consumer<GroupByModel> applyGroupBy(RenderedQueryExpression.Builder builder) {
-        return groupByModel -> applyGroupBy(builder, groupByModel);
-    }
-    
-    private void applyGroupBy(RenderedQueryExpression.Builder builder, GroupByModel groupByModel) {
-        String groupByClause = groupByModel.mapColumns(this::applyTableAlias)
+
+    private String renderGroupBy(GroupByModel groupByModel) {
+        return groupByModel.mapColumns(this::applyTableAlias)
                 .collect(CustomCollectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
-        builder.withGroupByClause(groupByClause);
-        
     }
     
     private String applyTableAlias(SelectListItem column) {
         return column.applyTableAliasToName(queryExpression.tableAliasCalculator());
     }
     
-    public static QueryExpressionRenderer of(QueryExpression queryExpression) {
-        return new QueryExpressionRenderer(queryExpression);
+    public static class Builder {
+        private QueryExpression queryExpression;
+        private RenderingStrategy renderingStrategy;
+        private AtomicInteger sequence;
+        
+        public Builder withQueryExpression(QueryExpression queryExpression) {
+            this.queryExpression = queryExpression;
+            return this;
+        }
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+        
+        public Builder withSequence(AtomicInteger sequence) {
+            this.sequence = sequence;
+            return this;
+        }
+        
+        public QueryExpressionRenderer build() {
+            return new QueryExpressionRenderer(this);
+        }
     }
 }

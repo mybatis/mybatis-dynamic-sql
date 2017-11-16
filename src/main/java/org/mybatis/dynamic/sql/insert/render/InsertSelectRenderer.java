@@ -28,12 +28,14 @@ import org.mybatis.dynamic.sql.select.render.SelectSupport;
 public class InsertSelectRenderer {
 
     private InsertSelectModel model;
+    private RenderingStrategy renderingStrategy;
     
-    private InsertSelectRenderer(InsertSelectModel model) {
-        this.model = Objects.requireNonNull(model);
+    private InsertSelectRenderer(Builder builder) {
+        model = Objects.requireNonNull(builder.model);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public InsertSelectSupport render(RenderingStrategy renderingStrategy) {
+    public InsertSelectSupport render() {
         SelectSupport selectSupport = model.selectModel().render(renderingStrategy);
         
         return new InsertSelectSupport.Builder()
@@ -53,7 +55,22 @@ public class InsertSelectRenderer {
         return ss.collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    public static InsertSelectRenderer of(InsertSelectModel model) {
-        return new InsertSelectRenderer(model);
+    public static class Builder {
+        private InsertSelectModel model;
+        private RenderingStrategy renderingStrategy;
+        
+        public Builder withInsertSelectModel(InsertSelectModel model) {
+            this.model = model;
+            return this;
+        }
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+        
+        public InsertSelectRenderer build() {
+            return new InsertSelectRenderer(this);
+        }
     }
 }

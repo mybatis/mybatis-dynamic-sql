@@ -41,10 +41,10 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private TableAliasCalculator tableAliasCalculator;
     
     private WhereConditionVisitor(Builder<T> builder) {
-        this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        this.sequence = Objects.requireNonNull(builder.sequence);
-        this.column = Objects.requireNonNull(builder.column);
-        this.tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        sequence = Objects.requireNonNull(builder.sequence);
+        column = Objects.requireNonNull(builder.column);
+        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
     }
 
     @Override
@@ -95,7 +95,12 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
-        SelectSupport ss = SelectRenderer.of(condition.selectModel()).render(renderingStrategy, sequence);
+        SelectSupport ss = new SelectRenderer.Builder()
+                .withSelectModel(condition.selectModel())
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(sequence)
+                .build()
+                .render();
         
         return new FragmentAndParameters.Builder()
                 .withFragment(condition.renderCondition(columnName(), ss.getFullSelectStatement()))

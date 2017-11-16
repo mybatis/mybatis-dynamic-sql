@@ -25,12 +25,14 @@ import org.mybatis.dynamic.sql.util.InsertMapping;
 public class InsertRenderer<T> {
 
     private InsertModel<T> model;
+    private RenderingStrategy renderingStrategy;
     
-    private InsertRenderer(InsertModel<T> model) {
-        this.model = Objects.requireNonNull(model);
+    private InsertRenderer(Builder<T> builder) {
+        model = Objects.requireNonNull(builder.model);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public InsertSupport<T> render(RenderingStrategy renderingStrategy) {
+    public InsertSupport<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
@@ -50,7 +52,22 @@ public class InsertRenderer<T> {
         return insertMapping.accept(visitor);
     }
     
-    public static <T> InsertRenderer<T> of(InsertModel<T> model) {
-        return new InsertRenderer<>(model);
+    public static class Builder<T> {
+        private InsertModel<T> model;
+        private RenderingStrategy renderingStrategy;
+        
+        public Builder<T> withInsertModel(InsertModel<T> model) {
+            this.model = model;
+            return this;
+        }
+        
+        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+        
+        public InsertRenderer<T> build() {
+            return new InsertRenderer<>(this);
+        }
     }
 }

@@ -53,7 +53,11 @@ public class UpdateModel {
     }
     
     public UpdateSupport render(RenderingStrategy renderingStrategy) {
-        return UpdateRenderer.of(this).render(renderingStrategy);
+        return new UpdateRenderer.Builder()
+                .withUpdateModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
     
     public static class Builder {

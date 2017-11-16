@@ -31,7 +31,7 @@ public class SelectSupport {
     
     private SelectSupport(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
-        orderByClause = Optional.ofNullable(builder.orderByClause);
+        orderByClause = Objects.requireNonNull(builder.orderByClause);
         parameters = Collections.unmodifiableMap(Objects.requireNonNull(builder.parameters));
     }
     
@@ -45,7 +45,7 @@ public class SelectSupport {
     
     public static class Builder {
         private String queryExpression;
-        private String orderByClause;
+        private Optional<String> orderByClause = Optional.empty();
         private Map<String, Object> parameters = new HashMap<>();
         
         public Builder withQueryExpression(String queryExpression) {
@@ -53,7 +53,7 @@ public class SelectSupport {
             return this;
         }
         
-        public Builder withOrderByClause(String orderByClause) {
+        public Builder withOrderByClause(Optional<String> orderByClause) {
             this.orderByClause = orderByClause;
             return this;
         }

@@ -52,7 +52,11 @@ public class InsertBatchModel<T> {
     }
     
     public InsertBatchSupport<T> render(RenderingStrategy renderingStrategy) {
-        return InsertBatchRenderer.of(this).render(renderingStrategy);
+        return new InsertBatchRenderer.Builder<T>()
+                .withInsertBatchModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
     
     public static class Builder<T> {

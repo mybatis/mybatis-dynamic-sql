@@ -15,8 +15,8 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,25 +32,25 @@ import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class UpdateRenderer {
     private UpdateModel updateModel;
+    private RenderingStrategy renderingStrategy;
     
-    private UpdateRenderer(UpdateModel updateModel) {
-        this.updateModel = updateModel;
+    private UpdateRenderer(Builder builder) {
+        updateModel = Objects.requireNonNull(builder.updateModel);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public UpdateSupport render(RenderingStrategy renderingStrategy) {
+    public UpdateSupport render() {
         SetPhraseVisitor visitor = new SetPhraseVisitor(renderingStrategy);
 
         FragmentCollector fc = updateModel.mapColumnValues(toFragmentAndParameters(visitor))
                 .collect(FragmentCollector.collect());
         
-        UpdateSupport.Builder builder = new UpdateSupport.Builder()
+        return new UpdateSupport.Builder()
                 .withTableName(updateModel.table().name())
                 .withSetClause(calculateSetPhrase(fc))
-                .withParameters(fc.parameters());
-        
-        updateModel.whereModel().ifPresent(applyWhere(builder, renderingStrategy));
-        
-        return builder.build();
+                .withParameters(fc.parameters())
+                .withWhereSupport(updateModel.whereModel().map(this::renderWhereModel))
+                .build();
     }
 
     private String calculateSetPhrase(FragmentCollector collector) {
@@ -58,23 +58,16 @@ public class UpdateRenderer {
                 .collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    private Consumer<WhereModel> applyWhere(UpdateSupport.Builder builder, RenderingStrategy renderingStrategy) {
-        return whereModel -> applyWhere(builder, renderingStrategy, whereModel); 
-    }
-    
-    private void applyWhere(UpdateSupport.Builder builder, RenderingStrategy renderingStrategy, WhereModel whereModel) {
-        WhereSupport whereSupport = new WhereRenderer.Builder()
+    private WhereSupport renderWhereModel(WhereModel whereModel) {
+        return new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
                 .render();
-        
-        builder.withWhereClause(whereSupport.getWhereClause());
-        builder.withParameters(whereSupport.getParameters());
     }
-    
+
     private Function<UpdateMapping, FragmentAndParameters> toFragmentAndParameters(SetPhraseVisitor visitor) {
         return updateMapping -> toFragmentAndParameters(visitor, updateMapping);
     }
@@ -83,7 +76,22 @@ public class UpdateRenderer {
         return updateMapping.accept(visitor);
     }
     
-    public static UpdateRenderer of(UpdateModel updateModel) {
-        return new UpdateRenderer(updateModel);
+    public static class Builder {
+        private UpdateModel updateModel;
+        private RenderingStrategy renderingStrategy;
+
+        public Builder withUpdateModel(UpdateModel updateModel) {
+            this.updateModel = updateModel;
+            return this;
+        }
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+        
+        public UpdateRenderer build() {
+            return new UpdateRenderer(this);
+        }
     }
 }

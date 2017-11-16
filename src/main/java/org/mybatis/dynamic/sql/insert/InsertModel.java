@@ -51,7 +51,11 @@ public class InsertModel<T> {
     }
     
     public InsertSupport<T> render(RenderingStrategy renderingStrategy) {
-        return InsertRenderer.of(this).render(renderingStrategy);
+        return new InsertRenderer.Builder<T>()
+                .withInsertModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
     
     public static class Builder<T> {

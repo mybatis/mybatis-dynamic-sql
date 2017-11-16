@@ -52,7 +52,11 @@ public class InsertSelectModel {
     }
     
     public InsertSelectSupport render(RenderingStrategy renderingStrategy) {
-        return InsertSelectRenderer.of(this).render(renderingStrategy);
+        return new InsertSelectRenderer.Builder()
+                .withInsertSelectModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
     
     public static class Builder {

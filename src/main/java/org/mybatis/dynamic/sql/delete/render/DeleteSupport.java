@@ -17,21 +17,22 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
+import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class DeleteSupport extends AbstractSqlSupport {
-
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
     
     private DeleteSupport(Builder builder) {
         super(builder.tableName);
-        whereClause = Optional.ofNullable(builder.whereClause);
+        whereClause = Objects.requireNonNull(builder.whereClause);
         parameters = Objects.requireNonNull(builder.parameters);
     }
     
@@ -47,7 +48,7 @@ public class DeleteSupport extends AbstractSqlSupport {
 
     public static class Builder {
         private String tableName;
-        private String whereClause;
+        private Optional<String> whereClause = Optional.empty();
         private Map<String, Object> parameters = new HashMap<>();
         
         public Builder withTableName(String tableName) {
@@ -55,13 +56,9 @@ public class DeleteSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withWhereClause(String whereClause) {
-            this.whereClause = whereClause;
-            return this;
-        }
-        
-        public Builder withParameters(Map<String, Object> parameters) {
-            this.parameters.putAll(parameters);
+        public Builder withWhereSupport(Optional<WhereSupport> whereSupport) {
+            whereClause = whereSupport.map(WhereSupport::getWhereClause);
+            parameters.putAll(whereSupport.map(WhereSupport::getParameters).orElse(Collections.emptyMap()));
             return this;
         }
         

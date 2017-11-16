@@ -16,9 +16,8 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -29,45 +28,36 @@ import org.mybatis.dynamic.sql.util.CustomCollectors;
 
 public class SelectRenderer {
     private SelectModel selectModel;
+    private RenderingStrategy renderingStrategy;
+    private AtomicInteger sequence;
     
-    private SelectRenderer(SelectModel selectModel) {
-        this.selectModel = Objects.requireNonNull(selectModel);
+    private SelectRenderer(Builder builder) {
+        selectModel = Objects.requireNonNull(builder.selectModel);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        sequence = builder.sequence.orElse(new AtomicInteger(1));
     }
     
-    public SelectSupport render(RenderingStrategy renderingStrategy) {
-        return render(renderingStrategy, new AtomicInteger(1));
-    }
-    
-    public SelectSupport render(RenderingStrategy renderingStrategy, AtomicInteger sequence) {
-        SelectSupport.Builder builder = selectModel
-                .mapQueryExpressions(renderQueryExpression(renderingStrategy, sequence))
-                .collect(QueryExpressionCollector.collect());
-        
-        selectModel.orderByModel().ifPresent(applyOrderBy(builder));
-        
-        return builder.build();
+    public SelectSupport render() {
+        // TODO - this looks odd.  Consider breaking the toBuilder method out of the collector
+        return selectModel
+                .mapQueryExpressions(this::renderQueryExpression)
+                .collect(QueryExpressionCollector.collect())
+                .withOrderByClause(selectModel.orderByModel().map(this::renderOrderBy))
+                .build();
     }
 
-    private Function<QueryExpression, RenderedQueryExpression> renderQueryExpression(
-            RenderingStrategy renderingStrategy, AtomicInteger sequence) {
-        return queryExpression -> renderQueryExpression(renderingStrategy, sequence, queryExpression);
-    }
-    
-    private RenderedQueryExpression renderQueryExpression(RenderingStrategy renderingStrategy, AtomicInteger sequence,
-            QueryExpression queryExpression) {
-        return QueryExpressionRenderer.of(queryExpression)
-                .render(renderingStrategy, sequence);
+    private RenderedQueryExpression renderQueryExpression(QueryExpression queryExpression) {
+        return new QueryExpressionRenderer.Builder()
+                .withQueryExpression(queryExpression)
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(sequence)
+                .build()
+                .render();
     }
 
-    private Consumer<OrderByModel> applyOrderBy(SelectSupport.Builder builder) {
-        return orderByModel -> applyOrderBy(builder, orderByModel);
-    }
-    
-    private void applyOrderBy(SelectSupport.Builder builder, OrderByModel orderByModel) {
-        String orderByClause = orderByModel.mapColumns(this::orderByPhrase)
+    private String renderOrderBy(OrderByModel orderByModel) {
+        return orderByModel.mapColumns(this::orderByPhrase)
                 .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
-        builder.withOrderByClause(orderByClause);
     }
     
     private String orderByPhrase(SqlColumn<?> column) {
@@ -78,7 +68,28 @@ public class SelectRenderer {
         return phrase;
     }
     
-    public static SelectRenderer of(SelectModel selectModel) {
-        return new SelectRenderer(selectModel);
+    public static class Builder {
+        private SelectModel selectModel;
+        private RenderingStrategy renderingStrategy;
+        private Optional<AtomicInteger> sequence = Optional.empty();
+        
+        public Builder withSelectModel(SelectModel selectModel) {
+            this.selectModel = selectModel;
+            return this;
+        }
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+        
+        public Builder withSequence(AtomicInteger sequence) {
+            this.sequence = Optional.of(sequence);
+            return this;
+        }
+        
+        public SelectRenderer build() {
+            return new SelectRenderer(this);
+        }
     }
 }

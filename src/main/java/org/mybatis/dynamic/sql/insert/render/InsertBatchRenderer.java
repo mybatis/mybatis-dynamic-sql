@@ -25,12 +25,14 @@ import org.mybatis.dynamic.sql.util.InsertMapping;
 public class InsertBatchRenderer<T> {
 
     private InsertBatchModel<T> model;
+    private RenderingStrategy renderingStrategy;
     
-    private InsertBatchRenderer(InsertBatchModel<T> model) {
-        this.model = Objects.requireNonNull(model);
+    private InsertBatchRenderer(Builder<T> builder) {
+        model = Objects.requireNonNull(builder.model);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public InsertBatchSupport<T> render(RenderingStrategy renderingStrategy) {
+    public InsertBatchSupport<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
@@ -41,7 +43,7 @@ public class InsertBatchRenderer<T> {
                 .withRecords(model.records())
                 .build();
     }
-
+    
     private Function<InsertMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
@@ -50,7 +52,22 @@ public class InsertBatchRenderer<T> {
         return insertMapping.accept(visitor);
     }
     
-    public static <T> InsertBatchRenderer<T> of(InsertBatchModel<T> model) {
-        return new InsertBatchRenderer<>(model);
+    public static class Builder<T> {
+        private InsertBatchModel<T> model;
+        private RenderingStrategy renderingStrategy;
+        
+        public Builder<T> withInsertBatchModel(InsertBatchModel<T> model) {
+            this.model = model;
+            return this;
+        }
+        
+        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+        
+        public InsertBatchRenderer<T> build() {
+            return new InsertBatchRenderer<>(this);
+        }
     }
 }
