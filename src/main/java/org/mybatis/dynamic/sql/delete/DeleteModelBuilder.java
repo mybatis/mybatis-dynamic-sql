@@ -50,7 +50,7 @@ public class DeleteModelBuilder {
                 .build();
     }
     
-    public static DeleteModelBuilder of(SqlTable table) {
+    public static DeleteModelBuilder deleteFrom(SqlTable table) {
         return new DeleteModelBuilder(table);
     }
     

@@ -68,7 +68,7 @@ public interface SqlBuilder {
 
     // statements
     static DeleteModelBuilder deleteFrom(SqlTable table) {
-        return DeleteModelBuilder.of(table);
+        return DeleteModelBuilder.deleteFrom(table);
     }
 
     static <T> InsertModelBuilder.IntoGatherer<T> insert(T record) {
