@@ -55,7 +55,7 @@ public class DeleteRenderer {
         private DeleteModel deleteModel;
         private RenderingStrategy renderingStrategy;
 
-        public Builder withDeleteModer(DeleteModel deleteModel) {
+        public Builder withDeleteModel(DeleteModel deleteModel) {
             this.deleteModel = deleteModel;
             return this;
         }

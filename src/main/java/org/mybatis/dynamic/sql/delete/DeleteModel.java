@@ -43,7 +43,7 @@ public class DeleteModel {
     
     public DeleteSupport render(RenderingStrategy renderingStrategy) {
         return new DeleteRenderer.Builder()
-                .withDeleteModer(this)
+                .withDeleteModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
