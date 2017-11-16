@@ -25,9 +25,9 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.QueryExpressionBuilder.QueryExpressionAfterFromBuilder;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFromBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
-import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
+import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public final class SimpleTableDynamicSqlSupport {
@@ -102,7 +102,7 @@ public final class SimpleTableDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
 
-    public static UpdateModelBuilder updateByExample(SimpleTableRecord record) {
+    public static UpdateDSL updateByExample(SimpleTableRecord record) {
         return update(simpleTable)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
@@ -112,7 +112,7 @@ public final class SimpleTableDynamicSqlSupport {
                 .set(occupation).equalTo(record.getOccupation());
     }
 
-    public static UpdateModelBuilder updateByExampleSelective(SimpleTableRecord record) {
+    public static UpdateDSL updateByExampleSelective(SimpleTableRecord record) {
         return update(simpleTable)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())

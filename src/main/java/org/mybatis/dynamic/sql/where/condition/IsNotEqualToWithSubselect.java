@@ -16,8 +16,8 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import org.mybatis.dynamic.sql.AbstractSubselectCondition;
-import org.mybatis.dynamic.sql.select.Buildable;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.util.Buildable;
 
 public class IsNotEqualToWithSubselect<T> extends AbstractSubselectCondition<T> {
     

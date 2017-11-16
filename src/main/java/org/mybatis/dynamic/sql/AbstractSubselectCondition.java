@@ -15,8 +15,8 @@
  */
 package org.mybatis.dynamic.sql;
 
-import org.mybatis.dynamic.sql.select.Buildable;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.util.Buildable;
 
 public abstract class AbstractSubselectCondition<T> implements VisitableCondition<T> {
     private SelectModel selectModel;

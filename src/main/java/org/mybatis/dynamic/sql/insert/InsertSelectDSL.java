@@ -21,22 +21,22 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.select.Buildable;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.util.Buildable;
 
-public class InsertSelectModelBuilder {
+public class InsertSelectDSL {
 
     private SqlTable table;
     private Optional<List<SqlColumn<?>>> columns;
     private SelectModel selectModel;
     
-    private InsertSelectModelBuilder(SqlTable table, List<SqlColumn<?>> columns, SelectModel selectModel) {
+    private InsertSelectDSL(SqlTable table, List<SqlColumn<?>> columns, SelectModel selectModel) {
         this.table = table;
         this.columns = Optional.of(columns);
         this.selectModel = selectModel;
     }
     
-    private InsertSelectModelBuilder(SqlTable table, SelectModel selectModel) {
+    private InsertSelectDSL(SqlTable table, SelectModel selectModel) {
         this.table = table;
         this.columns = Optional.empty();
         this.selectModel = selectModel;
@@ -65,8 +65,8 @@ public class InsertSelectModelBuilder {
             return new SelectGatherer(table, Arrays.asList(columns));
         }
 
-        public InsertSelectModelBuilder withSelectStatement(Buildable<SelectModel> selectModelBuilder) {
-            return new InsertSelectModelBuilder(table, selectModelBuilder.build());
+        public InsertSelectDSL withSelectStatement(Buildable<SelectModel> selectModelBuilder) {
+            return new InsertSelectDSL(table, selectModelBuilder.build());
         }
     }
     
@@ -79,8 +79,8 @@ public class InsertSelectModelBuilder {
             this.columns = columns;
         }
         
-        public InsertSelectModelBuilder withSelectStatement(Buildable<SelectModel> selectModelBuilder) {
-            return new InsertSelectModelBuilder(table, columns, selectModelBuilder.build());
+        public InsertSelectDSL withSelectStatement(Buildable<SelectModel> selectModelBuilder) {
+            return new InsertSelectDSL(table, columns, selectModelBuilder.build());
         }
     }
 }

@@ -28,14 +28,14 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
-import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
+import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
-public class UpdateModelBuilder {
+public class UpdateDSL {
 
     private List<UpdateMapping> columnsAndValues = new ArrayList<>();
     private SqlTable table;
     
-    private UpdateModelBuilder(SqlTable table) {
+    private UpdateDSL(SqlTable table) {
         this.table = Objects.requireNonNull(table);
     }
     
@@ -64,8 +64,8 @@ public class UpdateModelBuilder {
                 .build();
     }
     
-    public static UpdateModelBuilder update(SqlTable table) {
-        return new UpdateModelBuilder(table);
+    public static UpdateDSL update(SqlTable table) {
+        return new UpdateDSL(table);
     }
     
     public class UpdateSupportBuilderFinisher<T> {
@@ -76,35 +76,35 @@ public class UpdateModelBuilder {
             this.column = column;
         }
         
-        public UpdateModelBuilder equalToNull() {
+        public UpdateDSL equalToNull() {
             columnsAndValues.add(NullMapping.of(column));
-            return UpdateModelBuilder.this;
+            return UpdateDSL.this;
         }
 
-        public UpdateModelBuilder equalToConstant(String constant) {
+        public UpdateDSL equalToConstant(String constant) {
             columnsAndValues.add(ConstantMapping.of(column, constant));
-            return UpdateModelBuilder.this;
+            return UpdateDSL.this;
         }
         
-        public UpdateModelBuilder equalToStringConstant(String constant) {
+        public UpdateDSL equalToStringConstant(String constant) {
             columnsAndValues.add(StringConstantMapping.of(column, constant));
-            return UpdateModelBuilder.this;
+            return UpdateDSL.this;
         }
         
-        public UpdateModelBuilder equalTo(T value) {
+        public UpdateDSL equalTo(T value) {
             columnsAndValues.add(ValueMapping.of(column, value));
-            return UpdateModelBuilder.this;
+            return UpdateDSL.this;
         }
 
-        public UpdateModelBuilder equalToWhenPresent(T value) {
+        public UpdateDSL equalToWhenPresent(T value) {
             if (value != null) {
                 columnsAndValues.add(ValueMapping.of(column, value));
             }
-            return UpdateModelBuilder.this;
+            return UpdateDSL.this;
         }
     }
 
-    public class UpdateSupportWhereBuilder extends AbstractWhereModelBuilder<UpdateSupportWhereBuilder> {
+    public class UpdateSupportWhereBuilder extends AbstractWhereDSL<UpdateSupportWhereBuilder> {
         
         public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);

@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.SelectListItem;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.GroupByModel;
-import org.mybatis.dynamic.sql.select.QueryExpression;
+import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -31,7 +31,7 @@ import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class QueryExpressionRenderer {
-    private QueryExpression queryExpression;
+    private QueryExpressionModel queryExpression;
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
     
@@ -41,8 +41,8 @@ public class QueryExpressionRenderer {
         sequence = Objects.requireNonNull(builder.sequence);
     }
     
-    public RenderedQueryExpression render() {
-        return new RenderedQueryExpression.Builder()
+    public QueryExpressionSupport render() {
+        return new QueryExpressionSupport.Builder()
                 .withConnector(queryExpression.connector())
                 .isDistinct(queryExpression.isDistinct())
                 .withColumnList(calculateColumnList())
@@ -94,11 +94,11 @@ public class QueryExpressionRenderer {
     }
     
     public static class Builder {
-        private QueryExpression queryExpression;
+        private QueryExpressionModel queryExpression;
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         
-        public Builder withQueryExpression(QueryExpression queryExpression) {
+        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpression = queryExpression;
             return this;
         }

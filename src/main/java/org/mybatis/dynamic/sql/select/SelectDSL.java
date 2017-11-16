@@ -20,41 +20,41 @@ import java.util.List;
 
 import org.mybatis.dynamic.sql.SelectListItem;
 
-public class SelectModelBuilder {
+public class SelectDSL {
 
-    private List<QueryExpression> queryExpressions = new ArrayList<>();    
+    private List<QueryExpressionModel> queryExpressions = new ArrayList<>();    
     private OrderByModel orderByModel;
     
-    private SelectModelBuilder() {
+    private SelectDSL() {
         super();
     }
 
-    private QueryExpressionBuilder queryExpressionBuilder(SelectListItem...selectList) {
-        return new QueryExpressionBuilder.Builder()
+    private QueryExpressionDSL queryExpressionBuilder(SelectListItem...selectList) {
+        return new QueryExpressionDSL.Builder()
                 .withSelectList(selectList)
                 .withSelectModelBuilder(this)
                 .build();
     }
     
-    private QueryExpressionBuilder distinctQueryExpressionBuilder(SelectListItem...selectList) {
-        return new QueryExpressionBuilder.Builder()
+    private QueryExpressionDSL distinctQueryExpressionBuilder(SelectListItem...selectList) {
+        return new QueryExpressionDSL.Builder()
                 .withSelectList(selectList)
                 .isDistinct()
                 .withSelectModelBuilder(this)
                 .build();
     }
     
-    public static QueryExpressionBuilder select(SelectListItem...selectList) {
-        SelectModelBuilder selectModelBuilder = new SelectModelBuilder();
+    public static QueryExpressionDSL select(SelectListItem...selectList) {
+        SelectDSL selectModelBuilder = new SelectDSL();
         return selectModelBuilder.queryExpressionBuilder(selectList);
     }
     
-    public static QueryExpressionBuilder selectDistinct(SelectListItem...selectList) {
-        SelectModelBuilder selectModelBuilder = new SelectModelBuilder();
+    public static QueryExpressionDSL selectDistinct(SelectListItem...selectList) {
+        SelectDSL selectModelBuilder = new SelectDSL();
         return selectModelBuilder.distinctQueryExpressionBuilder(selectList);
     }
     
-    void addQueryExpression(QueryExpression queryExpression) {
+    void addQueryExpression(QueryExpressionModel queryExpression) {
         queryExpressions.add(queryExpression);
     }
     

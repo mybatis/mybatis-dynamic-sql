@@ -23,10 +23,10 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
-public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuilder<T>> {
+public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();
     
-    protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, VisitableCondition<S> condition) {
+    protected <S> AbstractWhereDSL(SqlColumn<S> column, VisitableCondition<S> condition) {
         SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
                 .withColumn(column)
                 .withCondition(condition)
@@ -34,7 +34,7 @@ public abstract class AbstractWhereModelBuilder<T extends AbstractWhereModelBuil
         criteria.add(criterion);
     }
     
-    protected <S> AbstractWhereModelBuilder(SqlColumn<S> column, VisitableCondition<S> condition,
+    protected <S> AbstractWhereDSL(SqlColumn<S> column, VisitableCondition<S> condition,
             SqlCriterion<?>...subCriteria) {
         SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
                 .withColumn(column)

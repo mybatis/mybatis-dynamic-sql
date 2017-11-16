@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class QueryExpression {
+public class QueryExpressionModel {
     private Optional<String> connector;
     private boolean isDistinct;
     private List<SelectListItem> selectList;
@@ -43,7 +43,7 @@ public class QueryExpression {
     private Optional<WhereModel> whereModel;
     private Optional<GroupByModel> groupByModel;
 
-    private QueryExpression(Builder builder) {
+    private QueryExpressionModel(Builder builder) {
         this.connector = Optional.ofNullable(builder.connector);
         isDistinct = builder.isDistinct;
         selectList = Objects.requireNonNull(builder.selectList);
@@ -142,8 +142,8 @@ public class QueryExpression {
             return this;
         }
         
-        public QueryExpression build() {
-            return new QueryExpression(this);
+        public QueryExpressionModel build() {
+            return new QueryExpressionModel(this);
         }
     }
 }

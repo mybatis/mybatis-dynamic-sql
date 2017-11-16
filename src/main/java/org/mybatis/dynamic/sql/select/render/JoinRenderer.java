@@ -22,14 +22,14 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.select.QueryExpression;
+import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 
 public class JoinRenderer {
     private JoinModel joinModel;
-    private QueryExpression queryExpression;
+    private QueryExpressionModel queryExpression;
     
     private JoinRenderer(Builder builder) {
         joinModel = Objects.requireNonNull(builder.joinModel);
@@ -66,14 +66,14 @@ public class JoinRenderer {
     
     public static class Builder {
         private JoinModel joinModel;
-        private QueryExpression queryExpression;
+        private QueryExpressionModel queryExpression;
         
         public Builder withJoinModel(JoinModel joinModel) {
             this.joinModel = joinModel;
             return this;
         }
         
-        public Builder withQueryExpression(QueryExpression queryExpression) {
+        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpression = queryExpression;
             return this;
         }

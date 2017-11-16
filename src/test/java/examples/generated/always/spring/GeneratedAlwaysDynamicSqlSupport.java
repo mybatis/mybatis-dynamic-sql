@@ -23,8 +23,8 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.QueryExpressionBuilder.QueryExpressionAfterFromBuilder;
-import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFromBuilder;
+import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 
 public final class GeneratedAlwaysDynamicSqlSupport {
@@ -83,14 +83,14 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 
-    public static UpdateModelBuilder updateByExample(GeneratedAlwaysRecord record) {
+    public static UpdateDSL updateByExample(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName());
     }
 
-    public static UpdateModelBuilder updateByExampleSelective(GeneratedAlwaysRecord record) {
+    public static UpdateDSL updateByExampleSelective(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())

@@ -27,13 +27,13 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class InsertModelBuilder<T> {
+public class InsertDSL<T> {
 
     private T record;
     private SqlTable table;
     private List<InsertMapping> columnMappings = new ArrayList<>();
     
-    private InsertModelBuilder(T record, SqlTable table) {
+    private InsertDSL(T record, SqlTable table) {
         this.record = record;
         this.table = table;
     }
@@ -61,8 +61,8 @@ public class InsertModelBuilder<T> {
             this.record = record;
         }
 
-        public InsertModelBuilder<T> into(SqlTable table) {
-            return new InsertModelBuilder<>(record, table);
+        public InsertDSL<T> into(SqlTable table) {
+            return new InsertDSL<>(record, table);
         }
     }
     
@@ -73,31 +73,31 @@ public class InsertModelBuilder<T> {
             this.column = column;
         }
             
-        public InsertModelBuilder<T> toProperty(String property) {
+        public InsertDSL<T> toProperty(String property) {
             columnMappings.add(PropertyMapping.of(column, property));
-            return InsertModelBuilder.this;
+            return InsertDSL.this;
         }
             
-        public InsertModelBuilder<T> toPropertyWhenPresent(String property) {
+        public InsertDSL<T> toPropertyWhenPresent(String property) {
             if (BeanPropertyGetter.instance().getPropertyValue(record, property) != null) {
                 toProperty(property);
             }
-            return InsertModelBuilder.this;
+            return InsertDSL.this;
         }
             
-        public InsertModelBuilder<T> toNull() {
+        public InsertDSL<T> toNull() {
             columnMappings.add(NullMapping.of(column));
-            return InsertModelBuilder.this;
+            return InsertDSL.this;
         }
             
-        public InsertModelBuilder<T> toConstant(String constant) {
+        public InsertDSL<T> toConstant(String constant) {
             columnMappings.add(ConstantMapping.of(column, constant));
-            return InsertModelBuilder.this;
+            return InsertDSL.this;
         }
             
-        public InsertModelBuilder<T> toStringConstant(String constant) {
+        public InsertDSL<T> toStringConstant(String constant) {
             columnMappings.add(StringConstantMapping.of(column, constant));
-            return InsertModelBuilder.this;
+            return InsertDSL.this;
         }
     }
 }

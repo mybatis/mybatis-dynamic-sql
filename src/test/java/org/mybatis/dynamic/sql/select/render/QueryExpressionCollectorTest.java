@@ -32,27 +32,27 @@ public class QueryExpressionCollectorTest {
 
     @Test
     public void testQueryExpressionCollectorMerge() {
-        List<RenderedQueryExpression> queryExpressions = new ArrayList<>();
+        List<QueryExpressionSupport> queryExpressions = new ArrayList<>();
         
         Map<String, Object> parms1 = new HashMap<>();
         parms1.put("p1", 1);
-        RenderedQueryExpression fp1 = new RenderedQueryExpression.Builder()
+        QueryExpressionSupport qe1 = new QueryExpressionSupport.Builder()
                 .withConnector(Optional.empty())
                 .withColumnList("foo")
                 .withTableName("bar")
                 .withParameters(parms1)
                 .build();
-        queryExpressions.add(fp1);
+        queryExpressions.add(qe1);
 
         Map<String, Object> parms2 = new HashMap<>();
         parms2.put("p2", 2);
-        RenderedQueryExpression fp2 = new RenderedQueryExpression.Builder()
+        QueryExpressionSupport qe2 = new QueryExpressionSupport.Builder()
                 .withConnector(Optional.of("union"))
                 .withColumnList("bar")
                 .withTableName("foo")
                 .withParameters(parms2)
                 .build();
-        queryExpressions.add(fp2);
+        queryExpressions.add(qe2);
 
         // parallelStream should trigger the merge
         QueryExpressionCollector collector = queryExpressions.parallelStream()

@@ -30,9 +30,9 @@ public class QueryExpressionCollector {
         super();
     }
     
-    private void add(RenderedQueryExpression renderedQueryExpression) {
-        queryExpressions.add(renderedQueryExpression.queryExpression());
-        parameters.putAll(renderedQueryExpression.parameters());
+    private void add(QueryExpressionSupport queryExpressionSupport) {
+        queryExpressions.add(queryExpressionSupport.queryExpression());
+        parameters.putAll(queryExpressionSupport.parameters());
     }
     
     private QueryExpressionCollector merge(QueryExpressionCollector other) {
@@ -49,7 +49,7 @@ public class QueryExpressionCollector {
         return parameters;
     }
     
-    public static Collector<RenderedQueryExpression, QueryExpressionCollector, QueryExpressionCollector> collect() {
+    public static Collector<QueryExpressionSupport, QueryExpressionCollector, QueryExpressionCollector> collect() {
         return Collector.of(QueryExpressionCollector::new,
                 QueryExpressionCollector::add,
                 QueryExpressionCollector::merge);

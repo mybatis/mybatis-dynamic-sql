@@ -32,13 +32,14 @@ import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
-import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
+import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class QueryExpressionBuilder {
+public class QueryExpressionDSL {
 
     private String connector;
-    private SelectModelBuilder selectModelBuilder;
+    private SelectDSL selectModelBuilder;
     private boolean isDistinct;
     private List<SelectListItem> selectList;
     private SqlTable table;
@@ -48,7 +49,7 @@ public class QueryExpressionBuilder {
     private JoinModel joinModel;
     private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
-    private QueryExpressionBuilder(Builder builder) {
+    private QueryExpressionDSL(Builder builder) {
         this.connector = builder.connector;
         this.selectList = Arrays.asList(builder.selectList);
         this.isDistinct = builder.isDistinct;
@@ -70,7 +71,7 @@ public class QueryExpressionBuilder {
         private String connector;
         private SelectListItem[] selectList;
         private boolean isDistinct;
-        private SelectModelBuilder selectModelBuilder;
+        private SelectDSL selectModelBuilder;
 
         public Builder withConnector(String connector) {
             this.connector = connector;
@@ -87,18 +88,18 @@ public class QueryExpressionBuilder {
             return this;
         }
         
-        public Builder withSelectModelBuilder(SelectModelBuilder selectModelBuilder) {
+        public Builder withSelectModelBuilder(SelectDSL selectModelBuilder) {
             this.selectModelBuilder = selectModelBuilder;
             return this;
         }
         
-        public QueryExpressionBuilder build() {
-            return new QueryExpressionBuilder(this);
+        public QueryExpressionDSL build() {
+            return new QueryExpressionDSL(this);
         }
     }
     
-    protected QueryExpression buildModel() {
-        return new QueryExpression.Builder()
+    protected QueryExpressionModel buildModel() {
+        return new QueryExpressionModel.Builder()
                 .withConnector(connector)
                 .withTable(table)
                 .isDistinct(isDistinct)
@@ -172,7 +173,7 @@ public class QueryExpressionBuilder {
             return new GroupByFinisher();
         }
         
-        public SelectModelBuilder orderBy(SqlColumn<?>...columns) {
+        public SelectDSL orderBy(SqlColumn<?>...columns) {
             selectModelBuilder.addQueryExpression(buildModel());
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
             return selectModelBuilder;
@@ -184,7 +185,7 @@ public class QueryExpressionBuilder {
         }
     }
     
-    public class SelectSupportWhereBuilder extends AbstractWhereModelBuilder<SelectSupportWhereBuilder>
+    public class SelectSupportWhereBuilder extends AbstractWhereDSL<SelectSupportWhereBuilder>
             implements Buildable<SelectModel> {
         private <T> SelectSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
@@ -201,7 +202,7 @@ public class QueryExpressionBuilder {
             return new UnionBuilder();
         }
 
-        public SelectModelBuilder orderBy(SqlColumn<?>...columns) {
+        public SelectDSL orderBy(SqlColumn<?>...columns) {
             whereModel = buildWhereModel();
             selectModelBuilder.addQueryExpression(buildModel());
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
@@ -356,7 +357,7 @@ public class QueryExpressionBuilder {
             return fullJoin(joinTable);
         }
 
-        public SelectModelBuilder orderBy(SqlColumn<?>...columns) {
+        public SelectDSL orderBy(SqlColumn<?>...columns) {
             joinModel = buildJoinModel();
             selectModelBuilder.addQueryExpression(buildModel());
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
@@ -365,7 +366,7 @@ public class QueryExpressionBuilder {
     }
     
     public class GroupByFinisher implements Buildable<SelectModel> {
-        public SelectModelBuilder orderBy(SqlColumn<?>...columns) {
+        public SelectDSL orderBy(SqlColumn<?>...columns) {
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
             return selectModelBuilder;
         }
@@ -377,16 +378,16 @@ public class QueryExpressionBuilder {
     }
     
     public class UnionBuilder {
-        public QueryExpressionBuilder select(SelectListItem...selectList) {
-            return new QueryExpressionBuilder.Builder()
+        public QueryExpressionDSL select(SelectListItem...selectList) {
+            return new QueryExpressionDSL.Builder()
                     .withConnector("union") //$NON-NLS-1$
                     .withSelectList(selectList)
                     .withSelectModelBuilder(selectModelBuilder)
                     .build();
         }
         
-        public QueryExpressionBuilder selectDistinct(SelectListItem...selectList) {
-            return new QueryExpressionBuilder.Builder()
+        public QueryExpressionDSL selectDistinct(SelectListItem...selectList) {
+            return new QueryExpressionDSL.Builder()
                     .withConnector("union") //$NON-NLS-1$
                     .withSelectList(selectList)
                     .isDistinct()

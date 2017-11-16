@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.OrderByModel;
-import org.mybatis.dynamic.sql.select.QueryExpression;
+import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 
@@ -49,9 +49,9 @@ public class SelectRenderer {
                 .build();
     }
 
-    private RenderedQueryExpression renderQueryExpression(QueryExpression queryExpression) {
+    private QueryExpressionSupport renderQueryExpression(QueryExpressionModel queryExpressionModel) {
         return new QueryExpressionRenderer.Builder()
-                .withQueryExpression(queryExpression)
+                .withQueryExpression(queryExpressionModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
                 .build()

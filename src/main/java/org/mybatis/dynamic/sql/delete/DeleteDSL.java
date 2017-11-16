@@ -19,13 +19,13 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
-import org.mybatis.dynamic.sql.where.AbstractWhereModelBuilder;
+import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
-public class DeleteModelBuilder {
+public class DeleteDSL {
 
     private SqlTable table;
     
-    private DeleteModelBuilder(SqlTable table) {
+    private DeleteDSL(SqlTable table) {
         this.table = table;
     }
     
@@ -50,11 +50,11 @@ public class DeleteModelBuilder {
                 .build();
     }
     
-    public static DeleteModelBuilder deleteFrom(SqlTable table) {
-        return new DeleteModelBuilder(table);
+    public static DeleteDSL deleteFrom(SqlTable table) {
+        return new DeleteDSL(table);
     }
     
-    public class DeleteSupportWhereBuilder extends AbstractWhereModelBuilder<DeleteSupportWhereBuilder> {
+    public class DeleteSupportWhereBuilder extends AbstractWhereDSL<DeleteSupportWhereBuilder> {
         
         private <T> DeleteSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);

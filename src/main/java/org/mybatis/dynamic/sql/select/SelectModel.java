@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectSupport;
 
 public class SelectModel {
-    private List<QueryExpression> queryExpressions;
+    private List<QueryExpressionModel> queryExpressions;
     private Optional<OrderByModel> orderByModel;
 
     private SelectModel(Builder builder) {
@@ -35,7 +35,7 @@ public class SelectModel {
         orderByModel = Optional.ofNullable(builder.orderByModel);
     }
     
-    public <R> Stream<R> mapQueryExpressions(Function<QueryExpression, R> mapper) {
+    public <R> Stream<R> mapQueryExpressions(Function<QueryExpressionModel, R> mapper) {
         return queryExpressions.stream().map(mapper);
     }
     
@@ -52,10 +52,10 @@ public class SelectModel {
     }
     
     public static class Builder {
-        private List<QueryExpression> queryExpressions = new ArrayList<>();
+        private List<QueryExpressionModel> queryExpressions = new ArrayList<>();
         private OrderByModel orderByModel;
         
-        public Builder withQueryExpressions(List<QueryExpression> queryExpressions) {
+        public Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
             this.queryExpressions.addAll(queryExpressions);
             return this;
         }

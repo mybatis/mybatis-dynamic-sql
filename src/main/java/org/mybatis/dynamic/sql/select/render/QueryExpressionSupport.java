@@ -27,7 +27,7 @@ import java.util.Optional;
 import org.mybatis.dynamic.sql.AbstractSqlSupport;
 import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
-public class RenderedQueryExpression extends AbstractSqlSupport {
+public class QueryExpressionSupport extends AbstractSqlSupport {
     
     private Optional<String> connector;
     private String columnList;
@@ -37,7 +37,7 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
     private Optional<String> joinClause;
     private Optional<String> groupByClause;
     
-    private RenderedQueryExpression(Builder builder) {
+    private QueryExpressionSupport(Builder builder) {
         super(builder.tableName);
         connector = Objects.requireNonNull(builder.connector);
         columnList = Objects.requireNonNull(builder.columnList);
@@ -115,8 +115,8 @@ public class RenderedQueryExpression extends AbstractSqlSupport {
             return this;
         }
         
-        public RenderedQueryExpression build() {
-            return new RenderedQueryExpression(this);
+        public QueryExpressionSupport build() {
+            return new QueryExpressionSupport(this);
         }
     }
 }

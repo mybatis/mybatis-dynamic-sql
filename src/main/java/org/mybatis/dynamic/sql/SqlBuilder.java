@@ -18,15 +18,13 @@ package org.mybatis.dynamic.sql;
 import java.util.Arrays;
 import java.util.List;
 
-import org.mybatis.dynamic.sql.delete.DeleteModelBuilder;
-import org.mybatis.dynamic.sql.insert.InsertBatchModelBuilder;
-import org.mybatis.dynamic.sql.insert.InsertModelBuilder;
-import org.mybatis.dynamic.sql.insert.InsertSelectModelBuilder;
-import org.mybatis.dynamic.sql.insert.InsertSelectModelBuilder.InsertColumnGatherer;
-import org.mybatis.dynamic.sql.select.Buildable;
-import org.mybatis.dynamic.sql.select.QueryExpressionBuilder;
+import org.mybatis.dynamic.sql.delete.DeleteDSL;
+import org.mybatis.dynamic.sql.insert.InsertBatchDSL;
+import org.mybatis.dynamic.sql.insert.InsertDSL;
+import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
-import org.mybatis.dynamic.sql.select.SelectModelBuilder;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
@@ -36,7 +34,8 @@ import org.mybatis.dynamic.sql.select.aggregate.Sum;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
-import org.mybatis.dynamic.sql.update.UpdateModelBuilder;
+import org.mybatis.dynamic.sql.update.UpdateDSL;
+import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
@@ -67,37 +66,37 @@ import org.mybatis.dynamic.sql.where.condition.IsNull;
 public interface SqlBuilder {
 
     // statements
-    static DeleteModelBuilder deleteFrom(SqlTable table) {
-        return DeleteModelBuilder.deleteFrom(table);
+    static DeleteDSL deleteFrom(SqlTable table) {
+        return DeleteDSL.deleteFrom(table);
     }
 
-    static <T> InsertModelBuilder.IntoGatherer<T> insert(T record) {
-        return InsertModelBuilder.insert(record);
+    static <T> InsertDSL.IntoGatherer<T> insert(T record) {
+        return InsertDSL.insert(record);
     }
     
     @SafeVarargs
-    static <T> InsertBatchModelBuilder.IntoGatherer<T> insert(T...records) {
-        return InsertBatchModelBuilder.insert(records);
+    static <T> InsertBatchDSL.IntoGatherer<T> insert(T...records) {
+        return InsertBatchDSL.insert(records);
     }
     
-    static <T> InsertBatchModelBuilder.IntoGatherer<T> insert(List<T> records) {
-        return InsertBatchModelBuilder.insert(records);
+    static <T> InsertBatchDSL.IntoGatherer<T> insert(List<T> records) {
+        return InsertBatchDSL.insert(records);
     }
     
-    static InsertColumnGatherer insertInto(SqlTable table) {
-        return InsertSelectModelBuilder.insertInto(table);
+    static InsertSelectDSL.InsertColumnGatherer insertInto(SqlTable table) {
+        return InsertSelectDSL.insertInto(table);
     }
     
-    static QueryExpressionBuilder select(SelectListItem...selectList) {
-        return SelectModelBuilder.select(selectList);
+    static QueryExpressionDSL select(SelectListItem...selectList) {
+        return SelectDSL.select(selectList);
     }
     
-    static QueryExpressionBuilder selectDistinct(SelectListItem...selectList) {
-        return SelectModelBuilder.selectDistinct(selectList);
+    static QueryExpressionDSL selectDistinct(SelectListItem...selectList) {
+        return SelectDSL.selectDistinct(selectList);
     }
     
-    static UpdateModelBuilder update(SqlTable table) {
-        return UpdateModelBuilder.update(table);
+    static UpdateDSL update(SqlTable table) {
+        return UpdateDSL.update(table);
     }
 
     // where condition connectors
@@ -134,6 +133,19 @@ public interface SqlBuilder {
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
+    }
+
+    // join support
+    static <T> JoinCriterion<T> and(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+        return new JoinCriterion.Builder<T>()
+                .withJoinColumn(joinColumn)
+                .withJoinCondition(joinCondition)
+                .withConnector("and") //$NON-NLS-1$
+                .build();
+    }
+    
+    static <T> EqualTo<T> equalTo(SqlColumn<T> column) {
+        return new EqualTo<>(column);
     }
 
     // aggregate support
@@ -276,18 +288,5 @@ public interface SqlBuilder {
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
         return IsNotInCaseInsensitive.of(Arrays.asList(values));
-    }
-
-    // join support
-    static <T> JoinCriterion<T> and(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-        return new JoinCriterion.Builder<T>()
-                .withJoinColumn(joinColumn)
-                .withJoinCondition(joinCondition)
-                .withConnector("and") //$NON-NLS-1$
-                .build();
-    }
-    
-    static <T> EqualTo<T> equalTo(SqlColumn<T> column) {
-        return new EqualTo<>(column);
     }
 }
