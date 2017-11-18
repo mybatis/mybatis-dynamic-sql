@@ -15,13 +15,9 @@
  */
 package org.mybatis.dynamic.sql.insert;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectRenderer;
@@ -30,12 +26,12 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 
 public class InsertSelectModel {
     private SqlTable table;
-    private Optional<List<SqlColumn<?>>> columns;
+    private Optional<InsertColumnListModel> columnList;
     private SelectModel selectModel;
     
     private InsertSelectModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
-        columns = Objects.requireNonNull(builder.columns);
+        columnList = Objects.requireNonNull(builder.columnList);
         selectModel = Objects.requireNonNull(builder.selectModel);
     }
 
@@ -47,8 +43,8 @@ public class InsertSelectModel {
         return selectModel;
     }
     
-    public <R> Optional<Stream<R>> mapColumns(Function<SqlColumn<?>, R> mapper) {
-        return columns.map(cl -> cl.stream().map(mapper));
+    public Optional<InsertColumnListModel> columnList() {
+        return columnList;
     }
     
     public InsertSelectProvider render(RenderingStrategy renderingStrategy) {
@@ -61,7 +57,7 @@ public class InsertSelectModel {
     
     public static class Builder {
         private SqlTable table;
-        private Optional<List<SqlColumn<?>>> columns;
+        private Optional<InsertColumnListModel> columnList = Optional.empty();
         private SelectModel selectModel;
         
         public Builder withTable(SqlTable table) {
@@ -69,8 +65,8 @@ public class InsertSelectModel {
             return this;
         }
         
-        public Builder withColumns(Optional<List<SqlColumn<?>>> columns) {
-            this.columns = columns;
+        public Builder withColumnList(Optional<InsertColumnListModel> columnList) {
+            this.columnList = columnList;
             return this;
         }
         

@@ -27,25 +27,25 @@ import org.mybatis.dynamic.sql.util.Buildable;
 public class InsertSelectDSL {
 
     private SqlTable table;
-    private Optional<List<SqlColumn<?>>> columns;
+    private Optional<InsertColumnListModel> columnList;
     private SelectModel selectModel;
     
-    private InsertSelectDSL(SqlTable table, List<SqlColumn<?>> columns, SelectModel selectModel) {
+    private InsertSelectDSL(SqlTable table, InsertColumnListModel columnList, SelectModel selectModel) {
         this.table = table;
-        this.columns = Optional.of(columns);
+        this.columnList = Optional.of(columnList);
         this.selectModel = selectModel;
     }
     
     private InsertSelectDSL(SqlTable table, SelectModel selectModel) {
         this.table = table;
-        this.columns = Optional.empty();
+        this.columnList = Optional.empty();
         this.selectModel = selectModel;
     }
     
     public InsertSelectModel build() {
         return new InsertSelectModel.Builder()
                 .withTable(table)
-                .withColumns(columns)
+                .withColumnList(columnList)
                 .withSelectModel(selectModel)
                 .build();
     }
@@ -72,15 +72,15 @@ public class InsertSelectDSL {
     
     public static class SelectGatherer {
         private SqlTable table;
-        private List<SqlColumn<?>> columns;
+        private InsertColumnListModel columnList;
         
         private SelectGatherer(SqlTable table, List<SqlColumn<?>> columns) {
             this.table = table;
-            this.columns = columns;
+            columnList = InsertColumnListModel.of(columns);
         }
         
         public InsertSelectDSL withSelectStatement(Buildable<SelectModel> selectModelBuilder) {
-            return new InsertSelectDSL(table, columns, selectModelBuilder.build());
+            return new InsertSelectDSL(table, columnList, selectModelBuilder.build());
         }
     }
 }

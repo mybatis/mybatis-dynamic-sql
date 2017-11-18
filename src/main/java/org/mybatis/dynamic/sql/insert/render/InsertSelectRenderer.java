@@ -18,9 +18,9 @@ package org.mybatis.dynamic.sql.insert.render;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertSelectModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectProvider;
@@ -47,12 +47,13 @@ public class InsertSelectRenderer {
     }
     
     private Optional<String> calculateColumnsPhrase() {
-        return model.mapColumns(SqlColumn::name)
+        return model.columnList()
                 .map(this::calculateColumnsPhrase);
     }
     
-    private String calculateColumnsPhrase(Stream<String> ss) {
-        return ss.collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private String calculateColumnsPhrase(InsertColumnListModel columnList) {
+        return columnList.mapColumns(SqlColumn::name)
+                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     public static class Builder {
