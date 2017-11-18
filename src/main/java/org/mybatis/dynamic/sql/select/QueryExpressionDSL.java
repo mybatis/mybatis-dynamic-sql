@@ -116,13 +116,13 @@ public class QueryExpressionDSL {
             super();
         }
         
-        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
-            return new SelectSupportWhereBuilder(column, condition);
+        public <T> QueryExpressionWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
+            return new QueryExpressionWhereBuilder(column, condition);
         }
 
-        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
+        public <T> QueryExpressionWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
-            return new SelectSupportWhereBuilder(column, condition, subCriteria);
+            return new QueryExpressionWhereBuilder(column, condition, subCriteria);
         }
         
         @Override
@@ -185,13 +185,13 @@ public class QueryExpressionDSL {
         }
     }
     
-    public class SelectSupportWhereBuilder extends AbstractWhereDSL<SelectSupportWhereBuilder>
+    public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<SelectModel> {
-        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
+        private <T> QueryExpressionWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
         }
         
-        private <T> SelectSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
+        private <T> QueryExpressionWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
@@ -217,7 +217,7 @@ public class QueryExpressionDSL {
         }
         
         @Override
-        protected SelectSupportWhereBuilder getThis() {
+        protected QueryExpressionWhereBuilder getThis() {
             return this;
         }
     }
@@ -296,15 +296,15 @@ public class QueryExpressionDSL {
             return selectModelBuilder.build();
         }
         
-        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
+        public <T> QueryExpressionWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
             joinModel = buildJoinModel();
-            return new SelectSupportWhereBuilder(column, condition);
+            return new QueryExpressionWhereBuilder(column, condition);
         }
 
-        public <T> SelectSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
+        public <T> QueryExpressionWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             joinModel = buildJoinModel();
-            return new SelectSupportWhereBuilder(column, condition, subCriteria);
+            return new QueryExpressionWhereBuilder(column, condition, subCriteria);
         }
 
         public <T> JoinSpecificationFinisher and(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {

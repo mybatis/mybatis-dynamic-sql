@@ -32,11 +32,11 @@ public class InsertRenderer<T> {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public InsertSupport<T> render() {
+    public InsertProvider<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
-        return new InsertSupport.Builder<T>()
+        return new InsertProvider.Builder<T>()
                 .withTableName(model.table().name())
                 .withColumnsPhrase(collector.columnsPhrase())
                 .withValuesPhrase(collector.valuesPhrase())

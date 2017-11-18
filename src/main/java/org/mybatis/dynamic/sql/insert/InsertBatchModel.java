@@ -23,8 +23,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.insert.render.InsertBatchProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertBatchRenderer;
-import org.mybatis.dynamic.sql.insert.render.InsertBatchSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.InsertMapping;
 
@@ -51,7 +51,7 @@ public class InsertBatchModel<T> {
         return table;
     }
     
-    public InsertBatchSupport<T> render(RenderingStrategy renderingStrategy) {
+    public InsertBatchProvider<T> render(RenderingStrategy renderingStrategy) {
         return new InsertBatchRenderer.Builder<T>()
                 .withInsertBatchModel(this)
                 .withRenderingStrategy(renderingStrategy)

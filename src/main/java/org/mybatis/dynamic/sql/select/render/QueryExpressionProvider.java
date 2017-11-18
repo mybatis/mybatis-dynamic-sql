@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.where.render.WhereSupport;
+import org.mybatis.dynamic.sql.AbstractSqlProvider;
+import org.mybatis.dynamic.sql.where.render.WhereProvider;
 
-public class QueryExpressionSupport extends AbstractSqlSupport {
+public class QueryExpressionProvider extends AbstractSqlProvider {
     
     private Optional<String> connector;
     private String columnList;
@@ -37,7 +37,7 @@ public class QueryExpressionSupport extends AbstractSqlSupport {
     private Optional<String> joinClause;
     private Optional<String> groupByClause;
     
-    private QueryExpressionSupport(Builder builder) {
+    private QueryExpressionProvider(Builder builder) {
         super(builder.tableName);
         connector = Objects.requireNonNull(builder.connector);
         columnList = Objects.requireNonNull(builder.columnList);
@@ -89,9 +89,9 @@ public class QueryExpressionSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withWhereSupport(Optional<WhereSupport> whereSupport) {
-            whereClause = whereSupport.map(WhereSupport::getWhereClause);
-            parameters.putAll(whereSupport.map(WhereSupport::getParameters).orElse(Collections.emptyMap()));
+        public Builder withWhereProvider(Optional<WhereProvider> whereProvider) {
+            whereClause = whereProvider.map(WhereProvider::getWhereClause);
+            parameters.putAll(whereProvider.map(WhereProvider::getParameters).orElse(Collections.emptyMap()));
             return this;
         }
         
@@ -115,8 +115,8 @@ public class QueryExpressionSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public QueryExpressionSupport build() {
-            return new QueryExpressionSupport(this);
+        public QueryExpressionProvider build() {
+            return new QueryExpressionProvider(this);
         }
     }
 }

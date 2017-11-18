@@ -25,11 +25,11 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 @RunWith(JUnitPlatform.class)
-public class InsertSupportTest {
+public class InsertProviderTest {
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = foo.column("first_name", JDBCType.VARCHAR);
@@ -37,12 +37,12 @@ public class InsertSupportTest {
     private static final SqlColumn<String> occupation = foo.column("occupation", JDBCType.VARCHAR);
 
     @Test
-    public void testFullInsertSupportBuilder() {
+    public void testFullInsertProviderBuilder() {
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertSupport<?> insertSupport = insert(record)
+        InsertProvider<?> insertProvider = insert(record)
                 .into(foo)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
@@ -55,16 +55,16 @@ public class InsertSupportTest {
                 + "values (#{record.id,jdbcType=INTEGER}, "
                 + "#{record.firstName,jdbcType=VARCHAR}, " + "#{record.lastName,jdbcType=VARCHAR}, "
                 + "#{record.occupation,jdbcType=VARCHAR})";
-        assertThat(insertSupport.getFullInsertStatement()).isEqualTo(expected);
+        assertThat(insertProvider.getFullInsertStatement()).isEqualTo(expected);
     }
 
     @Test
-    public void testSelectiveInsertSupportBuilder() {
+    public void testSelectiveInsertProviderBuilder() {
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertSupport<?> insertSupport = insert(record)
+        InsertProvider<?> insertProvider = insert(record)
                 .into(foo)
                 .map(id).toPropertyWhenPresent("id")
                 .map(firstName).toPropertyWhenPresent("firstName")
@@ -76,7 +76,7 @@ public class InsertSupportTest {
         String expected = "insert into foo (last_name, occupation) "
                 + "values (#{record.lastName,jdbcType=VARCHAR}, "
                 + "#{record.occupation,jdbcType=VARCHAR})";
-        assertThat(insertSupport.getFullInsertStatement()).isEqualTo(expected);
+        assertThat(insertProvider.getFullInsertStatement()).isEqualTo(expected);
     }
 
     public static class TestRecord {

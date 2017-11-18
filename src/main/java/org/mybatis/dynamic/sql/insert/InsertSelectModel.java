@@ -23,8 +23,8 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectRenderer;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectSupport;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModel;
 
@@ -51,7 +51,7 @@ public class InsertSelectModel {
         return columns.map(cl -> cl.stream().map(mapper));
     }
     
-    public InsertSelectSupport render(RenderingStrategy renderingStrategy) {
+    public InsertSelectProvider render(RenderingStrategy renderingStrategy) {
         return new InsertSelectRenderer.Builder()
                 .withInsertSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)

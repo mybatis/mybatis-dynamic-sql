@@ -17,13 +17,13 @@ package examples.generated.always;
 
 import java.util.List;
 
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertProvider;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateProvider;
 
 public interface GeneratedAlwaysXmlMapper {
-    List<GeneratedAlwaysRecord> selectMany(SelectSupport selectSupport);
+    List<GeneratedAlwaysRecord> selectMany(SelectProvider selectProvider);
     GeneratedAlwaysRecord selectByPrimaryKey(int id);
-    int insert(InsertSupport<GeneratedAlwaysRecord> insertSupport);
-    int update(UpdateSupport updateSupport);
+    int insert(InsertProvider<GeneratedAlwaysRecord> insertProvider);
+    int update(UpdateProvider updateProvider);
 }

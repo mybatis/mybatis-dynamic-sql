@@ -39,17 +39,17 @@ public class UpdateDSL {
         this.table = Objects.requireNonNull(table);
     }
     
-    public <T> UpdateSupportBuilderFinisher<T> set(SqlColumn<T> column) {
-        return new UpdateSupportBuilderFinisher<>(column);
+    public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
+        return new SetClauseFinisher<>(column);
     }
     
-    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
-        return new UpdateSupportWhereBuilder(column, condition);
+    public <T> UpdateWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
+        return new UpdateWhereBuilder(column, condition);
     }
     
-    public <T> UpdateSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
+    public <T> UpdateWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        return new UpdateSupportWhereBuilder(column, condition, subCriteria);
+        return new UpdateWhereBuilder(column, condition, subCriteria);
     }
     
     /**
@@ -68,11 +68,11 @@ public class UpdateDSL {
         return new UpdateDSL(table);
     }
     
-    public class UpdateSupportBuilderFinisher<T> {
+    public class SetClauseFinisher<T> {
         
         private SqlColumn<T> column;
         
-        public UpdateSupportBuilderFinisher(SqlColumn<T> column) {
+        public SetClauseFinisher(SqlColumn<T> column) {
             this.column = column;
         }
         
@@ -104,13 +104,13 @@ public class UpdateDSL {
         }
     }
 
-    public class UpdateSupportWhereBuilder extends AbstractWhereDSL<UpdateSupportWhereBuilder> {
+    public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> {
         
-        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
+        public <T> UpdateWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
         }
         
-        public <T> UpdateSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
+        public <T> UpdateWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
@@ -123,7 +123,7 @@ public class UpdateDSL {
         }
         
         @Override
-        protected UpdateSupportWhereBuilder getThis() {
+        protected UpdateWhereBuilder getThis() {
             return this;
         }
     }

@@ -17,16 +17,16 @@ package examples.simple;
 
 import java.util.List;
 
-import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertProvider;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateProvider;
 
 public interface SimpleTableXmlMapper {
-    List<SimpleTableRecord> selectMany(SelectSupport selectSupport);
-    int delete(DeleteSupport deleteSupport);
-    int insert(InsertSupport<SimpleTableRecord> insertSupport);
-    int update(UpdateSupport updateSupport);
-    SimpleTableRecord selectOne(SelectSupport selectSupport);
-    long count(SelectSupport selectSupport);
+    List<SimpleTableRecord> selectMany(SelectProvider selectProvider);
+    int delete(DeleteProvider deleteProvider);
+    int insert(InsertProvider<SimpleTableRecord> insertProvider);
+    int update(UpdateProvider updateProvider);
+    SimpleTableRecord selectOne(SelectProvider selectProvider);
+    long count(SelectProvider selectProvider);
 }

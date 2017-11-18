@@ -36,10 +36,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.mybatis.dynamic.sql.insert.render.InsertBatchSupport;
+import org.mybatis.dynamic.sql.insert.render.InsertBatchProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateProvider;
 
 @RunWith(JUnitPlatform.class)
 public class GeneratedAlwaysXmlMapperTest {
@@ -69,13 +69,13 @@ public class GeneratedAlwaysXmlMapperTest {
         try {
             GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
             
-            SelectSupport selectSupport = select(id, firstName, lastName, fullName)
+            SelectProvider selectProvider = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
                     .where(id, isEqualTo(1))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectSupport);
+            List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectProvider);
             
             assertThat(rows.size()).isEqualTo(1);
         } finally {
@@ -89,13 +89,13 @@ public class GeneratedAlwaysXmlMapperTest {
         try {
             GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
             
-            SelectSupport selectSupport = select(id, firstName, lastName, fullName)
+            SelectProvider selectProvider = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
                     .where(firstName, isIn("Fred", "Barney"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectSupport);
+            List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectProvider);
             
             assertThat(rows.size()).isEqualTo(2);
         } finally {
@@ -113,7 +113,7 @@ public class GeneratedAlwaysXmlMapperTest {
             record.setFirstName("Joe");
             record.setLastName("Jones");
             
-            int rows = mapper.insert(buildInsertSupport(record));
+            int rows = mapper.insert(buildInsertProvider(record));
             
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(rows).isEqualTo(1);
@@ -131,7 +131,7 @@ public class GeneratedAlwaysXmlMapperTest {
             GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
             
-            InsertBatchSupport<GeneratedAlwaysRecord> support = insert(records)
+            InsertBatchProvider<GeneratedAlwaysRecord> insertBatchProvider = insert(records)
                     .into(generatedAlways)
                     .map(id).toProperty("id")
                     .map(firstName).toProperty("firstName")
@@ -139,7 +139,7 @@ public class GeneratedAlwaysXmlMapperTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            support.insertSupports().stream().forEach(mapper::insert);
+            insertBatchProvider.insertProviders().stream().forEach(mapper::insert);
             
             session.commit();
             
@@ -168,7 +168,7 @@ public class GeneratedAlwaysXmlMapperTest {
             record2.setFirstName("Jane");
             record2.setLastName("Jetson");
             
-            InsertBatchSupport<GeneratedAlwaysRecord> support = insert(record1, record2)
+            InsertBatchProvider<GeneratedAlwaysRecord> insertBatchProvider = insert(record1, record2)
                     .into(generatedAlways)
                     .map(id).toProperty("id")
                     .map(firstName).toProperty("firstName")
@@ -176,7 +176,7 @@ public class GeneratedAlwaysXmlMapperTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            support.insertSupports().stream().forEach(mapper::insert);
+            insertBatchProvider.insertProviders().stream().forEach(mapper::insert);
             
             session.commit();
             
@@ -226,7 +226,7 @@ public class GeneratedAlwaysXmlMapperTest {
             record.setFirstName("Joe");
             record.setLastName("Jones");
             
-            int rows = mapper.insert(buildInsertSelectiveSupport(record));
+            int rows = mapper.insert(buildInsertSelectiveProvider(record));
             
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(rows).isEqualTo(1);
@@ -248,12 +248,12 @@ public class GeneratedAlwaysXmlMapperTest {
             record.setLastName("Jones");
             
             SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(buildInsertSupport(record));
+                int rows = mapper.insert(buildInsertProvider(record));
                 softly.assertThat(rows).isEqualTo(1);
                 softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
             
                 record.setLastName("Smith");
-                rows = mapper.update(buildUpdateByPrimaryKeySupport(record));
+                rows = mapper.update(buildUpdateByPrimaryKeyProvider(record));
                 softly.assertThat(rows).isEqualTo(1);
             
                 GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(100);
@@ -272,22 +272,22 @@ public class GeneratedAlwaysXmlMapperTest {
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setLastName("Jones");
             
-            UpdateSupport updateSupport = updateByExampleSelective(record)
+            UpdateProvider updateProvider = updateByExampleSelective(record)
                     .where(lastName, isEqualTo("Flintstone"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            int rows = mapper.update(updateSupport);
+            int rows = mapper.update(updateProvider);
             assertThat(rows).isEqualTo(3);
             
-            SelectSupport selectSupport = select(id, firstName, lastName, fullName)
+            SelectProvider selectProvider = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
                     .where(lastName, isEqualTo("Jones"))
                     .orderBy(firstName)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<GeneratedAlwaysRecord> records = mapper.selectMany(selectSupport);
+            List<GeneratedAlwaysRecord> records = mapper.selectMany(selectProvider);
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(records.size()).isEqualTo(3);
                 softly.assertThat(records.get(0).getFullName()).isEqualTo("Fred Jones");
@@ -309,13 +309,13 @@ public class GeneratedAlwaysXmlMapperTest {
             record.setFirstName("Joe");
             record.setLastName("Jones");
             
-            int rows = mapper.insert(buildInsertSupport(record));
+            int rows = mapper.insert(buildInsertProvider(record));
             assertThat(rows).isEqualTo(1);
 
             GeneratedAlwaysRecord updateRecord = new GeneratedAlwaysRecord();
             updateRecord.setId(100);
             updateRecord.setLastName("Smith");
-            rows = mapper.update(buildUpdateByPrimaryKeySelectiveSupport(updateRecord));
+            rows = mapper.update(buildUpdateByPrimaryKeySelectiveProvider(updateRecord));
             assertThat(rows).isEqualTo(1);
             
             GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(100);

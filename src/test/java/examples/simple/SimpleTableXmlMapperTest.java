@@ -35,9 +35,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
 
 @RunWith(JUnitPlatform.class)
 public class SimpleTableXmlMapperTest {
@@ -67,13 +67,13 @@ public class SimpleTableXmlMapperTest {
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            SelectSupport selectSupport = selectByExample()
+            SelectProvider selectProvider = selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectProvider);
             
             assertThat(rows.size()).isEqualTo(3);
         } finally {
@@ -87,13 +87,13 @@ public class SimpleTableXmlMapperTest {
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            SelectSupport selectSupport = selectByExample()
+            SelectProvider selectProvider = selectByExample()
                     .where(employed, isEqualTo(false))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectProvider);
             
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(rows.size()).isEqualTo(2);
@@ -111,12 +111,12 @@ public class SimpleTableXmlMapperTest {
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            SelectSupport selectSupport = selectByExample()
+            SelectProvider selectProvider = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectProvider);
             
             assertThat(rows.size()).isEqualTo(2);
         } finally {
@@ -129,11 +129,11 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            DeleteSupport deleteSupport = deleteFrom(simpleTable)
+            DeleteProvider deleteProvider = deleteFrom(simpleTable)
                     .where(occupation, isNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
-            int rows = mapper.delete(deleteSupport);
+            int rows = mapper.delete(deleteProvider);
             
             assertThat(rows).isEqualTo(2);
         } finally {
@@ -146,8 +146,8 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            DeleteSupport deleteSupport = buildDeleteByPrimaryKeySupport(2);
-            int rows = mapper.delete(deleteSupport);
+            DeleteProvider deleteProvider = buildDeleteByPrimaryKeyProvider(2);
+            int rows = mapper.delete(deleteProvider);
             
             assertThat(rows).isEqualTo(1);
         } finally {
@@ -168,7 +168,7 @@ public class SimpleTableXmlMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            int rows = mapper.insert(buildFullInsertSupport(record));
+            int rows = mapper.insert(buildFullInsertProvider(record));
             
             assertThat(rows).isEqualTo(1);
         } finally {
@@ -189,10 +189,10 @@ public class SimpleTableXmlMapperTest {
             record.setEmployed(false);
             
             SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(buildSelectiveInsertSupport(record));
+                int rows = mapper.insert(buildSelectiveInsertProvider(record));
                 softly.assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord returnedRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                SimpleTableRecord returnedRecord = mapper.selectOne(buildSelectByPrimaryKeyProvider(100));
                 softly.assertThat(returnedRecord.getOccupation()).isNull();
             });
         } finally {
@@ -214,14 +214,14 @@ public class SimpleTableXmlMapperTest {
             record.setOccupation("Developer");
             
             SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(buildFullInsertSupport(record));
+                int rows = mapper.insert(buildFullInsertProvider(record));
                 softly.assertThat(rows).isEqualTo(1);
 
                 record.setOccupation("Programmer");
-                rows = mapper.update(buildFullUpdateByPrimaryKeySupport(record));
+                rows = mapper.update(buildFullUpdateByPrimaryKeyProvider(record));
                 softly.assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyProvider(100));
                 softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
             });
         } finally {
@@ -243,16 +243,16 @@ public class SimpleTableXmlMapperTest {
             record.setOccupation("Developer");
             
             SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(buildFullInsertSupport(record));
+                int rows = mapper.insert(buildFullInsertProvider(record));
                 softly.assertThat(rows).isEqualTo(1);
 
                 SimpleTableRecord updateRecord = new SimpleTableRecord();
                 updateRecord.setId(100);
                 updateRecord.setOccupation("Programmer");
-                rows = mapper.update(buildSelectiveUpdateByPrimaryKeySupport(updateRecord));
+                rows = mapper.update(buildSelectiveUpdateByPrimaryKeyProvider(updateRecord));
                 softly.assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeySupport(100));
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyProvider(100));
                 softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
                 softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
             });
@@ -267,12 +267,12 @@ public class SimpleTableXmlMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
-            SelectSupport selectSupport = select(count())
+            SelectProvider selectProvider = select(count())
                     .from(simpleTable)
                     .where(occupation, isNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
-            long rows = mapper.count(selectSupport);
+            long rows = mapper.count(selectProvider);
             
             assertThat(rows).isEqualTo(2L);
         } finally {

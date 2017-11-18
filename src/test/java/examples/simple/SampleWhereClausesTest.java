@@ -23,56 +23,56 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
 
 @RunWith(JUnitPlatform.class)
 public class SampleWhereClausesTest {
 
     @Test
     public void simpleClause1() {
-        SelectSupport selectSupport = select(count())
+        SelectProvider selectProvider = select(count())
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        assertThat(selectSupport.getFullSelectStatement())
+        assertThat(selectProvider.getFullSelectStatement())
                 .isEqualTo("select count(*) from SimpleTable where id = #{parameters.p1,jdbcType=INTEGER}");
     }
     
     @Test
     public void simpleClause2() {
-        SelectSupport selectSupport = select(count())
+        SelectProvider selectProvider = select(count())
                 .from(simpleTable, "a")
                 .where(id, isNull())
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) from SimpleTable a where a.id is null");
+        assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select count(*) from SimpleTable a where a.id is null");
     }
     
     @Test
     public void betweenClause() {
-        SelectSupport selectSupport = select(count())
+        SelectProvider selectProvider = select(count())
                 .from(simpleTable, "a")
                 .where(id, isBetween(1).and(4))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        assertThat(selectSupport.getFullSelectStatement())
+        assertThat(selectProvider.getFullSelectStatement())
             .isEqualTo("select count(*) from SimpleTable a where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}");
     }
 
     @Test
     public void complexClause() {
-        SelectSupport selectSupport = select(count())
+        SelectProvider selectProvider = select(count())
                 .from(simpleTable, "a")
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        assertThat(selectSupport.getFullSelectStatement())
+        assertThat(selectProvider.getFullSelectStatement())
             .isEqualTo("select count(*) from SimpleTable a where a.id > #{parameters.p1,jdbcType=INTEGER} or (a.occupation is null and a.id < #{parameters.p2,jdbcType=INTEGER})");
     }
 }

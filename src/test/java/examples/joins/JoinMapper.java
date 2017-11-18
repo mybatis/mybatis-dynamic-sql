@@ -18,10 +18,10 @@ package examples.joins;
 import java.util.List;
 import java.util.Map;
 
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
 
 public interface JoinMapper {
-    List<OrderMaster> selectMany(SelectSupport selectSupport);
+    List<OrderMaster> selectMany(SelectProvider selectProvider);
     
-    List<Map<String, Object>> generalSelect(SelectSupport selectSupport);
+    List<Map<String, Object>> generalSelect(SelectProvider selectProvider);
 }

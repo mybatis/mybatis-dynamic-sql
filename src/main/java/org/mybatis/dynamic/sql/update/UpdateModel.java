@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.update.render.UpdateProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -52,7 +52,7 @@ public class UpdateModel {
         return columnValues.stream().map(mapper);
     }
     
-    public UpdateSupport render(RenderingStrategy renderingStrategy) {
+    public UpdateProvider render(RenderingStrategy renderingStrategy) {
         return new UpdateRenderer.Builder()
                 .withUpdateModel(this)
                 .withRenderingStrategy(renderingStrategy)

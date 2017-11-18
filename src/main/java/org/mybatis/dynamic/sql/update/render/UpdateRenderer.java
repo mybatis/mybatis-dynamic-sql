@@ -27,8 +27,8 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.render.WhereProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
-import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class UpdateRenderer {
     private UpdateModel updateModel;
@@ -39,17 +39,17 @@ public class UpdateRenderer {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public UpdateSupport render() {
+    public UpdateProvider render() {
         SetPhraseVisitor visitor = new SetPhraseVisitor(renderingStrategy);
 
         FragmentCollector fc = updateModel.mapColumnValues(toFragmentAndParameters(visitor))
                 .collect(FragmentCollector.collect());
         
-        return new UpdateSupport.Builder()
+        return new UpdateProvider.Builder()
                 .withTableName(updateModel.table().name())
                 .withSetClause(calculateSetPhrase(fc))
                 .withParameters(fc.parameters())
-                .withWhereSupport(updateModel.whereModel().map(this::renderWhereModel))
+                .withWhereProvider(updateModel.whereModel().map(this::renderWhereModel))
                 .build();
     }
 
@@ -58,7 +58,7 @@ public class UpdateRenderer {
                 .collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    private WhereSupport renderWhereModel(WhereModel whereModel) {
+    private WhereProvider renderWhereModel(WhereModel whereModel) {
         return new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)

@@ -22,13 +22,13 @@ import java.util.Date;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFromBuilder;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.update.render.UpdateProvider;
 
 public final class SimpleTableDynamicSqlSupport {
     public static final SimpleTable simpleTable = new SimpleTable();
@@ -52,7 +52,7 @@ public final class SimpleTableDynamicSqlSupport {
         }
     }
     
-    public static InsertSupport<SimpleTableRecord> buildFullInsertSupport(SimpleTableRecord record) {
+    public static InsertProvider<SimpleTableRecord> buildFullInsertProvider(SimpleTableRecord record) {
         return insert(record)
                 .into(simpleTable)
                 .map(id).toProperty("id")
@@ -65,7 +65,7 @@ public final class SimpleTableDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
 
-    public static InsertSupport<SimpleTableRecord> buildSelectiveInsertSupport(SimpleTableRecord record) {
+    public static InsertProvider<SimpleTableRecord> buildSelectiveInsertProvider(SimpleTableRecord record) {
         return insert(record)
                 .into(simpleTable)
                 .map(id).toPropertyWhenPresent("id")
@@ -78,7 +78,7 @@ public final class SimpleTableDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
     
-    public static UpdateSupport buildFullUpdateByPrimaryKeySupport(SimpleTableRecord record) {
+    public static UpdateProvider buildFullUpdateByPrimaryKeyProvider(SimpleTableRecord record) {
         return update(simpleTable)
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
@@ -90,7 +90,7 @@ public final class SimpleTableDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
 
-    public static UpdateSupport buildSelectiveUpdateByPrimaryKeySupport(SimpleTableRecord record) {
+    public static UpdateProvider buildSelectiveUpdateByPrimaryKeyProvider(SimpleTableRecord record) {
         return update(simpleTable)
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
@@ -122,7 +122,7 @@ public final class SimpleTableDynamicSqlSupport {
                 .set(occupation).equalToWhenPresent(record.getOccupation());
     }
 
-    public static DeleteSupport buildDeleteByPrimaryKeySupport(Integer id_) {
+    public static DeleteProvider buildDeleteByPrimaryKeyProvider(Integer id_) {
         return deleteFrom(simpleTable)
                 .where(id, isEqualTo(id_))
                 .build()
@@ -134,7 +134,7 @@ public final class SimpleTableDynamicSqlSupport {
             .from(simpleTable);
     }
 
-    public static SelectSupport buildSelectByPrimaryKeySupport(Integer id_) {
+    public static SelectProvider buildSelectByPrimaryKeyProvider(Integer id_) {
         return select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)
             .where(id, isEqualTo(id_))

@@ -37,19 +37,19 @@ public class SelectRenderer {
         sequence = builder.sequence.orElse(new AtomicInteger(1));
     }
     
-    public SelectSupport render() {
+    public SelectProvider render() {
         QueryExpressionCollector collector = selectModel
                 .mapQueryExpressions(this::renderQueryExpression)
                 .collect(QueryExpressionCollector.collect());
         
-        return new SelectSupport.Builder()
+        return new SelectProvider.Builder()
                 .withQueryExpression(collector.queryExpression())
                 .withParameters(collector.parameters())
                 .withOrderByClause(selectModel.orderByModel().map(this::renderOrderBy))
                 .build();
     }
 
-    private QueryExpressionSupport renderQueryExpression(QueryExpressionModel queryExpressionModel) {
+    private QueryExpressionProvider renderQueryExpression(QueryExpressionModel queryExpressionModel) {
         return new QueryExpressionRenderer.Builder()
                 .withQueryExpression(queryExpressionModel)
                 .withRenderingStrategy(renderingStrategy)

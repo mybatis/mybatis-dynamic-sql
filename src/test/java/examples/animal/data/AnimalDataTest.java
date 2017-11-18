@@ -42,13 +42,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
-import org.mybatis.dynamic.sql.insert.render.InsertBatchSupport;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectSupport;
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertBatchProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateProvider;
 
 @RunWith(JUnitPlatform.class)
 public class AnimalDataTest {
@@ -80,11 +80,11 @@ public class AnimalDataTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(animals.size()).isEqualTo(65);
                 softly.assertThat(animals.get(0).getId()).isEqualTo(1);
@@ -99,12 +99,12 @@ public class AnimalDataTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .orderBy(id.descending())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(animals.size()).isEqualTo(65);
                 softly.assertThat(animals.get(0).getId()).isEqualTo(65);
@@ -120,13 +120,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(20))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(19);
         } finally {
             sqlSession.close();
@@ -139,13 +139,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isBetween(30).and(40))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(11);
         } finally {
             sqlSession.close();
@@ -158,13 +158,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotBetween(10).and(60))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(14);
         } finally {
             sqlSession.close();
@@ -177,13 +177,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotBetween(10).and(60))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(14);
         } finally {
             sqlSession.close();
@@ -196,7 +196,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(20))
                     .union()
@@ -214,13 +214,13 @@ public class AnimalDataTest {
                     + "from AnimalData "
                     + "where id > #{parameters.p2,jdbcType=INTEGER}";
 
-            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expected);
             
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(44);
-            assertThat(selectSupport.getParameters().size()).isEqualTo(2);
-            assertThat(selectSupport.getParameters().get("p1")).isEqualTo(20);
-            assertThat(selectSupport.getParameters().get("p2")).isEqualTo(40);
+            assertThat(selectProvider.getParameters().size()).isEqualTo(2);
+            assertThat(selectProvider.getParameters().get("p1")).isEqualTo(20);
+            assertThat(selectProvider.getParameters().get("p2")).isEqualTo(40);
         } finally {
             sqlSession.close();
         }
@@ -232,7 +232,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .union()
                     .selectDistinct(id, animalName, bodyWeight, brainWeight)
@@ -248,11 +248,11 @@ public class AnimalDataTest {
                     + "from AnimalData "
                     + "order by id";
 
-            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expected);
             
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(65);
-            assertThat(selectSupport.getParameters().size()).isEqualTo(0);
+            assertThat(selectProvider.getParameters().size()).isEqualTo(0);
         } finally {
             sqlSession.close();
         }
@@ -264,7 +264,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(id, isLessThan(20))
                     .union()
@@ -284,13 +284,13 @@ public class AnimalDataTest {
                     + "where b.id > #{parameters.p2,jdbcType=INTEGER} "
                     + "order by id";
 
-            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expected);
             
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(44);
-            assertThat(selectSupport.getParameters().size()).isEqualTo(2);
-            assertThat(selectSupport.getParameters().get("p1")).isEqualTo(20);
-            assertThat(selectSupport.getParameters().get("p2")).isEqualTo(40);
+            assertThat(selectProvider.getParameters().size()).isEqualTo(2);
+            assertThat(selectProvider.getParameters().get("p1")).isEqualTo(20);
+            assertThat(selectProvider.getParameters().get("p2")).isEqualTo(40);
         } finally {
             sqlSession.close();
         }
@@ -302,7 +302,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id.as("animalId"), animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id.as("animalId"), animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(id, isLessThan(20))
                     .union()
@@ -322,13 +322,13 @@ public class AnimalDataTest {
                     + "where b.id > #{parameters.p2,jdbcType=INTEGER} "
                     + "order by animalId";
 
-            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expected);
             
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(44);
-            assertThat(selectSupport.getParameters().size()).isEqualTo(2);
-            assertThat(selectSupport.getParameters().get("p1")).isEqualTo(20);
-            assertThat(selectSupport.getParameters().get("p2")).isEqualTo(40);
+            assertThat(selectProvider.getParameters().size()).isEqualTo(2);
+            assertThat(selectProvider.getParameters().get("p1")).isEqualTo(20);
+            assertThat(selectProvider.getParameters().get("p2")).isEqualTo(40);
         } finally {
             sqlSession.close();
         }
@@ -340,13 +340,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isEqualTo(5))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(1);
         } finally {
             sqlSession.close();
@@ -359,13 +359,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotEqualTo(5))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(64);
         } finally {
             sqlSession.close();
@@ -378,13 +378,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isGreaterThanOrEqualTo(60))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(6);
         } finally {
             sqlSession.close();
@@ -397,13 +397,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThanOrEqualTo(10))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(10);
         } finally {
             sqlSession.close();
@@ -416,13 +416,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(5, 8, 10))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(3);
         } finally {
             sqlSession.close();
@@ -435,13 +435,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isInCaseInsensitive("yellow-bellied marmot", "verbet"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(2);
         } finally {
             sqlSession.close();
@@ -454,13 +454,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotIn(5, 8, 10))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(62);
         } finally {
             sqlSession.close();
@@ -473,13 +473,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotInCaseInsensitive("yellow-bellied marmot", "verbet"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(63);
         } finally {
             sqlSession.close();
@@ -492,13 +492,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isLike("%squirrel"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(2);
         } finally {
             sqlSession.close();
@@ -511,13 +511,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isLikeCaseInsensitive("%squirrel"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(2);
         } finally {
             sqlSession.close();
@@ -530,13 +530,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotLike("%squirrel"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(63);
         } finally {
             sqlSession.close();
@@ -549,13 +549,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotLikeCaseInsensitive("%squirrel"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(63);
         } finally {
             sqlSession.close();
@@ -568,12 +568,12 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            DeleteSupport deleteSupport = deleteFrom(animalData)
+            DeleteProvider deleteProvider = deleteFrom(animalData)
                     .where(id, isIn(5, 8, 10))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            int rowCount = mapper.delete(deleteSupport);
+            int rowCount = mapper.delete(deleteProvider);
             assertThat(rowCount).isEqualTo(3);
         } finally {
             sqlSession.close();
@@ -586,13 +586,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            DeleteSupport deleteSupport = deleteFrom(animalData)
+            DeleteProvider deleteProvider = deleteFrom(animalData)
                     .where(id, isLessThan(10))
                     .or(id, isGreaterThan(60))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            int rowCount = mapper.delete(deleteSupport);
+            int rowCount = mapper.delete(deleteProvider);
             assertThat(rowCount).isEqualTo(14);
         } finally {
             sqlSession.close();
@@ -605,13 +605,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(0);
         } finally {
             sqlSession.close();
@@ -624,13 +624,13 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(65);
         } finally {
             sqlSession.close();
@@ -643,7 +643,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
@@ -653,7 +653,7 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(4);
         } finally {
             sqlSession.close();
@@ -668,7 +668,7 @@ public class AnimalDataTest {
             AnimalData record = new AnimalData();
             record.setBodyWeight(2.6);
             
-            UpdateSupport updateSupport = update(animalData)
+            UpdateProvider updateProvider = update(animalData)
                     .set(bodyWeight).equalTo(record.getBodyWeight())
                     .set(animalName).equalToNull()
                     .where(id, isIn(1, 5, 7))
@@ -678,7 +678,7 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            int rows = mapper.update(updateSupport);
+            int rows = mapper.update(updateProvider);
             assertThat(rows).isEqualTo(4);
         } finally {
             sqlSession.close();
@@ -696,7 +696,7 @@ public class AnimalDataTest {
             record.setBodyWeight(22.5);
             record.setBrainWeight(1.2);
             
-            InsertSupport<AnimalData> insertSupport = insert(record)
+            InsertProvider<AnimalData> insertProvider = insert(record)
                     .into(animalData)
                     .map(id).toProperty("id")
                     .map(animalName).toProperty("animalName")
@@ -705,7 +705,7 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            int rows = mapper.insert(insertSupport);
+            int rows = mapper.insert(insertProvider);
             assertThat(rows).isEqualTo(1);
         } finally {
             sqlSession.close();
@@ -723,7 +723,7 @@ public class AnimalDataTest {
             record.setBodyWeight(22.5);
             record.setBrainWeight(1.2);
             
-            InsertSupport<AnimalData> insertSupport = insert(record)
+            InsertProvider<AnimalData> insertProvider = insert(record)
                     .into(animalData)
                     .map(id).toProperty("id")
                     .map(animalName).toNull()
@@ -732,7 +732,7 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            int rows = mapper.insert(insertSupport);
+            int rows = mapper.insert(insertProvider);
             assertThat(rows).isEqualTo(1);
         } finally {
             sqlSession.close();
@@ -757,7 +757,7 @@ public class AnimalDataTest {
             record.setBodyWeight(22.5);
             records.add(record);
             
-            InsertBatchSupport<AnimalData> insertSupport = insert(records)
+            InsertBatchProvider<AnimalData> insertProvider = insert(records)
                     .into(animalData)
                     .map(id).toProperty("id")
                     .map(animalName).toNull()
@@ -766,17 +766,17 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            insertSupport.insertSupports().stream().forEach(mapper::insert);
+            insertProvider.insertProviders().stream().forEach(mapper::insert);
             sqlSession.commit();
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(100, 101))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(2);
             
             assertThat(animals.get(0).getId()).isEqualTo(100);
@@ -809,7 +809,7 @@ public class AnimalDataTest {
             record.setBodyWeight(22.5);
             records.add(record);
             
-            InsertBatchSupport<AnimalData> insertSupport = insert(records)
+            InsertBatchProvider<AnimalData> insertProvider = insert(records)
                     .into(animalData)
                     .map(id).toProperty("id")
                     .map(animalName).toStringConstant("Old Fred")
@@ -818,17 +818,17 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            insertSupport.insertSupports().stream().forEach(mapper::insert);
+            insertProvider.insertProviders().stream().forEach(mapper::insert);
             sqlSession.commit();
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(100, 101))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(2);
             
             assertThat(animals.get(0).getId()).isEqualTo(100);
@@ -849,7 +849,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = selectDistinct(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = selectDistinct(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))
@@ -857,7 +857,7 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<AnimalData> rows = mapper.selectMany(selectSupport);
+            List<AnimalData> rows = mapper.selectMany(selectProvider);
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(rows.size()).isEqualTo(14);
                 softly.assertThat(rows.get(0).getId()).isEqualTo(65);
@@ -873,7 +873,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(10))
                     .or(id,  isGreaterThan(60))
@@ -881,7 +881,7 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<AnimalData> rows = mapper.selectMany(selectSupport);
+            List<AnimalData> rows = mapper.selectMany(selectProvider);
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(rows.size()).isEqualTo(14);
                 softly.assertThat(rows.get(0).getId()).isEqualTo(65);
@@ -897,15 +897,15 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(count().as("total"))
+            SelectProvider selectProvider = select(count().as("total"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) as total from AnimalData a");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select count(*) as total from AnimalData a");
             
-                Long count = mapper.selectALong(selectSupport);
+                Long count = mapper.selectALong(selectProvider);
                 softly.assertThat(count).isEqualTo(65);
             });
         } finally {
@@ -919,15 +919,15 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(count(brainWeight).as("total"))
+            SelectProvider selectProvider = select(count(brainWeight).as("total"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(a.brain_weight) as total from AnimalData a");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select count(a.brain_weight) as total from AnimalData a");
             
-                Long count = mapper.selectALong(selectSupport);
+                Long count = mapper.selectALong(selectProvider);
                 softly.assertThat(count).isEqualTo(65);
             });
         } finally {
@@ -941,15 +941,15 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(count())
+            SelectProvider selectProvider = select(count())
                     .from(animalData)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select count(*) from AnimalData");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select count(*) from AnimalData");
             
-                Long count = mapper.selectALong(selectSupport);
+                Long count = mapper.selectALong(selectProvider);
                 softly.assertThat(count).isEqualTo(65);
             });
         } finally {
@@ -963,15 +963,15 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(max(brainWeight).as("total"))
+            SelectProvider selectProvider = select(max(brainWeight).as("total"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select max(a.brain_weight) as total from AnimalData a");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select max(a.brain_weight) as total from AnimalData a");
             
-                Double max = mapper.selectADouble(selectSupport);
+                Double max = mapper.selectADouble(selectProvider);
                 softly.assertThat(max).isEqualTo(87000.0);
             });
         } finally {
@@ -985,15 +985,15 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(max(brainWeight))
+            SelectProvider selectProvider = select(max(brainWeight))
                     .from(animalData)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select max(brain_weight) from AnimalData");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select max(brain_weight) from AnimalData");
             
-                Double max = mapper.selectADouble(selectSupport);
+                Double max = mapper.selectADouble(selectProvider);
                 softly.assertThat(max).isEqualTo(87000.0);
             });
         } finally {
@@ -1007,16 +1007,16 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isEqualTo(select(max(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight = (select max(b.brain_weight) from AnimalData b)");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight = (select max(b.brain_weight) from AnimalData b)");
             
-                List<AnimalData> records = mapper.selectMany(selectSupport);
+                List<AnimalData> records = mapper.selectMany(selectProvider);
                 softly.assertThat(records.size()).isEqualTo(1);
                 AnimalData record = records.get(0);
                 softly.assertThat(record.getAnimalName()).isEqualTo("Brachiosaurus");
@@ -1032,15 +1032,15 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(min(brainWeight).as("total"))
+            SelectProvider selectProvider = select(min(brainWeight).as("total"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select min(a.brain_weight) as total from AnimalData a");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select min(a.brain_weight) as total from AnimalData a");
             
-                Double min = mapper.selectADouble(selectSupport);
+                Double min = mapper.selectADouble(selectProvider);
                 softly.assertThat(min).isEqualTo(0.005);
             });
         } finally {
@@ -1054,15 +1054,15 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(min(brainWeight))
+            SelectProvider selectProvider = select(min(brainWeight))
                     .from(animalData)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select min(brain_weight) from AnimalData");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select min(brain_weight) from AnimalData");
             
-                Double min = mapper.selectADouble(selectSupport);
+                Double min = mapper.selectADouble(selectProvider);
                 softly.assertThat(min).isEqualTo(0.005);
             });
         } finally {
@@ -1076,7 +1076,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isNotEqualTo(select(min(brainWeight)).from(animalData, "b")))
                     .orderBy(animalName)
@@ -1084,9 +1084,9 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <> (select min(b.brain_weight) from AnimalData b) order by animal_name");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <> (select min(b.brain_weight) from AnimalData b) order by animal_name");
             
-                List<AnimalData> records = mapper.selectMany(selectSupport);
+                List<AnimalData> records = mapper.selectMany(selectProvider);
                 softly.assertThat(records.size()).isEqualTo(64);
                 AnimalData record = records.get(0);
                 softly.assertThat(record.getAnimalName()).isEqualTo("African elephant");
@@ -1102,7 +1102,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(brainWeight, isNotEqualTo(select(min(brainWeight)).from(animalData)))
                     .orderBy(animalName)
@@ -1110,9 +1110,9 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where brain_weight <> (select min(brain_weight) from AnimalData) order by animal_name");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where brain_weight <> (select min(brain_weight) from AnimalData) order by animal_name");
             
-                List<AnimalData> records = mapper.selectMany(selectSupport);
+                List<AnimalData> records = mapper.selectMany(selectProvider);
                 softly.assertThat(records.size()).isEqualTo(64);
                 AnimalData record = records.get(0);
                 softly.assertThat(record.getAnimalName()).isEqualTo("African elephant");
@@ -1128,15 +1128,15 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(avg(brainWeight).as("average"))
+            SelectProvider selectProvider = select(avg(brainWeight).as("average"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select avg(a.brain_weight) as average from AnimalData a");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select avg(a.brain_weight) as average from AnimalData a");
             
-                Double average = mapper.selectADouble(selectSupport);
+                Double average = mapper.selectADouble(selectProvider);
                 softly.assertThat(average).isEqualTo(1852.69, within(.01));
             });
         } finally {
@@ -1150,15 +1150,15 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(sum(brainWeight).as("total"))
+            SelectProvider selectProvider = select(sum(brainWeight).as("total"))
                     .from(animalData)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select sum(brain_weight) as total from AnimalData");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select sum(brain_weight) as total from AnimalData");
             
-                Double total = mapper.selectADouble(selectSupport);
+                Double total = mapper.selectADouble(selectProvider);
                 softly.assertThat(total).isEqualTo(120424.97, within(.01));
             });
         } finally {
@@ -1172,16 +1172,16 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isLessThan(select(max(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight < (select max(b.brain_weight) from AnimalData b)");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight < (select max(b.brain_weight) from AnimalData b)");
             
-                List<AnimalData> records = mapper.selectMany(selectSupport);
+                List<AnimalData> records = mapper.selectMany(selectProvider);
                 softly.assertThat(records.size()).isEqualTo(64);
             });
         } finally {
@@ -1195,16 +1195,16 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isLessThanOrEqualTo(select(max(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <= (select max(b.brain_weight) from AnimalData b)");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <= (select max(b.brain_weight) from AnimalData b)");
             
-                List<AnimalData> records = mapper.selectMany(selectSupport);
+                List<AnimalData> records = mapper.selectMany(selectProvider);
                 softly.assertThat(records.size()).isEqualTo(65);
             });
         } finally {
@@ -1218,16 +1218,16 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isGreaterThan(select(min(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight > (select min(b.brain_weight) from AnimalData b)");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight > (select min(b.brain_weight) from AnimalData b)");
             
-                List<AnimalData> records = mapper.selectMany(selectSupport);
+                List<AnimalData> records = mapper.selectMany(selectProvider);
                 softly.assertThat(records.size()).isEqualTo(64);
             });
         } finally {
@@ -1241,16 +1241,16 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isGreaterThanOrEqualTo(select(min(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight >= (select min(b.brain_weight) from AnimalData b)");
+                softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight >= (select min(b.brain_weight) from AnimalData b)");
             
-                List<AnimalData> records = mapper.selectMany(selectSupport);
+                List<AnimalData> records = mapper.selectMany(selectProvider);
                 softly.assertThat(records.size()).isEqualTo(65);
             });
         } finally {
@@ -1266,7 +1266,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            InsertSelectSupport insertSelectSupport = insertInto(animalDataCopy)
+            InsertSelectProvider insertSelectProvider = insertInto(animalDataCopy)
                     .withColumnList(id, animalName, bodyWeight, brainWeight)
                     .withSelectStatement(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(22)))
                     .build()
@@ -1276,11 +1276,11 @@ public class AnimalDataTest {
                     + "select id, animal_name, body_weight, brain_weight "
                     + "from AnimalData "
                     + "where id < #{parameters.p1,jdbcType=INTEGER}";
-            assertThat(insertSelectSupport.getFullInsertStatement()).isEqualTo(expected);
-            assertThat(insertSelectSupport.getParameters().size()).isEqualTo(1);
-            assertThat(insertSelectSupport.getParameters().get("p1")).isEqualTo(22);
+            assertThat(insertSelectProvider.getFullInsertStatement()).isEqualTo(expected);
+            assertThat(insertSelectProvider.getParameters().size()).isEqualTo(1);
+            assertThat(insertSelectProvider.getParameters().get("p1")).isEqualTo(22);
 
-            int rows = mapper.insertSelect(insertSelectSupport);
+            int rows = mapper.insertSelect(insertSelectProvider);
             assertThat(rows).isEqualTo(21);
         } finally {
             sqlSession.close();
@@ -1295,7 +1295,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            InsertSelectSupport insertSelectSupport = insertInto(animalDataCopy)
+            InsertSelectProvider insertSelectProvider = insertInto(animalDataCopy)
                     .withSelectStatement(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(33)))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -1304,11 +1304,11 @@ public class AnimalDataTest {
                     + "select id, animal_name, body_weight, brain_weight "
                     + "from AnimalData "
                     + "where id < #{parameters.p1,jdbcType=INTEGER}";
-            assertThat(insertSelectSupport.getFullInsertStatement()).isEqualTo(expected);
-            assertThat(insertSelectSupport.getParameters().size()).isEqualTo(1);
-            assertThat(insertSelectSupport.getParameters().get("p1")).isEqualTo(33);
+            assertThat(insertSelectProvider.getFullInsertStatement()).isEqualTo(expected);
+            assertThat(insertSelectProvider.getParameters().size()).isEqualTo(1);
+            assertThat(insertSelectProvider.getParameters().get("p1")).isEqualTo(33);
 
-            int rows = mapper.insertSelect(insertSelectSupport);
+            int rows = mapper.insertSelect(insertSelectProvider);
             assertThat(rows).isEqualTo(32);
         } finally {
             sqlSession.close();

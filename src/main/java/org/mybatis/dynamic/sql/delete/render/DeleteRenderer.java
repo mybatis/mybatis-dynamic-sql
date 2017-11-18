@@ -22,8 +22,8 @@ import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.render.WhereProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
-import org.mybatis.dynamic.sql.where.render.WhereSupport;
 
 public class DeleteRenderer {
     private DeleteModel deleteModel;
@@ -34,14 +34,14 @@ public class DeleteRenderer {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public DeleteSupport render() {
-        return new DeleteSupport.Builder()
+    public DeleteProvider render() {
+        return new DeleteProvider.Builder()
                 .withTableName(deleteModel.table().name())
-                .withWhereSupport(deleteModel.whereModel().map(this::renderWhereModel))
+                .withWhereProvider(deleteModel.whereModel().map(this::renderWhereModel))
                 .build();
     }
     
-    private WhereSupport renderWhereModel(WhereModel whereModel) {
+    private WhereProvider renderWhereModel(WhereModel whereModel) {
         return new WhereRenderer.Builder()
                 .withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)

@@ -39,11 +39,11 @@ public class WhereRenderer {
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
     }
     
-    public WhereSupport render() {
+    public WhereProvider render() {
         FragmentCollector fc = whereModel.mapCriteria(this::render)
                 .collect(FragmentCollector.collect());
 
-        return new WhereSupport.Builder()
+        return new WhereProvider.Builder()
                 .withWhereClause(calculateWhereClause(fc))
                 .withParameters(fc.parameters())
                 .build();

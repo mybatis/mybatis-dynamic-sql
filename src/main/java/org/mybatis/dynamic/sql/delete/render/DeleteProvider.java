@@ -23,14 +23,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.where.render.WhereSupport;
+import org.mybatis.dynamic.sql.AbstractSqlProvider;
+import org.mybatis.dynamic.sql.where.render.WhereProvider;
 
-public class DeleteSupport extends AbstractSqlSupport {
+public class DeleteProvider extends AbstractSqlProvider {
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
     
-    private DeleteSupport(Builder builder) {
+    private DeleteProvider(Builder builder) {
         super(builder.tableName);
         whereClause = Objects.requireNonNull(builder.whereClause);
         parameters = Objects.requireNonNull(builder.parameters);
@@ -56,14 +56,14 @@ public class DeleteSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withWhereSupport(Optional<WhereSupport> whereSupport) {
-            whereClause = whereSupport.map(WhereSupport::getWhereClause);
-            parameters.putAll(whereSupport.map(WhereSupport::getParameters).orElse(Collections.emptyMap()));
+        public Builder withWhereProvider(Optional<WhereProvider> whereProvider) {
+            whereClause = whereProvider.map(WhereProvider::getWhereClause);
+            parameters.putAll(whereProvider.map(WhereProvider::getParameters).orElse(Collections.emptyMap()));
             return this;
         }
         
-        public DeleteSupport build() {
-            return new DeleteSupport(this);
+        public DeleteProvider build() {
+            return new DeleteProvider(this);
         }
     }
 }

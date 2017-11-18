@@ -22,15 +22,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AbstractSqlSupport;
+import org.mybatis.dynamic.sql.AbstractSqlProvider;
 
-public class InsertSelectSupport extends AbstractSqlSupport {
+public class InsertSelectProvider extends AbstractSqlProvider {
     
     private Optional<String> columnsPhrase;
     private String renderedSelectStatement;
     private Map<String, Object> parameters;
     
-    private InsertSelectSupport(Builder builder) {
+    private InsertSelectProvider(Builder builder) {
         super(builder.tableName);
         this.columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
         this.renderedSelectStatement = Objects.requireNonNull(builder.renderedSelectStatement);
@@ -74,8 +74,8 @@ public class InsertSelectSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public InsertSelectSupport build() {
-            return new InsertSelectSupport(this);
+        public InsertSelectProvider build() {
+            return new InsertSelectProvider(this);
         }
     }
 }

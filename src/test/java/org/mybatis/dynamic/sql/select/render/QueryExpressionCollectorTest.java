@@ -32,11 +32,11 @@ public class QueryExpressionCollectorTest {
 
     @Test
     public void testQueryExpressionCollectorMerge() {
-        List<QueryExpressionSupport> queryExpressions = new ArrayList<>();
+        List<QueryExpressionProvider> queryExpressions = new ArrayList<>();
         
         Map<String, Object> parms1 = new HashMap<>();
         parms1.put("p1", 1);
-        QueryExpressionSupport qe1 = new QueryExpressionSupport.Builder()
+        QueryExpressionProvider qe1 = new QueryExpressionProvider.Builder()
                 .withConnector(Optional.empty())
                 .withColumnList("foo")
                 .withTableName("bar")
@@ -46,7 +46,7 @@ public class QueryExpressionCollectorTest {
 
         Map<String, Object> parms2 = new HashMap<>();
         parms2.put("p2", 2);
-        QueryExpressionSupport qe2 = new QueryExpressionSupport.Builder()
+        QueryExpressionProvider qe2 = new QueryExpressionProvider.Builder()
                 .withConnector(Optional.of("union"))
                 .withColumnList("bar")
                 .withTableName("foo")

@@ -20,11 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class WhereSupport {
+public class WhereProvider {
     private String whereClause;
     private Map<String, Object> parameters;
 
-    private WhereSupport(Builder builder) {
+    private WhereProvider(Builder builder) {
         this.whereClause = Objects.requireNonNull(builder.whereClause);
         this.parameters = Objects.requireNonNull(builder.parameters);
     }
@@ -51,8 +51,8 @@ public class WhereSupport {
             return this;
         }
         
-        public WhereSupport build() {
-            return new WhereSupport(this);
+        public WhereProvider build() {
+            return new WhereProvider(this);
         }
     }
 }

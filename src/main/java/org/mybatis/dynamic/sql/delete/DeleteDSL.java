@@ -29,13 +29,13 @@ public class DeleteDSL {
         this.table = table;
     }
     
-    public <T> DeleteSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
-        return new DeleteSupportWhereBuilder(column, condition);
+    public <T> DeleteWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
+        return new DeleteWhereBuilder(column, condition);
     }
     
-    public <T> DeleteSupportWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
+    public <T> DeleteWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        return new DeleteSupportWhereBuilder(column, condition, subCriteria);
+        return new DeleteWhereBuilder(column, condition, subCriteria);
     }
     
     /**
@@ -54,13 +54,13 @@ public class DeleteDSL {
         return new DeleteDSL(table);
     }
     
-    public class DeleteSupportWhereBuilder extends AbstractWhereDSL<DeleteSupportWhereBuilder> {
+    public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> {
         
-        private <T> DeleteSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
+        private <T> DeleteWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
         }
         
-        private <T> DeleteSupportWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
+        private <T> DeleteWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
@@ -73,7 +73,7 @@ public class DeleteDSL {
         }
         
         @Override
-        protected DeleteSupportWhereBuilder getThis() {
+        protected DeleteWhereBuilder getThis() {
             return this;
         }
     }

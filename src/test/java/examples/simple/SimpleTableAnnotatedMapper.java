@@ -26,10 +26,10 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
-import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertProvider;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateProvider;
 
 @Mapper
 public interface SimpleTableAnnotatedMapper {
@@ -37,12 +37,12 @@ public interface SimpleTableAnnotatedMapper {
     @Insert({
         "${fullInsertStatement}"
     })
-    int insert(InsertSupport<SimpleTableRecord> insertSupport);
+    int insert(InsertProvider<SimpleTableRecord> insertProvider);
 
     @Update({
         "${fullUpdateStatement}"
     })
-    int update(UpdateSupport updateSupport);
+    int update(UpdateProvider updateProvider);
     
     @Select({
         "${fullSelectStatement}"
@@ -55,21 +55,21 @@ public interface SimpleTableAnnotatedMapper {
             @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR, typeHandler=YesNoTypeHandler.class),
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
     })
-    List<SimpleTableRecord> selectMany(SelectSupport selectSupport);
+    List<SimpleTableRecord> selectMany(SelectProvider selectProvider);
     
     @Select({
         "${fullSelectStatement}"
     })
     @ResultMap("SimpleTableResult")
-    SimpleTableRecord selectOne(SelectSupport selectSupport);
+    SimpleTableRecord selectOne(SelectProvider selectProvider);
     
     @Delete({
         "${fullDeleteStatement}"
     })
-    int delete(DeleteSupport deleteSupport);
+    int delete(DeleteProvider deleteProvider);
 
     @Select({
         "${fullSelectStatement}"
     })
-    long count(SelectSupport selectSupport);
+    long count(SelectProvider selectProvider);
 }

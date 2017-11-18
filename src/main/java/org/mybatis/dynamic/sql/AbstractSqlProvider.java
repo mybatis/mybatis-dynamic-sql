@@ -17,10 +17,10 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 
-public abstract class AbstractSqlSupport {
+public abstract class AbstractSqlProvider {
     private String tableName;
 
-    public AbstractSqlSupport(String tableName) {
+    public AbstractSqlProvider(String tableName) {
         this.tableName = Objects.requireNonNull(tableName);
     }
     

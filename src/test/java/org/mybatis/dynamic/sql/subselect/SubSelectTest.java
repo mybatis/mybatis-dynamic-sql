@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
 
 @RunWith(JUnitPlatform.class)
 public class SubSelectTest {
@@ -42,7 +42,7 @@ public class SubSelectTest {
     public void testInSubSelect() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select(column1.as("A_COLUMN1"), column2)
+        SelectProvider selectProvider = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column2, isIn(select(column2).from(table).where(column2, isEqualTo(3))))
                 .and(column1, isLessThan(d))
@@ -55,9 +55,9 @@ public class SubSelectTest {
                 + "where a.column2 in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER}) "
                 + "and a.column1 < #{parameters.p2,jdbcType=DATE}";
 
-        assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
+        assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expectedFullStatement);
 
-        Map<String, Object> parameters = selectSupport.getParameters();
+        Map<String, Object> parameters = selectProvider.getParameters();
         assertThat(parameters.get("p1")).isEqualTo(3);
         assertThat(parameters.get("p2")).isEqualTo(d);
     }
@@ -66,7 +66,7 @@ public class SubSelectTest {
     public void testNotInSubSelect() {
         Date d = new Date();
 
-        SelectSupport selectSupport = select(column1.as("A_COLUMN1"), column2)
+        SelectProvider selectProvider = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column2, isNotIn(select(column2).from(table).where(column2, isEqualTo(3))))
                 .and(column1, isLessThan(d))
@@ -80,9 +80,9 @@ public class SubSelectTest {
                     + "where a.column2 not in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER})"
                     + " and a.column1 < #{parameters.p2,jdbcType=DATE}";
 
-            softly.assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expectedFullStatement);
+            softly.assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expectedFullStatement);
 
-            Map<String, Object> parameters = selectSupport.getParameters();
+            Map<String, Object> parameters = selectProvider.getParameters();
             softly.assertThat(parameters.get("p1")).isEqualTo(3);
             softly.assertThat(parameters.get("p2")).isEqualTo(d);
         });

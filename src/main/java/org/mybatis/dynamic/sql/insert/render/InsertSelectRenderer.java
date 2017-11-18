@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.insert.InsertSelectModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
 
 public class InsertSelectRenderer {
 
@@ -35,14 +35,14 @@ public class InsertSelectRenderer {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public InsertSelectSupport render() {
-        SelectSupport selectSupport = model.selectModel().render(renderingStrategy);
+    public InsertSelectProvider render() {
+        SelectProvider selectProvider = model.selectModel().render(renderingStrategy);
         
-        return new InsertSelectSupport.Builder()
+        return new InsertSelectProvider.Builder()
                 .withTableName(model.table().name())
                 .withColumnsPhrase(calculateColumnsPhrase())
-                .withSelectStatement(selectSupport.getFullSelectStatement())
-                .withParameters(selectSupport.getParameters())
+                .withSelectStatement(selectProvider.getFullSelectStatement())
+                .withParameters(selectProvider.getParameters())
                 .build();
     }
     

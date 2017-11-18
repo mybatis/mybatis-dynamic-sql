@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AbstractSqlSupport;
-import org.mybatis.dynamic.sql.where.render.WhereSupport;
+import org.mybatis.dynamic.sql.AbstractSqlProvider;
+import org.mybatis.dynamic.sql.where.render.WhereProvider;
 
 /**
  * This class combines a "set" clause and a "where" clause into one parameter object
@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.where.render.WhereSupport;
  * @author Jeff Butler
  *
  */
-public class UpdateSupport extends AbstractSqlSupport {
+public class UpdateProvider extends AbstractSqlProvider {
     private String setClause;
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
 
-    private UpdateSupport(Builder builder) {
+    private UpdateProvider(Builder builder) {
         super(builder.tableName);
         setClause = Objects.requireNonNull(builder.setClause);
         whereClause = Objects.requireNonNull(builder.whereClause);
@@ -72,9 +72,9 @@ public class UpdateSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder withWhereSupport(Optional<WhereSupport> whereSupport) {
-            whereClause = whereSupport.map(WhereSupport::getWhereClause);
-            parameters.putAll(whereSupport.map(WhereSupport::getParameters).orElse(Collections.emptyMap()));
+        public Builder withWhereProvider(Optional<WhereProvider> whereProvider) {
+            whereClause = whereProvider.map(WhereProvider::getWhereClause);
+            parameters.putAll(whereProvider.map(WhereProvider::getParameters).orElse(Collections.emptyMap()));
             return this;
         }
         
@@ -83,8 +83,8 @@ public class UpdateSupport extends AbstractSqlSupport {
             return this;
         }
         
-        public UpdateSupport build() {
-            return new UpdateSupport(this);
+        public UpdateProvider build() {
+            return new UpdateProvider(this);
         }
     }
 }

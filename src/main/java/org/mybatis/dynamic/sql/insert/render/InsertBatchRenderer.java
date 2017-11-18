@@ -32,11 +32,11 @@ public class InsertBatchRenderer<T> {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public InsertBatchSupport<T> render() {
+    public InsertBatchProvider<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
-        return new InsertBatchSupport.Builder<T>()
+        return new InsertBatchProvider.Builder<T>()
                 .withTableName(model.table().name())
                 .withColumnsPhrase(collector.columnsPhrase())
                 .withValuesPhrase(collector.valuesPhrase())

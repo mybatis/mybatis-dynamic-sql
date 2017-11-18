@@ -23,11 +23,11 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectSupport;
-import org.mybatis.dynamic.sql.insert.render.InsertSupport;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertProvider;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateProvider;
 
 public interface AnimalDataMapper {
 
@@ -40,35 +40,35 @@ public interface AnimalDataMapper {
         @Result(column="brain_weight", property="brainWeight"),
         @Result(column="body_weight", property="bodyWeight")
     })
-    List<AnimalData> selectMany(SelectSupport selectSupport);
+    List<AnimalData> selectMany(SelectProvider selectProvider);
 
     @Select({
         "${fullSelectStatement}"
     })
-    Long selectALong(SelectSupport selectSupport);
+    Long selectALong(SelectProvider selectProvider);
     
     @Select({
         "${fullSelectStatement}"
     })
-    Double selectADouble(SelectSupport selectSupport);
+    Double selectADouble(SelectProvider selectProvider);
     
     @Delete({
         "${fullDeleteStatement}"
     })
-    int delete(DeleteSupport deleteSupport);
+    int delete(DeleteProvider deleteProvider);
 
     @Update({
         "${fullUpdateStatement}"
     })
-    int update(UpdateSupport updateSupport);
+    int update(UpdateProvider updateProvider);
     
     @Insert({
         "${fullInsertStatement}"
     })
-    int insert(InsertSupport<AnimalData> insertSupport);
+    int insert(InsertProvider<AnimalData> insertProvider);
 
     @Insert({
         "${fullInsertStatement}"
     })
-    int insertSelect(InsertSelectSupport insertSelectSupport);
+    int insertSelect(InsertSelectProvider insertSelectProvider);
 }

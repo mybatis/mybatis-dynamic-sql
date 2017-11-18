@@ -26,10 +26,10 @@ import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.update.render.UpdateSupport;
+import org.mybatis.dynamic.sql.update.render.UpdateProvider;
 
 @RunWith(JUnitPlatform.class)
-public class UpdateSupportTest {
+public class UpdateProviderTest {
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = foo.column("firstName", JDBCType.VARCHAR);
@@ -38,7 +38,7 @@ public class UpdateSupportTest {
 
     @Test
     public void testUpdateParameter() {
-        UpdateSupport updateSupport = update(foo)
+        UpdateProvider updateProvider = update(foo)
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
@@ -51,16 +51,16 @@ public class UpdateSupportTest {
                 + "occupation = null "
                 + "where id = #{parameters.p1,jdbcType=INTEGER}";
                 
-        assertThat(updateSupport.getFullUpdateStatement()).isEqualTo(expected);
-        assertThat(updateSupport.getParameters().size()).isEqualTo(3);
-        assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
-        assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
-        assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
+        assertThat(updateProvider.getFullUpdateStatement()).isEqualTo(expected);
+        assertThat(updateProvider.getParameters().size()).isEqualTo(3);
+        assertThat(updateProvider.getParameters().get("up1")).isEqualTo("fred");
+        assertThat(updateProvider.getParameters().get("up2")).isEqualTo("jones");
+        assertThat(updateProvider.getParameters().get("p1")).isEqualTo(3);
     }
 
     @Test
     public void testUpdateParameterStartWithNull() {
-        UpdateSupport updateSupport = update(foo)
+        UpdateProvider updateProvider = update(foo)
                 .set(occupation).equalToNull()
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
@@ -75,11 +75,11 @@ public class UpdateSupportTest {
                 + "where id = #{parameters.p1,jdbcType=INTEGER} "
                 + "and firstName = #{parameters.p2,jdbcType=VARCHAR}";
                 
-        assertThat(updateSupport.getFullUpdateStatement()).isEqualTo(expectedSetClause);
-        assertThat(updateSupport.getParameters().size()).isEqualTo(4);
-        assertThat(updateSupport.getParameters().get("up1")).isEqualTo("fred");
-        assertThat(updateSupport.getParameters().get("up2")).isEqualTo("jones");
-        assertThat(updateSupport.getParameters().get("p1")).isEqualTo(3);
-        assertThat(updateSupport.getParameters().get("p2")).isEqualTo("barney");
+        assertThat(updateProvider.getFullUpdateStatement()).isEqualTo(expectedSetClause);
+        assertThat(updateProvider.getParameters().size()).isEqualTo(4);
+        assertThat(updateProvider.getParameters().get("up1")).isEqualTo("fred");
+        assertThat(updateProvider.getParameters().get("up2")).isEqualTo("jones");
+        assertThat(updateProvider.getParameters().get("p1")).isEqualTo(3);
+        assertThat(updateProvider.getParameters().get("p2")).isEqualTo("barney");
     }
 }

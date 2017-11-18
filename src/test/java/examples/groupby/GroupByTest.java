@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
 
 @RunWith(JUnitPlatform.class)
 public class GroupByTest {
@@ -73,16 +73,16 @@ public class GroupByTest {
         try {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
-            SelectSupport selectSupport = select(gender, count())
+            SelectProvider selectProvider = select(gender, count())
                     .from(person)
                     .groupBy(gender)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             String expected = "select gender, count(*) from Person group by gender";
-            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);
+            List<Map<String, Object>> rows = mapper.generalSelect(selectProvider);
             assertThat(rows.size()).isEqualTo(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row.get("GENDER")).isEqualTo("Male");
@@ -102,16 +102,16 @@ public class GroupByTest {
         try {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
-            SelectSupport selectSupport = select(gender, count().as("count"))
+            SelectProvider selectProvider = select(gender, count().as("count"))
                     .from(person)
                     .groupBy(gender)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             String expected = "select gender, count(*) as count from Person group by gender";
-            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);
+            List<Map<String, Object>> rows = mapper.generalSelect(selectProvider);
             assertThat(rows.size()).isEqualTo(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row.get("GENDER")).isEqualTo("Male");
@@ -131,7 +131,7 @@ public class GroupByTest {
         try {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
-            SelectSupport selectSupport = select(gender, count().as("count"))
+            SelectProvider selectProvider = select(gender, count().as("count"))
                     .from(person)
                     .groupBy(gender)
                     .orderBy(gender)
@@ -139,9 +139,9 @@ public class GroupByTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             String expected = "select gender, count(*) as count from Person group by gender order by gender";
-            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);
+            List<Map<String, Object>> rows = mapper.generalSelect(selectProvider);
             assertThat(rows.size()).isEqualTo(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row.get("GENDER")).isEqualTo("Female");
@@ -161,7 +161,7 @@ public class GroupByTest {
         try {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
-            SelectSupport selectSupport = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
+            SelectProvider selectProvider = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
                     .from(person, "a")
                     .groupBy(substring(gender, 1, 1))
                     .orderBy(gender.as("ShortGender"))
@@ -169,9 +169,9 @@ public class GroupByTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             String expected = "select substring(a.gender, 1, 1) as ShortGender, avg(a.age) as AverageAge from Person a group by substring(a.gender, 1, 1) order by ShortGender";
-            assertThat(selectSupport.getFullSelectStatement()).isEqualTo(expected);
+            assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectSupport);
+            List<Map<String, Object>> rows = mapper.generalSelect(selectProvider);
             assertThat(rows.size()).isEqualTo(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row.get("SHORTGENDER")).isEqualTo("F");

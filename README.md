@@ -58,7 +58,7 @@ One capability is that very expressive dynamic queries can be generated.  Here's
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectSupport selectSupport = select(id, animalName, bodyWeight, brainWeight)
+            SelectProvider selectProvider = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
@@ -68,7 +68,7 @@ One capability is that very expressive dynamic queries can be generated.  Here's
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectMany(selectSupport);
+            List<AnimalData> animals = mapper.selectMany(selectProvider);
             assertThat(animals.size()).isEqualTo(4);
         } finally {
             sqlSession.close();
@@ -158,8 +158,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
-import org.mybatis.dynamic.sql.delete.render.DeleteSupport;
-import org.mybatis.dynamic.sql.select.render.SelectSupport;
+import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
+import org.mybatis.dynamic.sql.select.render.SelectProvider;
 
 public class SimpleTableAnnotatedMapper {
     
@@ -174,12 +174,12 @@ public class SimpleTableAnnotatedMapper {
             @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR, typeHandler=YesNoTypeHandler.class),
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
     })
-    List<SimpleTableRecord> selectMany(SelectSupport selectSupport);
+    List<SimpleTableRecord> selectMany(SelectProvider selectProvider);
 
     @Delete({
         "${fullDeleteStatement}"
     })
-    int delete(DeleteSupport deleteSupport);
+    int delete(DeleteProvider deleteProvider);
 }
 ```
 An XML mapper might look like this:
@@ -216,7 +216,7 @@ All conditions can be accessed through expressive static methods in the ```org.m
 For example, a very simple select statement can be defined like this:
 
 ```java
-        SelectSupport selectSupport = select(count())
+        SelectProvider selectProvider = select(count())
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build()
@@ -226,7 +226,7 @@ For example, a very simple select statement can be defined like this:
 Or this (also note that you can give a table an alias):
 
 ```java
-        SelectSupport selectSupport = select(count())
+        SelectProvider selectProvider = select(count())
                 .from(simpleTable, "a")
                 .where(id, isNull())
                 .build()
@@ -235,7 +235,7 @@ Or this (also note that you can give a table an alias):
 A delete statement looks like this:
 
 ```java
-        DeleteSupport deleteSupport = deleteFrom(simpleTable)
+        DeleteProvider deleteProvider = deleteFrom(simpleTable)
                 .where(occupation, isNull())
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
@@ -244,7 +244,7 @@ A delete statement looks like this:
 The "between" condition is also expressive:
 
 ```java
-        SelectSupport selectSupport = select(count())
+        SelectProvider selectProvider = select(count())
                 .from(simpleTable)
                 .where(id, isBetween(1).and(4))
                 .build()
@@ -254,7 +254,7 @@ The "between" condition is also expressive:
 More complex expressions can be built using the "and" and "or" conditions as follows:
 
 ```java
-        SelectSupport selectSupport = select(count())
+        SelectProvider selectProvider = select(count())
                 .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
@@ -283,14 +283,14 @@ an example from ```examples.simple.SimpleTableXmlMapperTest```:
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            SelectSupport selectSupport = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+            SelectProvider selectProvider = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
                     .from(simpleTable)
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<SimpleTableRecord> rows = mapper.selectMany(selectSupport);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectProvider);
             
             assertThat(rows.size()).isEqualTo(3);
         } finally {

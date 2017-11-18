@@ -15,47 +15,41 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.AbstractSqlSupport;
+import org.mybatis.dynamic.sql.AbstractSqlProvider;
 
-public class InsertBatchSupport<T> extends AbstractSqlSupport {
+public class InsertProvider<T> extends AbstractSqlProvider {
     
     private String columnsPhrase;
     private String valuesPhrase;
-    private List<T> records;
+    private T record;
     
-    private InsertBatchSupport(Builder<T> builder) {
+    private InsertProvider(Builder<T> builder) {
         super(builder.tableName);
         this.columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
         this.valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
-        this.records = Collections.unmodifiableList(Objects.requireNonNull(builder.records));
+        this.record = Objects.requireNonNull(builder.record);
     }
     
-    public List<InsertSupport<T>> insertSupports() {
-        return records.stream()
-                .map(this::toInsertSupport)
-                .collect(Collectors.toList());
+    public T getRecord() {
+        return record;
     }
     
-    private InsertSupport<T> toInsertSupport(T record) {
-        return new InsertSupport.Builder<T>()
-                .withTableName(super.tableName())
-                .withColumnsPhrase(columnsPhrase)
-                .withValuesPhrase(valuesPhrase)
-                .withRecord(record)
-                .build();
+    public String getFullInsertStatement() {
+        return "insert into" //$NON-NLS-1$
+                + spaceBefore(tableName())
+                + spaceBefore(columnsPhrase)
+                + spaceBefore(valuesPhrase);
     }
 
     public static class Builder<T> {
         private String tableName;
         private String columnsPhrase;
         private String valuesPhrase;
-        private List<T> records = new ArrayList<>();
+        private T record;
         
         public Builder<T> withTableName(String tableName) {
             this.tableName = tableName;
@@ -72,13 +66,13 @@ public class InsertBatchSupport<T> extends AbstractSqlSupport {
             return this;
         }
         
-        public Builder<T> withRecords(List<T> records) {
-            this.records.addAll(records);
+        public Builder<T> withRecord(T record) {
+            this.record = record;
             return this;
         }
         
-        public InsertBatchSupport<T> build() {
-            return new InsertBatchSupport<>(this);
+        public InsertProvider<T> build() {
+            return new InsertProvider<>(this);
         }
     }
 }
