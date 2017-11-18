@@ -44,7 +44,7 @@ public class QueryExpressionModel {
     private Optional<GroupByModel> groupByModel;
 
     private QueryExpressionModel(Builder builder) {
-        this.connector = Optional.ofNullable(builder.connector);
+        connector = Optional.ofNullable(builder.connector);
         isDistinct = builder.isDistinct;
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);

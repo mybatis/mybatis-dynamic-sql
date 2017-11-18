@@ -19,28 +19,26 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
 
-import org.mybatis.dynamic.sql.AbstractSqlProvider;
-
-public class InsertProvider<T> extends AbstractSqlProvider {
-    
+public class InsertStatement<T> {
+    private String tableName;
     private String columnsPhrase;
     private String valuesPhrase;
     private T record;
     
-    private InsertProvider(Builder<T> builder) {
-        super(builder.tableName);
-        this.columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
-        this.valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
-        this.record = Objects.requireNonNull(builder.record);
+    private InsertStatement(Builder<T> builder) {
+        tableName = Objects.requireNonNull(builder.tableName);
+        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
+        valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
+        record = Objects.requireNonNull(builder.record);
     }
     
     public T getRecord() {
         return record;
     }
     
-    public String getFullInsertStatement() {
+    public String getInsertStatement() {
         return "insert into" //$NON-NLS-1$
-                + spaceBefore(tableName())
+                + spaceBefore(tableName)
                 + spaceBefore(columnsPhrase)
                 + spaceBefore(valuesPhrase);
     }
@@ -71,8 +69,8 @@ public class InsertProvider<T> extends AbstractSqlProvider {
             return this;
         }
         
-        public InsertProvider<T> build() {
-            return new InsertProvider<>(this);
+        public InsertStatement<T> build() {
+            return new InsertStatement<>(this);
         }
     }
 }

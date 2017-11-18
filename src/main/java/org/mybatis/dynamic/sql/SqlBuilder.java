@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
-import org.mybatis.dynamic.sql.insert.InsertBatchDSL;
+import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
@@ -75,12 +75,12 @@ public interface SqlBuilder {
     }
     
     @SafeVarargs
-    static <T> InsertBatchDSL.IntoGatherer<T> insert(T...records) {
-        return InsertBatchDSL.insert(records);
+    static <T> BatchInsertDSL.IntoGatherer<T> insert(T...records) {
+        return BatchInsertDSL.insert(records);
     }
     
-    static <T> InsertBatchDSL.IntoGatherer<T> insert(List<T> records) {
-        return InsertBatchDSL.insert(records);
+    static <T> BatchInsertDSL.IntoGatherer<T> insert(List<T> records) {
+        return BatchInsertDSL.insert(records);
     }
     
     static InsertSelectDSL.InsertColumnGatherer insertInto(SqlTable table) {

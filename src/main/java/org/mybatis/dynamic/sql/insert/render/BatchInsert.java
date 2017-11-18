@@ -21,30 +21,28 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.AbstractSqlProvider;
-
-public class InsertBatchProvider<T> extends AbstractSqlProvider {
-    
+public class BatchInsert<T> {
+    private String tableName;
     private String columnsPhrase;
     private String valuesPhrase;
     private List<T> records;
     
-    private InsertBatchProvider(Builder<T> builder) {
-        super(builder.tableName);
-        this.columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
-        this.valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
-        this.records = Collections.unmodifiableList(Objects.requireNonNull(builder.records));
+    private BatchInsert(Builder<T> builder) {
+        tableName = Objects.requireNonNull(builder.tableName);
+        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
+        valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
+        records = Collections.unmodifiableList(Objects.requireNonNull(builder.records));
     }
     
-    public List<InsertProvider<T>> insertProviders() {
+    public List<InsertStatement<T>> insertStatements() {
         return records.stream()
-                .map(this::toInsertProvider)
+                .map(this::toInsertStatement)
                 .collect(Collectors.toList());
     }
     
-    private InsertProvider<T> toInsertProvider(T record) {
-        return new InsertProvider.Builder<T>()
-                .withTableName(super.tableName())
+    private InsertStatement<T> toInsertStatement(T record) {
+        return new InsertStatement.Builder<T>()
+                .withTableName(tableName)
                 .withColumnsPhrase(columnsPhrase)
                 .withValuesPhrase(valuesPhrase)
                 .withRecord(record)
@@ -77,8 +75,8 @@ public class InsertBatchProvider<T> extends AbstractSqlProvider {
             return this;
         }
         
-        public InsertBatchProvider<T> build() {
-            return new InsertBatchProvider<>(this);
+        public BatchInsert<T> build() {
+            return new BatchInsert<>(this);
         }
     }
 }

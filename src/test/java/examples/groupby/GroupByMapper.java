@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Select;
-import org.mybatis.dynamic.sql.select.render.SelectProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
 
 public interface GroupByMapper {
 
     @Select({
-        "${fullSelectStatement}"
+        "${selectStatement}"
     })
-    List<Map<String, Object>> generalSelect(SelectProvider selectProvider);
+    List<Map<String, Object>> generalSelect(SelectStatement selectStatement);
 }

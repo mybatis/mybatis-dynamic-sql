@@ -19,8 +19,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectRenderer;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModel;
 
@@ -47,7 +47,7 @@ public class InsertSelectModel {
         return columnList;
     }
     
-    public InsertSelectProvider render(RenderingStrategy renderingStrategy) {
+    public InsertSelectStatement render(RenderingStrategy renderingStrategy) {
         return new InsertSelectRenderer.Builder()
                 .withInsertSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)

@@ -25,18 +25,18 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 @RunWith(JUnitPlatform.class)
-public class DeleteProviderTest {
+public class DeleteStatementTest {
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = foo.column("first_name", JDBCType.VARCHAR);
 
     @Test
     public void testFullStatement() {
-        DeleteProvider deleteProvider = deleteFrom(foo)
+        DeleteStatement deleteStatement = deleteFrom(foo)
                 .where(id, isEqualTo(3), and(firstName, isEqualTo("Betty")))
                 .or(firstName, isLikeCaseInsensitive("%Fr%"))
                 .build()
@@ -44,25 +44,25 @@ public class DeleteProviderTest {
 
         SoftAssertions.assertSoftly(softly -> {
             String expectedFullStatement = "delete from foo where (id = #{parameters.p1,jdbcType=INTEGER} and first_name = #{parameters.p2,jdbcType=VARCHAR}) or upper(first_name) like #{parameters.p3,jdbcType=VARCHAR}";
-            softly.assertThat(deleteProvider.getFullDeleteStatement()).isEqualTo(expectedFullStatement);
+            softly.assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expectedFullStatement);
 
-            softly.assertThat(deleteProvider.getParameters().size()).isEqualTo(3);
-            softly.assertThat(deleteProvider.getParameters().get("p1")).isEqualTo(3);
-            softly.assertThat(deleteProvider.getParameters().get("p2")).isEqualTo("Betty");
-            softly.assertThat(deleteProvider.getParameters().get("p3")).isEqualTo("%FR%");
+            softly.assertThat(deleteStatement.getParameters().size()).isEqualTo(3);
+            softly.assertThat(deleteStatement.getParameters().get("p1")).isEqualTo(3);
+            softly.assertThat(deleteStatement.getParameters().get("p2")).isEqualTo("Betty");
+            softly.assertThat(deleteStatement.getParameters().get("p3")).isEqualTo("%FR%");
         });
     }
 
     @Test
     public void testFullStatementWithoutWhere() {
-        DeleteProvider deleteProvider = deleteFrom(foo)
+        DeleteStatement deleteStatement = deleteFrom(foo)
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
         SoftAssertions.assertSoftly(softly -> {
             String expectedFullStatement = "delete from foo";
-            softly.assertThat(deleteProvider.getFullDeleteStatement()).isEqualTo(expectedFullStatement);
-            softly.assertThat(deleteProvider.getParameters().size()).isEqualTo(0);
+            softly.assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expectedFullStatement);
+            softly.assertThat(deleteStatement.getParameters().size()).isEqualTo(0);
         });
     }
 }

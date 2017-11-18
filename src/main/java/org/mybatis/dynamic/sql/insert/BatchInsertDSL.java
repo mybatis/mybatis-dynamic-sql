@@ -27,13 +27,13 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class InsertBatchDSL<T> {
+public class BatchInsertDSL<T> {
 
     private List<T> records;
     private SqlTable table;
     private List<InsertMapping> columnMappings = new ArrayList<>();
     
-    private InsertBatchDSL(List<T> records, SqlTable table) {
+    private BatchInsertDSL(List<T> records, SqlTable table) {
         this.records = records;
         this.table = table;
     }
@@ -42,8 +42,8 @@ public class InsertBatchDSL<T> {
         return new BatchColumnMappingFinisher<>(column);
     }
     
-    public InsertBatchModel<T> build() {
-        return new InsertBatchModel.Builder<T>()
+    public BatchInsertModel<T> build() {
+        return new BatchInsertModel.Builder<T>()
                 .withTable(table)
                 .withRecords(records)
                 .withColumnMappings(columnMappings)
@@ -66,8 +66,8 @@ public class InsertBatchDSL<T> {
             this.records = records;
         }
 
-        public InsertBatchDSL<T> into(SqlTable table) {
-            return new InsertBatchDSL<>(records, table);
+        public BatchInsertDSL<T> into(SqlTable table) {
+            return new BatchInsertDSL<>(records, table);
         }
     }
     
@@ -78,24 +78,24 @@ public class InsertBatchDSL<T> {
             this.column = column;
         }
             
-        public InsertBatchDSL<T> toProperty(String property) {
+        public BatchInsertDSL<T> toProperty(String property) {
             columnMappings.add(PropertyMapping.of(column, property));
-            return InsertBatchDSL.this;
+            return BatchInsertDSL.this;
         }
             
-        public InsertBatchDSL<T> toNull() {
+        public BatchInsertDSL<T> toNull() {
             columnMappings.add(NullMapping.of(column));
-            return InsertBatchDSL.this;
+            return BatchInsertDSL.this;
         }
             
-        public InsertBatchDSL<T> toConstant(String constant) {
+        public BatchInsertDSL<T> toConstant(String constant) {
             columnMappings.add(ConstantMapping.of(column, constant));
-            return InsertBatchDSL.this;
+            return BatchInsertDSL.this;
         }
             
-        public InsertBatchDSL<T> toStringConstant(String constant) {
+        public BatchInsertDSL<T> toStringConstant(String constant) {
             columnMappings.add(StringConstantMapping.of(column, constant));
-            return InsertBatchDSL.this;
+            return BatchInsertDSL.this;
         }
     }
 }

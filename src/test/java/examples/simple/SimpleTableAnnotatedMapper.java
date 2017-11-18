@@ -26,26 +26,26 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
-import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertProvider;
-import org.mybatis.dynamic.sql.select.render.SelectProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateProvider;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
 @Mapper
 public interface SimpleTableAnnotatedMapper {
     
     @Insert({
-        "${fullInsertStatement}"
+        "${insertStatement}"
     })
-    int insert(InsertProvider<SimpleTableRecord> insertProvider);
+    int insert(InsertStatement<SimpleTableRecord> insertStatement);
 
     @Update({
-        "${fullUpdateStatement}"
+        "${updateStatement}"
     })
-    int update(UpdateProvider updateProvider);
+    int update(UpdateStatement updateStatement);
     
     @Select({
-        "${fullSelectStatement}"
+        "${selectStatement}"
     })
     @Results(id="SimpleTableResult", value= {
             @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
@@ -55,21 +55,21 @@ public interface SimpleTableAnnotatedMapper {
             @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR, typeHandler=YesNoTypeHandler.class),
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
     })
-    List<SimpleTableRecord> selectMany(SelectProvider selectProvider);
+    List<SimpleTableRecord> selectMany(SelectStatement selectStatement);
     
     @Select({
-        "${fullSelectStatement}"
+        "${selectStatement}"
     })
     @ResultMap("SimpleTableResult")
-    SimpleTableRecord selectOne(SelectProvider selectProvider);
+    SimpleTableRecord selectOne(SelectStatement selectStatement);
     
     @Delete({
-        "${fullDeleteStatement}"
+        "${deleteStatement}"
     })
-    int delete(DeleteProvider deleteProvider);
+    int delete(DeleteStatement deleteStatement);
 
     @Select({
-        "${fullSelectStatement}"
+        "${selectStatement}"
     })
-    long count(SelectProvider selectProvider);
+    long count(SelectStatement selectStatement);
 }

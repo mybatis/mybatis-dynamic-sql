@@ -22,26 +22,24 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AbstractSqlProvider;
-
-public class InsertSelectProvider extends AbstractSqlProvider {
-    
+public class InsertSelectStatement {
+    private String tableName;
     private Optional<String> columnsPhrase;
-    private String renderedSelectStatement;
+    private String selectStatement;
     private Map<String, Object> parameters;
     
-    private InsertSelectProvider(Builder builder) {
-        super(builder.tableName);
-        this.columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
-        this.renderedSelectStatement = Objects.requireNonNull(builder.renderedSelectStatement);
-        this.parameters = Objects.requireNonNull(builder.parameters);
+    private InsertSelectStatement(Builder builder) {
+        tableName = Objects.requireNonNull(builder.tableName);
+        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
+        selectStatement = Objects.requireNonNull(builder.selectStatement);
+        parameters = Objects.requireNonNull(builder.parameters);
     }
     
-    public String getFullInsertStatement() {
+    public String getInsertStatement() {
         return "insert into" //$NON-NLS-1$
-                + spaceBefore(tableName())
+                + spaceBefore(tableName)
                 + spaceBefore(columnsPhrase)
-                + spaceBefore(renderedSelectStatement);
+                + spaceBefore(selectStatement);
     }
     
     public Map<String, Object> getParameters() {
@@ -51,7 +49,7 @@ public class InsertSelectProvider extends AbstractSqlProvider {
     public static class Builder {
         private String tableName;
         private Optional<String> columnsPhrase;
-        private String renderedSelectStatement;
+        private String selectStatement;
         private Map<String, Object> parameters = new HashMap<>();
         
         public Builder withTableName(String tableName) {
@@ -64,8 +62,8 @@ public class InsertSelectProvider extends AbstractSqlProvider {
             return this;
         }
         
-        public Builder withSelectStatement(String renderedSelectStatement) {
-            this.renderedSelectStatement = renderedSelectStatement;
+        public Builder withSelectStatement(String selectStatement) {
+            this.selectStatement = selectStatement;
             return this;
         }
         
@@ -74,8 +72,8 @@ public class InsertSelectProvider extends AbstractSqlProvider {
             return this;
         }
         
-        public InsertSelectProvider build() {
-            return new InsertSelectProvider(this);
+        public InsertSelectStatement build() {
+            return new InsertSelectStatement(this);
         }
     }
 }

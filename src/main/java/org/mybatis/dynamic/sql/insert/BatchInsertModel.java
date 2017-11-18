@@ -23,17 +23,17 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.InsertBatchProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertBatchRenderer;
+import org.mybatis.dynamic.sql.insert.render.BatchInsert;
+import org.mybatis.dynamic.sql.insert.render.BatchInsertRenderer;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.InsertMapping;
 
-public class InsertBatchModel<T> {
+public class BatchInsertModel<T> {
     private SqlTable table;
     private List<T> records;
     private List<InsertMapping> columnMappings;
     
-    private InsertBatchModel(Builder<T> builder) {
+    private BatchInsertModel(Builder<T> builder) {
         table = Objects.requireNonNull(builder.table);
         records = Collections.unmodifiableList(Objects.requireNonNull(builder.records));
         columnMappings = Objects.requireNonNull(builder.columnMappings);
@@ -51,9 +51,9 @@ public class InsertBatchModel<T> {
         return table;
     }
     
-    public InsertBatchProvider<T> render(RenderingStrategy renderingStrategy) {
-        return new InsertBatchRenderer.Builder<T>()
-                .withInsertBatchModel(this)
+    public BatchInsert<T> render(RenderingStrategy renderingStrategy) {
+        return new BatchInsertRenderer.Builder<T>()
+                .withBatchInsertModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
@@ -79,8 +79,8 @@ public class InsertBatchModel<T> {
             return this;
         }
         
-        public InsertBatchModel<T> build() {
-            return new InsertBatchModel<>(this);
+        public BatchInsertModel<T> build() {
+            return new BatchInsertModel<>(this);
         }
     }
 }

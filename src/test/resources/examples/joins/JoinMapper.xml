@@ -31,10 +31,10 @@
   </resultMap>
 
   <select id="selectMany" resultMap="SimpleJoinResult">
-    ${fullSelectStatement}
+    ${selectStatement}
   </select>
 
   <select id="generalSelect" resultType="map">
-    ${fullSelectStatement}
+    ${selectStatement}
   </select>
 </mapper>

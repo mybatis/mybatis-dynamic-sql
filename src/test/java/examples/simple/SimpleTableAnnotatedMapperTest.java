@@ -35,11 +35,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertProvider;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
 @RunWith(JUnitPlatform.class)
 public class SimpleTableAnnotatedMapperTest {
@@ -70,14 +70,14 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
-            SelectProvider selectProvider = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+            SelectStatement selectStatement = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
                     .from(simpleTable)
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<SimpleTableRecord> rows = mapper.selectMany(selectProvider);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectStatement);
             
             assertThat(rows.size()).isEqualTo(3);
         } finally {
@@ -91,13 +91,13 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
-            SelectProvider selectProvider = selectByExample()
+            SelectStatement selectStatement = selectByExample()
                     .where(employed, isEqualTo(false))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<SimpleTableRecord> rows = mapper.selectMany(selectProvider);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectStatement);
             
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(rows.size()).isEqualTo(2);
@@ -115,12 +115,12 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
-            SelectProvider selectProvider = selectByExample()
+            SelectStatement selectStatement = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            List<SimpleTableRecord> rows = mapper.selectMany(selectProvider);
+            List<SimpleTableRecord> rows = mapper.selectMany(selectStatement);
             
             assertThat(rows.size()).isEqualTo(2);
         } finally {
@@ -133,11 +133,11 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            DeleteProvider deleteProvider = deleteFrom(simpleTable)
+            DeleteStatement deleteStatement = deleteFrom(simpleTable)
                     .where(occupation, isNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
-            int rows = mapper.delete(deleteProvider);
+            int rows = mapper.delete(deleteStatement);
             
             assertThat(rows).isEqualTo(2);
         } finally {
@@ -150,8 +150,8 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            DeleteProvider deleteProvider = buildDeleteByPrimaryKeyProvider(2);
-            int rows = mapper.delete(deleteProvider);
+            DeleteStatement deleteStatement = buildDeleteByPrimaryKeyStatement(2);
+            int rows = mapper.delete(deleteStatement);
             
             assertThat(rows).isEqualTo(1);
         } finally {
@@ -172,8 +172,8 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            InsertProvider<SimpleTableRecord> insertProvider = buildFullInsertProvider(record);
-            int rows = mapper.insert(insertProvider);
+            InsertStatement<SimpleTableRecord> insertStatement = buildFullInsert(record);
+            int rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
         } finally {
             session.close();
@@ -192,8 +192,8 @@ public class SimpleTableAnnotatedMapperTest {
             record.setBirthDate(new Date());
             record.setEmployed(false);
             
-            InsertProvider<SimpleTableRecord> insertProvider = buildSelectiveInsertProvider(record);
-            int rows = mapper.insert(insertProvider);
+            InsertStatement<SimpleTableRecord> insertStatement = buildSelectiveInsert(record);
+            int rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
         } finally {
             session.close();
@@ -214,14 +214,14 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(buildFullInsertProvider(record));
+                int rows = mapper.insert(buildFullInsert(record));
                 softly.assertThat(rows).isEqualTo(1);
             
                 record.setOccupation("Programmer");
-                rows = mapper.update(buildFullUpdateByPrimaryKeyProvider(record));
+                rows = mapper.update(buildFullUpdateByPrimaryKeyStatement(record));
                 softly.assertThat(rows).isEqualTo(1);
             
-                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyProvider(100));
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyStatement(100));
                 softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
             });
         } finally {
@@ -243,16 +243,16 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(buildFullInsertProvider(record));
+                int rows = mapper.insert(buildFullInsert(record));
                 softly.assertThat(rows).isEqualTo(1);
 
                 SimpleTableRecord updateRecord = new SimpleTableRecord();
                 updateRecord.setId(100);
                 updateRecord.setOccupation("Programmer");
-                rows = mapper.update(buildSelectiveUpdateByPrimaryKeyProvider(updateRecord));
+                rows = mapper.update(buildSelectiveUpdateByPrimaryKeyStatement(updateRecord));
                 softly.assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyProvider(100));
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyStatement(100));
                 softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
                 softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
             });
@@ -276,20 +276,20 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(buildFullInsertProvider(record));
+                int rows = mapper.insert(buildFullInsert(record));
                 softly.assertThat(rows).isEqualTo(1);
 
-                UpdateProvider updateProvider = update(simpleTable)
+                UpdateStatement updateStatement = update(simpleTable)
                         .set(occupation).equalToNull()
                         .set(employed).equalTo(false)
                         .where(id, isEqualTo(100))
                         .build()
                         .render(RenderingStrategy.MYBATIS3);
 
-                rows = mapper.update(updateProvider);
+                rows = mapper.update(updateStatement);
                 softly.assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyProvider(100));
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyStatement(100));
                 softly.assertThat(newRecord.getOccupation()).isNull();
                 softly.assertThat(newRecord.getEmployed()).isEqualTo(false);
                 softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
@@ -313,20 +313,20 @@ public class SimpleTableAnnotatedMapperTest {
             record.setOccupation("Developer");
             
             SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(buildFullInsertProvider(record));
+                int rows = mapper.insert(buildFullInsert(record));
                 softly.assertThat(rows).isEqualTo(1);
 
                 record.setOccupation("Programmer");
-                UpdateProvider updateProvider = updateByExample(record)
+                UpdateStatement updateStatement = updateByExample(record)
                         .where(id, isEqualTo(100))
                         .and(firstName, isEqualTo("Joe"))
                         .build()
                         .render(RenderingStrategy.MYBATIS3);
 
-                rows = mapper.update(updateProvider);
+                rows = mapper.update(updateStatement);
                 softly.assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyProvider(100));
+                SimpleTableRecord newRecord = mapper.selectOne(buildSelectByPrimaryKeyStatement(100));
                 softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
             });
         } finally {
@@ -339,12 +339,12 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            SelectProvider selectProvider = select(count())
+            SelectStatement selectStatement = select(count())
                     .from(simpleTable)
                     .where(occupation, isNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
-            long rows = mapper.count(selectProvider);
+            long rows = mapper.count(selectStatement);
             
             assertThat(rows).isEqualTo(2L);
         } finally {

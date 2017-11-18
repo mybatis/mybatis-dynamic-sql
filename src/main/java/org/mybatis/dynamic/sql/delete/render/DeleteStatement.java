@@ -23,15 +23,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AbstractSqlProvider;
-import org.mybatis.dynamic.sql.where.render.WhereProvider;
+import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
 
-public class DeleteProvider extends AbstractSqlProvider {
+public class DeleteStatement {
+    private String tableName;
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
     
-    private DeleteProvider(Builder builder) {
-        super(builder.tableName);
+    private DeleteStatement(Builder builder) {
+        tableName = Objects.requireNonNull(builder.tableName);
         whereClause = Objects.requireNonNull(builder.whereClause);
         parameters = Objects.requireNonNull(builder.parameters);
     }
@@ -40,9 +40,9 @@ public class DeleteProvider extends AbstractSqlProvider {
         return parameters;
     }
     
-    public String getFullDeleteStatement() {
+    public String getDeleteStatement() {
         return "delete from" //$NON-NLS-1$
-                + spaceBefore(tableName())
+                + spaceBefore(tableName)
                 + spaceBefore(whereClause);
     }
 
@@ -56,14 +56,15 @@ public class DeleteProvider extends AbstractSqlProvider {
             return this;
         }
         
-        public Builder withWhereProvider(Optional<WhereProvider> whereProvider) {
-            whereClause = whereProvider.map(WhereProvider::getWhereClause);
-            parameters.putAll(whereProvider.map(WhereProvider::getParameters).orElse(Collections.emptyMap()));
+        public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
+            whereClause = whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);
+            parameters.putAll(whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
+                    .orElse(Collections.emptyMap()));
             return this;
         }
         
-        public DeleteProvider build() {
-            return new DeleteProvider(this);
+        public DeleteStatement build() {
+            return new DeleteStatement(this);
         }
     }
 }

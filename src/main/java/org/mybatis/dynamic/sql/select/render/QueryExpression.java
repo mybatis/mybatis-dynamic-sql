@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AbstractSqlProvider;
-import org.mybatis.dynamic.sql.where.render.WhereProvider;
+import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
 
-public class QueryExpressionProvider extends AbstractSqlProvider {
+public class QueryExpression {
     
+    private String tableName;
     private Optional<String> connector;
     private String columnList;
     private Optional<String> whereClause;
@@ -37,8 +37,8 @@ public class QueryExpressionProvider extends AbstractSqlProvider {
     private Optional<String> joinClause;
     private Optional<String> groupByClause;
     
-    private QueryExpressionProvider(Builder builder) {
-        super(builder.tableName);
+    private QueryExpression(Builder builder) {
+        tableName = Objects.requireNonNull(builder.tableName);
         connector = Objects.requireNonNull(builder.connector);
         columnList = Objects.requireNonNull(builder.columnList);
         whereClause = Objects.requireNonNull(builder.whereClause);
@@ -58,7 +58,7 @@ public class QueryExpressionProvider extends AbstractSqlProvider {
                 + (isDistinct ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + columnList
                 + " from " //$NON-NLS-1$
-                + tableName()
+                + tableName
                 + spaceBefore(joinClause)
                 + spaceBefore(whereClause)
                 + spaceBefore(groupByClause);
@@ -89,9 +89,10 @@ public class QueryExpressionProvider extends AbstractSqlProvider {
             return this;
         }
         
-        public Builder withWhereProvider(Optional<WhereProvider> whereProvider) {
-            whereClause = whereProvider.map(WhereProvider::getWhereClause);
-            parameters.putAll(whereProvider.map(WhereProvider::getParameters).orElse(Collections.emptyMap()));
+        public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
+            whereClause = whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);
+            parameters.putAll(whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
+                    .orElse(Collections.emptyMap()));
             return this;
         }
         
@@ -115,8 +116,8 @@ public class QueryExpressionProvider extends AbstractSqlProvider {
             return this;
         }
         
-        public QueryExpressionProvider build() {
-            return new QueryExpressionProvider(this);
+        public QueryExpression build() {
+            return new QueryExpression(this);
         }
     }
 }

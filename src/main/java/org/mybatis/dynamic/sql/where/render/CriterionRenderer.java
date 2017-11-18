@@ -35,9 +35,9 @@ public class CriterionRenderer {
     private TableAliasCalculator tableAliasCalculator;
     
     private CriterionRenderer(Builder builder) {
-        this.sequence = Objects.requireNonNull(builder.sequence);
-        this.renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        this.tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
+        sequence = Objects.requireNonNull(builder.sequence);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
     }
     
     public <T> FragmentAndParameters render(SqlCriterion<T> criterion) {

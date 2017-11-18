@@ -13,10 +13,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.generated.always;
+package examples.generated.always.sqlprovider;
 
-import static examples.generated.always.GeneratedAlwaysDynamicSqlSupport.*;
-import static org.assertj.core.api.Assertions.*;
+import static examples.generated.always.sqlprovider.GeneratedAlwaysDynamicSqlSupport.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
@@ -26,11 +26,15 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +46,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
 @RunWith(JUnitPlatform.class)
-public class GeneratedAlwaysXmlMapperTest {
+public class GeneratedAlwaysAnnotatedMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -59,15 +63,18 @@ public class GeneratedAlwaysXmlMapperTest {
             sr.runScript(new InputStreamReader(is));
         }
         
-        is = getClass().getResourceAsStream("/examples/generated/always/MapperConfig.xml");
-        sqlSessionFactory = new SqlSessionFactoryBuilder().build(is);
+        UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
+        Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
+        Configuration config = new Configuration(environment);
+        config.addMapper(GeneratedAlwaysAnnotatedMapper.class);
+        sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
     
     @Test
     public void testSelectByExample() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
             SelectStatement selectStatement = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
@@ -87,7 +94,7 @@ public class GeneratedAlwaysXmlMapperTest {
     public void testFirstNameIn() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
             SelectStatement selectStatement = select(id, firstName, lastName, fullName)
                     .from(generatedAlways)
@@ -107,7 +114,7 @@ public class GeneratedAlwaysXmlMapperTest {
     public void testInsert() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -128,7 +135,7 @@ public class GeneratedAlwaysXmlMapperTest {
     public void testBatchInsertWithList() {
         SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH);
         try {
-            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
             
             BatchInsert<GeneratedAlwaysRecord> batchInsert = insert(records)
@@ -156,7 +163,7 @@ public class GeneratedAlwaysXmlMapperTest {
     public void testBatchInsertWithArray() {
         SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH);
         try {
-            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
 
             GeneratedAlwaysRecord record1 = new GeneratedAlwaysRecord();
             record1.setId(1000);
@@ -220,13 +227,13 @@ public class GeneratedAlwaysXmlMapperTest {
     public void testInsertSelective() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setId(100);
             record.setFirstName("Joe");
             record.setLastName("Jones");
             
-            int rows = mapper.insert(buildInsertSelectiveStatement(record));
+            int rows = mapper.insert(buildInsertSelectiveProvider(record));
             
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(rows).isEqualTo(1);
@@ -241,7 +248,7 @@ public class GeneratedAlwaysXmlMapperTest {
     public void testUpdateByPrimaryKey() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -253,10 +260,10 @@ public class GeneratedAlwaysXmlMapperTest {
                 softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
             
                 record.setLastName("Smith");
-                rows = mapper.update(buildUpdateByPrimaryKeyStatement(record));
+                rows = mapper.update(buildUpdateByPrimaryKeyProvider(record));
                 softly.assertThat(rows).isEqualTo(1);
             
-                GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(100);
+                GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(selectByPrimaryKey(100));
                 softly.assertThat(newRecord.getFullName()).isEqualTo("Joe Smith");
             });
         } finally {
@@ -268,7 +275,7 @@ public class GeneratedAlwaysXmlMapperTest {
     public void testUpdateByExampleSelective() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setLastName("Jones");
             
@@ -303,7 +310,7 @@ public class GeneratedAlwaysXmlMapperTest {
     public void testUpdateByExample() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            GeneratedAlwaysXmlMapper mapper = session.getMapper(GeneratedAlwaysXmlMapper.class);
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -315,10 +322,10 @@ public class GeneratedAlwaysXmlMapperTest {
             GeneratedAlwaysRecord updateRecord = new GeneratedAlwaysRecord();
             updateRecord.setId(100);
             updateRecord.setLastName("Smith");
-            rows = mapper.update(buildUpdateByPrimaryKeySelectiveStatement(updateRecord));
+            rows = mapper.update(buildUpdateByPrimaryKeySelectiveProvider(updateRecord));
             assertThat(rows).isEqualTo(1);
             
-            GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(100);
+            GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(selectByPrimaryKey(100));
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
                 softly.assertThat(newRecord.getLastName()).isEqualTo("Smith");

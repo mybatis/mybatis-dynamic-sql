@@ -50,10 +50,10 @@ public class QueryExpressionDSL {
     private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
     private QueryExpressionDSL(Builder builder) {
-        this.connector = builder.connector;
-        this.selectList = Arrays.asList(builder.selectList);
-        this.isDistinct = builder.isDistinct;
-        this.selectModelBuilder = Objects.requireNonNull(builder.selectModelBuilder);
+        connector = builder.connector;
+        selectList = Arrays.asList(builder.selectList);
+        isDistinct = builder.isDistinct;
+        selectModelBuilder = Objects.requireNonNull(builder.selectModelBuilder);
     }
     
     public QueryExpressionAfterFromBuilder from(SqlTable table) {

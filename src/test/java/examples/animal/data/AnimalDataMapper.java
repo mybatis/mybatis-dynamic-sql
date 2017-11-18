@@ -23,16 +23,16 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.mybatis.dynamic.sql.delete.render.DeleteProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertProvider;
-import org.mybatis.dynamic.sql.select.render.SelectProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateProvider;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
 public interface AnimalDataMapper {
 
     @Select({
-        "${fullSelectStatement}"
+        "${selectStatement}"
     })
     @Results({
         @Result(column="id", property="id"),
@@ -40,35 +40,35 @@ public interface AnimalDataMapper {
         @Result(column="brain_weight", property="brainWeight"),
         @Result(column="body_weight", property="bodyWeight")
     })
-    List<AnimalData> selectMany(SelectProvider selectProvider);
+    List<AnimalData> selectMany(SelectStatement selectStatement);
 
     @Select({
-        "${fullSelectStatement}"
+        "${selectStatement}"
     })
-    Long selectALong(SelectProvider selectProvider);
+    Long selectALong(SelectStatement selectStatement);
     
     @Select({
-        "${fullSelectStatement}"
+        "${selectStatement}"
     })
-    Double selectADouble(SelectProvider selectProvider);
+    Double selectADouble(SelectStatement selectStatement);
     
     @Delete({
-        "${fullDeleteStatement}"
+        "${deleteStatement}"
     })
-    int delete(DeleteProvider deleteProvider);
+    int delete(DeleteStatement deleteStatement);
 
     @Update({
-        "${fullUpdateStatement}"
+        "${updateStatement}"
     })
-    int update(UpdateProvider updateProvider);
+    int update(UpdateStatement updateStatement);
     
     @Insert({
-        "${fullInsertStatement}"
+        "${insertStatement}"
     })
-    int insert(InsertProvider<AnimalData> insertProvider);
+    int insert(InsertStatement<AnimalData> insertStatement);
 
     @Insert({
-        "${fullInsertStatement}"
+        "${insertStatement}"
     })
-    int insertSelect(InsertSelectProvider insertSelectProvider);
+    int insertSelect(InsertSelectStatement insertSelectStatement);
 }

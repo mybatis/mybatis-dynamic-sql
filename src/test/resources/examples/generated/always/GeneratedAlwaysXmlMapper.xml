@@ -27,11 +27,11 @@
   </resultMap>
 
   <insert id="insert" useGeneratedKeys="true" keyProperty="record.fullName">
-    ${fullInsertStatement}
+    ${insertStatement}
   </insert>
   
   <select id="selectMany" resultMap="GeneratedAlwaysResult">
-    ${fullSelectStatement}
+    ${selectStatement}
   </select>
 
   <select id="selectByPrimaryKey" resultMap="GeneratedAlwaysResult">
@@ -41,6 +41,6 @@
   </select>
   
   <update id="update">
-    ${fullUpdateStatement}
+    ${updateStatement}
   </update>
 </mapper>

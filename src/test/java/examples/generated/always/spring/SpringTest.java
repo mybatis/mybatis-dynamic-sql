@@ -15,7 +15,7 @@
  */
 package examples.generated.always.spring;
 
-import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.buildInsertProvider;
+import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.buildInsert;
 import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.id;
 import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.selectByExample;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,9 +31,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.mybatis.dynamic.sql.insert.render.InsertProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -61,7 +61,7 @@ public class SpringTest {
     public void testSelect() {
         NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(db);
         
-        SelectProvider selectProvider = selectByExample()
+        SelectStatement selectStatement = selectByExample()
                 .where(id, isGreaterThan(3))
                 .orderBy(id.descending())
                 .build()
@@ -72,9 +72,9 @@ public class SpringTest {
                 + "where a.id > :p1 "
                 + "order by id DESC";
         
-        assertThat(selectProvider.getFullSelectStatement()).isEqualTo(expected);
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         
-        List<GeneratedAlwaysRecord> records = template.query(selectProvider.getFullSelectStatement(), selectProvider.getParameters(),
+        List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), selectStatement.getParameters(),
                 new RowMapper<GeneratedAlwaysRecord>(){
                     @Override
                     public GeneratedAlwaysRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -103,12 +103,12 @@ public class SpringTest {
         record.setFirstName("Bob");
         record.setLastName("Jones");
         
-        InsertProvider<GeneratedAlwaysRecord> insertProvider = buildInsertProvider(record);
+        InsertStatement<GeneratedAlwaysRecord> insertStatement = buildInsert(record);
         
         SqlParameterSource ps = new BeanPropertySqlParameterSource(record);
         KeyHolder kh = new GeneratedKeyHolder();
         
-        int rows = template.update(insertProvider.getFullInsertStatement(), ps, kh);
+        int rows = template.update(insertStatement.getInsertStatement(), ps, kh);
         
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(rows).isEqualTo(1);

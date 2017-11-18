@@ -23,8 +23,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectProvider;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
 
 public class SelectModel {
     private List<QueryExpressionModel> queryExpressions;
@@ -43,7 +43,7 @@ public class SelectModel {
         return orderByModel;
     }
     
-    public SelectProvider render(RenderingStrategy renderingStrategy) {
+    public SelectStatement render(RenderingStrategy renderingStrategy) {
         return new SelectRenderer.Builder()
                 .withSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)

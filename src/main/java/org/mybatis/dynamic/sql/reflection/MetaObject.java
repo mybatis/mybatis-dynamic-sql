@@ -35,9 +35,9 @@ public class MetaObject {
     @SuppressWarnings("unchecked")
     private MetaObject(Object object) {
         if (object instanceof Map) {
-            this.objectWrapper = new MapWrapper(this, (Map<String, Object>) object);
+            objectWrapper = new MapWrapper(this, (Map<String, Object>) object);
         } else {
-            this.objectWrapper = new BeanWrapper(this, object);
+            objectWrapper = new BeanWrapper(this, object);
         }
     }
 

@@ -8,8 +8,8 @@ The most common use case is to generate statements, and a matching set of parame
 by MyBatis.  The library will also generate statements and parameter objects that are compatible with Spring JDBC
 templates.
 
-The library works by implementing an SQL like DSL that creates an object (an "SQL provider") containing a full SQL statement and any
-parameters required for that statement.  The SQL provider object can be used directly by MyBatis as a parameter to a mapper method.
+The library works by implementing an SQL-like DSL that creates an object containing a full SQL statement and any
+parameters required for that statement.  The SQL statement object can be used directly by MyBatis as a parameter to a mapper method.
 
 The library will generate these types of SQL statements:
 

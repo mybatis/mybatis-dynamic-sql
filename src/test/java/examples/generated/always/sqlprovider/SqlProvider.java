@@ -13,18 +13,23 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql;
+package examples.generated.always.sqlprovider;
 
-import java.util.Objects;
+import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
-public abstract class AbstractSqlProvider {
-    private String tableName;
+public class SqlProvider {
 
-    public AbstractSqlProvider(String tableName) {
-        this.tableName = Objects.requireNonNull(tableName);
+    public static String insert(InsertStatement<GeneratedAlwaysRecord> insertStatement) {
+        return insertStatement.getInsertStatement();
     }
     
-    public String tableName() {
-        return tableName;
+    public static String update(UpdateStatement updateStatement) {
+        return updateStatement.getUpdateStatement();
+    }
+
+    public static String select(SelectStatement selectStatement) {
+        return selectStatement.getSelectStatement();
     }
 }

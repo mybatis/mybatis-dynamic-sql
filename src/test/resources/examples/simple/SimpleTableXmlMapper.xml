@@ -29,26 +29,26 @@
   </resultMap>
 
   <insert id="insert">
-    ${fullInsertStatement}
+    ${insertStatement}
   </insert>
   
   <select id="selectMany" resultMap="SimpleTableResult">
-    ${fullSelectStatement}
+    ${selectStatement}
   </select>
 
   <select id="selectOne" resultMap="SimpleTableResult">
-    ${fullSelectStatement}
+    ${selectStatement}
   </select>
   
   <delete id="delete">
-    ${fullDeleteStatement}
+    ${deleteStatement}
   </delete>
 
   <update id="update">
-    ${fullUpdateStatement}
+    ${updateStatement}
   </update>
 
   <select id="count" resultType="_long">
-    ${fullSelectStatement}
+    ${selectStatement}
   </select>
 </mapper>

@@ -23,8 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AbstractSqlProvider;
-import org.mybatis.dynamic.sql.where.render.WhereProvider;
+import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
 
 /**
  * This class combines a "set" clause and a "where" clause into one parameter object
@@ -33,13 +32,14 @@ import org.mybatis.dynamic.sql.where.render.WhereProvider;
  * @author Jeff Butler
  *
  */
-public class UpdateProvider extends AbstractSqlProvider {
+public class UpdateStatement {
+    private String tableName;
     private String setClause;
     private Optional<String> whereClause;
     private Map<String, Object> parameters;
 
-    private UpdateProvider(Builder builder) {
-        super(builder.tableName);
+    private UpdateStatement(Builder builder) {
+        tableName = Objects.requireNonNull(builder.tableName);
         setClause = Objects.requireNonNull(builder.setClause);
         whereClause = Objects.requireNonNull(builder.whereClause);
         parameters = Objects.requireNonNull(builder.parameters);
@@ -49,9 +49,9 @@ public class UpdateProvider extends AbstractSqlProvider {
         return parameters;
     }
 
-    public String getFullUpdateStatement() {
+    public String getUpdateStatement() {
         return "update" //$NON-NLS-1$
-                + spaceBefore(tableName())
+                + spaceBefore(tableName)
                 + spaceBefore(setClause)
                 + spaceBefore(whereClause);
     }
@@ -72,9 +72,10 @@ public class UpdateProvider extends AbstractSqlProvider {
             return this;
         }
         
-        public Builder withWhereProvider(Optional<WhereProvider> whereProvider) {
-            whereClause = whereProvider.map(WhereProvider::getWhereClause);
-            parameters.putAll(whereProvider.map(WhereProvider::getParameters).orElse(Collections.emptyMap()));
+        public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
+            whereClause = whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);
+            parameters.putAll(whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
+                    .orElse(Collections.emptyMap()));
             return this;
         }
         
@@ -83,8 +84,8 @@ public class UpdateProvider extends AbstractSqlProvider {
             return this;
         }
         
-        public UpdateProvider build() {
-            return new UpdateProvider(this);
+        public UpdateStatement build() {
+            return new UpdateStatement(this);
         }
     }
 }

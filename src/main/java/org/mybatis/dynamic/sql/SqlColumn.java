@@ -39,19 +39,19 @@ public class SqlColumn<T> implements SelectListItem {
     protected Optional<String> typeHandler;
     
     private SqlColumn(Builder builder) {
-        this.name = Objects.requireNonNull(builder.name);
-        this.jdbcType = Objects.requireNonNull(builder.jdbcType);
-        this.table = Objects.requireNonNull(builder.table);
-        this.typeHandler = Optional.ofNullable(builder.typeHandler);
+        name = Objects.requireNonNull(builder.name);
+        jdbcType = Objects.requireNonNull(builder.jdbcType);
+        table = Objects.requireNonNull(builder.table);
+        typeHandler = Optional.ofNullable(builder.typeHandler);
     }
     
     protected SqlColumn(SqlColumn<?> sqlColumn) {
-        this.name = sqlColumn.name;
-        this.table = sqlColumn.table;
-        this.jdbcType = sqlColumn.jdbcType;
-        this.isDescending = sqlColumn.isDescending;
-        this.alias = sqlColumn.alias;
-        this.typeHandler = sqlColumn.typeHandler;
+        name = sqlColumn.name;
+        table = sqlColumn.table;
+        jdbcType = sqlColumn.jdbcType;
+        isDescending = sqlColumn.isDescending;
+        alias = sqlColumn.alias;
+        typeHandler = sqlColumn.typeHandler;
     }
     
     public String name() {
