@@ -8,8 +8,8 @@ The most common use case is to generate statements, and a matching set of parame
 by MyBatis.  The library will also generate statements and parameter objects that are compatible with Spring JDBC
 templates.
 
-The library works by implementing an SQL like DSL that creates an object containing a full SQL statement and any
-parameters required for that statement.  That object can be used directly by MyBatis as a parameter to a mapper method.
+The library works by implementing an SQL like DSL that creates an object (an "SQL provider") containing a full SQL statement and any
+parameters required for that statement.  The SQL provider object can be used directly by MyBatis as a parameter to a mapper method.
 
 The library will generate these types of SQL statements:
 
@@ -19,9 +19,8 @@ The library will generate these types of SQL statements:
     - A statement that inserts a single record that will ignore null input values and their associated columns (a "selective" insert)
     - A statement that inserts into a table using the results of a SELECT statement
     - A parameter object is designed for inserting multiple objects with a JDBC batch
-- SELECT statements with a flexible column list, a flexible WHERE clause, and support for distinct, "group by",
-joins, unions, "order by", etc.
--UPDATE statements with a flexible WHERE clause.  Like the INSERT statement, there are two varieties of UPDATE statements:
+- SELECT statements with a flexible column list, a flexible WHERE clause, and support for distinct, "group by", joins, unions, "order by", etc.
+- UPDATE statements with a flexible WHERE clause.  Like the INSERT statement, there are two varieties of UPDATE statements:
     - A "full" update that will set null values
     - A "selective" update that will ignore null input values
 
