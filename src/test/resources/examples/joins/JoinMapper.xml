@@ -18,7 +18,6 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="examples.joins.JoinMapper">
-
   <resultMap id="SimpleJoinResult" type="examples.joins.OrderMaster">
     <id column="order_id" jdbcType="INTEGER" property="id" />
     <result column="order_date" jdbcType="DATE" property="orderDate" />
@@ -29,12 +28,4 @@
       <result column="quantity" jdbcType="INTEGER" property="quantity"/>
     </collection>
   </resultMap>
-
-  <select id="selectMany" resultMap="SimpleJoinResult">
-    ${selectStatement}
-  </select>
-
-  <select id="generalSelect" resultType="map">
-    ${selectStatement}
-  </select>
 </mapper>

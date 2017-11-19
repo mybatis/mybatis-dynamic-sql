@@ -145,10 +145,12 @@ public final class SimpleTableDynamicSqlSupport {
 }
 ```
 
-### Second - Write XML or annotated mappers that will use the generated statement
-The library will create support classes that will be used as input to an annotated or XML mapper.  These classes include the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that these objects be the one and only parameter to a MyBatis method.
+### Second - Write MyBatis mappers that will use the generated statement
+The library will create support classes that will be used as input to a MyBatis mapper.  These classes include the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that these objects be the one and only parameter to a MyBatis method.
 
-For example, an annotated mapper might look like this:
+The library can be used with both XML and annotated mappers, but we recommend using MyBatis' annotated mapper support in all cases.  The only case where XML is required is when you code a JOIN statement - in that case you will need to define your result map in XML due to limitations of the MyBatis annotations in supporting joins.
+
+For example, a mapper might look like this:
 
 ```java
 package examples.simple;
@@ -178,32 +180,6 @@ public class SimpleTableAnnotatedMapper {
     int delete(DeleteStatement deleteStatement);
 }
 ```
-An XML mapper might look like this:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="examples.simple.SimpleTableXmlMapper">
-
-  <resultMap id="SimpleTableResult" type="examples.simple.SimpleTableRecord">
-    <id column="A_ID" jdbcType="INTEGER" property="id" />
-    <result column="first_name" jdbcType="VARCHAR" property="firstName" />
-    <result column="last_name" jdbcType="VARCHAR" property="lastName" />
-    <result column="birth_date" jdbcType="DATE" property="birthDate" />
-    <result column="employed" jdbcType="VARCHAR" property="employed" typeHandler="examples.simple.YesNoTypeHandler" />
-    <result column="occupation" jdbcType="VARCHAR" property="occupation" />
-  </resultMap>
-
-  <select id="selectMany" resultMap="SimpleTableResult">
-    ${selectStatement}
-  </select>
-
-  <delete id="delete">
-    ${deleteStatement}
-  </delete>
-</mapper>
-```
-
 ### Third - Create dynamic statements
 Select statements are created by combining your column and table definitions (from the first step above) with
 condition for the column.  This library includes a large number of type safe conditions.
@@ -270,7 +246,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 ### Fourth - Use your statements
 In a DAO or service class, you can use the generated statement as input to your mapper methods.  Here's
-an example from ```examples.simple.SimpleTableXmlMapperTest```:
+an example from `examples.simple.SimpleTableAnnotatedMapperTest`:
 
 ```java
     @Test

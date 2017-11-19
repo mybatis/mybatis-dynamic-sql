@@ -40,6 +40,7 @@ We are committed to clean code.  This means:
 - Comments are a last resort - don't comment bad code, refactor it
 - No nested control structures - ideal cyclomatic complexity of a function is 1
 - Maintain 100% test coverage
+- Run SonarQube analysis - do not add any technical debt, bugs, code smells, etc.
 
 ## Test Driven Development
 

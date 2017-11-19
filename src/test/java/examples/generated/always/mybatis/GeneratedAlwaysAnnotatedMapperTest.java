@@ -13,9 +13,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.generated.always.sqlprovider;
+package examples.generated.always.mybatis;
 
-import static examples.generated.always.sqlprovider.GeneratedAlwaysDynamicSqlSupport.*;
+import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -44,6 +44,8 @@ import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+
+import examples.generated.always.GeneratedAlwaysRecord;
 
 @RunWith(JUnitPlatform.class)
 public class GeneratedAlwaysAnnotatedMapperTest {
@@ -76,8 +78,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
         try {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
-            SelectStatement selectStatement = select(id, firstName, lastName, fullName)
-                    .from(generatedAlways)
+            SelectStatement selectStatement = selectByExample()
                     .where(id, isEqualTo(1))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -96,8 +97,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
         try {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
-            SelectStatement selectStatement = select(id, firstName, lastName, fullName)
-                    .from(generatedAlways)
+            SelectStatement selectStatement = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -233,7 +233,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             record.setFirstName("Joe");
             record.setLastName("Jones");
             
-            int rows = mapper.insert(buildInsertSelectiveProvider(record));
+            int rows = mapper.insert(buildInsertSelectiveStatement(record));
             
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(rows).isEqualTo(1);
@@ -260,7 +260,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                 softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
             
                 record.setLastName("Smith");
-                rows = mapper.update(buildUpdateByPrimaryKeyProvider(record));
+                rows = mapper.update(buildUpdateByPrimaryKeyStatement(record));
                 softly.assertThat(rows).isEqualTo(1);
             
                 GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(selectByPrimaryKey(100));
@@ -287,8 +287,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             int rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(3);
             
-            SelectStatement selectStatement = select(id, firstName, lastName, fullName)
-                    .from(generatedAlways)
+            SelectStatement selectStatement = selectByExample()
                     .where(lastName, isEqualTo("Jones"))
                     .orderBy(firstName)
                     .build()
@@ -322,7 +321,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             GeneratedAlwaysRecord updateRecord = new GeneratedAlwaysRecord();
             updateRecord.setId(100);
             updateRecord.setLastName("Smith");
-            rows = mapper.update(buildUpdateByPrimaryKeySelectiveProvider(updateRecord));
+            rows = mapper.update(buildUpdateByPrimaryKeySelectiveStatement(updateRecord));
             assertThat(rows).isEqualTo(1);
             
             GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(selectByPrimaryKey(100));

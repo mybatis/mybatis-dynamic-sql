@@ -26,10 +26,14 @@ import java.sql.DriverManager;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,9 +63,11 @@ public class SimpleTableAnnotatedMapperTest {
             sr.runScript(new InputStreamReader(is));
         }
         
-        is = getClass().getResourceAsStream("/examples/simple/MapperConfig.xml");
-        sqlSessionFactory = new SqlSessionFactoryBuilder().build(is);
-        sqlSessionFactory.getConfiguration().addMapper(SimpleTableAnnotatedMapper.class);
+        UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
+        Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
+        Configuration config = new Configuration(environment);
+        config.addMapper(SimpleTableAnnotatedMapper.class);
+        sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
     
     @Test

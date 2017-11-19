@@ -44,6 +44,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import examples.generated.always.GeneratedAlwaysRecord;
+
 @RunWith(JUnitPlatform.class)
 public class SpringTest {
     private EmbeddedDatabase db;

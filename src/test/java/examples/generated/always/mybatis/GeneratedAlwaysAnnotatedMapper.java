@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.generated.always.sqlprovider;
+package examples.generated.always.mybatis;
 
 import java.util.List;
 
@@ -28,6 +28,8 @@ import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+
+import examples.generated.always.GeneratedAlwaysRecord;
 
 public interface GeneratedAlwaysAnnotatedMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")

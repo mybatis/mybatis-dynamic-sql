@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.generated.always.sqlprovider;
+package examples.generated.always.mybatis;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -27,6 +27,8 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFro
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+
+import examples.generated.always.GeneratedAlwaysRecord;
 
 public final class GeneratedAlwaysDynamicSqlSupport {
     public static final GeneratedAlways generatedAlways = new GeneratedAlways();
@@ -56,7 +58,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
 
-    public static InsertStatement<GeneratedAlwaysRecord> buildInsertSelectiveProvider(GeneratedAlwaysRecord record) {
+    public static InsertStatement<GeneratedAlwaysRecord> buildInsertSelectiveStatement(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
                 .map(id).toPropertyWhenPresent("id")
@@ -66,7 +68,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
     
-    public static UpdateStatement buildUpdateByPrimaryKeyProvider(GeneratedAlwaysRecord record) {
+    public static UpdateStatement buildUpdateByPrimaryKeyStatement(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
@@ -75,7 +77,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
 
-    public static UpdateStatement buildUpdateByPrimaryKeySelectiveProvider(GeneratedAlwaysRecord record) {
+    public static UpdateStatement buildUpdateByPrimaryKeySelectiveStatement(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
@@ -99,12 +101,12 @@ public final class GeneratedAlwaysDynamicSqlSupport {
     }
     
     public static QueryExpressionAfterFromBuilder selectByExample() {
-        return select(id, firstName, lastName, fullName)
-                .from(generatedAlways);
+        return select(id.as("A_ID"), firstName, lastName, fullName)
+                .from(generatedAlways, "a");
     }
-
+    
     public static SelectStatement selectByPrimaryKey(int id_) {
-        return select(id, firstName, lastName, fullName)
+        return select(id.as("A_ID"), firstName, lastName, fullName)
                 .from(generatedAlways)
                 .where(id, isEqualTo(id_))
                 .build()
