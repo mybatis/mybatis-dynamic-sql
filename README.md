@@ -146,7 +146,7 @@ public final class SimpleTableDynamicSqlSupport {
 ```
 
 ### Second - Write MyBatis mappers that will use the generated statement
-The library will create support classes that will be used as input to a MyBatis mapper.  These classes include the generated where clause, as well as a parameter set that will match the generated clause.  Both are required by MyBatis3.  It is intended that these objects be the one and only parameter to a MyBatis method.
+The library will create classes that will be used as input to a MyBatis mapper.  These classes include the generated SQL, as well as a parameter set that will match the generated SQL.  Both are required by MyBatis.  It is intended that these objects be the one and only parameter to a MyBatis mapper method.
 
 The library can be used with both XML and annotated mappers, but we recommend using MyBatis' annotated mapper support in all cases.  The only case where XML is required is when you code a JOIN statement - in that case you will need to define your result map in XML due to limitations of the MyBatis annotations in supporting joins.
 
@@ -183,7 +183,7 @@ public class SimpleTableAnnotatedMapper {
 ### Third - Create dynamic statements
 Select statements are created by combining your column and table definitions (from the first step above) with
 condition for the column.  This library includes a large number of type safe conditions.
-All conditions can be accessed through expressive static methods in the ```org.mybatis.dynamic.sql.SqlBuilder``` interface.
+All SQL construction methods can be accessed through expressive static methods in the ```org.mybatis.dynamic.sql.SqlBuilder``` interface.
 
 For example, a very simple select statement can be defined like this:
 

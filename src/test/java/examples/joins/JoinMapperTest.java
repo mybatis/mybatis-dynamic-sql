@@ -15,10 +15,11 @@
  */
 package examples.joins;
 
-import static examples.joins.ItemMasterDynamicSQLSupport.*;
-import static examples.joins.OrderDetailDynamicSQLSupport.*;
-import static examples.joins.OrderLineDynamicSQLSupport.*;
-import static examples.joins.OrderMasterDynamicSQLSupport.*;
+import static examples.joins.ItemMasterDynamicSQLSupport.itemMaster;
+import static examples.joins.OrderDetailDynamicSQLSupport.orderDetail;
+import static examples.joins.OrderLineDynamicSQLSupport.orderLine;
+import static examples.joins.OrderMasterDynamicSQLSupport.orderDate;
+import static examples.joins.OrderMasterDynamicSQLSupport.orderMaster;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -29,10 +30,14 @@ import java.sql.DriverManager;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -58,8 +63,11 @@ public class JoinMapperTest {
             sr.runScript(new InputStreamReader(is));
         }
         
-        is = getClass().getResourceAsStream("/examples/joins/MapperConfig.xml");
-        sqlSessionFactory = new SqlSessionFactoryBuilder().build(is);
+        UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
+        Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
+        Configuration config = new Configuration(environment);
+        config.addMapper(JoinMapper.class);
+        sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
     
     @Test
