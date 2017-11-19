@@ -17,23 +17,22 @@ package examples.animal.data;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 public interface AnimalDataMapper {
 
-    @Select({
-        "${selectStatement}"
-    })
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results({
         @Result(column="id", property="id"),
         @Result(column="animal_name", property="animalName"),
@@ -42,33 +41,21 @@ public interface AnimalDataMapper {
     })
     List<AnimalData> selectMany(SelectStatement selectStatement);
 
-    @Select({
-        "${selectStatement}"
-    })
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     Long selectALong(SelectStatement selectStatement);
     
-    @Select({
-        "${selectStatement}"
-    })
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     Double selectADouble(SelectStatement selectStatement);
     
-    @Delete({
-        "${deleteStatement}"
-    })
+    @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatement deleteStatement);
 
-    @Update({
-        "${updateStatement}"
-    })
+    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatement updateStatement);
     
-    @Insert({
-        "${insertStatement}"
-    })
+    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatement<AnimalData> insertStatement);
 
-    @Insert({
-        "${insertStatement}"
-    })
+    @InsertProvider(type=SqlProviderAdapter.class, method="insertSelect")
     int insertSelect(InsertSelectStatement insertSelectStatement);
 }

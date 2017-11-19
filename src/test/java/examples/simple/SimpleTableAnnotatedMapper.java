@@ -17,36 +17,31 @@ package examples.simple;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 @Mapper
 public interface SimpleTableAnnotatedMapper {
     
-    @Insert({
-        "${insertStatement}"
-    })
+    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatement<SimpleTableRecord> insertStatement);
 
-    @Update({
-        "${updateStatement}"
-    })
+    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatement updateStatement);
     
-    @Select({
-        "${selectStatement}"
-    })
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="SimpleTableResult", value= {
             @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
@@ -57,19 +52,13 @@ public interface SimpleTableAnnotatedMapper {
     })
     List<SimpleTableRecord> selectMany(SelectStatement selectStatement);
     
-    @Select({
-        "${selectStatement}"
-    })
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("SimpleTableResult")
     SimpleTableRecord selectOne(SelectStatement selectStatement);
     
-    @Delete({
-        "${deleteStatement}"
-    })
+    @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatement deleteStatement);
 
-    @Select({
-        "${selectStatement}"
-    })
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatement selectStatement);
 }

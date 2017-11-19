@@ -13,23 +13,39 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.generated.always.sqlprovider;
+package org.mybatis.dynamic.sql.util;
 
+import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
-public class SqlProvider {
+/**
+ * Adapter for use with MyBatis SQL provider annotations.
+ * 
+ * @author Jeff Butler
+ *
+ */
+public class SqlProviderAdapter {
 
-    public static String insert(InsertStatement<GeneratedAlwaysRecord> insertStatement) {
+    public String delete(DeleteStatement deleteStatement) {
+        return deleteStatement.getDeleteStatement();
+    }
+    
+    public String insert(InsertStatement<?> insertStatement) {
         return insertStatement.getInsertStatement();
     }
     
-    public static String update(UpdateStatement updateStatement) {
-        return updateStatement.getUpdateStatement();
+    public String insertSelect(InsertSelectStatement insertStatement) {
+        return insertStatement.getInsertStatement();
+    }
+    
+    public String select(SelectStatement selectStatement) {
+        return selectStatement.getSelectStatement();
     }
 
-    public static String select(SelectStatement selectStatement) {
-        return selectStatement.getSelectStatement();
+    public String update(UpdateStatement updateStatement) {
+        return updateStatement.getUpdateStatement();
     }
 }

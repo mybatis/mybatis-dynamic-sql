@@ -24,15 +24,14 @@ The DeleteStatement object can be used as a parameter to a MyBatis mapper method
 are using an annotated mapper, the delete method should look like this:
   
 ```java
-import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 @Mapper
 public interface SimpleTableAnnotatedMapper {
-    @Delete({
-        "${deleteStatement}"
-    })
+    @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatement deleteStatement);
 }
 ```

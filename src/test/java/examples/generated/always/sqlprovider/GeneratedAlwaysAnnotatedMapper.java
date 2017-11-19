@@ -27,9 +27,10 @@ import org.apache.ibatis.annotations.UpdateProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 public interface GeneratedAlwaysAnnotatedMapper {
-    @SelectProvider(type=SqlProvider.class, method="select")
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="gaResults", value={
         @Result(property="id", column="id"),
         @Result(property="firstName", column="first_name"),
@@ -38,14 +39,14 @@ public interface GeneratedAlwaysAnnotatedMapper {
     })
     List<GeneratedAlwaysRecord> selectMany(SelectStatement selectStatement);
     
-    @SelectProvider(type=SqlProvider.class, method="select")
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("gaResults")
     GeneratedAlwaysRecord selectByPrimaryKey(SelectStatement selectStatement);
     
-    @InsertProvider(type=SqlProvider.class, method="insert")
+    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @Options(useGeneratedKeys=true, keyProperty="record.fullName")
     int insert(InsertStatement<GeneratedAlwaysRecord> insertStatement);
     
-    @UpdateProvider(type=SqlProvider.class, method="update")
+    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatement updateStatement);
 }
