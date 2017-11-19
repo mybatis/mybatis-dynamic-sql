@@ -31,6 +31,10 @@ One main feature of the SELECT support is the support of a very flexible WHERE c
 
 ## Union Queries
 
+## Annotated Mapper for Select Statements
+
+## XML Mapper for Select Statements
+
 ## Notes on Order By
 
 Order by phrases can be difficult to calculate when there are aliased columns, aliased tables, unions, and joins.

@@ -41,6 +41,7 @@
       <item href="docs/delete.html" name="DELETE Statements" />
       <item href="docs/insert.html" name="INSERT Statements" />
       <item href="docs/update.html" name="UPDATE Statements" />
+      <item href="docs/spring.html" name="Spring Support" />
       <item href="docs/howItWorks.html" name="How it Works" />
       <item href="docs/extending.html" name="Extending the Library" />
       <item href="docs/codingStandards.html" name="Coding Standards" />

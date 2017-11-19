@@ -25,31 +25,32 @@ are using an annotated mapper, the delete method should look like this:
   
 ```java
 import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
-@Mapper
-public interface SimpleTableAnnotatedMapper {
+...
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatement deleteStatement);
-}
+...
+
 ```
 
 ## XML Mapper for Delete Statements
 
-The DeleteStatement object can be used as a parameter to a MyBatis mapper method directly.  If you
-are using an XML mapper, the delete method should look like this:
+We do not recommend using an XML mapper for delete statements, but if you want to do so the DeleteStatement object can be used as a parameter to a MyBatis mapper method directly.
+
+If you are using an XML mapper, the delete method should look like this in the Java interface:
   
 ```java
-import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 
-@Mapper
-public interface SimpleTableAnnotatedMapper {
+...
     int delete(DeleteStatement deleteStatement);
-}
+...
+
 ```
+
+The XML element should look like this:
 
 ```xml
   <delete id="delete">
