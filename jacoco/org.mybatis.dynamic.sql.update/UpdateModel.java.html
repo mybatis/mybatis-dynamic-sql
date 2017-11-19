@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update</a> &gt; <span class="el_source">UpdateModel.java</span></div><h1>UpdateModel.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2017 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.update;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
+import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.util.UpdateMapping;
+import org.mybatis.dynamic.sql.where.WhereModel;
+
+public class UpdateModel {
+    private SqlTable table;
+    private Optional&lt;WhereModel&gt; whereModel;
+    private List&lt;UpdateMapping&gt; columnValues;
+    
+<span class="fc" id="L37">    private UpdateModel(Builder builder) {</span>
+<span class="fc" id="L38">        table = builder.table;</span>
+<span class="fc" id="L39">        whereModel = Optional.ofNullable(builder.whereModel);</span>
+<span class="fc" id="L40">        columnValues = Objects.requireNonNull(builder.columnValues);</span>
+<span class="fc" id="L41">    }</span>
+    
+    public SqlTable table() {
+<span class="fc" id="L44">        return table;</span>
+    }
+    
+    public Optional&lt;WhereModel&gt; whereModel() {
+<span class="fc" id="L48">        return whereModel;</span>
+    }
+    
+    public &lt;R&gt; Stream&lt;R&gt; mapColumnValues(Function&lt;UpdateMapping, R&gt; mapper) {
+<span class="fc" id="L52">        return columnValues.stream().map(mapper);</span>
+    }
+    
+    public UpdateStatement render(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L56">        return new UpdateRenderer.Builder()</span>
+<span class="fc" id="L57">                .withUpdateModel(this)</span>
+<span class="fc" id="L58">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L59">                .build()</span>
+<span class="fc" id="L60">                .render();</span>
+    }
+    
+    public static class Builder {
+        private SqlTable table;
+        private WhereModel whereModel;
+<span class="fc" id="L66">        private List&lt;UpdateMapping&gt; columnValues = new ArrayList&lt;&gt;();</span>
+        
+<span class="fc" id="L68">        public Builder(SqlTable table) {</span>
+<span class="fc" id="L69">            this.table = table;</span>
+<span class="fc" id="L70">        }</span>
+        
+        public Builder withColumnValues(List&lt;UpdateMapping&gt; columnValues) {
+<span class="fc" id="L73">            this.columnValues.addAll(columnValues);</span>
+<span class="fc" id="L74">            return this;</span>
+        }
+        
+        public Builder withWhereModel(WhereModel whereModel) {
+<span class="fc" id="L78">            this.whereModel = whereModel;</span>
+<span class="fc" id="L79">            return this;</span>
+        }
+        
+        public UpdateModel build() {
+<span class="fc" id="L83">            return new UpdateModel(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

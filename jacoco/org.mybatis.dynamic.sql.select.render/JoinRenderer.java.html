@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JoinRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.render</a> &gt; <span class="el_source">JoinRenderer.java</span></div><h1>JoinRenderer.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2017 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select.render;
+
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.select.QueryExpressionModel;
+import org.mybatis.dynamic.sql.select.join.JoinCriterion;
+import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.select.join.JoinSpecification;
+
+public class JoinRenderer {
+    private JoinModel joinModel;
+    private QueryExpressionModel queryExpression;
+    
+<span class="fc" id="L34">    private JoinRenderer(Builder builder) {</span>
+<span class="fc" id="L35">        joinModel = Objects.requireNonNull(builder.joinModel);</span>
+<span class="fc" id="L36">        queryExpression = Objects.requireNonNull(builder.queryExpression);</span>
+<span class="fc" id="L37">    }</span>
+    
+    public String render() {
+<span class="fc" id="L40">        return joinModel.mapJoinSpecifications(this::toRenderedString)</span>
+<span class="fc" id="L41">                .collect(Collectors.joining(&quot; &quot;)); //$NON-NLS-1$</span>
+    }
+    
+    private String toRenderedString(JoinSpecification joinSpecification) {
+<span class="fc" id="L45">        return spaceAfter(joinSpecification.joinType().shortType())</span>
+<span class="fc" id="L46">                + &quot;join&quot; //$NON-NLS-1$</span>
+<span class="fc" id="L47">                + spaceBefore(queryExpression.calculateTableNameIncludingAlias(joinSpecification.table()))</span>
+<span class="fc" id="L48">                + spaceBefore(renderConditions(joinSpecification));</span>
+    }
+    
+    private String renderConditions(JoinSpecification joinSpecification) {
+<span class="fc" id="L52">        return joinSpecification.mapJoinCriteria(this::renderCriterion)</span>
+<span class="fc" id="L53">                .collect(Collectors.joining(&quot; &quot;)); //$NON-NLS-1$</span>
+    }
+    
+    private String renderCriterion(JoinCriterion&lt;?&gt; joinCriterion) {
+<span class="fc" id="L57">        return joinCriterion.connector()</span>
+<span class="fc" id="L58">                + spaceBefore(applyTableAlias(joinCriterion.leftColumn()))</span>
+<span class="fc" id="L59">                + spaceBefore(joinCriterion.operator())</span>
+<span class="fc" id="L60">                + spaceBefore(applyTableAlias(joinCriterion.rightColumn()));</span>
+    }
+    
+    private String applyTableAlias(SqlColumn&lt;?&gt; column) {
+<span class="fc" id="L64">        return column.applyTableAliasToName(queryExpression.tableAliasCalculator());</span>
+    }
+    
+<span class="fc" id="L67">    public static class Builder {</span>
+        private JoinModel joinModel;
+        private QueryExpressionModel queryExpression;
+        
+        public Builder withJoinModel(JoinModel joinModel) {
+<span class="fc" id="L72">            this.joinModel = joinModel;</span>
+<span class="fc" id="L73">            return this;</span>
+        }
+        
+        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
+<span class="fc" id="L77">            this.queryExpression = queryExpression;</span>
+<span class="fc" id="L78">            return this;</span>
+        }
+        
+        public JoinRenderer build() {
+<span class="fc" id="L82">            return new JoinRenderer(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

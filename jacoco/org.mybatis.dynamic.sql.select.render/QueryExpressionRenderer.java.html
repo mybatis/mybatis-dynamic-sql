@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.render</a> &gt; <span class="el_source">QueryExpressionRenderer.java</span></div><h1>QueryExpressionRenderer.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2017 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select.render;
+
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.GroupByModel;
+import org.mybatis.dynamic.sql.select.QueryExpressionModel;
+import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.util.CustomCollectors;
+import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereRenderer;
+
+public class QueryExpressionRenderer {
+    private QueryExpressionModel queryExpression;
+    private RenderingStrategy renderingStrategy;
+    private AtomicInteger sequence;
+    
+<span class="fc" id="L38">    private QueryExpressionRenderer(Builder builder) {</span>
+<span class="fc" id="L39">        queryExpression = Objects.requireNonNull(builder.queryExpression);</span>
+<span class="fc" id="L40">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L41">        sequence = Objects.requireNonNull(builder.sequence);</span>
+<span class="fc" id="L42">    }</span>
+    
+    public QueryExpression render() {
+<span class="fc" id="L45">        return new QueryExpression.Builder()</span>
+<span class="fc" id="L46">                .withConnector(queryExpression.connector())</span>
+<span class="fc" id="L47">                .isDistinct(queryExpression.isDistinct())</span>
+<span class="fc" id="L48">                .withColumnList(calculateColumnList())</span>
+<span class="fc" id="L49">                .withTableName(calculateTableName(queryExpression.table()))</span>
+<span class="fc" id="L50">                .withJoinClause(queryExpression.joinModel().map(this::renderJoin))</span>
+<span class="fc" id="L51">                .withWhereClause(queryExpression.whereModel().map(this::renderWhere))</span>
+<span class="fc" id="L52">                .withGroupByClause(queryExpression.groupByModel().map(this::renderGroupBy))</span>
+<span class="fc" id="L53">                .build();</span>
+    }
+
+    private String calculateColumnList() {
+<span class="fc" id="L57">        return queryExpression.mapColumns(this::applyTableAndColumnAlias)</span>
+<span class="fc" id="L58">                .collect(Collectors.joining(&quot;, &quot;)); //$NON-NLS-1$</span>
+    }
+
+    private String calculateTableName(SqlTable table) {
+<span class="fc" id="L62">        return queryExpression.calculateTableNameIncludingAlias(table);</span>
+    }
+    
+    private String applyTableAndColumnAlias(SelectListItem selectListItem) {
+<span class="fc" id="L66">        return selectListItem.applyTableAndColumnAliasToName(queryExpression.tableAliasCalculator());</span>
+    }
+    
+    private String renderJoin(JoinModel joinModel) {
+<span class="fc" id="L70">        return new JoinRenderer.Builder()</span>
+<span class="fc" id="L71">                .withJoinModel(joinModel)</span>
+<span class="fc" id="L72">                .withQueryExpression(queryExpression)</span>
+<span class="fc" id="L73">                .build()</span>
+<span class="fc" id="L74">                .render();</span>
+    }
+    
+    private WhereClauseAndParameters renderWhere(WhereModel whereModel) {
+<span class="fc" id="L78">        return new WhereRenderer.Builder()</span>
+<span class="fc" id="L79">                .withWhereModel(whereModel)</span>
+<span class="fc" id="L80">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L81">                .withTableAliasCalculator(queryExpression.tableAliasCalculator())</span>
+<span class="fc" id="L82">                .withSequence(sequence)</span>
+<span class="fc" id="L83">                .build()</span>
+<span class="fc" id="L84">                .render();</span>
+    }
+
+    private String renderGroupBy(GroupByModel groupByModel) {
+<span class="fc" id="L88">        return groupByModel.mapColumns(this::applyTableAlias)</span>
+<span class="fc" id="L89">                .collect(CustomCollectors.joining(&quot;, &quot;, &quot;group by &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+    }
+    
+    private String applyTableAlias(SelectListItem column) {
+<span class="fc" id="L93">        return column.applyTableAliasToName(queryExpression.tableAliasCalculator());</span>
+    }
+    
+<span class="fc" id="L96">    public static class Builder {</span>
+        private QueryExpressionModel queryExpression;
+        private RenderingStrategy renderingStrategy;
+        private AtomicInteger sequence;
+        
+        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
+<span class="fc" id="L102">            this.queryExpression = queryExpression;</span>
+<span class="fc" id="L103">            return this;</span>
+        }
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L107">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L108">            return this;</span>
+        }
+        
+        public Builder withSequence(AtomicInteger sequence) {
+<span class="fc" id="L112">            this.sequence = sequence;</span>
+<span class="fc" id="L113">            return this;</span>
+        }
+        
+        public QueryExpressionRenderer build() {
+<span class="fc" id="L117">            return new QueryExpressionRenderer(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

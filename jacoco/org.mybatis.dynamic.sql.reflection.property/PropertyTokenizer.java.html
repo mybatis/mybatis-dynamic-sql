@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PropertyTokenizer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.reflection.property</a> &gt; <span class="el_source">PropertyTokenizer.java</span></div><h1>PropertyTokenizer.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2017 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.reflection.property;
+
+/**
+ * Utility to trace through an OGNL like expression.
+ * 
+ * @author Clinton Begin (initial work)
+ * @author Jeff Butler (derivation)
+ */
+public class PropertyTokenizer {
+    private String name;
+    private String indexedName;
+    private String index;
+    private String children;
+
+<span class="fc" id="L30">    public PropertyTokenizer(String fullname) {</span>
+<span class="fc" id="L31">        int delim = fullname.indexOf('.');</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (delim &gt; -1) {</span>
+<span class="fc" id="L33">            name = fullname.substring(0, delim);</span>
+<span class="fc" id="L34">            children = fullname.substring(delim + 1);</span>
+<span class="fc" id="L35">        } else {</span>
+<span class="fc" id="L36">            name = fullname;</span>
+<span class="fc" id="L37">            children = null;</span>
+        }
+<span class="fc" id="L39">        indexedName = name;</span>
+<span class="fc" id="L40">        delim = name.indexOf('[');</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (delim &gt; -1) {</span>
+<span class="fc" id="L42">            index = name.substring(delim + 1, name.length() - 1);</span>
+<span class="fc" id="L43">            name = name.substring(0, delim);</span>
+        }
+<span class="fc" id="L45">    }</span>
+
+    public String getName() {
+<span class="fc" id="L48">        return name;</span>
+    }
+
+    public String getIndex() {
+<span class="fc" id="L52">        return index;</span>
+    }
+
+    public String getIndexedName() {
+<span class="fc" id="L56">        return indexedName;</span>
+    }
+
+    public String getChildren() {
+<span class="fc" id="L60">        return children;</span>
+    }
+
+    public boolean hasNext() {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        return children != null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

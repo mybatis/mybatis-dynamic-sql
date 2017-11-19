@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SqlColumn.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">SqlColumn.java</span></div><h1>SqlColumn.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2017 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql;
+
+import java.sql.JDBCType;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+
+/**
+ * 
+ * @author Jeff Butler
+ *
+ * @param &lt;T&gt; - even though the type is not directly used in this class,
+ *     it is used by the compiler to match columns with conditions so it should
+ *     not be removed.
+*/
+public class SqlColumn&lt;T&gt; implements SelectListItem {
+    
+    protected String name;
+    protected SqlTable table;
+    protected JDBCType jdbcType;
+<span class="fc" id="L37">    protected boolean isDescending = false;</span>
+<span class="fc" id="L38">    protected Optional&lt;String&gt; alias = Optional.empty();</span>
+    protected Optional&lt;String&gt; typeHandler;
+    
+<span class="fc" id="L41">    private SqlColumn(Builder builder) {</span>
+<span class="fc" id="L42">        name = Objects.requireNonNull(builder.name);</span>
+<span class="fc" id="L43">        jdbcType = Objects.requireNonNull(builder.jdbcType);</span>
+<span class="fc" id="L44">        table = Objects.requireNonNull(builder.table);</span>
+<span class="fc" id="L45">        typeHandler = Optional.ofNullable(builder.typeHandler);</span>
+<span class="fc" id="L46">    }</span>
+    
+<span class="fc" id="L48">    protected SqlColumn(SqlColumn&lt;?&gt; sqlColumn) {</span>
+<span class="fc" id="L49">        name = sqlColumn.name;</span>
+<span class="fc" id="L50">        table = sqlColumn.table;</span>
+<span class="fc" id="L51">        jdbcType = sqlColumn.jdbcType;</span>
+<span class="fc" id="L52">        isDescending = sqlColumn.isDescending;</span>
+<span class="fc" id="L53">        alias = sqlColumn.alias;</span>
+<span class="fc" id="L54">        typeHandler = sqlColumn.typeHandler;</span>
+<span class="fc" id="L55">    }</span>
+    
+    public String name() {
+<span class="fc" id="L58">        return name;</span>
+    }
+    
+    public JDBCType jdbcType() {
+<span class="fc" id="L62">        return jdbcType;</span>
+    }
+
+    @Override
+    public Optional&lt;String&gt; alias() {
+<span class="fc" id="L67">        return alias;</span>
+    }
+    
+    public Optional&lt;String&gt; typeHandler() {
+<span class="fc" id="L71">        return typeHandler;</span>
+    }
+    
+    public SqlColumn&lt;T&gt; descending() {
+<span class="fc" id="L75">        SqlColumn&lt;T&gt; column = new SqlColumn&lt;&gt;(this);</span>
+<span class="fc" id="L76">        column.isDescending = true;</span>
+<span class="fc" id="L77">        return column;</span>
+    }
+    
+    public SqlColumn&lt;T&gt; as(String alias) {
+<span class="fc" id="L81">        SqlColumn&lt;T&gt; column = new SqlColumn&lt;&gt;(this);</span>
+<span class="fc" id="L82">        column.alias = Optional.of(alias);</span>
+<span class="fc" id="L83">        return column;</span>
+    }
+    
+    public boolean isDescending() {
+<span class="fc" id="L87">        return isDescending;</span>
+    }
+    
+    @Override
+    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+<span class="fc" id="L92">        return tableAliasCalculator.aliasForColumn(table)</span>
+<span class="fc" id="L93">                .map(this::applyTableAlias)</span>
+<span class="fc" id="L94">                .orElseGet(this::name);</span>
+    }
+    
+    private String applyTableAlias(String tableAlias) {
+<span class="fc" id="L98">        return tableAlias + &quot;.&quot; + name(); //$NON-NLS-1$</span>
+    }
+    
+<span class="fc" id="L101">    public static class Builder {</span>
+        private SqlTable table;
+        private String name;
+        private JDBCType jdbcType;
+        private String typeHandler;
+        
+        public Builder withTable(SqlTable table) {
+<span class="fc" id="L108">            this.table = table;</span>
+<span class="fc" id="L109">            return this;</span>
+        }
+        
+        public Builder withName(String name) {
+<span class="fc" id="L113">            this.name = name;</span>
+<span class="fc" id="L114">            return this;</span>
+        }
+        
+        public Builder withJdbcType(JDBCType jdbcType) {
+<span class="fc" id="L118">            this.jdbcType = jdbcType;</span>
+<span class="fc" id="L119">            return this;</span>
+        }
+        
+        public Builder withTypeHandler(String typeHandler) {
+<span class="fc" id="L123">            this.typeHandler = typeHandler;</span>
+<span class="fc" id="L124">            return this;</span>
+        }
+        
+        public &lt;T&gt; SqlColumn&lt;T&gt; build() {
+<span class="fc" id="L128">            return new SqlColumn&lt;&gt;(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

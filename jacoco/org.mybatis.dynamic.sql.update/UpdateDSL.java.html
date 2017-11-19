@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update</a> &gt; <span class="el_source">UpdateDSL.java</span></div><h1>UpdateDSL.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2017 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.update;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.StringConstantMapping;
+import org.mybatis.dynamic.sql.util.UpdateMapping;
+import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+
+public class UpdateDSL {
+
+<span class="fc" id="L35">    private List&lt;UpdateMapping&gt; columnsAndValues = new ArrayList&lt;&gt;();</span>
+    private SqlTable table;
+    
+<span class="fc" id="L38">    private UpdateDSL(SqlTable table) {</span>
+<span class="fc" id="L39">        this.table = Objects.requireNonNull(table);</span>
+<span class="fc" id="L40">    }</span>
+    
+    public &lt;T&gt; SetClauseFinisher&lt;T&gt; set(SqlColumn&lt;T&gt; column) {
+<span class="fc" id="L43">        return new SetClauseFinisher&lt;&gt;(column);</span>
+    }
+    
+    public &lt;T&gt; UpdateWhereBuilder where(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
+<span class="fc" id="L47">        return new UpdateWhereBuilder(column, condition);</span>
+    }
+    
+    public &lt;T&gt; UpdateWhereBuilder where(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
+            SqlCriterion&lt;?&gt;...subCriteria) {
+<span class="fc" id="L52">        return new UpdateWhereBuilder(column, condition, subCriteria);</span>
+    }
+    
+    /**
+     * WARNING! Calling this method could result in an update statement that updates
+     * all rows in a table.
+     * 
+     * @return the update model
+     */
+    public UpdateModel build() {
+<span class="fc" id="L62">        return new UpdateModel.Builder(table)</span>
+<span class="fc" id="L63">                .withColumnValues(columnsAndValues)</span>
+<span class="fc" id="L64">                .build();</span>
+    }
+    
+    public static UpdateDSL update(SqlTable table) {
+<span class="fc" id="L68">        return new UpdateDSL(table);</span>
+    }
+    
+    public class SetClauseFinisher&lt;T&gt; {
+        
+        private SqlColumn&lt;T&gt; column;
+        
+<span class="fc" id="L75">        public SetClauseFinisher(SqlColumn&lt;T&gt; column) {</span>
+<span class="fc" id="L76">            this.column = column;</span>
+<span class="fc" id="L77">        }</span>
+        
+        public UpdateDSL equalToNull() {
+<span class="fc" id="L80">            columnsAndValues.add(NullMapping.of(column));</span>
+<span class="fc" id="L81">            return UpdateDSL.this;</span>
+        }
+
+        public UpdateDSL equalToConstant(String constant) {
+<span class="fc" id="L85">            columnsAndValues.add(ConstantMapping.of(column, constant));</span>
+<span class="fc" id="L86">            return UpdateDSL.this;</span>
+        }
+        
+        public UpdateDSL equalToStringConstant(String constant) {
+<span class="fc" id="L90">            columnsAndValues.add(StringConstantMapping.of(column, constant));</span>
+<span class="fc" id="L91">            return UpdateDSL.this;</span>
+        }
+        
+        public UpdateDSL equalTo(T value) {
+<span class="fc" id="L95">            columnsAndValues.add(ValueMapping.of(column, value));</span>
+<span class="fc" id="L96">            return UpdateDSL.this;</span>
+        }
+
+        public UpdateDSL equalToWhenPresent(T value) {
+<span class="fc bfc" id="L100" title="All 2 branches covered.">            if (value != null) {</span>
+<span class="fc" id="L101">                columnsAndValues.add(ValueMapping.of(column, value));</span>
+            }
+<span class="fc" id="L103">            return UpdateDSL.this;</span>
+        }
+    }
+
+    public class UpdateWhereBuilder extends AbstractWhereDSL&lt;UpdateWhereBuilder&gt; {
+        
+<span class="fc" id="L109">        public &lt;T&gt; UpdateWhereBuilder(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {</span>
+<span class="fc" id="L110">            super(column, condition);</span>
+<span class="fc" id="L111">        }</span>
+        
+        public &lt;T&gt; UpdateWhereBuilder(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
+<span class="fc" id="L114">                SqlCriterion&lt;?&gt;...subCriteria) {</span>
+<span class="fc" id="L115">            super(column, condition, subCriteria);</span>
+<span class="fc" id="L116">        }</span>
+        
+        public UpdateModel build() {
+<span class="fc" id="L119">            return new UpdateModel.Builder(table)</span>
+<span class="fc" id="L120">                    .withColumnValues(columnsAndValues)</span>
+<span class="fc" id="L121">                    .withWhereModel(buildWhereModel())</span>
+<span class="fc" id="L122">                    .build();</span>
+        }
+        
+        @Override
+        protected UpdateWhereBuilder getThis() {
+<span class="fc" id="L127">            return this;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
