@@ -25,6 +25,13 @@
     <href>docs/introduction.html</href>
   </bannerLeft>
 
+  <bannerRight>
+    <name>MyBatis</name>
+    <src>http://mybatis.github.io/images/mybatis-logo.png</src>
+    <alt>MyBatis logo</alt>
+    <href>http://www.mybatis.org/</href>
+  </bannerRight>
+  
   <body>
     <menu name="User's Guide">
       <item href="docs/introduction.html" name="Introduction" />
