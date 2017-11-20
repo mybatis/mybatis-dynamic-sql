@@ -91,7 +91,7 @@ MyBatis supports returning generated values from a single record insert, or a ba
 ...
 ```
 
-The important thing is that the `keyProperty` is set correctly.  It should always be in the form `record.<attribute>` where <attribute> is the attribute of the record class that should be updated with the generated value.
+The important thing is that the `keyProperty` is set correctly.  It should always be in the form `record.<attribute>` where `<attribute>` is the attribute of the record class that should be updated with the generated value.
 
 ## Batch Insert Support
 A batch insert is a collection of statements that can be used to execute a JDBC batch.  A batch is the preferred method of doing bulk inserts with JDBC.  The basic idea is that you configure the connection for a batch insert, then execute the same statement multiple times, with different values for each inserted record.  MyBatis has a nice abstraction of JDBC batches that works well with statements generated from this library.  A batch insert looks like this:
