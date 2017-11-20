@@ -1,6 +1,6 @@
 # Extending MyBatis Dynamic SQL
 
-The library has been design for extension from the very start of the design.  We do not believe that the library covers all possible uses and we wanted to make it easy to add functionality that suits the needs of dependent projects.
+The library has been designed for extension from the very start of the design.  We do not believe that the library covers all possible uses and we wanted to make it possible to add functionality that suits the needs of different projects.
 
 This page details the main extension points of the library. 
 
@@ -41,6 +41,6 @@ The library will pass the following parameters to the `getFormattedJdbcPlacehold
 
 ## Writing Custom Renderers
 
-SQL rendering is accomplished be classes that are decoupled from the SQL model classes.  All the model classes have a `render` method that calls the built-in default renderers.  But this is completely optional and you do not need to use it.  You can write your own rendering support if you are dissatisfied with the SQL produced by the default renderers.
+SQL rendering is accomplished by classes that are decoupled from the SQL model classes.  All the model classes have a `render` method that calls the built-in default renderers, but this is completely optional and you do not need to use it.  You can write your own rendering support if you are dissatisfied with the SQL produced by the default renderers.
 
 Writing a custom renderer is quite complex.  If you want to undertake that task, we suggest that you take the time to understand how the default renderers work first.  And feel free to ask questions about this topic on the MyBatis mailing list.

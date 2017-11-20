@@ -88,7 +88,7 @@ Any number of SELECT statements can be added to a UNION query.  Only one ORDER B
 ## Annotated Mapper for Select Statements
 
 The SelectStatement object can be used as a parameter to a MyBatis mapper method directly.  If you
-are using an annotated mapper, the select method should look like this (note that we recommend to code a "selectMany" and a "selectOne" method with a shared result mapping):
+are using an annotated mapper, the select method should look like this (note that we recommend coding a "selectMany" and a "selectOne" method with a shared result mapping):
   
 ```java
 import org.apache.ibatis.annotations.Result;
@@ -145,7 +145,7 @@ And the corresponding XML looks like this:
 Notice that the resultMap is the only element in the XML mapper.  This is our recommended practice.
 
 ## XML Mapper for Select Statements
-We do not recommend using an XML mapper for select statements, but if you want to do so the DelectStatement object can be used as a parameter to a MyBatis mapper method directly.
+We do not recommend using an XML mapper for select statements, but if you want to do so the SelectStatement object can be used as a parameter to a MyBatis mapper method directly.
 
 If you are using an XML mapper, the select method should look like this in the Java interface:
   
@@ -181,5 +181,3 @@ name into the order by phrase.  For the order by phrase, the table alias (if the
 
 In our testing, this caused an issue in only one case.  When there is an outer join and the select list contains
 both the left and right join column.  In that case, the workaround is to supply a column alias for both columns.
- 
-

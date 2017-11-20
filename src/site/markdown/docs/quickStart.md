@@ -56,7 +56,7 @@ public final class SimpleTableDynamicSqlSupport {
     public static final SqlColumn<Date> birthDate = simpleTable.birthDate;
     public static final SqlColumn<Boolean> employed = simpleTable.employed;
     public static final SqlColumn<String> occupation = simpleTable.occupation;
-    
+
     public static final class SimpleTable extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
@@ -101,13 +101,13 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 @Mapper
 public interface SimpleTableAnnotatedMapper {
-    
+
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatement<SimpleTableRecord> insertStatement);
 
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatement updateStatement);
-    
+
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="SimpleTableResult", value= {
             @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
@@ -118,11 +118,11 @@ public interface SimpleTableAnnotatedMapper {
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
     })
     List<SimpleTableRecord> selectMany(SelectStatement selectStatement);
-    
+
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("SimpleTableResult")
     SimpleTableRecord selectOne(SelectStatement selectStatement);
-    
+
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatement deleteStatement);
 
@@ -148,9 +148,9 @@ an example from `examples.simple.SimpleTableAnnotatedMapperTest`:
                     .or(occupation, isNull())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
-            
+
             List<SimpleTableRecord> rows = mapper.selectMany(selectStatement);
-            
+
             assertThat(rows.size()).isEqualTo(3);
         } finally {
             session.close();

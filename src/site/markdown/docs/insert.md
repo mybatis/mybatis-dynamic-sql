@@ -17,7 +17,7 @@ A single record insert is a statement that inserts a single record into a table.
     record.setBirthDate(new Date());
     record.setEmployed(true);
     record.setOccupation("Developer");
-    
+
     InsertStatement<SimpleTableRecord> insertStatement = insert(record)
             .into(simpleTable)
             .map(id).toProperty("id")
@@ -28,9 +28,8 @@ A single record insert is a statement that inserts a single record into a table.
             .map(occupation).toProperty("occupation")
             .build()
             .render(RenderingStrategy.MYBATIS3);
-    
+
     int rows = mapper.insert(insertStatement);
-    
 ...
 ```
 
@@ -102,7 +101,7 @@ A batch insert is a collection of statements that can be used to execute a JDBC 
     try {
         SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
         List<SimpleTableRecord> records = getRecordsToInsert(); // not shown
-    
+
         BatchInsert<SimpleTableRecord> batchInsert = insert(records)
                 .into(simpleTable)
                 .map(id).toProperty("id")
@@ -113,9 +112,9 @@ A batch insert is a collection of statements that can be used to execute a JDBC 
                 .map(occupation).toProperty("occupation")
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
-    
+
         batchInsert.insertStatements().stream().forEach(mapper::insert);
-            
+
         session.commit();
     } finally {
         session.close();
@@ -139,7 +138,7 @@ An insert select is an SQL insert statement the inserts the results of a select.
                 .where(id, isLessThan(22)))
             .build()
             .render(RenderingStrategy.MYBATIS3);
-            
+
     int rows = mapper.insertSelect(insertSelectStatement);
 ```
 The column list is optional and can be removed if the selected columns match the layout of the table. 
@@ -157,7 +156,6 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
     @InsertProvider(type=SqlProviderAdapter.class, method="insertSelect")
     int insertSelect(InsertSelectStatement insertSelectStatement);
 ...
-
 ```
 
 Note that MyBatis does not support overloaded mapper method names, so the name of the method should be different than the single record insert in a mapper.
