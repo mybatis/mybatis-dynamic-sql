@@ -81,7 +81,7 @@
   
 <li>Subqueries in where clauses. For example, <tt>where foo in (select foo from foos where id &lt; 36)</tt></li>
 </ol>
-<p>At this time, we do not support the following:</p>
+<p>At this time, the library does not support the following:</p>
 
 <ol style="list-style-type: decimal">
   
@@ -92,26 +92,157 @@
 <li>Select from another select. For example <tt>select count(*) from (select foo from foos where id &lt; 36)</tt></li>
   
 <li>INTERSECT, EXCEPT, etc.</li>
-  
-<li>Calculated columns in select lists or anywhere else in a statement - although this can be supported with  custom implementations of SelectListItem and/or SqlColumn</li>
 </ol>
+<p>The user guide page for WHERE Clauses shows examples of many different types of SELECT statements with different complexities of the WHERE clause including support for sub-queries. We will just show a single example here, including an ORDER BY clause:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">    SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+            .from(animalData)
+            .where(id, isIn(1, 5, 7))
+            .and(bodyWeight, isBetween(1.0).and(3.0))
+            .orderBy(id.descending(), bodyWeight)
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+
+    List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
+</pre></div></div>
+<p>The WHERE and ORDER BY clauses are optional.</p>
 <div class="section">
-<h2><a name="General_Selects"></a>General Selects</h2>
-<p>One main feature of the SELECT support is the support of a very flexible WHERE clause.</p></div>
+<h2><a name="Joins"></a>Joins</h2>
+<p>The library supports the generation of equijoin statements - joins defined by column matching. For example:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">    SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+            .from(orderMaster, &quot;om&quot;)
+            .join(orderDetail, &quot;od&quot;).on(orderMaster.orderId, equalTo(orderDetail.orderId))
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+</pre></div></div>
+<p>Notice that you can give an alias to a tables if desired. If you don&#x2019;t specify an alias, the full table name wil be used in the generated SQL.</p>
+<p>Multiple tables can be joined in a single statement. For example:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">    SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+            .from(orderMaster, &quot;om&quot;)
+            .join(orderLine, &quot;ol&quot;).on(orderMaster.orderId, equalTo(orderLine.orderId))
+            .join(itemMaster, &quot;im&quot;).on(orderLine.itemId, equalTo(itemMaster.itemId))
+            .where(orderMaster.orderId, isEqualTo(2))
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+</pre></div></div>
+<p>Join queries will likely require you to define a MyBatis result mapping in XML. This is the only instance where XML is required. This is due to the limitations of the MyBatis annotations when mapping collections.</p>
+<p>The library supports four join types:</p>
+
+<ol style="list-style-type: decimal">
+  
+<li><tt>.join(...)</tt> is an INNER join</li>
+  
+<li><tt>.leftJoin(...)</tt> is a LEFT OUTER join</li>
+  
+<li><tt>.rightJoin(...)</tt> is a RIGHT OUTER join</li>
+  
+<li><tt>.fullJoin(...)</tt> is a FULL OUTER join</li>
+</ol></div>
 <div class="section">
-<h2><a name="Subqueries"></a>Subqueries</h2></div>
+<h2><a name="Union_Queries"></a>Union Queries</h2>
+<p>The library supports the generation of UNION queries. Foe example:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">    SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+            .from(animalData)
+            .union()
+            .selectDistinct(id, animalName, bodyWeight, brainWeight)
+            .from(animalData)
+            .orderBy(id)
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+</pre></div></div>
+<p>Any number of SELECT statements can be added to a UNION query. Only one ORDER BY phrase is allowed.</p></div>
 <div class="section">
-<h2><a name="Joins"></a>Joins</h2></div>
+<h2><a name="Annotated_Mapper_for_Select_Statements"></a>Annotated Mapper for Select Statements</h2>
+<p>The SelectStatement object can be used as a parameter to a MyBatis mapper method directly. If you are using an annotated mapper, the select method should look like this (note that we recommend to code a &#x201c;selectMany&#x201d; and a &#x201c;selectOne&#x201d; method with a shared result mapping):</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+
+...
+    @SelectProvider(type=SqlProviderAdapter.class, method=&quot;select&quot;)
+    @Results(id=&quot;AnimalDataResult&quot;, value={
+        @Result(column=&quot;id&quot;, property=&quot;id&quot;, id=true),
+        @Result(column=&quot;animal_name&quot;, property=&quot;animalName&quot;),
+        @Result(column=&quot;brain_weight&quot;, property=&quot;brainWeight&quot;),
+        @Result(column=&quot;body_weight&quot;, property=&quot;bodyWeight&quot;)
+    })
+    List&lt;AnimalData&gt; selectMany(SelectStatement selectStatement);
+
+    @SelectProvider(type=SqlProviderAdapter.class, method=&quot;select&quot;)
+    @ResultMap(&quot;AnimalDataResult&quot;)
+    AnimalData selectOne(SelectStatement selectStatement);
+...
+
+</pre></div></div></div>
 <div class="section">
-<h2><a name="Union_Queries"></a>Union Queries</h2></div>
+<h2><a name="XML_Mapper_for_Join_Statements"></a>XML Mapper for Join Statements</h2>
+<p>If you are coding a join, it is likely you will need to code an XML mapper to define the result map. This is due to a MyBatis limitation - the annotations cannot define a collection mapping. If you have to do this, the Java code looks like this:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">    @SelectProvider(type=SqlProviderAdapter.class, method=&quot;select&quot;)
+    @ResultMap(&quot;SimpleJoinResult&quot;)
+    List&lt;OrderMaster&gt; selectMany(SelectStatement selectStatement);
+</pre></div></div>
+<p>And the corresponding XML looks like this:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">&lt;mapper namespace=&quot;examples.joins.JoinMapper&quot;&gt;
+  &lt;resultMap id=&quot;SimpleJoinResult&quot; type=&quot;examples.joins.OrderMaster&quot;&gt;
+    &lt;id column=&quot;order_id&quot; jdbcType=&quot;INTEGER&quot; property=&quot;id&quot; /&gt;
+    &lt;result column=&quot;order_date&quot; jdbcType=&quot;DATE&quot; property=&quot;orderDate&quot; /&gt;
+    &lt;collection property=&quot;details&quot; ofType=&quot;examples.joins.OrderDetail&quot;&gt;
+      &lt;id column=&quot;order_id&quot; jdbcType=&quot;INTEGER&quot; property=&quot;orderId&quot;/&gt;
+      &lt;id column=&quot;line_number&quot; jdbcType=&quot;INTEGER&quot; property=&quot;lineNumber&quot;/&gt;
+      &lt;result column=&quot;description&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;description&quot;/&gt;
+      &lt;result column=&quot;quantity&quot; jdbcType=&quot;INTEGER&quot; property=&quot;quantity&quot;/&gt;
+    &lt;/collection&gt;
+  &lt;/resultMap&gt;
+&lt;/mapper&gt;
+</pre></div></div>
+<p>Notice that the resultMap is the only element in the XML mapper. This is our recommended practice.</p></div>
 <div class="section">
-<h2><a name="Annotated_Mapper_for_Select_Statements"></a>Annotated Mapper for Select Statements</h2></div>
-<div class="section">
-<h2><a name="XML_Mapper_for_Select_Statements"></a>XML Mapper for Select Statements</h2></div>
+<h2><a name="XML_Mapper_for_Select_Statements"></a>XML Mapper for Select Statements</h2>
+<p>We do not recommend using an XML mapper for select statements, but if you want to do so the DelectStatement object can be used as a parameter to a MyBatis mapper method directly.</p>
+<p>If you are using an XML mapper, the select method should look like this in the Java interface:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">import org.mybatis.dynamic.sql.select.render.SelectStatement;
+
+...
+    List&lt;AnimalData&gt; selectMany(SelectStatement selectStatement);
+...
+
+</pre></div></div>
+<p>The XML element should look like this:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">  &lt;resultMap id=&quot;animalResult&quot; type=&quot;examples.animal.data.AnimalData&quot;&gt;
+    &lt;id column=&quot;id&quot; jdbcType=&quot;INTEGER&quot; property=&quot;id&quot; /&gt;
+    &lt;result column=&quot;animal_name&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;animalName&quot; /&gt;
+    &lt;result column=&quot;brain_weight&quot; jdbcType=&quot;DOUBLE&quot; property=&quot;brainWeight&quot; /&gt;
+    &lt;result column=&quot;body_weight&quot; jdbcType=&quot;DOUBLE&quot; property=&quot;bodyWeight&quot; /&gt;
+  &lt;/resultMap&gt;
+
+  &lt;select id=&quot;selectMany&quot; resultMap=&quot;animalResult&quot;&gt;
+    ${selecteStatement}
+  &lt;/select&gt;
+</pre></div></div></div>
 <div class="section">
 <h2><a name="Notes_on_Order_By"></a>Notes on Order By</h2>
 <p>Order by phrases can be difficult to calculate when there are aliased columns, aliased tables, unions, and joins. This library has taken a simple approach - the library will either write the column alias or the column name into the order by phrase. For the order by phrase, the table alias (if there is one) will be ignored.</p>
-<p>In our testing, this caused an issue in only one case. When there is an outer join and the select list contains both the left and right join column. In that case, the workaround is to supply a column alias for both columns. </p></div>
+<p>In our testing, this caused an issue in only one case. When there is an outer join and the select list contains both the left and right join column. In that case, the workaround is to supply a column alias for both columns.</p></div>
         </div>
       </div>
     </div>

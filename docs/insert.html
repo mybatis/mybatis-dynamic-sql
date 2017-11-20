@@ -64,46 +64,191 @@
         </div>
         <div id="bodyColumn"  class="span10" >
 <h1>Insert Statements</h1>
-<p>The library will generate a variety of INSERT statements.</p>
+<p>The library will generate a variety of INSERT statements:</p>
+
+<ol style="list-style-type: decimal">
+  
+<li>An insert for a single record</li>
+  
+<li>An insert for a batch of records</li>
+  
+<li>An insert with a select statement</li>
+</ol>
 <div class="section">
-<h2><a name="Single_Record_Insert"></a>Single Record Insert</h2></div>
+<h2><a name="Single_Record_Insert"></a>Single Record Insert</h2>
+<p>A single record insert is a statement that inserts a single record into a table. This statement is configured differently than other statements in the library so that MyBatis&#x2019; support for generated keys will work properly. To use the statement, you must first create an object that will map to the database row, then map object attributes to fields in the database. For example:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">...
+    SimpleTableRecord record = new SimpleTableRecord();
+    record.setId(100);
+    record.setFirstName(&quot;Joe&quot;);
+    record.setLastName(&quot;Jones&quot;);
+    record.setBirthDate(new Date());
+    record.setEmployed(true);
+    record.setOccupation(&quot;Developer&quot;);
+    
+    InsertStatement&lt;SimpleTableRecord&gt; insertStatement = insert(record)
+            .into(simpleTable)
+            .map(id).toProperty(&quot;id&quot;)
+            .map(firstName).toProperty(&quot;firstName&quot;)
+            .map(lastName).toProperty(&quot;lastName&quot;)
+            .map(birthDate).toProperty(&quot;birthDate&quot;)
+            .map(employed).toProperty(&quot;employed&quot;)
+            .map(occupation).toProperty(&quot;occupation&quot;)
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+    
+    int rows = mapper.insert(insertStatement);
+    
+...
+</pre></div></div>
+<p>Notice the <tt>map</tt> method. It is used to map a database column to an attribute of the record to insert. There are several different mappings available:</p>
+
+<ol style="list-style-type: decimal">
+  
+<li><tt>map(column).toNull()</tt> will insert a null into a column</li>
+  
+<li><tt>map(column).toConstant(constant_value)</tt> will insert a constant into a column. The constant_value will be written into the generated insert statement exactly as entered</li>
+  
+<li><tt>map(column).toStringConstant(constant_value)</tt> will insert a constant into a column. The constant_value will be written into the generated insert statement surrounded by single quote marks (as an SQL String)</li>
+  
+<li><tt>map(column).toProperty(property)</tt> will insert a value from the record into a column. The value of the property will be bound to the SQL statement as a prepared statement parameter</li>
+  
+<li><tt>map(column).toPropertyWhenPresent(property)</tt> will insert a value from the record into a column if the value is non-null. The value of the property will be bound to the SQL statement as a prepared statement parameter. This is used to generate a &#x201c;selective&#x201d; insert as defined in MyBatis Generator.</li>
+</ol>
 <div class="section">
-<h2><a name="Insert_Selective"></a>Insert Selective</h2></div>
+<h3><a name="Annotated_Mapper_for_Single_Record_Insert_Statements"></a>Annotated Mapper for Single Record Insert Statements</h3>
+<p>The InsertStatement object can be used as a parameter to a MyBatis mapper method directly. If you are using an annotated mapper, the insert method should look like this (with @Options added for generated values if necessary):</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">import org.apache.ibatis.annotations.InsertProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+
+...
+    @InsertProvider(type=SqlProviderAdapter.class, method=&quot;insert&quot;)
+    int insert(InsertStatement&lt;SimpleTableRecord&gt; insertStatement);
+...
+
+</pre></div></div></div>
 <div class="section">
-<h2><a name="Batch_Insert_Support"></a>Batch Insert Support</h2></div>
-<div class="section">
-<h2><a name="Insert_with_Select"></a>Insert with Select</h2></div>
-<div class="section">
-<h2><a name="Generated_Keys"></a>Generated Keys</h2>
-<p>MyBatis supports returning generated key from a single record insert, or a batch insert. In either case, it is simply a matter of configuring the insert mapper method appropriately.</p></div>
-<div class="section">
-<h2><a name="Annotated_Mapper_for_Insert_Statements"></a>Annotated Mapper for Insert Statements</h2></div>
-<div class="section">
-<h2><a name="XML_Mapper_for_Insert_Statements"></a>XML Mapper for Insert Statements</h2>
-<p>We do not recommend using an XML mapper for insert statements, but if you want to do so the InsertStatement or InsertSelectStatement objects can be used as a parameter to a MyBatis mapper method directly.</p>
+<h3><a name="XML_Mapper_for_Single_Record_Insert_Statements"></a>XML Mapper for Single Record Insert Statements</h3>
+<p>We do not recommend using an XML mapper for insert statements, but if you want to do so the InsertStatement object can be used as a parameter to a MyBatis mapper method directly.</p>
 <p>If you are using an XML mapper, the insert method should look like this in the Java interface:</p>
 
 <div class="source">
 <div class="source"><pre class="prettyprint">import org.mybatis.dynamic.sql.insert.render.InsertStatement;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
 
 ...
-    int insert(InsertStatement insertStatement);
-    int insertSelect(InsertSelectStatement insertSelectStatement);
+    int insert(InsertStatement&lt;SimpleTableRecord&gt; insertStatement);
 ...
 
 </pre></div></div>
-<p>The XML element should look like this (with attributes added for generated keys if necessary):</p>
+<p>The XML element should look like this (with attributes added for generated values if necessary):</p>
 
 <div class="source">
 <div class="source"><pre class="prettyprint">  &lt;insert id=&quot;insert&quot;&gt;
     ${insertStatement}
   &lt;/delete&gt;
+</pre></div></div></div>
+<div class="section">
+<h3><a name="Generated_Values"></a>Generated Values</h3>
+<p>MyBatis supports returning generated values from a single record insert, or a batch insert. In either case, it is simply a matter of configuring the insert mapper method appropriately. For example, to retrieve the value of a calculated column configure your mapper method like this:</p>
 
-  &lt;insert id=&quot;insertSelect&quot;&gt;
+<div class="source">
+<div class="source"><pre class="prettyprint">...
+    @InsertProvider(type=SqlProviderAdapter.class, method=&quot;insert&quot;)
+    @Options(useGeneratedKeys=true, keyProperty=&quot;record.fullName&quot;)
+    int insert(InsertStatement&lt;GeneratedAlwaysRecord&gt; insertStatement);
+...
+</pre></div></div>
+<p>The important thing is that the <tt>keyProperty</tt> is set correctly. It should always be in the form <tt>record.&lt;attribute&gt;</tt> where <tt>&lt;attribute&gt;</tt> is the attribute of the record class that should be updated with the generated value.</p></div></div>
+<div class="section">
+<h2><a name="Batch_Insert_Support"></a>Batch Insert Support</h2>
+<p>A batch insert is a collection of statements that can be used to execute a JDBC batch. A batch is the preferred method of doing bulk inserts with JDBC. The basic idea is that you configure the connection for a batch insert, then execute the same statement multiple times, with different values for each inserted record. MyBatis has a nice abstraction of JDBC batches that works well with statements generated from this library. A batch insert looks like this:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">...
+    SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH);
+    try {
+        SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
+        List&lt;SimpleTableRecord&gt; records = getRecordsToInsert(); // not shown
+    
+        BatchInsert&lt;SimpleTableRecord&gt; batchInsert = insert(records)
+                .into(simpleTable)
+                .map(id).toProperty(&quot;id&quot;)
+                .map(firstName).toProperty(&quot;firstName&quot;)
+                .map(lastName).toProperty(&quot;lastName&quot;)
+                .map(birthDate).toProperty(&quot;birthDate&quot;)
+                .map(employed).toProperty(&quot;employed&quot;)
+                .map(occupation).toProperty(&quot;occupation&quot;)
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+    
+        batchInsert.insertStatements().stream().forEach(mapper::insert);
+            
+        session.commit();
+    } finally {
+        session.close();
+    }
+...
+</pre></div></div>
+<p>It is important to open a MyBatis session by setting the executor type to BATCH. The records are inserted on the commit. You can call commit multiple times if you want to do intermediate commits.</p>
+<p>Notice that the same mapper method that is used to insert a single record is now executed multiple times. The <tt>map</tt> methods are the same with the exception that the <tt>map(column).toPropertyWhenPresent(property)</tt> method is not supported for batch inserts. </p></div>
+<div class="section">
+<h2><a name="Insert_with_Select"></a>Insert with Select</h2>
+<p>An insert select is an SQL insert statement the inserts the results of a select. For example:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">    InsertSelectStatement insertSelectStatement = insertInto(animalDataCopy)
+            .withColumnList(id, animalName, bodyWeight, brainWeight)
+            .withSelectStatement(
+                select(id, animalName, bodyWeight, brainWeight)
+                .from(animalData)
+                .where(id, isLessThan(22)))
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+            
+    int rows = mapper.insertSelect(insertSelectStatement);
+</pre></div></div>
+<p>The column list is optional and can be removed if the selected columns match the layout of the table. </p>
+<div class="section">
+<h3><a name="Annotated_Mapper_for_Insert_Select_Statements"></a>Annotated Mapper for Insert Select Statements</h3>
+<p>The InsertSelectStatement object can be used as a parameter to a MyBatis mapper method directly. If you are using an annotated mapper, the insert method should look like this:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">import org.apache.ibatis.annotations.InsertProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+
+...
+    @InsertProvider(type=SqlProviderAdapter.class, method=&quot;insertSelect&quot;)
+    int insertSelect(InsertSelectStatement insertSelectStatement);
+...
+
+</pre></div></div>
+<p>Note that MyBatis does not support overloaded mapper method names, so the name of the method should be different than the single record insert in a mapper.</p></div>
+<div class="section">
+<h3><a name="XML_Mapper_for_Insert_Select_Statements"></a>XML Mapper for Insert Select Statements</h3>
+<p>We do not recommend using an XML mapper for insert statements, but if you want to do so the InsertSelectStatement object can be used as a parameter to a MyBatis mapper method directly.</p>
+<p>If you are using an XML mapper, the insert method should look like this in the Java interface:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
+
+...
+    int insertSelect(InsertSelectStatement insertSelectStatement);
+...
+
+</pre></div></div>
+<p>The XML element should look like this:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">  &lt;insert id=&quot;insertSelect&quot;&gt;
     ${insertStatement}
   &lt;/delete&gt;
-</pre></div></div></div>
+</pre></div></div></div></div>
         </div>
       </div>
     </div>
