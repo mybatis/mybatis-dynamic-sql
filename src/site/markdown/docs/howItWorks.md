@@ -90,6 +90,6 @@ are not exposed to any general user input.
 If you follow these practices, you will make the SQL injection possibility less obvious:
 
 1. Always use MyBatis annotated mappers
-2. Use the SqlProviderAdapter utility class in conjunction with the MyBatis provider annotations (@InsertProvider, @SlectProvider, etc.)
+2. Use the SqlProviderAdapter utility class in conjunction with the MyBatis provider annotations (@InsertProvider, @SelectProvider, etc.)
 
 This is, admittedly, only security through obscurity.
