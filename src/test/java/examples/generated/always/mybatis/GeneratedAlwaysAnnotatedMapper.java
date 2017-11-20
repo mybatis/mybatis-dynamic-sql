@@ -34,7 +34,7 @@ import examples.generated.always.GeneratedAlwaysRecord;
 public interface GeneratedAlwaysAnnotatedMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="gaResults", value={
-        @Result(property="id", column="id"),
+        @Result(property="id", column="id", id=true),
         @Result(property="firstName", column="first_name"),
         @Result(property="lastName", column="last_name"),
         @Result(property="fullName", column="full_name")

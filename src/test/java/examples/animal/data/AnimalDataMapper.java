@@ -34,7 +34,7 @@ public interface AnimalDataMapper {
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results({
-        @Result(column="id", property="id"),
+        @Result(column="id", property="id", id=true),
         @Result(column="animal_name", property="animalName"),
         @Result(column="brain_weight", property="brainWeight"),
         @Result(column="body_weight", property="bodyWeight")
