@@ -52,8 +52,8 @@ public class FieldAndValueCollector&lt;T&gt; {
     
     public static &lt;T&gt; Collector&lt;FieldAndValue, FieldAndValueCollector&lt;T&gt;, FieldAndValueCollector&lt;T&gt;&gt; collect() {
 <span class="fc" id="L54">        return Collector.of(FieldAndValueCollector::new,</span>
-<span class="fc" id="L55">                FieldAndValueCollector::add,</span>
-<span class="fc" id="L56">                FieldAndValueCollector::merge);</span>
+                FieldAndValueCollector::add,
+                FieldAndValueCollector::merge);
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

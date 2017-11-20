@@ -20,7 +20,7 @@
       <div id="banner">
         <div class="pull-left"><a href="../docs/introduction.html" id="bannerLeft"><h2>MyBatis Dynamic SQL</h2>
 </a></div>
-        <div class="pull-right"><a href="../../" id="bannerRight" title="MyBatis logo"><img src="../../images/mybatis-logo.png"  alt="MyBatis logo"/></a></div>
+        <div class="pull-right"><a href="../../" id="bannerRight" title="MyBatis logo"><img src="http://mybatis.github.io/images/mybatis-logo.png"  alt="MyBatis logo"/></a></div>
         <div class="clear"><hr/></div>
       </div>
 
@@ -44,6 +44,7 @@
     <li class="active"><a href="#"><span class="none"></span>INSERT Statements</a>
   </li>
     <li><a href="../docs/update.html" title="UPDATE Statements"><span class="none"></span>UPDATE Statements</a>  </li>
+    <li><a href="../docs/spring.html" title="Spring Support"><span class="none"></span>Spring Support</a>  </li>
     <li><a href="../docs/howItWorks.html" title="How it Works"><span class="none"></span>How it Works</a>  </li>
     <li><a href="../docs/extending.html" title="Extending the Library"><span class="none"></span>Extending the Library</a>  </li>
     <li><a href="../docs/codingStandards.html" title="Coding Standards"><span class="none"></span>Coding Standards</a>  </li>
@@ -63,14 +64,46 @@
         </div>
         <div id="bodyColumn"  class="span10" >
 <h1>Insert Statements</h1>
+<p>The library will generate a variety of INSERT statements.</p>
 <div class="section">
-<h2><a name="Insert"></a>Insert</h2></div>
+<h2><a name="Single_Record_Insert"></a>Single Record Insert</h2></div>
 <div class="section">
 <h2><a name="Insert_Selective"></a>Insert Selective</h2></div>
 <div class="section">
-<h2><a name="Bulk_Insert"></a>Bulk Insert</h2></div>
+<h2><a name="Batch_Insert_Support"></a>Batch Insert Support</h2></div>
 <div class="section">
-<h2><a name="Generated_Keys"></a>Generated Keys</h2></div>
+<h2><a name="Insert_with_Select"></a>Insert with Select</h2></div>
+<div class="section">
+<h2><a name="Generated_Keys"></a>Generated Keys</h2>
+<p>MyBatis supports returning generated key from a single record insert, or a batch insert. In either case, it is simply a matter of configuring the insert mapper method appropriately.</p></div>
+<div class="section">
+<h2><a name="Annotated_Mapper_for_Insert_Statements"></a>Annotated Mapper for Insert Statements</h2></div>
+<div class="section">
+<h2><a name="XML_Mapper_for_Insert_Statements"></a>XML Mapper for Insert Statements</h2>
+<p>We do not recommend using an XML mapper for insert statements, but if you want to do so the InsertStatement or InsertSelectStatement objects can be used as a parameter to a MyBatis mapper method directly.</p>
+<p>If you are using an XML mapper, the insert method should look like this in the Java interface:</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
+
+...
+    int insert(InsertStatement insertStatement);
+    int insertSelect(InsertSelectStatement insertSelectStatement);
+...
+
+</pre></div></div>
+<p>The XML element should look like this (with attributes added for generated keys if necessary):</p>
+
+<div class="source">
+<div class="source"><pre class="prettyprint">  &lt;insert id=&quot;insert&quot;&gt;
+    ${insertStatement}
+  &lt;/delete&gt;
+
+  &lt;insert id=&quot;insertSelect&quot;&gt;
+    ${insertStatement}
+  &lt;/delete&gt;
+</pre></div></div></div>
         </div>
       </div>
     </div>

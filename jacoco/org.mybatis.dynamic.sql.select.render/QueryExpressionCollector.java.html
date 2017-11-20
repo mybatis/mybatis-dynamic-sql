@@ -51,8 +51,8 @@ public class QueryExpressionCollector {
     
     public static Collector&lt;QueryExpression, QueryExpressionCollector, QueryExpressionCollector&gt; collect() {
 <span class="fc" id="L53">        return Collector.of(QueryExpressionCollector::new,</span>
-<span class="fc" id="L54">                QueryExpressionCollector::add,</span>
-<span class="fc" id="L55">                QueryExpressionCollector::merge);</span>
+                QueryExpressionCollector::add,
+                QueryExpressionCollector::merge);
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

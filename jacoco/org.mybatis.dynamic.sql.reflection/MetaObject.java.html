@@ -36,7 +36,7 @@ public class MetaObject {
 <span class="fc" id="L36">    private MetaObject(Object object) {</span>
 <span class="fc bfc" id="L37" title="All 2 branches covered.">        if (object instanceof Map) {</span>
 <span class="fc" id="L38">            objectWrapper = new MapWrapper(this, (Map&lt;String, Object&gt;) object);</span>
-<span class="fc" id="L39">        } else {</span>
+        } else {
 <span class="fc" id="L40">            objectWrapper = new BeanWrapper(this, object);</span>
         }
 <span class="fc" id="L42">    }</span>

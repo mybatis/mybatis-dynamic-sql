@@ -247,7 +247,7 @@ public class QueryExpressionDSL {
 <span class="fc" id="L247">        private List&lt;JoinCriterion&lt;?&gt;&gt; joinCriteria = new ArrayList&lt;&gt;();</span>
         private JoinType joinType;
         
-<span class="fc" id="L250">        public &lt;T&gt; JoinSpecificationFinisher(SqlTable table, SqlColumn&lt;T&gt; joinColumn,</span>
+        public &lt;T&gt; JoinSpecificationFinisher(SqlTable table, SqlColumn&lt;T&gt; joinColumn,
 <span class="fc" id="L251">                JoinCondition&lt;T&gt; joinCondition, JoinType joinType) {</span>
 <span class="fc" id="L252">            this.joinTable = table;</span>
 <span class="fc" id="L253">            this.joinType = joinType;</span>
@@ -261,7 +261,7 @@ public class QueryExpressionDSL {
 <span class="fc" id="L261">            joinCriteria.add(joinCriterion);</span>
 <span class="fc" id="L262">        }</span>
 
-<span class="fc" id="L264">        public &lt;T&gt; JoinSpecificationFinisher(SqlTable table, SqlColumn&lt;T&gt; joinColumn,</span>
+        public &lt;T&gt; JoinSpecificationFinisher(SqlTable table, SqlColumn&lt;T&gt; joinColumn,
 <span class="fc" id="L265">                JoinCondition&lt;T&gt; joinCondition, JoinType joinType, JoinCriterion&lt;?&gt;...joinCriteria) {</span>
 <span class="fc" id="L266">            this.joinTable = table;</span>
 <span class="fc" id="L267">            this.joinType = joinType;</span>

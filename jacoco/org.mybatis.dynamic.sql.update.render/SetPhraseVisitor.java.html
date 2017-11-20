@@ -54,9 +54,9 @@ public class SetPhraseVisitor implements UpdateMappingVisitor&lt;FragmentAndPara
     @Override
     public FragmentAndParameters visit(StringConstantMapping mapping) {
 <span class="fc" id="L56">        String fragment = mapping.mapColumn(SqlColumn::name)</span>
-<span class="fc" id="L57">                + &quot; = '&quot; //$NON-NLS-1$</span>
+                + &quot; = '&quot; //$NON-NLS-1$
 <span class="fc" id="L58">                + mapping.constant()</span>
-<span class="fc" id="L59">                + &quot;'&quot;; //$NON-NLS-1$</span>
+                + &quot;'&quot;; //$NON-NLS-1$
         
 <span class="fc" id="L61">        return new FragmentAndParameters.Builder()</span>
 <span class="fc" id="L62">                .withFragment(fragment)</span>
@@ -69,8 +69,8 @@ public class SetPhraseVisitor implements UpdateMappingVisitor&lt;FragmentAndPara
 
 <span class="fc" id="L70">        String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));</span>
 <span class="fc" id="L71">        String setPhrase = mapping.mapColumn(SqlColumn::name)</span>
-<span class="fc" id="L72">                + &quot; = &quot;  //$NON-NLS-1$</span>
-<span class="fc" id="L73">                + jdbcPlaceholder;</span>
+                + &quot; = &quot;  //$NON-NLS-1$
+                + jdbcPlaceholder;
         
 <span class="fc" id="L75">        return new FragmentAndParameters.Builder()</span>
 <span class="fc" id="L76">                .withFragment(setPhrase)</span>

@@ -53,12 +53,12 @@ public class QueryExpression {
     }
     
     public String queryExpression() {
-<span class="fc" id="L56">        return spaceAfter(connector)</span>
-<span class="fc" id="L57">                + &quot;select &quot; //$NON-NLS-1$</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">                + (isDistinct ? &quot;distinct &quot; : &quot;&quot;) //$NON-NLS-1$ //$NON-NLS-2$</span>
-<span class="fc" id="L59">                + columnList</span>
-<span class="fc" id="L60">                + &quot; from &quot; //$NON-NLS-1$</span>
-<span class="fc" id="L61">                + tableName</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        return spaceAfter(connector)</span>
+                + &quot;select &quot; //$NON-NLS-1$
+                + (isDistinct ? &quot;distinct &quot; : &quot;&quot;) //$NON-NLS-1$ //$NON-NLS-2$
+                + columnList
+                + &quot; from &quot; //$NON-NLS-1$
+                + tableName
 <span class="fc" id="L62">                + spaceBefore(joinClause)</span>
 <span class="fc" id="L63">                + spaceBefore(whereClause)</span>
 <span class="fc" id="L64">                + spaceBefore(groupByClause);</span>

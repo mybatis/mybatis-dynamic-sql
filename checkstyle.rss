@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 - 2017 MyBatis.org</copyright>
     <item>
-      <title>File: 128,
+      <title>File: 127,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -355,20 +355,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive.java">org/mybatis/dynamic/sql/where/condition/IsNotInCaseInsensitive.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#target.classes.META-INF.maven.org.mybatis.dynamic.sql.mybatis-dynamic-sql.pom.properties">target/classes/META-INF/maven/org.mybatis.dynamic.sql/mybatis-dynamic-sql/pom.properties</a>
                 </td>
                 <td>
                   0

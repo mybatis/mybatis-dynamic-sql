@@ -21,14 +21,14 @@ import org.mybatis.dynamic.sql.SqlColumn;
     @Override
     public String getFormattedJdbcPlaceholder(SqlColumn&lt;?&gt; column, String prefix, String parameterName) {
 <span class="fc" id="L23">        return &quot;#{&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L24">                + prefix</span>
-<span class="fc" id="L25">                + &quot;.&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L26">                + parameterName</span>
-<span class="fc" id="L27">                + &quot;,jdbcType=&quot; //$NON-NLS-1$</span>
+                + prefix
+                + &quot;.&quot; //$NON-NLS-1$
+                + parameterName
+                + &quot;,jdbcType=&quot; //$NON-NLS-1$
 <span class="fc" id="L28">                + column.jdbcType().getName()</span>
 <span class="fc" id="L29">                + column.typeHandler().map(th -&gt; &quot;,typeHandler=&quot; + th) //$NON-NLS-1$</span>
 <span class="fc" id="L30">                    .orElse(&quot;&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L31">                + &quot;}&quot;; //$NON-NLS-1$</span>
+                + &quot;}&quot;; //$NON-NLS-1$
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

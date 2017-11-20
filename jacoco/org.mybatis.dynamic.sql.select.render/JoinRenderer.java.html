@@ -43,7 +43,7 @@ public class JoinRenderer {
     
     private String toRenderedString(JoinSpecification joinSpecification) {
 <span class="fc" id="L45">        return spaceAfter(joinSpecification.joinType().shortType())</span>
-<span class="fc" id="L46">                + &quot;join&quot; //$NON-NLS-1$</span>
+                + &quot;join&quot; //$NON-NLS-1$
 <span class="fc" id="L47">                + spaceBefore(queryExpression.calculateTableNameIncludingAlias(joinSpecification.table()))</span>
 <span class="fc" id="L48">                + spaceBefore(renderConditions(joinSpecification));</span>
     }

@@ -44,7 +44,7 @@ public class Reflector {
 
 <span class="fc" id="L45">    private static final Logger log = Logger.getLogger(Reflector.class.getName());</span>
     private static final String IS = &quot;is&quot;; //$NON-NLS-1$
-<span class="fc" id="L47">    private static final String GET = &quot;get&quot;; //$NON-NLS-1$</span>
+    private static final String GET = &quot;get&quot;; //$NON-NLS-1$
     
 <span class="fc" id="L49">    private Map&lt;String, Invoker&gt; getMethods = new HashMap&lt;&gt;();</span>
 
@@ -183,7 +183,7 @@ public class Reflector {
             // Ignored. If the method isn't accessible, it will be filtered out later in the pipeline.
 <span class="fc" id="L184">            log.log(Level.FINEST,</span>
 <span class="fc" id="L185">                    &quot;Exception making method &quot; + method.toString() + &quot; accessible.&quot;, e); //$NON-NLS-1$ //$NON-NLS-2$</span>
-        }
+<span class="fc" id="L186">        }</span>
 <span class="fc" id="L187">        return method;</span>
     }
 
@@ -194,13 +194,13 @@ public class Reflector {
             // Ignored. If the method isn't accessible, it will be filtered out later in the pipeline.
 <span class="fc" id="L195">            log.log(Level.FINEST,</span>
 <span class="fc" id="L196">                    &quot;Exception making field &quot; + field.toString() + &quot; accessible.&quot;, e); //$NON-NLS-1$ //$NON-NLS-2$</span>
-        }
+<span class="fc" id="L197">        }</span>
 <span class="fc" id="L198">        return field;</span>
     }
     
     static String getMethodSignature(Method method) {
 <span class="fc" id="L202">        return method.getReturnType().getName()</span>
-<span class="fc" id="L203">                + &quot;#&quot; //$NON-NLS-1$</span>
+                + &quot;#&quot; //$NON-NLS-1$
 <span class="fc" id="L204">                + method.getName()</span>
 <span class="fc" id="L205">                + Arrays.stream(method.getParameterTypes())</span>
 <span class="fc" id="L206">                .map(Class::getName)</span>
