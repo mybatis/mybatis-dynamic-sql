@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
@@ -174,7 +174,7 @@ public class QueryExpressionDSL {
             return new GroupByFinisher();
         }
         
-        public SelectDSL orderBy(SqlColumn<?>...columns) {
+        public SelectDSL orderBy(SortSpecification...columns) {
             selectModelBuilder.addQueryExpression(buildModel());
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
             return selectModelBuilder;
@@ -203,7 +203,7 @@ public class QueryExpressionDSL {
             return new UnionBuilder();
         }
 
-        public SelectDSL orderBy(SqlColumn<?>...columns) {
+        public SelectDSL orderBy(SortSpecification...columns) {
             whereModel = buildWhereModel();
             selectModelBuilder.addQueryExpression(buildModel());
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
@@ -358,7 +358,7 @@ public class QueryExpressionDSL {
             return fullJoin(joinTable);
         }
 
-        public SelectDSL orderBy(SqlColumn<?>...columns) {
+        public SelectDSL orderBy(SortSpecification...columns) {
             joinModel = buildJoinModel();
             selectModelBuilder.addQueryExpression(buildModel());
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
@@ -367,7 +367,7 @@ public class QueryExpressionDSL {
     }
     
     public class GroupByFinisher implements Buildable<SelectModel> {
-        public SelectDSL orderBy(SqlColumn<?>...columns) {
+        public SelectDSL orderBy(SortSpecification...columns) {
             selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
             return selectModelBuilder;
         }

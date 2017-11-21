@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class SqlColumn<T> implements BindableColumn<T> {
+public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     
     protected String name;
     protected SqlTable table;
@@ -65,10 +65,23 @@ public class SqlColumn<T> implements BindableColumn<T> {
         return typeHandler;
     }
     
-    public SqlColumn<T> descending() {
-        SqlColumn<T> column = new SqlColumn<>(this);
-        column.isDescending = true;
-        return column;
+    public SortSpecification descending() {
+        return new SortSpecification() {
+            @Override
+            public SortSpecification as(String alias) {
+                return SqlColumn.this.as(alias);
+            }
+            
+            @Override
+            public boolean isDescending() {
+                return true;
+            }
+            
+            @Override
+            public String aliasOrName() {
+                return SqlColumn.this.aliasOrName();
+            }
+        };
     }
     
     @Override
@@ -78,8 +91,14 @@ public class SqlColumn<T> implements BindableColumn<T> {
         return column;
     }
     
+    @Override
     public boolean isDescending() {
         return isDescending;
+    }
+    
+    @Override
+    public String aliasOrName() {
+        return alias.orElse(name);
     }
     
     @Override

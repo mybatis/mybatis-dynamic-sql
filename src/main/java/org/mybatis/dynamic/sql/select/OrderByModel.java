@@ -21,20 +21,20 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
 
 public class OrderByModel {
-    private List<SqlColumn<?>> columns = new ArrayList<>();
+    private List<SortSpecification> columns = new ArrayList<>();
     
-    private OrderByModel(List<SqlColumn<?>> columns) {
+    private OrderByModel(List<SortSpecification> columns) {
         this.columns.addAll(columns);
     }
     
-    public <R> Stream<R> mapColumns(Function<SqlColumn<?>, R> mapper) {
+    public <R> Stream<R> mapColumns(Function<SortSpecification, R> mapper) {
         return columns.stream().map(mapper);
     }
     
-    public static OrderByModel of(SqlColumn<?>...columns) {
+    public static OrderByModel of(SortSpecification...columns) {
         return new OrderByModel(Arrays.asList(columns));
     }
 }
