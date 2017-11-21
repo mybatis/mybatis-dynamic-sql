@@ -557,6 +557,39 @@ public class AnimalDataTest {
     }
 
     @Test
+    public void testCalculatedColumn() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatement selectStatement = select(id, animalName, add(bodyWeight, brainWeight).as("combined_weight"))
+                    .from(animalData, "a")
+                    .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+
+            String expected = "select a.id, a.animal_name, a.body_weight + a.brain_weight as combined_weight "
+                    + "from AnimalData a "
+                    + "where a.body_weight + a.brain_weight > #{parameters.p1,jdbcType=DOUBLE}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
+            assertThat(animals.size()).isEqualTo(3);
+            Map<String, Object> animal = animals.get(0);
+            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
+            assertThat(animal.get("COMBINED_WEIGHT")).isEqualTo(12366.0);
+            animal = animals.get(1);
+            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
+            assertThat(animal.get("COMBINED_WEIGHT")).isEqualTo(11750.0);
+            animal = animals.get(2);
+            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
+            assertThat(animal.get("COMBINED_WEIGHT")).isEqualTo(87154.5);
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
     public void testNotLikeCondition() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {

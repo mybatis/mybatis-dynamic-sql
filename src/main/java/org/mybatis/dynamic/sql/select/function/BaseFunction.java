@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.function;
 
 import java.sql.JDBCType;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -25,7 +26,7 @@ public abstract class BaseFunction<T, S extends BaseFunction<T, S>> implements B
     protected BindableColumn<T> column;
     
     protected BaseFunction(BindableColumn<T> column) {
-        this.column = column;
+        this.column = Objects.requireNonNull(column);
     }
 
     @Override

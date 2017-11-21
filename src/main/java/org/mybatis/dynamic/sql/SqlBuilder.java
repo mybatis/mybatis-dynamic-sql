@@ -31,6 +31,7 @@ import org.mybatis.dynamic.sql.select.aggregate.CountAll;
 import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
+import org.mybatis.dynamic.sql.select.function.Add;
 import org.mybatis.dynamic.sql.select.function.Lower;
 import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Upper;
@@ -177,6 +178,10 @@ public interface SqlBuilder {
     }
 
     // functions
+    static <T extends Number> Add<T> add(BindableColumn<T> column1, BindableColumn<T> column2) {
+        return Add.of(column1, column2);
+    }
+    
     static Lower lower(BindableColumn<String> column) {
         return Lower.of(column);
     }
