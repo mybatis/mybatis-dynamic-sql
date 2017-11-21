@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -36,7 +36,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class QueryExpressionModel {
     private Optional<String> connector;
     private boolean isDistinct;
-    private List<SelectListItem> selectList;
+    private List<BasicColumn> selectList;
     private SqlTable table;
     private Optional<JoinModel> joinModel;
     private TableAliasCalculator tableAliasCalculator;
@@ -63,7 +63,7 @@ public class QueryExpressionModel {
         return isDistinct;
     }
     
-    public <R> Stream<R> mapColumns(Function<SelectListItem, R> mapper) {
+    public <R> Stream<R> mapColumns(Function<BasicColumn, R> mapper) {
         return selectList.stream().map(mapper);
     }
     
@@ -95,7 +95,7 @@ public class QueryExpressionModel {
     public static class Builder {
         private String connector;
         private boolean isDistinct;
-        private List<SelectListItem> selectList = new ArrayList<>();
+        private List<BasicColumn> selectList = new ArrayList<>();
         private SqlTable table;
         private Map<SqlTable, String> tableAliases = new HashMap<>();
         private WhereModel whereModel;
@@ -117,7 +117,7 @@ public class QueryExpressionModel {
             return this;
         }
 
-        public Builder withColumns(List<SelectListItem> selectList) {
+        public Builder withColumns(List<BasicColumn> selectList) {
             this.selectList.addAll(selectList);
             return this;
         }

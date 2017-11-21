@@ -31,6 +31,9 @@ import org.mybatis.dynamic.sql.select.aggregate.CountAll;
 import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
+import org.mybatis.dynamic.sql.select.function.Lower;
+import org.mybatis.dynamic.sql.select.function.Substring;
+import org.mybatis.dynamic.sql.select.function.Upper;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
@@ -87,11 +90,11 @@ public interface SqlBuilder {
         return InsertSelectDSL.insertInto(table);
     }
     
-    static QueryExpressionDSL select(SelectListItem...selectList) {
+    static QueryExpressionDSL select(BasicColumn...selectList) {
         return SelectDSL.select(selectList);
     }
     
-    static QueryExpressionDSL selectDistinct(SelectListItem...selectList) {
+    static QueryExpressionDSL selectDistinct(BasicColumn...selectList) {
         return SelectDSL.selectDistinct(selectList);
     }
     
@@ -100,7 +103,7 @@ public interface SqlBuilder {
     }
 
     // where condition connectors
-    static <T> SqlCriterion<T> or(SqlColumn<T> column, VisitableCondition<T> condition) {
+    static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("or") //$NON-NLS-1$
                 .withColumn(column)
@@ -108,7 +111,7 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> SqlCriterion<T> or(SqlColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
+    static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("or") //$NON-NLS-1$
                 .withColumn(column)
@@ -117,7 +120,7 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> SqlCriterion<T> and(SqlColumn<T> column, VisitableCondition<T> condition) {
+    static <T> SqlCriterion<T> and(BindableColumn<T> column, VisitableCondition<T> condition) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("and") //$NON-NLS-1$
                 .withColumn(column)
@@ -125,7 +128,7 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> SqlCriterion<T> and(SqlColumn<T> column, VisitableCondition<T> condition,
+    static <T> SqlCriterion<T> and(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("and") //$NON-NLS-1$
@@ -136,16 +139,16 @@ public interface SqlBuilder {
     }
 
     // join support
-    static <T> JoinCriterion<T> and(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-        return new JoinCriterion.Builder<T>()
+    static JoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
+        return new JoinCriterion.Builder()
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .withConnector("and") //$NON-NLS-1$
                 .build();
     }
     
-    static <T> EqualTo<T> equalTo(SqlColumn<T> column) {
-        return new EqualTo<>(column);
+    static EqualTo equalTo(BasicColumn column) {
+        return new EqualTo(column);
     }
 
     // aggregate support
@@ -153,26 +156,39 @@ public interface SqlBuilder {
         return new CountAll();
     }
     
-    static Count count(SqlColumn<?> column) {
+    static Count count(BasicColumn column) {
         return Count.of(column);
     }
     
-    static Max max(SqlColumn<?> column) {
+    static Max max(BasicColumn column) {
         return Max.of(column);
     }
     
-    static Min min(SqlColumn<?> column) {
+    static Min min(BasicColumn column) {
         return Min.of(column);
     }
 
-    static Avg avg(SqlColumn<?> column) {
+    static Avg avg(BasicColumn column) {
         return Avg.of(column);
     }
 
-    static Sum sum(SqlColumn<?> column) {
+    static Sum sum(BasicColumn column) {
         return Sum.of(column);
     }
 
+    // functions
+    static Lower lower(BindableColumn<String> column) {
+        return Lower.of(column);
+    }
+    
+    static Substring substring(BindableColumn<String> column, int offset, int length) {
+        return Substring.of(column, offset, length);
+    }
+    
+    static Upper upper(BindableColumn<String> column) {
+        return Upper.of(column);
+    }
+    
     // conditions for all data types
     static <T> IsNull<T> isNull() {
         return new IsNull<>();

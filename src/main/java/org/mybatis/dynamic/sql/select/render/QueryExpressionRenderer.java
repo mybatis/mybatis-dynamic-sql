@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.GroupByModel;
@@ -62,7 +62,7 @@ public class QueryExpressionRenderer {
         return queryExpression.calculateTableNameIncludingAlias(table);
     }
     
-    private String applyTableAndColumnAlias(SelectListItem selectListItem) {
+    private String applyTableAndColumnAlias(BasicColumn selectListItem) {
         return selectListItem.applyTableAndColumnAliasToName(queryExpression.tableAliasCalculator());
     }
     
@@ -89,7 +89,7 @@ public class QueryExpressionRenderer {
                 .collect(CustomCollectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    private String applyTableAlias(SelectListItem column) {
+    private String applyTableAlias(BasicColumn column) {
         return column.applyTableAliasToName(queryExpression.tableAliasCalculator());
     }
     

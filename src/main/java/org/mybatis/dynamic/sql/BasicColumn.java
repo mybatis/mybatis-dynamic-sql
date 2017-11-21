@@ -19,10 +19,19 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public interface SelectListItem {
+/**
+ * Describes attributes of columns that are necessary for rendering if the column is not expected to
+ * be bound as a JDBC parameter.  Columns in select lists, join expressions, and group by expressions
+ * are typically not bound.
+ * 
+ * @author Jeff Butler
+ *
+ */
+public interface BasicColumn {
 
     Optional<String> alias();
-
+    BasicColumn as(String alias);
+    
     /**
      * Returns the name of the item aliased with a table name if appropriate.
      * For example, "a.foo".  This is appropriate for where clauses and order by clauses.

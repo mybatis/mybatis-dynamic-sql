@@ -23,8 +23,8 @@ import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.AbstractSubselectCondition;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ConditionVisitor;
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
@@ -37,7 +37,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private static final String PARAMETERS_PREFIX = "parameters"; //$NON-NLS-1$
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
-    private SqlColumn<T> column;
+    private BindableColumn<T> column;
     private TableAliasCalculator tableAliasCalculator;
     
     private WhereConditionVisitor(Builder<T> builder) {
@@ -132,7 +132,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     public static class Builder<T> {
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
-        private SqlColumn<T> column;
+        private BindableColumn<T> column;
         private TableAliasCalculator tableAliasCalculator;
         
         public Builder<T> withSequence(AtomicInteger sequence) {
@@ -145,7 +145,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
             return this;
         }
         
-        public Builder<T> withColumn(SqlColumn<T> column) {
+        public Builder<T> withColumn(BindableColumn<T> column) {
             this.column = column;
             return this;
         }

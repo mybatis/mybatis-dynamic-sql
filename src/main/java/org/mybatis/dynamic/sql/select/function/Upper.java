@@ -13,27 +13,30 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.aggregate;
+package org.mybatis.dynamic.sql.select.function;
 
-import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Min extends AbstractAggregate<Min> {
-
-    private Min(BasicColumn column) {
+public class Upper extends BaseFunction<String, Upper> {
+    
+    private Upper(BindableColumn<String> column) {
         super(column);
     }
-    
+
     @Override
-    protected String render(String columnName) {
-        return "min(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+        return "upper(" //$NON-NLS-1$
+                + column.applyTableAliasToName(tableAliasCalculator)
+                + ")"; //$NON-NLS-1$
     }
 
     @Override
-    protected Min copy() {
-        return new Min(column);
+    protected Upper copyWithColumn(BindableColumn<String> column) {
+        return new Upper(column);
     }
-    
-    public static Min of(BasicColumn column) {
-        return new Min(column);
+
+    public static Upper of(BindableColumn<String> column) {
+        return new Upper(column);
     }
 }

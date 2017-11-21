@@ -13,25 +13,26 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql;
+package org.mybatis.dynamic.sql.select.aggregate;
 
 import java.util.Objects;
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 /**
- * This class is the base class for aggregate functions and calculated columns.
+ * This class is the base class for aggregate functions.
  * 
  * @author Jeff Butler
  *
  * @param <T> the subclass type
  */
-public abstract class AbstractSelectListItem<T extends AbstractSelectListItem<T>> implements SelectListItem {
-    protected SqlColumn<?> column;
+public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implements BasicColumn {
+    protected BasicColumn column;
     protected Optional<String> alias = Optional.empty();
 
-    protected AbstractSelectListItem(SqlColumn<?> column) {
+    protected AbstractAggregate(BasicColumn column) {
         this.column = Objects.requireNonNull(column);
     }
 
@@ -45,6 +46,7 @@ public abstract class AbstractSelectListItem<T extends AbstractSelectListItem<T>
         return render(column.applyTableAliasToName(tableAliasCalculator));
     }
     
+    @Override
     public T as(String alias) {
         T copy = copy();
         copy.alias = Optional.of(alias);

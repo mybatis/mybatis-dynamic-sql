@@ -15,12 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.AbstractSelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public class Sum extends AbstractSelectListItem<Sum> {
+public class Sum extends AbstractAggregate<Sum> {
 
-    private Sum(SqlColumn<?> column) {
+    private Sum(BasicColumn column) {
         super(column);
     }
     
@@ -34,7 +33,7 @@ public class Sum extends AbstractSelectListItem<Sum> {
         return new Sum(column);
     }
     
-    public static Sum of(SqlColumn<?> column) {
+    public static Sum of(BasicColumn column) {
         return new Sum(column);
     }
 }

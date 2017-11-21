@@ -21,20 +21,20 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.BasicColumn;
 
 public class GroupByModel {
-    private List<SelectListItem> columns = new ArrayList<>();
+    private List<BasicColumn> columns = new ArrayList<>();
     
-    private GroupByModel(List<SelectListItem> columns) {
+    private GroupByModel(List<BasicColumn> columns) {
         this.columns.addAll(columns);
     }
     
-    public <R> Stream<R> mapColumns(Function<SelectListItem, R> mapper) {
+    public <R> Stream<R> mapColumns(Function<BasicColumn, R> mapper) {
         return columns.stream().map(mapper);
     }
     
-    public static GroupByModel of(SelectListItem...columns) {
+    public static GroupByModel of(BasicColumn...columns) {
         return new GroupByModel(Arrays.asList(columns));
     }
 }

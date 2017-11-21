@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 public class SqlCriterion<T> {
     
-    private SqlColumn<T> column;
+    private BindableColumn<T> column;
     private VisitableCondition<T> condition;
     private Optional<String> connector;
     private List<SqlCriterion<?>> subCriteria;
@@ -40,7 +40,7 @@ public class SqlCriterion<T> {
         return connector;
     }
     
-    public SqlColumn<T> column() {
+    public BindableColumn<T> column() {
         return column;
     }
     
@@ -58,7 +58,7 @@ public class SqlCriterion<T> {
 
     public static class Builder<T> {
         private String connector;
-        private SqlColumn<T> column;
+        private BindableColumn<T> column;
         private VisitableCondition<T> condition;
         private List<SqlCriterion<?>> subCriteria = new ArrayList<>();
         
@@ -67,7 +67,7 @@ public class SqlCriterion<T> {
             return this;
         }
         
-        public Builder<T> withColumn(SqlColumn<T> column) {
+        public Builder<T> withColumn(BindableColumn<T> column) {
             this.column = column;
             return this;
         }

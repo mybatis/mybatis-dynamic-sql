@@ -15,12 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.AbstractSelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public class Count extends AbstractSelectListItem<Count> {
+public class Count extends AbstractAggregate<Count> {
     
-    private Count(SqlColumn<?> column) {
+    private Count(BasicColumn column) {
         super(column);
     }
     
@@ -34,7 +33,7 @@ public class Count extends AbstractSelectListItem<Count> {
         return new Count(column);
     }
     
-    public static Count of(SqlColumn<?> column) {
+    public static Count of(BasicColumn column) {
         return new Count(column);
     }
 }

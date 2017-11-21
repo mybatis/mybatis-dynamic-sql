@@ -15,16 +15,16 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public abstract class JoinCondition<T> {
-    private SqlColumn<T> rightColumn;
+public abstract class JoinCondition {
+    private BasicColumn rightColumn;
     
-    public JoinCondition(SqlColumn<T> rightColumn) {
+    public JoinCondition(BasicColumn rightColumn) {
         this.rightColumn = rightColumn;
     }
     
-    public SqlColumn<T> rightColumn() {
+    public BasicColumn rightColumn() {
         return rightColumn;
     }
     

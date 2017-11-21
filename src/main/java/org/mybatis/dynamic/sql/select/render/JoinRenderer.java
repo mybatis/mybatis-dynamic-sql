@@ -21,7 +21,7 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -53,14 +53,14 @@ public class JoinRenderer {
                 .collect(Collectors.joining(" ")); //$NON-NLS-1$
     }
     
-    private String renderCriterion(JoinCriterion<?> joinCriterion) {
+    private String renderCriterion(JoinCriterion joinCriterion) {
         return joinCriterion.connector()
                 + spaceBefore(applyTableAlias(joinCriterion.leftColumn()))
                 + spaceBefore(joinCriterion.operator())
                 + spaceBefore(applyTableAlias(joinCriterion.rightColumn()));
     }
     
-    private String applyTableAlias(SqlColumn<?> column) {
+    private String applyTableAlias(BasicColumn column) {
         return column.applyTableAliasToName(queryExpression.tableAliasCalculator());
     }
     

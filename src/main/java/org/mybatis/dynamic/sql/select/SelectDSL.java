@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.select;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.BasicColumn;
 
 public class SelectDSL {
 
@@ -29,14 +29,14 @@ public class SelectDSL {
         super();
     }
 
-    private QueryExpressionDSL queryExpressionBuilder(SelectListItem...selectList) {
+    private QueryExpressionDSL queryExpressionBuilder(BasicColumn...selectList) {
         return new QueryExpressionDSL.Builder()
                 .withSelectList(selectList)
                 .withSelectModelBuilder(this)
                 .build();
     }
     
-    private QueryExpressionDSL distinctQueryExpressionBuilder(SelectListItem...selectList) {
+    private QueryExpressionDSL distinctQueryExpressionBuilder(BasicColumn...selectList) {
         return new QueryExpressionDSL.Builder()
                 .withSelectList(selectList)
                 .isDistinct()
@@ -44,12 +44,12 @@ public class SelectDSL {
                 .build();
     }
     
-    public static QueryExpressionDSL select(SelectListItem...selectList) {
+    public static QueryExpressionDSL select(BasicColumn...selectList) {
         SelectDSL selectModelBuilder = new SelectDSL();
         return selectModelBuilder.queryExpressionBuilder(selectList);
     }
     
-    public static QueryExpressionDSL selectDistinct(SelectListItem...selectList) {
+    public static QueryExpressionDSL selectDistinct(BasicColumn...selectList) {
         SelectDSL selectModelBuilder = new SelectDSL();
         return selectModelBuilder.distinctQueryExpressionBuilder(selectList);
     }

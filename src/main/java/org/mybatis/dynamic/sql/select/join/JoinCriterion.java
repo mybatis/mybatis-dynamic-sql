@@ -17,15 +17,15 @@ package org.mybatis.dynamic.sql.select.join;
 
 import java.util.Objects;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public class JoinCriterion<T> {
+public class JoinCriterion {
 
     private String connector;
-    private SqlColumn<T> leftColumn;
-    private JoinCondition<T> joinCondition;
+    private BasicColumn leftColumn;
+    private JoinCondition joinCondition;
     
-    private JoinCriterion(Builder<T> builder) {
+    private JoinCriterion(Builder builder) {
         connector = Objects.requireNonNull(builder.connector);
         leftColumn = Objects.requireNonNull(builder.joinColumn);
         joinCondition = Objects.requireNonNull(builder.joinCondition);
@@ -35,11 +35,11 @@ public class JoinCriterion<T> {
         return connector;
     }
     
-    public SqlColumn<T> leftColumn() {
+    public BasicColumn leftColumn() {
         return leftColumn;
     }
     
-    public SqlColumn<T> rightColumn() {
+    public BasicColumn rightColumn() {
         return joinCondition.rightColumn();
     }
     
@@ -47,28 +47,28 @@ public class JoinCriterion<T> {
         return joinCondition.operator();
     }
     
-    public static class Builder<T> {
-        private SqlColumn<T> joinColumn;
-        private JoinCondition<T> joinCondition;
+    public static class Builder {
+        private BasicColumn joinColumn;
+        private JoinCondition joinCondition;
         private String connector;
         
-        public Builder<T> withJoinColumn(SqlColumn<T> joinColumn) {
+        public Builder withJoinColumn(BasicColumn joinColumn) {
             this.joinColumn = joinColumn;
             return this;
         }
         
-        public Builder<T> withJoinCondition(JoinCondition<T> joinCondition) {
+        public Builder withJoinCondition(JoinCondition joinCondition) {
             this.joinCondition = joinCondition;
             return this;
         }
         
-        public Builder<T> withConnector(String connector) {
+        public Builder withConnector(String connector) {
             this.connector = connector;
             return this;
         }
         
-        public JoinCriterion<T> build() {
-            return new JoinCriterion<>(this);
+        public JoinCriterion build() {
+            return new JoinCriterion(this);
         }
     }
 }

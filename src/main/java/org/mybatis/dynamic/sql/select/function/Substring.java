@@ -13,39 +13,39 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.groupby;
+package org.mybatis.dynamic.sql.select.function;
 
-import org.mybatis.dynamic.sql.AbstractSelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Substring extends AbstractSelectListItem<Substring> {
+public class Substring extends BaseFunction<String, Substring> {
 
     private int offset;
     private int length;
     
-    private Substring(SqlColumn<?> column, int offset, int length) {
+    private Substring(BindableColumn<String> column, int offset, int length) {
         super(column);
         this.offset = offset;
         this.length = length;
     }
     
     @Override
-    protected String render(String columnName) {
+    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
         return "substring(" //$NON-NLS-1$
-                + columnName
+                + column.applyTableAliasToName(tableAliasCalculator)
                 + ", " //$NON-NLS-1$
                 + offset
                 + ", " //$NON-NLS-1$
                 + length
                 + ")"; //$NON-NLS-1$
     }
-
+    
     @Override
-    protected Substring copy() {
+    protected Substring copyWithColumn(BindableColumn<String> column) {
         return new Substring(column, offset, length);
     }
     
-    public static Substring substring(SqlColumn<String> column, int offset, int length) {
+    public static Substring of(BindableColumn<String> column, int offset, int length) {
         return new Substring(column, offset, length);
     }
 }

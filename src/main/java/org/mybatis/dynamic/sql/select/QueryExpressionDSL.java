@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -41,7 +42,7 @@ public class QueryExpressionDSL {
     private String connector;
     private SelectDSL selectModelBuilder;
     private boolean isDistinct;
-    private List<SelectListItem> selectList;
+    private List<BasicColumn> selectList;
     private SqlTable table;
     private Map<SqlTable, String> tableAliases = new HashMap<>();
     private WhereModel whereModel;
@@ -69,7 +70,7 @@ public class QueryExpressionDSL {
 
     public static class Builder {
         private String connector;
-        private SelectListItem[] selectList;
+        private BasicColumn[] selectList;
         private boolean isDistinct;
         private SelectDSL selectModelBuilder;
 
@@ -78,7 +79,7 @@ public class QueryExpressionDSL {
             return this;
         }
         
-        public Builder withSelectList(SelectListItem...selectList) {
+        public Builder withSelectList(BasicColumn...selectList) {
             this.selectList = selectList;
             return this;
         }
@@ -116,11 +117,11 @@ public class QueryExpressionDSL {
             super();
         }
         
-        public <T> QueryExpressionWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
+        public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
             return new QueryExpressionWhereBuilder(column, condition);
         }
 
-        public <T> QueryExpressionWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
+        public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             return new QueryExpressionWhereBuilder(column, condition, subCriteria);
         }
@@ -167,7 +168,7 @@ public class QueryExpressionDSL {
             return fullJoin(joinTable);
         }
 
-        public GroupByFinisher groupBy(SelectListItem...columns) {
+        public GroupByFinisher groupBy(BasicColumn...columns) {
             groupByModel = GroupByModel.of(columns);
             selectModelBuilder.addQueryExpression(buildModel());
             return new GroupByFinisher();
@@ -187,11 +188,11 @@ public class QueryExpressionDSL {
     
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<SelectModel> {
-        private <T> QueryExpressionWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
+        private <T> QueryExpressionWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
         }
         
-        private <T> QueryExpressionWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
+        private <T> QueryExpressionWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
@@ -231,12 +232,12 @@ public class QueryExpressionDSL {
             this.joinType = joinType;
         }
 
-        public <T> JoinSpecificationFinisher on(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+        public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition joinCondition) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);
         }
 
-        public <T> JoinSpecificationFinisher on(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition,
-                JoinCriterion<?>...joinCriteria) {
+        public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition joinCondition,
+                JoinCriterion...joinCriteria) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType, joinCriteria);
         }
     }
@@ -244,15 +245,15 @@ public class QueryExpressionDSL {
     public class JoinSpecificationFinisher implements Buildable<SelectModel> {
 
         private SqlTable joinTable;
-        private List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
+        private List<JoinCriterion> joinCriteria = new ArrayList<>();
         private JoinType joinType;
         
-        public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn,
-                JoinCondition<T> joinCondition, JoinType joinType) {
+        public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
+                JoinCondition joinCondition, JoinType joinType) {
             this.joinTable = table;
             this.joinType = joinType;
 
-            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
+            JoinCriterion joinCriterion = new JoinCriterion.Builder()
                     .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
                     .withConnector("on") //$NON-NLS-1$
@@ -261,12 +262,12 @@ public class QueryExpressionDSL {
             joinCriteria.add(joinCriterion);
         }
 
-        public <T> JoinSpecificationFinisher(SqlTable table, SqlColumn<T> joinColumn,
-                JoinCondition<T> joinCondition, JoinType joinType, JoinCriterion<?>...joinCriteria) {
+        public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
+                JoinCondition joinCondition, JoinType joinType, JoinCriterion...joinCriteria) {
             this.joinTable = table;
             this.joinType = joinType;
 
-            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
+            JoinCriterion joinCriterion = new JoinCriterion.Builder()
                     .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
                     .withConnector("on") //$NON-NLS-1$
@@ -296,19 +297,19 @@ public class QueryExpressionDSL {
             return selectModelBuilder.build();
         }
         
-        public <T> QueryExpressionWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
+        public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
             joinModel = buildJoinModel();
             return new QueryExpressionWhereBuilder(column, condition);
         }
 
-        public <T> QueryExpressionWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
+        public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             joinModel = buildJoinModel();
             return new QueryExpressionWhereBuilder(column, condition, subCriteria);
         }
 
-        public <T> JoinSpecificationFinisher and(SqlColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
+        public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
+            JoinCriterion joinCriterion = new JoinCriterion.Builder()
                     .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
                     .withConnector("and") //$NON-NLS-1$
@@ -378,7 +379,7 @@ public class QueryExpressionDSL {
     }
     
     public class UnionBuilder {
-        public QueryExpressionDSL select(SelectListItem...selectList) {
+        public QueryExpressionDSL select(BasicColumn...selectList) {
             return new QueryExpressionDSL.Builder()
                     .withConnector("union") //$NON-NLS-1$
                     .withSelectList(selectList)
@@ -386,7 +387,7 @@ public class QueryExpressionDSL {
                     .build();
         }
         
-        public QueryExpressionDSL selectDistinct(SelectListItem...selectList) {
+        public QueryExpressionDSL selectDistinct(BasicColumn...selectList) {
             return new QueryExpressionDSL.Builder()
                     .withConnector("union") //$NON-NLS-1$
                     .withSelectList(selectList)

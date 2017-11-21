@@ -15,12 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.AbstractSelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public class Max extends AbstractSelectListItem<Max> {
+public class Max extends AbstractAggregate<Max> {
 
-    private Max(SqlColumn<?> column) {
+    private Max(BasicColumn column) {
         super(column);
     }
     
@@ -34,7 +33,7 @@ public class Max extends AbstractSelectListItem<Max> {
         return new Max(column);
     }
     
-    public static Max of(SqlColumn<?> column) {
+    public static Max of(BasicColumn column) {
         return new Max(column);
     }
 }

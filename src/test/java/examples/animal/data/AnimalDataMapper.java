@@ -16,6 +16,7 @@
 package examples.animal.data;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -40,6 +41,9 @@ public interface AnimalDataMapper {
         @Result(column="body_weight", property="bodyWeight")
     })
     List<AnimalData> selectMany(SelectStatement selectStatement);
+    
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    List<Map<String, Object>> generalSelect(SelectStatement selectStatement);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     Long selectALong(SelectStatement selectStatement);

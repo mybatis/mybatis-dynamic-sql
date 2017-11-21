@@ -21,15 +21,7 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-/**
- * 
- * @author Jeff Butler
- *
- * @param <T> - even though the type is not directly used in this class,
- *     it is used by the compiler to match columns with conditions so it should
- *     not be removed.
-*/
-public class SqlColumn<T> implements SelectListItem {
+public class SqlColumn<T> implements BindableColumn<T> {
     
     protected String name;
     protected SqlTable table;
@@ -58,6 +50,7 @@ public class SqlColumn<T> implements SelectListItem {
         return name;
     }
     
+    @Override
     public JDBCType jdbcType() {
         return jdbcType;
     }
@@ -67,6 +60,7 @@ public class SqlColumn<T> implements SelectListItem {
         return alias;
     }
     
+    @Override
     public Optional<String> typeHandler() {
         return typeHandler;
     }
@@ -77,6 +71,7 @@ public class SqlColumn<T> implements SelectListItem {
         return column;
     }
     
+    @Override
     public SqlColumn<T> as(String alias) {
         SqlColumn<T> column = new SqlColumn<>(this);
         column.alias = Optional.of(alias);

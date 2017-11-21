@@ -15,12 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.AbstractSelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public class Avg extends AbstractSelectListItem<Avg> {
+public class Avg extends AbstractAggregate<Avg> {
 
-    private Avg(SqlColumn<?> column) {
+    private Avg(BasicColumn column) {
         super(column);
     }
     
@@ -34,7 +33,7 @@ public class Avg extends AbstractSelectListItem<Avg> {
         return new Avg(column);
     }
     
-    public static Avg of(SqlColumn<?> column) {
+    public static Avg of(BasicColumn column) {
         return new Avg(column);
     }
 }

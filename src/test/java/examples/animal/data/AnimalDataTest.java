@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -500,11 +501,61 @@ public class AnimalDataTest {
 
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertThat(animals.size()).isEqualTo(2);
+            AnimalData animal = animals.get(0);
+            assertThat(animal.getAnimalName()).isEqualTo("Ground squirrel");
+            animal = animals.get(1);
+            assertThat(animal.getAnimalName()).isEqualTo("Artic ground squirrel");
         } finally {
             sqlSession.close();
         }
     }
     
+    @Test
+    public void testLikeLowerCase() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatement selectStatement = select(id, lower(animalName).as("AnimalName"), bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(lower(animalName), isLike("%squirrel"))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+
+            List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
+            assertThat(animals.size()).isEqualTo(2);
+            Map<String, Object> animal = animals.get(0);
+            assertThat(animal.get("ANIMALNAME")).isEqualTo("ground squirrel");
+            animal = animals.get(1);
+            assertThat(animal.get("ANIMALNAME")).isEqualTo("artic ground squirrel");
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testLikeUpperCase() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatement selectStatement = select(id, upper(animalName).as("animalname"), bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(upper(animalName), isLike("%SQUIRREL"))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+
+            List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
+            assertThat(animals.size()).isEqualTo(2);
+            Map<String, Object> animal = animals.get(0);
+            assertThat(animal.get("ANIMALNAME")).isEqualTo("GROUND SQUIRREL");
+            animal = animals.get(1);
+            assertThat(animal.get("ANIMALNAME")).isEqualTo("ARTIC GROUND SQUIRREL");
+        } finally {
+            sqlSession.close();
+        }
+    }
+
     @Test
     public void testNotLikeCondition() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
