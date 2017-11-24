@@ -1,6 +1,6 @@
 # Delete Statements
 
-Delete statements are composed with a table and a where clause.  The result of building a delete
+Delete statements are composed with a table and an optional where clause.  The result of building a delete
 statement is a DeleteStatement object.  For example
 
 ```java

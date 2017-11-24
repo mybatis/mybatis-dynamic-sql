@@ -22,7 +22,21 @@ package org.mybatis.dynamic.sql;
  *
  */
 public interface SortSpecification {
+    /**
+     * Returns a new instance of the SortSpecification that should render as descending in an
+     * ORDER BY clause.
+     * 
+     * @return new instance of SortSpecification
+     */
     SortSpecification descending();
+
+    /**
+     * @return the column alias if one has been specified by the user, or else the column name
+     */
     String aliasOrName();
+
+    /**
+     * @return true if the SortSpcification should render as descending 
+     */
     boolean isDescending();
 }
