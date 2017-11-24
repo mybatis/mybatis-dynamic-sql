@@ -163,22 +163,22 @@ public class GroupByTest {
             SelectStatement selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
                     .from(person, "a")
                     .groupBy(substring(gender, 1, 1))
-                    .orderBy(gender.as("ShortGender"))
+                    .orderBy(sortColumn("ShortGender").descending())
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            String expected = "select substring(a.gender, 1, 1) as ShortGender, avg(a.age) as AverageAge from Person a group by substring(a.gender, 1, 1) order by ShortGender";
+            String expected = "select substring(a.gender, 1, 1) as ShortGender, avg(a.age) as AverageAge from Person a group by substring(a.gender, 1, 1) order by ShortGender DESC";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
             assertThat(rows.size()).isEqualTo(2);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("SHORTGENDER")).isEqualTo("F");
-            assertThat(row.get("AVERAGEAGE")).isEqualTo(27);
-
-            row = rows.get(1);
             assertThat(row.get("SHORTGENDER")).isEqualTo("M");
             assertThat(row.get("AVERAGEAGE")).isEqualTo(25);
+
+            row = rows.get(1);
+            assertThat(row.get("SHORTGENDER")).isEqualTo("F");
+            assertThat(row.get("AVERAGEAGE")).isEqualTo(27);
         } finally {
             session.close();
         }

@@ -439,7 +439,7 @@ public class JoinMapperTest {
             SelectStatement selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
                     .from(itemMaster, "im")
                     .fullJoin(orderLine, "ol").on(itemMaster.itemId, equalTo(orderLine.itemId))
-                    .orderBy(itemMaster.itemId.as("im_itemid"))
+                    .orderBy(sortColumn("im_itemid"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             

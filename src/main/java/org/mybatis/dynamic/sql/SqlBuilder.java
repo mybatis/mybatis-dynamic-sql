@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
@@ -309,5 +310,10 @@ public interface SqlBuilder {
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
         return IsNotInCaseInsensitive.of(Arrays.asList(values));
+    }
+    
+    // order by support
+    static SortSpecification sortColumn(String name) {
+        return SimpleSortSpecification.of(name);
     }
 }

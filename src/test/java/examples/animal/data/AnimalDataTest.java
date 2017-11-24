@@ -291,7 +291,7 @@ public class AnimalDataTest {
                     .select(id.as("animalId"), animalName, bodyWeight, brainWeight)
                     .from(animalData, "b")
                     .where(id, isGreaterThan(40))
-                    .orderBy(id.as("animalId"))
+                    .orderBy(sortColumn("animalId"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             

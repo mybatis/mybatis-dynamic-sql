@@ -65,23 +65,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return typeHandler;
     }
     
+    @Override
     public SortSpecification descending() {
-        return new SortSpecification() {
-            @Override
-            public SortSpecification as(String alias) {
-                return SqlColumn.this.as(alias);
-            }
-            
-            @Override
-            public boolean isDescending() {
-                return true;
-            }
-            
-            @Override
-            public String aliasOrName() {
-                return SqlColumn.this.aliasOrName();
-            }
-        };
+        SqlColumn<T> column = new SqlColumn<>(this);
+        column.isDescending = true;
+        return column;
     }
     
     @Override

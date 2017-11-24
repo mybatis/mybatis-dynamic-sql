@@ -22,7 +22,7 @@ package org.mybatis.dynamic.sql;
  *
  */
 public interface SortSpecification {
-    SortSpecification as(String alias);
+    SortSpecification descending();
     String aliasOrName();
     boolean isDescending();
 }
