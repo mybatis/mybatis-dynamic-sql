@@ -39,10 +39,10 @@ public class Add<T extends Number> implements BindableColumn<T> {
     }
 
     @Override
-    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
-        return column1.applyTableAliasToName(tableAliasCalculator)
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return column1.renderWithTableAlias(tableAliasCalculator)
                 + " + " //$NON-NLS-1$
-                + column2.applyTableAliasToName(tableAliasCalculator);
+                + column2.renderWithTableAlias(tableAliasCalculator);
     }
 
     @Override

@@ -25,9 +25,9 @@ public class Upper extends BaseFunction<String, Upper> {
     }
 
     @Override
-    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return "upper(" //$NON-NLS-1$
-                + column.applyTableAliasToName(tableAliasCalculator)
+                + column.renderWithTableAlias(tableAliasCalculator)
                 + ")"; //$NON-NLS-1$
     }
 

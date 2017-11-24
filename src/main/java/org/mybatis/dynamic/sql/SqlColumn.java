@@ -90,7 +90,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
     
     @Override
-    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return tableAliasCalculator.aliasForColumn(table)
                 .map(this::applyTableAlias)
                 .orElseGet(this::name);

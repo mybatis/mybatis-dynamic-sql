@@ -25,9 +25,9 @@ public class Lower extends BaseFunction<String, Lower> {
     }
     
     @Override
-    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return "lower(" //$NON-NLS-1$
-                + column.applyTableAliasToName(tableAliasCalculator)
+                + column.renderWithTableAlias(tableAliasCalculator)
                 + ")"; //$NON-NLS-1$
     }
 

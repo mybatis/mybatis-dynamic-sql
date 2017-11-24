@@ -30,9 +30,9 @@ public class Substring extends BaseFunction<String, Substring> {
     }
     
     @Override
-    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return "substring(" //$NON-NLS-1$
-                + column.applyTableAliasToName(tableAliasCalculator)
+                + column.renderWithTableAlias(tableAliasCalculator)
                 + ", " //$NON-NLS-1$
                 + offset
                 + ", " //$NON-NLS-1$

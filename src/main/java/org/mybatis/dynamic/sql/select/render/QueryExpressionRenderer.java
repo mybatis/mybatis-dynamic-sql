@@ -63,7 +63,7 @@ public class QueryExpressionRenderer {
     }
     
     private String applyTableAndColumnAlias(BasicColumn selectListItem) {
-        return selectListItem.applyTableAndColumnAliasToName(queryExpression.tableAliasCalculator());
+        return selectListItem.renderWithTableAndColumnAlias(queryExpression.tableAliasCalculator());
     }
     
     private String renderJoin(JoinModel joinModel) {
@@ -90,7 +90,7 @@ public class QueryExpressionRenderer {
     }
     
     private String applyTableAlias(BasicColumn column) {
-        return column.applyTableAliasToName(queryExpression.tableAliasCalculator());
+        return column.renderWithTableAlias(queryExpression.tableAliasCalculator());
     }
     
     public static class Builder {

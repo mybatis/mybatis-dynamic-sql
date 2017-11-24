@@ -36,7 +36,7 @@ public class CountAll implements BasicColumn {
     }
 
     @Override
-    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return "count(*)"; //$NON-NLS-1$
     }
 

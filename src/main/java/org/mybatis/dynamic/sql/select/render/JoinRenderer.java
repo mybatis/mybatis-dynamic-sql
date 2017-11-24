@@ -61,7 +61,7 @@ public class JoinRenderer {
     }
     
     private String applyTableAlias(BasicColumn column) {
-        return column.applyTableAliasToName(queryExpression.tableAliasCalculator());
+        return column.renderWithTableAlias(queryExpression.tableAliasCalculator());
     }
     
     public static class Builder {

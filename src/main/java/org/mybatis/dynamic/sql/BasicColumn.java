@@ -39,7 +39,7 @@ public interface BasicColumn {
      * @param tableAliasCalculator the table alias calculator for the current renderer
      * @return the item name with the table alias applied
      */
-    String applyTableAliasToName(TableAliasCalculator tableAliasCalculator);
+    String renderWithTableAlias(TableAliasCalculator tableAliasCalculator);
     
     /**
      * Returns the name of the item aliased with a table name and column alias if appropriate.
@@ -48,8 +48,8 @@ public interface BasicColumn {
      * @param tableAliasCalculator the table alias calculator for the current renderer
      * @return the item name with the table and column aliases applied
      */
-    default String applyTableAndColumnAliasToName(TableAliasCalculator tableAliasCalculator) {
-        String nameAndTableAlias = applyTableAliasToName(tableAliasCalculator);
+    default String renderWithTableAndColumnAlias(TableAliasCalculator tableAliasCalculator) {
+        String nameAndTableAlias = renderWithTableAlias(tableAliasCalculator);
         
         return alias().map(a -> nameAndTableAlias + " as " + a) //$NON-NLS-1$
                 .orElse(nameAndTableAlias);

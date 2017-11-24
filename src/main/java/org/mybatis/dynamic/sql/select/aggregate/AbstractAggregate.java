@@ -42,8 +42,8 @@ public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implemen
     }
 
     @Override
-    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
-        return render(column.applyTableAliasToName(tableAliasCalculator));
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return render(column.renderWithTableAlias(tableAliasCalculator));
     }
     
     @Override
