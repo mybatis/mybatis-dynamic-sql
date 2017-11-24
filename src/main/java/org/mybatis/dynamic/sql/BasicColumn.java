@@ -29,7 +29,19 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
  */
 public interface BasicColumn {
 
+    /**
+     * Returns the columns alias if one has been specified.
+     * 
+     * @return the column alias
+     */
     Optional<String> alias();
+    
+    /**
+     * Returns a new instance of a BasicColumn with the alias set
+     * 
+     * @param alias the column alias to set
+     * @return new instance with alias set
+     */
     BasicColumn as(String alias);
     
     /**

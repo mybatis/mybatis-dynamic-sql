@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;

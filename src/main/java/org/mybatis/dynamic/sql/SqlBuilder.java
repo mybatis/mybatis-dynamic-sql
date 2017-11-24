@@ -113,7 +113,8 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
+    static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion<?>...subCriteria) {
         return new SqlCriterion.Builder<T>()
                 .withConnector("or") //$NON-NLS-1$
                 .withColumn(column)

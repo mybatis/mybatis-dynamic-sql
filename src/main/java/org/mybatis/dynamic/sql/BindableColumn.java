@@ -35,7 +35,8 @@ public interface BindableColumn<T> extends BasicColumn {
      */
     @Override
     BindableColumn<T> as(String alias);
-    
+
     JDBCType jdbcType();
+    
     Optional<String> typeHandler();
 }
