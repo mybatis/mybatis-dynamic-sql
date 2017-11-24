@@ -181,3 +181,17 @@ name into the order by phrase.  For the order by phrase, the table alias (if the
 
 In our testing, this caused an issue in only one case.  When there is an outer join and the select list contains
 both the left and right join column.  In that case, the workaround is to supply a column alias for both columns.
+
+When using a column function (lower, upper, etc.), then is is customary to give the calculated column an alias so you will have a predictable result set.  In cases like this there will not be a column to use for an alias.  The library supports arbitrary values in an ORDER BY expression like this:
+
+```java
+    SelectStatement selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
+            .from(person, "a")
+            .groupBy(substring(gender, 1, 1))
+            .orderBy(sortColumn("ShortGender").descending())
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+```
+
+In this example the `substring` function is used in both the select list and the GROUP BY expression.  In the ORDER BY expression, we use the `sortColumn` function to duplicate the alias given to the column in the select list.
+

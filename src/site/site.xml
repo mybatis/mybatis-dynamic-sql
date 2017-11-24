@@ -45,6 +45,7 @@
       <item href="docs/howItWorks.html" name="How it Works" />
       <item href="docs/extending.html" name="Extending the Library" />
       <item href="docs/codingStandards.html" name="Coding Standards" />
+      <item href="docs/motivation.html" name="Motivation" />
     </menu>
     
     <menu ref="reports"/>
