@@ -37,7 +37,7 @@ public interface BasicColumn {
     Optional<String> alias();
     
     /**
-     * Returns a new instance of a BasicColumn with the alias set
+     * Returns a new instance of a BasicColumn with the alias set.
      * 
      * @param alias the column alias to set
      * @return new instance with alias set

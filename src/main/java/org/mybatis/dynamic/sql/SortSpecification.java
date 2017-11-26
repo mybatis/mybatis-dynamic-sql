@@ -31,11 +31,15 @@ public interface SortSpecification {
     SortSpecification descending();
 
     /**
+     * Return the column alias or column name.
+     * 
      * @return the column alias if one has been specified by the user, or else the column name
      */
     String aliasOrName();
 
     /**
+     * Return true if the sort order is descending.
+     * 
      * @return true if the SortSpcification should render as descending 
      */
     boolean isDescending();
