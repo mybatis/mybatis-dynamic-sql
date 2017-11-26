@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFromBuilder;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFrom;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
@@ -100,7 +100,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .set(lastName).equalToWhenPresent(record.getLastName());
     }
     
-    public static QueryExpressionAfterFromBuilder selectByExample() {
+    public static QueryExpressionAfterFrom selectByExample() {
         return select(id.as("A_ID"), firstName, lastName, fullName)
                 .from(generatedAlways, "a");
     }

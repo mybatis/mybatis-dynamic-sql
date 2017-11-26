@@ -15,20 +15,15 @@
  */
 package examples.simple;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
 import java.sql.JDBCType;
 import java.util.Date;
 
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFromBuilder;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.delete.DeleteDSL;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFrom;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
 public final class SimpleTableDynamicSqlSupport {
     public static final SimpleTable simpleTable = new SimpleTable();
@@ -51,59 +46,18 @@ public final class SimpleTableDynamicSqlSupport {
             super("SimpleTable");
         }
     }
-    
-    public static InsertStatement<SimpleTableRecord> buildFullInsert(SimpleTableRecord record) {
-        return insert(record)
-                .into(simpleTable)
-                .map(id).toProperty("id")
-                .map(firstName).toProperty("firstName")
-                .map(lastName).toProperty("lastName")
-                .map(birthDate).toProperty("birthDate")
-                .map(employed).toProperty("employed")
-                .map(occupation).toProperty("occupation")
-                .build()
-                .render(RenderingStrategy.MYBATIS3);
-    }
 
-    public static InsertStatement<SimpleTableRecord> buildSelectiveInsert(SimpleTableRecord record) {
-        return insert(record)
-                .into(simpleTable)
-                .map(id).toPropertyWhenPresent("id")
-                .map(firstName).toPropertyWhenPresent("firstName")
-                .map(lastName).toPropertyWhenPresent("lastName")
-                .map(birthDate).toPropertyWhenPresent("birthDate")
-                .map(employed).toPropertyWhenPresent("employed")
-                .map(occupation).toPropertyWhenPresent("occupation")
-                .build()
-                .render(RenderingStrategy.MYBATIS3);
+    public static DeleteDSL delete() {
+        return SqlBuilder.deleteFrom(simpleTable);
     }
     
-    public static UpdateStatement buildFullUpdateByPrimaryKeyStatement(SimpleTableRecord record) {
-        return update(simpleTable)
-                .set(firstName).equalTo(record.getFirstName())
-                .set(lastName).equalTo(record.getLastName())
-                .set(birthDate).equalTo(record.getBirthDate())
-                .set(employed).equalTo(record.getEmployed())
-                .set(occupation).equalTo(record.getOccupation())
-                .where(id, isEqualTo(record.getId()))
-                .build()
-                .render(RenderingStrategy.MYBATIS3);
+    public static QueryExpressionAfterFrom select() {
+        return SqlBuilder.select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+            .from(simpleTable);
     }
-
-    public static UpdateStatement buildSelectiveUpdateByPrimaryKeyStatement(SimpleTableRecord record) {
-        return update(simpleTable)
-                .set(firstName).equalToWhenPresent(record.getFirstName())
-                .set(lastName).equalToWhenPresent(record.getLastName())
-                .set(birthDate).equalToWhenPresent(record.getBirthDate())
-                .set(employed).equalToWhenPresent(record.getEmployed())
-                .set(occupation).equalToWhenPresent(record.getOccupation())
-                .where(id, isEqualTo(record.getId()))
-                .build()
-                .render(RenderingStrategy.MYBATIS3);
-    }
-
-    public static UpdateDSL updateByExample(SimpleTableRecord record) {
-        return update(simpleTable)
+    
+    public static UpdateDSL update(SimpleTableRecord record) {
+        return SqlBuilder.update(simpleTable)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
@@ -112,33 +66,13 @@ public final class SimpleTableDynamicSqlSupport {
                 .set(occupation).equalTo(record.getOccupation());
     }
 
-    public static UpdateDSL updateByExampleSelective(SimpleTableRecord record) {
-        return update(simpleTable)
+    public static UpdateDSL updateSelective(SimpleTableRecord record) {
+        return SqlBuilder.update(simpleTable)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
                 .set(birthDate).equalToWhenPresent(record.getBirthDate())
                 .set(employed).equalToWhenPresent(record.getEmployed())
                 .set(occupation).equalToWhenPresent(record.getOccupation());
-    }
-
-    public static DeleteStatement buildDeleteByPrimaryKeyStatement(Integer id_) {
-        return deleteFrom(simpleTable)
-                .where(id, isEqualTo(id_))
-                .build()
-                .render(RenderingStrategy.MYBATIS3);
-    }
-    
-    public static QueryExpressionAfterFromBuilder selectByExample() {
-        return select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
-            .from(simpleTable);
-    }
-
-    public static SelectStatement buildSelectByPrimaryKeyStatement(Integer id_) {
-        return select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
-            .from(simpleTable)
-            .where(id, isEqualTo(id_))
-            .build()
-            .render(RenderingStrategy.MYBATIS3);
     }
 }

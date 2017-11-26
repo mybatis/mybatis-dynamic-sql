@@ -57,15 +57,15 @@ public class QueryExpressionDSL {
         selectModelBuilder = Objects.requireNonNull(builder.selectModelBuilder);
     }
     
-    public QueryExpressionAfterFromBuilder from(SqlTable table) {
+    public QueryExpressionAfterFrom from(SqlTable table) {
         this.table = table;
-        return new QueryExpressionAfterFromBuilder();
+        return new QueryExpressionAfterFrom();
     }
 
-    public QueryExpressionAfterFromBuilder from(SqlTable table, String tableAlias) {
+    public QueryExpressionAfterFrom from(SqlTable table, String tableAlias) {
         this.table = table;
         tableAliases.put(table, tableAlias);
-        return new QueryExpressionAfterFromBuilder();
+        return new QueryExpressionAfterFrom();
     }
 
     public static class Builder {
@@ -112,8 +112,8 @@ public class QueryExpressionDSL {
                 .build();
     }
     
-    public class QueryExpressionAfterFromBuilder implements Buildable<SelectModel> {
-        private QueryExpressionAfterFromBuilder() {
+    public class QueryExpressionAfterFrom implements Buildable<SelectModel> {
+        private QueryExpressionAfterFrom() {
             super();
         }
         
