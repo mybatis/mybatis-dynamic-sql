@@ -35,7 +35,7 @@ public class UpdateModel {
     private List<UpdateMapping> columnValues;
     
     private UpdateModel(Builder builder) {
-        table = builder.table;
+        table = Objects.requireNonNull(builder.table);
         whereModel = Optional.ofNullable(builder.whereModel);
         columnValues = Objects.requireNonNull(builder.columnValues);
     }
@@ -65,8 +65,9 @@ public class UpdateModel {
         private WhereModel whereModel;
         private List<UpdateMapping> columnValues = new ArrayList<>();
         
-        public Builder(SqlTable table) {
+        public Builder withTable(SqlTable table) {
             this.table = table;
+            return this;
         }
         
         public Builder withColumnValues(List<UpdateMapping> columnValues) {

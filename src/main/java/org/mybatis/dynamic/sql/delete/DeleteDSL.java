@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
@@ -29,11 +29,11 @@ public class DeleteDSL {
         this.table = table;
     }
     
-    public <T> DeleteWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
+    public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
         return new DeleteWhereBuilder(column, condition);
     }
     
-    public <T> DeleteWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
+    public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
         return new DeleteWhereBuilder(column, condition, subCriteria);
     }
@@ -56,11 +56,11 @@ public class DeleteDSL {
     
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> {
         
-        private <T> DeleteWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
+        private <T> DeleteWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
         }
         
-        private <T> DeleteWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
+        private <T> DeleteWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }

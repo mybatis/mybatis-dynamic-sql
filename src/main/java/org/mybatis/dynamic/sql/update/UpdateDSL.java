@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -43,11 +44,11 @@ public class UpdateDSL {
         return new SetClauseFinisher<>(column);
     }
     
-    public <T> UpdateWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition) {
+    public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
         return new UpdateWhereBuilder(column, condition);
     }
     
-    public <T> UpdateWhereBuilder where(SqlColumn<T> column, VisitableCondition<T> condition,
+    public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
         return new UpdateWhereBuilder(column, condition, subCriteria);
     }
@@ -59,7 +60,8 @@ public class UpdateDSL {
      * @return the update model
      */
     public UpdateModel build() {
-        return new UpdateModel.Builder(table)
+        return new UpdateModel.Builder()
+                .withTable(table)
                 .withColumnValues(columnsAndValues)
                 .build();
     }
@@ -106,17 +108,18 @@ public class UpdateDSL {
 
     public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> {
         
-        public <T> UpdateWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition) {
+        public <T> UpdateWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
         }
         
-        public <T> UpdateWhereBuilder(SqlColumn<T> column, VisitableCondition<T> condition,
+        public <T> UpdateWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
         }
         
         public UpdateModel build() {
-            return new UpdateModel.Builder(table)
+            return new UpdateModel.Builder()
+                    .withTable(table)
                     .withColumnValues(columnsAndValues)
                     .withWhereModel(buildWhereModel())
                     .build();
