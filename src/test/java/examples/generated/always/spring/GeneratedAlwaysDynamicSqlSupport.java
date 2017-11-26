@@ -15,20 +15,10 @@
  */
 package examples.generated.always.spring;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
 import java.sql.JDBCType;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFromBuilder;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
-
-import examples.generated.always.GeneratedAlwaysRecord;
 
 public final class GeneratedAlwaysDynamicSqlSupport {
     public static final GeneratedAlways generatedAlways = new GeneratedAlways();
@@ -46,70 +36,5 @@ public final class GeneratedAlwaysDynamicSqlSupport {
         public GeneratedAlways() {
             super("GeneratedAlways");
         }
-    }
-    
-    public static InsertStatement<GeneratedAlwaysRecord> buildInsert(GeneratedAlwaysRecord record) {
-        return insert(record)
-                .into(generatedAlways)
-                .map(id).toProperty("id")
-                .map(firstName).toProperty("firstName")
-                .map(lastName).toProperty("lastName")
-                .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
-    }
-
-    public static InsertStatement<GeneratedAlwaysRecord> buildInsertSelectiveStatement(GeneratedAlwaysRecord record) {
-        return insert(record)
-                .into(generatedAlways)
-                .map(id).toPropertyWhenPresent("id")
-                .map(firstName).toPropertyWhenPresent("firstName")
-                .map(lastName).toPropertyWhenPresent("lastName")
-                .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
-    }
-    
-    public static UpdateStatement buildUpdateByPrimaryKeyStatement(GeneratedAlwaysRecord record) {
-        return update(generatedAlways)
-                .set(firstName).equalTo(record.getFirstName())
-                .set(lastName).equalTo(record.getLastName())
-                .where(id, isEqualTo(record.getId()))
-                .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
-    }
-
-    public static UpdateStatement buildUpdateByPrimaryKeySelectiveStatement(GeneratedAlwaysRecord record) {
-        return update(generatedAlways)
-                .set(firstName).equalToWhenPresent(record.getFirstName())
-                .set(lastName).equalToWhenPresent(record.getLastName())
-                .where(id, isEqualTo(record.getId()))
-                .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
-    }
-
-    public static UpdateDSL updateByExample(GeneratedAlwaysRecord record) {
-        return update(generatedAlways)
-                .set(id).equalTo(record.getId())
-                .set(firstName).equalTo(record.getFirstName())
-                .set(lastName).equalTo(record.getLastName());
-    }
-
-    public static UpdateDSL updateByExampleSelective(GeneratedAlwaysRecord record) {
-        return update(generatedAlways)
-                .set(id).equalToWhenPresent(record.getId())
-                .set(firstName).equalToWhenPresent(record.getFirstName())
-                .set(lastName).equalToWhenPresent(record.getLastName());
-    }
-    
-    public static QueryExpressionAfterFromBuilder selectByExample() {
-        return select(id.as("A_ID"), firstName, lastName, fullName)
-                .from(generatedAlways, "a");
-    }
-    
-    public static SelectStatement selectByPrimaryKey(int id_) {
-        return select(id.as("A_ID"), firstName, lastName, fullName)
-                .from(generatedAlways)
-                .where(id, isEqualTo(id_))
-                .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
     }
 }

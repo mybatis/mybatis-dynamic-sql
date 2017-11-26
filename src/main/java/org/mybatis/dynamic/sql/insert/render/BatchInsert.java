@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +36,11 @@ public class BatchInsert<T> {
         records = Collections.unmodifiableList(Objects.requireNonNull(builder.records));
     }
     
+    /**
+     * Returns a list of InsertStatement objects.  This is useful for MyBatis batch support.
+     * 
+     * @return a List of InsertStatements
+     */
     public List<InsertStatement<T>> insertStatements() {
         return records.stream()
                 .map(this::toInsertStatement)
@@ -49,6 +56,18 @@ public class BatchInsert<T> {
                 .build();
     }
 
+    /**
+     * Returns the generated SQL for this batch.  This is useful for Spring JDBC batch support.
+     * 
+     * @return the generated INSERT statement
+     */
+    public String getInsertStatementSQL() {
+        return "insert into" //$NON-NLS-1$
+                + spaceBefore(tableName)
+                + spaceBefore(columnsPhrase)
+                + spaceBefore(valuesPhrase);
+    }
+    
     public static class Builder<T> {
         private String tableName;
         private String columnsPhrase;

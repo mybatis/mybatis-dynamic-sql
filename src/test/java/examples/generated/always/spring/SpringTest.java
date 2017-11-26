@@ -15,29 +15,30 @@
  */
 package examples.generated.always.spring;
 
-import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.buildInsert;
-import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.id;
-import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.selectByExample;
+import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
+import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -49,6 +50,7 @@ import examples.generated.always.GeneratedAlwaysRecord;
 @RunWith(JUnitPlatform.class)
 public class SpringTest {
     private EmbeddedDatabase db;
+    private NamedParameterJdbcTemplate template;
     
     @BeforeEach
     public void setup() {
@@ -57,13 +59,13 @@ public class SpringTest {
                 .generateUniqueName(true)
                 .addScript("classpath:/examples/generated/always/CreateGeneratedAlwaysDB.sql")
                 .build();
+        template = new NamedParameterJdbcTemplate(db);
     }
     
     @Test
-    public void testSelect() {
-        NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(db);
-        
-        SelectStatement selectStatement = selectByExample()
+    public void testRender() {
+        SelectStatement selectStatement = select(id.as("A_ID"), firstName, lastName, fullName)
+                .from(generatedAlways, "a")
                 .where(id, isGreaterThan(3))
                 .orderBy(id.descending())
                 .build()
@@ -75,8 +77,19 @@ public class SpringTest {
                 + "order by id DESC";
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
+    
+    @Test
+    public void testSelect() {
+        SelectStatement selectStatement = select(id.as("A_ID"), firstName, lastName, fullName)
+                .from(generatedAlways, "a")
+                .where(id, isGreaterThan(3))
+                .orderBy(id.descending())
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
         
-        List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), selectStatement.getParameters(),
+        SqlParameterSource namedParameters = new MapSqlParameterSource(selectStatement.getParameters());
+        List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), namedParameters,
                 new RowMapper<GeneratedAlwaysRecord>(){
                     @Override
                     public GeneratedAlwaysRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -88,36 +101,68 @@ public class SpringTest {
                     }
                 });
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(records.size()).isEqualTo(3);
-            softly.assertThat(records.get(0).getId()).isEqualTo(6);
-            softly.assertThat(records.get(1).getId()).isEqualTo(5);
-            softly.assertThat(records.get(2).getId()).isEqualTo(4);
-        });
+        assertThat(records.size()).isEqualTo(3);
+        assertThat(records.get(0).getId()).isEqualTo(6);
+        assertThat(records.get(1).getId()).isEqualTo(5);
+        assertThat(records.get(2).getId()).isEqualTo(4);
     }
-    
+
     @Test
     public void testInsert() {
-        NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(db);
-        
         GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
         record.setId(100);
         record.setFirstName("Bob");
         record.setLastName("Jones");
         
-        InsertStatement<GeneratedAlwaysRecord> insertStatement = buildInsert(record);
+        InsertStatement<GeneratedAlwaysRecord> insertStatement = insert(record)
+                .into(generatedAlways)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName")
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
         
         SqlParameterSource ps = new BeanPropertySqlParameterSource(record);
         KeyHolder kh = new GeneratedKeyHolder();
         
         int rows = template.update(insertStatement.getInsertStatement(), ps, kh);
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(rows).isEqualTo(1);
-            softly.assertThat(kh.getKeys().get("FULL_NAME")).isEqualTo("Bob Jones");
-        });
+        assertThat(rows).isEqualTo(1);
+        assertThat(kh.getKeys().get("FULL_NAME")).isEqualTo("Bob Jones");
     }
     
+    @Test
+    public void testInsertBatch() {
+        List<GeneratedAlwaysRecord> records = new ArrayList<>();
+        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+        record.setId(100);
+        record.setFirstName("Bob");
+        record.setLastName("Jones");
+        records.add(record);
+        
+        record = new GeneratedAlwaysRecord();
+        record.setId(101);
+        record.setFirstName("Jim");
+        record.setLastName("Smith");
+        records.add(record);
+
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records.toArray());
+        
+        BatchInsert<GeneratedAlwaysRecord> batchInsert = insert(records)
+                .into(generatedAlways)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName")
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+        
+        int[] updateCounts = template.batchUpdate(batchInsert.getInsertStatementSQL(), batch);
+        
+        assertThat(updateCounts.length).isEqualTo(2);
+        assertThat(updateCounts[0]).isEqualTo(1);
+        assertThat(updateCounts[1]).isEqualTo(1);
+    }
+
     @AfterEach
     public void teardown() {
         db.shutdown();
