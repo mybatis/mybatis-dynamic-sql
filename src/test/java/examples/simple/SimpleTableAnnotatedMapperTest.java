@@ -40,7 +40,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
 @RunWith(JUnitPlatform.class)
@@ -74,14 +73,11 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
-            SelectStatement selectStatement = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
-                    .from(simpleTable)
+            List<SimpleTableRecord> rows = mapper.selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            
-            List<SimpleTableRecord> rows = mapper.selectMany(selectStatement);
+                    .execute();
             
             assertThat(rows.size()).isEqualTo(3);
         } finally {
@@ -129,7 +125,7 @@ public class SimpleTableAnnotatedMapperTest {
     }
 
     @Test
-    public void testDeleteWhere() {
+    public void testDeleteByExample() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);

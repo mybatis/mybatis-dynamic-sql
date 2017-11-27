@@ -15,32 +15,37 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 
 /**
- * This SelectModel will render the underlying select model for MyBatis3, and then call a MyBatis mapper method.
+ * This adapter will render the underlying select model for MyBatis3, and then call a MyBatis mapper method.
  * 
  * @author Jeff Butler
  *
  */
-public class MyBatis3SelectModel<R> {
+public class MyBatis3SelectModelAdapter<R> {
 
     private SelectModel selectModel;
     private Function<SelectStatement, R> mapperMethod;
     
-    private MyBatis3SelectModel(SelectModel selectModel, Function<SelectStatement, R> mapperMethod) {
-        this.selectModel = selectModel;
-        this.mapperMethod = mapperMethod;
+    private MyBatis3SelectModelAdapter(SelectModel selectModel, Function<SelectStatement, R> mapperMethod) {
+        this.selectModel = Objects.requireNonNull(selectModel);
+        this.mapperMethod = Objects.requireNonNull(mapperMethod);
     }
     
     public R execute() {
-        return mapperMethod.apply(selectModel.render(RenderingStrategy.MYBATIS3));
+        return mapperMethod.apply(selectStatement());
     }
     
-    public static <R> MyBatis3SelectModel<R> of(SelectModel selectModel, Function<SelectStatement, R> mapperMethod) {
-        return new MyBatis3SelectModel<>(selectModel, mapperMethod);
+    private SelectStatement selectStatement() {
+        return selectModel.render(RenderingStrategy.MYBATIS3);
+    }
+    
+    public static <R> MyBatis3SelectModelAdapter<R> of(SelectModel selectModel, Function<SelectStatement, R> mapperMethod) {
+        return new MyBatis3SelectModelAdapter<>(selectModel, mapperMethod);
     }
 }

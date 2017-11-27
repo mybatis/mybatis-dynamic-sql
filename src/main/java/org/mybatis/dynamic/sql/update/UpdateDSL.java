@@ -35,13 +35,13 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
 public class UpdateDSL<R> {
 
-    private Function<UpdateModel, R> decoratorFunction;
+    private Function<UpdateModel, R> adapterFunction;
     private List<UpdateMapping> columnsAndValues = new ArrayList<>();
     private SqlTable table;
     
-    private UpdateDSL(SqlTable table, Function<UpdateModel, R> decoratorFunction) {
+    private UpdateDSL(SqlTable table, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
-        this.decoratorFunction = Objects.requireNonNull(decoratorFunction);
+        this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
     
     public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
@@ -68,23 +68,19 @@ public class UpdateDSL<R> {
                 .withTable(table)
                 .withColumnValues(columnsAndValues)
                 .build();
-        return decoratorFunction.apply(updateModel);
+        return adapterFunction.apply(updateModel);
     }
     
-    public static <R> UpdateDSL<R> genericUpdate(Function<UpdateModel, R> decoratorFunction, SqlTable table) {
-        return new UpdateDSL<>(table, decoratorFunction);
+    public static <R> UpdateDSL<R> genericUpdate(Function<UpdateModel, R> adapterFunction, SqlTable table) {
+        return new UpdateDSL<>(table, adapterFunction);
     }
     
     public static UpdateDSL<UpdateModel> update(SqlTable table) {
         return genericUpdate(Function.identity(), table);
     }
     
-    public static UpdateDSL<MyBatis3UpdateModel> update(Function<UpdateStatement, Integer> mapperMethod, SqlTable table) {
-        return genericUpdate(decorate(mapperMethod), table);
-    }
-    
-    private static Function<UpdateModel, MyBatis3UpdateModel> decorate(Function<UpdateStatement, Integer> mapperMethod) {
-        return updateModel -> MyBatis3UpdateModel.of(updateModel, mapperMethod);
+    public static <T> UpdateDSL<MyBatis3UpdateModelAdapter<T>> update(Function<UpdateStatement, T> mapperMethod, SqlTable table) {
+        return genericUpdate(updateModel -> MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);
     }
     
     public class SetClauseFinisher<T> {
@@ -140,7 +136,7 @@ public class UpdateDSL<R> {
                     .withColumnValues(columnsAndValues)
                     .withWhereModel(buildWhereModel())
                     .build();
-            return decoratorFunction.apply(updateModel);
+            return adapterFunction.apply(updateModel);
         }
         
         @Override

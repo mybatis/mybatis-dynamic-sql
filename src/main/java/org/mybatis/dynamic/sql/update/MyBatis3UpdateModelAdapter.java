@@ -15,32 +15,37 @@
  */
 package org.mybatis.dynamic.sql.update;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
 /**
- * This UpdateModel will render the underlying update model for MyBatis3, and then call a MyBatis mapper method.
+ * This adapter will render the underlying update model for MyBatis3, and then call a MyBatis mapper method.
  * 
  * @author Jeff Butler
  *
  */
-public class MyBatis3UpdateModel {
+public class MyBatis3UpdateModelAdapter<R> {
 
     private UpdateModel updateModel;
-    private Function<UpdateStatement, Integer> mapperMethod;
+    private Function<UpdateStatement, R> mapperMethod;
     
-    private MyBatis3UpdateModel(UpdateModel updateModel, Function<UpdateStatement, Integer> mapperMethod) {
-        this.updateModel = updateModel;
-        this.mapperMethod = mapperMethod;
+    private MyBatis3UpdateModelAdapter(UpdateModel updateModel, Function<UpdateStatement, R> mapperMethod) {
+        this.updateModel = Objects.requireNonNull(updateModel);
+        this.mapperMethod = Objects.requireNonNull(mapperMethod);
     }
     
-    public int execute() {
-        return mapperMethod.apply(updateModel.render(RenderingStrategy.MYBATIS3));
+    public R execute() {
+        return mapperMethod.apply(updateStatement());
     }
     
-    public static MyBatis3UpdateModel of(UpdateModel updateModel, Function<UpdateStatement, Integer> mapperMethod) {
-        return new MyBatis3UpdateModel(updateModel, mapperMethod);
+    private UpdateStatement updateStatement() {
+        return updateModel.render(RenderingStrategy.MYBATIS3);
+    }
+    
+    public static <R> MyBatis3UpdateModelAdapter<R> of(UpdateModel updateModel, Function<UpdateStatement, R> mapperMethod) {
+        return new MyBatis3UpdateModelAdapter<>(updateModel, mapperMethod);
     }
 }

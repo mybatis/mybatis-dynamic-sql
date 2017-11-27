@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -26,12 +27,12 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
 public class DeleteDSL<R> {
 
-    private Function<DeleteModel, R> decoratorFunction;
+    private Function<DeleteModel, R> adapterFunction;
     private SqlTable table;
     
-    private DeleteDSL(SqlTable table, Function<DeleteModel, R> decoratorFunction) {
-        this.table = table;
-        this.decoratorFunction = decoratorFunction;
+    private DeleteDSL(SqlTable table, Function<DeleteModel, R> adapterFunction) {
+        this.table = Objects.requireNonNull(table);
+        this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
     
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
@@ -53,23 +54,19 @@ public class DeleteDSL<R> {
         DeleteModel deleteModel = new DeleteModel.Builder()
                 .withTable(table)
                 .build();
-        return decoratorFunction.apply(deleteModel);
+        return adapterFunction.apply(deleteModel);
     }
     
-    public static <R> DeleteDSL<R> genericDeleteFrom(SqlTable table, Function<DeleteModel, R> decoratorFunction) {
-        return new DeleteDSL<>(table, decoratorFunction);
+    public static <R> DeleteDSL<R> genericDeleteFrom(SqlTable table, Function<DeleteModel, R> adapterFunction) {
+        return new DeleteDSL<>(table, adapterFunction);
     }
     
     public static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
         return genericDeleteFrom(table, Function.identity());
     }
     
-    public static DeleteDSL<MyBatis3DeleteModel> deleteFrom(SqlTable table, Function<DeleteStatement, Integer> mapperMethod) {
-        return genericDeleteFrom(table, decorate(mapperMethod));
-    }
-    
-    private static Function<DeleteModel, MyBatis3DeleteModel> decorate(Function<DeleteStatement, Integer> mapperMethod) {
-        return deleteModel -> MyBatis3DeleteModel.of(deleteModel, mapperMethod);
+    public static <T> DeleteDSL<MyBatis3DeleteModelAdapter<T>> deleteFrom(SqlTable table, Function<DeleteStatement, T> mapperMethod) {
+        return genericDeleteFrom(table, deleteModel -> MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod));
     }
     
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> {
@@ -88,7 +85,7 @@ public class DeleteDSL<R> {
                     .withTable(table)
                     .withWhereModel(buildWhereModel())
                     .build();
-            return decoratorFunction.apply(deleteModel);
+            return adapterFunction.apply(deleteModel);
         }
         
         @Override

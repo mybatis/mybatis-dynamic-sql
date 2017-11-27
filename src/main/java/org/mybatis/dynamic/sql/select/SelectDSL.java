@@ -32,12 +32,12 @@ import org.mybatis.dynamic.sql.select.render.SelectStatement;
  */
 public class SelectDSL<R> {
 
-    private Function<SelectModel, R> decoratorFunction;
+    private Function<SelectModel, R> adapterFunction;
     private List<QueryExpressionModel> queryExpressions = new ArrayList<>();    
     private OrderByModel orderByModel;
     
-    private SelectDSL(Function<SelectModel, R> decoratorFunction) {
-        this.decoratorFunction = Objects.requireNonNull(decoratorFunction);
+    private SelectDSL(Function<SelectModel, R> adapterFunction) {
+        this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
     private QueryExpressionDSL<R> queryExpressionBuilder(BasicColumn...selectList) {
@@ -55,13 +55,13 @@ public class SelectDSL<R> {
                 .build();
     }
     
-    public static <R> QueryExpressionDSL<R> genericSelect(Function<SelectModel, R> decoratorFunction, BasicColumn...selectList) {
-        SelectDSL<R> selectModelBuilder = new SelectDSL<>(decoratorFunction);
+    public static <R> QueryExpressionDSL<R> genericSelect(Function<SelectModel, R> adapterFunction, BasicColumn...selectList) {
+        SelectDSL<R> selectModelBuilder = new SelectDSL<>(adapterFunction);
         return selectModelBuilder.queryExpressionBuilder(selectList);
     }
     
-    public static <R> QueryExpressionDSL<R> genericSelectDistinct(Function<SelectModel, R> decoratorFunction, BasicColumn...selectList) {
-        SelectDSL<R> selectModelBuilder = new SelectDSL<>(decoratorFunction);
+    public static <R> QueryExpressionDSL<R> genericSelectDistinct(Function<SelectModel, R> adapterFunction, BasicColumn...selectList) {
+        SelectDSL<R> selectModelBuilder = new SelectDSL<>(adapterFunction);
         return selectModelBuilder.distinctQueryExpressionBuilder(selectList);
     }
     
@@ -69,20 +69,16 @@ public class SelectDSL<R> {
         return genericSelect(Function.identity(), selectList);
     }
     
-    public static <T> QueryExpressionDSL<MyBatis3SelectModel<T>> select(Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
-        return genericSelect(decorate(mapperMethod), selectList);
+    public static <T> QueryExpressionDSL<MyBatis3SelectModelAdapter<T>> select(Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
+        return genericSelect(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);
     }
     
     public static QueryExpressionDSL<SelectModel> selectDistinct(BasicColumn...selectList) {
         return genericSelectDistinct(Function.identity(), selectList);
     }
     
-    public static <T> QueryExpressionDSL<MyBatis3SelectModel<T>> selectDistinct(Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
-        return genericSelectDistinct(decorate(mapperMethod), selectList);
-    }
-    
-    private static <T> Function<SelectModel, MyBatis3SelectModel<T>> decorate(Function<SelectStatement, T> mapperMethod) {
-        return selectModel -> MyBatis3SelectModel.of(selectModel, mapperMethod);
+    public static <T> QueryExpressionDSL<MyBatis3SelectModelAdapter<T>> selectDistinct(Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
+        return genericSelectDistinct(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);
     }
     
     void addQueryExpression(QueryExpressionModel queryExpression) {
@@ -98,6 +94,6 @@ public class SelectDSL<R> {
                 .withQueryExpressions(queryExpressions)
                 .withOrderByModel(orderByModel)
                 .build();
-        return decoratorFunction.apply(selectModel);
+        return adapterFunction.apply(selectModel);
     }
 }

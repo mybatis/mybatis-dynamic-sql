@@ -31,15 +31,15 @@ import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
-import org.mybatis.dynamic.sql.delete.MyBatis3DeleteModel;
+import org.mybatis.dynamic.sql.delete.MyBatis3DeleteModelAdapter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.MyBatis3SelectModel;
+import org.mybatis.dynamic.sql.select.MyBatis3SelectModelAdapter;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
-import org.mybatis.dynamic.sql.update.MyBatis3UpdateModel;
+import org.mybatis.dynamic.sql.update.MyBatis3UpdateModelAdapter;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
@@ -74,12 +74,12 @@ public interface SimpleTableAnnotatedMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatement selectStatement);
     
-    default QueryExpressionDSL<MyBatis3SelectModel<Long>>.QueryExpressionAfterFrom countByExample() {
+    default QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>>.QueryExpressionAfterFrom countByExample() {
         return SelectDSL.select(this::count, SqlBuilder.count())
             .from(simpleTable);
     }
     
-    default DeleteDSL<MyBatis3DeleteModel> deleteByExample() {
+    default DeleteDSL<MyBatis3DeleteModelAdapter<Integer>> deleteByExample() {
         return DeleteDSL.deleteFrom(simpleTable, this::delete);
     }
     
@@ -116,7 +116,7 @@ public interface SimpleTableAnnotatedMapper {
                 .render(RenderingStrategy.MYBATIS3));
     }
     
-    default QueryExpressionDSL<MyBatis3SelectModel<List<SimpleTableRecord>>>.QueryExpressionAfterFrom selectByExample() {
+    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>>.QueryExpressionAfterFrom selectByExample() {
         return SelectDSL.select(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }
@@ -129,7 +129,7 @@ public interface SimpleTableAnnotatedMapper {
             .render(RenderingStrategy.MYBATIS3));
     }
     
-    default UpdateDSL<MyBatis3UpdateModel> updateByExample(SimpleTableRecord record) {
+    default UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> updateByExample(SimpleTableRecord record) {
         return UpdateDSL.update(this::update, simpleTable)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
@@ -139,7 +139,7 @@ public interface SimpleTableAnnotatedMapper {
                 .set(occupation).equalTo(record.getOccupation());
     }
 
-    default UpdateDSL<MyBatis3UpdateModel> updateByExampleSelective(SimpleTableRecord record) {
+    default UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> updateByExampleSelective(SimpleTableRecord record) {
         return UpdateDSL.update(this::update, simpleTable)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())

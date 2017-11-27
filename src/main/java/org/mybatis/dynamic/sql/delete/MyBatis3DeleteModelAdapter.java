@@ -15,32 +15,37 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 /**
- * This DeleteModel will render the underlying delete model for MyBatis3, and then call a MyBatis mapper method.
+ * This adapter will render the underlying delete model for MyBatis3, and then call a MyBatis mapper method.
  * 
  * @author Jeff Butler
  *
  */
-public class MyBatis3DeleteModel {
+public class MyBatis3DeleteModelAdapter<R> {
 
     private DeleteModel deleteModel;
-    private Function<DeleteStatement, Integer> mapperMethod;
+    private Function<DeleteStatement, R> mapperMethod;
     
-    private MyBatis3DeleteModel(DeleteModel deleteModel, Function<DeleteStatement, Integer> mapperMethod) {
-        this.deleteModel = deleteModel;
-        this.mapperMethod = mapperMethod;
+    private MyBatis3DeleteModelAdapter(DeleteModel deleteModel, Function<DeleteStatement, R> mapperMethod) {
+        this.deleteModel = Objects.requireNonNull(deleteModel);
+        this.mapperMethod = Objects.requireNonNull(mapperMethod);
     }
     
-    public int execute() {
-        return mapperMethod.apply(deleteModel.render(RenderingStrategy.MYBATIS3));
+    public R execute() {
+        return mapperMethod.apply(deleteStatement());
     }
     
-    public static MyBatis3DeleteModel of(DeleteModel deleteModel, Function<DeleteStatement, Integer> mapperMethod) {
-        return new MyBatis3DeleteModel(deleteModel, mapperMethod);
+    private DeleteStatement deleteStatement() {
+        return deleteModel.render(RenderingStrategy.MYBATIS3);
+    }
+    
+    public static <R> MyBatis3DeleteModelAdapter<R> of(DeleteModel deleteModel, Function<DeleteStatement, R> mapperMethod) {
+        return new MyBatis3DeleteModelAdapter<>(deleteModel, mapperMethod);
     }
 }
