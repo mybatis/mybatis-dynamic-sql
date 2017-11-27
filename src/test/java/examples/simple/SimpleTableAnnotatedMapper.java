@@ -30,10 +30,14 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.delete.DeleteDSL;
+import org.mybatis.dynamic.sql.delete.MyBatis3DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.update.MyBatis3UpdateModel;
+import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
@@ -67,13 +71,22 @@ public interface SimpleTableAnnotatedMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatement selectStatement);
     
-    default int deleteByPrimaryKeyStatement(Integer id_) {
-        return delete(deleteFrom(simpleTable)
-                .where(id, isEqualTo(id_))
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
+    /**
+     * This is like the old DeleteByExample method
+     * 
+     * @return
+     */
+    default DeleteDSL<MyBatis3DeleteModel> delete() {
+        return DeleteDSL.deleteFrom(simpleTable, this::delete);
     }
     
+    default int deleteByPrimaryKey(Integer id_) {
+        return delete()
+                .where(id, isEqualTo(id_))
+                .build()
+                .execute();
+    }
+
     default int insert(SimpleTableRecord record) {
         return insert(SqlBuilder.insert(record)
                 .into(simpleTable)
@@ -109,26 +122,48 @@ public interface SimpleTableAnnotatedMapper {
     }
     
     default int updateByPrimaryKey(SimpleTableRecord record) {
-        return update(SqlBuilder.update(simpleTable)
+        return update(record)
+                .where(id, isEqualTo(record.getId()))
+                .build()
+                .execute();
+    }
+
+    default int updateByPrimaryKeySelective(SimpleTableRecord record) {
+        return updateSelective(record)
+                .where(id, isEqualTo(record.getId()))
+                .build()
+                .execute();
+    }
+
+    /**
+     * This is the old update by example
+     * 
+     * @param record
+     * @return
+     */
+    default UpdateDSL<MyBatis3UpdateModel> update(SimpleTableRecord record) {
+        return UpdateDSL.update(simpleTable, this::update)
+                .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
                 .set(birthDate).equalTo(record.getBirthDate())
                 .set(employed).equalTo(record.getEmployed())
-                .set(occupation).equalTo(record.getOccupation())
-                .where(id, isEqualTo(record.getId()))
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
+                .set(occupation).equalTo(record.getOccupation());
     }
 
-    default int updateByPrimaryKeySelective(SimpleTableRecord record) {
-        return update(SqlBuilder.update(simpleTable)
+    /**
+     * This is the old update by example selective
+     * 
+     * @param record
+     * @return
+     */
+    default UpdateDSL<MyBatis3UpdateModel> updateSelective(SimpleTableRecord record) {
+        return UpdateDSL.update(simpleTable, this::update)
+                .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
                 .set(birthDate).equalToWhenPresent(record.getBirthDate())
                 .set(employed).equalToWhenPresent(record.getEmployed())
-                .set(occupation).equalToWhenPresent(record.getOccupation())
-                .where(id, isEqualTo(record.getId()))
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
+                .set(occupation).equalToWhenPresent(record.getOccupation());
     }
 }

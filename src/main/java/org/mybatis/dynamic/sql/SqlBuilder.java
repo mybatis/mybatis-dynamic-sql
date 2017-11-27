@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
+import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
@@ -40,6 +41,7 @@ import org.mybatis.dynamic.sql.select.join.EqualTo;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
+import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
@@ -71,7 +73,7 @@ import org.mybatis.dynamic.sql.where.condition.IsNull;
 public interface SqlBuilder {
 
     // statements
-    static DeleteDSL deleteFrom(SqlTable table) {
+    static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
         return DeleteDSL.deleteFrom(table);
     }
 
@@ -100,7 +102,7 @@ public interface SqlBuilder {
         return SelectDSL.selectDistinct(selectList);
     }
     
-    static UpdateDSL update(SqlTable table) {
+    static UpdateDSL<UpdateModel> update(SqlTable table) {
         return UpdateDSL.update(table);
     }
 

@@ -39,7 +39,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
@@ -138,12 +137,10 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            DeleteStatement deleteStatement = delete()
+            int rows = mapper.delete()
                     .where(occupation, isNull())
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
-
-            int rows = mapper.delete(deleteStatement);
+                    .execute();
             assertThat(rows).isEqualTo(2);
         } finally {
             session.close();
@@ -155,7 +152,7 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            int rows = mapper.deleteByPrimaryKeyStatement(2);
+            int rows = mapper.deleteByPrimaryKey(2);
             
             assertThat(rows).isEqualTo(1);
         } finally {
@@ -319,13 +316,12 @@ public class SimpleTableAnnotatedMapperTest {
                 softly.assertThat(rows).isEqualTo(1);
 
                 record.setOccupation("Programmer");
-                UpdateStatement updateStatement = update(record)
+                rows = mapper.update(record)
                         .where(id, isEqualTo(100))
                         .and(firstName, isEqualTo("Joe"))
                         .build()
-                        .render(RenderingStrategy.MYBATIS3);
+                        .execute();
 
-                rows = mapper.update(updateStatement);
                 softly.assertThat(rows).isEqualTo(1);
 
                 SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);

@@ -21,9 +21,7 @@ import java.util.Date;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFrom;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
 
 public final class SimpleTableDynamicSqlSupport {
     public static final SimpleTable simpleTable = new SimpleTable();
@@ -47,32 +45,8 @@ public final class SimpleTableDynamicSqlSupport {
         }
     }
 
-    public static DeleteDSL delete() {
-        return SqlBuilder.deleteFrom(simpleTable);
-    }
-    
     public static QueryExpressionAfterFrom select() {
         return SqlBuilder.select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
-    }
-    
-    public static UpdateDSL update(SimpleTableRecord record) {
-        return SqlBuilder.update(simpleTable)
-                .set(id).equalTo(record.getId())
-                .set(firstName).equalTo(record.getFirstName())
-                .set(lastName).equalTo(record.getLastName())
-                .set(birthDate).equalTo(record.getBirthDate())
-                .set(employed).equalTo(record.getEmployed())
-                .set(occupation).equalTo(record.getOccupation());
-    }
-
-    public static UpdateDSL updateSelective(SimpleTableRecord record) {
-        return SqlBuilder.update(simpleTable)
-                .set(id).equalToWhenPresent(record.getId())
-                .set(firstName).equalToWhenPresent(record.getFirstName())
-                .set(lastName).equalToWhenPresent(record.getLastName())
-                .set(birthDate).equalToWhenPresent(record.getBirthDate())
-                .set(employed).equalToWhenPresent(record.getEmployed())
-                .set(occupation).equalToWhenPresent(record.getOccupation());
     }
 }

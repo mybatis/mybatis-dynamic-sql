@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFrom;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
+import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 
 import examples.generated.always.GeneratedAlwaysRecord;
@@ -86,14 +87,14 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
 
-    public static UpdateDSL updateByExample(GeneratedAlwaysRecord record) {
+    public static UpdateDSL<UpdateModel> updateByExample(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName());
     }
 
-    public static UpdateDSL updateByExampleSelective(GeneratedAlwaysRecord record) {
+    public static UpdateDSL<UpdateModel> updateByExampleSelective(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())

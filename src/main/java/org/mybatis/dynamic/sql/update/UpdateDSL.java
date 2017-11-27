@@ -18,12 +18,14 @@ package org.mybatis.dynamic.sql.update;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
@@ -31,13 +33,15 @@ import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
-public class UpdateDSL {
+public class UpdateDSL<R> {
 
+    private Function<UpdateModel, R> decoratorFunction;
     private List<UpdateMapping> columnsAndValues = new ArrayList<>();
     private SqlTable table;
     
-    private UpdateDSL(SqlTable table) {
+    private UpdateDSL(SqlTable table, Function<UpdateModel, R> decoratorFunction) {
         this.table = Objects.requireNonNull(table);
+        this.decoratorFunction = Objects.requireNonNull(decoratorFunction);
     }
     
     public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
@@ -59,15 +63,28 @@ public class UpdateDSL {
      * 
      * @return the update model
      */
-    public UpdateModel build() {
-        return new UpdateModel.Builder()
+    public R build() {
+        UpdateModel updateModel = new UpdateModel.Builder()
                 .withTable(table)
                 .withColumnValues(columnsAndValues)
                 .build();
+        return decoratorFunction.apply(updateModel);
     }
     
-    public static UpdateDSL update(SqlTable table) {
-        return new UpdateDSL(table);
+    public static <R> UpdateDSL<R> genericUpdate(SqlTable table, Function<UpdateModel, R> decoratorFunction) {
+        return new UpdateDSL<>(table, decoratorFunction);
+    }
+    
+    public static UpdateDSL<UpdateModel> update(SqlTable table) {
+        return genericUpdate(table, Function.identity());
+    }
+    
+    public static UpdateDSL<MyBatis3UpdateModel> update(SqlTable table, Function<UpdateStatement, Integer> mapperMethod) {
+        return genericUpdate(table, decorate(mapperMethod));
+    }
+    
+    private static Function<UpdateModel, MyBatis3UpdateModel> decorate(Function<UpdateStatement, Integer> mapperMethod) {
+        return updateModel -> MyBatis3UpdateModel.of(updateModel, mapperMethod);
     }
     
     public class SetClauseFinisher<T> {
@@ -78,27 +95,27 @@ public class UpdateDSL {
             this.column = column;
         }
         
-        public UpdateDSL equalToNull() {
+        public UpdateDSL<R> equalToNull() {
             columnsAndValues.add(NullMapping.of(column));
             return UpdateDSL.this;
         }
 
-        public UpdateDSL equalToConstant(String constant) {
+        public UpdateDSL<R> equalToConstant(String constant) {
             columnsAndValues.add(ConstantMapping.of(column, constant));
             return UpdateDSL.this;
         }
         
-        public UpdateDSL equalToStringConstant(String constant) {
+        public UpdateDSL<R> equalToStringConstant(String constant) {
             columnsAndValues.add(StringConstantMapping.of(column, constant));
             return UpdateDSL.this;
         }
         
-        public UpdateDSL equalTo(T value) {
+        public UpdateDSL<R> equalTo(T value) {
             columnsAndValues.add(ValueMapping.of(column, value));
             return UpdateDSL.this;
         }
 
-        public UpdateDSL equalToWhenPresent(T value) {
+        public UpdateDSL<R> equalToWhenPresent(T value) {
             if (value != null) {
                 columnsAndValues.add(ValueMapping.of(column, value));
             }
@@ -117,12 +134,13 @@ public class UpdateDSL {
             super(column, condition, subCriteria);
         }
         
-        public UpdateModel build() {
-            return new UpdateModel.Builder()
+        public R build() {
+            UpdateModel updateModel = new UpdateModel.Builder()
                     .withTable(table)
                     .withColumnValues(columnsAndValues)
                     .withWhereModel(buildWhereModel())
                     .build();
+            return decoratorFunction.apply(updateModel);
         }
         
         @Override
