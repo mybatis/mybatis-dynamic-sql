@@ -29,10 +29,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -108,6 +110,20 @@ public class SpringTest {
     }
 
     @Test
+    public void testDelete() {
+        DeleteStatement deleteStatement = deleteFrom(generatedAlways)
+                .where(id,  isLessThan(3))
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+        
+        SqlParameterSource parameterSource = new MapSqlParameterSource(deleteStatement.getParameters());
+        
+        int rows = template.update(deleteStatement.getDeleteStatement(), parameterSource);
+        
+        assertThat(rows).isEqualTo(2);
+    }
+    
+    @Test
     public void testInsert() {
         GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
         record.setId(100);
@@ -122,13 +138,13 @@ public class SpringTest {
                 .build()
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
         
-        SqlParameterSource ps = new BeanPropertySqlParameterSource(record);
-        KeyHolder kh = new GeneratedKeyHolder();
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(record);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         
-        int rows = template.update(insertStatement.getInsertStatement(), ps, kh);
+        int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
         
         assertThat(rows).isEqualTo(1);
-        assertThat(kh.getKeys().get("FULL_NAME")).isEqualTo("Bob Jones");
+        assertThat(keyHolder.getKeys().get("FULL_NAME")).isEqualTo("Bob Jones");
     }
     
     @Test
@@ -163,6 +179,21 @@ public class SpringTest {
         assertThat(updateCounts[1]).isEqualTo(1);
     }
 
+    @Test
+    public void testUpdate() {
+        UpdateStatement updateStatement = update(generatedAlways)
+                .set(firstName).equalToStringConstant("Rob")
+                .where(id,  isIn(1, 5, 22))
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+        
+        SqlParameterSource parameterSource = new MapSqlParameterSource(updateStatement.getParameters());
+        
+        int rows = template.update(updateStatement.getUpdateStatement(), parameterSource);
+        
+        assertThat(rows).isEqualTo(2);
+    }
+    
     @AfterEach
     public void teardown() {
         db.shutdown();
