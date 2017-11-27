@@ -95,13 +95,11 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
-            SelectStatement selectStatement = select()
+            List<SimpleTableRecord> rows = mapper.selectByExample()
                     .where(employed, isEqualTo(false))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            
-            List<SimpleTableRecord> rows = mapper.selectMany(selectStatement);
+                    .execute();
             
             SoftAssertions.assertSoftly(softly -> {
                 softly.assertThat(rows.size()).isEqualTo(2);
@@ -119,12 +117,10 @@ public class SimpleTableAnnotatedMapperTest {
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
-            SelectStatement selectStatement = select()
+            List<SimpleTableRecord> rows = mapper.selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            
-            List<SimpleTableRecord> rows = mapper.selectMany(selectStatement);
+                    .execute();
             
             assertThat(rows.size()).isEqualTo(2);
         } finally {
@@ -137,7 +133,7 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            int rows = mapper.delete()
+            int rows = mapper.deleteByExample()
                     .where(occupation, isNull())
                     .build()
                     .execute();
@@ -316,7 +312,7 @@ public class SimpleTableAnnotatedMapperTest {
                 softly.assertThat(rows).isEqualTo(1);
 
                 record.setOccupation("Programmer");
-                rows = mapper.update(record)
+                rows = mapper.updateByExample(record)
                         .where(id, isEqualTo(100))
                         .and(firstName, isEqualTo("Joe"))
                         .build()
@@ -337,12 +333,10 @@ public class SimpleTableAnnotatedMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         try {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            SelectStatement selectStatement = select(count())
-                    .from(simpleTable)
+            long rows = mapper.countByExample()
                     .where(occupation, isNull())
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            long rows = mapper.count(selectStatement);
+                    .execute();
             
             assertThat(rows).isEqualTo(2L);
         } finally {

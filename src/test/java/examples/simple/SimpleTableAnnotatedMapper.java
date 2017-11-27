@@ -35,6 +35,9 @@ import org.mybatis.dynamic.sql.delete.MyBatis3DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.MyBatis3SelectModel;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.MyBatis3UpdateModel;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
@@ -71,17 +74,17 @@ public interface SimpleTableAnnotatedMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatement selectStatement);
     
-    /**
-     * This is like the old DeleteByExample method
-     * 
-     * @return
-     */
-    default DeleteDSL<MyBatis3DeleteModel> delete() {
+    default QueryExpressionDSL<MyBatis3SelectModel<Long>>.QueryExpressionAfterFrom countByExample() {
+        return SelectDSL.select(this::count, SqlBuilder.count())
+            .from(simpleTable);
+    }
+    
+    default DeleteDSL<MyBatis3DeleteModel> deleteByExample() {
         return DeleteDSL.deleteFrom(simpleTable, this::delete);
     }
     
     default int deleteByPrimaryKey(Integer id_) {
-        return delete()
+        return deleteByExample()
                 .where(id, isEqualTo(id_))
                 .build()
                 .execute();
@@ -113,36 +116,21 @@ public interface SimpleTableAnnotatedMapper {
                 .render(RenderingStrategy.MYBATIS3));
     }
     
+    default QueryExpressionDSL<MyBatis3SelectModel<List<SimpleTableRecord>>>.QueryExpressionAfterFrom selectByExample() {
+        return SelectDSL.select(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+            .from(simpleTable);
+    }
+    
     default SimpleTableRecord selectByPrimaryKey(Integer id_) {
-        return selectOne(select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+        return selectOne(SqlBuilder.select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)
             .where(id, isEqualTo(id_))
             .build()
             .render(RenderingStrategy.MYBATIS3));
     }
     
-    default int updateByPrimaryKey(SimpleTableRecord record) {
-        return update(record)
-                .where(id, isEqualTo(record.getId()))
-                .build()
-                .execute();
-    }
-
-    default int updateByPrimaryKeySelective(SimpleTableRecord record) {
-        return updateSelective(record)
-                .where(id, isEqualTo(record.getId()))
-                .build()
-                .execute();
-    }
-
-    /**
-     * This is the old update by example
-     * 
-     * @param record
-     * @return
-     */
-    default UpdateDSL<MyBatis3UpdateModel> update(SimpleTableRecord record) {
-        return UpdateDSL.update(simpleTable, this::update)
+    default UpdateDSL<MyBatis3UpdateModel> updateByExample(SimpleTableRecord record) {
+        return UpdateDSL.update(this::update, simpleTable)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
@@ -151,19 +139,27 @@ public interface SimpleTableAnnotatedMapper {
                 .set(occupation).equalTo(record.getOccupation());
     }
 
-    /**
-     * This is the old update by example selective
-     * 
-     * @param record
-     * @return
-     */
-    default UpdateDSL<MyBatis3UpdateModel> updateSelective(SimpleTableRecord record) {
-        return UpdateDSL.update(simpleTable, this::update)
+    default UpdateDSL<MyBatis3UpdateModel> updateByExampleSelective(SimpleTableRecord record) {
+        return UpdateDSL.update(this::update, simpleTable)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
                 .set(birthDate).equalToWhenPresent(record.getBirthDate())
                 .set(employed).equalToWhenPresent(record.getEmployed())
                 .set(occupation).equalToWhenPresent(record.getOccupation());
+    }
+
+    default int updateByPrimaryKey(SimpleTableRecord record) {
+        return updateByExample(record)
+                .where(id, isEqualTo(record.getId()))
+                .build()
+                .execute();
+    }
+
+    default int updateByPrimaryKeySelective(SimpleTableRecord record) {
+        return updateByExampleSelective(record)
+                .where(id, isEqualTo(record.getId()))
+                .build()
+                .execute();
     }
 }

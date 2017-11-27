@@ -94,11 +94,11 @@ public interface SqlBuilder {
         return InsertSelectDSL.insertInto(table);
     }
     
-    static QueryExpressionDSL select(BasicColumn...selectList) {
+    static QueryExpressionDSL<SelectModel> select(BasicColumn...selectList) {
         return SelectDSL.select(selectList);
     }
     
-    static QueryExpressionDSL selectDistinct(BasicColumn...selectList) {
+    static QueryExpressionDSL<SelectModel> selectDistinct(BasicColumn...selectList) {
         return SelectDSL.selectDistinct(selectList);
     }
     

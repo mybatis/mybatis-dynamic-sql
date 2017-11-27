@@ -71,16 +71,16 @@ public class UpdateDSL<R> {
         return decoratorFunction.apply(updateModel);
     }
     
-    public static <R> UpdateDSL<R> genericUpdate(SqlTable table, Function<UpdateModel, R> decoratorFunction) {
+    public static <R> UpdateDSL<R> genericUpdate(Function<UpdateModel, R> decoratorFunction, SqlTable table) {
         return new UpdateDSL<>(table, decoratorFunction);
     }
     
     public static UpdateDSL<UpdateModel> update(SqlTable table) {
-        return genericUpdate(table, Function.identity());
+        return genericUpdate(Function.identity(), table);
     }
     
-    public static UpdateDSL<MyBatis3UpdateModel> update(SqlTable table, Function<UpdateStatement, Integer> mapperMethod) {
-        return genericUpdate(table, decorate(mapperMethod));
+    public static UpdateDSL<MyBatis3UpdateModel> update(Function<UpdateStatement, Integer> mapperMethod, SqlTable table) {
+        return genericUpdate(decorate(mapperMethod), table);
     }
     
     private static Function<UpdateModel, MyBatis3UpdateModel> decorate(Function<UpdateStatement, Integer> mapperMethod) {

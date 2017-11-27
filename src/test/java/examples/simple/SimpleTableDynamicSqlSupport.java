@@ -18,10 +18,8 @@ package examples.simple;
 import java.sql.JDBCType;
 import java.util.Date;
 
-import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionAfterFrom;
 
 public final class SimpleTableDynamicSqlSupport {
     public static final SimpleTable simpleTable = new SimpleTable();
@@ -43,10 +41,5 @@ public final class SimpleTableDynamicSqlSupport {
         public SimpleTable() {
             super("SimpleTable");
         }
-    }
-
-    public static QueryExpressionAfterFrom select() {
-        return SqlBuilder.select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
-            .from(simpleTable);
     }
 }

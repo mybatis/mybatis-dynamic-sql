@@ -17,41 +17,72 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
 
-public class SelectDSL {
+/**
+ * Implements a standard SQL dialect for building model classes.
+ * 
+ * @author Jeff Butler
+ *
+ * @param <R> the type of model produced by this builder
+ */
+public class SelectDSL<R> {
 
+    private Function<SelectModel, R> decoratorFunction;
     private List<QueryExpressionModel> queryExpressions = new ArrayList<>();    
     private OrderByModel orderByModel;
     
-    private SelectDSL() {
-        super();
+    private SelectDSL(Function<SelectModel, R> decoratorFunction) {
+        this.decoratorFunction = Objects.requireNonNull(decoratorFunction);
     }
 
-    private QueryExpressionDSL queryExpressionBuilder(BasicColumn...selectList) {
-        return new QueryExpressionDSL.Builder()
+    private QueryExpressionDSL<R> queryExpressionBuilder(BasicColumn...selectList) {
+        return new QueryExpressionDSL.Builder<R>()
                 .withSelectList(selectList)
                 .withSelectModelBuilder(this)
                 .build();
     }
     
-    private QueryExpressionDSL distinctQueryExpressionBuilder(BasicColumn...selectList) {
-        return new QueryExpressionDSL.Builder()
+    private QueryExpressionDSL<R> distinctQueryExpressionBuilder(BasicColumn...selectList) {
+        return new QueryExpressionDSL.Builder<R>()
                 .withSelectList(selectList)
                 .isDistinct()
                 .withSelectModelBuilder(this)
                 .build();
     }
     
-    public static QueryExpressionDSL select(BasicColumn...selectList) {
-        SelectDSL selectModelBuilder = new SelectDSL();
+    public static <R> QueryExpressionDSL<R> genericSelect(Function<SelectModel, R> decoratorFunction, BasicColumn...selectList) {
+        SelectDSL<R> selectModelBuilder = new SelectDSL<>(decoratorFunction);
         return selectModelBuilder.queryExpressionBuilder(selectList);
     }
     
-    public static QueryExpressionDSL selectDistinct(BasicColumn...selectList) {
-        SelectDSL selectModelBuilder = new SelectDSL();
+    public static <R> QueryExpressionDSL<R> genericSelectDistinct(Function<SelectModel, R> decoratorFunction, BasicColumn...selectList) {
+        SelectDSL<R> selectModelBuilder = new SelectDSL<>(decoratorFunction);
         return selectModelBuilder.distinctQueryExpressionBuilder(selectList);
+    }
+    
+    public static QueryExpressionDSL<SelectModel> select(BasicColumn...selectList) {
+        return genericSelect(Function.identity(), selectList);
+    }
+    
+    public static <T> QueryExpressionDSL<MyBatis3SelectModel<T>> select(Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
+        return genericSelect(decorate(mapperMethod), selectList);
+    }
+    
+    public static QueryExpressionDSL<SelectModel> selectDistinct(BasicColumn...selectList) {
+        return genericSelectDistinct(Function.identity(), selectList);
+    }
+    
+    public static <T> QueryExpressionDSL<MyBatis3SelectModel<T>> selectDistinct(Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
+        return genericSelectDistinct(decorate(mapperMethod), selectList);
+    }
+    
+    private static <T> Function<SelectModel, MyBatis3SelectModel<T>> decorate(Function<SelectStatement, T> mapperMethod) {
+        return selectModel -> MyBatis3SelectModel.of(selectModel, mapperMethod);
     }
     
     void addQueryExpression(QueryExpressionModel queryExpression) {
@@ -62,10 +93,11 @@ public class SelectDSL {
         this.orderByModel = orderByModel;
     }
     
-    public SelectModel build() {
-        return new SelectModel.Builder()
+    public R build() {
+        SelectModel selectModel = new SelectModel.Builder()
                 .withQueryExpressions(queryExpressions)
                 .withOrderByModel(orderByModel)
                 .build();
+        return decoratorFunction.apply(selectModel);
     }
 }
