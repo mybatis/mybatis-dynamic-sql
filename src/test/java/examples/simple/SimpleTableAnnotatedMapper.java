@@ -75,12 +75,12 @@ public interface SimpleTableAnnotatedMapper {
     long count(SelectStatement selectStatement);
     
     default QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>>.QueryExpressionAfterFrom countByExample() {
-        return SelectDSL.select(this::count, SqlBuilder.count())
+        return SelectDSL.selectWithMapper(this::count, SqlBuilder.count())
             .from(simpleTable);
     }
     
     default DeleteDSL<MyBatis3DeleteModelAdapter<Integer>> deleteByExample() {
-        return DeleteDSL.deleteFrom(simpleTable, this::delete);
+        return DeleteDSL.deleteFromWithMapper(this::delete, simpleTable);
     }
     
     default int deleteByPrimaryKey(Integer id_) {
@@ -117,7 +117,7 @@ public interface SimpleTableAnnotatedMapper {
     }
     
     default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>>.QueryExpressionAfterFrom selectByExample() {
-        return SelectDSL.select(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+        return SelectDSL.selectWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }
     
@@ -130,7 +130,7 @@ public interface SimpleTableAnnotatedMapper {
     }
     
     default UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> updateByExample(SimpleTableRecord record) {
-        return UpdateDSL.update(this::update, simpleTable)
+        return UpdateDSL.updateWithMapper(this::update, simpleTable)
                 .set(id).equalTo(record.getId())
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
@@ -140,7 +140,7 @@ public interface SimpleTableAnnotatedMapper {
     }
 
     default UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> updateByExampleSelective(SimpleTableRecord record) {
-        return UpdateDSL.update(this::update, simpleTable)
+        return UpdateDSL.updateWithMapper(this::update, simpleTable)
                 .set(id).equalToWhenPresent(record.getId())
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())

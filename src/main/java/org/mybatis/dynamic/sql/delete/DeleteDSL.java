@@ -57,17 +57,17 @@ public class DeleteDSL<R> {
         return adapterFunction.apply(deleteModel);
     }
     
-    public static <R> DeleteDSL<R> genericDeleteFrom(SqlTable table, Function<DeleteModel, R> adapterFunction) {
+    public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table) {
         return new DeleteDSL<>(table, adapterFunction);
     }
     
     public static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
-        return genericDeleteFrom(table, Function.identity());
+        return deleteFrom(Function.identity(), table);
     }
     
-    public static <T> DeleteDSL<MyBatis3DeleteModelAdapter<T>> deleteFrom(SqlTable table,
-            Function<DeleteStatement, T> mapperMethod) {
-        return genericDeleteFrom(table, deleteModel -> MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod));
+    public static <T> DeleteDSL<MyBatis3DeleteModelAdapter<T>> deleteFromWithMapper(
+            Function<DeleteStatement, T> mapperMethod, SqlTable table) {
+        return deleteFrom(deleteModel -> MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);
     }
     
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> {

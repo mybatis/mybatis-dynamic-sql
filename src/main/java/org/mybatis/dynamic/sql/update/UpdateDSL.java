@@ -71,17 +71,17 @@ public class UpdateDSL<R> {
         return adapterFunction.apply(updateModel);
     }
     
-    public static <R> UpdateDSL<R> genericUpdate(Function<UpdateModel, R> adapterFunction, SqlTable table) {
+    public static <R> UpdateDSL<R> update(Function<UpdateModel, R> adapterFunction, SqlTable table) {
         return new UpdateDSL<>(table, adapterFunction);
     }
     
     public static UpdateDSL<UpdateModel> update(SqlTable table) {
-        return genericUpdate(Function.identity(), table);
+        return update(Function.identity(), table);
     }
     
-    public static <T> UpdateDSL<MyBatis3UpdateModelAdapter<T>> update(Function<UpdateStatement, T> mapperMethod,
+    public static <T> UpdateDSL<MyBatis3UpdateModelAdapter<T>> updateWithMapper(Function<UpdateStatement, T> mapperMethod,
             SqlTable table) {
-        return genericUpdate(updateModel -> MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);
+        return update(updateModel -> MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);
     }
     
     public class SetClauseFinisher<T> {
