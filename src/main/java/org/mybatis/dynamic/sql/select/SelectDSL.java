@@ -55,12 +55,14 @@ public class SelectDSL<R> {
                 .build();
     }
     
-    public static <R> QueryExpressionDSL<R> genericSelect(Function<SelectModel, R> adapterFunction, BasicColumn...selectList) {
+    public static <R> QueryExpressionDSL<R> genericSelect(Function<SelectModel, R> adapterFunction,
+            BasicColumn...selectList) {
         SelectDSL<R> selectModelBuilder = new SelectDSL<>(adapterFunction);
         return selectModelBuilder.queryExpressionBuilder(selectList);
     }
     
-    public static <R> QueryExpressionDSL<R> genericSelectDistinct(Function<SelectModel, R> adapterFunction, BasicColumn...selectList) {
+    public static <R> QueryExpressionDSL<R> genericSelectDistinct(Function<SelectModel, R> adapterFunction,
+            BasicColumn...selectList) {
         SelectDSL<R> selectModelBuilder = new SelectDSL<>(adapterFunction);
         return selectModelBuilder.distinctQueryExpressionBuilder(selectList);
     }
@@ -69,7 +71,8 @@ public class SelectDSL<R> {
         return genericSelect(Function.identity(), selectList);
     }
     
-    public static <T> QueryExpressionDSL<MyBatis3SelectModelAdapter<T>> select(Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
+    public static <T> QueryExpressionDSL<MyBatis3SelectModelAdapter<T>> select(
+            Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
         return genericSelect(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);
     }
     
@@ -77,8 +80,10 @@ public class SelectDSL<R> {
         return genericSelectDistinct(Function.identity(), selectList);
     }
     
-    public static <T> QueryExpressionDSL<MyBatis3SelectModelAdapter<T>> selectDistinct(Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
-        return genericSelectDistinct(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);
+    public static <T> QueryExpressionDSL<MyBatis3SelectModelAdapter<T>> selectDistinct(
+            Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
+        return genericSelectDistinct(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),
+                selectList);
     }
     
     void addQueryExpression(QueryExpressionModel queryExpression) {

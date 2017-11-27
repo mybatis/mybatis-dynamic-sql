@@ -79,7 +79,8 @@ public class UpdateDSL<R> {
         return genericUpdate(Function.identity(), table);
     }
     
-    public static <T> UpdateDSL<MyBatis3UpdateModelAdapter<T>> update(Function<UpdateStatement, T> mapperMethod, SqlTable table) {
+    public static <T> UpdateDSL<MyBatis3UpdateModelAdapter<T>> update(Function<UpdateStatement, T> mapperMethod,
+            SqlTable table) {
         return genericUpdate(updateModel -> MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);
     }
     

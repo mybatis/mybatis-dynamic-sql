@@ -65,7 +65,8 @@ public class DeleteDSL<R> {
         return genericDeleteFrom(table, Function.identity());
     }
     
-    public static <T> DeleteDSL<MyBatis3DeleteModelAdapter<T>> deleteFrom(SqlTable table, Function<DeleteStatement, T> mapperMethod) {
+    public static <T> DeleteDSL<MyBatis3DeleteModelAdapter<T>> deleteFrom(SqlTable table,
+            Function<DeleteStatement, T> mapperMethod) {
         return genericDeleteFrom(table, deleteModel -> MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod));
     }
     

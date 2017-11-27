@@ -45,7 +45,8 @@ public class MyBatis3SelectModelAdapter<R> {
         return selectModel.render(RenderingStrategy.MYBATIS3);
     }
     
-    public static <R> MyBatis3SelectModelAdapter<R> of(SelectModel selectModel, Function<SelectStatement, R> mapperMethod) {
+    public static <R> MyBatis3SelectModelAdapter<R> of(SelectModel selectModel,
+            Function<SelectStatement, R> mapperMethod) {
         return new MyBatis3SelectModelAdapter<>(selectModel, mapperMethod);
     }
 }

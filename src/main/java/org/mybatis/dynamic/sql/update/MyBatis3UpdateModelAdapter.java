@@ -45,7 +45,8 @@ public class MyBatis3UpdateModelAdapter<R> {
         return updateModel.render(RenderingStrategy.MYBATIS3);
     }
     
-    public static <R> MyBatis3UpdateModelAdapter<R> of(UpdateModel updateModel, Function<UpdateStatement, R> mapperMethod) {
+    public static <R> MyBatis3UpdateModelAdapter<R> of(UpdateModel updateModel,
+            Function<UpdateStatement, R> mapperMethod) {
         return new MyBatis3UpdateModelAdapter<>(updateModel, mapperMethod);
     }
 }

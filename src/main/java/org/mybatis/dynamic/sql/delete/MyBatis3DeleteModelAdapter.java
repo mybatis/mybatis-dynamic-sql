@@ -45,7 +45,8 @@ public class MyBatis3DeleteModelAdapter<R> {
         return deleteModel.render(RenderingStrategy.MYBATIS3);
     }
     
-    public static <R> MyBatis3DeleteModelAdapter<R> of(DeleteModel deleteModel, Function<DeleteStatement, R> mapperMethod) {
+    public static <R> MyBatis3DeleteModelAdapter<R> of(DeleteModel deleteModel,
+            Function<DeleteStatement, R> mapperMethod) {
         return new MyBatis3DeleteModelAdapter<>(deleteModel, mapperMethod);
     }
 }
