@@ -121,6 +121,11 @@ public interface SimpleTableAnnotatedMapper {
             .from(simpleTable);
     }
     
+    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>>.QueryExpressionAfterFrom selectDistinctByExample() {
+        return SelectDSL.selectDistinctWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+            .from(simpleTable);
+    }
+    
     default SimpleTableRecord selectByPrimaryKey(Integer id_) {
         return selectOne(SqlBuilder.select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)

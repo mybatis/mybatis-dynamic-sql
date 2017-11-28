@@ -86,6 +86,24 @@ public class SimpleTableAnnotatedMapperTest {
     }
 
     @Test
+    public void testSelectDistinctByExample() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            
+            List<SimpleTableRecord> rows = mapper.selectDistinctByExample()
+                    .where(id, isGreaterThan(1))
+                    .or(occupation, isNull())
+                    .build()
+                    .execute();
+            
+            assertThat(rows.size()).isEqualTo(5);
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Test
     public void testSelectByExampleWithTypeHandler() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
