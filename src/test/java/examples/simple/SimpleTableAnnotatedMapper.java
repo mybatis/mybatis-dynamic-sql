@@ -76,7 +76,7 @@ public interface SimpleTableAnnotatedMapper {
     
     default QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>>.QueryExpressionAfterFrom countByExample() {
         return SelectDSL.selectWithMapper(this::count, SqlBuilder.count())
-            .from(simpleTable);
+                .from(simpleTable);
     }
     
     default DeleteDSL<MyBatis3DeleteModelAdapter<Integer>> deleteByExample() {
@@ -84,8 +84,8 @@ public interface SimpleTableAnnotatedMapper {
     }
     
     default int deleteByPrimaryKey(Integer id_) {
-        return deleteByExample()
-                .where(id, isEqualTo(id_))
+        return DeleteDSL.deleteFromWithMapper(this::delete, simpleTable)
+                .where(id,  isEqualTo(id_))
                 .build()
                 .execute();
     }
@@ -127,11 +127,11 @@ public interface SimpleTableAnnotatedMapper {
     }
     
     default SimpleTableRecord selectByPrimaryKey(Integer id_) {
-        return selectOne(SqlBuilder.select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+        return SelectDSL.selectWithMapper(this::selectOne, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)
             .where(id, isEqualTo(id_))
             .build()
-            .render(RenderingStrategy.MYBATIS3));
+            .execute();
     }
     
     default UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> updateByExample(SimpleTableRecord record) {
@@ -155,14 +155,26 @@ public interface SimpleTableAnnotatedMapper {
     }
 
     default int updateByPrimaryKey(SimpleTableRecord record) {
-        return updateByExample(record)
+        return UpdateDSL.updateWithMapper(this::update, simpleTable)
+                .set(id).equalTo(record.getId())
+                .set(firstName).equalTo(record.getFirstName())
+                .set(lastName).equalTo(record.getLastName())
+                .set(birthDate).equalTo(record.getBirthDate())
+                .set(employed).equalTo(record.getEmployed())
+                .set(occupation).equalTo(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
                 .build()
                 .execute();
     }
 
     default int updateByPrimaryKeySelective(SimpleTableRecord record) {
-        return updateByExampleSelective(record)
+        return UpdateDSL.updateWithMapper(this::update, simpleTable)
+                .set(id).equalToWhenPresent(record.getId())
+                .set(firstName).equalToWhenPresent(record.getFirstName())
+                .set(lastName).equalToWhenPresent(record.getLastName())
+                .set(birthDate).equalToWhenPresent(record.getBirthDate())
+                .set(employed).equalToWhenPresent(record.getEmployed())
+                .set(occupation).equalToWhenPresent(record.getOccupation())
                 .where(id, isEqualTo(record.getId()))
                 .build()
                 .execute();
