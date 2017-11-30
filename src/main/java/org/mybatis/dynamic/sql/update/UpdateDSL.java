@@ -79,8 +79,8 @@ public class UpdateDSL<R> {
         return update(Function.identity(), table);
     }
     
-    public static <T> UpdateDSL<MyBatis3UpdateModelAdapter<T>> updateWithMapper(Function<UpdateStatement, T> mapperMethod,
-            SqlTable table) {
+    public static <T> UpdateDSL<MyBatis3UpdateModelAdapter<T>> updateWithMapper(
+            Function<UpdateStatement, T> mapperMethod, SqlTable table) {
         return update(updateModel -> MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);
     }
     

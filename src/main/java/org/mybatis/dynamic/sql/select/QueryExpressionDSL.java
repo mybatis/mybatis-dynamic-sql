@@ -37,10 +37,10 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class QueryExpressionDSL<R> {
+public class QueryExpressionDSL<R> implements Buildable<R> {
 
     private String connector;
-    private SelectDSL<R> selectModelBuilder;
+    private SelectDSL<R> selectDSL;
     private boolean isDistinct;
     private List<BasicColumn> selectList;
     private SqlTable table;
@@ -50,55 +50,83 @@ public class QueryExpressionDSL<R> {
     private JoinModel joinModel;
     private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
-    private QueryExpressionDSL(Builder<R> builder) {
-        connector = builder.connector;
-        selectList = Arrays.asList(builder.selectList);
-        isDistinct = builder.isDistinct;
-        selectModelBuilder = Objects.requireNonNull(builder.selectModelBuilder);
+    private QueryExpressionDSL(FromGatherer<R> fromGatherer) {
+        connector = fromGatherer.builder.connector;
+        selectList = Arrays.asList(fromGatherer.builder.selectList);
+        isDistinct = fromGatherer.builder.isDistinct;
+        selectDSL = Objects.requireNonNull(fromGatherer.builder.selectDSL);
+        table = Objects.requireNonNull(fromGatherer.table);
+        tableAliases.putAll(fromGatherer.tableAliasMap);
     }
     
-    public QueryExpressionAfterFrom from(SqlTable table) {
-        this.table = table;
-        return new QueryExpressionAfterFrom();
+    public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
+        return new QueryExpressionWhereBuilder(column, condition);
     }
 
-    public QueryExpressionAfterFrom from(SqlTable table, String tableAlias) {
-        this.table = table;
-        tableAliases.put(table, tableAlias);
-        return new QueryExpressionAfterFrom();
-    }
-
-    public static class Builder<R> {
-        private String connector;
-        private BasicColumn[] selectList;
-        private boolean isDistinct;
-        private SelectDSL<R> selectModelBuilder;
-
-        public Builder<R> withConnector(String connector) {
-            this.connector = connector;
-            return this;
-        }
-        
-        public Builder<R> withSelectList(BasicColumn...selectList) {
-            this.selectList = selectList;
-            return this;
-        }
-        
-        public Builder<R> isDistinct() {
-            this.isDistinct = true;
-            return this;
-        }
-        
-        public Builder<R> withSelectModelBuilder(SelectDSL<R> selectModelBuilder) {
-            this.selectModelBuilder = selectModelBuilder;
-            return this;
-        }
-        
-        public QueryExpressionDSL<R> build() {
-            return new QueryExpressionDSL<>(this);
-        }
+    public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion<?>...subCriteria) {
+        return new QueryExpressionWhereBuilder(column, condition, subCriteria);
     }
     
+    @Override
+    public R build() {
+        selectDSL.addQueryExpression(buildModel());
+        return selectDSL.build();
+    }
+
+    public JoinSpecificationStarter join(SqlTable joinTable) {
+        return new JoinSpecificationStarter(joinTable, JoinType.INNER);
+    }
+    
+    public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
+        tableAliases.put(joinTable, tableAlias);
+        return join(joinTable);
+    }
+
+    public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
+        return new JoinSpecificationStarter(joinTable, JoinType.LEFT);
+    }
+    
+    public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
+        tableAliases.put(joinTable, tableAlias);
+        return leftJoin(joinTable);
+    }
+
+    public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
+        return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);
+    }
+    
+    public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
+        tableAliases.put(joinTable, tableAlias);
+        return rightJoin(joinTable);
+    }
+
+    public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
+        return new JoinSpecificationStarter(joinTable, JoinType.FULL);
+    }
+    
+    public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
+        tableAliases.put(joinTable, tableAlias);
+        return fullJoin(joinTable);
+    }
+
+    public GroupByFinisher groupBy(BasicColumn...columns) {
+        groupByModel = GroupByModel.of(columns);
+        selectDSL.addQueryExpression(buildModel());
+        return new GroupByFinisher();
+    }
+    
+    public SelectDSL<R> orderBy(SortSpecification...columns) {
+        selectDSL.addQueryExpression(buildModel());
+        selectDSL.setOrderByModel(OrderByModel.of(columns));
+        return selectDSL;
+    }
+
+    public UnionBuilder union() {
+        selectDSL.addQueryExpression(buildModel());
+        return new UnionBuilder();
+    }
+
     protected QueryExpressionModel buildModel() {
         return new QueryExpressionModel.Builder()
                 .withConnector(connector)
@@ -112,77 +140,56 @@ public class QueryExpressionDSL<R> {
                 .build();
     }
     
-    public class QueryExpressionAfterFrom implements Buildable<R> {
-        private QueryExpressionAfterFrom() {
-            super();
+    public static class FromGatherer<R> {
+        private FromGathererBuilder<R> builder;
+        private Map<SqlTable, String> tableAliasMap = new HashMap<>();
+        private SqlTable table;
+        
+        public FromGatherer(FromGathererBuilder<R> builder) {
+            this.builder = builder;
         }
         
-        public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-            return new QueryExpressionWhereBuilder(column, condition);
+        public QueryExpressionDSL<R> from(SqlTable table) {
+            this.table = table;
+            
+            return new QueryExpressionDSL<>(this);
         }
 
-        public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-                SqlCriterion<?>...subCriteria) {
-            return new QueryExpressionWhereBuilder(column, condition, subCriteria);
+        public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
+            this.table = table;
+            tableAliasMap.put(table, tableAlias);
+            return new QueryExpressionDSL<>(this);
+        }
+    }
+    
+    public static class FromGathererBuilder<R> {
+        private String connector;
+        private BasicColumn[] selectList;
+        private SelectDSL<R> selectDSL;
+        private boolean isDistinct;
+        
+        public FromGathererBuilder<R> withConnector(String connector) {
+            this.connector = connector;
+            return this;
+        }
+
+        public FromGathererBuilder<R> withSelectList(BasicColumn[] selectList) {
+            this.selectList = selectList;
+            return this;
+        }
+
+        public FromGathererBuilder<R> withSelectDSL(SelectDSL<R> selectDSL) {
+            this.selectDSL = selectDSL;
+            return this;
         }
         
-        @Override
-        public R build() {
-            selectModelBuilder.addQueryExpression(buildModel());
-            return selectModelBuilder.build();
-        }
-
-        public JoinSpecificationStarter join(SqlTable joinTable) {
-            return new JoinSpecificationStarter(joinTable, JoinType.INNER);
+        public FromGathererBuilder<R> isDistinct() {
+            this.isDistinct = true;
+            return this;
         }
         
-        public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
-            tableAliases.put(joinTable, tableAlias);
-            return join(joinTable);
-        }
-
-        public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
-            return new JoinSpecificationStarter(joinTable, JoinType.LEFT);
-        }
-        
-        public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
-            tableAliases.put(joinTable, tableAlias);
-            return leftJoin(joinTable);
-        }
-
-        public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
-            return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);
-        }
-        
-        public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
-            tableAliases.put(joinTable, tableAlias);
-            return rightJoin(joinTable);
-        }
-
-        public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
-            return new JoinSpecificationStarter(joinTable, JoinType.FULL);
-        }
-        
-        public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
-            tableAliases.put(joinTable, tableAlias);
-            return fullJoin(joinTable);
-        }
-
-        public GroupByFinisher groupBy(BasicColumn...columns) {
-            groupByModel = GroupByModel.of(columns);
-            selectModelBuilder.addQueryExpression(buildModel());
-            return new GroupByFinisher();
-        }
-        
-        public SelectDSL<R> orderBy(SortSpecification...columns) {
-            selectModelBuilder.addQueryExpression(buildModel());
-            selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
-            return selectModelBuilder;
-        }
-
-        public UnionBuilder union() {
-            selectModelBuilder.addQueryExpression(buildModel());
-            return new UnionBuilder();
+        public FromGatherer<R> build() {
+            return new FromGatherer<>(this);
         }
     }
     
@@ -199,22 +206,22 @@ public class QueryExpressionDSL<R> {
         
         public UnionBuilder union() {
             whereModel = buildWhereModel();
-            selectModelBuilder.addQueryExpression(buildModel());
+            selectDSL.addQueryExpression(buildModel());
             return new UnionBuilder();
         }
 
         public SelectDSL<R> orderBy(SortSpecification...columns) {
             whereModel = buildWhereModel();
-            selectModelBuilder.addQueryExpression(buildModel());
-            selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
-            return selectModelBuilder;
+            selectDSL.addQueryExpression(buildModel());
+            selectDSL.setOrderByModel(OrderByModel.of(columns));
+            return selectDSL;
         }
         
         @Override
         public R build() {
             whereModel = buildWhereModel();
-            selectModelBuilder.addQueryExpression(buildModel());
-            return selectModelBuilder.build();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.build();
         }
         
         @Override
@@ -293,8 +300,8 @@ public class QueryExpressionDSL<R> {
         @Override
         public R build() {
             joinModel = buildJoinModel();
-            selectModelBuilder.addQueryExpression(buildModel());
-            return selectModelBuilder.build();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.build();
         }
         
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
@@ -360,39 +367,39 @@ public class QueryExpressionDSL<R> {
 
         public SelectDSL<R> orderBy(SortSpecification...columns) {
             joinModel = buildJoinModel();
-            selectModelBuilder.addQueryExpression(buildModel());
-            selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
-            return selectModelBuilder;
+            selectDSL.addQueryExpression(buildModel());
+            selectDSL.setOrderByModel(OrderByModel.of(columns));
+            return selectDSL;
         }
     }
     
     public class GroupByFinisher implements Buildable<R> {
         public SelectDSL<R> orderBy(SortSpecification...columns) {
-            selectModelBuilder.setOrderByModel(OrderByModel.of(columns));
-            return selectModelBuilder;
+            selectDSL.setOrderByModel(OrderByModel.of(columns));
+            return selectDSL;
         }
 
         @Override
         public R build() {
-            return selectModelBuilder.build();
+            return selectDSL.build();
         }
     }
     
     public class UnionBuilder {
-        public QueryExpressionDSL<R> select(BasicColumn...selectList) {
-            return new QueryExpressionDSL.Builder<R>()
-                    .withConnector("union") //$NON-NLS-1$
+        public FromGatherer<R> select(BasicColumn...selectList) {
+            return new FromGathererBuilder<R>()
+                    .withConnector("union")
                     .withSelectList(selectList)
-                    .withSelectModelBuilder(selectModelBuilder)
+                    .withSelectDSL(selectDSL)
                     .build();
         }
-        
-        public QueryExpressionDSL<R> selectDistinct(BasicColumn...selectList) {
-            return new QueryExpressionDSL.Builder<R>()
-                    .withConnector("union") //$NON-NLS-1$
-                    .withSelectList(selectList)
+
+        public FromGatherer<R> selectDistinct(BasicColumn...selectList) {
+            return new FromGathererBuilder<R>()
+                    .withConnector("union")
                     .isDistinct()
-                    .withSelectModelBuilder(selectModelBuilder)
+                    .withSelectList(selectList)
+                    .withSelectDSL(selectDSL)
                     .build();
         }
     }

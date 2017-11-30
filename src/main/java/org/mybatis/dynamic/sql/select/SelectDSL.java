@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGathererBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 
 /**
@@ -40,47 +42,47 @@ public class SelectDSL<R> {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
-    private QueryExpressionDSL<R> queryExpressionBuilder(BasicColumn...selectList) {
-        return new QueryExpressionDSL.Builder<R>()
+    private FromGatherer<R> queryExpressionBuilder(BasicColumn...selectList) {
+        return new FromGathererBuilder<R>()
+                .withSelectDSL(this)
                 .withSelectList(selectList)
-                .withSelectModelBuilder(this)
                 .build();
     }
     
-    private QueryExpressionDSL<R> distinctQueryExpressionBuilder(BasicColumn...selectList) {
-        return new QueryExpressionDSL.Builder<R>()
+    private FromGatherer<R> distinctQueryExpressionBuilder(BasicColumn...selectList) {
+        return new FromGathererBuilder<R>()
+                .withSelectDSL(this)
                 .withSelectList(selectList)
                 .isDistinct()
-                .withSelectModelBuilder(this)
                 .build();
     }
     
-    public static <R> QueryExpressionDSL<R> select(Function<SelectModel, R> adapterFunction,
+    public static FromGatherer<SelectModel> select(BasicColumn...selectList) {
+        return select(Function.identity(), selectList);
+    }
+    
+    public static <R> FromGatherer<R> select(Function<SelectModel, R> adapterFunction,
             BasicColumn...selectList) {
         SelectDSL<R> selectModelBuilder = new SelectDSL<>(adapterFunction);
         return selectModelBuilder.queryExpressionBuilder(selectList);
     }
     
-    public static <R> QueryExpressionDSL<R> selectDistinct(Function<SelectModel, R> adapterFunction,
+    public static FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
+        return selectDistinct(Function.identity(), selectList);
+    }
+    
+    public static <R> FromGatherer<R> selectDistinct(Function<SelectModel, R> adapterFunction,
             BasicColumn...selectList) {
         SelectDSL<R> selectModelBuilder = new SelectDSL<>(adapterFunction);
         return selectModelBuilder.distinctQueryExpressionBuilder(selectList);
     }
     
-    public static QueryExpressionDSL<SelectModel> select(BasicColumn...selectList) {
-        return select(Function.identity(), selectList);
-    }
-    
-    public static <T> QueryExpressionDSL<MyBatis3SelectModelAdapter<T>> selectWithMapper(
+    public static <T> FromGatherer<MyBatis3SelectModelAdapter<T>> selectWithMapper(
             Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
         return select(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);
     }
     
-    public static QueryExpressionDSL<SelectModel> selectDistinct(BasicColumn...selectList) {
-        return selectDistinct(Function.identity(), selectList);
-    }
-    
-    public static <T> QueryExpressionDSL<MyBatis3SelectModelAdapter<T>> selectDistinctWithMapper(
+    public static <T> FromGatherer<MyBatis3SelectModelAdapter<T>> selectDistinctWithMapper(
             Function<SelectStatement, T> mapperMethod, BasicColumn...selectList) {
         return selectDistinct(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),
                 selectList);

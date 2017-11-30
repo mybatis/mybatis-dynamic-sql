@@ -102,7 +102,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .set(lastName).equalToWhenPresent(record.getLastName());
     }
     
-    public static QueryExpressionDSL<SelectModel>.QueryExpressionAfterFrom selectByExample() {
+    public static QueryExpressionDSL<SelectModel> selectByExample() {
         return select(id.as("A_ID"), firstName, lastName, fullName)
                 .from(generatedAlways, "a");
     }

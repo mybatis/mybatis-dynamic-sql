@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
@@ -94,11 +94,11 @@ public interface SqlBuilder {
         return InsertSelectDSL.insertInto(table);
     }
     
-    static QueryExpressionDSL<SelectModel> select(BasicColumn...selectList) {
+    static FromGatherer<SelectModel> select(BasicColumn...selectList) {
         return SelectDSL.select(selectList);
     }
     
-    static QueryExpressionDSL<SelectModel> selectDistinct(BasicColumn...selectList) {
+    static FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
         return SelectDSL.selectDistinct(selectList);
     }
     

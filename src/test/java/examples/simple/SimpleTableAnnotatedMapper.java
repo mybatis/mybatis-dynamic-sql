@@ -74,7 +74,7 @@ public interface SimpleTableAnnotatedMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatement selectStatement);
     
-    default QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>>.QueryExpressionAfterFrom countByExample() {
+    default QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>> countByExample() {
         return SelectDSL.selectWithMapper(this::count, SqlBuilder.count())
                 .from(simpleTable);
     }
@@ -116,12 +116,12 @@ public interface SimpleTableAnnotatedMapper {
                 .render(RenderingStrategy.MYBATIS3));
     }
     
-    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>>.QueryExpressionAfterFrom selectByExample() {
+    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>> selectByExample() {
         return SelectDSL.selectWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }
     
-    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>>.QueryExpressionAfterFrom selectDistinctByExample() {
+    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>> selectDistinctByExample() {
         return SelectDSL.selectDistinctWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }

@@ -35,7 +35,7 @@ public interface SimpleTableAnnotatedMapper {
     })
     List<SimpleTableRecord> selectMany(SelectStatement selectStatement);
     
-    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>>.QueryExpressionAfterFrom selectByExample() {
+    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>> selectByExample() {
         return SelectDSL.select(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }
@@ -55,4 +55,4 @@ The code is used like this:
             .execute();
 ```
 
-It is expected that a future version of MyBatis Generator will generate code that looks like this.
+It is expected that MyBatis Generator will generate code that looks like this.
