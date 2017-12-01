@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -57,10 +56,13 @@ public class DeleteStatement {
         }
         
         public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
-            whereClause = whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);
-            parameters.putAll(whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
-                    .orElse(Collections.emptyMap()));
+            whereClauseAndParameters.ifPresent(this::handleWhereClause);
             return this;
+        }
+        
+        private void handleWhereClause(WhereClauseAndParameters whereClauseAndParameters) {
+            this.whereClause = Optional.of(whereClauseAndParameters.whereClause());
+            parameters.putAll(whereClauseAndParameters.parameters());
         }
         
         public DeleteStatement build() {

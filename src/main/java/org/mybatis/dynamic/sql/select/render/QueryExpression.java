@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.select.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -90,9 +89,7 @@ public class QueryExpression {
         }
         
         public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
-            whereClause = whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);
-            parameters.putAll(whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
-                    .orElse(Collections.emptyMap()));
+            whereClauseAndParameters.ifPresent(this::handleWhereClause);
             return this;
         }
         
@@ -114,6 +111,11 @@ public class QueryExpression {
         public Builder withGroupByClause(Optional<String> groupByClause) {
             this.groupByClause = groupByClause;
             return this;
+        }
+        
+        private void handleWhereClause(WhereClauseAndParameters whereClauseAndParameters) {
+            this.whereClause = Optional.of(whereClauseAndParameters.whereClause());
+            parameters.putAll(whereClauseAndParameters.parameters());
         }
         
         public QueryExpression build() {

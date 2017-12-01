@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.update.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -73,15 +72,18 @@ public class UpdateStatement {
         }
         
         public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
-            whereClause = whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);
-            parameters.putAll(whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
-                    .orElse(Collections.emptyMap()));
+            whereClauseAndParameters.ifPresent(this::handleWhereClause);
             return this;
         }
         
         public Builder withParameters(Map<String, Object> parameters) {
             this.parameters.putAll(parameters);
             return this;
+        }
+        
+        private void handleWhereClause(WhereClauseAndParameters whereClauseAndParameters) {
+            this.whereClause = Optional.of(whereClauseAndParameters.whereClause());
+            parameters.putAll(whereClauseAndParameters.parameters());
         }
         
         public UpdateStatement build() {
