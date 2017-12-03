@@ -21,7 +21,9 @@ import java.util.Map;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
@@ -30,11 +32,12 @@ import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
 
 public interface AnimalDataMapper {
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results({
+    @Results(id="AnimalDataResult", value={
         @Result(column="id", property="id", id=true),
         @Result(column="animal_name", property="animalName"),
         @Result(column="brain_weight", property="brainWeight"),
@@ -62,4 +65,20 @@ public interface AnimalDataMapper {
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insertSelect")
     int insertSelect(InsertSelectStatement insertSelectStatement);
+    
+    @Select({
+        "select id, animal_name, brain_weight, body_weight",
+        "from AnimalData",
+        "${whereClause}"
+    })
+    @ResultMap("AnimalDataResult")
+    List<AnimalData> selectByExample(WhereClauseAndParameters whereClause);
+
+    @Select({
+        "select a.id, a.animal_name, a.brain_weight, a.body_weight",
+        "from AnimalData a",
+        "${whereClause}"
+    })
+    @ResultMap("AnimalDataResult")
+    List<AnimalData> selectByExampleWithAlias(WhereClauseAndParameters whereClause);
 }

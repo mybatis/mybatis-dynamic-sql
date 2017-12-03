@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.render;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,11 +39,17 @@ public class TableAliasCalculator {
         return Optional.ofNullable(aliases.get(table));
     }
     
+    public static TableAliasCalculator of(SqlTable table, String alias) {
+        Map<SqlTable, String> tableAliases = new HashMap<>();
+        tableAliases.put(table, alias);
+        return of(tableAliases);
+    }
+    
     public static TableAliasCalculator of(Map<SqlTable, String> aliases) {
         return new TableAliasCalculator(aliases);
     }
     
     public static TableAliasCalculator empty() {
-        return new TableAliasCalculator(Collections.emptyMap());
+        return of(Collections.emptyMap());
     }
 }

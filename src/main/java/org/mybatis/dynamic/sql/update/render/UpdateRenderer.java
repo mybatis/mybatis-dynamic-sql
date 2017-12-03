@@ -16,19 +16,16 @@
 package org.mybatis.dynamic.sql.update.render;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
-import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class UpdateRenderer {
     private UpdateModel updateModel;
@@ -59,13 +56,7 @@ public class UpdateRenderer {
     }
     
     private WhereClauseAndParameters renderWhereModel(WhereModel whereModel) {
-        return new WhereRenderer.Builder()
-                .withWhereModel(whereModel)
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(new AtomicInteger(1))
-                .withTableAliasCalculator(TableAliasCalculator.empty())
-                .build()
-                .render();
+        return whereModel.render(renderingStrategy);
     }
 
     private Function<UpdateMapping, FragmentAndParameters> toFragmentAndParameters(SetPhraseVisitor visitor) {

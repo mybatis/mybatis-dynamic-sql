@@ -48,8 +48,10 @@ import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
 import org.mybatis.dynamic.sql.insert.render.InsertStatement;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectStatement;
 import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
 
 @RunWith(JUnitPlatform.class)
 public class AnimalDataTest {
@@ -172,6 +174,23 @@ public class AnimalDataTest {
         }
     }
 
+    @Test
+    public void testSelectRowsNotBetweenWithStandaloneWhereClause() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            WhereClauseAndParameters whereClause = where(id, isNotBetween(10).and(60))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            List<AnimalData> animals = mapper.selectByExample(whereClause);
+            assertThat(animals.size()).isEqualTo(14);
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
     @Test
     public void testUnionSelectWithWhere() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
@@ -725,6 +744,25 @@ public class AnimalDataTest {
         }
     }
 
+    @Test
+    public void testComplexConditionWithStandaloneWhereAndTableAlias() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            WhereClauseAndParameters whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
+            
+            assertThat(whereClause.whereClause()).isEqualTo("where (a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight > #{parameters.p2,jdbcType=DOUBLE})");
+
+            List<AnimalData> animals = mapper.selectByExampleWithAlias(whereClause);
+            assertThat(animals.size()).isEqualTo(59);
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
     @Test
     public void testUpdateByExample() {
         SqlSession sqlSession = sqlSessionFactory.openSession();

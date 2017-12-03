@@ -43,6 +43,7 @@ import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.where.WhereDSL;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
@@ -106,6 +107,15 @@ public interface SqlBuilder {
         return UpdateDSL.update(table);
     }
 
+    static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition) {
+        return WhereDSL.where(column, condition);
+    }
+    
+    static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion<?>... subCriteria) {
+        return WhereDSL.where(column, condition, subCriteria);
+    }
+    
     // where condition connectors
     static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition) {
         return new SqlCriterion.Builder<T>()

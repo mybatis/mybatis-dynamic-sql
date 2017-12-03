@@ -16,14 +16,11 @@
 package org.mybatis.dynamic.sql.delete.render;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
-import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class DeleteRenderer {
     private DeleteModel deleteModel;
@@ -42,13 +39,7 @@ public class DeleteRenderer {
     }
     
     private WhereClauseAndParameters renderWhereModel(WhereModel whereModel) {
-        return new WhereRenderer.Builder()
-                .withWhereModel(whereModel)
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(new AtomicInteger(1))
-                .withTableAliasCalculator(TableAliasCalculator.empty())
-                .build()
-                .render();
+        return whereModel.render(renderingStrategy);
     }
     
     public static class Builder {

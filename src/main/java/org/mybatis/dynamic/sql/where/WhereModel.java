@@ -17,10 +17,15 @@ package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class WhereModel {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();
@@ -33,6 +38,27 @@ public class WhereModel {
         return criteria.stream().map(mapper);
     }
 
+    /**
+     * Renders a where clause without table aliases.
+     * 
+     * @param renderingStrategy rendering strategy
+     * @return rendered where clause
+     */
+    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy) {
+        return render(renderingStrategy, TableAliasCalculator.empty());
+    }
+    
+    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+            TableAliasCalculator tableAliasCalculator) {
+        return new WhereRenderer.Builder()
+                .withWhereModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(new AtomicInteger(1))
+                .withTableAliasCalculator(tableAliasCalculator)
+                .build()
+                .render();
+    }
+    
     public static WhereModel of(List<SqlCriterion<?>> criteria) {
         return new WhereModel(criteria);
     }
