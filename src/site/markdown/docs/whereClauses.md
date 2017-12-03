@@ -1,7 +1,7 @@
 # WHERE Clause Support
 
 This library supports the creation of very flexible WHERE clauses.  WHERE clauses can be added to DELETE, SELECT,
-and UPDATE statements.
+and UPDATE statements.  WHERE clauses can also stand alone for use in other hand coded SQL.
 
 ## Simple WHERE Clauses
 
@@ -67,3 +67,27 @@ Most of the conditions also support a subquery.  For example:
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 ```
+
+## Stand Alone Where Clauses
+You can use the where clause support on its own if you would rather code your own SQL for the remainder of a statement.  There may be several reasons to do this - mainly if the library doesn't support some SQL or MyBatisfeature you want to use.  A good example would be paginated queries which are currently not support by the library.  If you want to use a standalone where clause, you can code a mapper method that looks like this:
+
+```java
+    @Select({
+        "select id, animal_name, brain_weight, body_weight",
+        "from AnimalData",
+        "${whereClause}"
+    })
+    @ResultMap("AnimalDataResult")
+    List<AnimalData> selectByExample(WhereClauseAndParameters whereClause);
+```
+
+You can build a stand alone where clause and call your mapper like this:
+
+```java
+    WhereClauseAndParameters whereClause = where(id, isNotBetween(10).and(60))
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+
+    List<AnimalData> animals = mapper.selectByExample(whereClause);
+```
+ 
