@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.where.render;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -31,12 +32,14 @@ public class WhereRenderer {
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
     private TableAliasCalculator tableAliasCalculator;
+    private Optional<String> parameterName;
     
     private WhereRenderer(Builder builder) {
         whereModel = Objects.requireNonNull(builder.whereModel);
         sequence = Objects.requireNonNull(builder.sequence);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
+        parameterName = Objects.requireNonNull(builder.parameterName);
     }
     
     public WhereClauseAndParameters render() {
@@ -54,6 +57,7 @@ public class WhereRenderer {
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withParameterName(parameterName)
                 .build()
                 .render(criterion);
     }
@@ -68,6 +72,7 @@ public class WhereRenderer {
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator;
         private AtomicInteger sequence;
+        private Optional<String> parameterName = Optional.empty();
         
         public Builder withWhereModel(WhereModel whereModel) {
             this.whereModel = whereModel;
@@ -86,6 +91,11 @@ public class WhereRenderer {
         
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
+            return this;
+        }
+
+        public Builder withParameterName(Optional<String> parameterName) {
+            this.parameterName = parameterName;
             return this;
         }
         

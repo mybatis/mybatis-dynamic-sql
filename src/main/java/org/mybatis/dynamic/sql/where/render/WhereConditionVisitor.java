@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.where.render;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
@@ -34,17 +35,19 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
     
-    private static final String PARAMETERS_PREFIX = "parameters"; //$NON-NLS-1$
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
     private BindableColumn<T> column;
     private TableAliasCalculator tableAliasCalculator;
+    private String parameterPrefix;
     
     private WhereConditionVisitor(Builder<T> builder) {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         sequence = Objects.requireNonNull(builder.sequence);
         column = Objects.requireNonNull(builder.column);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
+        parameterPrefix = builder.parameterName.map(name -> name + ".parameters") //$NON-NLS-1$
+                .orElse("parameters"); //$NON-NLS-1$
     }
 
     @Override
@@ -122,7 +125,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
     
     private String getFormattedJdbcPlaceholder(String mapKey) {
-        return renderingStrategy.getFormattedJdbcPlaceholder(column, PARAMETERS_PREFIX, mapKey);        
+        return renderingStrategy.getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        
     }
     
     private String columnName() {
@@ -134,6 +137,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         private AtomicInteger sequence;
         private BindableColumn<T> column;
         private TableAliasCalculator tableAliasCalculator;
+        private Optional<String> parameterName = Optional.empty();
         
         public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -152,6 +156,11 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         
         public Builder<T> withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
             this.tableAliasCalculator = tableAliasCalculator;
+            return this;
+        }
+
+        public Builder<T> withParameterName(Optional<String> parameterName) {
+            this.parameterName = parameterName;
             return this;
         }
         

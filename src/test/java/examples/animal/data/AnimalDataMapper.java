@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
@@ -81,4 +82,26 @@ public interface AnimalDataMapper {
     })
     @ResultMap("AnimalDataResult")
     List<AnimalData> selectByExampleWithAlias(WhereClauseAndParameters whereClause);
+
+    @Select({
+        "select id, animal_name, brain_weight, body_weight",
+        "from AnimalData",
+        "${whereSupport.whereClause}",
+        "order by id",
+        "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
+    })
+    @ResultMap("AnimalDataResult")
+    List<AnimalData> selectByExampleWithLimitAndOffset(@Param("whereSupport") WhereClauseAndParameters whereClause,
+            @Param("limit") int limit, @Param("offset") int offset);
+
+    @Select({
+        "select b.id, b.animal_name, b.brain_weight, b.body_weight",
+        "from AnimalData b",
+        "${whereSupport.whereClause}",
+        "order by id",
+        "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
+    })
+    @ResultMap("AnimalDataResult")
+    List<AnimalData> selectByExampleWithAliasLimitAndOffset(@Param("whereSupport") WhereClauseAndParameters whereClause,
+            @Param("limit") int limit, @Param("offset") int offset);
 }

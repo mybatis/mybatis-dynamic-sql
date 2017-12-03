@@ -19,6 +19,7 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -33,11 +34,13 @@ public class CriterionRenderer {
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
     private TableAliasCalculator tableAliasCalculator;
+    private Optional<String> parameterName = Optional.empty();
     
     private CriterionRenderer(Builder builder) {
         sequence = Objects.requireNonNull(builder.sequence);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
+        parameterName = Objects.requireNonNull(builder.parameterName);
     }
     
     public <T> FragmentAndParameters render(SqlCriterion<T> criterion) {
@@ -107,6 +110,7 @@ public class CriterionRenderer {
                 .withSequence(sequence)
                 .withColumn(criterion.column())
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withParameterName(parameterName)
                 .build();
         return criterion.condition().accept(visitor);
     }
@@ -115,6 +119,7 @@ public class CriterionRenderer {
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator;
+        private Optional<String> parameterName = Optional.empty();
         
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -128,6 +133,11 @@ public class CriterionRenderer {
         
         public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
             this.tableAliasCalculator = tableAliasCalculator;
+            return this;
+        }
+
+        public Builder withParameterName(Optional<String> parameterName) {
+            this.parameterName = parameterName;
             return this;
         }
         

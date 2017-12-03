@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -45,16 +46,32 @@ public class WhereModel {
      * @return rendered where clause
      */
     public WhereClauseAndParameters render(RenderingStrategy renderingStrategy) {
-        return render(renderingStrategy, TableAliasCalculator.empty());
+        return render(renderingStrategy, TableAliasCalculator.empty(), Optional.empty());
     }
     
     public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator) {
+        return render(renderingStrategy, tableAliasCalculator, Optional.empty());
+    }
+    
+    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+            String parameterName) {
+        return render(renderingStrategy, TableAliasCalculator.empty(), Optional.of(parameterName));
+    }
+    
+    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+            TableAliasCalculator tableAliasCalculator, String parameterName) {
+        return render(renderingStrategy, tableAliasCalculator, Optional.of(parameterName));
+    }
+    
+    private WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+            TableAliasCalculator tableAliasCalculator, Optional<String> parameterName) {
         return new WhereRenderer.Builder()
                 .withWhereModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withParameterName(parameterName)
                 .build()
                 .render();
     }

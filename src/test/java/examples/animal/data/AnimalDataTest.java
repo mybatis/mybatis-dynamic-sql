@@ -192,6 +192,63 @@ public class AnimalDataTest {
     }
     
     @Test
+    public void testComplexConditionWithStandaloneWhereAndTableAlias() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            WhereClauseAndParameters whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
+            
+            assertThat(whereClause.whereClause()).isEqualTo("where (a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight > #{parameters.p2,jdbcType=DOUBLE})");
+
+            List<AnimalData> animals = mapper.selectByExampleWithAlias(whereClause);
+            assertThat(animals.size()).isEqualTo(59);
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
+    public void testSelectRowsNotBetweenWithStandaloneWhereClauseLimitAndOffset() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            WhereClauseAndParameters whereClause = where(id, isLessThan(60))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3, "whereSupport");
+            
+            List<AnimalData> animals = mapper.selectByExampleWithLimitAndOffset(whereClause, 5, 15);
+            assertThat(animals.size()).isEqualTo(5);
+            assertThat(animals.get(0).getId()).isEqualTo(16);
+            
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
+    public void testSelectRowsNotBetweenWithStandaloneWhereClauseAliasLimitAndOffset() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            WhereClauseAndParameters whereClause = where(id, isLessThan(60))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, "b"),  "whereSupport");
+            
+            List<AnimalData> animals = mapper.selectByExampleWithAliasLimitAndOffset(whereClause, 3, 24);
+            assertThat(animals.size()).isEqualTo(3);
+            assertThat(animals.get(0).getId()).isEqualTo(25);
+            
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
     public void testUnionSelectWithWhere() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
@@ -744,25 +801,6 @@ public class AnimalDataTest {
         }
     }
 
-    @Test
-    public void testComplexConditionWithStandaloneWhereAndTableAlias() {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        try {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
-            WhereClauseAndParameters whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
-            
-            assertThat(whereClause.whereClause()).isEqualTo("where (a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight > #{parameters.p2,jdbcType=DOUBLE})");
-
-            List<AnimalData> animals = mapper.selectByExampleWithAlias(whereClause);
-            assertThat(animals.size()).isEqualTo(59);
-        } finally {
-            sqlSession.close();
-        }
-    }
-    
     @Test
     public void testUpdateByExample() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
