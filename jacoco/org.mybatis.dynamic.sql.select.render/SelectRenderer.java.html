@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
@@ -63,8 +63,8 @@ public class SelectRenderer {
 <span class="fc" id="L63">                .collect(CustomCollectors.joining(&quot;, &quot;, &quot;order by &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
     
-    private String orderByPhrase(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L67">        String phrase = column.alias().orElse(column.name());</span>
+    private String orderByPhrase(SortSpecification column) {
+<span class="fc" id="L67">        String phrase = column.aliasOrName();</span>
 <span class="fc bfc" id="L68" title="All 2 branches covered.">        if (column.isDescending()) {</span>
 <span class="fc" id="L69">            phrase = phrase + &quot; DESC&quot;; //$NON-NLS-1$</span>
         }

@@ -17,24 +17,67 @@ package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class WhereModel {
-<span class="fc" id="L26">    private List&lt;SqlCriterion&lt;?&gt;&gt; criteria = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L32">    private List&lt;SqlCriterion&lt;?&gt;&gt; criteria = new ArrayList&lt;&gt;();</span>
     
-<span class="fc" id="L28">    private WhereModel(List&lt;SqlCriterion&lt;?&gt;&gt; criteria) {</span>
-<span class="fc" id="L29">        this.criteria.addAll(criteria);</span>
-<span class="fc" id="L30">    }</span>
+<span class="fc" id="L34">    private WhereModel(List&lt;SqlCriterion&lt;?&gt;&gt; criteria) {</span>
+<span class="fc" id="L35">        this.criteria.addAll(criteria);</span>
+<span class="fc" id="L36">    }</span>
     
     public &lt;R&gt; Stream&lt;R&gt; mapCriteria(Function&lt;SqlCriterion&lt;?&gt;, R&gt; mapper) {
-<span class="fc" id="L33">        return criteria.stream().map(mapper);</span>
+<span class="fc" id="L39">        return criteria.stream().map(mapper);</span>
     }
 
+    /**
+     * Renders a where clause without table aliases.
+     * 
+     * @param renderingStrategy rendering strategy
+     * @return rendered where clause
+     */
+    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L49">        return render(renderingStrategy, TableAliasCalculator.empty(), Optional.empty());</span>
+    }
+    
+    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+            TableAliasCalculator tableAliasCalculator) {
+<span class="fc" id="L54">        return render(renderingStrategy, tableAliasCalculator, Optional.empty());</span>
+    }
+    
+    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+            String parameterName) {
+<span class="fc" id="L59">        return render(renderingStrategy, TableAliasCalculator.empty(), Optional.of(parameterName));</span>
+    }
+    
+    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+            TableAliasCalculator tableAliasCalculator, String parameterName) {
+<span class="fc" id="L64">        return render(renderingStrategy, tableAliasCalculator, Optional.of(parameterName));</span>
+    }
+    
+    private WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+            TableAliasCalculator tableAliasCalculator, Optional&lt;String&gt; parameterName) {
+<span class="fc" id="L69">        return new WhereRenderer.Builder()</span>
+<span class="fc" id="L70">                .withWhereModel(this)</span>
+<span class="fc" id="L71">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L72">                .withSequence(new AtomicInteger(1))</span>
+<span class="fc" id="L73">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L74">                .withParameterName(parameterName)</span>
+<span class="fc" id="L75">                .build()</span>
+<span class="fc" id="L76">                .render();</span>
+    }
+    
     public static WhereModel of(List&lt;SqlCriterion&lt;?&gt;&gt; criteria) {
-<span class="fc" id="L37">        return new WhereModel(criteria);</span>
+<span class="fc" id="L80">        return new WhereModel(criteria);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

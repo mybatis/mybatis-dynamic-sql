@@ -16,57 +16,48 @@
 package org.mybatis.dynamic.sql.delete.render;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
-import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class DeleteRenderer {
     private DeleteModel deleteModel;
     private RenderingStrategy renderingStrategy;
     
-<span class="fc" id="L32">    private DeleteRenderer(Builder builder) {</span>
-<span class="fc" id="L33">        deleteModel = Objects.requireNonNull(builder.deleteModel);</span>
-<span class="fc" id="L34">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L29">    private DeleteRenderer(Builder builder) {</span>
+<span class="fc" id="L30">        deleteModel = Objects.requireNonNull(builder.deleteModel);</span>
+<span class="fc" id="L31">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L32">    }</span>
     
     public DeleteStatement render() {
-<span class="fc" id="L38">        return new DeleteStatement.Builder()</span>
-<span class="fc" id="L39">                .withTableName(deleteModel.table().name())</span>
-<span class="fc" id="L40">                .withWhereClause(deleteModel.whereModel().map(this::renderWhereModel))</span>
-<span class="fc" id="L41">                .build();</span>
+<span class="fc" id="L35">        return new DeleteStatement.Builder()</span>
+<span class="fc" id="L36">                .withTableName(deleteModel.table().name())</span>
+<span class="fc" id="L37">                .withWhereClause(deleteModel.whereModel().map(this::renderWhereModel))</span>
+<span class="fc" id="L38">                .build();</span>
     }
     
     private WhereClauseAndParameters renderWhereModel(WhereModel whereModel) {
-<span class="fc" id="L45">        return new WhereRenderer.Builder()</span>
-<span class="fc" id="L46">                .withWhereModel(whereModel)</span>
-<span class="fc" id="L47">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L48">                .withSequence(new AtomicInteger(1))</span>
-<span class="fc" id="L49">                .withTableAliasCalculator(TableAliasCalculator.empty())</span>
-<span class="fc" id="L50">                .build()</span>
-<span class="fc" id="L51">                .render();</span>
+<span class="fc" id="L42">        return whereModel.render(renderingStrategy);</span>
     }
     
-<span class="fc" id="L54">    public static class Builder {</span>
+<span class="fc" id="L45">    public static class Builder {</span>
         private DeleteModel deleteModel;
         private RenderingStrategy renderingStrategy;
 
         public Builder withDeleteModel(DeleteModel deleteModel) {
-<span class="fc" id="L59">            this.deleteModel = deleteModel;</span>
-<span class="fc" id="L60">            return this;</span>
+<span class="fc" id="L50">            this.deleteModel = deleteModel;</span>
+<span class="fc" id="L51">            return this;</span>
         }
         
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L64">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L65">            return this;</span>
+<span class="fc" id="L55">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L56">            return this;</span>
         }
         
         public DeleteRenderer build() {
-<span class="fc" id="L69">            return new DeleteRenderer(this);</span>
+<span class="fc" id="L60">            return new DeleteRenderer(this);</span>
         }
     }
 }

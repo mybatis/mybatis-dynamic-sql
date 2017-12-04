@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public class EqualTo&lt;T&gt; extends JoinCondition&lt;T&gt; {
+public class EqualTo extends JoinCondition {
 
-    public EqualTo(SqlColumn&lt;T&gt; rightColumn) {
+    public EqualTo(BasicColumn rightColumn) {
 <span class="fc" id="L23">        super(rightColumn);</span>
 <span class="fc" id="L24">    }</span>
 

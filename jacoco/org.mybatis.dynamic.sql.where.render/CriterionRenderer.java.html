@@ -19,6 +19,7 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -33,106 +34,115 @@ public class CriterionRenderer {
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
     private TableAliasCalculator tableAliasCalculator;
+<span class="fc" id="L37">    private Optional&lt;String&gt; parameterName = Optional.empty();</span>
     
-<span class="fc" id="L37">    private CriterionRenderer(Builder builder) {</span>
-<span class="fc" id="L38">        sequence = Objects.requireNonNull(builder.sequence);</span>
-<span class="fc" id="L39">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
-<span class="fc" id="L40">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L39">    private CriterionRenderer(Builder builder) {</span>
+<span class="fc" id="L40">        sequence = Objects.requireNonNull(builder.sequence);</span>
+<span class="fc" id="L41">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L42">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
+<span class="fc" id="L43">        parameterName = Objects.requireNonNull(builder.parameterName);</span>
+<span class="fc" id="L44">    }</span>
     
     public &lt;T&gt; FragmentAndParameters render(SqlCriterion&lt;T&gt; criterion) {
-<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (criterion.hasSubCriteria()) {</span>
-<span class="fc" id="L45">            return renderWithSubcriteria(criterion);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (criterion.hasSubCriteria()) {</span>
+<span class="fc" id="L48">            return renderWithSubcriteria(criterion);</span>
         } else {
-<span class="fc" id="L47">            return renderWithoutSubcriteria(criterion);</span>
+<span class="fc" id="L50">            return renderWithoutSubcriteria(criterion);</span>
         }
     }
     
     private &lt;T&gt; FragmentAndParameters renderWithSubcriteria(SqlCriterion&lt;T&gt; criterion) {
-<span class="fc" id="L52">        String connector = renderConnector(criterion);</span>
-<span class="fc" id="L53">        FragmentAndParameters renderedCondition = renderCondition(criterion);</span>
+<span class="fc" id="L55">        String connector = renderConnector(criterion);</span>
+<span class="fc" id="L56">        FragmentAndParameters renderedCondition = renderCondition(criterion);</span>
         
-<span class="fc" id="L55">        FragmentCollector renderedSubCriteria = criterion.mapSubCriteria(this::renderSubCriterion)</span>
-<span class="fc" id="L56">                .collect(FragmentCollector.collect());</span>
-<span class="fc" id="L57">        String fragment = calculateFragment(connector, renderedCondition, renderedSubCriteria);</span>
+<span class="fc" id="L58">        FragmentCollector renderedSubCriteria = criterion.mapSubCriteria(this::renderSubCriterion)</span>
+<span class="fc" id="L59">                .collect(FragmentCollector.collect());</span>
+<span class="fc" id="L60">        String fragment = calculateFragment(connector, renderedCondition, renderedSubCriteria);</span>
         
-<span class="fc" id="L59">        return new FragmentAndParameters.Builder()</span>
-<span class="fc" id="L60">                .withFragment(fragment)</span>
-<span class="fc" id="L61">                .withParameters(renderedCondition.parameters())</span>
-<span class="fc" id="L62">                .withParameters(renderedSubCriteria.parameters())</span>
-<span class="fc" id="L63">                .build();</span>
+<span class="fc" id="L62">        return new FragmentAndParameters.Builder()</span>
+<span class="fc" id="L63">                .withFragment(fragment)</span>
+<span class="fc" id="L64">                .withParameters(renderedCondition.parameters())</span>
+<span class="fc" id="L65">                .withParameters(renderedSubCriteria.parameters())</span>
+<span class="fc" id="L66">                .build();</span>
     }
 
     private &lt;T&gt; FragmentAndParameters renderWithoutSubcriteria(SqlCriterion&lt;T&gt; criterion) {
-<span class="fc" id="L67">        String connector = renderConnector(criterion);</span>
-<span class="fc" id="L68">        FragmentAndParameters renderedCondition = renderCondition(criterion);</span>
+<span class="fc" id="L70">        String connector = renderConnector(criterion);</span>
+<span class="fc" id="L71">        FragmentAndParameters renderedCondition = renderCondition(criterion);</span>
         
-<span class="fc" id="L70">        String fragment = calculateFragment(connector, renderedCondition);</span>
+<span class="fc" id="L73">        String fragment = calculateFragment(connector, renderedCondition);</span>
         
-<span class="fc" id="L72">        return new FragmentAndParameters.Builder()</span>
-<span class="fc" id="L73">                .withFragment(fragment)</span>
-<span class="fc" id="L74">                .withParameters(renderedCondition.parameters())</span>
-<span class="fc" id="L75">                .build();</span>
+<span class="fc" id="L75">        return new FragmentAndParameters.Builder()</span>
+<span class="fc" id="L76">                .withFragment(fragment)</span>
+<span class="fc" id="L77">                .withParameters(renderedCondition.parameters())</span>
+<span class="fc" id="L78">                .build();</span>
     }
     
     private String calculateFragment(String connector, FragmentAndParameters renderedCondition) {
-<span class="fc" id="L79">        return connector + renderedCondition.fragment();</span>
+<span class="fc" id="L82">        return connector + renderedCondition.fragment();</span>
     }
     
     private String calculateFragment(String connector, FragmentAndParameters renderedCondition,
             FragmentCollector renderedSubCriteria) {
-<span class="fc" id="L84">        return connector</span>
+<span class="fc" id="L87">        return connector</span>
                 + &quot;(&quot;  //$NON-NLS-1$
-<span class="fc" id="L86">                + renderedCondition.fragment()</span>
-<span class="fc" id="L87">                + spaceBefore(renderedSubCriteria.fragments().collect(Collectors.joining(&quot; &quot;))) //$NON-NLS-1$</span>
+<span class="fc" id="L89">                + renderedCondition.fragment()</span>
+<span class="fc" id="L90">                + spaceBefore(renderedSubCriteria.fragments().collect(Collectors.joining(&quot; &quot;))) //$NON-NLS-1$</span>
                 + &quot;)&quot;; //$NON-NLS-1$
     }
     
     private String renderConnector(SqlCriterion&lt;?&gt; criterion) {
-<span class="fc" id="L92">        return spaceAfter(criterion.connector());</span>
+<span class="fc" id="L95">        return spaceAfter(criterion.connector());</span>
     }
     
     private  &lt;T&gt; FragmentAndParameters renderSubCriterion(SqlCriterion&lt;T&gt; subCriterion) {
-<span class="fc" id="L96">        return new CriterionRenderer.Builder()</span>
-<span class="fc" id="L97">                .withSequence(sequence)</span>
-<span class="fc" id="L98">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L99">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L100">                .build()</span>
-<span class="fc" id="L101">                .render(subCriterion);</span>
+<span class="fc" id="L99">        return new CriterionRenderer.Builder()</span>
+<span class="fc" id="L100">                .withSequence(sequence)</span>
+<span class="fc" id="L101">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L102">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L103">                .build()</span>
+<span class="fc" id="L104">                .render(subCriterion);</span>
     }
     
     private &lt;T&gt; FragmentAndParameters renderCondition(SqlCriterion&lt;T&gt; criterion) {
-<span class="fc" id="L105">        WhereConditionVisitor&lt;T&gt; visitor = new WhereConditionVisitor.Builder&lt;T&gt;()</span>
-<span class="fc" id="L106">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L107">                .withSequence(sequence)</span>
-<span class="fc" id="L108">                .withColumn(criterion.column())</span>
-<span class="fc" id="L109">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L110">                .build();</span>
-<span class="fc" id="L111">        return criterion.condition().accept(visitor);</span>
+<span class="fc" id="L108">        WhereConditionVisitor&lt;T&gt; visitor = new WhereConditionVisitor.Builder&lt;T&gt;()</span>
+<span class="fc" id="L109">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L110">                .withSequence(sequence)</span>
+<span class="fc" id="L111">                .withColumn(criterion.column())</span>
+<span class="fc" id="L112">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L113">                .withParameterName(parameterName)</span>
+<span class="fc" id="L114">                .build();</span>
+<span class="fc" id="L115">        return criterion.condition().accept(visitor);</span>
     }
     
-<span class="fc" id="L114">    public static class Builder {</span>
+<span class="fc" id="L118">    public static class Builder {</span>
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator;
+<span class="fc" id="L122">        private Optional&lt;String&gt; parameterName = Optional.empty();</span>
         
         public Builder withSequence(AtomicInteger sequence) {
-<span class="fc" id="L120">            this.sequence = sequence;</span>
-<span class="fc" id="L121">            return this;</span>
-        }
-        
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L125">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L125">            this.sequence = sequence;</span>
 <span class="fc" id="L126">            return this;</span>
         }
         
-        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L130">            this.tableAliasCalculator = tableAliasCalculator;</span>
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L130">            this.renderingStrategy = renderingStrategy;</span>
 <span class="fc" id="L131">            return this;</span>
         }
         
+        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+<span class="fc" id="L135">            this.tableAliasCalculator = tableAliasCalculator;</span>
+<span class="fc" id="L136">            return this;</span>
+        }
+
+        public Builder withParameterName(Optional&lt;String&gt; parameterName) {
+<span class="fc" id="L140">            this.parameterName = parameterName;</span>
+<span class="fc" id="L141">            return this;</span>
+        }
+        
         public CriterionRenderer build() {
-<span class="fc" id="L135">            return new CriterionRenderer(this);</span>
+<span class="fc" id="L145">            return new CriterionRenderer(this);</span>
         }
     }
 }

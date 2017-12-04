@@ -15,27 +15,26 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.AbstractSelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public class Avg extends AbstractSelectListItem&lt;Avg&gt; {
+public class Avg extends AbstractAggregate&lt;Avg&gt; {
 
-    private Avg(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L24">        super(column);</span>
-<span class="fc" id="L25">    }</span>
+    private Avg(BasicColumn column) {
+<span class="fc" id="L23">        super(column);</span>
+<span class="fc" id="L24">    }</span>
     
     @Override
     protected String render(String columnName) {
-<span class="fc" id="L29">        return &quot;avg(&quot; + columnName + &quot;)&quot;; //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L28">        return &quot;avg(&quot; + columnName + &quot;)&quot;; //$NON-NLS-1$ //$NON-NLS-2$</span>
     }
 
     @Override
     protected Avg copy() {
-<span class="fc" id="L34">        return new Avg(column);</span>
+<span class="fc" id="L33">        return new Avg(column);</span>
     }
     
-    public static Avg of(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L38">        return new Avg(column);</span>
+    public static Avg of(BasicColumn column) {
+<span class="fc" id="L37">        return new Avg(column);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

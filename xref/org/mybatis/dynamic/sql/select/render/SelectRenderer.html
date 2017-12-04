@@ -27,7 +27,7 @@
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicInteger;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlColumn;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SortSpecification;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.OrderByModel;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.QueryExpressionModel;
@@ -71,8 +71,8 @@
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>                  .collect(CustomCollectors.joining(<span class="jxr_string">", "</span>, <span class="jxr_string">"order by "</span>, <span class="jxr_string">""</span>)); <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</em>
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      }
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">private</strong> String orderByPhrase(SqlColumn&lt;?&gt; column) {
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          String phrase = column.alias().orElse(column.name());
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">private</strong> String orderByPhrase(<a href="../../../../../../org/mybatis/dynamic/sql/SortSpecification.html">SortSpecification</a> column) {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          String phrase = column.aliasOrName();
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">if</strong> (column.isDescending()) {
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>              phrase = phrase + <span class="jxr_string">" DESC"</span>; <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          }

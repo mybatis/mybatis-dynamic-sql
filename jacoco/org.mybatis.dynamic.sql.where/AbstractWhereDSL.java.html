@@ -19,14 +19,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
 public abstract class AbstractWhereDSL&lt;T extends AbstractWhereDSL&lt;T&gt;&gt; {
 <span class="fc" id="L27">    private List&lt;SqlCriterion&lt;?&gt;&gt; criteria = new ArrayList&lt;&gt;();</span>
     
-<span class="fc" id="L29">    protected &lt;S&gt; AbstractWhereDSL(SqlColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {</span>
+<span class="fc" id="L29">    protected &lt;S&gt; AbstractWhereDSL(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {</span>
 <span class="fc" id="L30">        SqlCriterion&lt;S&gt; criterion = new SqlCriterion.Builder&lt;S&gt;()</span>
 <span class="fc" id="L31">                .withColumn(column)</span>
 <span class="fc" id="L32">                .withCondition(condition)</span>
@@ -34,7 +34,7 @@ public abstract class AbstractWhereDSL&lt;T extends AbstractWhereDSL&lt;T&gt;&gt
 <span class="fc" id="L34">        criteria.add(criterion);</span>
 <span class="fc" id="L35">    }</span>
     
-    protected &lt;S&gt; AbstractWhereDSL(SqlColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+    protected &lt;S&gt; AbstractWhereDSL(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
 <span class="fc" id="L38">            SqlCriterion&lt;?&gt;...subCriteria) {</span>
 <span class="fc" id="L39">        SqlCriterion&lt;S&gt; criterion = new SqlCriterion.Builder&lt;S&gt;()</span>
 <span class="fc" id="L40">                .withColumn(column)</span>
@@ -44,27 +44,27 @@ public abstract class AbstractWhereDSL&lt;T extends AbstractWhereDSL&lt;T&gt;&gt
 <span class="fc" id="L44">        criteria.add(criterion);</span>
 <span class="fc" id="L45">    }</span>
     
-    public &lt;S&gt; T and(SqlColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {
+    public &lt;S&gt; T and(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {
 <span class="fc" id="L48">        addCriterion(&quot;and&quot;, column, condition); //$NON-NLS-1$</span>
 <span class="fc" id="L49">        return getThis();</span>
     }
     
-    public &lt;S&gt; T and(SqlColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, SqlCriterion&lt;?&gt;...subCriteria) {
+    public &lt;S&gt; T and(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, SqlCriterion&lt;?&gt;...subCriteria) {
 <span class="fc" id="L53">        addCriterion(&quot;and&quot;, column, condition, subCriteria); //$NON-NLS-1$</span>
 <span class="fc" id="L54">        return getThis();</span>
     }
     
-    public &lt;S&gt; T or(SqlColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {
+    public &lt;S&gt; T or(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {
 <span class="fc" id="L58">        addCriterion(&quot;or&quot;, column, condition); //$NON-NLS-1$</span>
 <span class="fc" id="L59">        return getThis();</span>
     }
     
-    public &lt;S&gt; T or(SqlColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, SqlCriterion&lt;?&gt;...subCriteria) {
+    public &lt;S&gt; T or(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, SqlCriterion&lt;?&gt;...subCriteria) {
 <span class="fc" id="L63">        addCriterion(&quot;or&quot;, column, condition, subCriteria); //$NON-NLS-1$</span>
 <span class="fc" id="L64">        return getThis();</span>
     }
     
-    private &lt;S&gt; void addCriterion(String connector, SqlColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {
+    private &lt;S&gt; void addCriterion(String connector, BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {
 <span class="fc" id="L68">        SqlCriterion&lt;S&gt; criterion = new SqlCriterion.Builder&lt;S&gt;()</span>
 <span class="fc" id="L69">                .withConnector(connector)</span>
 <span class="fc" id="L70">                .withColumn(column)</span>
@@ -73,7 +73,7 @@ public abstract class AbstractWhereDSL&lt;T extends AbstractWhereDSL&lt;T&gt;&gt
 <span class="fc" id="L73">        criteria.add(criterion);</span>
 <span class="fc" id="L74">    }</span>
     
-    private &lt;S&gt; void addCriterion(String connector, SqlColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+    private &lt;S&gt; void addCriterion(String connector, BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
             SqlCriterion&lt;?&gt;...subCriteria) {
 <span class="fc" id="L78">        SqlCriterion&lt;S&gt; criterion = new SqlCriterion.Builder&lt;S&gt;()</span>
 <span class="fc" id="L79">                .withConnector(connector)</span>

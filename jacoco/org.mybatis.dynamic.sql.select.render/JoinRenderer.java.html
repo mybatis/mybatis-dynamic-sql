@@ -21,7 +21,7 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -53,15 +53,15 @@ public class JoinRenderer {
 <span class="fc" id="L53">                .collect(Collectors.joining(&quot; &quot;)); //$NON-NLS-1$</span>
     }
     
-    private String renderCriterion(JoinCriterion&lt;?&gt; joinCriterion) {
+    private String renderCriterion(JoinCriterion joinCriterion) {
 <span class="fc" id="L57">        return joinCriterion.connector()</span>
 <span class="fc" id="L58">                + spaceBefore(applyTableAlias(joinCriterion.leftColumn()))</span>
 <span class="fc" id="L59">                + spaceBefore(joinCriterion.operator())</span>
 <span class="fc" id="L60">                + spaceBefore(applyTableAlias(joinCriterion.rightColumn()));</span>
     }
     
-    private String applyTableAlias(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L64">        return column.applyTableAliasToName(queryExpression.tableAliasCalculator());</span>
+    private String applyTableAlias(BasicColumn column) {
+<span class="fc" id="L64">        return column.renderWithTableAlias(queryExpression.tableAliasCalculator());</span>
     }
     
 <span class="fc" id="L67">    public static class Builder {</span>

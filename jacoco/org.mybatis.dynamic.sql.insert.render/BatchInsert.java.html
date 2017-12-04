@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,56 +29,73 @@ public class BatchInsert&lt;T&gt; {
     private String valuesPhrase;
     private List&lt;T&gt; records;
     
-<span class="fc" id="L30">    private BatchInsert(Builder&lt;T&gt; builder) {</span>
-<span class="fc" id="L31">        tableName = Objects.requireNonNull(builder.tableName);</span>
-<span class="fc" id="L32">        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);</span>
-<span class="fc" id="L33">        valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);</span>
-<span class="fc" id="L34">        records = Collections.unmodifiableList(Objects.requireNonNull(builder.records));</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L32">    private BatchInsert(Builder&lt;T&gt; builder) {</span>
+<span class="fc" id="L33">        tableName = Objects.requireNonNull(builder.tableName);</span>
+<span class="fc" id="L34">        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);</span>
+<span class="fc" id="L35">        valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);</span>
+<span class="fc" id="L36">        records = Collections.unmodifiableList(Objects.requireNonNull(builder.records));</span>
+<span class="fc" id="L37">    }</span>
     
+    /**
+     * Returns a list of InsertStatement objects.  This is useful for MyBatis batch support.
+     * 
+     * @return a List of InsertStatements
+     */
     public List&lt;InsertStatement&lt;T&gt;&gt; insertStatements() {
-<span class="fc" id="L38">        return records.stream()</span>
-<span class="fc" id="L39">                .map(this::toInsertStatement)</span>
-<span class="fc" id="L40">                .collect(Collectors.toList());</span>
+<span class="fc" id="L45">        return records.stream()</span>
+<span class="fc" id="L46">                .map(this::toInsertStatement)</span>
+<span class="fc" id="L47">                .collect(Collectors.toList());</span>
     }
     
     private InsertStatement&lt;T&gt; toInsertStatement(T record) {
-<span class="fc" id="L44">        return new InsertStatement.Builder&lt;T&gt;()</span>
-<span class="fc" id="L45">                .withTableName(tableName)</span>
-<span class="fc" id="L46">                .withColumnsPhrase(columnsPhrase)</span>
-<span class="fc" id="L47">                .withValuesPhrase(valuesPhrase)</span>
-<span class="fc" id="L48">                .withRecord(record)</span>
-<span class="fc" id="L49">                .build();</span>
+<span class="fc" id="L51">        return new InsertStatement.Builder&lt;T&gt;()</span>
+<span class="fc" id="L52">                .withTableName(tableName)</span>
+<span class="fc" id="L53">                .withColumnsPhrase(columnsPhrase)</span>
+<span class="fc" id="L54">                .withValuesPhrase(valuesPhrase)</span>
+<span class="fc" id="L55">                .withRecord(record)</span>
+<span class="fc" id="L56">                .build();</span>
     }
 
-<span class="fc" id="L52">    public static class Builder&lt;T&gt; {</span>
+    /**
+     * Returns the generated SQL for this batch.  This is useful for Spring JDBC batch support.
+     * 
+     * @return the generated INSERT statement
+     */
+    public String getInsertStatementSQL() {
+<span class="fc" id="L65">        return &quot;insert into&quot; //$NON-NLS-1$</span>
+<span class="fc" id="L66">                + spaceBefore(tableName)</span>
+<span class="fc" id="L67">                + spaceBefore(columnsPhrase)</span>
+<span class="fc" id="L68">                + spaceBefore(valuesPhrase);</span>
+    }
+    
+<span class="fc" id="L71">    public static class Builder&lt;T&gt; {</span>
         private String tableName;
         private String columnsPhrase;
         private String valuesPhrase;
-<span class="fc" id="L56">        private List&lt;T&gt; records = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L75">        private List&lt;T&gt; records = new ArrayList&lt;&gt;();</span>
         
         public Builder&lt;T&gt; withTableName(String tableName) {
-<span class="fc" id="L59">            this.tableName = tableName;</span>
-<span class="fc" id="L60">            return this;</span>
+<span class="fc" id="L78">            this.tableName = tableName;</span>
+<span class="fc" id="L79">            return this;</span>
         }
 
         public Builder&lt;T&gt; withColumnsPhrase(String columnsPhrase) {
-<span class="fc" id="L64">            this.columnsPhrase = columnsPhrase;</span>
-<span class="fc" id="L65">            return this;</span>
+<span class="fc" id="L83">            this.columnsPhrase = columnsPhrase;</span>
+<span class="fc" id="L84">            return this;</span>
         }
         
         public Builder&lt;T&gt; withValuesPhrase(String valuesPhrase) {
-<span class="fc" id="L69">            this.valuesPhrase = valuesPhrase;</span>
-<span class="fc" id="L70">            return this;</span>
+<span class="fc" id="L88">            this.valuesPhrase = valuesPhrase;</span>
+<span class="fc" id="L89">            return this;</span>
         }
         
         public Builder&lt;T&gt; withRecords(List&lt;T&gt; records) {
-<span class="fc" id="L74">            this.records.addAll(records);</span>
-<span class="fc" id="L75">            return this;</span>
+<span class="fc" id="L93">            this.records.addAll(records);</span>
+<span class="fc" id="L94">            return this;</span>
         }
         
         public BatchInsert&lt;T&gt; build() {
-<span class="fc" id="L79">            return new BatchInsert&lt;&gt;(this);</span>
+<span class="fc" id="L98">            return new BatchInsert&lt;&gt;(this);</span>
         }
     }
 }

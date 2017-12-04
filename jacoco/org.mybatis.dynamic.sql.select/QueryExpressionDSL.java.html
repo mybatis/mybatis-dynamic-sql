@@ -22,8 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.mybatis.dynamic.sql.SelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
@@ -36,189 +37,196 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class QueryExpressionDSL {
+public class QueryExpressionDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 
     private String connector;
-    private SelectDSL selectModelBuilder;
+    private SelectDSL&lt;R&gt; selectDSL;
     private boolean isDistinct;
-    private List&lt;SelectListItem&gt; selectList;
+    private List&lt;BasicColumn&gt; selectList;
     private SqlTable table;
-<span class="fc" id="L46">    private Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L47">    private Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
     private WhereModel whereModel;
     private GroupByModel groupByModel;
     private JoinModel joinModel;
-<span class="fc" id="L50">    private List&lt;JoinSpecification&gt; joinSpecifications = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L51">    private List&lt;JoinSpecification&gt; joinSpecifications = new ArrayList&lt;&gt;();</span>
     
-<span class="fc" id="L52">    private QueryExpressionDSL(Builder builder) {</span>
-<span class="fc" id="L53">        connector = builder.connector;</span>
-<span class="fc" id="L54">        selectList = Arrays.asList(builder.selectList);</span>
-<span class="fc" id="L55">        isDistinct = builder.isDistinct;</span>
-<span class="fc" id="L56">        selectModelBuilder = Objects.requireNonNull(builder.selectModelBuilder);</span>
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L53">    private QueryExpressionDSL(FromGatherer&lt;R&gt; fromGatherer) {</span>
+<span class="fc" id="L54">        connector = fromGatherer.builder.connector;</span>
+<span class="fc" id="L55">        selectList = Arrays.asList(fromGatherer.builder.selectList);</span>
+<span class="fc" id="L56">        isDistinct = fromGatherer.builder.isDistinct;</span>
+<span class="fc" id="L57">        selectDSL = Objects.requireNonNull(fromGatherer.builder.selectDSL);</span>
+<span class="fc" id="L58">        table = Objects.requireNonNull(fromGatherer.table);</span>
+<span class="fc" id="L59">        tableAliases.putAll(fromGatherer.tableAliasMap);</span>
+<span class="fc" id="L60">    }</span>
     
-    public QueryExpressionAfterFromBuilder from(SqlTable table) {
-<span class="fc" id="L60">        this.table = table;</span>
-<span class="fc" id="L61">        return new QueryExpressionAfterFromBuilder();</span>
+    public &lt;T&gt; QueryExpressionWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
+<span class="fc" id="L63">        return new QueryExpressionWhereBuilder(column, condition);</span>
     }
 
-    public QueryExpressionAfterFromBuilder from(SqlTable table, String tableAlias) {
-<span class="fc" id="L65">        this.table = table;</span>
-<span class="fc" id="L66">        tableAliases.put(table, tableAlias);</span>
-<span class="fc" id="L67">        return new QueryExpressionAfterFromBuilder();</span>
-    }
-
-<span class="fc" id="L70">    public static class Builder {</span>
-        private String connector;
-        private SelectListItem[] selectList;
-        private boolean isDistinct;
-        private SelectDSL selectModelBuilder;
-
-        public Builder withConnector(String connector) {
-<span class="fc" id="L77">            this.connector = connector;</span>
-<span class="fc" id="L78">            return this;</span>
-        }
-        
-        public Builder withSelectList(SelectListItem...selectList) {
-<span class="fc" id="L82">            this.selectList = selectList;</span>
-<span class="fc" id="L83">            return this;</span>
-        }
-        
-        public Builder isDistinct() {
-<span class="fc" id="L87">            this.isDistinct = true;</span>
-<span class="fc" id="L88">            return this;</span>
-        }
-        
-        public Builder withSelectModelBuilder(SelectDSL selectModelBuilder) {
-<span class="fc" id="L92">            this.selectModelBuilder = selectModelBuilder;</span>
-<span class="fc" id="L93">            return this;</span>
-        }
-        
-        public QueryExpressionDSL build() {
-<span class="fc" id="L97">            return new QueryExpressionDSL(this);</span>
-        }
+    public &lt;T&gt; QueryExpressionWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
+            SqlCriterion&lt;?&gt;...subCriteria) {
+<span class="fc" id="L68">        return new QueryExpressionWhereBuilder(column, condition, subCriteria);</span>
     }
     
+    @Override
+    public R build() {
+<span class="fc" id="L73">        selectDSL.addQueryExpression(buildModel());</span>
+<span class="fc" id="L74">        return selectDSL.build();</span>
+    }
+
+    public JoinSpecificationStarter join(SqlTable joinTable) {
+<span class="fc" id="L78">        return new JoinSpecificationStarter(joinTable, JoinType.INNER);</span>
+    }
+    
+    public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
+<span class="fc" id="L82">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L83">        return join(joinTable);</span>
+    }
+
+    public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
+<span class="fc" id="L87">        return new JoinSpecificationStarter(joinTable, JoinType.LEFT);</span>
+    }
+    
+    public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
+<span class="fc" id="L91">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L92">        return leftJoin(joinTable);</span>
+    }
+
+    public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
+<span class="fc" id="L96">        return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);</span>
+    }
+    
+    public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
+<span class="fc" id="L100">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L101">        return rightJoin(joinTable);</span>
+    }
+
+    public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
+<span class="fc" id="L105">        return new JoinSpecificationStarter(joinTable, JoinType.FULL);</span>
+    }
+    
+    public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
+<span class="fc" id="L109">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L110">        return fullJoin(joinTable);</span>
+    }
+
+    public GroupByFinisher groupBy(BasicColumn...columns) {
+<span class="fc" id="L114">        groupByModel = GroupByModel.of(columns);</span>
+<span class="fc" id="L115">        selectDSL.addQueryExpression(buildModel());</span>
+<span class="fc" id="L116">        return new GroupByFinisher();</span>
+    }
+    
+    public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
+<span class="fc" id="L120">        selectDSL.addQueryExpression(buildModel());</span>
+<span class="fc" id="L121">        selectDSL.setOrderByModel(OrderByModel.of(columns));</span>
+<span class="fc" id="L122">        return selectDSL;</span>
+    }
+
+    public UnionBuilder union() {
+<span class="fc" id="L126">        selectDSL.addQueryExpression(buildModel());</span>
+<span class="fc" id="L127">        return new UnionBuilder();</span>
+    }
+
     protected QueryExpressionModel buildModel() {
-<span class="fc" id="L102">        return new QueryExpressionModel.Builder()</span>
-<span class="fc" id="L103">                .withConnector(connector)</span>
-<span class="fc" id="L104">                .withTable(table)</span>
-<span class="fc" id="L105">                .isDistinct(isDistinct)</span>
-<span class="fc" id="L106">                .withColumns(selectList)</span>
-<span class="fc" id="L107">                .withTableAliases(tableAliases)</span>
-<span class="fc" id="L108">                .withWhereModel(whereModel)</span>
-<span class="fc" id="L109">                .withJoinModel(joinModel)</span>
-<span class="fc" id="L110">                .withGroupByModel(groupByModel)</span>
-<span class="fc" id="L111">                .build();</span>
+<span class="fc" id="L131">        return new QueryExpressionModel.Builder()</span>
+<span class="fc" id="L132">                .withConnector(connector)</span>
+<span class="fc" id="L133">                .withTable(table)</span>
+<span class="fc" id="L134">                .isDistinct(isDistinct)</span>
+<span class="fc" id="L135">                .withColumns(selectList)</span>
+<span class="fc" id="L136">                .withTableAliases(tableAliases)</span>
+<span class="fc" id="L137">                .withWhereModel(whereModel)</span>
+<span class="fc" id="L138">                .withJoinModel(joinModel)</span>
+<span class="fc" id="L139">                .withGroupByModel(groupByModel)</span>
+<span class="fc" id="L140">                .build();</span>
     }
     
-    public class QueryExpressionAfterFromBuilder implements Buildable&lt;SelectModel&gt; {
-<span class="fc" id="L115">        private QueryExpressionAfterFromBuilder() {</span>
-<span class="fc" id="L116">            super();</span>
-<span class="fc" id="L117">        }</span>
+    public static class FromGatherer&lt;R&gt; {
+        private FromGathererBuilder&lt;R&gt; builder;
+<span class="fc" id="L145">        private Map&lt;SqlTable, String&gt; tableAliasMap = new HashMap&lt;&gt;();</span>
+        private SqlTable table;
         
-        public &lt;T&gt; QueryExpressionWhereBuilder where(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L120">            return new QueryExpressionWhereBuilder(column, condition);</span>
+<span class="fc" id="L148">        public FromGatherer(FromGathererBuilder&lt;R&gt; builder) {</span>
+<span class="fc" id="L149">            this.builder = builder;</span>
+<span class="fc" id="L150">        }</span>
+        
+        public QueryExpressionDSL&lt;R&gt; from(SqlTable table) {
+<span class="fc" id="L153">            this.table = table;</span>
+            
+<span class="fc" id="L155">            return new QueryExpressionDSL&lt;&gt;(this);</span>
         }
 
-        public &lt;T&gt; QueryExpressionWhereBuilder where(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
-                SqlCriterion&lt;?&gt;...subCriteria) {
-<span class="fc" id="L125">            return new QueryExpressionWhereBuilder(column, condition, subCriteria);</span>
+        public QueryExpressionDSL&lt;R&gt; from(SqlTable table, String tableAlias) {
+<span class="fc" id="L159">            this.table = table;</span>
+<span class="fc" id="L160">            tableAliasMap.put(table, tableAlias);</span>
+<span class="fc" id="L161">            return new QueryExpressionDSL&lt;&gt;(this);</span>
         }
+    }
+    
+<span class="fc" id="L165">    public static class FromGathererBuilder&lt;R&gt; {</span>
+        private String connector;
+        private BasicColumn[] selectList;
+        private SelectDSL&lt;R&gt; selectDSL;
+        private boolean isDistinct;
         
-        @Override
-        public SelectModel build() {
-<span class="fc" id="L130">            selectModelBuilder.addQueryExpression(buildModel());</span>
-<span class="fc" id="L131">            return selectModelBuilder.build();</span>
+        public FromGathererBuilder&lt;R&gt; withConnector(String connector) {
+<span class="fc" id="L172">            this.connector = connector;</span>
+<span class="fc" id="L173">            return this;</span>
         }
 
-        public JoinSpecificationStarter join(SqlTable joinTable) {
-<span class="fc" id="L135">            return new JoinSpecificationStarter(joinTable, JoinType.INNER);</span>
-        }
-        
-        public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L139">            tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L140">            return join(joinTable);</span>
+        public FromGathererBuilder&lt;R&gt; withSelectList(BasicColumn[] selectList) {
+<span class="fc" id="L177">            this.selectList = selectList;</span>
+<span class="fc" id="L178">            return this;</span>
         }
 
-        public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
-<span class="fc" id="L144">            return new JoinSpecificationStarter(joinTable, JoinType.LEFT);</span>
+        public FromGathererBuilder&lt;R&gt; withSelectDSL(SelectDSL&lt;R&gt; selectDSL) {
+<span class="fc" id="L182">            this.selectDSL = selectDSL;</span>
+<span class="fc" id="L183">            return this;</span>
         }
         
-        public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L148">            tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L149">            return leftJoin(joinTable);</span>
-        }
-
-        public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
-<span class="fc" id="L153">            return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);</span>
+        public FromGathererBuilder&lt;R&gt; isDistinct() {
+<span class="fc" id="L187">            this.isDistinct = true;</span>
+<span class="fc" id="L188">            return this;</span>
         }
         
-        public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L157">            tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L158">            return rightJoin(joinTable);</span>
-        }
-
-        public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
-<span class="fc" id="L162">            return new JoinSpecificationStarter(joinTable, JoinType.FULL);</span>
-        }
-        
-        public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L166">            tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L167">            return fullJoin(joinTable);</span>
-        }
-
-        public GroupByFinisher groupBy(SelectListItem...columns) {
-<span class="fc" id="L171">            groupByModel = GroupByModel.of(columns);</span>
-<span class="fc" id="L172">            selectModelBuilder.addQueryExpression(buildModel());</span>
-<span class="fc" id="L173">            return new GroupByFinisher();</span>
-        }
-        
-        public SelectDSL orderBy(SqlColumn&lt;?&gt;...columns) {
-<span class="fc" id="L177">            selectModelBuilder.addQueryExpression(buildModel());</span>
-<span class="fc" id="L178">            selectModelBuilder.setOrderByModel(OrderByModel.of(columns));</span>
-<span class="fc" id="L179">            return selectModelBuilder;</span>
-        }
-
-        public UnionBuilder union() {
-<span class="fc" id="L183">            selectModelBuilder.addQueryExpression(buildModel());</span>
-<span class="fc" id="L184">            return new UnionBuilder();</span>
+        public FromGatherer&lt;R&gt; build() {
+<span class="fc" id="L192">            return new FromGatherer&lt;&gt;(this);</span>
         }
     }
     
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL&lt;QueryExpressionWhereBuilder&gt;
-            implements Buildable&lt;SelectModel&gt; {
-<span class="fc" id="L190">        private &lt;T&gt; QueryExpressionWhereBuilder(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {</span>
-<span class="fc" id="L191">            super(column, condition);</span>
-<span class="fc" id="L192">        }</span>
+            implements Buildable&lt;R&gt; {
+<span class="fc" id="L198">        private &lt;T&gt; QueryExpressionWhereBuilder(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {</span>
+<span class="fc" id="L199">            super(column, condition);</span>
+<span class="fc" id="L200">        }</span>
         
-        private &lt;T&gt; QueryExpressionWhereBuilder(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
-<span class="fc" id="L195">                SqlCriterion&lt;?&gt;...subCriteria) {</span>
-<span class="fc" id="L196">            super(column, condition, subCriteria);</span>
-<span class="fc" id="L197">        }</span>
+        private &lt;T&gt; QueryExpressionWhereBuilder(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
+<span class="fc" id="L203">                SqlCriterion&lt;?&gt;...subCriteria) {</span>
+<span class="fc" id="L204">            super(column, condition, subCriteria);</span>
+<span class="fc" id="L205">        }</span>
         
         public UnionBuilder union() {
-<span class="fc" id="L200">            whereModel = buildWhereModel();</span>
-<span class="fc" id="L201">            selectModelBuilder.addQueryExpression(buildModel());</span>
-<span class="fc" id="L202">            return new UnionBuilder();</span>
+<span class="fc" id="L208">            whereModel = buildWhereModel();</span>
+<span class="fc" id="L209">            selectDSL.addQueryExpression(buildModel());</span>
+<span class="fc" id="L210">            return new UnionBuilder();</span>
         }
 
-        public SelectDSL orderBy(SqlColumn&lt;?&gt;...columns) {
-<span class="fc" id="L206">            whereModel = buildWhereModel();</span>
-<span class="fc" id="L207">            selectModelBuilder.addQueryExpression(buildModel());</span>
-<span class="fc" id="L208">            selectModelBuilder.setOrderByModel(OrderByModel.of(columns));</span>
-<span class="fc" id="L209">            return selectModelBuilder;</span>
+        public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
+<span class="fc" id="L214">            whereModel = buildWhereModel();</span>
+<span class="fc" id="L215">            selectDSL.addQueryExpression(buildModel());</span>
+<span class="fc" id="L216">            selectDSL.setOrderByModel(OrderByModel.of(columns));</span>
+<span class="fc" id="L217">            return selectDSL;</span>
         }
         
         @Override
-        public SelectModel build() {
-<span class="fc" id="L214">            whereModel = buildWhereModel();</span>
-<span class="fc" id="L215">            selectModelBuilder.addQueryExpression(buildModel());</span>
-<span class="fc" id="L216">            return selectModelBuilder.build();</span>
+        public R build() {
+<span class="fc" id="L222">            whereModel = buildWhereModel();</span>
+<span class="fc" id="L223">            selectDSL.addQueryExpression(buildModel());</span>
+<span class="fc" id="L224">            return selectDSL.build();</span>
         }
         
         @Override
         protected QueryExpressionWhereBuilder getThis() {
-<span class="fc" id="L221">            return this;</span>
+<span class="fc" id="L229">            return this;</span>
         }
     }
     
@@ -226,173 +234,173 @@ public class QueryExpressionDSL {
         private SqlTable joinTable;
         private JoinType joinType;
         
-<span class="fc" id="L229">        public JoinSpecificationStarter(SqlTable joinTable, JoinType joinType) {</span>
-<span class="fc" id="L230">            this.joinTable = joinTable;</span>
-<span class="fc" id="L231">            this.joinType = joinType;</span>
-<span class="fc" id="L232">        }</span>
+<span class="fc" id="L237">        public JoinSpecificationStarter(SqlTable joinTable, JoinType joinType) {</span>
+<span class="fc" id="L238">            this.joinTable = joinTable;</span>
+<span class="fc" id="L239">            this.joinType = joinType;</span>
+<span class="fc" id="L240">        }</span>
 
-        public &lt;T&gt; JoinSpecificationFinisher on(SqlColumn&lt;T&gt; joinColumn, JoinCondition&lt;T&gt; joinCondition) {
-<span class="fc" id="L235">            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);</span>
+        public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition joinCondition) {
+<span class="fc" id="L243">            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);</span>
         }
 
-        public &lt;T&gt; JoinSpecificationFinisher on(SqlColumn&lt;T&gt; joinColumn, JoinCondition&lt;T&gt; joinCondition,
-                JoinCriterion&lt;?&gt;...joinCriteria) {
-<span class="fc" id="L240">            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType, joinCriteria);</span>
+        public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition joinCondition,
+                JoinCriterion...joinCriteria) {
+<span class="fc" id="L248">            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType, joinCriteria);</span>
         }
     }
 
-    public class JoinSpecificationFinisher implements Buildable&lt;SelectModel&gt; {
+    public class JoinSpecificationFinisher implements Buildable&lt;R&gt; {
 
         private SqlTable joinTable;
-<span class="fc" id="L247">        private List&lt;JoinCriterion&lt;?&gt;&gt; joinCriteria = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L255">        private List&lt;JoinCriterion&gt; joinCriteria = new ArrayList&lt;&gt;();</span>
         private JoinType joinType;
         
-        public &lt;T&gt; JoinSpecificationFinisher(SqlTable table, SqlColumn&lt;T&gt; joinColumn,
-<span class="fc" id="L251">                JoinCondition&lt;T&gt; joinCondition, JoinType joinType) {</span>
-<span class="fc" id="L252">            this.joinTable = table;</span>
-<span class="fc" id="L253">            this.joinType = joinType;</span>
+        public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
+<span class="fc" id="L259">                JoinCondition joinCondition, JoinType joinType) {</span>
+<span class="fc" id="L260">            this.joinTable = table;</span>
+<span class="fc" id="L261">            this.joinType = joinType;</span>
 
-<span class="fc" id="L255">            JoinCriterion&lt;T&gt; joinCriterion = new JoinCriterion.Builder&lt;T&gt;()</span>
-<span class="fc" id="L256">                    .withJoinColumn(joinColumn)</span>
-<span class="fc" id="L257">                    .withJoinCondition(joinCondition)</span>
-<span class="fc" id="L258">                    .withConnector(&quot;on&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L259">                    .build();</span>
+<span class="fc" id="L263">            JoinCriterion joinCriterion = new JoinCriterion.Builder()</span>
+<span class="fc" id="L264">                    .withJoinColumn(joinColumn)</span>
+<span class="fc" id="L265">                    .withJoinCondition(joinCondition)</span>
+<span class="fc" id="L266">                    .withConnector(&quot;on&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L267">                    .build();</span>
             
-<span class="fc" id="L261">            joinCriteria.add(joinCriterion);</span>
-<span class="fc" id="L262">        }</span>
+<span class="fc" id="L269">            joinCriteria.add(joinCriterion);</span>
+<span class="fc" id="L270">        }</span>
 
-        public &lt;T&gt; JoinSpecificationFinisher(SqlTable table, SqlColumn&lt;T&gt; joinColumn,
-<span class="fc" id="L265">                JoinCondition&lt;T&gt; joinCondition, JoinType joinType, JoinCriterion&lt;?&gt;...joinCriteria) {</span>
-<span class="fc" id="L266">            this.joinTable = table;</span>
-<span class="fc" id="L267">            this.joinType = joinType;</span>
+        public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
+<span class="fc" id="L273">                JoinCondition joinCondition, JoinType joinType, JoinCriterion...joinCriteria) {</span>
+<span class="fc" id="L274">            this.joinTable = table;</span>
+<span class="fc" id="L275">            this.joinType = joinType;</span>
 
-<span class="fc" id="L269">            JoinCriterion&lt;T&gt; joinCriterion = new JoinCriterion.Builder&lt;T&gt;()</span>
-<span class="fc" id="L270">                    .withJoinColumn(joinColumn)</span>
-<span class="fc" id="L271">                    .withJoinCondition(joinCondition)</span>
-<span class="fc" id="L272">                    .withConnector(&quot;on&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L273">                    .build();</span>
+<span class="fc" id="L277">            JoinCriterion joinCriterion = new JoinCriterion.Builder()</span>
+<span class="fc" id="L278">                    .withJoinColumn(joinColumn)</span>
+<span class="fc" id="L279">                    .withJoinCondition(joinCondition)</span>
+<span class="fc" id="L280">                    .withConnector(&quot;on&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L281">                    .build();</span>
             
-<span class="fc" id="L275">            this.joinCriteria.add(joinCriterion);</span>
-<span class="fc" id="L276">            this.joinCriteria.addAll(Arrays.asList(joinCriteria));</span>
-<span class="fc" id="L277">        }</span>
+<span class="fc" id="L283">            this.joinCriteria.add(joinCriterion);</span>
+<span class="fc" id="L284">            this.joinCriteria.addAll(Arrays.asList(joinCriteria));</span>
+<span class="fc" id="L285">        }</span>
         
         protected JoinSpecification buildJoinSpecification() {
-<span class="fc" id="L280">            return new JoinSpecification.Builder()</span>
-<span class="fc" id="L281">                    .withJoinCriteria(joinCriteria)</span>
-<span class="fc" id="L282">                    .withJoinTable(joinTable)</span>
-<span class="fc" id="L283">                    .withJoinType(joinType)</span>
-<span class="fc" id="L284">                    .build();</span>
+<span class="fc" id="L288">            return new JoinSpecification.Builder()</span>
+<span class="fc" id="L289">                    .withJoinCriteria(joinCriteria)</span>
+<span class="fc" id="L290">                    .withJoinTable(joinTable)</span>
+<span class="fc" id="L291">                    .withJoinType(joinType)</span>
+<span class="fc" id="L292">                    .build();</span>
         }
         
         protected JoinModel buildJoinModel() {
-<span class="fc" id="L288">            joinSpecifications.add(buildJoinSpecification());</span>
-<span class="fc" id="L289">            return JoinModel.of(joinSpecifications);</span>
+<span class="fc" id="L296">            joinSpecifications.add(buildJoinSpecification());</span>
+<span class="fc" id="L297">            return JoinModel.of(joinSpecifications);</span>
         }
         
         @Override
-        public SelectModel build() {
-<span class="fc" id="L294">            joinModel = buildJoinModel();</span>
-<span class="fc" id="L295">            selectModelBuilder.addQueryExpression(buildModel());</span>
-<span class="fc" id="L296">            return selectModelBuilder.build();</span>
+        public R build() {
+<span class="fc" id="L302">            joinModel = buildJoinModel();</span>
+<span class="fc" id="L303">            selectDSL.addQueryExpression(buildModel());</span>
+<span class="fc" id="L304">            return selectDSL.build();</span>
         }
         
-        public &lt;T&gt; QueryExpressionWhereBuilder where(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L300">            joinModel = buildJoinModel();</span>
-<span class="fc" id="L301">            return new QueryExpressionWhereBuilder(column, condition);</span>
+        public &lt;T&gt; QueryExpressionWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
+<span class="fc" id="L308">            joinModel = buildJoinModel();</span>
+<span class="fc" id="L309">            return new QueryExpressionWhereBuilder(column, condition);</span>
         }
 
-        public &lt;T&gt; QueryExpressionWhereBuilder where(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
+        public &lt;T&gt; QueryExpressionWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
                 SqlCriterion&lt;?&gt;...subCriteria) {
-<span class="fc" id="L306">            joinModel = buildJoinModel();</span>
-<span class="fc" id="L307">            return new QueryExpressionWhereBuilder(column, condition, subCriteria);</span>
+<span class="fc" id="L314">            joinModel = buildJoinModel();</span>
+<span class="fc" id="L315">            return new QueryExpressionWhereBuilder(column, condition, subCriteria);</span>
         }
 
-        public &lt;T&gt; JoinSpecificationFinisher and(SqlColumn&lt;T&gt; joinColumn, JoinCondition&lt;T&gt; joinCondition) {
-<span class="fc" id="L311">            JoinCriterion&lt;T&gt; joinCriterion = new JoinCriterion.Builder&lt;T&gt;()</span>
-<span class="fc" id="L312">                    .withJoinColumn(joinColumn)</span>
-<span class="fc" id="L313">                    .withJoinCondition(joinCondition)</span>
-<span class="fc" id="L314">                    .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L315">                    .build();</span>
-<span class="fc" id="L316">            this.joinCriteria.add(joinCriterion);</span>
-<span class="fc" id="L317">            return this;</span>
+        public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
+<span class="fc" id="L319">            JoinCriterion joinCriterion = new JoinCriterion.Builder()</span>
+<span class="fc" id="L320">                    .withJoinColumn(joinColumn)</span>
+<span class="fc" id="L321">                    .withJoinCondition(joinCondition)</span>
+<span class="fc" id="L322">                    .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L323">                    .build();</span>
+<span class="fc" id="L324">            this.joinCriteria.add(joinCriterion);</span>
+<span class="fc" id="L325">            return this;</span>
         }
 
         public JoinSpecificationStarter join(SqlTable joinTable) {
-<span class="fc" id="L321">            joinSpecifications.add(buildJoinSpecification());</span>
-<span class="fc" id="L322">            return new JoinSpecificationStarter(joinTable, JoinType.INNER);</span>
+<span class="fc" id="L329">            joinSpecifications.add(buildJoinSpecification());</span>
+<span class="fc" id="L330">            return new JoinSpecificationStarter(joinTable, JoinType.INNER);</span>
         }
         
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L326">            tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L327">            return join(joinTable);</span>
+<span class="fc" id="L334">            tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L335">            return join(joinTable);</span>
         }
 
         public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
-<span class="fc" id="L331">            joinSpecifications.add(buildJoinSpecification());</span>
-<span class="fc" id="L332">            return new JoinSpecificationStarter(joinTable, JoinType.LEFT);</span>
+<span class="fc" id="L339">            joinSpecifications.add(buildJoinSpecification());</span>
+<span class="fc" id="L340">            return new JoinSpecificationStarter(joinTable, JoinType.LEFT);</span>
         }
         
         public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L336">            tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L337">            return leftJoin(joinTable);</span>
+<span class="fc" id="L344">            tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L345">            return leftJoin(joinTable);</span>
         }
 
         public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
-<span class="fc" id="L341">            joinSpecifications.add(buildJoinSpecification());</span>
-<span class="fc" id="L342">            return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);</span>
+<span class="fc" id="L349">            joinSpecifications.add(buildJoinSpecification());</span>
+<span class="fc" id="L350">            return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);</span>
         }
         
         public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L346">            tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L347">            return rightJoin(joinTable);</span>
+<span class="fc" id="L354">            tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L355">            return rightJoin(joinTable);</span>
         }
 
         public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
-<span class="fc" id="L351">            joinSpecifications.add(buildJoinSpecification());</span>
-<span class="fc" id="L352">            return new JoinSpecificationStarter(joinTable, JoinType.FULL);</span>
+<span class="fc" id="L359">            joinSpecifications.add(buildJoinSpecification());</span>
+<span class="fc" id="L360">            return new JoinSpecificationStarter(joinTable, JoinType.FULL);</span>
         }
         
         public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L356">            tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L357">            return fullJoin(joinTable);</span>
+<span class="fc" id="L364">            tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L365">            return fullJoin(joinTable);</span>
         }
 
-        public SelectDSL orderBy(SqlColumn&lt;?&gt;...columns) {
-<span class="fc" id="L361">            joinModel = buildJoinModel();</span>
-<span class="fc" id="L362">            selectModelBuilder.addQueryExpression(buildModel());</span>
-<span class="fc" id="L363">            selectModelBuilder.setOrderByModel(OrderByModel.of(columns));</span>
-<span class="fc" id="L364">            return selectModelBuilder;</span>
+        public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
+<span class="fc" id="L369">            joinModel = buildJoinModel();</span>
+<span class="fc" id="L370">            selectDSL.addQueryExpression(buildModel());</span>
+<span class="fc" id="L371">            selectDSL.setOrderByModel(OrderByModel.of(columns));</span>
+<span class="fc" id="L372">            return selectDSL;</span>
         }
     }
     
-<span class="fc" id="L368">    public class GroupByFinisher implements Buildable&lt;SelectModel&gt; {</span>
-        public SelectDSL orderBy(SqlColumn&lt;?&gt;...columns) {
-<span class="fc" id="L370">            selectModelBuilder.setOrderByModel(OrderByModel.of(columns));</span>
-<span class="fc" id="L371">            return selectModelBuilder;</span>
+<span class="fc" id="L376">    public class GroupByFinisher implements Buildable&lt;R&gt; {</span>
+        public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
+<span class="fc" id="L378">            selectDSL.setOrderByModel(OrderByModel.of(columns));</span>
+<span class="fc" id="L379">            return selectDSL;</span>
         }
 
         @Override
-        public SelectModel build() {
-<span class="fc" id="L376">            return selectModelBuilder.build();</span>
+        public R build() {
+<span class="fc" id="L384">            return selectDSL.build();</span>
         }
     }
     
-<span class="fc" id="L380">    public class UnionBuilder {</span>
-        public QueryExpressionDSL select(SelectListItem...selectList) {
-<span class="fc" id="L382">            return new QueryExpressionDSL.Builder()</span>
-<span class="fc" id="L383">                    .withConnector(&quot;union&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L384">                    .withSelectList(selectList)</span>
-<span class="fc" id="L385">                    .withSelectModelBuilder(selectModelBuilder)</span>
-<span class="fc" id="L386">                    .build();</span>
-        }
-        
-        public QueryExpressionDSL selectDistinct(SelectListItem...selectList) {
-<span class="fc" id="L390">            return new QueryExpressionDSL.Builder()</span>
-<span class="fc" id="L391">                    .withConnector(&quot;union&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L388">    public class UnionBuilder {</span>
+        public FromGatherer&lt;R&gt; select(BasicColumn...selectList) {
+<span class="fc" id="L390">            return new FromGathererBuilder&lt;R&gt;()</span>
+<span class="fc" id="L391">                    .withConnector(&quot;union&quot;)</span>
 <span class="fc" id="L392">                    .withSelectList(selectList)</span>
-<span class="fc" id="L393">                    .isDistinct()</span>
-<span class="fc" id="L394">                    .withSelectModelBuilder(selectModelBuilder)</span>
-<span class="fc" id="L395">                    .build();</span>
+<span class="fc" id="L393">                    .withSelectDSL(selectDSL)</span>
+<span class="fc" id="L394">                    .build();</span>
+        }
+
+        public FromGatherer&lt;R&gt; selectDistinct(BasicColumn...selectList) {
+<span class="fc" id="L398">            return new FromGathererBuilder&lt;R&gt;()</span>
+<span class="fc" id="L399">                    .withConnector(&quot;union&quot;)</span>
+<span class="fc" id="L400">                    .isDistinct()</span>
+<span class="fc" id="L401">                    .withSelectList(selectList)</span>
+<span class="fc" id="L402">                    .withSelectDSL(selectDSL)</span>
+<span class="fc" id="L403">                    .build();</span>
         }
     }
 }

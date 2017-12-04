@@ -19,23 +19,31 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
+import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
 import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
+import org.mybatis.dynamic.sql.select.function.Add;
+import org.mybatis.dynamic.sql.select.function.Lower;
+import org.mybatis.dynamic.sql.select.function.Substring;
+import org.mybatis.dynamic.sql.select.function.Upper;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
+import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.where.WhereDSL;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
@@ -66,228 +74,260 @@ import org.mybatis.dynamic.sql.where.condition.IsNull;
 public interface SqlBuilder {
 
     // statements
-    static DeleteDSL deleteFrom(SqlTable table) {
-<span class="fc" id="L70">        return DeleteDSL.deleteFrom(table);</span>
+    static DeleteDSL&lt;DeleteModel&gt; deleteFrom(SqlTable table) {
+<span class="fc" id="L78">        return DeleteDSL.deleteFrom(table);</span>
     }
 
     static &lt;T&gt; InsertDSL.IntoGatherer&lt;T&gt; insert(T record) {
-<span class="fc" id="L74">        return InsertDSL.insert(record);</span>
+<span class="fc" id="L82">        return InsertDSL.insert(record);</span>
     }
     
     @SafeVarargs
     static &lt;T&gt; BatchInsertDSL.IntoGatherer&lt;T&gt; insert(T...records) {
-<span class="fc" id="L79">        return BatchInsertDSL.insert(records);</span>
+<span class="fc" id="L87">        return BatchInsertDSL.insert(records);</span>
     }
     
     static &lt;T&gt; BatchInsertDSL.IntoGatherer&lt;T&gt; insert(List&lt;T&gt; records) {
-<span class="fc" id="L83">        return BatchInsertDSL.insert(records);</span>
+<span class="fc" id="L91">        return BatchInsertDSL.insert(records);</span>
     }
     
     static InsertSelectDSL.InsertColumnGatherer insertInto(SqlTable table) {
-<span class="fc" id="L87">        return InsertSelectDSL.insertInto(table);</span>
+<span class="fc" id="L95">        return InsertSelectDSL.insertInto(table);</span>
     }
     
-    static QueryExpressionDSL select(SelectListItem...selectList) {
-<span class="fc" id="L91">        return SelectDSL.select(selectList);</span>
+    static FromGatherer&lt;SelectModel&gt; select(BasicColumn...selectList) {
+<span class="fc" id="L99">        return SelectDSL.select(selectList);</span>
     }
     
-    static QueryExpressionDSL selectDistinct(SelectListItem...selectList) {
-<span class="fc" id="L95">        return SelectDSL.selectDistinct(selectList);</span>
+    static FromGatherer&lt;SelectModel&gt; selectDistinct(BasicColumn...selectList) {
+<span class="fc" id="L103">        return SelectDSL.selectDistinct(selectList);</span>
     }
     
-    static UpdateDSL update(SqlTable table) {
-<span class="fc" id="L99">        return UpdateDSL.update(table);</span>
+    static UpdateDSL&lt;UpdateModel&gt; update(SqlTable table) {
+<span class="fc" id="L107">        return UpdateDSL.update(table);</span>
     }
 
+    static &lt;T&gt; WhereDSL where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
+<span class="fc" id="L111">        return WhereDSL.where(column, condition);</span>
+    }
+    
+    static &lt;T&gt; WhereDSL where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
+            SqlCriterion&lt;?&gt;... subCriteria) {
+<span class="fc" id="L116">        return WhereDSL.where(column, condition, subCriteria);</span>
+    }
+    
     // where condition connectors
-    static &lt;T&gt; SqlCriterion&lt;T&gt; or(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L104">        return new SqlCriterion.Builder&lt;T&gt;()</span>
-<span class="fc" id="L105">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L106">                .withColumn(column)</span>
-<span class="fc" id="L107">                .withCondition(condition)</span>
-<span class="fc" id="L108">                .build();</span>
-    }
-
-    static &lt;T&gt; SqlCriterion&lt;T&gt; or(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition, SqlCriterion&lt;?&gt;...subCriteria) {
-<span class="fc" id="L112">        return new SqlCriterion.Builder&lt;T&gt;()</span>
-<span class="fc" id="L113">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L114">                .withColumn(column)</span>
-<span class="fc" id="L115">                .withCondition(condition)</span>
-<span class="fc" id="L116">                .withSubCriteria(Arrays.asList(subCriteria))</span>
-<span class="fc" id="L117">                .build();</span>
-    }
-
-    static &lt;T&gt; SqlCriterion&lt;T&gt; and(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
+    static &lt;T&gt; SqlCriterion&lt;T&gt; or(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
 <span class="fc" id="L121">        return new SqlCriterion.Builder&lt;T&gt;()</span>
-<span class="fc" id="L122">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L122">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
 <span class="fc" id="L123">                .withColumn(column)</span>
 <span class="fc" id="L124">                .withCondition(condition)</span>
 <span class="fc" id="L125">                .build();</span>
     }
 
-    static &lt;T&gt; SqlCriterion&lt;T&gt; and(SqlColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
+    static &lt;T&gt; SqlCriterion&lt;T&gt; or(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;...subCriteria) {
 <span class="fc" id="L130">        return new SqlCriterion.Builder&lt;T&gt;()</span>
-<span class="fc" id="L131">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L131">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
 <span class="fc" id="L132">                .withColumn(column)</span>
 <span class="fc" id="L133">                .withCondition(condition)</span>
 <span class="fc" id="L134">                .withSubCriteria(Arrays.asList(subCriteria))</span>
 <span class="fc" id="L135">                .build();</span>
     }
 
+    static &lt;T&gt; SqlCriterion&lt;T&gt; and(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
+<span class="fc" id="L139">        return new SqlCriterion.Builder&lt;T&gt;()</span>
+<span class="fc" id="L140">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L141">                .withColumn(column)</span>
+<span class="fc" id="L142">                .withCondition(condition)</span>
+<span class="fc" id="L143">                .build();</span>
+    }
+
+    static &lt;T&gt; SqlCriterion&lt;T&gt; and(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
+            SqlCriterion&lt;?&gt;...subCriteria) {
+<span class="fc" id="L148">        return new SqlCriterion.Builder&lt;T&gt;()</span>
+<span class="fc" id="L149">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L150">                .withColumn(column)</span>
+<span class="fc" id="L151">                .withCondition(condition)</span>
+<span class="fc" id="L152">                .withSubCriteria(Arrays.asList(subCriteria))</span>
+<span class="fc" id="L153">                .build();</span>
+    }
+
     // join support
-    static &lt;T&gt; JoinCriterion&lt;T&gt; and(SqlColumn&lt;T&gt; joinColumn, JoinCondition&lt;T&gt; joinCondition) {
-<span class="fc" id="L140">        return new JoinCriterion.Builder&lt;T&gt;()</span>
-<span class="fc" id="L141">                .withJoinColumn(joinColumn)</span>
-<span class="fc" id="L142">                .withJoinCondition(joinCondition)</span>
-<span class="fc" id="L143">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L144">                .build();</span>
+    static JoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
+<span class="fc" id="L158">        return new JoinCriterion.Builder()</span>
+<span class="fc" id="L159">                .withJoinColumn(joinColumn)</span>
+<span class="fc" id="L160">                .withJoinCondition(joinCondition)</span>
+<span class="fc" id="L161">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L162">                .build();</span>
     }
     
-    static &lt;T&gt; EqualTo&lt;T&gt; equalTo(SqlColumn&lt;T&gt; column) {
-<span class="fc" id="L148">        return new EqualTo&lt;&gt;(column);</span>
+    static EqualTo equalTo(BasicColumn column) {
+<span class="fc" id="L166">        return new EqualTo(column);</span>
     }
 
     // aggregate support
     static CountAll count() {
-<span class="fc" id="L153">        return new CountAll();</span>
+<span class="fc" id="L171">        return new CountAll();</span>
     }
     
-    static Count count(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L157">        return Count.of(column);</span>
+    static Count count(BasicColumn column) {
+<span class="fc" id="L175">        return Count.of(column);</span>
     }
     
-    static Max max(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L161">        return Max.of(column);</span>
+    static Max max(BasicColumn column) {
+<span class="fc" id="L179">        return Max.of(column);</span>
     }
     
-    static Min min(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L165">        return Min.of(column);</span>
+    static Min min(BasicColumn column) {
+<span class="fc" id="L183">        return Min.of(column);</span>
     }
 
-    static Avg avg(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L169">        return Avg.of(column);</span>
+    static Avg avg(BasicColumn column) {
+<span class="fc" id="L187">        return Avg.of(column);</span>
     }
 
-    static Sum sum(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L173">        return Sum.of(column);</span>
+    static Sum sum(BasicColumn column) {
+<span class="fc" id="L191">        return Sum.of(column);</span>
     }
 
+    // functions
+    static &lt;T extends Number&gt; Add&lt;T&gt; add(BindableColumn&lt;T&gt; column1, BindableColumn&lt;T&gt; column2) {
+<span class="fc" id="L196">        return Add.of(column1, column2);</span>
+    }
+    
+    static Lower lower(BindableColumn&lt;String&gt; column) {
+<span class="fc" id="L200">        return Lower.of(column);</span>
+    }
+    
+    static Substring substring(BindableColumn&lt;String&gt; column, int offset, int length) {
+<span class="fc" id="L204">        return Substring.of(column, offset, length);</span>
+    }
+    
+    static Upper upper(BindableColumn&lt;String&gt; column) {
+<span class="fc" id="L208">        return Upper.of(column);</span>
+    }
+    
     // conditions for all data types
     static &lt;T&gt; IsNull&lt;T&gt; isNull() {
-<span class="fc" id="L178">        return new IsNull&lt;&gt;();</span>
+<span class="fc" id="L213">        return new IsNull&lt;&gt;();</span>
     }
 
     static &lt;T&gt; IsNotNull&lt;T&gt; isNotNull() {
-<span class="fc" id="L182">        return new IsNotNull&lt;&gt;();</span>
+<span class="fc" id="L217">        return new IsNotNull&lt;&gt;();</span>
     }
 
     static &lt;T&gt; IsEqualTo&lt;T&gt; isEqualTo(T value) {
-<span class="fc" id="L186">        return IsEqualTo.of(value);</span>
+<span class="fc" id="L221">        return IsEqualTo.of(value);</span>
     }
 
     static &lt;T&gt; IsEqualToWithSubselect&lt;T&gt; isEqualTo(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L190">        return IsEqualToWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L225">        return IsEqualToWithSubselect.of(selectModelBuilder);</span>
     }
 
     static &lt;T&gt; IsNotEqualTo&lt;T&gt; isNotEqualTo(T value) {
-<span class="fc" id="L194">        return IsNotEqualTo.of(value);</span>
+<span class="fc" id="L229">        return IsNotEqualTo.of(value);</span>
     }
 
     static &lt;T&gt; IsNotEqualToWithSubselect&lt;T&gt; isNotEqualTo(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L198">        return IsNotEqualToWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L233">        return IsNotEqualToWithSubselect.of(selectModelBuilder);</span>
     }
 
     static &lt;T&gt; IsGreaterThan&lt;T&gt; isGreaterThan(T value) {
-<span class="fc" id="L202">        return IsGreaterThan.of(value);</span>
+<span class="fc" id="L237">        return IsGreaterThan.of(value);</span>
     }
     
     static &lt;T&gt; IsGreaterThanWithSubselect&lt;T&gt; isGreaterThan(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L206">        return IsGreaterThanWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L241">        return IsGreaterThanWithSubselect.of(selectModelBuilder);</span>
     }
     
     static &lt;T&gt; IsGreaterThanOrEqualTo&lt;T&gt; isGreaterThanOrEqualTo(T value) {
-<span class="fc" id="L210">        return IsGreaterThanOrEqualTo.of(value);</span>
+<span class="fc" id="L245">        return IsGreaterThanOrEqualTo.of(value);</span>
     }
     
     static &lt;T&gt; IsGreaterThanOrEqualToWithSubselect&lt;T&gt; isGreaterThanOrEqualTo(
             Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L215">        return IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L250">        return IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);</span>
     }
     
     static &lt;T&gt; IsLessThan&lt;T&gt; isLessThan(T value) {
-<span class="fc" id="L219">        return IsLessThan.of(value);</span>
+<span class="fc" id="L254">        return IsLessThan.of(value);</span>
     }
     
     static &lt;T&gt; IsLessThanWithSubselect&lt;T&gt; isLessThan(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L223">        return IsLessThanWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L258">        return IsLessThanWithSubselect.of(selectModelBuilder);</span>
     }
     
     static &lt;T&gt; IsLessThanOrEqualTo&lt;T&gt; isLessThanOrEqualTo(T value) {
-<span class="fc" id="L227">        return IsLessThanOrEqualTo.of(value);</span>
+<span class="fc" id="L262">        return IsLessThanOrEqualTo.of(value);</span>
     }
     
     static &lt;T&gt; IsLessThanOrEqualToWithSubselect&lt;T&gt; isLessThanOrEqualTo(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L231">        return IsLessThanOrEqualToWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L266">        return IsLessThanOrEqualToWithSubselect.of(selectModelBuilder);</span>
     }
     
     @SafeVarargs
     static &lt;T&gt; IsIn&lt;T&gt; isIn(T...values) {
-<span class="fc" id="L236">        return isIn(Arrays.asList(values));</span>
+<span class="fc" id="L271">        return isIn(Arrays.asList(values));</span>
     }
 
     static &lt;T&gt; IsIn&lt;T&gt; isIn(List&lt;T&gt; values) {
-<span class="fc" id="L240">        return IsIn.of(values);</span>
+<span class="fc" id="L275">        return IsIn.of(values);</span>
     }
     
     static &lt;T&gt; IsInWithSubselect&lt;T&gt; isIn(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L244">        return IsInWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L279">        return IsInWithSubselect.of(selectModelBuilder);</span>
     }
 
     @SafeVarargs
     static &lt;T&gt; IsNotIn&lt;T&gt; isNotIn(T...values) {
-<span class="fc" id="L249">        return isNotIn(Arrays.asList(values));</span>
+<span class="fc" id="L284">        return isNotIn(Arrays.asList(values));</span>
     }
     
     static &lt;T&gt; IsNotIn&lt;T&gt; isNotIn(List&lt;T&gt; values) {
-<span class="fc" id="L253">        return IsNotIn.of(values);</span>
+<span class="fc" id="L288">        return IsNotIn.of(values);</span>
     }
     
     static &lt;T&gt; IsNotInWithSubselect&lt;T&gt; isNotIn(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L257">        return IsNotInWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L292">        return IsNotInWithSubselect.of(selectModelBuilder);</span>
     }
 
     static &lt;T&gt; IsBetween.Builder&lt;T&gt; isBetween(T value1) {
-<span class="fc" id="L261">        return IsBetween.isBetween(value1);</span>
+<span class="fc" id="L296">        return IsBetween.isBetween(value1);</span>
     }
     
     static &lt;T&gt; IsNotBetween.Builder&lt;T&gt; isNotBetween(T value1) {
-<span class="fc" id="L265">        return IsNotBetween.isNotBetween(value1);</span>
+<span class="fc" id="L300">        return IsNotBetween.isNotBetween(value1);</span>
     }
     
     // conditions for strings only
     static IsLike isLike(String value) {
-<span class="fc" id="L270">        return IsLike.of(value);</span>
+<span class="fc" id="L305">        return IsLike.of(value);</span>
     }
     
     static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
-<span class="fc" id="L274">        return IsLikeCaseInsensitive.of(value);</span>
+<span class="fc" id="L309">        return IsLikeCaseInsensitive.of(value);</span>
     }
     
     static IsNotLike isNotLike(String value) {
-<span class="fc" id="L278">        return IsNotLike.of(value);</span>
+<span class="fc" id="L313">        return IsNotLike.of(value);</span>
     }
     
     static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
-<span class="fc" id="L282">        return IsNotLikeCaseInsensitive.of(value);</span>
+<span class="fc" id="L317">        return IsNotLikeCaseInsensitive.of(value);</span>
     }
 
     static IsInCaseInsensitive isInCaseInsensitive(String...values) {
-<span class="fc" id="L286">        return IsInCaseInsensitive.of(Arrays.asList(values));</span>
+<span class="fc" id="L321">        return IsInCaseInsensitive.of(Arrays.asList(values));</span>
     }
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
-<span class="fc" id="L290">        return IsNotInCaseInsensitive.of(Arrays.asList(values));</span>
+<span class="fc" id="L325">        return IsNotInCaseInsensitive.of(Arrays.asList(values));</span>
+    }
+    
+    // order by support
+    static SortSpecification sortColumn(String name) {
+<span class="fc" id="L330">        return SimpleSortSpecification.of(name);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.render;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,24 +27,30 @@ public class TableAliasCalculator {
     
     private Map&lt;SqlTable, String&gt; aliases;
 
-<span class="fc" id="L29">    protected TableAliasCalculator(Map&lt;SqlTable, String&gt; aliases) {</span>
-<span class="fc" id="L30">        this.aliases = Objects.requireNonNull(aliases);</span>
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L30">    protected TableAliasCalculator(Map&lt;SqlTable, String&gt; aliases) {</span>
+<span class="fc" id="L31">        this.aliases = Objects.requireNonNull(aliases);</span>
+<span class="fc" id="L32">    }</span>
     
     public Optional&lt;String&gt; aliasForColumn(SqlTable table) {
-<span class="fc" id="L34">        return Optional.ofNullable(aliases.get(table));</span>
+<span class="fc" id="L35">        return Optional.ofNullable(aliases.get(table));</span>
     }
 
     public Optional&lt;String&gt; aliasForTable(SqlTable table) {
-<span class="fc" id="L38">        return Optional.ofNullable(aliases.get(table));</span>
+<span class="fc" id="L39">        return Optional.ofNullable(aliases.get(table));</span>
+    }
+    
+    public static TableAliasCalculator of(SqlTable table, String alias) {
+<span class="fc" id="L43">        Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L44">        tableAliases.put(table, alias);</span>
+<span class="fc" id="L45">        return of(tableAliases);</span>
     }
     
     public static TableAliasCalculator of(Map&lt;SqlTable, String&gt; aliases) {
-<span class="fc" id="L42">        return new TableAliasCalculator(aliases);</span>
+<span class="fc" id="L49">        return new TableAliasCalculator(aliases);</span>
     }
     
     public static TableAliasCalculator empty() {
-<span class="fc" id="L46">        return new TableAliasCalculator(Collections.emptyMap());</span>
+<span class="fc" id="L53">        return of(Collections.emptyMap());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -36,7 +36,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class QueryExpressionModel {
     private Optional&lt;String&gt; connector;
     private boolean isDistinct;
-    private List&lt;SelectListItem&gt; selectList;
+    private List&lt;BasicColumn&gt; selectList;
     private SqlTable table;
     private Optional&lt;JoinModel&gt; joinModel;
     private TableAliasCalculator tableAliasCalculator;
@@ -63,7 +63,7 @@ public class QueryExpressionModel {
 <span class="fc" id="L63">        return isDistinct;</span>
     }
     
-    public &lt;R&gt; Stream&lt;R&gt; mapColumns(Function&lt;SelectListItem, R&gt; mapper) {
+    public &lt;R&gt; Stream&lt;R&gt; mapColumns(Function&lt;BasicColumn, R&gt; mapper) {
 <span class="fc" id="L67">        return selectList.stream().map(mapper);</span>
     }
     
@@ -95,7 +95,7 @@ public class QueryExpressionModel {
 <span class="fc" id="L95">    public static class Builder {</span>
         private String connector;
         private boolean isDistinct;
-<span class="fc" id="L98">        private List&lt;SelectListItem&gt; selectList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L98">        private List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
         private SqlTable table;
 <span class="fc" id="L100">        private Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
         private WhereModel whereModel;
@@ -117,7 +117,7 @@ public class QueryExpressionModel {
 <span class="fc" id="L117">            return this;</span>
         }
 
-        public Builder withColumns(List&lt;SelectListItem&gt; selectList) {
+        public Builder withColumns(List&lt;BasicColumn&gt; selectList) {
 <span class="fc" id="L121">            this.selectList.addAll(selectList);</span>
 <span class="fc" id="L122">            return this;</span>
         }

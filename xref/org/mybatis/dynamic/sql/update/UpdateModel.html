@@ -43,7 +43,7 @@
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">private</strong> List&lt;UpdateMapping&gt; columnValues;
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>      
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../org/mybatis/dynamic/sql/update/UpdateModel.html">UpdateModel</a>(<a href="../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> builder) {
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>          table = builder.table;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          table = Objects.requireNonNull(builder.table);
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>          whereModel = Optional.ofNullable(builder.whereModel);
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>          columnValues = Objects.requireNonNull(builder.columnValues);
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      }
@@ -73,25 +73,26 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          <strong class="jxr_keyword">private</strong> <a href="../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> whereModel;
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">private</strong> List&lt;UpdateMapping&gt; columnValues = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a>(<a href="../../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withTable(<a href="../../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>              <strong class="jxr_keyword">this</strong>.table = table;
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withColumnValues(List&lt;UpdateMapping&gt; columnValues) {
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>              <strong class="jxr_keyword">this</strong>.columnValues.addAll(columnValues);
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>          }
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>          
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withWhereModel(<a href="../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> whereModel) {
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>              <strong class="jxr_keyword">this</strong>.whereModel = whereModel;
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          }
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../org/mybatis/dynamic/sql/update/UpdateModel.html">UpdateModel</a> build() {
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../org/mybatis/dynamic/sql/update/UpdateModel.html">UpdateModel</a>(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>          }
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      }
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  }
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          }
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withColumnValues(List&lt;UpdateMapping&gt; columnValues) {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>              <strong class="jxr_keyword">this</strong>.columnValues.addAll(columnValues);
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          }
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>          
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withWhereModel(<a href="../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> whereModel) {
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>              <strong class="jxr_keyword">this</strong>.whereModel = whereModel;
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          }
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../org/mybatis/dynamic/sql/update/UpdateModel.html">UpdateModel</a> build() {
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../org/mybatis/dynamic/sql/update/UpdateModel.html">UpdateModel</a>(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          }
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      }
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016&#x2013;2017 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>

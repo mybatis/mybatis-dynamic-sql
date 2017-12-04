@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 public class JoinSpecification {
 
     private SqlTable table;
-    private List&lt;JoinCriterion&lt;?&gt;&gt; joinCriteria;
+    private List&lt;JoinCriterion&gt; joinCriteria;
     private JoinType joinType;
     
 <span class="fc" id="L32">    private JoinSpecification(Builder builder) {</span>
@@ -39,7 +39,7 @@ public class JoinSpecification {
 <span class="fc" id="L39">        return table;</span>
     }
     
-    public &lt;R&gt; Stream&lt;R&gt; mapJoinCriteria(Function&lt;JoinCriterion&lt;?&gt;, R&gt; mapper) {
+    public &lt;R&gt; Stream&lt;R&gt; mapJoinCriteria(Function&lt;JoinCriterion, R&gt; mapper) {
 <span class="fc" id="L43">        return joinCriteria.stream().map(mapper);</span>
     }
     
@@ -49,7 +49,7 @@ public class JoinSpecification {
     
 <span class="fc" id="L50">    public static class Builder {</span>
         private SqlTable table;
-<span class="fc" id="L52">        private List&lt;JoinCriterion&lt;?&gt;&gt; joinCriteria = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L52">        private List&lt;JoinCriterion&gt; joinCriteria = new ArrayList&lt;&gt;();</span>
         private JoinType joinType;
         
         public Builder withJoinTable(SqlTable table) {
@@ -57,7 +57,7 @@ public class JoinSpecification {
 <span class="fc" id="L57">            return this;</span>
         }
         
-        public Builder withJoinCriteria(List&lt;JoinCriterion&lt;?&gt;&gt; joinCriteria) {
+        public Builder withJoinCriteria(List&lt;JoinCriterion&gt; joinCriteria) {
 <span class="fc" id="L61">            this.joinCriteria.addAll(joinCriteria);</span>
 <span class="fc" id="L62">            return this;</span>
         }

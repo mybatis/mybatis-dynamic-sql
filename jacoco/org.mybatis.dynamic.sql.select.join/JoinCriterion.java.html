@@ -17,15 +17,15 @@ package org.mybatis.dynamic.sql.select.join;
 
 import java.util.Objects;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public class JoinCriterion&lt;T&gt; {
+public class JoinCriterion {
 
     private String connector;
-    private SqlColumn&lt;T&gt; leftColumn;
-    private JoinCondition&lt;T&gt; joinCondition;
+    private BasicColumn leftColumn;
+    private JoinCondition joinCondition;
     
-<span class="fc" id="L28">    private JoinCriterion(Builder&lt;T&gt; builder) {</span>
+<span class="fc" id="L28">    private JoinCriterion(Builder builder) {</span>
 <span class="fc" id="L29">        connector = Objects.requireNonNull(builder.connector);</span>
 <span class="fc" id="L30">        leftColumn = Objects.requireNonNull(builder.joinColumn);</span>
 <span class="fc" id="L31">        joinCondition = Objects.requireNonNull(builder.joinCondition);</span>
@@ -35,11 +35,11 @@ public class JoinCriterion&lt;T&gt; {
 <span class="fc" id="L35">        return connector;</span>
     }
     
-    public SqlColumn&lt;T&gt; leftColumn() {
+    public BasicColumn leftColumn() {
 <span class="fc" id="L39">        return leftColumn;</span>
     }
     
-    public SqlColumn&lt;T&gt; rightColumn() {
+    public BasicColumn rightColumn() {
 <span class="fc" id="L43">        return joinCondition.rightColumn();</span>
     }
     
@@ -47,28 +47,28 @@ public class JoinCriterion&lt;T&gt; {
 <span class="fc" id="L47">        return joinCondition.operator();</span>
     }
     
-<span class="fc" id="L50">    public static class Builder&lt;T&gt; {</span>
-        private SqlColumn&lt;T&gt; joinColumn;
-        private JoinCondition&lt;T&gt; joinCondition;
+<span class="fc" id="L50">    public static class Builder {</span>
+        private BasicColumn joinColumn;
+        private JoinCondition joinCondition;
         private String connector;
         
-        public Builder&lt;T&gt; withJoinColumn(SqlColumn&lt;T&gt; joinColumn) {
+        public Builder withJoinColumn(BasicColumn joinColumn) {
 <span class="fc" id="L56">            this.joinColumn = joinColumn;</span>
 <span class="fc" id="L57">            return this;</span>
         }
         
-        public Builder&lt;T&gt; withJoinCondition(JoinCondition&lt;T&gt; joinCondition) {
+        public Builder withJoinCondition(JoinCondition joinCondition) {
 <span class="fc" id="L61">            this.joinCondition = joinCondition;</span>
 <span class="fc" id="L62">            return this;</span>
         }
         
-        public Builder&lt;T&gt; withConnector(String connector) {
+        public Builder withConnector(String connector) {
 <span class="fc" id="L66">            this.connector = connector;</span>
 <span class="fc" id="L67">            return this;</span>
         }
         
-        public JoinCriterion&lt;T&gt; build() {
-<span class="fc" id="L71">            return new JoinCriterion&lt;&gt;(this);</span>
+        public JoinCriterion build() {
+<span class="fc" id="L71">            return new JoinCriterion(this);</span>
         }
     }
 }

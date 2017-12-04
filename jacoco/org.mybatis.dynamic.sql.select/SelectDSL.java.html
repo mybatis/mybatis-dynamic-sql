@@ -17,56 +17,91 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGathererBuilder;
+import org.mybatis.dynamic.sql.select.render.SelectStatement;
 
-public class SelectDSL {
+/**
+ * Implements a standard SQL dialect for building model classes.
+ * 
+ * @author Jeff Butler
+ *
+ * @param &lt;R&gt; the type of model produced by this builder
+ */
+public class SelectDSL&lt;R&gt; {
 
-<span class="fc" id="L25">    private List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();    </span>
+    private Function&lt;SelectModel, R&gt; adapterFunction;
+<span class="fc" id="L38">    private List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();    </span>
     private OrderByModel orderByModel;
     
-    private SelectDSL() {
-<span class="fc" id="L29">        super();</span>
-<span class="fc" id="L30">    }</span>
+<span class="fc" id="L41">    private SelectDSL(Function&lt;SelectModel, R&gt; adapterFunction) {</span>
+<span class="fc" id="L42">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
+<span class="fc" id="L43">    }</span>
 
-    private QueryExpressionDSL queryExpressionBuilder(SelectListItem...selectList) {
-<span class="fc" id="L33">        return new QueryExpressionDSL.Builder()</span>
-<span class="fc" id="L34">                .withSelectList(selectList)</span>
-<span class="fc" id="L35">                .withSelectModelBuilder(this)</span>
-<span class="fc" id="L36">                .build();</span>
+    private FromGatherer&lt;R&gt; queryExpressionBuilder(BasicColumn...selectList) {
+<span class="fc" id="L46">        return new FromGathererBuilder&lt;R&gt;()</span>
+<span class="fc" id="L47">                .withSelectDSL(this)</span>
+<span class="fc" id="L48">                .withSelectList(selectList)</span>
+<span class="fc" id="L49">                .build();</span>
     }
     
-    private QueryExpressionDSL distinctQueryExpressionBuilder(SelectListItem...selectList) {
-<span class="fc" id="L40">        return new QueryExpressionDSL.Builder()</span>
-<span class="fc" id="L41">                .withSelectList(selectList)</span>
-<span class="fc" id="L42">                .isDistinct()</span>
-<span class="fc" id="L43">                .withSelectModelBuilder(this)</span>
-<span class="fc" id="L44">                .build();</span>
+    private FromGatherer&lt;R&gt; distinctQueryExpressionBuilder(BasicColumn...selectList) {
+<span class="fc" id="L53">        return new FromGathererBuilder&lt;R&gt;()</span>
+<span class="fc" id="L54">                .withSelectDSL(this)</span>
+<span class="fc" id="L55">                .withSelectList(selectList)</span>
+<span class="fc" id="L56">                .isDistinct()</span>
+<span class="fc" id="L57">                .build();</span>
     }
     
-    public static QueryExpressionDSL select(SelectListItem...selectList) {
-<span class="fc" id="L48">        SelectDSL selectModelBuilder = new SelectDSL();</span>
-<span class="fc" id="L49">        return selectModelBuilder.queryExpressionBuilder(selectList);</span>
+    public static FromGatherer&lt;SelectModel&gt; select(BasicColumn...selectList) {
+<span class="fc" id="L61">        return select(Function.identity(), selectList);</span>
     }
     
-    public static QueryExpressionDSL selectDistinct(SelectListItem...selectList) {
-<span class="fc" id="L53">        SelectDSL selectModelBuilder = new SelectDSL();</span>
-<span class="fc" id="L54">        return selectModelBuilder.distinctQueryExpressionBuilder(selectList);</span>
+    public static &lt;R&gt; FromGatherer&lt;R&gt; select(Function&lt;SelectModel, R&gt; adapterFunction,
+            BasicColumn...selectList) {
+<span class="fc" id="L66">        SelectDSL&lt;R&gt; selectModelBuilder = new SelectDSL&lt;&gt;(adapterFunction);</span>
+<span class="fc" id="L67">        return selectModelBuilder.queryExpressionBuilder(selectList);</span>
+    }
+    
+    public static FromGatherer&lt;SelectModel&gt; selectDistinct(BasicColumn...selectList) {
+<span class="fc" id="L71">        return selectDistinct(Function.identity(), selectList);</span>
+    }
+    
+    public static &lt;R&gt; FromGatherer&lt;R&gt; selectDistinct(Function&lt;SelectModel, R&gt; adapterFunction,
+            BasicColumn...selectList) {
+<span class="fc" id="L76">        SelectDSL&lt;R&gt; selectModelBuilder = new SelectDSL&lt;&gt;(adapterFunction);</span>
+<span class="fc" id="L77">        return selectModelBuilder.distinctQueryExpressionBuilder(selectList);</span>
+    }
+    
+    public static &lt;T&gt; FromGatherer&lt;MyBatis3SelectModelAdapter&lt;T&gt;&gt; selectWithMapper(
+            Function&lt;SelectStatement, T&gt; mapperMethod, BasicColumn...selectList) {
+<span class="fc" id="L82">        return select(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);</span>
+    }
+    
+    public static &lt;T&gt; FromGatherer&lt;MyBatis3SelectModelAdapter&lt;T&gt;&gt; selectDistinctWithMapper(
+            Function&lt;SelectStatement, T&gt; mapperMethod, BasicColumn...selectList) {
+<span class="fc" id="L87">        return selectDistinct(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),</span>
+                selectList);
     }
     
     void addQueryExpression(QueryExpressionModel queryExpression) {
-<span class="fc" id="L58">        queryExpressions.add(queryExpression);</span>
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L92">        queryExpressions.add(queryExpression);</span>
+<span class="fc" id="L93">    }</span>
     
     void setOrderByModel(OrderByModel orderByModel) {
-<span class="fc" id="L62">        this.orderByModel = orderByModel;</span>
-<span class="fc" id="L63">    }</span>
+<span class="fc" id="L96">        this.orderByModel = orderByModel;</span>
+<span class="fc" id="L97">    }</span>
     
-    public SelectModel build() {
-<span class="fc" id="L66">        return new SelectModel.Builder()</span>
-<span class="fc" id="L67">                .withQueryExpressions(queryExpressions)</span>
-<span class="fc" id="L68">                .withOrderByModel(orderByModel)</span>
-<span class="fc" id="L69">                .build();</span>
+    public R build() {
+<span class="fc" id="L100">        SelectModel selectModel = new SelectModel.Builder()</span>
+<span class="fc" id="L101">                .withQueryExpressions(queryExpressions)</span>
+<span class="fc" id="L102">                .withOrderByModel(orderByModel)</span>
+<span class="fc" id="L103">                .build();</span>
+<span class="fc" id="L104">        return adapterFunction.apply(selectModel);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -17,17 +17,17 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 /**
  * CountAll seems like the other aggregates, but it is special because there is no column.
  * Rather than dealing with a useless and confusing abstraction, we simply implement
- * SelectListItem directly.
+ * BasicColumn directly.
  *  
  * @author Jeff Butler
  */
-public class CountAll implements SelectListItem {
+public class CountAll implements BasicColumn {
     
 <span class="fc" id="L32">    private Optional&lt;String&gt; alias = Optional.empty();</span>
 
@@ -36,7 +36,7 @@ public class CountAll implements SelectListItem {
 <span class="fc" id="L36">    }</span>
 
     @Override
-    public String applyTableAliasToName(TableAliasCalculator tableAliasCalculator) {
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
 <span class="fc" id="L40">        return &quot;count(*)&quot;; //$NON-NLS-1$</span>
     }
 
@@ -45,10 +45,11 @@ public class CountAll implements SelectListItem {
 <span class="fc" id="L45">        return alias;</span>
     }
 
+    @Override
     public CountAll as(String alias) {
-<span class="fc" id="L49">        CountAll copy = new CountAll();</span>
-<span class="fc" id="L50">        copy.alias = Optional.of(alias);</span>
-<span class="fc" id="L51">        return copy;</span>
+<span class="fc" id="L50">        CountAll copy = new CountAll();</span>
+<span class="fc" id="L51">        copy.alias = Optional.of(alias);</span>
+<span class="fc" id="L52">        return copy;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.select.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -37,87 +36,90 @@ public class QueryExpression {
     private Optional&lt;String&gt; joinClause;
     private Optional&lt;String&gt; groupByClause;
     
-<span class="fc" id="L40">    private QueryExpression(Builder builder) {</span>
-<span class="fc" id="L41">        tableName = Objects.requireNonNull(builder.tableName);</span>
-<span class="fc" id="L42">        connector = Objects.requireNonNull(builder.connector);</span>
-<span class="fc" id="L43">        columnList = Objects.requireNonNull(builder.columnList);</span>
-<span class="fc" id="L44">        whereClause = Objects.requireNonNull(builder.whereClause);</span>
-<span class="fc" id="L45">        parameters = Objects.requireNonNull(builder.parameters);</span>
-<span class="fc" id="L46">        isDistinct = builder.isDistinct;</span>
-<span class="fc" id="L47">        joinClause = Objects.requireNonNull(builder.joinClause);</span>
-<span class="fc" id="L48">        groupByClause = Objects.requireNonNull(builder.groupByClause);</span>
-<span class="fc" id="L49">    }</span>
+<span class="fc" id="L39">    private QueryExpression(Builder builder) {</span>
+<span class="fc" id="L40">        tableName = Objects.requireNonNull(builder.tableName);</span>
+<span class="fc" id="L41">        connector = Objects.requireNonNull(builder.connector);</span>
+<span class="fc" id="L42">        columnList = Objects.requireNonNull(builder.columnList);</span>
+<span class="fc" id="L43">        whereClause = Objects.requireNonNull(builder.whereClause);</span>
+<span class="fc" id="L44">        parameters = Objects.requireNonNull(builder.parameters);</span>
+<span class="fc" id="L45">        isDistinct = builder.isDistinct;</span>
+<span class="fc" id="L46">        joinClause = Objects.requireNonNull(builder.joinClause);</span>
+<span class="fc" id="L47">        groupByClause = Objects.requireNonNull(builder.groupByClause);</span>
+<span class="fc" id="L48">    }</span>
     
     public Map&lt;String, Object&gt; parameters() {
-<span class="fc" id="L52">        return parameters;</span>
+<span class="fc" id="L51">        return parameters;</span>
     }
     
     public String queryExpression() {
-<span class="fc bfc" id="L56" title="All 2 branches covered.">        return spaceAfter(connector)</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        return spaceAfter(connector)</span>
                 + &quot;select &quot; //$NON-NLS-1$
                 + (isDistinct ? &quot;distinct &quot; : &quot;&quot;) //$NON-NLS-1$ //$NON-NLS-2$
                 + columnList
                 + &quot; from &quot; //$NON-NLS-1$
                 + tableName
-<span class="fc" id="L62">                + spaceBefore(joinClause)</span>
-<span class="fc" id="L63">                + spaceBefore(whereClause)</span>
-<span class="fc" id="L64">                + spaceBefore(groupByClause);</span>
+<span class="fc" id="L61">                + spaceBefore(joinClause)</span>
+<span class="fc" id="L62">                + spaceBefore(whereClause)</span>
+<span class="fc" id="L63">                + spaceBefore(groupByClause);</span>
     }
     
-<span class="fc" id="L67">    public static class Builder {</span>
+<span class="fc" id="L66">    public static class Builder {</span>
         private Optional&lt;String&gt; connector;
         private String tableName;
         private boolean isDistinct;
-<span class="fc" id="L71">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L70">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
         private String columnList;
-<span class="fc" id="L73">        private Optional&lt;String&gt; joinClause = Optional.empty();</span>
-<span class="fc" id="L74">        private Optional&lt;String&gt; whereClause = Optional.empty();</span>
-<span class="fc" id="L75">        private Optional&lt;String&gt; groupByClause = Optional.empty();</span>
+<span class="fc" id="L72">        private Optional&lt;String&gt; joinClause = Optional.empty();</span>
+<span class="fc" id="L73">        private Optional&lt;String&gt; whereClause = Optional.empty();</span>
+<span class="fc" id="L74">        private Optional&lt;String&gt; groupByClause = Optional.empty();</span>
         
         public Builder withConnector(Optional&lt;String&gt; connector) {
-<span class="fc" id="L78">            this.connector = connector;</span>
-<span class="fc" id="L79">            return this;</span>
+<span class="fc" id="L77">            this.connector = connector;</span>
+<span class="fc" id="L78">            return this;</span>
         }
         
         public Builder withTableName(String tableName) {
-<span class="fc" id="L83">            this.tableName = tableName;</span>
-<span class="fc" id="L84">            return this;</span>
+<span class="fc" id="L82">            this.tableName = tableName;</span>
+<span class="fc" id="L83">            return this;</span>
         }
         
         public Builder isDistinct(boolean isDistinct) {
-<span class="fc" id="L88">            this.isDistinct = isDistinct;</span>
-<span class="fc" id="L89">            return this;</span>
+<span class="fc" id="L87">            this.isDistinct = isDistinct;</span>
+<span class="fc" id="L88">            return this;</span>
         }
         
         public Builder withWhereClause(Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters) {
-<span class="fc" id="L93">            whereClause = whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);</span>
-<span class="fc" id="L94">            parameters.putAll(whereClauseAndParameters.map(WhereClauseAndParameters::parameters)</span>
-<span class="fc" id="L95">                    .orElse(Collections.emptyMap()));</span>
-<span class="fc" id="L96">            return this;</span>
+<span class="fc" id="L92">            whereClauseAndParameters.ifPresent(this::handleWhereClause);</span>
+<span class="fc" id="L93">            return this;</span>
         }
         
         public Builder withParameters(Map&lt;String, Object&gt; parameters) {
-<span class="fc" id="L100">            this.parameters.putAll(parameters);</span>
-<span class="fc" id="L101">            return this;</span>
+<span class="fc" id="L97">            this.parameters.putAll(parameters);</span>
+<span class="fc" id="L98">            return this;</span>
         }
         
         public Builder withColumnList(String columnList) {
-<span class="fc" id="L105">            this.columnList = columnList;</span>
-<span class="fc" id="L106">            return this;</span>
+<span class="fc" id="L102">            this.columnList = columnList;</span>
+<span class="fc" id="L103">            return this;</span>
         }
         
         public Builder withJoinClause(Optional&lt;String&gt; joinClause) {
-<span class="fc" id="L110">            this.joinClause = joinClause;</span>
-<span class="fc" id="L111">            return this;</span>
+<span class="fc" id="L107">            this.joinClause = joinClause;</span>
+<span class="fc" id="L108">            return this;</span>
         }
         
         public Builder withGroupByClause(Optional&lt;String&gt; groupByClause) {
-<span class="fc" id="L115">            this.groupByClause = groupByClause;</span>
-<span class="fc" id="L116">            return this;</span>
+<span class="fc" id="L112">            this.groupByClause = groupByClause;</span>
+<span class="fc" id="L113">            return this;</span>
         }
         
+        private void handleWhereClause(WhereClauseAndParameters whereClauseAndParameters) {
+<span class="fc" id="L117">            this.whereClause = Optional.of(whereClauseAndParameters.whereClause());</span>
+<span class="fc" id="L118">            parameters.putAll(whereClauseAndParameters.parameters());</span>
+<span class="fc" id="L119">        }</span>
+        
         public QueryExpression build() {
-<span class="fc" id="L120">            return new QueryExpression(this);</span>
+<span class="fc" id="L122">            return new QueryExpression(this);</span>
         }
     }
 }

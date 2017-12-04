@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 public class SqlCriterion&lt;T&gt; {
     
-    private SqlColumn&lt;T&gt; column;
+    private BindableColumn&lt;T&gt; column;
     private VisitableCondition&lt;T&gt; condition;
     private Optional&lt;String&gt; connector;
     private List&lt;SqlCriterion&lt;?&gt;&gt; subCriteria;
@@ -40,7 +40,7 @@ public class SqlCriterion&lt;T&gt; {
 <span class="fc" id="L40">        return connector;</span>
     }
     
-    public SqlColumn&lt;T&gt; column() {
+    public BindableColumn&lt;T&gt; column() {
 <span class="fc" id="L44">        return column;</span>
     }
     
@@ -58,7 +58,7 @@ public class SqlCriterion&lt;T&gt; {
 
 <span class="fc" id="L59">    public static class Builder&lt;T&gt; {</span>
         private String connector;
-        private SqlColumn&lt;T&gt; column;
+        private BindableColumn&lt;T&gt; column;
         private VisitableCondition&lt;T&gt; condition;
 <span class="fc" id="L63">        private List&lt;SqlCriterion&lt;?&gt;&gt; subCriteria = new ArrayList&lt;&gt;();</span>
         
@@ -67,7 +67,7 @@ public class SqlCriterion&lt;T&gt; {
 <span class="fc" id="L67">            return this;</span>
         }
         
-        public Builder&lt;T&gt; withColumn(SqlColumn&lt;T&gt; column) {
+        public Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
 <span class="fc" id="L71">            this.column = column;</span>
 <span class="fc" id="L72">            return this;</span>
         }

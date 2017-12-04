@@ -15,12 +15,12 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 
 <span class="fc" id="L20">public class SpringNamedParameterRenderingStrategy extends RenderingStrategy {</span>
     
     @Override
-    public String getFormattedJdbcPlaceholder(SqlColumn&lt;?&gt; column, String prefix, String parameterName) {
+    public String getFormattedJdbcPlaceholder(BindableColumn&lt;?&gt; column, String prefix, String parameterName) {
 <span class="fc" id="L24">        return &quot;:&quot; + parameterName; //$NON-NLS-1$</span>
     }
 

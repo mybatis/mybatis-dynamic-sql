@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,41 +29,44 @@ public class DeleteStatement {
     private Optional&lt;String&gt; whereClause;
     private Map&lt;String, Object&gt; parameters;
     
-<span class="fc" id="L33">    private DeleteStatement(Builder builder) {</span>
-<span class="fc" id="L34">        tableName = Objects.requireNonNull(builder.tableName);</span>
-<span class="fc" id="L35">        whereClause = Objects.requireNonNull(builder.whereClause);</span>
-<span class="fc" id="L36">        parameters = Objects.requireNonNull(builder.parameters);</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L32">    private DeleteStatement(Builder builder) {</span>
+<span class="fc" id="L33">        tableName = Objects.requireNonNull(builder.tableName);</span>
+<span class="fc" id="L34">        whereClause = Objects.requireNonNull(builder.whereClause);</span>
+<span class="fc" id="L35">        parameters = Objects.requireNonNull(builder.parameters);</span>
+<span class="fc" id="L36">    }</span>
     
     public Map&lt;String, Object&gt; getParameters() {
-<span class="fc" id="L40">        return parameters;</span>
+<span class="fc" id="L39">        return parameters;</span>
     }
     
     public String getDeleteStatement() {
-<span class="fc" id="L44">        return &quot;delete from&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L45">                + spaceBefore(tableName)</span>
-<span class="fc" id="L46">                + spaceBefore(whereClause);</span>
+<span class="fc" id="L43">        return &quot;delete from&quot; //$NON-NLS-1$</span>
+<span class="fc" id="L44">                + spaceBefore(tableName)</span>
+<span class="fc" id="L45">                + spaceBefore(whereClause);</span>
     }
 
-<span class="fc" id="L49">    public static class Builder {</span>
+<span class="fc" id="L48">    public static class Builder {</span>
         private String tableName;
-<span class="fc" id="L51">        private Optional&lt;String&gt; whereClause = Optional.empty();</span>
-<span class="fc" id="L52">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L50">        private Optional&lt;String&gt; whereClause = Optional.empty();</span>
+<span class="fc" id="L51">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
         
         public Builder withTableName(String tableName) {
-<span class="fc" id="L55">            this.tableName = tableName;</span>
-<span class="fc" id="L56">            return this;</span>
+<span class="fc" id="L54">            this.tableName = tableName;</span>
+<span class="fc" id="L55">            return this;</span>
         }
         
         public Builder withWhereClause(Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters) {
-<span class="fc" id="L60">            whereClause = whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);</span>
-<span class="fc" id="L61">            parameters.putAll(whereClauseAndParameters.map(WhereClauseAndParameters::parameters)</span>
-<span class="fc" id="L62">                    .orElse(Collections.emptyMap()));</span>
-<span class="fc" id="L63">            return this;</span>
+<span class="fc" id="L59">            whereClauseAndParameters.ifPresent(this::handleWhereClause);</span>
+<span class="fc" id="L60">            return this;</span>
         }
         
+        private void handleWhereClause(WhereClauseAndParameters whereClauseAndParameters) {
+<span class="fc" id="L64">            this.whereClause = Optional.of(whereClauseAndParameters.whereClause());</span>
+<span class="fc" id="L65">            parameters.putAll(whereClauseAndParameters.parameters());</span>
+<span class="fc" id="L66">        }</span>
+        
         public DeleteStatement build() {
-<span class="fc" id="L67">            return new DeleteStatement(this);</span>
+<span class="fc" id="L69">            return new DeleteStatement(this);</span>
         }
     }
 }

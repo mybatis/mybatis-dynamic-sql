@@ -35,7 +35,7 @@ public class UpdateModel {
     private List&lt;UpdateMapping&gt; columnValues;
     
 <span class="fc" id="L37">    private UpdateModel(Builder builder) {</span>
-<span class="fc" id="L38">        table = builder.table;</span>
+<span class="fc" id="L38">        table = Objects.requireNonNull(builder.table);</span>
 <span class="fc" id="L39">        whereModel = Optional.ofNullable(builder.whereModel);</span>
 <span class="fc" id="L40">        columnValues = Objects.requireNonNull(builder.columnValues);</span>
 <span class="fc" id="L41">    }</span>
@@ -60,27 +60,28 @@ public class UpdateModel {
 <span class="fc" id="L60">                .render();</span>
     }
     
-    public static class Builder {
+<span class="fc" id="L63">    public static class Builder {</span>
         private SqlTable table;
         private WhereModel whereModel;
 <span class="fc" id="L66">        private List&lt;UpdateMapping&gt; columnValues = new ArrayList&lt;&gt;();</span>
         
-<span class="fc" id="L68">        public Builder(SqlTable table) {</span>
+        public Builder withTable(SqlTable table) {
 <span class="fc" id="L69">            this.table = table;</span>
-<span class="fc" id="L70">        }</span>
+<span class="fc" id="L70">            return this;</span>
+        }
         
         public Builder withColumnValues(List&lt;UpdateMapping&gt; columnValues) {
-<span class="fc" id="L73">            this.columnValues.addAll(columnValues);</span>
-<span class="fc" id="L74">            return this;</span>
+<span class="fc" id="L74">            this.columnValues.addAll(columnValues);</span>
+<span class="fc" id="L75">            return this;</span>
         }
         
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L78">            this.whereModel = whereModel;</span>
-<span class="fc" id="L79">            return this;</span>
+<span class="fc" id="L79">            this.whereModel = whereModel;</span>
+<span class="fc" id="L80">            return this;</span>
         }
         
         public UpdateModel build() {
-<span class="fc" id="L83">            return new UpdateModel(this);</span>
+<span class="fc" id="L84">            return new UpdateModel(this);</span>
         }
     }
 }

@@ -447,7 +447,7 @@
 <a class="jxr_linenumber" name="L439" href="#L439">439</a>             SelectStatement selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as(<span class="jxr_string">"ol_itemid"</span>), itemMaster.itemId.as(<span class="jxr_string">"im_itemid"</span>), itemMaster.description)
 <a class="jxr_linenumber" name="L440" href="#L440">440</a>                     .from(itemMaster, <span class="jxr_string">"im"</span>)
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>                     .fullJoin(orderLine, <span class="jxr_string">"ol"</span>).on(itemMaster.itemId, equalTo(orderLine.itemId))
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>                     .orderBy(itemMaster.itemId.as(<span class="jxr_string">"im_itemid"</span>))
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>                     .orderBy(sortColumn(<span class="jxr_string">"im_itemid"</span>))
 <a class="jxr_linenumber" name="L443" href="#L443">443</a>                     .build()
 <a class="jxr_linenumber" name="L444" href="#L444">444</a>                     .render(RenderingStrategy.MYBATIS3);
 <a class="jxr_linenumber" name="L445" href="#L445">445</a>             

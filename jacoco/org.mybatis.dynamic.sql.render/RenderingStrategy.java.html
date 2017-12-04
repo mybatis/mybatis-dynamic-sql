@@ -15,12 +15,12 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 
 <span class="fc" id="L20">public abstract class RenderingStrategy {</span>
 <span class="fc" id="L21">    public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();</span>
 <span class="fc" id="L22">    public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();</span>
     
-    public abstract String getFormattedJdbcPlaceholder(SqlColumn&lt;?&gt; column, String prefix, String parameterName);
+    public abstract String getFormattedJdbcPlaceholder(BindableColumn&lt;?&gt; column, String prefix, String parameterName);
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

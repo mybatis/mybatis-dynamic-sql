@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.update.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -38,54 +37,57 @@ public class UpdateStatement {
     private Optional&lt;String&gt; whereClause;
     private Map&lt;String, Object&gt; parameters;
 
-<span class="fc" id="L41">    private UpdateStatement(Builder builder) {</span>
-<span class="fc" id="L42">        tableName = Objects.requireNonNull(builder.tableName);</span>
-<span class="fc" id="L43">        setClause = Objects.requireNonNull(builder.setClause);</span>
-<span class="fc" id="L44">        whereClause = Objects.requireNonNull(builder.whereClause);</span>
-<span class="fc" id="L45">        parameters = Objects.requireNonNull(builder.parameters);</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L40">    private UpdateStatement(Builder builder) {</span>
+<span class="fc" id="L41">        tableName = Objects.requireNonNull(builder.tableName);</span>
+<span class="fc" id="L42">        setClause = Objects.requireNonNull(builder.setClause);</span>
+<span class="fc" id="L43">        whereClause = Objects.requireNonNull(builder.whereClause);</span>
+<span class="fc" id="L44">        parameters = Objects.requireNonNull(builder.parameters);</span>
+<span class="fc" id="L45">    }</span>
 
     public Map&lt;String, Object&gt; getParameters() {
-<span class="fc" id="L49">        return parameters;</span>
+<span class="fc" id="L48">        return parameters;</span>
     }
 
     public String getUpdateStatement() {
-<span class="fc" id="L53">        return &quot;update&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L54">                + spaceBefore(tableName)</span>
-<span class="fc" id="L55">                + spaceBefore(setClause)</span>
-<span class="fc" id="L56">                + spaceBefore(whereClause);</span>
+<span class="fc" id="L52">        return &quot;update&quot; //$NON-NLS-1$</span>
+<span class="fc" id="L53">                + spaceBefore(tableName)</span>
+<span class="fc" id="L54">                + spaceBefore(setClause)</span>
+<span class="fc" id="L55">                + spaceBefore(whereClause);</span>
     }
     
-<span class="fc" id="L59">    public static class Builder {</span>
+<span class="fc" id="L58">    public static class Builder {</span>
         private String tableName;
         private String setClause;
-<span class="fc" id="L62">        private Optional&lt;String&gt; whereClause = Optional.empty();</span>
-<span class="fc" id="L63">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L61">        private Optional&lt;String&gt; whereClause = Optional.empty();</span>
+<span class="fc" id="L62">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
         
         public Builder withTableName(String tableName) {
-<span class="fc" id="L66">            this.tableName = tableName;</span>
-<span class="fc" id="L67">            return this;</span>
+<span class="fc" id="L65">            this.tableName = tableName;</span>
+<span class="fc" id="L66">            return this;</span>
         }
         
         public Builder withSetClause(String setClause) {
-<span class="fc" id="L71">            this.setClause = setClause;</span>
-<span class="fc" id="L72">            return this;</span>
+<span class="fc" id="L70">            this.setClause = setClause;</span>
+<span class="fc" id="L71">            return this;</span>
         }
         
         public Builder withWhereClause(Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters) {
-<span class="fc" id="L76">            whereClause = whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);</span>
-<span class="fc" id="L77">            parameters.putAll(whereClauseAndParameters.map(WhereClauseAndParameters::parameters)</span>
-<span class="fc" id="L78">                    .orElse(Collections.emptyMap()));</span>
-<span class="fc" id="L79">            return this;</span>
+<span class="fc" id="L75">            whereClauseAndParameters.ifPresent(this::handleWhereClause);</span>
+<span class="fc" id="L76">            return this;</span>
         }
         
         public Builder withParameters(Map&lt;String, Object&gt; parameters) {
-<span class="fc" id="L83">            this.parameters.putAll(parameters);</span>
-<span class="fc" id="L84">            return this;</span>
+<span class="fc" id="L80">            this.parameters.putAll(parameters);</span>
+<span class="fc" id="L81">            return this;</span>
         }
         
+        private void handleWhereClause(WhereClauseAndParameters whereClauseAndParameters) {
+<span class="fc" id="L85">            this.whereClause = Optional.of(whereClauseAndParameters.whereClause());</span>
+<span class="fc" id="L86">            parameters.putAll(whereClauseAndParameters.parameters());</span>
+<span class="fc" id="L87">        }</span>
+        
         public UpdateStatement build() {
-<span class="fc" id="L88">            return new UpdateStatement(this);</span>
+<span class="fc" id="L90">            return new UpdateStatement(this);</span>
         }
     }
 }

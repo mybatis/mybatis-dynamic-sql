@@ -27,7 +27,7 @@
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicInteger;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SelectListItem;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.BasicColumn;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.GroupByModel;
@@ -70,8 +70,8 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          <strong class="jxr_keyword">return</strong> queryExpression.calculateTableNameIncludingAlias(table);
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>      }
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">private</strong> String applyTableAndColumnAlias(<a href="../../../../../../org/mybatis/dynamic/sql/SelectListItem.html">SelectListItem</a> selectListItem) {
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">return</strong> selectListItem.applyTableAndColumnAliasToName(queryExpression.tableAliasCalculator());
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">private</strong> String applyTableAndColumnAlias(<a href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> selectListItem) {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">return</strong> selectListItem.renderWithTableAndColumnAlias(queryExpression.tableAliasCalculator());
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">private</strong> String renderJoin(<a href="../../../../../../org/mybatis/dynamic/sql/select/join/JoinModel.html">JoinModel</a> joinModel) {
@@ -97,8 +97,8 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>                  .collect(CustomCollectors.joining(<span class="jxr_string">", "</span>, <span class="jxr_string">"group by "</span>, <span class="jxr_string">""</span>)); <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">private</strong> String applyTableAlias(<a href="../../../../../../org/mybatis/dynamic/sql/SelectListItem.html">SelectListItem</a> column) {
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>          <strong class="jxr_keyword">return</strong> column.applyTableAliasToName(queryExpression.tableAliasCalculator());
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">private</strong> String applyTableAlias(<a href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          <strong class="jxr_keyword">return</strong> column.renderWithTableAlias(queryExpression.tableAliasCalculator());
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      }
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> {

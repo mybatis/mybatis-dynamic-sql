@@ -15,27 +15,26 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.AbstractSelectListItem;
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-public class Count extends AbstractSelectListItem&lt;Count&gt; {
+public class Count extends AbstractAggregate&lt;Count&gt; {
     
-    private Count(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L24">        super(column);</span>
-<span class="fc" id="L25">    }</span>
+    private Count(BasicColumn column) {
+<span class="fc" id="L23">        super(column);</span>
+<span class="fc" id="L24">    }</span>
     
     @Override
     protected String render(String columnName) {
-<span class="fc" id="L29">        return &quot;count(&quot; + columnName + &quot;)&quot;; //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L28">        return &quot;count(&quot; + columnName + &quot;)&quot;; //$NON-NLS-1$ //$NON-NLS-2$</span>
     }
 
     @Override
     protected Count copy() {
-<span class="fc" id="L34">        return new Count(column);</span>
+<span class="fc" id="L33">        return new Count(column);</span>
     }
     
-    public static Count of(SqlColumn&lt;?&gt; column) {
-<span class="fc" id="L38">        return new Count(column);</span>
+    public static Count of(BasicColumn column) {
+<span class="fc" id="L37">        return new Count(column);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

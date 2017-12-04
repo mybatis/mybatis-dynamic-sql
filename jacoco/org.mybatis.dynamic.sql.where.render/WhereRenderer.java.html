@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.where.render;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -31,66 +32,75 @@ public class WhereRenderer {
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
     private TableAliasCalculator tableAliasCalculator;
+    private Optional&lt;String&gt; parameterName;
     
-<span class="fc" id="L35">    private WhereRenderer(Builder builder) {</span>
-<span class="fc" id="L36">        whereModel = Objects.requireNonNull(builder.whereModel);</span>
-<span class="fc" id="L37">        sequence = Objects.requireNonNull(builder.sequence);</span>
-<span class="fc" id="L38">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
-<span class="fc" id="L39">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L37">    private WhereRenderer(Builder builder) {</span>
+<span class="fc" id="L38">        whereModel = Objects.requireNonNull(builder.whereModel);</span>
+<span class="fc" id="L39">        sequence = Objects.requireNonNull(builder.sequence);</span>
+<span class="fc" id="L40">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L41">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
+<span class="fc" id="L42">        parameterName = Objects.requireNonNull(builder.parameterName);</span>
+<span class="fc" id="L43">    }</span>
     
     public WhereClauseAndParameters render() {
-<span class="fc" id="L43">        FragmentCollector fc = whereModel.mapCriteria(this::render)</span>
-<span class="fc" id="L44">                .collect(FragmentCollector.collect());</span>
+<span class="fc" id="L46">        FragmentCollector fc = whereModel.mapCriteria(this::render)</span>
+<span class="fc" id="L47">                .collect(FragmentCollector.collect());</span>
 
-<span class="fc" id="L46">        return new WhereClauseAndParameters.Builder()</span>
-<span class="fc" id="L47">                .withWhereClause(calculateWhereClause(fc))</span>
-<span class="fc" id="L48">                .withParameters(fc.parameters())</span>
-<span class="fc" id="L49">                .build();</span>
+<span class="fc" id="L49">        return new WhereClauseAndParameters.Builder()</span>
+<span class="fc" id="L50">                .withWhereClause(calculateWhereClause(fc))</span>
+<span class="fc" id="L51">                .withParameters(fc.parameters())</span>
+<span class="fc" id="L52">                .build();</span>
     }
     
     private FragmentAndParameters render(SqlCriterion&lt;?&gt; criterion) {
-<span class="fc" id="L53">        return new CriterionRenderer.Builder()</span>
-<span class="fc" id="L54">                .withSequence(sequence)</span>
-<span class="fc" id="L55">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L56">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L57">                .build()</span>
-<span class="fc" id="L58">                .render(criterion);</span>
+<span class="fc" id="L56">        return new CriterionRenderer.Builder()</span>
+<span class="fc" id="L57">                .withSequence(sequence)</span>
+<span class="fc" id="L58">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L59">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L60">                .withParameterName(parameterName)</span>
+<span class="fc" id="L61">                .build()</span>
+<span class="fc" id="L62">                .render(criterion);</span>
     }
     
     private String calculateWhereClause(FragmentCollector collector) {
-<span class="fc" id="L62">        return collector.fragments()</span>
-<span class="fc" id="L63">                .collect(Collectors.joining(&quot; &quot;, &quot;where &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L66">        return collector.fragments()</span>
+<span class="fc" id="L67">                .collect(Collectors.joining(&quot; &quot;, &quot;where &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
     
-<span class="fc" id="L66">    public static class Builder {</span>
+<span class="fc" id="L70">    public static class Builder {</span>
         private WhereModel whereModel;
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator;
         private AtomicInteger sequence;
+<span class="fc" id="L75">        private Optional&lt;String&gt; parameterName = Optional.empty();</span>
         
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L73">            this.whereModel = whereModel;</span>
-<span class="fc" id="L74">            return this;</span>
-        }
-        
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L78">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L78">            this.whereModel = whereModel;</span>
 <span class="fc" id="L79">            return this;</span>
         }
         
-        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L83">            this.tableAliasCalculator = tableAliasCalculator;</span>
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L83">            this.renderingStrategy = renderingStrategy;</span>
 <span class="fc" id="L84">            return this;</span>
         }
         
-        public Builder withSequence(AtomicInteger sequence) {
-<span class="fc" id="L88">            this.sequence = sequence;</span>
+        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+<span class="fc" id="L88">            this.tableAliasCalculator = tableAliasCalculator;</span>
 <span class="fc" id="L89">            return this;</span>
         }
         
+        public Builder withSequence(AtomicInteger sequence) {
+<span class="fc" id="L93">            this.sequence = sequence;</span>
+<span class="fc" id="L94">            return this;</span>
+        }
+
+        public Builder withParameterName(Optional&lt;String&gt; parameterName) {
+<span class="fc" id="L98">            this.parameterName = parameterName;</span>
+<span class="fc" id="L99">            return this;</span>
+        }
+        
         public WhereRenderer build() {
-<span class="fc" id="L93">            return new WhereRenderer(this);</span>
+<span class="fc" id="L103">            return new WhereRenderer(this);</span>
         }
     }
 }

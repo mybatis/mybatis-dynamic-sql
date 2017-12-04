@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SelectListItem;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.GroupByModel;
@@ -62,8 +62,8 @@ public class QueryExpressionRenderer {
 <span class="fc" id="L62">        return queryExpression.calculateTableNameIncludingAlias(table);</span>
     }
     
-    private String applyTableAndColumnAlias(SelectListItem selectListItem) {
-<span class="fc" id="L66">        return selectListItem.applyTableAndColumnAliasToName(queryExpression.tableAliasCalculator());</span>
+    private String applyTableAndColumnAlias(BasicColumn selectListItem) {
+<span class="fc" id="L66">        return selectListItem.renderWithTableAndColumnAlias(queryExpression.tableAliasCalculator());</span>
     }
     
     private String renderJoin(JoinModel joinModel) {
@@ -89,8 +89,8 @@ public class QueryExpressionRenderer {
 <span class="fc" id="L89">                .collect(CustomCollectors.joining(&quot;, &quot;, &quot;group by &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
     
-    private String applyTableAlias(SelectListItem column) {
-<span class="fc" id="L93">        return column.applyTableAliasToName(queryExpression.tableAliasCalculator());</span>
+    private String applyTableAlias(BasicColumn column) {
+<span class="fc" id="L93">        return column.renderWithTableAlias(queryExpression.tableAliasCalculator());</span>
     }
     
 <span class="fc" id="L96">    public static class Builder {</span>
