@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.select.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,8 +30,7 @@ public class QueryExpression {
     private String tableName;
     private Optional<String> connector;
     private String columnList;
-    private Optional<String> whereClause;
-    private Map<String, Object> parameters;
+    private Optional<WhereClauseAndParameters> whereClauseAndParameters;
     private boolean isDistinct;
     private Optional<String> joinClause;
     private Optional<String> groupByClause;
@@ -40,15 +39,15 @@ public class QueryExpression {
         tableName = Objects.requireNonNull(builder.tableName);
         connector = Objects.requireNonNull(builder.connector);
         columnList = Objects.requireNonNull(builder.columnList);
-        whereClause = Objects.requireNonNull(builder.whereClause);
-        parameters = Objects.requireNonNull(builder.parameters);
+        whereClauseAndParameters = Objects.requireNonNull(builder.whereClauseAndParameters);
         isDistinct = builder.isDistinct;
         joinClause = Objects.requireNonNull(builder.joinClause);
         groupByClause = Objects.requireNonNull(builder.groupByClause);
     }
     
     public Map<String, Object> parameters() {
-        return parameters;
+        return whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
+                .orElse(Collections.emptyMap());
     }
     
     public String queryExpression() {
@@ -59,7 +58,7 @@ public class QueryExpression {
                 + " from " //$NON-NLS-1$
                 + tableName
                 + spaceBefore(joinClause)
-                + spaceBefore(whereClause)
+                + spaceBefore(whereClauseAndParameters.map(WhereClauseAndParameters::whereClause))
                 + spaceBefore(groupByClause);
     }
     
@@ -67,10 +66,9 @@ public class QueryExpression {
         private Optional<String> connector;
         private String tableName;
         private boolean isDistinct;
-        private Map<String, Object> parameters = new HashMap<>();
         private String columnList;
         private Optional<String> joinClause = Optional.empty();
-        private Optional<String> whereClause = Optional.empty();
+        private Optional<WhereClauseAndParameters> whereClauseAndParameters = Optional.empty();
         private Optional<String> groupByClause = Optional.empty();
         
         public Builder withConnector(Optional<String> connector) {
@@ -89,12 +87,7 @@ public class QueryExpression {
         }
         
         public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
-            whereClauseAndParameters.ifPresent(this::handleWhereClause);
-            return this;
-        }
-        
-        public Builder withParameters(Map<String, Object> parameters) {
-            this.parameters.putAll(parameters);
+            this.whereClauseAndParameters = whereClauseAndParameters;
             return this;
         }
         
@@ -111,11 +104,6 @@ public class QueryExpression {
         public Builder withGroupByClause(Optional<String> groupByClause) {
             this.groupByClause = groupByClause;
             return this;
-        }
-        
-        private void handleWhereClause(WhereClauseAndParameters whereClauseAndParameters) {
-            this.whereClause = Optional.of(whereClauseAndParameters.whereClause());
-            parameters.putAll(whereClauseAndParameters.parameters());
         }
         
         public QueryExpression build() {

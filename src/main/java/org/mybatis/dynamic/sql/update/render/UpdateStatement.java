@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.update.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,13 +36,16 @@ public class UpdateStatement {
     private String tableName;
     private String setClause;
     private Optional<String> whereClause;
-    private Map<String, Object> parameters;
+    private Map<String, Object> parameters = new HashMap<>();
 
     private UpdateStatement(Builder builder) {
         tableName = Objects.requireNonNull(builder.tableName);
         setClause = Objects.requireNonNull(builder.setClause);
-        whereClause = Objects.requireNonNull(builder.whereClause);
-        parameters = Objects.requireNonNull(builder.parameters);
+        whereClause = builder.whereClauseAndParameters.map(WhereClauseAndParameters::whereClause);
+        parameters.putAll(builder.parameters);
+        parameters.putAll(builder.whereClauseAndParameters
+                .map(WhereClauseAndParameters::parameters)
+                .orElse(Collections.emptyMap()));
     }
 
     public Map<String, Object> getParameters() {
@@ -58,7 +62,7 @@ public class UpdateStatement {
     public static class Builder {
         private String tableName;
         private String setClause;
-        private Optional<String> whereClause = Optional.empty();
+        private Optional<WhereClauseAndParameters> whereClauseAndParameters = Optional.empty();
         private Map<String, Object> parameters = new HashMap<>();
         
         public Builder withTableName(String tableName) {
@@ -72,18 +76,13 @@ public class UpdateStatement {
         }
         
         public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
-            whereClauseAndParameters.ifPresent(this::handleWhereClause);
+            this.whereClauseAndParameters = whereClauseAndParameters;
             return this;
         }
         
         public Builder withParameters(Map<String, Object> parameters) {
             this.parameters.putAll(parameters);
             return this;
-        }
-        
-        private void handleWhereClause(WhereClauseAndParameters whereClauseAndParameters) {
-            this.whereClause = Optional.of(whereClauseAndParameters.whereClause());
-            parameters.putAll(whereClauseAndParameters.parameters());
         }
         
         public UpdateStatement build() {

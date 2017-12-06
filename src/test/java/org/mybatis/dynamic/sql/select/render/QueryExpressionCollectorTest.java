@@ -26,6 +26,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
+import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
 
 @RunWith(JUnitPlatform.class)
 public class QueryExpressionCollectorTest {
@@ -36,21 +37,33 @@ public class QueryExpressionCollectorTest {
         
         Map<String, Object> parms1 = new HashMap<>();
         parms1.put("p1", 1);
+
+        WhereClauseAndParameters wcp1 = new WhereClauseAndParameters.Builder()
+                .withWhereClause("where fred = ?")
+                .withParameters(parms1)
+                .build();
+        
         QueryExpression qe1 = new QueryExpression.Builder()
                 .withConnector(Optional.empty())
                 .withColumnList("foo")
                 .withTableName("bar")
-                .withParameters(parms1)
+                .withWhereClause(Optional.of(wcp1))
                 .build();
         queryExpressions.add(qe1);
 
         Map<String, Object> parms2 = new HashMap<>();
         parms2.put("p2", 2);
+
+        WhereClauseAndParameters wcp2 = new WhereClauseAndParameters.Builder()
+                .withWhereClause("where betty = ?")
+                .withParameters(parms2)
+                .build();
+        
         QueryExpression qe2 = new QueryExpression.Builder()
                 .withConnector(Optional.of("union"))
                 .withColumnList("bar")
                 .withTableName("foo")
-                .withParameters(parms2)
+                .withWhereClause(Optional.of(wcp2))
                 .build();
         queryExpressions.add(qe2);
 
@@ -58,7 +71,7 @@ public class QueryExpressionCollectorTest {
         QueryExpressionCollector collector = queryExpressions.parallelStream()
                 .collect(QueryExpressionCollector.collect());
 
-        assertThat(collector.queryExpression()).isEqualTo("select foo from bar union select bar from foo");
+        assertThat(collector.queryExpression()).isEqualTo("select foo from bar where fred = ? union select bar from foo where betty = ?");
         assertThat(collector.parameters().size()).isEqualTo(2);
         assertThat(collector.parameters().get("p1")).isEqualTo(1);
         assertThat(collector.parameters().get("p2")).isEqualTo(2);

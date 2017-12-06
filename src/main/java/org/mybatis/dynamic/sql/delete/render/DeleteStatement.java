@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,29 +26,27 @@ import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
 
 public class DeleteStatement {
     private String tableName;
-    private Optional<String> whereClause;
-    private Map<String, Object> parameters;
+    private Optional<WhereClauseAndParameters> whereClauseAndParameters;
     
     private DeleteStatement(Builder builder) {
         tableName = Objects.requireNonNull(builder.tableName);
-        whereClause = Objects.requireNonNull(builder.whereClause);
-        parameters = Objects.requireNonNull(builder.parameters);
+        whereClauseAndParameters = Objects.requireNonNull(builder.whereClauseAndParameters);
     }
     
     public Map<String, Object> getParameters() {
-        return parameters;
+        return whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
+                .orElse(Collections.emptyMap());
     }
     
     public String getDeleteStatement() {
         return "delete from" //$NON-NLS-1$
                 + spaceBefore(tableName)
-                + spaceBefore(whereClause);
+                + spaceBefore(whereClauseAndParameters.map(WhereClauseAndParameters::whereClause));
     }
 
     public static class Builder {
         private String tableName;
-        private Optional<String> whereClause = Optional.empty();
-        private Map<String, Object> parameters = new HashMap<>();
+        private Optional<WhereClauseAndParameters> whereClauseAndParameters = Optional.empty();
         
         public Builder withTableName(String tableName) {
             this.tableName = tableName;
@@ -56,13 +54,8 @@ public class DeleteStatement {
         }
         
         public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
-            whereClauseAndParameters.ifPresent(this::handleWhereClause);
+            this.whereClauseAndParameters = whereClauseAndParameters;
             return this;
-        }
-        
-        private void handleWhereClause(WhereClauseAndParameters whereClauseAndParameters) {
-            this.whereClause = Optional.of(whereClauseAndParameters.whereClause());
-            parameters.putAll(whereClauseAndParameters.parameters());
         }
         
         public DeleteStatement build() {
