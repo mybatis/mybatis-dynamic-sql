@@ -9,8 +9,8 @@ The SELECT support is the most complex part of the library, and also the part of
 
 | Interface | Purpose|
 |-----------|--------|
-| org.mybatis.dynamic.sql.BasicColumn | Use this interface if you want to add capabilities to a SELECT list or a GROUP BY expression. For example, creating a calculated column. |
-| org.mybatis.dynamic.sql.BindableColumn | Use this interface if you want to add capabilities to a WHERE clause. For example, creating a custom condition. |
+| `org.mybatis.dynamic.sql.BasicColumn` | Use this interface if you want to add capabilities to a SELECT list or a GROUP BY expression. For example, creating a calculated column. |
+| `org.mybatis.dynamic.sql.BindableColumn` | Use this interface if you want to add capabilities to a WHERE clause. For example, creating a custom condition. |
 
 See the following sections for examples.
 
