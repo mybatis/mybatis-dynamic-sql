@@ -181,11 +181,12 @@ public class AnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
             WhereClauseAndParameters whereClause = where(id, isNotBetween(10).and(60))
+                    .or(id, isIn(25, 27))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
             List<AnimalData> animals = mapper.selectByExample(whereClause);
-            assertThat(animals.size()).isEqualTo(14);
+            assertThat(animals.size()).isEqualTo(16);
         } finally {
             sqlSession.close();
         }
