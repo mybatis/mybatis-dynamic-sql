@@ -43,6 +43,10 @@ public class InsertStatement<T> {
                 + spaceBefore(valuesPhrase);
     }
 
+    public static <T> Builder<T> withRecord(T record) {
+        return new Builder<T>().withRecord(record);
+    }
+    
     public static class Builder<T> {
         private String tableName;
         private String columnsPhrase;

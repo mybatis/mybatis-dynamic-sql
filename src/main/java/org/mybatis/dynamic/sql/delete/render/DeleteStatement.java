@@ -44,6 +44,10 @@ public class DeleteStatement {
                 + spaceBefore(whereClauseAndParameters.map(WhereClauseAndParameters::whereClause));
     }
 
+    public static Builder withTableName(String tableName) {
+        return new Builder().withTableName(tableName);
+    }
+    
     public static class Builder {
         private String tableName;
         private Optional<WhereClauseAndParameters> whereClauseAndParameters = Optional.empty();

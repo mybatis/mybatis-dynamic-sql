@@ -118,36 +118,32 @@ public interface SqlBuilder {
     
     // where condition connectors
     static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return new SqlCriterion.Builder<T>()
+        return SqlCriterion.withColumn(column)
                 .withConnector("or") //$NON-NLS-1$
-                .withColumn(column)
                 .withCondition(condition)
                 .build();
     }
 
     static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        return new SqlCriterion.Builder<T>()
+        return SqlCriterion.withColumn(column)
                 .withConnector("or") //$NON-NLS-1$
-                .withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
 
     static <T> SqlCriterion<T> and(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return new SqlCriterion.Builder<T>()
+        return SqlCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
-                .withColumn(column)
                 .withCondition(condition)
                 .build();
     }
 
     static <T> SqlCriterion<T> and(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        return new SqlCriterion.Builder<T>()
+        return SqlCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
-                .withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
@@ -155,8 +151,7 @@ public interface SqlBuilder {
 
     // join support
     static JoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
-        return new JoinCriterion.Builder()
-                .withJoinColumn(joinColumn)
+        return JoinCriterion.withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .withConnector("and") //$NON-NLS-1$
                 .build();

@@ -44,11 +44,14 @@ public class SelectModel {
     }
     
     public SelectStatement render(RenderingStrategy renderingStrategy) {
-        return new SelectRenderer.Builder()
-                .withSelectModel(this)
+        return SelectRenderer.withSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+    
+    public static Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
+        return new Builder().withQueryExpressions(queryExpressions);
     }
     
     public static class Builder {

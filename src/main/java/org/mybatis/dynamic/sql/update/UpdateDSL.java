@@ -64,8 +64,7 @@ public class UpdateDSL<R> {
      * @return the update model
      */
     public R build() {
-        UpdateModel updateModel = new UpdateModel.Builder()
-                .withTable(table)
+        UpdateModel updateModel = UpdateModel.withTable(table)
                 .withColumnValues(columnsAndValues)
                 .build();
         return adapterFunction.apply(updateModel);
@@ -132,8 +131,7 @@ public class UpdateDSL<R> {
         }
         
         public R build() {
-            UpdateModel updateModel = new UpdateModel.Builder()
-                    .withTable(table)
+            UpdateModel updateModel = UpdateModel.withTable(table)
                     .withColumnValues(columnsAndValues)
                     .withWhereModel(buildWhereModel())
                     .build();

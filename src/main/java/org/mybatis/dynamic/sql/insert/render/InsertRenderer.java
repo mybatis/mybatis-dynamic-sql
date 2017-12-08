@@ -36,11 +36,10 @@ public class InsertRenderer<T> {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
-        return new InsertStatement.Builder<T>()
+        return InsertStatement.withRecord(model.record())
                 .withTableName(model.table().name())
                 .withColumnsPhrase(collector.columnsPhrase())
                 .withValuesPhrase(collector.valuesPhrase())
-                .withRecord(model.record())
                 .build();
     }
 
@@ -50,6 +49,10 @@ public class InsertRenderer<T> {
     
     private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, InsertMapping insertMapping) {
         return insertMapping.accept(visitor);
+    }
+    
+    public static <T> Builder<T> withInsertModel(InsertModel<T> model) {
+        return new Builder<T>().withInsertModel(model);
     }
     
     public static class Builder<T> {

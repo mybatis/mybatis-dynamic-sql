@@ -48,11 +48,14 @@ public class InsertSelectModel {
     }
     
     public InsertSelectStatement render(RenderingStrategy renderingStrategy) {
-        return new InsertSelectRenderer.Builder()
-                .withInsertSelectModel(this)
+        return InsertSelectRenderer.withInsertSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+    
+    public static Builder withTable(SqlTable table) {
+        return new Builder().withTable(table);
     }
     
     public static class Builder {

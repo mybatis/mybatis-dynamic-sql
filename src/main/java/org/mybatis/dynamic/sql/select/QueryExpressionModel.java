@@ -92,6 +92,10 @@ public class QueryExpressionModel {
                 + spaceBefore(tableAliasCalculator.aliasForTable(table));
     }
     
+    public static Builder withSelectList(List<BasicColumn> columnList) {
+        return new Builder().withSelectList(columnList);
+    }
+    
     public static class Builder {
         private String connector;
         private boolean isDistinct;
@@ -117,7 +121,7 @@ public class QueryExpressionModel {
             return this;
         }
 
-        public Builder withColumns(List<BasicColumn> selectList) {
+        public Builder withSelectList(List<BasicColumn> selectList) {
             this.selectList.addAll(selectList);
             return this;
         }

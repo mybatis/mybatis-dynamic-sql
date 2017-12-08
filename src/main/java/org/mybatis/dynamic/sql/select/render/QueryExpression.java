@@ -62,6 +62,10 @@ public class QueryExpression {
                 + spaceBefore(groupByClause);
     }
     
+    public static Builder withColumnList(String columnList) {
+        return new Builder().withColumnList(columnList);
+    }
+    
     public static class Builder {
         private Optional<String> connector;
         private String tableName;

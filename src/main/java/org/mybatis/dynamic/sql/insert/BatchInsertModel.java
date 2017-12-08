@@ -52,11 +52,14 @@ public class BatchInsertModel<T> {
     }
     
     public BatchInsert<T> render(RenderingStrategy renderingStrategy) {
-        return new BatchInsertRenderer.Builder<T>()
-                .withBatchInsertModel(this)
+        return BatchInsertRenderer.withBatchInsertModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+    
+    public static <T> Builder<T> withRecords(List<T> records) {
+        return new Builder<T>().withRecords(records);
     }
     
     public static class Builder<T> {

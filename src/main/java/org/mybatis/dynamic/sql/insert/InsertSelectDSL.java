@@ -43,8 +43,7 @@ public class InsertSelectDSL {
     }
     
     public InsertSelectModel build() {
-        return new InsertSelectModel.Builder()
-                .withTable(table)
+        return InsertSelectModel.withTable(table)
                 .withColumnList(columnList)
                 .withSelectModel(selectModel)
                 .build();

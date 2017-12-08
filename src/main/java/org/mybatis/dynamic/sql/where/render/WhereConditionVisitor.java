@@ -55,16 +55,14 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters)
                 .collect(FragmentCollector.collect());
         
-        return new FragmentAndParameters.Builder()
-                .withFragment(condition.renderCondition(columnName(), fc.fragments()))
+        return FragmentAndParameters.withFragment(condition.renderCondition(columnName(), fc.fragments()))
                 .withParameters(fc.parameters())
                 .build();
     }
 
     @Override
     public FragmentAndParameters visit(AbstractNoValueCondition<T> condition) {
-        return new FragmentAndParameters.Builder()
-                .withFragment(condition.renderCondition(columnName()))
+        return FragmentAndParameters.withFragment(condition.renderCondition(columnName()))
                 .build();
     }
 
@@ -74,8 +72,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         String fragment = condition.renderCondition(columnName(),
                 getFormattedJdbcPlaceholder(mapKey));
 
-        return new FragmentAndParameters.Builder()
-                .withFragment(fragment)
+        return FragmentAndParameters.withFragment(fragment)
                 .withParameter(mapKey, condition.value())
                 .build();
     }
@@ -88,8 +85,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
                 getFormattedJdbcPlaceholder(mapKey1),
                 getFormattedJdbcPlaceholder(mapKey2));
                 
-        return new FragmentAndParameters.Builder()
-                .withFragment(fragment)
+        return FragmentAndParameters.withFragment(fragment)
                 .withParameter(mapKey1, condition.value1())
                 .withParameter(mapKey2, condition.value2())
                 .build();
@@ -98,15 +94,15 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
-        SelectStatement selectStatement = new SelectRenderer.Builder()
-                .withSelectModel(condition.selectModel())
+        SelectStatement selectStatement = SelectRenderer.withSelectModel(condition.selectModel())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
                 .build()
                 .render();
         
-        return new FragmentAndParameters.Builder()
-                .withFragment(condition.renderCondition(columnName(), selectStatement.getSelectStatement()))
+        String fragment = condition.renderCondition(columnName(), selectStatement.getSelectStatement());
+        
+        return FragmentAndParameters.withFragment(fragment)
                 .withParameters(selectStatement.getParameters())
                 .build();
     }
@@ -114,8 +110,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private FragmentAndParameters toFragmentAndParameters(Object value) {
         String mapKey = formatParameterMapKey(sequence.getAndIncrement());
         
-        return new FragmentAndParameters.Builder()
-                .withFragment(getFormattedJdbcPlaceholder(mapKey))
+        return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))
                 .withParameter(mapKey, value)
                 .build();
     }
@@ -130,6 +125,10 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     
     private String columnName() {
         return column.renderWithTableAlias(tableAliasCalculator);
+    }
+    
+    public static <T> Builder<T> withColumn(BindableColumn<T> column) {
+        return new Builder<T>().withColumn(column);
     }
     
     public static class Builder<T> {

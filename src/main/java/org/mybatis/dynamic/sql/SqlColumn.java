@@ -100,6 +100,10 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return tableAlias + "." + name(); //$NON-NLS-1$
     }
     
+    public static Builder withName(String name) {
+        return new Builder().withName(name);
+    }
+    
     public static class Builder {
         private SqlTable table;
         private String name;

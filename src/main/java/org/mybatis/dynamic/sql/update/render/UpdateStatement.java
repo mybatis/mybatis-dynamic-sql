@@ -59,6 +59,10 @@ public class UpdateStatement {
                 + spaceBefore(whereClause);
     }
     
+    public static Builder withTableName(String tableName) {
+        return new Builder().withTableName(tableName);
+    }
+    
     public static class Builder {
         private String tableName;
         private String setClause;

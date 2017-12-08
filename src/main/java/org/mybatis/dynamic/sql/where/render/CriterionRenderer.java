@@ -29,51 +29,50 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
-public class CriterionRenderer {
-
+public class CriterionRenderer<T> {
+    private SqlCriterion<T> sqlCriterion;
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
     private TableAliasCalculator tableAliasCalculator;
     private Optional<String> parameterName = Optional.empty();
     
-    private CriterionRenderer(Builder builder) {
+    private CriterionRenderer(Builder<T> builder) {
+        sqlCriterion = Objects.requireNonNull(builder.sqlCriterion);
         sequence = Objects.requireNonNull(builder.sequence);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
         parameterName = Objects.requireNonNull(builder.parameterName);
     }
     
-    public <T> FragmentAndParameters render(SqlCriterion<T> criterion) {
-        if (criterion.hasSubCriteria()) {
-            return renderWithSubcriteria(criterion);
+    public FragmentAndParameters render() {
+        if (sqlCriterion.hasSubCriteria()) {
+            return renderWithSubcriteria();
         } else {
-            return renderWithoutSubcriteria(criterion);
+            return renderWithoutSubcriteria();
         }
     }
     
-    private <T> FragmentAndParameters renderWithSubcriteria(SqlCriterion<T> criterion) {
-        String connector = renderConnector(criterion);
-        FragmentAndParameters renderedCondition = renderCondition(criterion);
+    private FragmentAndParameters renderWithSubcriteria() {
+        String connector = renderConnector();
+        FragmentAndParameters renderedCondition = renderCondition();
         
-        FragmentCollector renderedSubCriteria = criterion.mapSubCriteria(this::renderSubCriterion)
+        FragmentCollector renderedSubCriteria = sqlCriterion.mapSubCriteria(this::renderSubCriterion)
                 .collect(FragmentCollector.collect());
         String fragment = calculateFragment(connector, renderedCondition, renderedSubCriteria);
         
-        return new FragmentAndParameters.Builder()
-                .withFragment(fragment)
+        return FragmentAndParameters.withFragment(fragment)
                 .withParameters(renderedCondition.parameters())
                 .withParameters(renderedSubCriteria.parameters())
                 .build();
     }
 
-    private <T> FragmentAndParameters renderWithoutSubcriteria(SqlCriterion<T> criterion) {
-        String connector = renderConnector(criterion);
-        FragmentAndParameters renderedCondition = renderCondition(criterion);
+    private FragmentAndParameters renderWithoutSubcriteria() {
+        String connector = renderConnector();
+        FragmentAndParameters renderedCondition = renderCondition();
         
         String fragment = calculateFragment(connector, renderedCondition);
         
-        return new FragmentAndParameters.Builder()
-                .withFragment(fragment)
+        return FragmentAndParameters.withFragment(fragment)
                 .withParameters(renderedCondition.parameters())
                 .build();
     }
@@ -91,58 +90,67 @@ public class CriterionRenderer {
                 + ")"; //$NON-NLS-1$
     }
     
-    private String renderConnector(SqlCriterion<?> criterion) {
-        return spaceAfter(criterion.connector());
+    private String renderConnector() {
+        return spaceAfter(sqlCriterion.connector());
     }
     
-    private  <T> FragmentAndParameters renderSubCriterion(SqlCriterion<T> subCriterion) {
-        return new CriterionRenderer.Builder()
+    private <S> FragmentAndParameters renderSubCriterion(SqlCriterion<S> subCriterion) {
+        return CriterionRenderer.withCriterion(subCriterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(tableAliasCalculator)
                 .build()
-                .render(subCriterion);
+                .render();
     }
     
-    private <T> FragmentAndParameters renderCondition(SqlCriterion<T> criterion) {
-        WhereConditionVisitor<T> visitor = new WhereConditionVisitor.Builder<T>()
+    private FragmentAndParameters renderCondition() {
+        WhereConditionVisitor<T> visitor = WhereConditionVisitor.withColumn(sqlCriterion.column())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
-                .withColumn(criterion.column())
                 .withTableAliasCalculator(tableAliasCalculator)
                 .withParameterName(parameterName)
                 .build();
-        return criterion.condition().accept(visitor);
+        return sqlCriterion.condition().accept(visitor);
     }
     
-    public static class Builder {
+    public static <T> Builder<T> withCriterion(SqlCriterion<T> sqlCriterion) {
+        return new Builder<T>().withCriterion(sqlCriterion);
+    }
+    
+    public static class Builder<T> {
+        private SqlCriterion<T> sqlCriterion;
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator;
         private Optional<String> parameterName = Optional.empty();
         
-        public Builder withSequence(AtomicInteger sequence) {
+        public Builder<T> withCriterion(SqlCriterion<T> sqlCriterion) {
+            this.sqlCriterion = sqlCriterion;
+            return this;
+            
+        }
+        public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
             return this;
         }
         
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
         
-        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+        public Builder<T> withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
             this.tableAliasCalculator = tableAliasCalculator;
             return this;
         }
 
-        public Builder withParameterName(Optional<String> parameterName) {
+        public Builder<T> withParameterName(Optional<String> parameterName) {
             this.parameterName = parameterName;
             return this;
         }
         
-        public CriterionRenderer build() {
-            return new CriterionRenderer(this);
+        public CriterionRenderer<T> build() {
+            return new CriterionRenderer<>(this);
         }
     }
 }

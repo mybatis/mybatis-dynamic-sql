@@ -47,6 +47,10 @@ public class JoinSpecification {
         return joinType;
     }
     
+    public static Builder withJoinTable(SqlTable table) {
+        return new Builder().withJoinTable(table);
+    }
+    
     public static class Builder {
         private SqlTable table;
         private List<JoinCriterion> joinCriteria = new ArrayList<>();

@@ -66,8 +66,7 @@ public class WhereModel {
     
     private WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator, Optional<String> parameterName) {
-        return new WhereRenderer.Builder()
-                .withWhereModel(this)
+        return WhereRenderer.withWhereModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(tableAliasCalculator)

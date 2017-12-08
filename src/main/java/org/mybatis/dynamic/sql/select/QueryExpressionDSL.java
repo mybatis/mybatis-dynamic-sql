@@ -128,11 +128,10 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     }
 
     protected QueryExpressionModel buildModel() {
-        return new QueryExpressionModel.Builder()
+        return QueryExpressionModel.withSelectList(selectList)
                 .withConnector(connector)
                 .withTable(table)
                 .isDistinct(isDistinct)
-                .withColumns(selectList)
                 .withTableAliases(tableAliases)
                 .withWhereModel(whereModel)
                 .withJoinModel(joinModel)
@@ -260,8 +259,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             this.joinTable = table;
             this.joinType = joinType;
 
-            JoinCriterion joinCriterion = new JoinCriterion.Builder()
-                    .withJoinColumn(joinColumn)
+            JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
                     .withConnector("on") //$NON-NLS-1$
                     .build();
@@ -274,8 +272,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             this.joinTable = table;
             this.joinType = joinType;
 
-            JoinCriterion joinCriterion = new JoinCriterion.Builder()
-                    .withJoinColumn(joinColumn)
+            JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
                     .withConnector("on") //$NON-NLS-1$
                     .build();
@@ -285,9 +282,8 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
         
         protected JoinSpecification buildJoinSpecification() {
-            return new JoinSpecification.Builder()
+            return JoinSpecification.withJoinTable(joinTable)
                     .withJoinCriteria(joinCriteria)
-                    .withJoinTable(joinTable)
                     .withJoinType(joinType)
                     .build();
         }
@@ -316,8 +312,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
 
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
-            JoinCriterion joinCriterion = new JoinCriterion.Builder()
-                    .withJoinColumn(joinColumn)
+            JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
                     .withConnector("and") //$NON-NLS-1$
                     .build();

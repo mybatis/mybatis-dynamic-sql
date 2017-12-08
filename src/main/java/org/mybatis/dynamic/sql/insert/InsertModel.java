@@ -51,11 +51,14 @@ public class InsertModel<T> {
     }
     
     public InsertStatement<T> render(RenderingStrategy renderingStrategy) {
-        return new InsertRenderer.Builder<T>()
-                .withInsertModel(this)
+        return InsertRenderer.withInsertModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+    
+    public static <T> Builder<T> withRecord(T record) {
+        return new Builder<T>().withRecord(record);
     }
     
     public static class Builder<T> {

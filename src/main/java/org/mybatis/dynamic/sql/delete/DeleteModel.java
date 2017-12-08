@@ -42,11 +42,14 @@ public class DeleteModel {
     }
     
     public DeleteStatement render(RenderingStrategy renderingStrategy) {
-        return new DeleteRenderer.Builder()
-                .withDeleteModel(this)
+        return DeleteRenderer.withDeleteModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+    
+    public static Builder withTable(SqlTable table) {
+        return new Builder().withTable(table);
     }
     
     public static class Builder {

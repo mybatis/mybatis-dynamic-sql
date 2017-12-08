@@ -154,8 +154,7 @@ public class InsertStatementTest {
     }
     
     private FieldAndValue newFieldAndValue(String fieldName, String valuePhrase) {
-        return new FieldAndValue.Builder()
-                .withFieldName(fieldName)
+        return FieldAndValue.withFieldName(fieldName)
                 .withValuePhrase(valuePhrase)
                 .build();
     }

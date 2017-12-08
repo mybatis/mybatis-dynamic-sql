@@ -43,6 +43,10 @@ public class SelectStatement {
         return queryExpression + StringUtilities.spaceBefore(orderByClause);
     }
     
+    public static Builder withQueryExpression(String queryExpression) {
+        return new Builder().withQueryExpression(queryExpression);
+    }
+    
     public static class Builder {
         private String queryExpression;
         private Optional<String> orderByClause = Optional.empty();

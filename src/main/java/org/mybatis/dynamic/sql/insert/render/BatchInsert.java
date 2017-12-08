@@ -48,11 +48,10 @@ public class BatchInsert<T> {
     }
     
     private InsertStatement<T> toInsertStatement(T record) {
-        return new InsertStatement.Builder<T>()
+        return InsertStatement.withRecord(record)
                 .withTableName(tableName)
                 .withColumnsPhrase(columnsPhrase)
                 .withValuesPhrase(valuesPhrase)
-                .withRecord(record)
                 .build();
     }
 
@@ -66,6 +65,10 @@ public class BatchInsert<T> {
                 + spaceBefore(tableName)
                 + spaceBefore(columnsPhrase)
                 + spaceBefore(valuesPhrase);
+    }
+    
+    public static <T> Builder<T> withRecords(List<T> records) {
+        return new Builder<T>().withRecords(records);
     }
     
     public static class Builder<T> {

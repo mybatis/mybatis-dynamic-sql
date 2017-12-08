@@ -32,14 +32,17 @@ public class DeleteRenderer {
     }
     
     public DeleteStatement render() {
-        return new DeleteStatement.Builder()
-                .withTableName(deleteModel.table().name())
+        return DeleteStatement.withTableName(deleteModel.table().name())
                 .withWhereClause(deleteModel.whereModel().map(this::renderWhereModel))
                 .build();
     }
     
     private WhereClauseAndParameters renderWhereModel(WhereModel whereModel) {
         return whereModel.render(renderingStrategy);
+    }
+    
+    public static Builder withDeleteModel(DeleteModel deleteModel) {
+        return new Builder().withDeleteModel(deleteModel);
     }
     
     public static class Builder {

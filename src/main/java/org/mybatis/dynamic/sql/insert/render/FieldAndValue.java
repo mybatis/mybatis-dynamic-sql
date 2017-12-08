@@ -34,6 +34,10 @@ public class FieldAndValue {
         return valuePhrase;
     }
     
+    public static Builder withFieldName(String fieldName) {
+        return new Builder().withFieldName(fieldName);
+    }
+    
     public static class Builder {
         private String fieldName;
         private String valuePhrase;

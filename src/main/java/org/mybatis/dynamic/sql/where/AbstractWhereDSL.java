@@ -27,8 +27,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();
     
     protected <S> AbstractWhereDSL(BindableColumn<S> column, VisitableCondition<S> condition) {
-        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
-                .withColumn(column)
+        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         criteria.add(criterion);
@@ -36,8 +35,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     
     protected <S> AbstractWhereDSL(BindableColumn<S> column, VisitableCondition<S> condition,
             SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
-                .withColumn(column)
+        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
@@ -65,9 +63,8 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
     
     private <S> void addCriterion(String connector, BindableColumn<S> column, VisitableCondition<S> condition) {
-        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
+        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
                 .withConnector(connector)
-                .withColumn(column)
                 .withCondition(condition)
                 .build();
         criteria.add(criterion);
@@ -75,9 +72,8 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     
     private <S> void addCriterion(String connector, BindableColumn<S> column, VisitableCondition<S> condition,
             SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = new SqlCriterion.Builder<S>()
+        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
                 .withConnector(connector)
-                .withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();

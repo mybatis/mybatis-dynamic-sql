@@ -97,8 +97,7 @@ public class SelectDSL<R> {
     }
     
     public R build() {
-        SelectModel selectModel = new SelectModel.Builder()
-                .withQueryExpressions(queryExpressions)
+        SelectModel selectModel = SelectModel.withQueryExpressions(queryExpressions)
                 .withOrderByModel(orderByModel)
                 .build();
         return adapterFunction.apply(selectModel);

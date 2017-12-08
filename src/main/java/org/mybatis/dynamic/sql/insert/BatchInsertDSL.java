@@ -43,9 +43,8 @@ public class BatchInsertDSL<T> {
     }
     
     public BatchInsertModel<T> build() {
-        return new BatchInsertModel.Builder<T>()
+        return BatchInsertModel.withRecords(records)
                 .withTable(table)
-                .withRecords(records)
                 .withColumnMappings(columnMappings)
                 .build();
     }

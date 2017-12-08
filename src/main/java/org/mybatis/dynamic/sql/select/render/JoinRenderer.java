@@ -64,6 +64,10 @@ public class JoinRenderer {
         return column.renderWithTableAlias(queryExpression.tableAliasCalculator());
     }
     
+    public static Builder withJoinModel(JoinModel joinModel) {
+        return new Builder().withJoinModel(joinModel);
+    }
+    
     public static class Builder {
         private JoinModel joinModel;
         private QueryExpressionModel queryExpression;

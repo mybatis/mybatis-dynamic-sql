@@ -31,16 +31,14 @@ public class SqlTable {
     }
     
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType) {
-        return new SqlColumn.Builder()
-                .withName(name)
+        return SqlColumn.withName(name)
                 .withJdbcType(jdbcType)
                 .withTable(this)
                 .build();
     }
 
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType, String typeHandler) {
-        return new SqlColumn.Builder()
-                .withName(name)
+        return SqlColumn.withName(name)
                 .withJdbcType(jdbcType)
                 .withTypeHandler(typeHandler)
                 .withTable(this)

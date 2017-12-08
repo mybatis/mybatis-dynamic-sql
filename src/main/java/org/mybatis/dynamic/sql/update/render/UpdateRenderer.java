@@ -42,8 +42,7 @@ public class UpdateRenderer {
         FragmentCollector fc = updateModel.mapColumnValues(toFragmentAndParameters(visitor))
                 .collect(FragmentCollector.collect());
         
-        return new UpdateStatement.Builder()
-                .withTableName(updateModel.table().name())
+        return UpdateStatement.withTableName(updateModel.table().name())
                 .withSetClause(calculateSetPhrase(fc))
                 .withParameters(fc.parameters())
                 .withWhereClause(updateModel.whereModel().map(this::renderWhereModel))
@@ -65,6 +64,10 @@ public class UpdateRenderer {
     
     private FragmentAndParameters toFragmentAndParameters(SetPhraseVisitor visitor, UpdateMapping updateMapping) {
         return updateMapping.accept(visitor);
+    }
+    
+    public static Builder withUpdateModel(UpdateModel updateModel) {
+        return new Builder().withUpdateModel(updateModel);
     }
     
     public static class Builder {

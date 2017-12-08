@@ -42,16 +42,14 @@ public class SelectRenderer {
                 .mapQueryExpressions(this::renderQueryExpression)
                 .collect(QueryExpressionCollector.collect());
         
-        return new SelectStatement.Builder()
-                .withQueryExpression(collector.queryExpression())
+        return SelectStatement.withQueryExpression(collector.queryExpression())
                 .withParameters(collector.parameters())
                 .withOrderByClause(selectModel.orderByModel().map(this::renderOrderBy))
                 .build();
     }
 
     private QueryExpression renderQueryExpression(QueryExpressionModel queryExpressionModel) {
-        return new QueryExpressionRenderer.Builder()
-                .withQueryExpression(queryExpressionModel)
+        return QueryExpressionRenderer.withQueryExpression(queryExpressionModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
                 .build()
@@ -69,6 +67,10 @@ public class SelectRenderer {
             phrase = phrase + " DESC"; //$NON-NLS-1$
         }
         return phrase;
+    }
+    
+    public static Builder withSelectModel(SelectModel selectModel) {
+        return new Builder().withSelectModel(selectModel);
     }
     
     public static class Builder {

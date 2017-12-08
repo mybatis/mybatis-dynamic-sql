@@ -47,6 +47,10 @@ public class JoinCriterion {
         return joinCondition.operator();
     }
     
+    public static Builder withJoinColumn(BasicColumn joinColumn) {
+        return new Builder().withJoinColumn(joinColumn);
+    }
+    
     public static class Builder {
         private BasicColumn joinColumn;
         private JoinCondition joinCondition;

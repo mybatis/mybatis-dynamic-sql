@@ -38,14 +38,12 @@ public class QueryExpressionCollectorTest {
         Map<String, Object> parms1 = new HashMap<>();
         parms1.put("p1", 1);
 
-        WhereClauseAndParameters wcp1 = new WhereClauseAndParameters.Builder()
-                .withWhereClause("where fred = ?")
+        WhereClauseAndParameters wcp1 = WhereClauseAndParameters.withWhereClause("where fred = ?")
                 .withParameters(parms1)
                 .build();
         
-        QueryExpression qe1 = new QueryExpression.Builder()
+        QueryExpression qe1 = QueryExpression.withColumnList("foo")
                 .withConnector(Optional.empty())
-                .withColumnList("foo")
                 .withTableName("bar")
                 .withWhereClause(Optional.of(wcp1))
                 .build();
@@ -54,14 +52,12 @@ public class QueryExpressionCollectorTest {
         Map<String, Object> parms2 = new HashMap<>();
         parms2.put("p2", 2);
 
-        WhereClauseAndParameters wcp2 = new WhereClauseAndParameters.Builder()
-                .withWhereClause("where betty = ?")
+        WhereClauseAndParameters wcp2 = WhereClauseAndParameters.withWhereClause("where betty = ?")
                 .withParameters(parms2)
                 .build();
         
-        QueryExpression qe2 = new QueryExpression.Builder()
+        QueryExpression qe2 = QueryExpression.withColumnList("bar")
                 .withConnector(Optional.of("union"))
-                .withColumnList("bar")
                 .withTableName("foo")
                 .withWhereClause(Optional.of(wcp2))
                 .build();

@@ -53,11 +53,14 @@ public class UpdateModel {
     }
     
     public UpdateStatement render(RenderingStrategy renderingStrategy) {
-        return new UpdateRenderer.Builder()
-                .withUpdateModel(this)
+        return UpdateRenderer.withUpdateModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+    
+    public static Builder withTable(SqlTable table) {
+        return new Builder().withTable(table);
     }
     
     public static class Builder {

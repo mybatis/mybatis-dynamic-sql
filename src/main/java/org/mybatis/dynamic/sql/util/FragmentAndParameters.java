@@ -37,6 +37,10 @@ public class FragmentAndParameters {
         return parameters;
     }
     
+    public static Builder withFragment(String fragment) {
+        return new Builder().withFragment(fragment);
+    }
+    
     public static class Builder {
         private String fragment;
         private Map<String, Object> parameters = new HashMap<>();

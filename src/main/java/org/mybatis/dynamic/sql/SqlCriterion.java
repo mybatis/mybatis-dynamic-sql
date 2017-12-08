@@ -55,6 +55,10 @@ public class SqlCriterion<T> {
     public <R> Stream<R> mapSubCriteria(Function<SqlCriterion<?>, R> mapper) {
         return subCriteria.stream().map(mapper);
     }
+    
+    public static <T> Builder<T> withColumn(BindableColumn<T> column) {
+        return new Builder<T>().withColumn(column);
+    }
 
     public static class Builder<T> {
         private String connector;

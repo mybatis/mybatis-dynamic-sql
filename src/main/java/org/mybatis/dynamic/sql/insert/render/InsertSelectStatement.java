@@ -46,6 +46,10 @@ public class InsertSelectStatement {
         return parameters;
     }
 
+    public static Builder withTableName(String tableName) {
+        return new Builder().withTableName(tableName);
+    }
+    
     public static class Builder {
         private String tableName;
         private Optional<String> columnsPhrase;

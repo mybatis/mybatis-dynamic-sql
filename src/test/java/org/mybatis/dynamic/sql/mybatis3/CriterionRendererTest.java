@@ -42,18 +42,17 @@ public class CriterionRendererTest {
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
-                .withColumn(column)
+        SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
+        FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
-                .build();
+                .build()
+                .render();
         
-        FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
             softly.assertThat(fp.parameters().size()).isEqualTo(1);
@@ -65,20 +64,19 @@ public class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
-                .withColumn(column)
+        SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
+        FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
-                .build();
+                .build()
+                .render();
         
-        FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
             softly.assertThat(fp.parameters().size()).isEqualTo(1);
@@ -90,18 +88,17 @@ public class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
-                .withColumn(column)
+        SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
+        FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
-                .build();
+                .build()
+                .render();
         
-        FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
             softly.assertThat(fp.parameters().size()).isEqualTo(1);
@@ -113,18 +110,17 @@ public class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
-                .withColumn(column)
+        SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
+        FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
-                .build();
+                .build()
+                .render();
         
-        FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
             softly.assertThat(fp.parameters().size()).isEqualTo(1);
@@ -136,18 +132,17 @@ public class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Date> column = table.column("id", JDBCType.DATE, "foo.Bar");
         IsEqualTo<Date> condition = IsEqualTo.of(new Date());
-        SqlCriterion<Date> criterion = new SqlCriterion.Builder<Date>()
-                .withColumn(column)
+        SqlCriterion<Date> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
+        FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
-                .build();
+                .build()
+                .render();
         
-        FragmentAndParameters fp = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}");
             softly.assertThat(fp.parameters().size()).isEqualTo(1);
@@ -159,24 +154,23 @@ public class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER, "foo.Bar");
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        SqlCriterion<Integer> criterion = new SqlCriterion.Builder<Integer>()
-                .withColumn(column)
+        SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
         
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
+        FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
-                .build();
+                .build()
+                .render();
         
-        FragmentAndParameters rc = renderer.render(criterion);
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(rc.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}");
-            softly.assertThat(rc.parameters().size()).isEqualTo(1);
+            softly.assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}");
+            softly.assertThat(fp.parameters().size()).isEqualTo(1);
         });
     }
 }

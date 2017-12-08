@@ -51,9 +51,7 @@ public class DeleteDSL<R> {
      * @return the model class
      */
     public R build() {
-        DeleteModel deleteModel = new DeleteModel.Builder()
-                .withTable(table)
-                .build();
+        DeleteModel deleteModel = DeleteModel.withTable(table).build();
         return adapterFunction.apply(deleteModel);
     }
     
@@ -82,8 +80,7 @@ public class DeleteDSL<R> {
         }
         
         public R build() {
-            DeleteModel deleteModel = new DeleteModel.Builder()
-                    .withTable(table)
+            DeleteModel deleteModel = DeleteModel.withTable(table)
                     .withWhereModel(buildWhereModel())
                     .build();
             return adapterFunction.apply(deleteModel);

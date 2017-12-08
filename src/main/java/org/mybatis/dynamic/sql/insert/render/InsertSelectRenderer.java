@@ -38,8 +38,7 @@ public class InsertSelectRenderer {
     public InsertSelectStatement render() {
         SelectStatement selectStatement = model.selectModel().render(renderingStrategy);
         
-        return new InsertSelectStatement.Builder()
-                .withTableName(model.table().name())
+        return InsertSelectStatement.withTableName(model.table().name())
                 .withColumnsPhrase(calculateColumnsPhrase())
                 .withSelectStatement(selectStatement.getSelectStatement())
                 .withParameters(selectStatement.getParameters())
@@ -54,6 +53,10 @@ public class InsertSelectRenderer {
     private String calculateColumnsPhrase(InsertColumnListModel columnList) {
         return columnList.mapColumns(SqlColumn::name)
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+    
+    public static Builder withInsertSelectModel(InsertSelectModel model) {
+        return new Builder().withInsertSelectModel(model);
     }
     
     public static class Builder {

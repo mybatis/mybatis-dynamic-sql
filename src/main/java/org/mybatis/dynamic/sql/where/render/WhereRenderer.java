@@ -46,25 +46,28 @@ public class WhereRenderer {
         FragmentCollector fc = whereModel.mapCriteria(this::render)
                 .collect(FragmentCollector.collect());
 
-        return new WhereClauseAndParameters.Builder()
-                .withWhereClause(calculateWhereClause(fc))
+        return WhereClauseAndParameters.withWhereClause(calculateWhereClause(fc))
                 .withParameters(fc.parameters())
                 .build();
     }
     
     private FragmentAndParameters render(SqlCriterion<?> criterion) {
-        return new CriterionRenderer.Builder()
+        return CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(tableAliasCalculator)
                 .withParameterName(parameterName)
                 .build()
-                .render(criterion);
+                .render();
     }
     
     private String calculateWhereClause(FragmentCollector collector) {
         return collector.fragments()
                 .collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+    
+    public static Builder withWhereModel(WhereModel whereModel) {
+        return new Builder().withWhereModel(whereModel);
     }
     
     public static class Builder {

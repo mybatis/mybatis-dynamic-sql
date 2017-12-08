@@ -43,9 +43,8 @@ public class InsertDSL<T> {
     }
     
     public InsertModel<T> build() {
-        return new InsertModel.Builder<T>()
+        return InsertModel.withRecord(record)
                 .withTable(table)
-                .withRecord(record)
                 .withColumnMappings(columnMappings)
                 .build();
     }

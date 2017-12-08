@@ -38,16 +38,14 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
 
     @Override
     public FragmentAndParameters visit(NullMapping mapping) {
-        return new FragmentAndParameters.Builder()
-                .withFragment(mapping.mapColumn(SqlColumn::name) + " = null") //$NON-NLS-1$
+        return FragmentAndParameters.withFragment(mapping.mapColumn(SqlColumn::name) + " = null") //$NON-NLS-1$
                 .build();
     }
 
     @Override
     public FragmentAndParameters visit(ConstantMapping mapping) {
         String fragment = mapping.mapColumn(SqlColumn::name) + " = " + mapping.constant(); //$NON-NLS-1$
-        return new FragmentAndParameters.Builder()
-                .withFragment(fragment)
+        return FragmentAndParameters.withFragment(fragment)
                 .build();
     }
 
@@ -58,8 +56,7 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
                 + mapping.constant()
                 + "'"; //$NON-NLS-1$
         
-        return new FragmentAndParameters.Builder()
-                .withFragment(fragment)
+        return FragmentAndParameters.withFragment(fragment)
                 .build();
     }
     
@@ -72,8 +69,7 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
                 + " = "  //$NON-NLS-1$
                 + jdbcPlaceholder;
         
-        return new FragmentAndParameters.Builder()
-                .withFragment(setPhrase)
+        return FragmentAndParameters.withFragment(setPhrase)
                 .withParameter(mapKey, mapping.value())
                 .build();
     }

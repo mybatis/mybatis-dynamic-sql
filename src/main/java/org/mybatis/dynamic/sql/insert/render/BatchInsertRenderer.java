@@ -36,11 +36,10 @@ public class BatchInsertRenderer<T> {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
-        return new BatchInsert.Builder<T>()
+        return BatchInsert.withRecords(model.records())
                 .withTableName(model.table().name())
                 .withColumnsPhrase(collector.columnsPhrase())
                 .withValuesPhrase(collector.valuesPhrase())
-                .withRecords(model.records())
                 .build();
     }
     
@@ -50,6 +49,10 @@ public class BatchInsertRenderer<T> {
     
     private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, InsertMapping insertMapping) {
         return insertMapping.accept(visitor);
+    }
+    
+    public static <T> Builder<T> withBatchInsertModel(BatchInsertModel<T> model) {
+        return new Builder<T>().withBatchInsertModel(model);
     }
     
     public static class Builder<T> {

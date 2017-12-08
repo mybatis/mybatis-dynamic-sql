@@ -42,10 +42,9 @@ public class QueryExpressionRenderer {
     }
     
     public QueryExpression render() {
-        return new QueryExpression.Builder()
+        return QueryExpression.withColumnList(calculateColumnList())
                 .withConnector(queryExpression.connector())
                 .isDistinct(queryExpression.isDistinct())
-                .withColumnList(calculateColumnList())
                 .withTableName(calculateTableName(queryExpression.table()))
                 .withJoinClause(queryExpression.joinModel().map(this::renderJoin))
                 .withWhereClause(queryExpression.whereModel().map(this::renderWhere))
@@ -67,16 +66,14 @@ public class QueryExpressionRenderer {
     }
     
     private String renderJoin(JoinModel joinModel) {
-        return new JoinRenderer.Builder()
-                .withJoinModel(joinModel)
+        return JoinRenderer.withJoinModel(joinModel)
                 .withQueryExpression(queryExpression)
                 .build()
                 .render();
     }
     
     private WhereClauseAndParameters renderWhere(WhereModel whereModel) {
-        return new WhereRenderer.Builder()
-                .withWhereModel(whereModel)
+        return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(queryExpression.tableAliasCalculator())
                 .withSequence(sequence)
@@ -91,6 +88,10 @@ public class QueryExpressionRenderer {
     
     private String applyTableAlias(BasicColumn column) {
         return column.renderWithTableAlias(queryExpression.tableAliasCalculator());
+    }
+    
+    public static Builder withQueryExpression(QueryExpressionModel model) {
+        return new Builder().withQueryExpression(model);
     }
     
     public static class Builder {

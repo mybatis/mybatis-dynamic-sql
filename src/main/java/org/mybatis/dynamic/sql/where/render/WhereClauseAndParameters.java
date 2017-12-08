@@ -37,6 +37,10 @@ public class WhereClauseAndParameters {
         return whereClause;
     }
     
+    public static Builder withWhereClause(String whereClause) {
+        return new Builder().withWhereClause(whereClause);
+    }
+    
     public static class Builder {
         private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();

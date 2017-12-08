@@ -27,15 +27,13 @@ public class FragmentCollectorTest {
     public void testWhereFragmentCollectorMerge() {
         SoftAssertions.assertSoftly(softly -> {
             FragmentCollector fc1 = new FragmentCollector();
-            FragmentAndParameters fp1 = new FragmentAndParameters.Builder()
-                    .withFragment(":p1")
+            FragmentAndParameters fp1 = FragmentAndParameters.withFragment(":p1")
                     .withParameter("p1", 1)
                     .build();
             fc1.add(fp1);
 
             FragmentCollector fc2 = new FragmentCollector();
-            FragmentAndParameters fp2 = new FragmentAndParameters.Builder()
-                    .withFragment(":p2")
+            FragmentAndParameters fp2 = FragmentAndParameters.withFragment(":p2")
                     .withParameter("p2", 2)
                     .build();
             fc2.add(fp2);
