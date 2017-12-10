@@ -129,6 +129,7 @@ public class CriterionRenderer<T> {
             return this;
             
         }
+        
         public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
             return this;
