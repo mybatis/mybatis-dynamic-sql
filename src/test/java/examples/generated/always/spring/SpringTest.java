@@ -83,8 +83,8 @@ public class SpringTest {
     
     @Test
     public void testSelect() {
-        SelectStatement selectStatement = select(id.as("A_ID"), firstName, lastName, fullName)
-                .from(generatedAlways, "a")
+        SelectStatement selectStatement = select(id, firstName, lastName, fullName)
+                .from(generatedAlways)
                 .where(id, isGreaterThan(3))
                 .orderBy(id.descending())
                 .build()
@@ -99,12 +99,17 @@ public class SpringTest {
                         record.setId(rs.getInt(1));
                         record.setFirstName(rs.getString(2));
                         record.setLastName(rs.getString(3));
+                        record.setFullName(rs.getString(4));
                         return record;
                     }
                 });
         
         assertThat(records.size()).isEqualTo(3);
         assertThat(records.get(0).getId()).isEqualTo(6);
+        assertThat(records.get(0).getFirstName()).isEqualTo("Bamm Bamm");
+        assertThat(records.get(0).getLastName()).isEqualTo("Rubble");
+        assertThat(records.get(0).getFullName()).isEqualTo("Bamm Bamm Rubble");
+        
         assertThat(records.get(1).getId()).isEqualTo(5);
         assertThat(records.get(2).getId()).isEqualTo(4);
     }
@@ -138,13 +143,14 @@ public class SpringTest {
                 .build()
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
         
-        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(record);
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement.getRecord());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         
         int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
+        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
         
         assertThat(rows).isEqualTo(1);
-        assertThat(keyHolder.getKeys().get("FULL_NAME")).isEqualTo("Bob Jones");
+        assertThat(generatedKey).isEqualTo("Bob Jones");
     }
     
     @Test
