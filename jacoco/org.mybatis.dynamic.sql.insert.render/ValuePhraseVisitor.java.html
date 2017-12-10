@@ -35,38 +35,34 @@ public class ValuePhraseVisitor implements InsertMappingVisitor&lt;FieldAndValue
 
     @Override
     public FieldAndValue visit(NullMapping mapping) {
-<span class="fc" id="L38">        return new FieldAndValue.Builder()</span>
-<span class="fc" id="L39">                .withFieldName(mapping.mapColumn(SqlColumn::name))</span>
-<span class="fc" id="L40">                .withValuePhrase(&quot;null&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L41">                .build();</span>
+<span class="fc" id="L38">        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))</span>
+<span class="fc" id="L39">                .withValuePhrase(&quot;null&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L40">                .build();</span>
     }
 
     @Override
     public FieldAndValue visit(ConstantMapping mapping) {
-<span class="fc" id="L46">        return new FieldAndValue.Builder()</span>
-<span class="fc" id="L47">                .withFieldName(mapping.mapColumn(SqlColumn::name))</span>
-<span class="fc" id="L48">                .withValuePhrase(mapping.constant())</span>
-<span class="fc" id="L49">                .build();</span>
+<span class="fc" id="L45">        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))</span>
+<span class="fc" id="L46">                .withValuePhrase(mapping.constant())</span>
+<span class="fc" id="L47">                .build();</span>
     }
 
     @Override
     public FieldAndValue visit(StringConstantMapping mapping) {
-<span class="fc" id="L54">        return new FieldAndValue.Builder()</span>
-<span class="fc" id="L55">                .withFieldName(mapping.mapColumn(SqlColumn::name))</span>
-<span class="fc" id="L56">                .withValuePhrase(&quot;'&quot; + mapping.constant() + &quot;'&quot;) //$NON-NLS-1$ //$NON-NLS-2$</span>
-<span class="fc" id="L57">                .build();</span>
+<span class="fc" id="L52">        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))</span>
+<span class="fc" id="L53">                .withValuePhrase(&quot;'&quot; + mapping.constant() + &quot;'&quot;) //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L54">                .build();</span>
     }
     
     @Override
     public FieldAndValue visit(PropertyMapping mapping) {
-<span class="fc" id="L62">        return new FieldAndValue.Builder()</span>
-<span class="fc" id="L63">                .withFieldName(mapping.mapColumn(SqlColumn::name))</span>
-<span class="fc" id="L64">                .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))</span>
-<span class="fc" id="L65">                .build();</span>
+<span class="fc" id="L59">        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))</span>
+<span class="fc" id="L60">                .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))</span>
+<span class="fc" id="L61">                .build();</span>
     }
     
     private Function&lt;SqlColumn&lt;?&gt;, String&gt; toJdbcPlaceholder(String parameterName) {
-<span class="fc" id="L69">        return column -&gt; renderingStrategy.getFormattedJdbcPlaceholder(column, &quot;record&quot;, parameterName); //$NON-NLS-1$</span>
+<span class="fc" id="L65">        return column -&gt; renderingStrategy.getFormattedJdbcPlaceholder(column, &quot;record&quot;, parameterName); //$NON-NLS-1$</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

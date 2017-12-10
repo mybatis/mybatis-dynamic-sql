@@ -37,22 +37,26 @@ public class WhereClauseAndParameters {
 <span class="fc" id="L37">        return whereClause;</span>
     }
     
-<span class="fc" id="L40">    public static class Builder {</span>
+    public static Builder withWhereClause(String whereClause) {
+<span class="fc" id="L41">        return new Builder().withWhereClause(whereClause);</span>
+    }
+    
+<span class="fc" id="L44">    public static class Builder {</span>
         private String whereClause;
-<span class="fc" id="L42">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L46">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
 
         public Builder withWhereClause(String whereClause) {
-<span class="fc" id="L45">            this.whereClause = whereClause;</span>
-<span class="fc" id="L46">            return this;</span>
+<span class="fc" id="L49">            this.whereClause = whereClause;</span>
+<span class="fc" id="L50">            return this;</span>
         }
         
         public Builder withParameters(Map&lt;String, Object&gt; parameters) {
-<span class="fc" id="L50">            this.parameters.putAll(parameters);</span>
-<span class="fc" id="L51">            return this;</span>
+<span class="fc" id="L54">            this.parameters.putAll(parameters);</span>
+<span class="fc" id="L55">            return this;</span>
         }
         
         public WhereClauseAndParameters build() {
-<span class="fc" id="L55">            return new WhereClauseAndParameters(this);</span>
+<span class="fc" id="L59">            return new WhereClauseAndParameters(this);</span>
         }
     }
 }

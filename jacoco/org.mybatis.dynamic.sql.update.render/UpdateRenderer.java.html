@@ -42,47 +42,50 @@ public class UpdateRenderer {
 <span class="fc" id="L42">        FragmentCollector fc = updateModel.mapColumnValues(toFragmentAndParameters(visitor))</span>
 <span class="fc" id="L43">                .collect(FragmentCollector.collect());</span>
         
-<span class="fc" id="L45">        return new UpdateStatement.Builder()</span>
-<span class="fc" id="L46">                .withTableName(updateModel.table().name())</span>
-<span class="fc" id="L47">                .withSetClause(calculateSetPhrase(fc))</span>
-<span class="fc" id="L48">                .withParameters(fc.parameters())</span>
-<span class="fc" id="L49">                .withWhereClause(updateModel.whereModel().map(this::renderWhereModel))</span>
-<span class="fc" id="L50">                .build();</span>
+<span class="fc" id="L45">        return UpdateStatement.withTableName(updateModel.table().name())</span>
+<span class="fc" id="L46">                .withSetClause(calculateSetPhrase(fc))</span>
+<span class="fc" id="L47">                .withParameters(fc.parameters())</span>
+<span class="fc" id="L48">                .withWhereClause(updateModel.whereModel().map(this::renderWhereModel))</span>
+<span class="fc" id="L49">                .build();</span>
     }
 
     private String calculateSetPhrase(FragmentCollector collector) {
-<span class="fc" id="L54">        return collector.fragments()</span>
-<span class="fc" id="L55">                .collect(Collectors.joining(&quot;, &quot;, &quot;set &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L53">        return collector.fragments()</span>
+<span class="fc" id="L54">                .collect(Collectors.joining(&quot;, &quot;, &quot;set &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
     
     private WhereClauseAndParameters renderWhereModel(WhereModel whereModel) {
-<span class="fc" id="L59">        return whereModel.render(renderingStrategy);</span>
+<span class="fc" id="L58">        return whereModel.render(renderingStrategy);</span>
     }
 
     private Function&lt;UpdateMapping, FragmentAndParameters&gt; toFragmentAndParameters(SetPhraseVisitor visitor) {
-<span class="fc" id="L63">        return updateMapping -&gt; toFragmentAndParameters(visitor, updateMapping);</span>
+<span class="fc" id="L62">        return updateMapping -&gt; toFragmentAndParameters(visitor, updateMapping);</span>
     }
     
     private FragmentAndParameters toFragmentAndParameters(SetPhraseVisitor visitor, UpdateMapping updateMapping) {
-<span class="fc" id="L67">        return updateMapping.accept(visitor);</span>
+<span class="fc" id="L66">        return updateMapping.accept(visitor);</span>
     }
     
-<span class="fc" id="L70">    public static class Builder {</span>
+    public static Builder withUpdateModel(UpdateModel updateModel) {
+<span class="fc" id="L70">        return new Builder().withUpdateModel(updateModel);</span>
+    }
+    
+<span class="fc" id="L73">    public static class Builder {</span>
         private UpdateModel updateModel;
         private RenderingStrategy renderingStrategy;
 
         public Builder withUpdateModel(UpdateModel updateModel) {
-<span class="fc" id="L75">            this.updateModel = updateModel;</span>
-<span class="fc" id="L76">            return this;</span>
+<span class="fc" id="L78">            this.updateModel = updateModel;</span>
+<span class="fc" id="L79">            return this;</span>
         }
         
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L80">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L81">            return this;</span>
+<span class="fc" id="L83">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L84">            return this;</span>
         }
         
         public UpdateRenderer build() {
-<span class="fc" id="L85">            return new UpdateRenderer(this);</span>
+<span class="fc" id="L88">            return new UpdateRenderer(this);</span>
         }
     }
 }

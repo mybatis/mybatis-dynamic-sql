@@ -64,22 +64,26 @@ public class JoinRenderer {
 <span class="fc" id="L64">        return column.renderWithTableAlias(queryExpression.tableAliasCalculator());</span>
     }
     
-<span class="fc" id="L67">    public static class Builder {</span>
+    public static Builder withJoinModel(JoinModel joinModel) {
+<span class="fc" id="L68">        return new Builder().withJoinModel(joinModel);</span>
+    }
+    
+<span class="fc" id="L71">    public static class Builder {</span>
         private JoinModel joinModel;
         private QueryExpressionModel queryExpression;
         
         public Builder withJoinModel(JoinModel joinModel) {
-<span class="fc" id="L72">            this.joinModel = joinModel;</span>
-<span class="fc" id="L73">            return this;</span>
+<span class="fc" id="L76">            this.joinModel = joinModel;</span>
+<span class="fc" id="L77">            return this;</span>
         }
         
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
-<span class="fc" id="L77">            this.queryExpression = queryExpression;</span>
-<span class="fc" id="L78">            return this;</span>
+<span class="fc" id="L81">            this.queryExpression = queryExpression;</span>
+<span class="fc" id="L82">            return this;</span>
         }
         
         public JoinRenderer build() {
-<span class="fc" id="L82">            return new JoinRenderer(this);</span>
+<span class="fc" id="L86">            return new JoinRenderer(this);</span>
         }
     }
 }

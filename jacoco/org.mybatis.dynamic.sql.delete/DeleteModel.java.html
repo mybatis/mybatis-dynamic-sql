@@ -42,29 +42,32 @@ public class DeleteModel {
     }
     
     public DeleteStatement render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L45">        return new DeleteRenderer.Builder()</span>
-<span class="fc" id="L46">                .withDeleteModel(this)</span>
-<span class="fc" id="L47">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L48">                .build()</span>
-<span class="fc" id="L49">                .render();</span>
+<span class="fc" id="L45">        return DeleteRenderer.withDeleteModel(this)</span>
+<span class="fc" id="L46">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L47">                .build()</span>
+<span class="fc" id="L48">                .render();</span>
     }
     
-<span class="fc" id="L52">    public static class Builder {</span>
+    public static Builder withTable(SqlTable table) {
+<span class="fc" id="L52">        return new Builder().withTable(table);</span>
+    }
+    
+<span class="fc" id="L55">    public static class Builder {</span>
         private SqlTable table;
         private WhereModel whereModel;
         
         public Builder withTable(SqlTable table) {
-<span class="fc" id="L57">            this.table = table;</span>
-<span class="fc" id="L58">            return this;</span>
+<span class="fc" id="L60">            this.table = table;</span>
+<span class="fc" id="L61">            return this;</span>
         }
         
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L62">            this.whereModel = whereModel;</span>
-<span class="fc" id="L63">            return this;</span>
+<span class="fc" id="L65">            this.whereModel = whereModel;</span>
+<span class="fc" id="L66">            return this;</span>
         }
         
         public DeleteModel build() {
-<span class="fc" id="L67">            return new DeleteModel(this);</span>
+<span class="fc" id="L70">            return new DeleteModel(this);</span>
         }
     }
 }

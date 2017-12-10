@@ -74,20 +74,19 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../org/mybatis/dynamic/sql/where/render/WhereClauseAndParameters.html">WhereClauseAndParameters</a> render(<a href="../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html">RenderingStrategy</a> renderingStrategy,
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>              <a href="../../../../../org/mybatis/dynamic/sql/render/TableAliasCalculator.html">TableAliasCalculator</a> tableAliasCalculator, Optional&lt;String&gt; parameterName) {
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> WhereRenderer.Builder()
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>                  .withWhereModel(<strong class="jxr_keyword">this</strong>)
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  .withRenderingStrategy(renderingStrategy)
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .withSequence(<strong class="jxr_keyword">new</strong> AtomicInteger(1))
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .withTableAliasCalculator(tableAliasCalculator)
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .withParameterName(parameterName)
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>                  .build()
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>                  .render();
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      }
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> of(List&lt;SqlCriterion&lt;?&gt;&gt; criteria) {
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a>(criteria);
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">return</strong> WhereRenderer.withWhereModel(<strong class="jxr_keyword">this</strong>)
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                  .withRenderingStrategy(renderingStrategy)
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  .withSequence(<strong class="jxr_keyword">new</strong> AtomicInteger(1))
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .withTableAliasCalculator(tableAliasCalculator)
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .withParameterName(parameterName)
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .build()
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>                  .render();
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      }
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> of(List&lt;SqlCriterion&lt;?&gt;&gt; criteria) {
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a>(criteria);
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      }
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016&#x2013;2017 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>

@@ -37,27 +37,31 @@ public class FragmentAndParameters {
 <span class="fc" id="L37">        return parameters;</span>
     }
     
-<span class="fc" id="L40">    public static class Builder {</span>
+    public static Builder withFragment(String fragment) {
+<span class="fc" id="L41">        return new Builder().withFragment(fragment);</span>
+    }
+    
+<span class="fc" id="L44">    public static class Builder {</span>
         private String fragment;
-<span class="fc" id="L42">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L46">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
         
         public Builder withFragment(String fragment) {
-<span class="fc" id="L45">            this.fragment = fragment;</span>
-<span class="fc" id="L46">            return this;</span>
+<span class="fc" id="L49">            this.fragment = fragment;</span>
+<span class="fc" id="L50">            return this;</span>
         }
         
         public Builder withParameter(String key, Object value) {
-<span class="fc" id="L50">            parameters.put(key, value);</span>
-<span class="fc" id="L51">            return this;</span>
+<span class="fc" id="L54">            parameters.put(key, value);</span>
+<span class="fc" id="L55">            return this;</span>
         }
         
         public Builder withParameters(Map&lt;String, Object&gt; parameters) {
-<span class="fc" id="L55">            this.parameters.putAll(parameters);</span>
-<span class="fc" id="L56">            return this;</span>
+<span class="fc" id="L59">            this.parameters.putAll(parameters);</span>
+<span class="fc" id="L60">            return this;</span>
         }
         
         public FragmentAndParameters build() {
-<span class="fc" id="L60">            return new FragmentAndParameters(this);</span>
+<span class="fc" id="L64">            return new FragmentAndParameters(this);</span>
         }
     }
 }

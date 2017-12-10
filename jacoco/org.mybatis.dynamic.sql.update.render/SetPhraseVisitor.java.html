@@ -38,49 +38,45 @@ public class SetPhraseVisitor implements UpdateMappingVisitor&lt;FragmentAndPara
 
     @Override
     public FragmentAndParameters visit(NullMapping mapping) {
-<span class="fc" id="L41">        return new FragmentAndParameters.Builder()</span>
-<span class="fc" id="L42">                .withFragment(mapping.mapColumn(SqlColumn::name) + &quot; = null&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L43">                .build();</span>
+<span class="fc" id="L41">        return FragmentAndParameters.withFragment(mapping.mapColumn(SqlColumn::name) + &quot; = null&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L42">                .build();</span>
     }
 
     @Override
     public FragmentAndParameters visit(ConstantMapping mapping) {
-<span class="fc" id="L48">        String fragment = mapping.mapColumn(SqlColumn::name) + &quot; = &quot; + mapping.constant(); //$NON-NLS-1$</span>
-<span class="fc" id="L49">        return new FragmentAndParameters.Builder()</span>
-<span class="fc" id="L50">                .withFragment(fragment)</span>
-<span class="fc" id="L51">                .build();</span>
+<span class="fc" id="L47">        String fragment = mapping.mapColumn(SqlColumn::name) + &quot; = &quot; + mapping.constant(); //$NON-NLS-1$</span>
+<span class="fc" id="L48">        return FragmentAndParameters.withFragment(fragment)</span>
+<span class="fc" id="L49">                .build();</span>
     }
 
     @Override
     public FragmentAndParameters visit(StringConstantMapping mapping) {
-<span class="fc" id="L56">        String fragment = mapping.mapColumn(SqlColumn::name)</span>
+<span class="fc" id="L54">        String fragment = mapping.mapColumn(SqlColumn::name)</span>
                 + &quot; = '&quot; //$NON-NLS-1$
-<span class="fc" id="L58">                + mapping.constant()</span>
+<span class="fc" id="L56">                + mapping.constant()</span>
                 + &quot;'&quot;; //$NON-NLS-1$
         
-<span class="fc" id="L61">        return new FragmentAndParameters.Builder()</span>
-<span class="fc" id="L62">                .withFragment(fragment)</span>
-<span class="fc" id="L63">                .build();</span>
+<span class="fc" id="L59">        return FragmentAndParameters.withFragment(fragment)</span>
+<span class="fc" id="L60">                .build();</span>
     }
     
     @Override
     public &lt;T&gt; FragmentAndParameters visit(ValueMapping&lt;T&gt; mapping) {
-<span class="fc" id="L68">        String mapKey = &quot;up&quot; + sequence.getAndIncrement(); //$NON-NLS-1$</span>
+<span class="fc" id="L65">        String mapKey = &quot;up&quot; + sequence.getAndIncrement(); //$NON-NLS-1$</span>
 
-<span class="fc" id="L70">        String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));</span>
-<span class="fc" id="L71">        String setPhrase = mapping.mapColumn(SqlColumn::name)</span>
+<span class="fc" id="L67">        String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));</span>
+<span class="fc" id="L68">        String setPhrase = mapping.mapColumn(SqlColumn::name)</span>
                 + &quot; = &quot;  //$NON-NLS-1$
                 + jdbcPlaceholder;
         
-<span class="fc" id="L75">        return new FragmentAndParameters.Builder()</span>
-<span class="fc" id="L76">                .withFragment(setPhrase)</span>
-<span class="fc" id="L77">                .withParameter(mapKey, mapping.value())</span>
-<span class="fc" id="L78">                .build();</span>
+<span class="fc" id="L72">        return FragmentAndParameters.withFragment(setPhrase)</span>
+<span class="fc" id="L73">                .withParameter(mapKey, mapping.value())</span>
+<span class="fc" id="L74">                .build();</span>
     }
 
     private Function&lt;SqlColumn&lt;?&gt;, String&gt; toJdbcPlaceholder(String parameterName) {
-<span class="fc" id="L82">        return column -&gt; renderingStrategy</span>
-<span class="fc" id="L83">                .getFormattedJdbcPlaceholder(column, &quot;parameters&quot;, parameterName); //$NON-NLS-1$</span>
+<span class="fc" id="L78">        return column -&gt; renderingStrategy</span>
+<span class="fc" id="L79">                .getFormattedJdbcPlaceholder(column, &quot;parameters&quot;, parameterName); //$NON-NLS-1$</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -46,34 +46,38 @@ public class InsertSelectStatement {
 <span class="fc" id="L46">        return parameters;</span>
     }
 
-<span class="fc" id="L49">    public static class Builder {</span>
+    public static Builder withTableName(String tableName) {
+<span class="fc" id="L50">        return new Builder().withTableName(tableName);</span>
+    }
+    
+<span class="fc" id="L53">    public static class Builder {</span>
         private String tableName;
         private Optional&lt;String&gt; columnsPhrase;
         private String selectStatement;
-<span class="fc" id="L53">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L57">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
         
         public Builder withTableName(String tableName) {
-<span class="fc" id="L56">            this.tableName = tableName;</span>
-<span class="fc" id="L57">            return this;</span>
+<span class="fc" id="L60">            this.tableName = tableName;</span>
+<span class="fc" id="L61">            return this;</span>
         }
 
         public Builder withColumnsPhrase(Optional&lt;String&gt; columnsPhrase) {
-<span class="fc" id="L61">            this.columnsPhrase = columnsPhrase;</span>
-<span class="fc" id="L62">            return this;</span>
+<span class="fc" id="L65">            this.columnsPhrase = columnsPhrase;</span>
+<span class="fc" id="L66">            return this;</span>
         }
         
         public Builder withSelectStatement(String selectStatement) {
-<span class="fc" id="L66">            this.selectStatement = selectStatement;</span>
-<span class="fc" id="L67">            return this;</span>
+<span class="fc" id="L70">            this.selectStatement = selectStatement;</span>
+<span class="fc" id="L71">            return this;</span>
         }
         
         public Builder withParameters(Map&lt;String, Object&gt; parameters) {
-<span class="fc" id="L71">            this.parameters.putAll(parameters);</span>
-<span class="fc" id="L72">            return this;</span>
+<span class="fc" id="L75">            this.parameters.putAll(parameters);</span>
+<span class="fc" id="L76">            return this;</span>
         }
         
         public InsertSelectStatement build() {
-<span class="fc" id="L76">            return new InsertSelectStatement(this);</span>
+<span class="fc" id="L80">            return new InsertSelectStatement(this);</span>
         }
     }
 }

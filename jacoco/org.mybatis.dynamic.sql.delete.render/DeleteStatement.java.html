@@ -44,22 +44,26 @@ public class DeleteStatement {
 <span class="fc" id="L44">                + spaceBefore(whereClauseAndParameters.map(WhereClauseAndParameters::whereClause));</span>
     }
 
-<span class="fc" id="L47">    public static class Builder {</span>
+    public static Builder withTableName(String tableName) {
+<span class="fc" id="L48">        return new Builder().withTableName(tableName);</span>
+    }
+    
+<span class="fc" id="L51">    public static class Builder {</span>
         private String tableName;
-<span class="fc" id="L49">        private Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters = Optional.empty();</span>
+<span class="fc" id="L53">        private Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters = Optional.empty();</span>
         
         public Builder withTableName(String tableName) {
-<span class="fc" id="L52">            this.tableName = tableName;</span>
-<span class="fc" id="L53">            return this;</span>
+<span class="fc" id="L56">            this.tableName = tableName;</span>
+<span class="fc" id="L57">            return this;</span>
         }
         
         public Builder withWhereClause(Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters) {
-<span class="fc" id="L57">            this.whereClauseAndParameters = whereClauseAndParameters;</span>
-<span class="fc" id="L58">            return this;</span>
+<span class="fc" id="L61">            this.whereClauseAndParameters = whereClauseAndParameters;</span>
+<span class="fc" id="L62">            return this;</span>
         }
         
         public DeleteStatement build() {
-<span class="fc" id="L62">            return new DeleteStatement(this);</span>
+<span class="fc" id="L66">            return new DeleteStatement(this);</span>
         }
     }
 }

@@ -52,35 +52,38 @@ public class BatchInsertModel&lt;T&gt; {
     }
     
     public BatchInsert&lt;T&gt; render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L55">        return new BatchInsertRenderer.Builder&lt;T&gt;()</span>
-<span class="fc" id="L56">                .withBatchInsertModel(this)</span>
-<span class="fc" id="L57">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L58">                .build()</span>
-<span class="fc" id="L59">                .render();</span>
+<span class="fc" id="L55">        return BatchInsertRenderer.withBatchInsertModel(this)</span>
+<span class="fc" id="L56">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L57">                .build()</span>
+<span class="fc" id="L58">                .render();</span>
     }
     
-<span class="fc" id="L62">    public static class Builder&lt;T&gt; {</span>
+    public static &lt;T&gt; Builder&lt;T&gt; withRecords(List&lt;T&gt; records) {
+<span class="fc" id="L62">        return new Builder&lt;T&gt;().withRecords(records);</span>
+    }
+    
+<span class="fc" id="L65">    public static class Builder&lt;T&gt; {</span>
         private SqlTable table;
-<span class="fc" id="L64">        private List&lt;T&gt; records = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L65">        private List&lt;InsertMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L67">        private List&lt;T&gt; records = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L68">        private List&lt;InsertMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
         
         public Builder&lt;T&gt; withTable(SqlTable table) {
-<span class="fc" id="L68">            this.table = table;</span>
-<span class="fc" id="L69">            return this;</span>
+<span class="fc" id="L71">            this.table = table;</span>
+<span class="fc" id="L72">            return this;</span>
         }
         
         public Builder&lt;T&gt; withRecords(List&lt;T&gt; records) {
-<span class="fc" id="L73">            this.records.addAll(records);</span>
-<span class="fc" id="L74">            return this;</span>
+<span class="fc" id="L76">            this.records.addAll(records);</span>
+<span class="fc" id="L77">            return this;</span>
         }
         
         public Builder&lt;T&gt; withColumnMappings(List&lt;InsertMapping&gt; columnMappings) {
-<span class="fc" id="L78">            this.columnMappings.addAll(columnMappings);</span>
-<span class="fc" id="L79">            return this;</span>
+<span class="fc" id="L81">            this.columnMappings.addAll(columnMappings);</span>
+<span class="fc" id="L82">            return this;</span>
         }
         
         public BatchInsertModel&lt;T&gt; build() {
-<span class="fc" id="L83">            return new BatchInsertModel&lt;&gt;(this);</span>
+<span class="fc" id="L86">            return new BatchInsertModel&lt;&gt;(this);</span>
         }
     }
 }

@@ -36,38 +36,41 @@ public class InsertRenderer&lt;T&gt; {
 <span class="fc" id="L36">        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);</span>
 <span class="fc" id="L37">        FieldAndValueCollector&lt;T&gt; collector = model.mapColumnMappings(toFieldAndValue(visitor))</span>
 <span class="fc" id="L38">                .collect(FieldAndValueCollector.collect());</span>
-<span class="fc" id="L39">        return new InsertStatement.Builder&lt;T&gt;()</span>
+<span class="fc" id="L39">        return InsertStatement.withRecord(model.record())</span>
 <span class="fc" id="L40">                .withTableName(model.table().name())</span>
 <span class="fc" id="L41">                .withColumnsPhrase(collector.columnsPhrase())</span>
 <span class="fc" id="L42">                .withValuesPhrase(collector.valuesPhrase())</span>
-<span class="fc" id="L43">                .withRecord(model.record())</span>
-<span class="fc" id="L44">                .build();</span>
+<span class="fc" id="L43">                .build();</span>
     }
 
     private Function&lt;InsertMapping, FieldAndValue&gt; toFieldAndValue(ValuePhraseVisitor visitor) {
-<span class="fc" id="L48">        return insertMapping -&gt; toFieldAndValue(visitor, insertMapping);</span>
+<span class="fc" id="L47">        return insertMapping -&gt; toFieldAndValue(visitor, insertMapping);</span>
     }
     
     private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, InsertMapping insertMapping) {
-<span class="fc" id="L52">        return insertMapping.accept(visitor);</span>
+<span class="fc" id="L51">        return insertMapping.accept(visitor);</span>
     }
     
-<span class="fc" id="L55">    public static class Builder&lt;T&gt; {</span>
+    public static &lt;T&gt; Builder&lt;T&gt; withInsertModel(InsertModel&lt;T&gt; model) {
+<span class="fc" id="L55">        return new Builder&lt;T&gt;().withInsertModel(model);</span>
+    }
+    
+<span class="fc" id="L58">    public static class Builder&lt;T&gt; {</span>
         private InsertModel&lt;T&gt; model;
         private RenderingStrategy renderingStrategy;
         
         public Builder&lt;T&gt; withInsertModel(InsertModel&lt;T&gt; model) {
-<span class="fc" id="L60">            this.model = model;</span>
-<span class="fc" id="L61">            return this;</span>
+<span class="fc" id="L63">            this.model = model;</span>
+<span class="fc" id="L64">            return this;</span>
         }
         
         public Builder&lt;T&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L65">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L66">            return this;</span>
+<span class="fc" id="L68">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L69">            return this;</span>
         }
         
         public InsertRenderer&lt;T&gt; build() {
-<span class="fc" id="L70">            return new InsertRenderer&lt;&gt;(this);</span>
+<span class="fc" id="L73">            return new InsertRenderer&lt;&gt;(this);</span>
         }
     }
 }

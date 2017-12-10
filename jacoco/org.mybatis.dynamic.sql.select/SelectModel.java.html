@@ -44,29 +44,32 @@ public class SelectModel {
     }
     
     public SelectStatement render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L47">        return new SelectRenderer.Builder()</span>
-<span class="fc" id="L48">                .withSelectModel(this)</span>
-<span class="fc" id="L49">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L50">                .build()</span>
-<span class="fc" id="L51">                .render();</span>
+<span class="fc" id="L47">        return SelectRenderer.withSelectModel(this)</span>
+<span class="fc" id="L48">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L49">                .build()</span>
+<span class="fc" id="L50">                .render();</span>
     }
     
-<span class="fc" id="L54">    public static class Builder {</span>
-<span class="fc" id="L55">        private List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();</span>
+    public static Builder withQueryExpressions(List&lt;QueryExpressionModel&gt; queryExpressions) {
+<span class="fc" id="L54">        return new Builder().withQueryExpressions(queryExpressions);</span>
+    }
+    
+<span class="fc" id="L57">    public static class Builder {</span>
+<span class="fc" id="L58">        private List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();</span>
         private OrderByModel orderByModel;
         
         public Builder withQueryExpressions(List&lt;QueryExpressionModel&gt; queryExpressions) {
-<span class="fc" id="L59">            this.queryExpressions.addAll(queryExpressions);</span>
-<span class="fc" id="L60">            return this;</span>
+<span class="fc" id="L62">            this.queryExpressions.addAll(queryExpressions);</span>
+<span class="fc" id="L63">            return this;</span>
         }
         
         public Builder withOrderByModel(OrderByModel orderByModel) {
-<span class="fc" id="L64">            this.orderByModel = orderByModel;</span>
-<span class="fc" id="L65">            return this;</span>
+<span class="fc" id="L67">            this.orderByModel = orderByModel;</span>
+<span class="fc" id="L68">            return this;</span>
         }
         
         public SelectModel build() {
-<span class="fc" id="L69">            return new SelectModel(this);</span>
+<span class="fc" id="L72">            return new SelectModel(this);</span>
         }
     }
 }

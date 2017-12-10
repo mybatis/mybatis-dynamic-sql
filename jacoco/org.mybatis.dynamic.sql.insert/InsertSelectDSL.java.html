@@ -43,30 +43,29 @@ public class InsertSelectDSL {
 <span class="fc" id="L43">    }</span>
     
     public InsertSelectModel build() {
-<span class="fc" id="L46">        return new InsertSelectModel.Builder()</span>
-<span class="fc" id="L47">                .withTable(table)</span>
-<span class="fc" id="L48">                .withColumnList(columnList)</span>
-<span class="fc" id="L49">                .withSelectModel(selectModel)</span>
-<span class="fc" id="L50">                .build();</span>
+<span class="fc" id="L46">        return InsertSelectModel.withTable(table)</span>
+<span class="fc" id="L47">                .withColumnList(columnList)</span>
+<span class="fc" id="L48">                .withSelectModel(selectModel)</span>
+<span class="fc" id="L49">                .build();</span>
     }
     
     public static InsertColumnGatherer insertInto(SqlTable table) {
-<span class="fc" id="L54">        return new InsertColumnGatherer(table);</span>
+<span class="fc" id="L53">        return new InsertColumnGatherer(table);</span>
     }
 
     public static class InsertColumnGatherer {
         private SqlTable table;
         
-<span class="fc" id="L60">        private InsertColumnGatherer(SqlTable table) {</span>
-<span class="fc" id="L61">            this.table = table;</span>
-<span class="fc" id="L62">        }</span>
+<span class="fc" id="L59">        private InsertColumnGatherer(SqlTable table) {</span>
+<span class="fc" id="L60">            this.table = table;</span>
+<span class="fc" id="L61">        }</span>
         
         public SelectGatherer withColumnList(SqlColumn&lt;?&gt;...columns) {
-<span class="fc" id="L65">            return new SelectGatherer(table, Arrays.asList(columns));</span>
+<span class="fc" id="L64">            return new SelectGatherer(table, Arrays.asList(columns));</span>
         }
 
         public InsertSelectDSL withSelectStatement(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L69">            return new InsertSelectDSL(table, selectModelBuilder.build());</span>
+<span class="fc" id="L68">            return new InsertSelectDSL(table, selectModelBuilder.build());</span>
         }
     }
     
@@ -74,13 +73,13 @@ public class InsertSelectDSL {
         private SqlTable table;
         private InsertColumnListModel columnList;
         
-<span class="fc" id="L77">        private SelectGatherer(SqlTable table, List&lt;SqlColumn&lt;?&gt;&gt; columns) {</span>
-<span class="fc" id="L78">            this.table = table;</span>
-<span class="fc" id="L79">            columnList = InsertColumnListModel.of(columns);</span>
-<span class="fc" id="L80">        }</span>
+<span class="fc" id="L76">        private SelectGatherer(SqlTable table, List&lt;SqlColumn&lt;?&gt;&gt; columns) {</span>
+<span class="fc" id="L77">            this.table = table;</span>
+<span class="fc" id="L78">            columnList = InsertColumnListModel.of(columns);</span>
+<span class="fc" id="L79">        }</span>
         
         public InsertSelectDSL withSelectStatement(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L83">            return new InsertSelectDSL(table, columnList, selectModelBuilder.build());</span>
+<span class="fc" id="L82">            return new InsertSelectDSL(table, columnList, selectModelBuilder.build());</span>
         }
     }
 }

@@ -43,28 +43,32 @@ public class SelectStatement {
 <span class="fc" id="L43">        return queryExpression + StringUtilities.spaceBefore(orderByClause);</span>
     }
     
-<span class="fc" id="L46">    public static class Builder {</span>
+    public static Builder withQueryExpression(String queryExpression) {
+<span class="fc" id="L47">        return new Builder().withQueryExpression(queryExpression);</span>
+    }
+    
+<span class="fc" id="L50">    public static class Builder {</span>
         private String queryExpression;
-<span class="fc" id="L48">        private Optional&lt;String&gt; orderByClause = Optional.empty();</span>
-<span class="fc" id="L49">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L52">        private Optional&lt;String&gt; orderByClause = Optional.empty();</span>
+<span class="fc" id="L53">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
         
         public Builder withQueryExpression(String queryExpression) {
-<span class="fc" id="L52">            this.queryExpression = queryExpression;</span>
-<span class="fc" id="L53">            return this;</span>
+<span class="fc" id="L56">            this.queryExpression = queryExpression;</span>
+<span class="fc" id="L57">            return this;</span>
         }
         
         public Builder withOrderByClause(Optional&lt;String&gt; orderByClause) {
-<span class="fc" id="L57">            this.orderByClause = orderByClause;</span>
-<span class="fc" id="L58">            return this;</span>
+<span class="fc" id="L61">            this.orderByClause = orderByClause;</span>
+<span class="fc" id="L62">            return this;</span>
         }
         
         public Builder withParameters(Map&lt;String, Object&gt; parameters) {
-<span class="fc" id="L62">            this.parameters.putAll(parameters);</span>
-<span class="fc" id="L63">            return this;</span>
+<span class="fc" id="L66">            this.parameters.putAll(parameters);</span>
+<span class="fc" id="L67">            return this;</span>
         }
         
         public SelectStatement build() {
-<span class="fc" id="L67">            return new SelectStatement(this);</span>
+<span class="fc" id="L71">            return new SelectStatement(this);</span>
         }
     }
 }

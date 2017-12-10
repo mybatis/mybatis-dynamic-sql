@@ -53,35 +53,38 @@ public class UpdateModel {
     }
     
     public UpdateStatement render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L56">        return new UpdateRenderer.Builder()</span>
-<span class="fc" id="L57">                .withUpdateModel(this)</span>
-<span class="fc" id="L58">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L59">                .build()</span>
-<span class="fc" id="L60">                .render();</span>
+<span class="fc" id="L56">        return UpdateRenderer.withUpdateModel(this)</span>
+<span class="fc" id="L57">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L58">                .build()</span>
+<span class="fc" id="L59">                .render();</span>
     }
     
-<span class="fc" id="L63">    public static class Builder {</span>
+    public static Builder withTable(SqlTable table) {
+<span class="fc" id="L63">        return new Builder().withTable(table);</span>
+    }
+    
+<span class="fc" id="L66">    public static class Builder {</span>
         private SqlTable table;
         private WhereModel whereModel;
-<span class="fc" id="L66">        private List&lt;UpdateMapping&gt; columnValues = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L69">        private List&lt;UpdateMapping&gt; columnValues = new ArrayList&lt;&gt;();</span>
         
         public Builder withTable(SqlTable table) {
-<span class="fc" id="L69">            this.table = table;</span>
-<span class="fc" id="L70">            return this;</span>
+<span class="fc" id="L72">            this.table = table;</span>
+<span class="fc" id="L73">            return this;</span>
         }
         
         public Builder withColumnValues(List&lt;UpdateMapping&gt; columnValues) {
-<span class="fc" id="L74">            this.columnValues.addAll(columnValues);</span>
-<span class="fc" id="L75">            return this;</span>
+<span class="fc" id="L77">            this.columnValues.addAll(columnValues);</span>
+<span class="fc" id="L78">            return this;</span>
         }
         
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L79">            this.whereModel = whereModel;</span>
-<span class="fc" id="L80">            return this;</span>
+<span class="fc" id="L82">            this.whereModel = whereModel;</span>
+<span class="fc" id="L83">            return this;</span>
         }
         
         public UpdateModel build() {
-<span class="fc" id="L84">            return new UpdateModel(this);</span>
+<span class="fc" id="L87">            return new UpdateModel(this);</span>
         }
     }
 }

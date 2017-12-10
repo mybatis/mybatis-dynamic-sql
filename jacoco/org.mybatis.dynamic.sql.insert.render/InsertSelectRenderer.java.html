@@ -38,40 +38,43 @@ public class InsertSelectRenderer {
     public InsertSelectStatement render() {
 <span class="fc" id="L39">        SelectStatement selectStatement = model.selectModel().render(renderingStrategy);</span>
         
-<span class="fc" id="L41">        return new InsertSelectStatement.Builder()</span>
-<span class="fc" id="L42">                .withTableName(model.table().name())</span>
-<span class="fc" id="L43">                .withColumnsPhrase(calculateColumnsPhrase())</span>
-<span class="fc" id="L44">                .withSelectStatement(selectStatement.getSelectStatement())</span>
-<span class="fc" id="L45">                .withParameters(selectStatement.getParameters())</span>
-<span class="fc" id="L46">                .build();</span>
+<span class="fc" id="L41">        return InsertSelectStatement.withTableName(model.table().name())</span>
+<span class="fc" id="L42">                .withColumnsPhrase(calculateColumnsPhrase())</span>
+<span class="fc" id="L43">                .withSelectStatement(selectStatement.getSelectStatement())</span>
+<span class="fc" id="L44">                .withParameters(selectStatement.getParameters())</span>
+<span class="fc" id="L45">                .build();</span>
     }
     
     private Optional&lt;String&gt; calculateColumnsPhrase() {
-<span class="fc" id="L50">        return model.columnList()</span>
-<span class="fc" id="L51">                .map(this::calculateColumnsPhrase);</span>
+<span class="fc" id="L49">        return model.columnList()</span>
+<span class="fc" id="L50">                .map(this::calculateColumnsPhrase);</span>
     }
     
     private String calculateColumnsPhrase(InsertColumnListModel columnList) {
-<span class="fc" id="L55">        return columnList.mapColumns(SqlColumn::name)</span>
-<span class="fc" id="L56">                .collect(Collectors.joining(&quot;, &quot;, &quot;(&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L54">        return columnList.mapColumns(SqlColumn::name)</span>
+<span class="fc" id="L55">                .collect(Collectors.joining(&quot;, &quot;, &quot;(&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
     
-<span class="fc" id="L59">    public static class Builder {</span>
+    public static Builder withInsertSelectModel(InsertSelectModel model) {
+<span class="fc" id="L59">        return new Builder().withInsertSelectModel(model);</span>
+    }
+    
+<span class="fc" id="L62">    public static class Builder {</span>
         private InsertSelectModel model;
         private RenderingStrategy renderingStrategy;
         
         public Builder withInsertSelectModel(InsertSelectModel model) {
-<span class="fc" id="L64">            this.model = model;</span>
-<span class="fc" id="L65">            return this;</span>
+<span class="fc" id="L67">            this.model = model;</span>
+<span class="fc" id="L68">            return this;</span>
         }
         
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L69">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L70">            return this;</span>
+<span class="fc" id="L72">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L73">            return this;</span>
         }
         
         public InsertSelectRenderer build() {
-<span class="fc" id="L74">            return new InsertSelectRenderer(this);</span>
+<span class="fc" id="L77">            return new InsertSelectRenderer(this);</span>
         }
     }
 }

@@ -31,43 +31,41 @@ public class SqlTable {
     }
     
     public &lt;T&gt; SqlColumn&lt;T&gt; column(String name, JDBCType jdbcType) {
-<span class="fc" id="L34">        return new SqlColumn.Builder()</span>
-<span class="fc" id="L35">                .withName(name)</span>
-<span class="fc" id="L36">                .withJdbcType(jdbcType)</span>
-<span class="fc" id="L37">                .withTable(this)</span>
-<span class="fc" id="L38">                .build();</span>
+<span class="fc" id="L34">        return SqlColumn.withName(name)</span>
+<span class="fc" id="L35">                .withJdbcType(jdbcType)</span>
+<span class="fc" id="L36">                .withTable(this)</span>
+<span class="fc" id="L37">                .build();</span>
     }
 
     public &lt;T&gt; SqlColumn&lt;T&gt; column(String name, JDBCType jdbcType, String typeHandler) {
-<span class="fc" id="L42">        return new SqlColumn.Builder()</span>
-<span class="fc" id="L43">                .withName(name)</span>
-<span class="fc" id="L44">                .withJdbcType(jdbcType)</span>
-<span class="fc" id="L45">                .withTypeHandler(typeHandler)</span>
-<span class="fc" id="L46">                .withTable(this)</span>
-<span class="fc" id="L47">                .build();</span>
+<span class="fc" id="L41">        return SqlColumn.withName(name)</span>
+<span class="fc" id="L42">                .withJdbcType(jdbcType)</span>
+<span class="fc" id="L43">                .withTypeHandler(typeHandler)</span>
+<span class="fc" id="L44">                .withTable(this)</span>
+<span class="fc" id="L45">                .build();</span>
     }
     
     public static SqlTable of(String name) {
-<span class="fc" id="L51">        return new SqlTable(name);</span>
+<span class="fc" id="L49">        return new SqlTable(name);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L56">        return Objects.hashCode(name);</span>
+<span class="fc" id="L54">        return Objects.hashCode(name);</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (this == obj) {</span>
-<span class="fc" id="L62">            return true;</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (this == obj) {</span>
+<span class="fc" id="L60">            return true;</span>
         }
 
-<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (!(obj instanceof SqlTable)) {</span>
-<span class="fc" id="L66">            return false;</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (!(obj instanceof SqlTable)) {</span>
+<span class="fc" id="L64">            return false;</span>
         }
 
-<span class="fc" id="L69">        SqlTable other = (SqlTable) obj;</span>
-<span class="fc" id="L70">        return Objects.equals(name, other.name);</span>
+<span class="fc" id="L67">        SqlTable other = (SqlTable) obj;</span>
+<span class="fc" id="L68">        return Objects.equals(name, other.name);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

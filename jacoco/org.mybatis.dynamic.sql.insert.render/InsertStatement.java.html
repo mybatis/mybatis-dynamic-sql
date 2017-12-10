@@ -43,34 +43,38 @@ public class InsertStatement&lt;T&gt; {
 <span class="fc" id="L43">                + spaceBefore(valuesPhrase);</span>
     }
 
-<span class="fc" id="L46">    public static class Builder&lt;T&gt; {</span>
+    public static &lt;T&gt; Builder&lt;T&gt; withRecord(T record) {
+<span class="fc" id="L47">        return new Builder&lt;T&gt;().withRecord(record);</span>
+    }
+    
+<span class="fc" id="L50">    public static class Builder&lt;T&gt; {</span>
         private String tableName;
         private String columnsPhrase;
         private String valuesPhrase;
         private T record;
         
         public Builder&lt;T&gt; withTableName(String tableName) {
-<span class="fc" id="L53">            this.tableName = tableName;</span>
-<span class="fc" id="L54">            return this;</span>
+<span class="fc" id="L57">            this.tableName = tableName;</span>
+<span class="fc" id="L58">            return this;</span>
         }
 
         public Builder&lt;T&gt; withColumnsPhrase(String columnsPhrase) {
-<span class="fc" id="L58">            this.columnsPhrase = columnsPhrase;</span>
-<span class="fc" id="L59">            return this;</span>
+<span class="fc" id="L62">            this.columnsPhrase = columnsPhrase;</span>
+<span class="fc" id="L63">            return this;</span>
         }
         
         public Builder&lt;T&gt; withValuesPhrase(String valuesPhrase) {
-<span class="fc" id="L63">            this.valuesPhrase = valuesPhrase;</span>
-<span class="fc" id="L64">            return this;</span>
+<span class="fc" id="L67">            this.valuesPhrase = valuesPhrase;</span>
+<span class="fc" id="L68">            return this;</span>
         }
         
         public Builder&lt;T&gt; withRecord(T record) {
-<span class="fc" id="L68">            this.record = record;</span>
-<span class="fc" id="L69">            return this;</span>
+<span class="fc" id="L72">            this.record = record;</span>
+<span class="fc" id="L73">            return this;</span>
         }
         
         public InsertStatement&lt;T&gt; build() {
-<span class="fc" id="L73">            return new InsertStatement&lt;&gt;(this);</span>
+<span class="fc" id="L77">            return new InsertStatement&lt;&gt;(this);</span>
         }
     }
 }

@@ -43,59 +43,58 @@ public class BatchInsertDSL&lt;T&gt; {
     }
     
     public BatchInsertModel&lt;T&gt; build() {
-<span class="fc" id="L46">        return new BatchInsertModel.Builder&lt;T&gt;()</span>
+<span class="fc" id="L46">        return BatchInsertModel.withRecords(records)</span>
 <span class="fc" id="L47">                .withTable(table)</span>
-<span class="fc" id="L48">                .withRecords(records)</span>
-<span class="fc" id="L49">                .withColumnMappings(columnMappings)</span>
-<span class="fc" id="L50">                .build();</span>
+<span class="fc" id="L48">                .withColumnMappings(columnMappings)</span>
+<span class="fc" id="L49">                .build();</span>
     }
 
     @SafeVarargs
     public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(T...records) {
-<span class="fc" id="L55">        return new IntoGatherer&lt;&gt;(Arrays.asList(records));</span>
+<span class="fc" id="L54">        return new IntoGatherer&lt;&gt;(Arrays.asList(records));</span>
     }
     
     public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(List&lt;T&gt; records) {
-<span class="fc" id="L59">        return new IntoGatherer&lt;&gt;(records);</span>
+<span class="fc" id="L58">        return new IntoGatherer&lt;&gt;(records);</span>
     }
     
     public static class IntoGatherer&lt;T&gt; {
         private List&lt;T&gt; records;
         
-<span class="fc" id="L65">        private IntoGatherer(List&lt;T&gt; records) {</span>
-<span class="fc" id="L66">            this.records = records;</span>
-<span class="fc" id="L67">        }</span>
+<span class="fc" id="L64">        private IntoGatherer(List&lt;T&gt; records) {</span>
+<span class="fc" id="L65">            this.records = records;</span>
+<span class="fc" id="L66">        }</span>
 
         public BatchInsertDSL&lt;T&gt; into(SqlTable table) {
-<span class="fc" id="L70">            return new BatchInsertDSL&lt;&gt;(records, table);</span>
+<span class="fc" id="L69">            return new BatchInsertDSL&lt;&gt;(records, table);</span>
         }
     }
     
     public class BatchColumnMappingFinisher&lt;F&gt; {
         private SqlColumn&lt;F&gt; column;
             
-<span class="fc" id="L77">        public BatchColumnMappingFinisher(SqlColumn&lt;F&gt; column) {</span>
-<span class="fc" id="L78">            this.column = column;</span>
-<span class="fc" id="L79">        }</span>
+<span class="fc" id="L76">        public BatchColumnMappingFinisher(SqlColumn&lt;F&gt; column) {</span>
+<span class="fc" id="L77">            this.column = column;</span>
+<span class="fc" id="L78">        }</span>
             
         public BatchInsertDSL&lt;T&gt; toProperty(String property) {
-<span class="fc" id="L82">            columnMappings.add(PropertyMapping.of(column, property));</span>
-<span class="fc" id="L83">            return BatchInsertDSL.this;</span>
+<span class="fc" id="L81">            columnMappings.add(PropertyMapping.of(column, property));</span>
+<span class="fc" id="L82">            return BatchInsertDSL.this;</span>
         }
             
         public BatchInsertDSL&lt;T&gt; toNull() {
-<span class="fc" id="L87">            columnMappings.add(NullMapping.of(column));</span>
-<span class="fc" id="L88">            return BatchInsertDSL.this;</span>
+<span class="fc" id="L86">            columnMappings.add(NullMapping.of(column));</span>
+<span class="fc" id="L87">            return BatchInsertDSL.this;</span>
         }
             
         public BatchInsertDSL&lt;T&gt; toConstant(String constant) {
-<span class="fc" id="L92">            columnMappings.add(ConstantMapping.of(column, constant));</span>
-<span class="fc" id="L93">            return BatchInsertDSL.this;</span>
+<span class="fc" id="L91">            columnMappings.add(ConstantMapping.of(column, constant));</span>
+<span class="fc" id="L92">            return BatchInsertDSL.this;</span>
         }
             
         public BatchInsertDSL&lt;T&gt; toStringConstant(String constant) {
-<span class="fc" id="L97">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
-<span class="fc" id="L98">            return BatchInsertDSL.this;</span>
+<span class="fc" id="L96">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
+<span class="fc" id="L97">            return BatchInsertDSL.this;</span>
         }
     }
 }

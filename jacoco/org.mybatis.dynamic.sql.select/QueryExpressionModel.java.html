@@ -92,58 +92,62 @@ public class QueryExpressionModel {
 <span class="fc" id="L92">                + spaceBefore(tableAliasCalculator.aliasForTable(table));</span>
     }
     
-<span class="fc" id="L95">    public static class Builder {</span>
+    public static Builder withSelectList(List&lt;BasicColumn&gt; columnList) {
+<span class="fc" id="L96">        return new Builder().withSelectList(columnList);</span>
+    }
+    
+<span class="fc" id="L99">    public static class Builder {</span>
         private String connector;
         private boolean isDistinct;
-<span class="fc" id="L98">        private List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L102">        private List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
         private SqlTable table;
-<span class="fc" id="L100">        private Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L104">        private Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
         private WhereModel whereModel;
         private JoinModel joinModel;
         private GroupByModel groupByModel;
         
         public Builder withConnector(String connector) {
-<span class="fc" id="L106">            this.connector = connector;</span>
-<span class="fc" id="L107">            return this;</span>
+<span class="fc" id="L110">            this.connector = connector;</span>
+<span class="fc" id="L111">            return this;</span>
         }
         
         public Builder withTable(SqlTable table) {
-<span class="fc" id="L111">            this.table = table;</span>
-<span class="fc" id="L112">            return this;</span>
+<span class="fc" id="L115">            this.table = table;</span>
+<span class="fc" id="L116">            return this;</span>
         }
         
         public Builder isDistinct(boolean isDistinct) {
-<span class="fc" id="L116">            this.isDistinct = isDistinct;</span>
-<span class="fc" id="L117">            return this;</span>
+<span class="fc" id="L120">            this.isDistinct = isDistinct;</span>
+<span class="fc" id="L121">            return this;</span>
         }
 
-        public Builder withColumns(List&lt;BasicColumn&gt; selectList) {
-<span class="fc" id="L121">            this.selectList.addAll(selectList);</span>
-<span class="fc" id="L122">            return this;</span>
+        public Builder withSelectList(List&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L125">            this.selectList.addAll(selectList);</span>
+<span class="fc" id="L126">            return this;</span>
         }
 
         public Builder withTableAliases(Map&lt;SqlTable, String&gt; tableAliases) {
-<span class="fc" id="L126">            this.tableAliases.putAll(tableAliases);</span>
-<span class="fc" id="L127">            return this;</span>
+<span class="fc" id="L130">            this.tableAliases.putAll(tableAliases);</span>
+<span class="fc" id="L131">            return this;</span>
         }
         
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L131">            this.whereModel = whereModel;</span>
-<span class="fc" id="L132">            return this;</span>
+<span class="fc" id="L135">            this.whereModel = whereModel;</span>
+<span class="fc" id="L136">            return this;</span>
         }
 
         public Builder withJoinModel(JoinModel joinModel) {
-<span class="fc" id="L136">            this.joinModel = joinModel;</span>
-<span class="fc" id="L137">            return this;</span>
+<span class="fc" id="L140">            this.joinModel = joinModel;</span>
+<span class="fc" id="L141">            return this;</span>
         }
         
         public Builder withGroupByModel(GroupByModel groupByModel) {
-<span class="fc" id="L141">            this.groupByModel = groupByModel;</span>
-<span class="fc" id="L142">            return this;</span>
+<span class="fc" id="L145">            this.groupByModel = groupByModel;</span>
+<span class="fc" id="L146">            return this;</span>
         }
         
         public QueryExpressionModel build() {
-<span class="fc" id="L146">            return new QueryExpressionModel(this);</span>
+<span class="fc" id="L150">            return new QueryExpressionModel(this);</span>
         }
     }
 }

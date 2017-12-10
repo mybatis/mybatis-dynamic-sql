@@ -66,18 +66,17 @@ public class WhereModel {
     
     private WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator, Optional&lt;String&gt; parameterName) {
-<span class="fc" id="L69">        return new WhereRenderer.Builder()</span>
-<span class="fc" id="L70">                .withWhereModel(this)</span>
-<span class="fc" id="L71">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L72">                .withSequence(new AtomicInteger(1))</span>
-<span class="fc" id="L73">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L74">                .withParameterName(parameterName)</span>
-<span class="fc" id="L75">                .build()</span>
-<span class="fc" id="L76">                .render();</span>
+<span class="fc" id="L69">        return WhereRenderer.withWhereModel(this)</span>
+<span class="fc" id="L70">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L71">                .withSequence(new AtomicInteger(1))</span>
+<span class="fc" id="L72">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L73">                .withParameterName(parameterName)</span>
+<span class="fc" id="L74">                .build()</span>
+<span class="fc" id="L75">                .render();</span>
     }
     
     public static WhereModel of(List&lt;SqlCriterion&lt;?&gt;&gt; criteria) {
-<span class="fc" id="L80">        return new WhereModel(criteria);</span>
+<span class="fc" id="L79">        return new WhereModel(criteria);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

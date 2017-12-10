@@ -47,28 +47,32 @@ public class JoinCriterion {
 <span class="fc" id="L47">        return joinCondition.operator();</span>
     }
     
-<span class="fc" id="L50">    public static class Builder {</span>
+    public static Builder withJoinColumn(BasicColumn joinColumn) {
+<span class="fc" id="L51">        return new Builder().withJoinColumn(joinColumn);</span>
+    }
+    
+<span class="fc" id="L54">    public static class Builder {</span>
         private BasicColumn joinColumn;
         private JoinCondition joinCondition;
         private String connector;
         
         public Builder withJoinColumn(BasicColumn joinColumn) {
-<span class="fc" id="L56">            this.joinColumn = joinColumn;</span>
-<span class="fc" id="L57">            return this;</span>
+<span class="fc" id="L60">            this.joinColumn = joinColumn;</span>
+<span class="fc" id="L61">            return this;</span>
         }
         
         public Builder withJoinCondition(JoinCondition joinCondition) {
-<span class="fc" id="L61">            this.joinCondition = joinCondition;</span>
-<span class="fc" id="L62">            return this;</span>
+<span class="fc" id="L65">            this.joinCondition = joinCondition;</span>
+<span class="fc" id="L66">            return this;</span>
         }
         
         public Builder withConnector(String connector) {
-<span class="fc" id="L66">            this.connector = connector;</span>
-<span class="fc" id="L67">            return this;</span>
+<span class="fc" id="L70">            this.connector = connector;</span>
+<span class="fc" id="L71">            return this;</span>
         }
         
         public JoinCriterion build() {
-<span class="fc" id="L71">            return new JoinCriterion(this);</span>
+<span class="fc" id="L75">            return new JoinCriterion(this);</span>
         }
     }
 }

@@ -52,25 +52,29 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>                  + spaceBefore(whereClauseAndParameters.map(WhereClauseAndParameters::whereClause));
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      }
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereRenderer.html">Builder</a> {
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          <strong class="jxr_keyword">private</strong> String tableName;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          <strong class="jxr_keyword">private</strong> Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters = Optional.empty();
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereRenderer.html">Builder</a> withTableName(String tableName) {
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>              <strong class="jxr_keyword">this</strong>.tableName = tableName;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          }
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>          
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereRenderer.html">Builder</a> withWhereClause(Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters) {
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>              <strong class="jxr_keyword">this</strong>.whereClauseAndParameters = whereClauseAndParameters;
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          }
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/delete/render/DeleteStatement.html">DeleteStatement</a> build() {
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/mybatis/dynamic/sql/delete/render/DeleteStatement.html">DeleteStatement</a>(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereRenderer.html">Builder</a> withTableName(String tableName) {
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereRenderer.html">Builder</a>().withTableName(tableName);
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      }
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereRenderer.html">Builder</a> {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          <strong class="jxr_keyword">private</strong> String tableName;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">private</strong> Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters = Optional.empty();
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereRenderer.html">Builder</a> withTableName(String tableName) {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>              <strong class="jxr_keyword">this</strong>.tableName = tableName;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereRenderer.html">Builder</a> withWhereClause(Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters) {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>              <strong class="jxr_keyword">this</strong>.whereClauseAndParameters = whereClauseAndParameters;
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          }
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      }
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  }
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/delete/render/DeleteStatement.html">DeleteStatement</a> build() {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/mybatis/dynamic/sql/delete/render/DeleteStatement.html">DeleteStatement</a>(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          }
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016&#x2013;2017 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>

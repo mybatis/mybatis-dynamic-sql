@@ -48,35 +48,38 @@ public class InsertSelectModel {
     }
     
     public InsertSelectStatement render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L51">        return new InsertSelectRenderer.Builder()</span>
-<span class="fc" id="L52">                .withInsertSelectModel(this)</span>
-<span class="fc" id="L53">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L54">                .build()</span>
-<span class="fc" id="L55">                .render();</span>
+<span class="fc" id="L51">        return InsertSelectRenderer.withInsertSelectModel(this)</span>
+<span class="fc" id="L52">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L53">                .build()</span>
+<span class="fc" id="L54">                .render();</span>
     }
     
-<span class="fc" id="L58">    public static class Builder {</span>
+    public static Builder withTable(SqlTable table) {
+<span class="fc" id="L58">        return new Builder().withTable(table);</span>
+    }
+    
+<span class="fc" id="L61">    public static class Builder {</span>
         private SqlTable table;
-<span class="fc" id="L60">        private Optional&lt;InsertColumnListModel&gt; columnList = Optional.empty();</span>
+<span class="fc" id="L63">        private Optional&lt;InsertColumnListModel&gt; columnList = Optional.empty();</span>
         private SelectModel selectModel;
         
         public Builder withTable(SqlTable table) {
-<span class="fc" id="L64">            this.table = table;</span>
-<span class="fc" id="L65">            return this;</span>
+<span class="fc" id="L67">            this.table = table;</span>
+<span class="fc" id="L68">            return this;</span>
         }
         
         public Builder withColumnList(Optional&lt;InsertColumnListModel&gt; columnList) {
-<span class="fc" id="L69">            this.columnList = columnList;</span>
-<span class="fc" id="L70">            return this;</span>
+<span class="fc" id="L72">            this.columnList = columnList;</span>
+<span class="fc" id="L73">            return this;</span>
         }
         
         public Builder withSelectModel(SelectModel selectModel) {
-<span class="fc" id="L74">            this.selectModel = selectModel;</span>
-<span class="fc" id="L75">            return this;</span>
+<span class="fc" id="L77">            this.selectModel = selectModel;</span>
+<span class="fc" id="L78">            return this;</span>
         }
         
         public InsertSelectModel build() {
-<span class="fc" id="L79">            return new InsertSelectModel(this);</span>
+<span class="fc" id="L82">            return new InsertSelectModel(this);</span>
         }
     }
 }

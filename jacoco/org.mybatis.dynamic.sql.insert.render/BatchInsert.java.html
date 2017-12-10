@@ -48,12 +48,11 @@ public class BatchInsert&lt;T&gt; {
     }
     
     private InsertStatement&lt;T&gt; toInsertStatement(T record) {
-<span class="fc" id="L51">        return new InsertStatement.Builder&lt;T&gt;()</span>
+<span class="fc" id="L51">        return InsertStatement.withRecord(record)</span>
 <span class="fc" id="L52">                .withTableName(tableName)</span>
 <span class="fc" id="L53">                .withColumnsPhrase(columnsPhrase)</span>
 <span class="fc" id="L54">                .withValuesPhrase(valuesPhrase)</span>
-<span class="fc" id="L55">                .withRecord(record)</span>
-<span class="fc" id="L56">                .build();</span>
+<span class="fc" id="L55">                .build();</span>
     }
 
     /**
@@ -62,40 +61,44 @@ public class BatchInsert&lt;T&gt; {
      * @return the generated INSERT statement
      */
     public String getInsertStatementSQL() {
-<span class="fc" id="L65">        return &quot;insert into&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L66">                + spaceBefore(tableName)</span>
-<span class="fc" id="L67">                + spaceBefore(columnsPhrase)</span>
-<span class="fc" id="L68">                + spaceBefore(valuesPhrase);</span>
+<span class="fc" id="L64">        return &quot;insert into&quot; //$NON-NLS-1$</span>
+<span class="fc" id="L65">                + spaceBefore(tableName)</span>
+<span class="fc" id="L66">                + spaceBefore(columnsPhrase)</span>
+<span class="fc" id="L67">                + spaceBefore(valuesPhrase);</span>
     }
     
-<span class="fc" id="L71">    public static class Builder&lt;T&gt; {</span>
+    public static &lt;T&gt; Builder&lt;T&gt; withRecords(List&lt;T&gt; records) {
+<span class="fc" id="L71">        return new Builder&lt;T&gt;().withRecords(records);</span>
+    }
+    
+<span class="fc" id="L74">    public static class Builder&lt;T&gt; {</span>
         private String tableName;
         private String columnsPhrase;
         private String valuesPhrase;
-<span class="fc" id="L75">        private List&lt;T&gt; records = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L78">        private List&lt;T&gt; records = new ArrayList&lt;&gt;();</span>
         
         public Builder&lt;T&gt; withTableName(String tableName) {
-<span class="fc" id="L78">            this.tableName = tableName;</span>
-<span class="fc" id="L79">            return this;</span>
+<span class="fc" id="L81">            this.tableName = tableName;</span>
+<span class="fc" id="L82">            return this;</span>
         }
 
         public Builder&lt;T&gt; withColumnsPhrase(String columnsPhrase) {
-<span class="fc" id="L83">            this.columnsPhrase = columnsPhrase;</span>
-<span class="fc" id="L84">            return this;</span>
+<span class="fc" id="L86">            this.columnsPhrase = columnsPhrase;</span>
+<span class="fc" id="L87">            return this;</span>
         }
         
         public Builder&lt;T&gt; withValuesPhrase(String valuesPhrase) {
-<span class="fc" id="L88">            this.valuesPhrase = valuesPhrase;</span>
-<span class="fc" id="L89">            return this;</span>
+<span class="fc" id="L91">            this.valuesPhrase = valuesPhrase;</span>
+<span class="fc" id="L92">            return this;</span>
         }
         
         public Builder&lt;T&gt; withRecords(List&lt;T&gt; records) {
-<span class="fc" id="L93">            this.records.addAll(records);</span>
-<span class="fc" id="L94">            return this;</span>
+<span class="fc" id="L96">            this.records.addAll(records);</span>
+<span class="fc" id="L97">            return this;</span>
         }
         
         public BatchInsert&lt;T&gt; build() {
-<span class="fc" id="L98">            return new BatchInsert&lt;&gt;(this);</span>
+<span class="fc" id="L101">            return new BatchInsert&lt;&gt;(this);</span>
         }
     }
 }

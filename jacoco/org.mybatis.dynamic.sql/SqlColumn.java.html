@@ -100,34 +100,38 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
 <span class="fc" id="L100">        return tableAlias + &quot;.&quot; + name(); //$NON-NLS-1$</span>
     }
     
-<span class="fc" id="L103">    public static class Builder {</span>
+    public static Builder withName(String name) {
+<span class="fc" id="L104">        return new Builder().withName(name);</span>
+    }
+    
+<span class="fc" id="L107">    public static class Builder {</span>
         private SqlTable table;
         private String name;
         private JDBCType jdbcType;
         private String typeHandler;
         
         public Builder withTable(SqlTable table) {
-<span class="fc" id="L110">            this.table = table;</span>
-<span class="fc" id="L111">            return this;</span>
+<span class="fc" id="L114">            this.table = table;</span>
+<span class="fc" id="L115">            return this;</span>
         }
         
         public Builder withName(String name) {
-<span class="fc" id="L115">            this.name = name;</span>
-<span class="fc" id="L116">            return this;</span>
+<span class="fc" id="L119">            this.name = name;</span>
+<span class="fc" id="L120">            return this;</span>
         }
         
         public Builder withJdbcType(JDBCType jdbcType) {
-<span class="fc" id="L120">            this.jdbcType = jdbcType;</span>
-<span class="fc" id="L121">            return this;</span>
+<span class="fc" id="L124">            this.jdbcType = jdbcType;</span>
+<span class="fc" id="L125">            return this;</span>
         }
         
         public Builder withTypeHandler(String typeHandler) {
-<span class="fc" id="L125">            this.typeHandler = typeHandler;</span>
-<span class="fc" id="L126">            return this;</span>
+<span class="fc" id="L129">            this.typeHandler = typeHandler;</span>
+<span class="fc" id="L130">            return this;</span>
         }
         
         public &lt;T&gt; SqlColumn&lt;T&gt; build() {
-<span class="fc" id="L130">            return new SqlColumn&lt;&gt;(this);</span>
+<span class="fc" id="L134">            return new SqlColumn&lt;&gt;(this);</span>
         }
     }
 }

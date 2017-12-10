@@ -32,32 +32,35 @@ public class DeleteRenderer {
 <span class="fc" id="L32">    }</span>
     
     public DeleteStatement render() {
-<span class="fc" id="L35">        return new DeleteStatement.Builder()</span>
-<span class="fc" id="L36">                .withTableName(deleteModel.table().name())</span>
-<span class="fc" id="L37">                .withWhereClause(deleteModel.whereModel().map(this::renderWhereModel))</span>
-<span class="fc" id="L38">                .build();</span>
+<span class="fc" id="L35">        return DeleteStatement.withTableName(deleteModel.table().name())</span>
+<span class="fc" id="L36">                .withWhereClause(deleteModel.whereModel().map(this::renderWhereModel))</span>
+<span class="fc" id="L37">                .build();</span>
     }
     
     private WhereClauseAndParameters renderWhereModel(WhereModel whereModel) {
-<span class="fc" id="L42">        return whereModel.render(renderingStrategy);</span>
+<span class="fc" id="L41">        return whereModel.render(renderingStrategy);</span>
     }
     
-<span class="fc" id="L45">    public static class Builder {</span>
+    public static Builder withDeleteModel(DeleteModel deleteModel) {
+<span class="fc" id="L45">        return new Builder().withDeleteModel(deleteModel);</span>
+    }
+    
+<span class="fc" id="L48">    public static class Builder {</span>
         private DeleteModel deleteModel;
         private RenderingStrategy renderingStrategy;
 
         public Builder withDeleteModel(DeleteModel deleteModel) {
-<span class="fc" id="L50">            this.deleteModel = deleteModel;</span>
-<span class="fc" id="L51">            return this;</span>
+<span class="fc" id="L53">            this.deleteModel = deleteModel;</span>
+<span class="fc" id="L54">            return this;</span>
         }
         
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L55">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L56">            return this;</span>
+<span class="fc" id="L58">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L59">            return this;</span>
         }
         
         public DeleteRenderer build() {
-<span class="fc" id="L60">            return new DeleteRenderer(this);</span>
+<span class="fc" id="L63">            return new DeleteRenderer(this);</span>
         }
     }
 }

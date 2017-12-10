@@ -34,22 +34,26 @@ public class FieldAndValue {
 <span class="fc" id="L34">        return valuePhrase;</span>
     }
     
-<span class="fc" id="L37">    public static class Builder {</span>
+    public static Builder withFieldName(String fieldName) {
+<span class="fc" id="L38">        return new Builder().withFieldName(fieldName);</span>
+    }
+    
+<span class="fc" id="L41">    public static class Builder {</span>
         private String fieldName;
         private String valuePhrase;
 
         public Builder withFieldName(String fieldName) {
-<span class="fc" id="L42">            this.fieldName = fieldName;</span>
-<span class="fc" id="L43">            return this;</span>
+<span class="fc" id="L46">            this.fieldName = fieldName;</span>
+<span class="fc" id="L47">            return this;</span>
         }
         
         public Builder withValuePhrase(String valuePhrase) {
-<span class="fc" id="L47">            this.valuePhrase = valuePhrase;</span>
-<span class="fc" id="L48">            return this;</span>
+<span class="fc" id="L51">            this.valuePhrase = valuePhrase;</span>
+<span class="fc" id="L52">            return this;</span>
         }
         
         public FieldAndValue build() {
-<span class="fc" id="L52">            return new FieldAndValue(this);</span>
+<span class="fc" id="L56">            return new FieldAndValue(this);</span>
         }
     }
 }

@@ -47,28 +47,32 @@ public class JoinSpecification {
 <span class="fc" id="L47">        return joinType;</span>
     }
     
-<span class="fc" id="L50">    public static class Builder {</span>
+    public static Builder withJoinTable(SqlTable table) {
+<span class="fc" id="L51">        return new Builder().withJoinTable(table);</span>
+    }
+    
+<span class="fc" id="L54">    public static class Builder {</span>
         private SqlTable table;
-<span class="fc" id="L52">        private List&lt;JoinCriterion&gt; joinCriteria = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L56">        private List&lt;JoinCriterion&gt; joinCriteria = new ArrayList&lt;&gt;();</span>
         private JoinType joinType;
         
         public Builder withJoinTable(SqlTable table) {
-<span class="fc" id="L56">            this.table = table;</span>
-<span class="fc" id="L57">            return this;</span>
+<span class="fc" id="L60">            this.table = table;</span>
+<span class="fc" id="L61">            return this;</span>
         }
         
         public Builder withJoinCriteria(List&lt;JoinCriterion&gt; joinCriteria) {
-<span class="fc" id="L61">            this.joinCriteria.addAll(joinCriteria);</span>
-<span class="fc" id="L62">            return this;</span>
+<span class="fc" id="L65">            this.joinCriteria.addAll(joinCriteria);</span>
+<span class="fc" id="L66">            return this;</span>
         }
         
         public Builder withJoinType(JoinType joinType) {
-<span class="fc" id="L66">            this.joinType = joinType;</span>
-<span class="fc" id="L67">            return this;</span>
+<span class="fc" id="L70">            this.joinType = joinType;</span>
+<span class="fc" id="L71">            return this;</span>
         }
         
         public JoinSpecification build() {
-<span class="fc" id="L71">            return new JoinSpecification(this);</span>
+<span class="fc" id="L75">            return new JoinSpecification(this);</span>
         }
     }
 }

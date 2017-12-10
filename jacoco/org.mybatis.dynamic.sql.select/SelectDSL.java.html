@@ -97,11 +97,10 @@ public class SelectDSL&lt;R&gt; {
 <span class="fc" id="L97">    }</span>
     
     public R build() {
-<span class="fc" id="L100">        SelectModel selectModel = new SelectModel.Builder()</span>
-<span class="fc" id="L101">                .withQueryExpressions(queryExpressions)</span>
-<span class="fc" id="L102">                .withOrderByModel(orderByModel)</span>
-<span class="fc" id="L103">                .build();</span>
-<span class="fc" id="L104">        return adapterFunction.apply(selectModel);</span>
+<span class="fc" id="L100">        SelectModel selectModel = SelectModel.withQueryExpressions(queryExpressions)</span>
+<span class="fc" id="L101">                .withOrderByModel(orderByModel)</span>
+<span class="fc" id="L102">                .build();</span>
+<span class="fc" id="L103">        return adapterFunction.apply(selectModel);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
