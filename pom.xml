@@ -24,9 +24,9 @@
   </parent>
   <groupId>org.mybatis.dynamic-sql</groupId>
   <artifactId>mybatis-dynamic-sql</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>MyBatis Dynamic SQL</name>
-  <description>MyBatis utility framework for generating dynamic queries.</description>
+  <description>MyBatis framework for generating dynamic SQL</description>
   <inceptionYear>2016</inceptionYear>
 
   <properties>
