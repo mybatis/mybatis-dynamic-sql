@@ -10,3 +10,4 @@ buildNumber.properties
 /.settings/
 /.classpath
 /.project
+/.vscode/
