@@ -86,22 +86,22 @@ public interface AnimalDataMapper {
     @Select({
         "select id, animal_name, brain_weight, body_weight",
         "from AnimalData",
-        "${whereSupport.whereClause}",
+        "${whereClauseProvider.whereClause}",
         "order by id",
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithLimitAndOffset(@Param("whereSupport") WhereClauseProvider whereClause,
+    List<AnimalData> selectByExampleWithLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
             @Param("limit") int limit, @Param("offset") int offset);
 
     @Select({
         "select b.id, b.animal_name, b.brain_weight, b.body_weight",
         "from AnimalData b",
-        "${whereSupport.whereClause}",
+        "${whereClauseProvider.whereClause}",
         "order by id",
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithAliasLimitAndOffset(@Param("whereSupport") WhereClauseProvider whereClause,
+    List<AnimalData> selectByExampleWithAliasLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
             @Param("limit") int limit, @Param("offset") int offset);
 }

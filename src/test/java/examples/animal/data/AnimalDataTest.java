@@ -219,7 +219,7 @@ public class AnimalDataTest {
             
             WhereClauseProvider whereClause = where(id, isLessThan(60))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3, "whereSupport");
+                    .render(RenderingStrategy.MYBATIS3, "whereClauseProvider");
             
             List<AnimalData> animals = mapper.selectByExampleWithLimitAndOffset(whereClause, 5, 15);
             assertThat(animals.size()).isEqualTo(5);
@@ -238,7 +238,7 @@ public class AnimalDataTest {
             
             WhereClauseProvider whereClause = where(id, isLessThan(60))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, "b"),  "whereSupport");
+                    .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, "b"),  "whereClauseProvider");
             
             List<AnimalData> animals = mapper.selectByExampleWithAliasLimitAndOffset(whereClause, 3, 24);
             assertThat(animals.size()).isEqualTo(3);

@@ -78,13 +78,13 @@ You can use the where clause support on its own if you would rather code your ow
         "${whereClause}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExample(WhereClauseAndParameters whereClause);
+    List<AnimalData> selectByExample(WhereClauseProvider whereClause);
 ```
 
 You can build a stand alone where clause and call your mapper like this:
 
 ```java
-    WhereClauseAndParameters whereClause = where(id, isNotBetween(10).and(60))
+    WhereClauseProvider whereClause = where(id, isNotBetween(10).and(60))
             .build()
             .render(RenderingStrategy.MYBATIS3);
 
@@ -102,12 +102,12 @@ If you need to use a table alias in the generated where clause you can supply it
         "${whereClause}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithAlias(WhereClauseAndParameters whereClause);
+    List<AnimalData> selectByExampleWithAlias(WhereClauseProvider whereClause);
 ```
 Then you can specify the alias for the generated WHERE clause on the render method like this:
 
 ```java
-    WhereClauseAndParameters whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
+    WhereClauseProvider whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
             .build()
             .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
 
@@ -122,24 +122,24 @@ By default, the WHERE clause renderer assumes that the rendered WHERE clause wil
     @Select({
         "select id, animal_name, brain_weight, body_weight",
         "from AnimalData",
-        "${whereSupport.whereClause}",
+        "${whereClauseProvider.whereClause}",
         "order by id",
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithLimitAndOffset(@Param("whereSupport") WhereClauseAndParameters whereClause,
+    List<AnimalData> selectByExampleWithLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
             @Param("limit") int limit, @Param("offset") int offset);
 ```
 
 In this mapper method there are three parameters.  So in this case it will be necessary to tell the WHERE rendered what parameter name to use the for rendered where clause.  That code looks like this:
 
 ```java
-    WhereClauseAndParameters whereClause = where(id, isLessThan(60))
+    WhereClauseProvider whereClause = where(id, isLessThan(60))
             .build()
-            .render(RenderingStrategy.MYBATIS3, "whereSupport");
+            .render(RenderingStrategy.MYBATIS3, "whereClauseProvider");
             
     List<AnimalData> animals = mapper.selectByExampleWithLimitAndOffset(whereClause, 5, 15);
 ```
-Notice that the string `whereSupport` is used both as the parameter name in the mapper `@Param` annotation and the parameter name in the `render` method.
+Notice that the string `whereClauseProvider` is used both as the parameter name in the mapper `@Param` annotation and the parameter name in the `render` method.
 
 The render method also has an override that accepts a TableAliasCalculator and a parameter name.
