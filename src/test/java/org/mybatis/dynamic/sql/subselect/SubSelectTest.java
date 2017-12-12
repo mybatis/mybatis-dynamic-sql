@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 @RunWith(JUnitPlatform.class)
 public class SubSelectTest {
@@ -42,7 +42,7 @@ public class SubSelectTest {
     public void testInSubSelect() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1.as("A_COLUMN1"), column2)
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column2, isIn(select(column2).from(table).where(column2, isEqualTo(3))))
                 .and(column1, isLessThan(d))
@@ -66,7 +66,7 @@ public class SubSelectTest {
     public void testNotInSubSelect() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1.as("A_COLUMN1"), column2)
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column2, isNotIn(select(column2).from(table).where(column2, isEqualTo(3))))
                 .and(column1, isLessThan(d))

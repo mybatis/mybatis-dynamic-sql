@@ -32,26 +32,26 @@ import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.MyBatis3DeleteModelAdapter;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.MyBatis3SelectModelAdapter;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.MyBatis3UpdateModelAdapter;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 @Mapper
 public interface SimpleTableAnnotatedMapper {
     
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
-    int insert(InsertStatement<SimpleTableRecord> insertStatement);
+    int insert(InsertStatementProvider<SimpleTableRecord> insertStatement);
 
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
-    int update(UpdateStatement updateStatement);
+    int update(UpdateStatementProvider updateStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="SimpleTableResult", value= {
@@ -62,17 +62,17 @@ public interface SimpleTableAnnotatedMapper {
             @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR, typeHandler=YesNoTypeHandler.class),
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
     })
-    List<SimpleTableRecord> selectMany(SelectStatement selectStatement);
+    List<SimpleTableRecord> selectMany(SelectStatementProvider selectStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("SimpleTableResult")
-    SimpleTableRecord selectOne(SelectStatement selectStatement);
+    SimpleTableRecord selectOne(SelectStatementProvider selectStatement);
     
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
-    int delete(DeleteStatement deleteStatement);
+    int delete(DeleteStatementProvider deleteStatement);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    long count(SelectStatement selectStatement);
+    long count(SelectStatementProvider selectStatement);
     
     default QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>> countByExample() {
         return SelectDSL.selectWithMapper(this::count, SqlBuilder.count())

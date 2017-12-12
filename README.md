@@ -57,7 +57,7 @@ One capability is that very expressive dynamic queries can be generated.  Here's
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
@@ -159,8 +159,8 @@ import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 public class SimpleTableAnnotatedMapper {
@@ -174,10 +174,10 @@ public class SimpleTableAnnotatedMapper {
             @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR, typeHandler=YesNoTypeHandler.class),
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
     })
-    List<SimpleTableRecord> selectMany(SelectStatement selectStatement);
+    List<SimpleTableRecord> selectMany(SelectStatementProvider selectStatement);
 
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
-    int delete(DeleteStatement deleteStatement);
+    int delete(DeleteStatementProvider deleteStatement);
 }
 ```
 ### Third - Create dynamic statements
@@ -188,7 +188,7 @@ All SQL construction methods can be accessed through expressive static methods i
 For example, a very simple select statement can be defined like this:
 
 ```java
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build()
@@ -198,7 +198,7 @@ For example, a very simple select statement can be defined like this:
 Or this (also note that you can give a table an alias):
 
 ```java
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(simpleTable, "a")
                 .where(id, isNull())
                 .build()
@@ -207,7 +207,7 @@ Or this (also note that you can give a table an alias):
 A delete statement looks like this:
 
 ```java
-        DeleteStatement deleteStatement = deleteFrom(simpleTable)
+        DeleteStatementProvider deleteStatement = deleteFrom(simpleTable)
                 .where(occupation, isNull())
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
@@ -216,7 +216,7 @@ A delete statement looks like this:
 The "between" condition is also expressive:
 
 ```java
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(simpleTable)
                 .where(id, isBetween(1).and(4))
                 .build()
@@ -226,7 +226,7 @@ The "between" condition is also expressive:
 More complex expressions can be built using the "and" and "or" conditions as follows:
 
 ```java
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(simpleTable)
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
@@ -255,7 +255,7 @@ an example from `examples.simple.SimpleTableAnnotatedMapperTest`:
         try {
             SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
             
-            SelectStatement selectStatement = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+            SelectStatementProvider selectStatement = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
                     .from(simpleTable)
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())

@@ -23,13 +23,13 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class SelectStatement {
+public class SelectStatementProvider {
     
     private String queryExpression;
     private Map<String, Object> parameters;
     private Optional<String> orderByClause;
     
-    private SelectStatement(Builder builder) {
+    private SelectStatementProvider(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
         orderByClause = Objects.requireNonNull(builder.orderByClause);
         parameters = Collections.unmodifiableMap(Objects.requireNonNull(builder.parameters));
@@ -67,8 +67,8 @@ public class SelectStatement {
             return this;
         }
         
-        public SelectStatement build() {
-            return new SelectStatement(this);
+        public SelectStatementProvider build() {
+            return new SelectStatementProvider(this);
         }
     }
 }

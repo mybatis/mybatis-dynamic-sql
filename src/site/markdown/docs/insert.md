@@ -18,7 +18,7 @@ A single record insert is a statement that inserts a single record into a table.
     record.setEmployed(true);
     record.setOccupation("Developer");
 
-    InsertStatement<SimpleTableRecord> insertStatement = insert(record)
+    InsertStatementProvider<SimpleTableRecord> insertStatement = insert(record)
             .into(simpleTable)
             .map(id).toProperty("id")
             .map(firstName).toProperty("firstName")
@@ -42,31 +42,31 @@ Notice the `map` method.  It is used to map a database column to an attribute of
 5. `map(column).toPropertyWhenPresent(property)` will insert a value from the record into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" insert as defined in MyBatis Generator.
 
 ### Annotated Mapper for Single Record Insert Statements
-The InsertStatement object can be used as a parameter to a MyBatis mapper method directly.  If you
+The InsertStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
 are using an annotated mapper, the insert method should look like this (with @Options added for generated values if necessary):
 
 ```java
 import org.apache.ibatis.annotations.InsertProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ...
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
-    int insert(InsertStatement<SimpleTableRecord> insertStatement);
+    int insert(InsertStatementProvider<SimpleTableRecord> insertStatement);
 ...
 
 ```
 
 ### XML Mapper for Single Record Insert Statements
-We do not recommend using an XML mapper for insert statements, but if you want to do so the InsertStatement object can be used as a parameter to a MyBatis mapper method directly.
+We do not recommend using an XML mapper for insert statements, but if you want to do so the InsertStatementProvider object can be used as a parameter to a MyBatis mapper method directly.
 
 If you are using an XML mapper, the insert method should look like this in the Java interface:
   
 ```java
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 
 ...
-    int insert(InsertStatement<SimpleTableRecord> insertStatement);
+    int insert(InsertStatementProvider<SimpleTableRecord> insertStatement);
 ...
 
 ```
@@ -86,7 +86,7 @@ MyBatis supports returning generated values from a single record insert, or a ba
 ...
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @Options(useGeneratedKeys=true, keyProperty="record.fullName")
-    int insert(InsertStatement<GeneratedAlwaysRecord> insertStatement);
+    int insert(InsertStatementProvider<GeneratedAlwaysRecord> insertStatement);
 ...
 ```
 
@@ -130,7 +130,7 @@ Notice that the same mapper method that is used to insert a single record is now
 An insert select is an SQL insert statement the inserts the results of a select.  For example:
 
 ```java
-    InsertSelectStatement insertSelectStatement = insertInto(animalDataCopy)
+    InsertSelectStatementProvider insertSelectStatement = insertInto(animalDataCopy)
             .withColumnList(id, animalName, bodyWeight, brainWeight)
             .withSelectStatement(
                 select(id, animalName, bodyWeight, brainWeight)
@@ -144,32 +144,32 @@ An insert select is an SQL insert statement the inserts the results of a select.
 The column list is optional and can be removed if the selected columns match the layout of the table. 
 
 ### Annotated Mapper for Insert Select Statements
-The InsertSelectStatement object can be used as a parameter to a MyBatis mapper method directly.  If you
+The InsertSelectStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
 are using an annotated mapper, the insert method should look like this:
 
 ```java
 import org.apache.ibatis.annotations.InsertProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ...
     @InsertProvider(type=SqlProviderAdapter.class, method="insertSelect")
-    int insertSelect(InsertSelectStatement insertSelectStatement);
+    int insertSelect(InsertSelectStatementProvider insertSelectStatement);
 ...
 ```
 
 Note that MyBatis does not support overloaded mapper method names, so the name of the method should be different than the single record insert in a mapper.
 
 ### XML Mapper for Insert Select Statements
-We do not recommend using an XML mapper for insert statements, but if you want to do so the InsertSelectStatement object can be used as a parameter to a MyBatis mapper method directly.
+We do not recommend using an XML mapper for insert statements, but if you want to do so the InsertSelectStatementProvider object can be used as a parameter to a MyBatis mapper method directly.
 
 If you are using an XML mapper, the insert method should look like this in the Java interface:
   
 ```java
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 
 ...
-    int insertSelect(InsertSelectStatement insertSelectStatement);
+    int insertSelect(InsertSelectStatementProvider insertSelectStatement);
 ...
 
 ```

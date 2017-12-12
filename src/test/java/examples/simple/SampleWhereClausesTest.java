@@ -23,14 +23,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 @RunWith(JUnitPlatform.class)
 public class SampleWhereClausesTest {
 
     @Test
     public void simpleClause1() {
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build()
@@ -42,7 +42,7 @@ public class SampleWhereClausesTest {
     
     @Test
     public void simpleClause2() {
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(simpleTable, "a")
                 .where(id, isNull())
                 .build()
@@ -53,7 +53,7 @@ public class SampleWhereClausesTest {
     
     @Test
     public void betweenClause() {
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(simpleTable, "a")
                 .where(id, isBetween(1).and(4))
                 .build()
@@ -65,7 +65,7 @@ public class SampleWhereClausesTest {
 
     @Test
     public void complexClause() {
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(simpleTable, "a")
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))

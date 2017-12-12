@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 @RunWith(JUnitPlatform.class)
 public class SelectStatementTest {
@@ -41,7 +41,7 @@ public class SelectStatementTest {
     public void testSimpleCriteriaWithoutAlias() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1, column2)
+        SelectStatementProvider selectStatement = select(column1, column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
@@ -62,7 +62,7 @@ public class SelectStatementTest {
     public void testComplexCriteriaWithoutAlias() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1, column2)
+        SelectStatementProvider selectStatement = select(column1, column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
@@ -99,7 +99,7 @@ public class SelectStatementTest {
     public void testSimpleCriteriaWithAlias() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1, column2)
+        SelectStatementProvider selectStatement = select(column1, column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
@@ -122,7 +122,7 @@ public class SelectStatementTest {
     public void testComplexCriteriaWithAlias() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1, column2)
+        SelectStatementProvider selectStatement = select(column1, column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))

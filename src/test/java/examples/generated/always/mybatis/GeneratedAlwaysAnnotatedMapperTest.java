@@ -42,8 +42,8 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 import examples.generated.always.GeneratedAlwaysRecord;
 
@@ -78,7 +78,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
         try {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
-            SelectStatement selectStatement = selectByExample()
+            SelectStatementProvider selectStatement = selectByExample()
                     .where(id, isEqualTo(1))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -97,7 +97,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
         try {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
-            SelectStatement selectStatement = selectByExample()
+            SelectStatementProvider selectStatement = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -279,7 +279,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setLastName("Jones");
             
-            UpdateStatement updateStatement = updateByExampleSelective(record)
+            UpdateStatementProvider updateStatement = updateByExampleSelective(record)
                     .where(lastName, isEqualTo("Flintstone"))
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -287,7 +287,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             int rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(3);
             
-            SelectStatement selectStatement = selectByExample()
+            SelectStatementProvider selectStatement = selectByExample()
                     .where(lastName, isEqualTo("Jones"))
                     .orderBy(firstName)
                     .build()

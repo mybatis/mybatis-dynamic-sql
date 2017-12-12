@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
 public class DeleteDSL<R> {
@@ -64,7 +64,7 @@ public class DeleteDSL<R> {
     }
     
     public static <T> DeleteDSL<MyBatis3DeleteModelAdapter<T>> deleteFromWithMapper(
-            Function<DeleteStatement, T> mapperMethod, SqlTable table) {
+            Function<DeleteStatementProvider, T> mapperMethod, SqlTable table) {
         return deleteFrom(deleteModel -> MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);
     }
     

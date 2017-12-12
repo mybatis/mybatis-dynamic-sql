@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 @RunWith(JUnitPlatform.class)
 public class JoinMapperTest {
@@ -76,7 +76,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+            SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                     .from(orderMaster, "om")
                     .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
                     .build()
@@ -110,7 +110,7 @@ public class JoinMapperTest {
     @Test
     public void testCompoundJoin1() {
         // this is a nonsensical join, but it does test the "and" capability
-        SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+        SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
                 .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
                 .build()
@@ -124,7 +124,7 @@ public class JoinMapperTest {
     @Test
     public void testCompoundJoin2() {
         // this is a nonsensical join, but it does test the "and" capability
-        SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+        SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
                 .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
                 .and(orderMaster.orderId, equalTo(orderDetail.orderId))
@@ -142,7 +142,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+            SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
@@ -176,7 +176,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+            SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
@@ -208,7 +208,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+            SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
@@ -248,7 +248,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+            SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster)
                     .join(orderLine).on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .join(itemMaster).on(orderLine.itemId, equalTo(itemMaster.itemId))
@@ -284,7 +284,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderLine, "ol")
                     .rightJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(itemMaster.itemId)
@@ -321,7 +321,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .rightJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
@@ -360,7 +360,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
                     .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(itemMaster.itemId)
@@ -397,7 +397,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .leftJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
@@ -436,7 +436,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
                     .from(itemMaster, "im")
                     .fullJoin(orderLine, "ol").on(itemMaster.itemId, equalTo(orderLine.itemId))
                     .orderBy(sortColumn("im_itemid"))
@@ -480,7 +480,7 @@ public class JoinMapperTest {
         try {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
-            SelectStatement selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .fullJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))

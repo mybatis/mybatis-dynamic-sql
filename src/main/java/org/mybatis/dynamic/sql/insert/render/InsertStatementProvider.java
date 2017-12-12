@@ -19,13 +19,13 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
 
-public class InsertStatement<T> {
+public class InsertStatementProvider<T> {
     private String tableName;
     private String columnsPhrase;
     private String valuesPhrase;
     private T record;
     
-    private InsertStatement(Builder<T> builder) {
+    private InsertStatementProvider(Builder<T> builder) {
         tableName = Objects.requireNonNull(builder.tableName);
         columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
         valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
@@ -73,8 +73,8 @@ public class InsertStatement<T> {
             return this;
         }
         
-        public InsertStatement<T> build() {
-            return new InsertStatement<>(this);
+        public InsertStatementProvider<T> build() {
+            return new InsertStatementProvider<>(this);
         }
     }
 }

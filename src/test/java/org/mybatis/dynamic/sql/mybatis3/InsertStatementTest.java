@@ -25,7 +25,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 @RunWith(JUnitPlatform.class)
@@ -42,7 +42,7 @@ public class InsertStatementTest {
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertStatement<?> insertStatement = insert(record)
+        InsertStatementProvider<?> insertStatement = insert(record)
                 .into(foo)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
@@ -64,7 +64,7 @@ public class InsertStatementTest {
         record.setLastName("jones");
         record.setOccupation("dino driver");
         
-        InsertStatement<?> insertStatement = insert(record)
+        InsertStatementProvider<?> insertStatement = insert(record)
                 .into(foo)
                 .map(id).toPropertyWhenPresent("id")
                 .map(firstName).toPropertyWhenPresent("firstName")

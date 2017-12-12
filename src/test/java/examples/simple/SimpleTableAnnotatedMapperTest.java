@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 @RunWith(JUnitPlatform.class)
 public class SimpleTableAnnotatedMapperTest {
@@ -288,7 +288,7 @@ public class SimpleTableAnnotatedMapperTest {
                 int rows = mapper.insert(record);
                 softly.assertThat(rows).isEqualTo(1);
 
-                UpdateStatement updateStatement = update(simpleTable)
+                UpdateStatementProvider updateStatement = update(simpleTable)
                         .set(occupation).equalToNull()
                         .set(employed).equalTo(false)
                         .where(id, isEqualTo(100))

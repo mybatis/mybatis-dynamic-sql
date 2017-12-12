@@ -4,7 +4,7 @@ The library supports generating SQL that is compatible with the Spring Framework
 The SQL statement objects are created in exactly the same way as for MyBatis - only the rendering strategy changes.  For example:
 
 ```java
-    SelectStatement selectStatement = select(id, firstName, lastName, fullName)
+    SelectStatementProvider selectStatement = select(id, firstName, lastName, fullName)
             .from(generatedAlways)
             .where(id, isGreaterThan(3))
             .orderBy(id.descending())
@@ -18,7 +18,7 @@ The Spring Named Parameter JDBC template expects an SQL statement with parameter
 ```java
     NamedParameterJdbcTemplate template = getTemplate();
 
-    SelectStatement selectStatement = select(id, firstName, lastName, fullName)
+    SelectStatementProvider selectStatement = select(id, firstName, lastName, fullName)
             .from(generatedAlways)
             .where(id, isGreaterThan(3))
             .orderBy(id.descending())
@@ -51,7 +51,7 @@ Insert statements are a bit different - MyBatis Dynamic SQL generates a properly
     record.setFirstName("Bob");
     record.setLastName("Jones");
         
-    InsertStatement<GeneratedAlwaysRecord> insertStatement = insert(record)
+    InsertStatementProvider<GeneratedAlwaysRecord> insertStatement = insert(record)
             .into(generatedAlways)
             .map(id).toProperty("id")
             .map(firstName).toProperty("firstName")
@@ -104,7 +104,7 @@ Updates and deletes use the `MapSqlParameterSource` as with select statements, b
 ```java
     NamedParameterJdbcTemplate template = getTemplate();
 
-    UpdateStatement updateStatement = update(generatedAlways)
+    UpdateStatementProvider updateStatement = update(generatedAlways)
             .set(firstName).equalToStringConstant("Rob")
             .where(id,  isIn(1, 5, 22))
             .build()

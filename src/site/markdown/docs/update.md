@@ -2,7 +2,7 @@
 Update statements are composed by specifying the table and columns to update, and an optional where clause.  For example:
 
 ```java
-    UpdateStatement updateStatement = update(animalData)
+    UpdateStatementProvider updateStatement = update(animalData)
             .set(bodyWeight).equalTo(record.getBodyWeight())
             .set(animalName).equalToNull()
             .where(id, isIn(1, 5, 7))
@@ -27,7 +27,7 @@ You can also build an update statement without a where clause.  This will update
 For example:
 
 ```java
-    UpdateStatement updateStatement = update(animalData)
+    UpdateStatementProvider updateStatement = update(animalData)
             .set(bodyWeight).equalTo(record.getBodyWeight())
             .set(animalName).equalToNull()
             .build()
@@ -36,32 +36,32 @@ For example:
 
 ## Annotated Mapper for Update Statements
 
-The UpdateStatement object can be used as a parameter to a MyBatis mapper method directly.  If you
+The UpdateStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
 are using an annotated mapper, the update method should look like this:
   
 ```java
 import org.apache.ibatis.annotations.UpdateProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ...
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
-    int update(UpdateStatement updateStatement);
+    int update(UpdateStatementProvider updateStatement);
 ...
 
 ```
 
 ## XML Mapper for Update Statements
 
-We do not recommend using an XML mapper for update statements, but if you want to do so the UpdateStatement object can be used as a parameter to a MyBatis mapper method directly.
+We do not recommend using an XML mapper for update statements, but if you want to do so the UpdateStatementProvider object can be used as a parameter to a MyBatis mapper method directly.
 
 If you are using an XML mapper, the update method should look like this in the Java interface:
   
 ```java
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 ...
-    int update(UpdateeStatement updateStatement);
+    int update(UpdateStatementProvider updateStatement);
 ...
 
 ```

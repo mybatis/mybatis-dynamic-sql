@@ -20,20 +20,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class WhereClauseAndParameters {
+public class WhereClauseProvider {
     private String whereClause;
     private Map<String, Object> parameters;
 
-    private WhereClauseAndParameters(Builder builder) {
+    private WhereClauseProvider(Builder builder) {
         whereClause = Objects.requireNonNull(builder.whereClause);
         parameters = Objects.requireNonNull(builder.parameters);
     }
     
-    public Map<String, Object> parameters() {
+    public Map<String, Object> getParameters() {
         return Collections.unmodifiableMap(parameters);
     }
     
-    public String whereClause() {
+    public String getWhereClause() {
         return whereClause;
     }
     
@@ -55,8 +55,8 @@ public class WhereClauseAndParameters {
             return this;
         }
         
-        public WhereClauseAndParameters build() {
-            return new WhereClauseAndParameters(this);
+        public WhereClauseProvider build() {
+            return new WhereClauseProvider(this);
         }
     }
 }

@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 /**
  * Adapter for use with MyBatis SQL provider annotations.
@@ -29,23 +29,23 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatement;
  */
 public class SqlProviderAdapter {
 
-    public String delete(DeleteStatement deleteStatement) {
+    public String delete(DeleteStatementProvider deleteStatement) {
         return deleteStatement.getDeleteStatement();
     }
     
-    public String insert(InsertStatement<?> insertStatement) {
+    public String insert(InsertStatementProvider<?> insertStatement) {
         return insertStatement.getInsertStatement();
     }
     
-    public String insertSelect(InsertSelectStatement insertStatement) {
+    public String insertSelect(InsertSelectStatementProvider insertStatement) {
         return insertStatement.getInsertStatement();
     }
     
-    public String select(SelectStatement selectStatement) {
+    public String select(SelectStatementProvider selectStatement) {
         return selectStatement.getSelectStatement();
     }
 
-    public String update(UpdateStatement updateStatement) {
+    public String update(UpdateStatementProvider updateStatement) {
         return updateStatement.getUpdateStatement();
     }
 }

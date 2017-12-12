@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class WhereModel {
@@ -45,26 +45,26 @@ public class WhereModel {
      * @param renderingStrategy rendering strategy
      * @return rendered where clause
      */
-    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy) {
+    public WhereClauseProvider render(RenderingStrategy renderingStrategy) {
         return render(renderingStrategy, TableAliasCalculator.empty(), Optional.empty());
     }
     
-    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+    public WhereClauseProvider render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator) {
         return render(renderingStrategy, tableAliasCalculator, Optional.empty());
     }
     
-    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+    public WhereClauseProvider render(RenderingStrategy renderingStrategy,
             String parameterName) {
         return render(renderingStrategy, TableAliasCalculator.empty(), Optional.of(parameterName));
     }
     
-    public WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+    public WhereClauseProvider render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator, String parameterName) {
         return render(renderingStrategy, tableAliasCalculator, Optional.of(parameterName));
     }
     
-    private WhereClauseAndParameters render(RenderingStrategy renderingStrategy,
+    private WhereClauseProvider render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator, Optional<String> parameterName) {
         return WhereRenderer.withWhereModel(this)
                 .withRenderingStrategy(renderingStrategy)

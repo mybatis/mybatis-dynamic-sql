@@ -24,9 +24,9 @@ import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 import examples.generated.always.GeneratedAlwaysRecord;
@@ -39,16 +39,16 @@ public interface GeneratedAlwaysAnnotatedMapper {
         @Result(property="lastName", column="last_name"),
         @Result(property="fullName", column="full_name")
     })
-    List<GeneratedAlwaysRecord> selectMany(SelectStatement selectStatement);
+    List<GeneratedAlwaysRecord> selectMany(SelectStatementProvider selectStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("gaResults")
-    GeneratedAlwaysRecord selectByPrimaryKey(SelectStatement selectStatement);
+    GeneratedAlwaysRecord selectByPrimaryKey(SelectStatementProvider selectStatement);
     
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @Options(useGeneratedKeys=true, keyProperty="record.fullName")
-    int insert(InsertStatement<GeneratedAlwaysRecord> insertStatement);
+    int insert(InsertStatementProvider<GeneratedAlwaysRecord> insertStatement);
     
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
-    int update(UpdateStatement updateStatement);
+    int update(UpdateStatementProvider updateStatement);
 }

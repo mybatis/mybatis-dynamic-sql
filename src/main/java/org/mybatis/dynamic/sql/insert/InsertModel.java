@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertRenderer;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.InsertMapping;
 
@@ -50,7 +50,7 @@ public class InsertModel<T> {
         return table;
     }
     
-    public InsertStatement<T> render(RenderingStrategy renderingStrategy) {
+    public InsertStatementProvider<T> render(RenderingStrategy renderingStrategy) {
         return InsertRenderer.withInsertModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()

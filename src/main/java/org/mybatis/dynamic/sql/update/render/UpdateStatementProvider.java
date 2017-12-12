@@ -13,61 +13,74 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.insert.render;
+package org.mybatis.dynamic.sql.update.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class InsertSelectStatement {
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
+
+/**
+ * This class combines a "set" clause and a "where" clause into one parameter object
+ * that can be sent to a MyBatis3 mapper method.
+ * 
+ * @author Jeff Butler
+ *
+ */
+public class UpdateStatementProvider {
     private String tableName;
-    private Optional<String> columnsPhrase;
-    private String selectStatement;
-    private Map<String, Object> parameters;
-    
-    private InsertSelectStatement(Builder builder) {
+    private String setClause;
+    private Optional<String> whereClause;
+    private Map<String, Object> parameters = new HashMap<>();
+
+    private UpdateStatementProvider(Builder builder) {
         tableName = Objects.requireNonNull(builder.tableName);
-        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
-        selectStatement = Objects.requireNonNull(builder.selectStatement);
-        parameters = Objects.requireNonNull(builder.parameters);
+        setClause = Objects.requireNonNull(builder.setClause);
+        whereClause = builder.whereClauseProvider.map(WhereClauseProvider::getWhereClause);
+        parameters.putAll(builder.parameters);
+        parameters.putAll(builder.whereClauseProvider
+                .map(WhereClauseProvider::getParameters)
+                .orElse(Collections.emptyMap()));
     }
-    
-    public String getInsertStatement() {
-        return "insert into" //$NON-NLS-1$
-                + spaceBefore(tableName)
-                + spaceBefore(columnsPhrase)
-                + spaceBefore(selectStatement);
-    }
-    
+
     public Map<String, Object> getParameters() {
         return parameters;
     }
 
+    public String getUpdateStatement() {
+        return "update" //$NON-NLS-1$
+                + spaceBefore(tableName)
+                + spaceBefore(setClause)
+                + spaceBefore(whereClause);
+    }
+    
     public static Builder withTableName(String tableName) {
         return new Builder().withTableName(tableName);
     }
     
     public static class Builder {
         private String tableName;
-        private Optional<String> columnsPhrase;
-        private String selectStatement;
+        private String setClause;
+        private Optional<WhereClauseProvider> whereClauseProvider = Optional.empty();
         private Map<String, Object> parameters = new HashMap<>();
         
         public Builder withTableName(String tableName) {
             this.tableName = tableName;
             return this;
         }
-
-        public Builder withColumnsPhrase(Optional<String> columnsPhrase) {
-            this.columnsPhrase = columnsPhrase;
+        
+        public Builder withSetClause(String setClause) {
+            this.setClause = setClause;
             return this;
         }
         
-        public Builder withSelectStatement(String selectStatement) {
-            this.selectStatement = selectStatement;
+        public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
+            this.whereClauseProvider = whereClauseProvider;
             return this;
         }
         
@@ -76,8 +89,8 @@ public class InsertSelectStatement {
             return this;
         }
         
-        public InsertSelectStatement build() {
-            return new InsertSelectStatement(this);
+        public UpdateStatementProvider build() {
+            return new UpdateStatementProvider(this);
         }
     }
 }

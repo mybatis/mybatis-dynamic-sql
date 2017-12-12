@@ -23,14 +23,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 public class QueryExpression {
     
     private String tableName;
     private Optional<String> connector;
     private String columnList;
-    private Optional<WhereClauseAndParameters> whereClauseAndParameters;
+    private Optional<WhereClauseProvider> whereClauseProvider;
     private boolean isDistinct;
     private Optional<String> joinClause;
     private Optional<String> groupByClause;
@@ -39,14 +39,14 @@ public class QueryExpression {
         tableName = Objects.requireNonNull(builder.tableName);
         connector = Objects.requireNonNull(builder.connector);
         columnList = Objects.requireNonNull(builder.columnList);
-        whereClauseAndParameters = Objects.requireNonNull(builder.whereClauseAndParameters);
+        whereClauseProvider = Objects.requireNonNull(builder.whereClauseProvider);
         isDistinct = builder.isDistinct;
         joinClause = Objects.requireNonNull(builder.joinClause);
         groupByClause = Objects.requireNonNull(builder.groupByClause);
     }
     
     public Map<String, Object> parameters() {
-        return whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
+        return whereClauseProvider.map(WhereClauseProvider::getParameters)
                 .orElse(Collections.emptyMap());
     }
     
@@ -58,7 +58,7 @@ public class QueryExpression {
                 + " from " //$NON-NLS-1$
                 + tableName
                 + spaceBefore(joinClause)
-                + spaceBefore(whereClauseAndParameters.map(WhereClauseAndParameters::whereClause))
+                + spaceBefore(whereClauseProvider.map(WhereClauseProvider::getWhereClause))
                 + spaceBefore(groupByClause);
     }
     
@@ -72,7 +72,7 @@ public class QueryExpression {
         private boolean isDistinct;
         private String columnList;
         private Optional<String> joinClause = Optional.empty();
-        private Optional<WhereClauseAndParameters> whereClauseAndParameters = Optional.empty();
+        private Optional<WhereClauseProvider> whereClauseProvider = Optional.empty();
         private Optional<String> groupByClause = Optional.empty();
         
         public Builder withConnector(Optional<String> connector) {
@@ -90,8 +90,8 @@ public class QueryExpression {
             return this;
         }
         
-        public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
-            this.whereClauseAndParameters = whereClauseAndParameters;
+        public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
+            this.whereClauseProvider = whereClauseProvider;
             return this;
         }
         

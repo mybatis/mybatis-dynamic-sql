@@ -41,14 +41,14 @@ public class BatchInsert<T> {
      * 
      * @return a List of InsertStatements
      */
-    public List<InsertStatement<T>> insertStatements() {
+    public List<InsertStatementProvider<T>> insertStatements() {
         return records.stream()
                 .map(this::toInsertStatement)
                 .collect(Collectors.toList());
     }
     
-    private InsertStatement<T> toInsertStatement(T record) {
-        return InsertStatement.withRecord(record)
+    private InsertStatementProvider<T> toInsertStatement(T record) {
+        return InsertStatementProvider.withRecord(record)
                 .withTableName(tableName)
                 .withColumnsPhrase(columnsPhrase)
                 .withValuesPhrase(valuesPhrase)

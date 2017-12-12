@@ -29,12 +29,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -66,7 +66,7 @@ public class SpringTest {
     
     @Test
     public void testRender() {
-        SelectStatement selectStatement = select(id.as("A_ID"), firstName, lastName, fullName)
+        SelectStatementProvider selectStatement = select(id.as("A_ID"), firstName, lastName, fullName)
                 .from(generatedAlways, "a")
                 .where(id, isGreaterThan(3))
                 .orderBy(id.descending())
@@ -83,7 +83,7 @@ public class SpringTest {
     
     @Test
     public void testSelect() {
-        SelectStatement selectStatement = select(id, firstName, lastName, fullName)
+        SelectStatementProvider selectStatement = select(id, firstName, lastName, fullName)
                 .from(generatedAlways)
                 .where(id, isGreaterThan(3))
                 .orderBy(id.descending())
@@ -116,7 +116,7 @@ public class SpringTest {
 
     @Test
     public void testDelete() {
-        DeleteStatement deleteStatement = deleteFrom(generatedAlways)
+        DeleteStatementProvider deleteStatement = deleteFrom(generatedAlways)
                 .where(id,  isLessThan(3))
                 .build()
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
@@ -135,7 +135,7 @@ public class SpringTest {
         record.setFirstName("Bob");
         record.setLastName("Jones");
         
-        InsertStatement<GeneratedAlwaysRecord> insertStatement = insert(record)
+        InsertStatementProvider<GeneratedAlwaysRecord> insertStatement = insert(record)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
@@ -187,7 +187,7 @@ public class SpringTest {
 
     @Test
     public void testUpdate() {
-        UpdateStatement updateStatement = update(generatedAlways)
+        UpdateStatementProvider updateStatement = update(generatedAlways)
                 .set(firstName).equalToStringConstant("Rob")
                 .where(id,  isIn(1, 5, 22))
                 .build()

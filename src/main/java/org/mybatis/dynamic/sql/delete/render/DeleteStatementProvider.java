@@ -22,26 +22,26 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
-public class DeleteStatement {
+public class DeleteStatementProvider {
     private String tableName;
-    private Optional<WhereClauseAndParameters> whereClauseAndParameters;
+    private Optional<WhereClauseProvider> whereClauseProvider;
     
-    private DeleteStatement(Builder builder) {
+    private DeleteStatementProvider(Builder builder) {
         tableName = Objects.requireNonNull(builder.tableName);
-        whereClauseAndParameters = Objects.requireNonNull(builder.whereClauseAndParameters);
+        whereClauseProvider = Objects.requireNonNull(builder.whereClauseProvider);
     }
     
     public Map<String, Object> getParameters() {
-        return whereClauseAndParameters.map(WhereClauseAndParameters::parameters)
+        return whereClauseProvider.map(WhereClauseProvider::getParameters)
                 .orElse(Collections.emptyMap());
     }
     
     public String getDeleteStatement() {
         return "delete from" //$NON-NLS-1$
                 + spaceBefore(tableName)
-                + spaceBefore(whereClauseAndParameters.map(WhereClauseAndParameters::whereClause));
+                + spaceBefore(whereClauseProvider.map(WhereClauseProvider::getWhereClause));
     }
 
     public static Builder withTableName(String tableName) {
@@ -50,20 +50,20 @@ public class DeleteStatement {
     
     public static class Builder {
         private String tableName;
-        private Optional<WhereClauseAndParameters> whereClauseAndParameters = Optional.empty();
+        private Optional<WhereClauseProvider> whereClauseProvider = Optional.empty();
         
         public Builder withTableName(String tableName) {
             this.tableName = tableName;
             return this;
         }
         
-        public Builder withWhereClause(Optional<WhereClauseAndParameters> whereClauseAndParameters) {
-            this.whereClauseAndParameters = whereClauseAndParameters;
+        public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
+            this.whereClauseProvider = whereClauseProvider;
             return this;
         }
         
-        public DeleteStatement build() {
-            return new DeleteStatement(this);
+        public DeleteStatementProvider build() {
+            return new DeleteStatementProvider(this);
         }
     }
 }

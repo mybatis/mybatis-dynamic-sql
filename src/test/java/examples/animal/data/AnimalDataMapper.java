@@ -27,13 +27,13 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 public interface AnimalDataMapper {
 
@@ -44,28 +44,28 @@ public interface AnimalDataMapper {
         @Result(column="brain_weight", property="brainWeight"),
         @Result(column="body_weight", property="bodyWeight")
     })
-    List<AnimalData> selectMany(SelectStatement selectStatement);
+    List<AnimalData> selectMany(SelectStatementProvider selectStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    List<Map<String, Object>> generalSelect(SelectStatement selectStatement);
+    List<Map<String, Object>> generalSelect(SelectStatementProvider selectStatement);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    Long selectALong(SelectStatement selectStatement);
+    Long selectALong(SelectStatementProvider selectStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    Double selectADouble(SelectStatement selectStatement);
+    Double selectADouble(SelectStatementProvider selectStatement);
     
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
-    int delete(DeleteStatement deleteStatement);
+    int delete(DeleteStatementProvider deleteStatement);
 
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
-    int update(UpdateStatement updateStatement);
+    int update(UpdateStatementProvider updateStatement);
     
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
-    int insert(InsertStatement<AnimalData> insertStatement);
+    int insert(InsertStatementProvider<AnimalData> insertStatement);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insertSelect")
-    int insertSelect(InsertSelectStatement insertSelectStatement);
+    int insertSelect(InsertSelectStatementProvider insertSelectStatement);
     
     @Select({
         "select id, animal_name, brain_weight, body_weight",
@@ -73,7 +73,7 @@ public interface AnimalDataMapper {
         "${whereClause}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExample(WhereClauseAndParameters whereClause);
+    List<AnimalData> selectByExample(WhereClauseProvider whereClause);
 
     @Select({
         "select a.id, a.animal_name, a.brain_weight, a.body_weight",
@@ -81,7 +81,7 @@ public interface AnimalDataMapper {
         "${whereClause}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithAlias(WhereClauseAndParameters whereClause);
+    List<AnimalData> selectByExampleWithAlias(WhereClauseProvider whereClause);
 
     @Select({
         "select id, animal_name, brain_weight, body_weight",
@@ -91,7 +91,7 @@ public interface AnimalDataMapper {
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithLimitAndOffset(@Param("whereSupport") WhereClauseAndParameters whereClause,
+    List<AnimalData> selectByExampleWithLimitAndOffset(@Param("whereSupport") WhereClauseProvider whereClause,
             @Param("limit") int limit, @Param("offset") int offset);
 
     @Select({
@@ -102,6 +102,6 @@ public interface AnimalDataMapper {
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithAliasLimitAndOffset(@Param("whereSupport") WhereClauseAndParameters whereClause,
+    List<AnimalData> selectByExampleWithAliasLimitAndOffset(@Param("whereSupport") WhereClauseProvider whereClause,
             @Param("limit") int limit, @Param("offset") int offset);
 }

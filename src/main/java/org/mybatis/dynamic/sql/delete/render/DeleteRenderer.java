@@ -20,7 +20,7 @@ import java.util.Objects;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 public class DeleteRenderer {
     private DeleteModel deleteModel;
@@ -31,13 +31,13 @@ public class DeleteRenderer {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public DeleteStatement render() {
-        return DeleteStatement.withTableName(deleteModel.table().name())
-                .withWhereClause(deleteModel.whereModel().map(this::renderWhereModel))
+    public DeleteStatementProvider render() {
+        return DeleteStatementProvider.withTableName(deleteModel.table().name())
+                .withWhereClause(deleteModel.whereModel().map(this::renderWhereClause))
                 .build();
     }
     
-    private WhereClauseAndParameters renderWhereModel(WhereModel whereModel) {
+    private WhereClauseProvider renderWhereClause(WhereModel whereModel) {
         return whereModel.render(renderingStrategy);
     }
     

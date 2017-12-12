@@ -21,14 +21,14 @@ import java.sql.JDBCType;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 import examples.generated.always.GeneratedAlwaysRecord;
 
@@ -50,7 +50,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
         }
     }
     
-    public static InsertStatement<GeneratedAlwaysRecord> buildInsert(GeneratedAlwaysRecord record) {
+    public static InsertStatementProvider<GeneratedAlwaysRecord> buildInsert(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
@@ -60,7 +60,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
 
-    public static InsertStatement<GeneratedAlwaysRecord> buildInsertSelectiveStatement(GeneratedAlwaysRecord record) {
+    public static InsertStatementProvider<GeneratedAlwaysRecord> buildInsertSelectiveStatement(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
                 .map(id).toPropertyWhenPresent("id")
@@ -70,7 +70,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
     
-    public static UpdateStatement buildUpdateByPrimaryKeyStatement(GeneratedAlwaysRecord record) {
+    public static UpdateStatementProvider buildUpdateByPrimaryKeyStatement(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(firstName).equalTo(record.getFirstName())
                 .set(lastName).equalTo(record.getLastName())
@@ -79,7 +79,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .render(RenderingStrategy.MYBATIS3);
     }
 
-    public static UpdateStatement buildUpdateByPrimaryKeySelectiveStatement(GeneratedAlwaysRecord record) {
+    public static UpdateStatementProvider buildUpdateByPrimaryKeySelectiveStatement(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(firstName).equalToWhenPresent(record.getFirstName())
                 .set(lastName).equalToWhenPresent(record.getLastName())
@@ -107,7 +107,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .from(generatedAlways, "a");
     }
     
-    public static SelectStatement selectByPrimaryKey(int id_) {
+    public static SelectStatementProvider selectByPrimaryKey(int id_) {
         return select(id.as("A_ID"), firstName, lastName, fullName)
                 .from(generatedAlways)
                 .where(id, isEqualTo(id_))

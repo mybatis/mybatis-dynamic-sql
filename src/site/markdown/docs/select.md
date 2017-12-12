@@ -23,7 +23,7 @@ At this time, the library does not support the following:
 The user guide page for WHERE Clauses shows examples of many different types of SELECT statements with different complexities of the WHERE clause including support for sub-queries.  We will just show a single example here, including an ORDER BY clause:
 
 ```java
-    SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+    SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
             .from(animalData)
             .where(id, isIn(1, 5, 7))
             .and(bodyWeight, isBetween(1.0).and(3.0))
@@ -40,7 +40,7 @@ The WHERE and ORDER BY clauses are optional.
 The library supports the generation of equijoin statements - joins defined by column matching.  For example:
 
 ```java
-    SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+    SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
             .from(orderMaster, "om")
             .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
             .build()
@@ -52,7 +52,7 @@ Notice that you can give an alias to a tables if desired.  If you don't specify 
 Multiple tables can be joined in a single statement.  For example:
 
 ```java
-    SelectStatement selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+    SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
             .from(orderMaster, "om")
             .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
             .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
@@ -73,7 +73,7 @@ The library supports four join types:
 The library supports the generation of UNION queries.  Foe example:
 
 ```java
-    SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+    SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
             .from(animalData)
             .union()
             .selectDistinct(id, animalName, bodyWeight, brainWeight)
@@ -87,7 +87,7 @@ Any number of SELECT statements can be added to a UNION query.  Only one ORDER B
 
 ## Annotated Mapper for Select Statements
 
-The SelectStatement object can be used as a parameter to a MyBatis mapper method directly.  If you
+The SelectStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
 are using an annotated mapper, the select method should look like this (note that we recommend coding a "selectMany" and a "selectOne" method with a shared result mapping):
   
 ```java
@@ -95,7 +95,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ...
@@ -106,11 +106,11 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
         @Result(column="brain_weight", property="brainWeight"),
         @Result(column="body_weight", property="bodyWeight")
     })
-    List<AnimalData> selectMany(SelectStatement selectStatement);
+    List<AnimalData> selectMany(SelectStatementProvider selectStatement);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("AnimalDataResult")
-    AnimalData selectOne(SelectStatement selectStatement);
+    AnimalData selectOne(SelectStatementProvider selectStatement);
 ...
 
 ```
@@ -122,7 +122,7 @@ If you are coding a join, it is likely you will need to code an XML mapper to de
 ```java
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("SimpleJoinResult")
-    List<OrderMaster> selectMany(SelectStatement selectStatement);
+    List<OrderMaster> selectMany(SelectStatementProvider selectStatement);
 ```
 
 And the corresponding XML looks like this:
@@ -145,15 +145,15 @@ And the corresponding XML looks like this:
 Notice that the resultMap is the only element in the XML mapper.  This is our recommended practice.
 
 ## XML Mapper for Select Statements
-We do not recommend using an XML mapper for select statements, but if you want to do so the SelectStatement object can be used as a parameter to a MyBatis mapper method directly.
+We do not recommend using an XML mapper for select statements, but if you want to do so the SelectStatementProvider object can be used as a parameter to a MyBatis mapper method directly.
 
 If you are using an XML mapper, the select method should look like this in the Java interface:
   
 ```java
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 ...
-    List<AnimalData> selectMany(SelectStatement selectStatement);
+    List<AnimalData> selectMany(SelectStatementProvider selectStatement);
 ...
 
 ```
@@ -185,7 +185,7 @@ both the left and right join column.  In that case, the workaround is to supply 
 When using a column function (lower, upper, etc.), then is is customary to give the calculated column an alias so you will have a predictable result set.  In cases like this there will not be a column to use for an alias.  The library supports arbitrary values in an ORDER BY expression like this:
 
 ```java
-    SelectStatement selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
+    SelectStatementProvider selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
             .from(person, "a")
             .groupBy(substring(gender, 1, 1))
             .orderBy(sortColumn("ShortGender").descending())

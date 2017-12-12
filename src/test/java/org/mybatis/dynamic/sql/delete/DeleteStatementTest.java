@@ -25,7 +25,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 @RunWith(JUnitPlatform.class)
@@ -36,7 +36,7 @@ public class DeleteStatementTest {
 
     @Test
     public void testFullStatement() {
-        DeleteStatement deleteStatement = deleteFrom(foo)
+        DeleteStatementProvider deleteStatement = deleteFrom(foo)
                 .where(id, isEqualTo(3), and(firstName, isEqualTo("Betty")))
                 .or(firstName, isLikeCaseInsensitive("%Fr%"))
                 .build()
@@ -55,7 +55,7 @@ public class DeleteStatementTest {
 
     @Test
     public void testFullStatementWithoutWhere() {
-        DeleteStatement deleteStatement = deleteFrom(foo)
+        DeleteStatementProvider deleteStatement = deleteFrom(foo)
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 

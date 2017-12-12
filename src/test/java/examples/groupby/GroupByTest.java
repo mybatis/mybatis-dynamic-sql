@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 @RunWith(JUnitPlatform.class)
 public class GroupByTest {
@@ -72,7 +72,7 @@ public class GroupByTest {
         try {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
-            SelectStatement selectStatement = select(gender, count())
+            SelectStatementProvider selectStatement = select(gender, count())
                     .from(person)
                     .groupBy(gender)
                     .build()
@@ -101,7 +101,7 @@ public class GroupByTest {
         try {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
-            SelectStatement selectStatement = select(gender, count().as("count"))
+            SelectStatementProvider selectStatement = select(gender, count().as("count"))
                     .from(person)
                     .groupBy(gender)
                     .build()
@@ -130,7 +130,7 @@ public class GroupByTest {
         try {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
-            SelectStatement selectStatement = select(gender, count().as("count"))
+            SelectStatementProvider selectStatement = select(gender, count().as("count"))
                     .from(person)
                     .groupBy(gender)
                     .orderBy(gender)
@@ -160,7 +160,7 @@ public class GroupByTest {
         try {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
-            SelectStatement selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
+            SelectStatementProvider selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
                     .from(person, "a")
                     .groupBy(substring(gender, 1, 1))
                     .orderBy(sortColumn("ShortGender").descending())

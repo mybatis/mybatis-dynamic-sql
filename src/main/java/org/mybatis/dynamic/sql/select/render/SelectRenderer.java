@@ -37,12 +37,12 @@ public class SelectRenderer {
         sequence = builder.sequence.orElse(new AtomicInteger(1));
     }
     
-    public SelectStatement render() {
+    public SelectStatementProvider render() {
         QueryExpressionCollector collector = selectModel
                 .mapQueryExpressions(this::renderQueryExpression)
                 .collect(QueryExpressionCollector.collect());
         
-        return SelectStatement.withQueryExpression(collector.queryExpression())
+        return SelectStatementProvider.withQueryExpression(collector.queryExpression())
                 .withParameters(collector.parameters())
                 .withOrderByClause(selectModel.orderByModel().map(this::renderOrderBy))
                 .build();

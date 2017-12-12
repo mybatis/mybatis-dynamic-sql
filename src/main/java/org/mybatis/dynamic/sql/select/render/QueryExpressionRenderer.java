@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class QueryExpressionRenderer {
@@ -47,7 +47,7 @@ public class QueryExpressionRenderer {
                 .isDistinct(queryExpression.isDistinct())
                 .withTableName(calculateTableName(queryExpression.table()))
                 .withJoinClause(queryExpression.joinModel().map(this::renderJoin))
-                .withWhereClause(queryExpression.whereModel().map(this::renderWhere))
+                .withWhereClause(queryExpression.whereModel().map(this::renderWhereClause))
                 .withGroupByClause(queryExpression.groupByModel().map(this::renderGroupBy))
                 .build();
     }
@@ -72,7 +72,7 @@ public class QueryExpressionRenderer {
                 .render();
     }
     
-    private WhereClauseAndParameters renderWhere(WhereModel whereModel) {
+    private WhereClauseProvider renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(queryExpression.tableAliasCalculator())

@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 @RunWith(JUnitPlatform.class)
 public class SelectStatementTest {
@@ -41,7 +41,7 @@ public class SelectStatementTest {
     public void testSimpleCriteria() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1.as("A_COLUMN1"), column2)
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d), and(column2, isEqualTo(33)))
                 .or(column2, isEqualTo(4))
@@ -68,7 +68,7 @@ public class SelectStatementTest {
     public void testComplexCriteria() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1.as("A_COLUMN1"), column2)
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .or(column2, isEqualTo(4))
@@ -105,7 +105,7 @@ public class SelectStatementTest {
     public void testOrderBySingleColumnAscending() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1.as("A_COLUMN1"), column2)
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .orderBy(column1)
@@ -129,7 +129,7 @@ public class SelectStatementTest {
     public void testOrderBySingleColumnDescending() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1.as("A_COLUMN1"), column2)
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending())
@@ -153,7 +153,7 @@ public class SelectStatementTest {
     public void testOrderByMultipleColumns() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(column1.as("A_COLUMN1"), column2)
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)
@@ -177,7 +177,7 @@ public class SelectStatementTest {
     public void testDistinct() {
         Date d = new Date();
 
-        SelectStatement selectStatement = selectDistinct(column1.as("A_COLUMN1"), column2)
+        SelectStatementProvider selectStatement = selectDistinct(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .orderBy(column2.descending(), column1)
@@ -201,7 +201,7 @@ public class SelectStatementTest {
     public void testCount() {
         Date d = new Date();
 
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(table, "a")
                 .where(column1, isEqualTo(d))
                 .build()
@@ -221,7 +221,7 @@ public class SelectStatementTest {
 
     @Test
     public void testNoWhere() {
-        SelectStatement selectStatement = select(count())
+        SelectStatementProvider selectStatement = select(count())
                 .from(table, "a")
                 .build()
                 .render(RenderingStrategy.MYBATIS3);

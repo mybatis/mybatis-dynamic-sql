@@ -42,11 +42,11 @@ public class WhereRenderer {
         parameterName = Objects.requireNonNull(builder.parameterName);
     }
     
-    public WhereClauseAndParameters render() {
+    public WhereClauseProvider render() {
         FragmentCollector fc = whereModel.mapCriteria(this::render)
                 .collect(FragmentCollector.collect());
 
-        return WhereClauseAndParameters.withWhereClause(calculateWhereClause(fc))
+        return WhereClauseProvider.withWhereClause(calculateWhereClause(fc))
                 .withParameters(fc.parameters())
                 .build();
     }

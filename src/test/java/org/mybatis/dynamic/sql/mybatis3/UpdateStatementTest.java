@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 @RunWith(JUnitPlatform.class)
 public class UpdateStatementTest {
@@ -38,7 +38,7 @@ public class UpdateStatementTest {
 
     @Test
     public void testUpdateParameter() {
-        UpdateStatement updateStatement = update(foo)
+        UpdateStatementProvider updateStatement = update(foo)
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
@@ -60,7 +60,7 @@ public class UpdateStatementTest {
 
     @Test
     public void testUpdateParameterStartWithNull() {
-        UpdateStatement updateStatement = update(foo)
+        UpdateStatementProvider updateStatement = update(foo)
                 .set(occupation).equalToNull()
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
