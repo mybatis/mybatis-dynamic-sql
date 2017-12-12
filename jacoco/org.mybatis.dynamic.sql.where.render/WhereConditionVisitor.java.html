@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
@@ -94,7 +94,7 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Fr
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition&lt;T&gt; condition) {
-<span class="fc" id="L97">        SelectStatement selectStatement = SelectRenderer.withSelectModel(condition.selectModel())</span>
+<span class="fc" id="L97">        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(condition.selectModel())</span>
 <span class="fc" id="L98">                .withRenderingStrategy(renderingStrategy)</span>
 <span class="fc" id="L99">                .withSequence(sequence)</span>
 <span class="fc" id="L100">                .build()</span>

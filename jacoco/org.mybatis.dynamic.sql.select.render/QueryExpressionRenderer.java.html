@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class QueryExpressionRenderer {
@@ -47,7 +47,7 @@ public class QueryExpressionRenderer {
 <span class="fc" id="L47">                .isDistinct(queryExpression.isDistinct())</span>
 <span class="fc" id="L48">                .withTableName(calculateTableName(queryExpression.table()))</span>
 <span class="fc" id="L49">                .withJoinClause(queryExpression.joinModel().map(this::renderJoin))</span>
-<span class="fc" id="L50">                .withWhereClause(queryExpression.whereModel().map(this::renderWhere))</span>
+<span class="fc" id="L50">                .withWhereClause(queryExpression.whereModel().map(this::renderWhereClause))</span>
 <span class="fc" id="L51">                .withGroupByClause(queryExpression.groupByModel().map(this::renderGroupBy))</span>
 <span class="fc" id="L52">                .build();</span>
     }
@@ -72,7 +72,7 @@ public class QueryExpressionRenderer {
 <span class="fc" id="L72">                .render();</span>
     }
     
-    private WhereClauseAndParameters renderWhere(WhereModel whereModel) {
+    private WhereClauseProvider renderWhereClause(WhereModel whereModel) {
 <span class="fc" id="L76">        return WhereRenderer.withWhereModel(whereModel)</span>
 <span class="fc" id="L77">                .withRenderingStrategy(renderingStrategy)</span>
 <span class="fc" id="L78">                .withTableAliasCalculator(queryExpression.tableAliasCalculator())</span>

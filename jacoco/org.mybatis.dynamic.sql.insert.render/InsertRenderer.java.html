@@ -32,11 +32,11 @@ public class InsertRenderer&lt;T&gt; {
 <span class="fc" id="L32">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
 <span class="fc" id="L33">    }</span>
     
-    public InsertStatement&lt;T&gt; render() {
+    public InsertStatementProvider&lt;T&gt; render() {
 <span class="fc" id="L36">        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);</span>
 <span class="fc" id="L37">        FieldAndValueCollector&lt;T&gt; collector = model.mapColumnMappings(toFieldAndValue(visitor))</span>
 <span class="fc" id="L38">                .collect(FieldAndValueCollector.collect());</span>
-<span class="fc" id="L39">        return InsertStatement.withRecord(model.record())</span>
+<span class="fc" id="L39">        return InsertStatementProvider.withRecord(model.record())</span>
 <span class="fc" id="L40">                .withTableName(model.table().name())</span>
 <span class="fc" id="L41">                .withColumnsPhrase(collector.columnsPhrase())</span>
 <span class="fc" id="L42">                .withValuesPhrase(collector.valuesPhrase())</span>

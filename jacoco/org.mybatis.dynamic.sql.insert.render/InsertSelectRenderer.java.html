@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertSelectModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class InsertSelectRenderer {
 
@@ -35,10 +35,10 @@ public class InsertSelectRenderer {
 <span class="fc" id="L35">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
 <span class="fc" id="L36">    }</span>
     
-    public InsertSelectStatement render() {
-<span class="fc" id="L39">        SelectStatement selectStatement = model.selectModel().render(renderingStrategy);</span>
+    public InsertSelectStatementProvider render() {
+<span class="fc" id="L39">        SelectStatementProvider selectStatement = model.selectModel().render(renderingStrategy);</span>
         
-<span class="fc" id="L41">        return InsertSelectStatement.withTableName(model.table().name())</span>
+<span class="fc" id="L41">        return InsertSelectStatementProvider.withTableName(model.table().name())</span>
 <span class="fc" id="L42">                .withColumnsPhrase(calculateColumnsPhrase())</span>
 <span class="fc" id="L43">                .withSelectStatement(selectStatement.getSelectStatement())</span>
 <span class="fc" id="L44">                .withParameters(selectStatement.getParameters())</span>

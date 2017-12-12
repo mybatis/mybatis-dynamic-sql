@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectRenderer;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModel;
 
@@ -47,7 +47,7 @@ public class InsertSelectModel {
 <span class="fc" id="L47">        return columnList;</span>
     }
     
-    public InsertSelectStatement render(RenderingStrategy renderingStrategy) {
+    public InsertSelectStatementProvider render(RenderingStrategy renderingStrategy) {
 <span class="fc" id="L51">        return InsertSelectRenderer.withInsertSelectModel(this)</span>
 <span class="fc" id="L52">                .withRenderingStrategy(renderingStrategy)</span>
 <span class="fc" id="L53">                .build()</span>

@@ -23,7 +23,7 @@ import java.util.function.Function;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGathererBuilder;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 /**
  * Implements a standard SQL dialect for building model classes.
@@ -78,12 +78,12 @@ public class SelectDSL&lt;R&gt; {
     }
     
     public static &lt;T&gt; FromGatherer&lt;MyBatis3SelectModelAdapter&lt;T&gt;&gt; selectWithMapper(
-            Function&lt;SelectStatement, T&gt; mapperMethod, BasicColumn...selectList) {
+            Function&lt;SelectStatementProvider, T&gt; mapperMethod, BasicColumn...selectList) {
 <span class="fc" id="L82">        return select(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);</span>
     }
     
     public static &lt;T&gt; FromGatherer&lt;MyBatis3SelectModelAdapter&lt;T&gt;&gt; selectDistinctWithMapper(
-            Function&lt;SelectStatement, T&gt; mapperMethod, BasicColumn...selectList) {
+            Function&lt;SelectStatementProvider, T&gt; mapperMethod, BasicColumn...selectList) {
 <span class="fc" id="L87">        return selectDistinct(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),</span>
                 selectList);
     }

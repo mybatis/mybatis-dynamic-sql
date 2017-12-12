@@ -51,15 +51,15 @@
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.junit.platform.runner.JUnitPlatform;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.junit.runner.RunWith;
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.BatchInsert;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.InsertStatement;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.TableAliasCalculator;
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatement;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatement;
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  @RunWith(JUnitPlatform.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../examples/animal/data/AnimalDataTest.html">AnimalDataTest</a> {
@@ -91,7 +91,7 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          SqlSession sqlSession = sqlSessionFactory.openSession();
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>              <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>              SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>              SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>                      .from(animalData)
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>                      .build()
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>                      .render(RenderingStrategy.MYBATIS3);
@@ -110,7 +110,7 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         SqlSession sqlSession = sqlSessionFactory.openSession();
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>                     .orderBy(id.descending())
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>                     .build()
@@ -131,7 +131,7 @@
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>             
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>                     .where(id, isLessThan(20))
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>                     .build()
@@ -150,7 +150,7 @@
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>                     .where(id, isBetween(30).and(40))
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>                     .build()
@@ -169,7 +169,7 @@
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>             
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>                     .where(id, isNotBetween(10).and(60))
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>                     .build()
@@ -188,7 +188,7 @@
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>             
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>             WhereClauseAndParameters whereClause = where(id, isNotBetween(10).and(60))
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>             WhereClauseProvider whereClause = where(id, isNotBetween(10).and(60))
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>                     .or(id, isIn(25, 27))
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>                     .build()
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -206,11 +206,11 @@
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>             
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>             WhereClauseAndParameters whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>             WhereClauseProvider whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>                     .build()
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>                     .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, <span class="jxr_string">"a"</span>));
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>             
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>             assertThat(whereClause.whereClause()).isEqualTo(<span class="jxr_string">"where (a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight &gt; #{parameters.p2,jdbcType=DOUBLE})"</span>);
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>             assertThat(whereClause.getWhereClause()).isEqualTo(<span class="jxr_string">"where (a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight &gt; #{parameters.p2,jdbcType=DOUBLE})"</span>);
 <a class="jxr_linenumber" name="L206" href="#L206">206</a> 
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>             List&lt;AnimalData&gt; animals = mapper.selectByExampleWithAlias(whereClause);
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>             assertThat(animals.size()).isEqualTo(59);
@@ -225,9 +225,9 @@
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>             
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>             WhereClauseAndParameters whereClause = where(id, isLessThan(60))
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>             WhereClauseProvider whereClause = where(id, isLessThan(60))
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>                     .build()
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>                     .render(RenderingStrategy.MYBATIS3, <span class="jxr_string">"whereSupport"</span>);
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>                     .render(RenderingStrategy.MYBATIS3, <span class="jxr_string">"whereClauseProvider"</span>);
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>             
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>             List&lt;AnimalData&gt; animals = mapper.selectByExampleWithLimitAndOffset(whereClause, 5, 15);
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>             assertThat(animals.size()).isEqualTo(5);
@@ -244,9 +244,9 @@
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>             
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>             WhereClauseAndParameters whereClause = where(id, isLessThan(60))
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>             WhereClauseProvider whereClause = where(id, isLessThan(60))
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>                     .build()
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>                     .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, <span class="jxr_string">"b"</span>),  <span class="jxr_string">"whereSupport"</span>);
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>                     .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, <span class="jxr_string">"b"</span>),  <span class="jxr_string">"whereClauseProvider"</span>);
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>             
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>             List&lt;AnimalData&gt; animals = mapper.selectByExampleWithAliasLimitAndOffset(whereClause, 3, 24);
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>             assertThat(animals.size()).isEqualTo(3);
@@ -263,7 +263,7 @@
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>             
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>                     .where(id, isLessThan(20))
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>                     .union()
@@ -299,7 +299,7 @@
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>             
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>                     .union()
 <a class="jxr_linenumber" name="L297" href="#L297">297</a>                     .selectDistinct(id, animalName, bodyWeight, brainWeight)
@@ -331,7 +331,7 @@
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L325" href="#L325">325</a>             
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L328" href="#L328">328</a>                     .where(id, isLessThan(20))
 <a class="jxr_linenumber" name="L329" href="#L329">329</a>                     .union()
@@ -369,7 +369,7 @@
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L362" href="#L362">362</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L363" href="#L363">363</a>             
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>             SelectStatement selectStatement = select(id.as(<span class="jxr_string">"animalId"</span>), animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>             SelectStatementProvider selectStatement = select(id.as(<span class="jxr_string">"animalId"</span>), animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L365" href="#L365">365</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>                     .where(id, isLessThan(20))
 <a class="jxr_linenumber" name="L367" href="#L367">367</a>                     .union()
@@ -407,7 +407,7 @@
 <a class="jxr_linenumber" name="L399" href="#L399">399</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L401" href="#L401">401</a>             
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>                     .where(id, isEqualTo(5))
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>                     .build()
@@ -426,7 +426,7 @@
 <a class="jxr_linenumber" name="L418" href="#L418">418</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L420" href="#L420">420</a>             
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L422" href="#L422">422</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>                     .where(id, isNotEqualTo(5))
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>                     .build()
@@ -445,7 +445,7 @@
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L438" href="#L438">438</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L439" href="#L439">439</a>             
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L442" href="#L442">442</a>                     .where(id, isGreaterThanOrEqualTo(60))
 <a class="jxr_linenumber" name="L443" href="#L443">443</a>                     .build()
@@ -464,7 +464,7 @@
 <a class="jxr_linenumber" name="L456" href="#L456">456</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L457" href="#L457">457</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>             
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L461" href="#L461">461</a>                     .where(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>                     .build()
@@ -483,7 +483,7 @@
 <a class="jxr_linenumber" name="L475" href="#L475">475</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L476" href="#L476">476</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L477" href="#L477">477</a>             
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L479" href="#L479">479</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L480" href="#L480">480</a>                     .where(id, isIn(5, 8, 10))
 <a class="jxr_linenumber" name="L481" href="#L481">481</a>                     .build()
@@ -502,7 +502,7 @@
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L496" href="#L496">496</a>             
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L498" href="#L498">498</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L499" href="#L499">499</a>                     .where(animalName, isInCaseInsensitive(<span class="jxr_string">"yellow-bellied marmot"</span>, <span class="jxr_string">"verbet"</span>))
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>                     .build()
@@ -521,7 +521,7 @@
 <a class="jxr_linenumber" name="L513" href="#L513">513</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L514" href="#L514">514</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L515" href="#L515">515</a>             
-<a class="jxr_linenumber" name="L516" href="#L516">516</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L517" href="#L517">517</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L518" href="#L518">518</a>                     .where(id, isNotIn(5, 8, 10))
 <a class="jxr_linenumber" name="L519" href="#L519">519</a>                     .build()
@@ -540,7 +540,7 @@
 <a class="jxr_linenumber" name="L532" href="#L532">532</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L533" href="#L533">533</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L534" href="#L534">534</a>             
-<a class="jxr_linenumber" name="L535" href="#L535">535</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L537" href="#L537">537</a>                     .where(animalName, isNotInCaseInsensitive(<span class="jxr_string">"yellow-bellied marmot"</span>, <span class="jxr_string">"verbet"</span>))
 <a class="jxr_linenumber" name="L538" href="#L538">538</a>                     .build()
@@ -559,7 +559,7 @@
 <a class="jxr_linenumber" name="L551" href="#L551">551</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L552" href="#L552">552</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L553" href="#L553">553</a>             
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L555" href="#L555">555</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L556" href="#L556">556</a>                     .where(animalName, isLike(<span class="jxr_string">"%squirrel"</span>))
 <a class="jxr_linenumber" name="L557" href="#L557">557</a>                     .build()
@@ -578,7 +578,7 @@
 <a class="jxr_linenumber" name="L570" href="#L570">570</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L571" href="#L571">571</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L572" href="#L572">572</a>             
-<a class="jxr_linenumber" name="L573" href="#L573">573</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L574" href="#L574">574</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L575" href="#L575">575</a>                     .where(animalName, isLikeCaseInsensitive(<span class="jxr_string">"%squirrel"</span>))
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>                     .build()
@@ -601,7 +601,7 @@
 <a class="jxr_linenumber" name="L593" href="#L593">593</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L594" href="#L594">594</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L595" href="#L595">595</a>             
-<a class="jxr_linenumber" name="L596" href="#L596">596</a>             SelectStatement selectStatement = select(id, lower(animalName).as(<span class="jxr_string">"AnimalName"</span>), bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L596" href="#L596">596</a>             SelectStatementProvider selectStatement = select(id, lower(animalName).as(<span class="jxr_string">"AnimalName"</span>), bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L597" href="#L597">597</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L598" href="#L598">598</a>                     .where(lower(animalName), isLike(<span class="jxr_string">"%squirrel"</span>))
 <a class="jxr_linenumber" name="L599" href="#L599">599</a>                     .build()
@@ -624,7 +624,7 @@
 <a class="jxr_linenumber" name="L616" href="#L616">616</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L617" href="#L617">617</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L618" href="#L618">618</a>             
-<a class="jxr_linenumber" name="L619" href="#L619">619</a>             SelectStatement selectStatement = select(id, upper(animalName).as(<span class="jxr_string">"animalname"</span>), bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>             SelectStatementProvider selectStatement = select(id, upper(animalName).as(<span class="jxr_string">"animalname"</span>), bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L620" href="#L620">620</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L621" href="#L621">621</a>                     .where(upper(animalName), isLike(<span class="jxr_string">"%SQUIRREL"</span>))
 <a class="jxr_linenumber" name="L622" href="#L622">622</a>                     .build()
@@ -647,7 +647,7 @@
 <a class="jxr_linenumber" name="L639" href="#L639">639</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L640" href="#L640">640</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L641" href="#L641">641</a>             
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>             SelectStatement selectStatement = select(id, animalName, add(bodyWeight, brainWeight).as(<span class="jxr_string">"combined_weight"</span>))
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>             SelectStatementProvider selectStatement = select(id, animalName, add(bodyWeight, brainWeight).as(<span class="jxr_string">"combined_weight"</span>))
 <a class="jxr_linenumber" name="L643" href="#L643">643</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L644" href="#L644">644</a>                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
 <a class="jxr_linenumber" name="L645" href="#L645">645</a>                     .build()
@@ -680,7 +680,7 @@
 <a class="jxr_linenumber" name="L672" href="#L672">672</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L673" href="#L673">673</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L674" href="#L674">674</a>             
-<a class="jxr_linenumber" name="L675" href="#L675">675</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L676" href="#L676">676</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L677" href="#L677">677</a>                     .where(animalName, isNotLike(<span class="jxr_string">"%squirrel"</span>))
 <a class="jxr_linenumber" name="L678" href="#L678">678</a>                     .build()
@@ -699,7 +699,7 @@
 <a class="jxr_linenumber" name="L691" href="#L691">691</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L692" href="#L692">692</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L693" href="#L693">693</a>             
-<a class="jxr_linenumber" name="L694" href="#L694">694</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L694" href="#L694">694</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L695" href="#L695">695</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L696" href="#L696">696</a>                     .where(animalName, isNotLikeCaseInsensitive(<span class="jxr_string">"%squirrel"</span>))
 <a class="jxr_linenumber" name="L697" href="#L697">697</a>                     .build()
@@ -718,7 +718,7 @@
 <a class="jxr_linenumber" name="L710" href="#L710">710</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L711" href="#L711">711</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L712" href="#L712">712</a>             
-<a class="jxr_linenumber" name="L713" href="#L713">713</a>             DeleteStatement deleteStatement = deleteFrom(animalData)
+<a class="jxr_linenumber" name="L713" href="#L713">713</a>             DeleteStatementProvider deleteStatement = deleteFrom(animalData)
 <a class="jxr_linenumber" name="L714" href="#L714">714</a>                     .where(id, isIn(5, 8, 10))
 <a class="jxr_linenumber" name="L715" href="#L715">715</a>                     .build()
 <a class="jxr_linenumber" name="L716" href="#L716">716</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -736,7 +736,7 @@
 <a class="jxr_linenumber" name="L728" href="#L728">728</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L729" href="#L729">729</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L730" href="#L730">730</a>             
-<a class="jxr_linenumber" name="L731" href="#L731">731</a>             DeleteStatement deleteStatement = deleteFrom(animalData)
+<a class="jxr_linenumber" name="L731" href="#L731">731</a>             DeleteStatementProvider deleteStatement = deleteFrom(animalData)
 <a class="jxr_linenumber" name="L732" href="#L732">732</a>                     .where(id, isLessThan(10))
 <a class="jxr_linenumber" name="L733" href="#L733">733</a>                     .or(id, isGreaterThan(60))
 <a class="jxr_linenumber" name="L734" href="#L734">734</a>                     .build()
@@ -755,7 +755,7 @@
 <a class="jxr_linenumber" name="L747" href="#L747">747</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L748" href="#L748">748</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L749" href="#L749">749</a>             
-<a class="jxr_linenumber" name="L750" href="#L750">750</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L750" href="#L750">750</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L751" href="#L751">751</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L752" href="#L752">752</a>                     .where(id, isNull())
 <a class="jxr_linenumber" name="L753" href="#L753">753</a>                     .build()
@@ -774,7 +774,7 @@
 <a class="jxr_linenumber" name="L766" href="#L766">766</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L767" href="#L767">767</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L768" href="#L768">768</a>             
-<a class="jxr_linenumber" name="L769" href="#L769">769</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L769" href="#L769">769</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L770" href="#L770">770</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L771" href="#L771">771</a>                     .where(id, isNotNull())
 <a class="jxr_linenumber" name="L772" href="#L772">772</a>                     .build()
@@ -793,7 +793,7 @@
 <a class="jxr_linenumber" name="L785" href="#L785">785</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L786" href="#L786">786</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L787" href="#L787">787</a>             
-<a class="jxr_linenumber" name="L788" href="#L788">788</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L788" href="#L788">788</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L789" href="#L789">789</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L790" href="#L790">790</a>                     .where(id, isIn(1, 5, 7))
 <a class="jxr_linenumber" name="L791" href="#L791">791</a>                     .or(id, isIn(2, 6, 8), and(animalName, isLike(<span class="jxr_string">"%bat"</span>)))
@@ -818,7 +818,7 @@
 <a class="jxr_linenumber" name="L810" href="#L810">810</a>             <a href="../../../examples/animal/data/AnimalDataDynamicSqlSupport.html">AnimalData</a> record = <strong class="jxr_keyword">new</strong> <a href="../../../examples/animal/data/AnimalDataDynamicSqlSupport.html">AnimalData</a>();
 <a class="jxr_linenumber" name="L811" href="#L811">811</a>             record.setBodyWeight(2.6);
 <a class="jxr_linenumber" name="L812" href="#L812">812</a>             
-<a class="jxr_linenumber" name="L813" href="#L813">813</a>             UpdateStatement updateStatement = update(animalData)
+<a class="jxr_linenumber" name="L813" href="#L813">813</a>             UpdateStatementProvider updateStatement = update(animalData)
 <a class="jxr_linenumber" name="L814" href="#L814">814</a>                     .set(bodyWeight).equalTo(record.getBodyWeight())
 <a class="jxr_linenumber" name="L815" href="#L815">815</a>                     .set(animalName).equalToNull()
 <a class="jxr_linenumber" name="L816" href="#L816">816</a>                     .where(id, isIn(1, 5, 7))
@@ -846,7 +846,7 @@
 <a class="jxr_linenumber" name="L838" href="#L838">838</a>             record.setBodyWeight(22.5);
 <a class="jxr_linenumber" name="L839" href="#L839">839</a>             record.setBrainWeight(1.2);
 <a class="jxr_linenumber" name="L840" href="#L840">840</a>             
-<a class="jxr_linenumber" name="L841" href="#L841">841</a>             InsertStatement&lt;AnimalData&gt; insertStatement = insert(record)
+<a class="jxr_linenumber" name="L841" href="#L841">841</a>             InsertStatementProvider&lt;AnimalData&gt; insertStatement = insert(record)
 <a class="jxr_linenumber" name="L842" href="#L842">842</a>                     .into(animalData)
 <a class="jxr_linenumber" name="L843" href="#L843">843</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L844" href="#L844">844</a>                     .map(animalName).toProperty(<span class="jxr_string">"animalName"</span>)
@@ -873,7 +873,7 @@
 <a class="jxr_linenumber" name="L865" href="#L865">865</a>             record.setBodyWeight(22.5);
 <a class="jxr_linenumber" name="L866" href="#L866">866</a>             record.setBrainWeight(1.2);
 <a class="jxr_linenumber" name="L867" href="#L867">867</a>             
-<a class="jxr_linenumber" name="L868" href="#L868">868</a>             InsertStatement&lt;AnimalData&gt; insertStatement = insert(record)
+<a class="jxr_linenumber" name="L868" href="#L868">868</a>             InsertStatementProvider&lt;AnimalData&gt; insertStatement = insert(record)
 <a class="jxr_linenumber" name="L869" href="#L869">869</a>                     .into(animalData)
 <a class="jxr_linenumber" name="L870" href="#L870">870</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L871" href="#L871">871</a>                     .map(animalName).toNull()
@@ -919,7 +919,7 @@
 <a class="jxr_linenumber" name="L911" href="#L911">911</a>             batchInsert.insertStatements().stream().forEach(mapper::insert);
 <a class="jxr_linenumber" name="L912" href="#L912">912</a>             sqlSession.commit();
 <a class="jxr_linenumber" name="L913" href="#L913">913</a>             
-<a class="jxr_linenumber" name="L914" href="#L914">914</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L914" href="#L914">914</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L915" href="#L915">915</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L916" href="#L916">916</a>                     .where(id, isIn(100, 101))
 <a class="jxr_linenumber" name="L917" href="#L917">917</a>                     .orderBy(id)
@@ -971,7 +971,7 @@
 <a class="jxr_linenumber" name="L963" href="#L963">963</a>             batchInsert.insertStatements().stream().forEach(mapper::insert);
 <a class="jxr_linenumber" name="L964" href="#L964">964</a>             sqlSession.commit();
 <a class="jxr_linenumber" name="L965" href="#L965">965</a>             
-<a class="jxr_linenumber" name="L966" href="#L966">966</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L966" href="#L966">966</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L967" href="#L967">967</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L968" href="#L968">968</a>                     .where(id, isIn(100, 101))
 <a class="jxr_linenumber" name="L969" href="#L969">969</a>                     .orderBy(id)
@@ -999,7 +999,7 @@
 <a class="jxr_linenumber" name="L991" href="#L991">991</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L992" href="#L992">992</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L993" href="#L993">993</a>             
-<a class="jxr_linenumber" name="L994" href="#L994">994</a>             SelectStatement selectStatement = selectDistinct(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L994" href="#L994">994</a>             SelectStatementProvider selectStatement = selectDistinct(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L995" href="#L995">995</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L996" href="#L996">996</a>                     .where(id, isLessThan(10))
 <a class="jxr_linenumber" name="L997" href="#L997">997</a>                     .or(id,  isGreaterThan(60))
@@ -1023,7 +1023,7 @@
 <a class="jxr_linenumber" name="L1015" href="#L1015">1015</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1016" href="#L1016">1016</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1017" href="#L1017">1017</a>             
-<a class="jxr_linenumber" name="L1018" href="#L1018">1018</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L1018" href="#L1018">1018</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L1019" href="#L1019">1019</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L1020" href="#L1020">1020</a>                     .where(id, isLessThan(10))
 <a class="jxr_linenumber" name="L1021" href="#L1021">1021</a>                     .or(id,  isGreaterThan(60))
@@ -1047,7 +1047,7 @@
 <a class="jxr_linenumber" name="L1039" href="#L1039">1039</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1040" href="#L1040">1040</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1041" href="#L1041">1041</a>             
-<a class="jxr_linenumber" name="L1042" href="#L1042">1042</a>             SelectStatement selectStatement = select(count().as(<span class="jxr_string">"total"</span>))
+<a class="jxr_linenumber" name="L1042" href="#L1042">1042</a>             SelectStatementProvider selectStatement = select(count().as(<span class="jxr_string">"total"</span>))
 <a class="jxr_linenumber" name="L1043" href="#L1043">1043</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1044" href="#L1044">1044</a>                     .build()
 <a class="jxr_linenumber" name="L1045" href="#L1045">1045</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -1069,7 +1069,7 @@
 <a class="jxr_linenumber" name="L1061" href="#L1061">1061</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1062" href="#L1062">1062</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1063" href="#L1063">1063</a>             
-<a class="jxr_linenumber" name="L1064" href="#L1064">1064</a>             SelectStatement selectStatement = select(count(brainWeight).as(<span class="jxr_string">"total"</span>))
+<a class="jxr_linenumber" name="L1064" href="#L1064">1064</a>             SelectStatementProvider selectStatement = select(count(brainWeight).as(<span class="jxr_string">"total"</span>))
 <a class="jxr_linenumber" name="L1065" href="#L1065">1065</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1066" href="#L1066">1066</a>                     .build()
 <a class="jxr_linenumber" name="L1067" href="#L1067">1067</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -1091,7 +1091,7 @@
 <a class="jxr_linenumber" name="L1083" href="#L1083">1083</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1084" href="#L1084">1084</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1085" href="#L1085">1085</a>             
-<a class="jxr_linenumber" name="L1086" href="#L1086">1086</a>             SelectStatement selectStatement = select(count())
+<a class="jxr_linenumber" name="L1086" href="#L1086">1086</a>             SelectStatementProvider selectStatement = select(count())
 <a class="jxr_linenumber" name="L1087" href="#L1087">1087</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L1088" href="#L1088">1088</a>                     .build()
 <a class="jxr_linenumber" name="L1089" href="#L1089">1089</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -1113,7 +1113,7 @@
 <a class="jxr_linenumber" name="L1105" href="#L1105">1105</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1106" href="#L1106">1106</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1107" href="#L1107">1107</a>             
-<a class="jxr_linenumber" name="L1108" href="#L1108">1108</a>             SelectStatement selectStatement = select(max(brainWeight).as(<span class="jxr_string">"total"</span>))
+<a class="jxr_linenumber" name="L1108" href="#L1108">1108</a>             SelectStatementProvider selectStatement = select(max(brainWeight).as(<span class="jxr_string">"total"</span>))
 <a class="jxr_linenumber" name="L1109" href="#L1109">1109</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1110" href="#L1110">1110</a>                     .build()
 <a class="jxr_linenumber" name="L1111" href="#L1111">1111</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -1135,7 +1135,7 @@
 <a class="jxr_linenumber" name="L1127" href="#L1127">1127</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1128" href="#L1128">1128</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1129" href="#L1129">1129</a>             
-<a class="jxr_linenumber" name="L1130" href="#L1130">1130</a>             SelectStatement selectStatement = select(max(brainWeight))
+<a class="jxr_linenumber" name="L1130" href="#L1130">1130</a>             SelectStatementProvider selectStatement = select(max(brainWeight))
 <a class="jxr_linenumber" name="L1131" href="#L1131">1131</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L1132" href="#L1132">1132</a>                     .build()
 <a class="jxr_linenumber" name="L1133" href="#L1133">1133</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -1157,7 +1157,7 @@
 <a class="jxr_linenumber" name="L1149" href="#L1149">1149</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1150" href="#L1150">1150</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1151" href="#L1151">1151</a>             
-<a class="jxr_linenumber" name="L1152" href="#L1152">1152</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L1152" href="#L1152">1152</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L1153" href="#L1153">1153</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1154" href="#L1154">1154</a>                     .where(brainWeight, isEqualTo(select(max(brainWeight)).from(animalData, <span class="jxr_string">"b"</span>)))
 <a class="jxr_linenumber" name="L1155" href="#L1155">1155</a>                     .build()
@@ -1182,7 +1182,7 @@
 <a class="jxr_linenumber" name="L1174" href="#L1174">1174</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1175" href="#L1175">1175</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1176" href="#L1176">1176</a>             
-<a class="jxr_linenumber" name="L1177" href="#L1177">1177</a>             SelectStatement selectStatement = select(min(brainWeight).as(<span class="jxr_string">"total"</span>))
+<a class="jxr_linenumber" name="L1177" href="#L1177">1177</a>             SelectStatementProvider selectStatement = select(min(brainWeight).as(<span class="jxr_string">"total"</span>))
 <a class="jxr_linenumber" name="L1178" href="#L1178">1178</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1179" href="#L1179">1179</a>                     .build()
 <a class="jxr_linenumber" name="L1180" href="#L1180">1180</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -1204,7 +1204,7 @@
 <a class="jxr_linenumber" name="L1196" href="#L1196">1196</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1197" href="#L1197">1197</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1198" href="#L1198">1198</a>             
-<a class="jxr_linenumber" name="L1199" href="#L1199">1199</a>             SelectStatement selectStatement = select(min(brainWeight))
+<a class="jxr_linenumber" name="L1199" href="#L1199">1199</a>             SelectStatementProvider selectStatement = select(min(brainWeight))
 <a class="jxr_linenumber" name="L1200" href="#L1200">1200</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L1201" href="#L1201">1201</a>                     .build()
 <a class="jxr_linenumber" name="L1202" href="#L1202">1202</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -1226,7 +1226,7 @@
 <a class="jxr_linenumber" name="L1218" href="#L1218">1218</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1219" href="#L1219">1219</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1220" href="#L1220">1220</a>             
-<a class="jxr_linenumber" name="L1221" href="#L1221">1221</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L1221" href="#L1221">1221</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L1222" href="#L1222">1222</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1223" href="#L1223">1223</a>                     .where(brainWeight, isNotEqualTo(select(min(brainWeight)).from(animalData, <span class="jxr_string">"b"</span>)))
 <a class="jxr_linenumber" name="L1224" href="#L1224">1224</a>                     .orderBy(animalName)
@@ -1252,7 +1252,7 @@
 <a class="jxr_linenumber" name="L1244" href="#L1244">1244</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1245" href="#L1245">1245</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1246" href="#L1246">1246</a>             
-<a class="jxr_linenumber" name="L1247" href="#L1247">1247</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L1247" href="#L1247">1247</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L1248" href="#L1248">1248</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L1249" href="#L1249">1249</a>                     .where(brainWeight, isNotEqualTo(select(min(brainWeight)).from(animalData)))
 <a class="jxr_linenumber" name="L1250" href="#L1250">1250</a>                     .orderBy(animalName)
@@ -1278,7 +1278,7 @@
 <a class="jxr_linenumber" name="L1270" href="#L1270">1270</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1271" href="#L1271">1271</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1272" href="#L1272">1272</a>             
-<a class="jxr_linenumber" name="L1273" href="#L1273">1273</a>             SelectStatement selectStatement = select(avg(brainWeight).as(<span class="jxr_string">"average"</span>))
+<a class="jxr_linenumber" name="L1273" href="#L1273">1273</a>             SelectStatementProvider selectStatement = select(avg(brainWeight).as(<span class="jxr_string">"average"</span>))
 <a class="jxr_linenumber" name="L1274" href="#L1274">1274</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1275" href="#L1275">1275</a>                     .build()
 <a class="jxr_linenumber" name="L1276" href="#L1276">1276</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -1300,7 +1300,7 @@
 <a class="jxr_linenumber" name="L1292" href="#L1292">1292</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1293" href="#L1293">1293</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1294" href="#L1294">1294</a>             
-<a class="jxr_linenumber" name="L1295" href="#L1295">1295</a>             SelectStatement selectStatement = select(sum(brainWeight).as(<span class="jxr_string">"total"</span>))
+<a class="jxr_linenumber" name="L1295" href="#L1295">1295</a>             SelectStatementProvider selectStatement = select(sum(brainWeight).as(<span class="jxr_string">"total"</span>))
 <a class="jxr_linenumber" name="L1296" href="#L1296">1296</a>                     .from(animalData)
 <a class="jxr_linenumber" name="L1297" href="#L1297">1297</a>                     .build()
 <a class="jxr_linenumber" name="L1298" href="#L1298">1298</a>                     .render(RenderingStrategy.MYBATIS3);
@@ -1322,7 +1322,7 @@
 <a class="jxr_linenumber" name="L1314" href="#L1314">1314</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1315" href="#L1315">1315</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1316" href="#L1316">1316</a>             
-<a class="jxr_linenumber" name="L1317" href="#L1317">1317</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L1317" href="#L1317">1317</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L1318" href="#L1318">1318</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1319" href="#L1319">1319</a>                     .where(brainWeight, isLessThan(select(max(brainWeight)).from(animalData, <span class="jxr_string">"b"</span>)))
 <a class="jxr_linenumber" name="L1320" href="#L1320">1320</a>                     .build()
@@ -1345,7 +1345,7 @@
 <a class="jxr_linenumber" name="L1337" href="#L1337">1337</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1338" href="#L1338">1338</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1339" href="#L1339">1339</a>             
-<a class="jxr_linenumber" name="L1340" href="#L1340">1340</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L1340" href="#L1340">1340</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L1341" href="#L1341">1341</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1342" href="#L1342">1342</a>                     .where(brainWeight, isLessThanOrEqualTo(select(max(brainWeight)).from(animalData, <span class="jxr_string">"b"</span>)))
 <a class="jxr_linenumber" name="L1343" href="#L1343">1343</a>                     .build()
@@ -1368,7 +1368,7 @@
 <a class="jxr_linenumber" name="L1360" href="#L1360">1360</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1361" href="#L1361">1361</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1362" href="#L1362">1362</a>             
-<a class="jxr_linenumber" name="L1363" href="#L1363">1363</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L1363" href="#L1363">1363</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L1364" href="#L1364">1364</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1365" href="#L1365">1365</a>                     .where(brainWeight, isGreaterThan(select(min(brainWeight)).from(animalData, <span class="jxr_string">"b"</span>)))
 <a class="jxr_linenumber" name="L1366" href="#L1366">1366</a>                     .build()
@@ -1391,7 +1391,7 @@
 <a class="jxr_linenumber" name="L1383" href="#L1383">1383</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1384" href="#L1384">1384</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1385" href="#L1385">1385</a>             
-<a class="jxr_linenumber" name="L1386" href="#L1386">1386</a>             SelectStatement selectStatement = select(id, animalName, bodyWeight, brainWeight)
+<a class="jxr_linenumber" name="L1386" href="#L1386">1386</a>             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L1387" href="#L1387">1387</a>                     .from(animalData, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L1388" href="#L1388">1388</a>                     .where(brainWeight, isGreaterThanOrEqualTo(select(min(brainWeight)).from(animalData, <span class="jxr_string">"b"</span>)))
 <a class="jxr_linenumber" name="L1389" href="#L1389">1389</a>                     .build()
@@ -1416,7 +1416,7 @@
 <a class="jxr_linenumber" name="L1408" href="#L1408">1408</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1409" href="#L1409">1409</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1410" href="#L1410">1410</a>             
-<a class="jxr_linenumber" name="L1411" href="#L1411">1411</a>             InsertSelectStatement insertSelectStatement = insertInto(animalDataCopy)
+<a class="jxr_linenumber" name="L1411" href="#L1411">1411</a>             InsertSelectStatementProvider insertSelectStatement = insertInto(animalDataCopy)
 <a class="jxr_linenumber" name="L1412" href="#L1412">1412</a>                     .withColumnList(id, animalName, bodyWeight, brainWeight)
 <a class="jxr_linenumber" name="L1413" href="#L1413">1413</a>                     .withSelectStatement(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(22)))
 <a class="jxr_linenumber" name="L1414" href="#L1414">1414</a>                     .build()
@@ -1445,7 +1445,7 @@
 <a class="jxr_linenumber" name="L1437" href="#L1437">1437</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1438" href="#L1438">1438</a>             <a href="../../../examples/animal/data/AnimalDataMapper.html">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L1439" href="#L1439">1439</a>             
-<a class="jxr_linenumber" name="L1440" href="#L1440">1440</a>             InsertSelectStatement insertSelectStatement = insertInto(animalDataCopy)
+<a class="jxr_linenumber" name="L1440" href="#L1440">1440</a>             InsertSelectStatementProvider insertSelectStatement = insertInto(animalDataCopy)
 <a class="jxr_linenumber" name="L1441" href="#L1441">1441</a>                     .withSelectStatement(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(33)))
 <a class="jxr_linenumber" name="L1442" href="#L1442">1442</a>                     .build()
 <a class="jxr_linenumber" name="L1443" href="#L1443">1443</a>                     .render(RenderingStrategy.MYBATIS3);

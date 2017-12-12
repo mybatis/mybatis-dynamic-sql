@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.delete;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 /**
@@ -30,9 +30,9 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 public class MyBatis3DeleteModelAdapter&lt;R&gt; {
 
     private DeleteModel deleteModel;
-    private Function&lt;DeleteStatement, R&gt; mapperMethod;
+    private Function&lt;DeleteStatementProvider, R&gt; mapperMethod;
     
-<span class="fc" id="L35">    private MyBatis3DeleteModelAdapter(DeleteModel deleteModel, Function&lt;DeleteStatement, R&gt; mapperMethod) {</span>
+<span class="fc" id="L35">    private MyBatis3DeleteModelAdapter(DeleteModel deleteModel, Function&lt;DeleteStatementProvider, R&gt; mapperMethod) {</span>
 <span class="fc" id="L36">        this.deleteModel = Objects.requireNonNull(deleteModel);</span>
 <span class="fc" id="L37">        this.mapperMethod = Objects.requireNonNull(mapperMethod);</span>
 <span class="fc" id="L38">    }</span>
@@ -41,12 +41,12 @@ public class MyBatis3DeleteModelAdapter&lt;R&gt; {
 <span class="fc" id="L41">        return mapperMethod.apply(deleteStatement());</span>
     }
     
-    private DeleteStatement deleteStatement() {
+    private DeleteStatementProvider deleteStatement() {
 <span class="fc" id="L45">        return deleteModel.render(RenderingStrategy.MYBATIS3);</span>
     }
     
     public static &lt;R&gt; MyBatis3DeleteModelAdapter&lt;R&gt; of(DeleteModel deleteModel,
-            Function&lt;DeleteStatement, R&gt; mapperMethod) {
+            Function&lt;DeleteStatementProvider, R&gt; mapperMethod) {
 <span class="fc" id="L50">        return new MyBatis3DeleteModelAdapter&lt;&gt;(deleteModel, mapperMethod);</span>
     }
 }

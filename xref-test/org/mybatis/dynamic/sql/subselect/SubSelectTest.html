@@ -37,7 +37,7 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlColumn;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatement;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  @RunWith(JUnitPlatform.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/mybatis/dynamic/sql/subselect/SubSelectTest.html">SubSelectTest</a> {
@@ -50,7 +50,7 @@
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testInSubSelect() {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>          SelectStatement selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>                  .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>                  .where(column2, isIn(select(column2).from(table).where(column2, isEqualTo(3))))
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>                  .and(column1, isLessThan(d))
@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testNotInSubSelect() {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          SelectStatement selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>                  .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>                  .where(column2, isNotIn(select(column2).from(table).where(column2, isEqualTo(3))))
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .and(column1, isLessThan(d))

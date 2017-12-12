@@ -27,13 +27,13 @@
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.annotations.SelectProvider;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatement;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a href="../../examples/groupby/GroupByMapper.html">GroupByMapper</a> {
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>      @SelectProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      List&lt;Map&lt;String, Object&gt;&gt; generalSelect(SelectStatement selectStatement);
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      List&lt;Map&lt;String, Object&gt;&gt; generalSelect(SelectStatementProvider selectStatement);
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  }
 </pre>
 <hr/>

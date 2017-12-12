@@ -42,11 +42,11 @@ public class WhereRenderer {
 <span class="fc" id="L42">        parameterName = Objects.requireNonNull(builder.parameterName);</span>
 <span class="fc" id="L43">    }</span>
     
-    public WhereClauseAndParameters render() {
+    public WhereClauseProvider render() {
 <span class="fc" id="L46">        FragmentCollector fc = whereModel.mapCriteria(this::render)</span>
 <span class="fc" id="L47">                .collect(FragmentCollector.collect());</span>
 
-<span class="fc" id="L49">        return WhereClauseAndParameters.withWhereClause(calculateWhereClause(fc))</span>
+<span class="fc" id="L49">        return WhereClauseProvider.withWhereClause(calculateWhereClause(fc))</span>
 <span class="fc" id="L50">                .withParameters(fc.parameters())</span>
 <span class="fc" id="L51">                .build();</span>
     }

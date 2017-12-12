@@ -47,7 +47,7 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.junit.platform.runner.JUnitPlatform;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.junit.runner.RunWith;
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatement;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  @RunWith(JUnitPlatform.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../examples/groupby/GroupByTest.html">GroupByTest</a> {
@@ -80,7 +80,7 @@
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>              <a href="../../examples/groupby/GroupByMapper.html">GroupByMapper</a> mapper = session.getMapper(GroupByMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>              SelectStatement selectStatement = select(gender, count())
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>              SelectStatementProvider selectStatement = select(gender, count())
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>                      .from(person)
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>                      .groupBy(gender)
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>                      .build()
@@ -109,7 +109,7 @@
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>             <a href="../../examples/groupby/GroupByMapper.html">GroupByMapper</a> mapper = session.getMapper(GroupByMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>             SelectStatement selectStatement = select(gender, count().as(<span class="jxr_string">"count"</span>))
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>             SelectStatementProvider selectStatement = select(gender, count().as(<span class="jxr_string">"count"</span>))
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>                     .from(person)
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>                     .groupBy(gender)
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>                     .build()
@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>             <a href="../../examples/groupby/GroupByMapper.html">GroupByMapper</a> mapper = session.getMapper(GroupByMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>             SelectStatement selectStatement = select(gender, count().as(<span class="jxr_string">"count"</span>))
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>             SelectStatementProvider selectStatement = select(gender, count().as(<span class="jxr_string">"count"</span>))
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>                     .from(person)
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>                     .groupBy(gender)
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                     .orderBy(gender)
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>             <a href="../../examples/groupby/GroupByMapper.html">GroupByMapper</a> mapper = session.getMapper(GroupByMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>         
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>             SelectStatement selectStatement = select(substring(gender, 1, 1).as(<span class="jxr_string">"ShortGender"</span>), avg(age).as(<span class="jxr_string">"AverageAge"</span>))
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>             SelectStatementProvider selectStatement = select(substring(gender, 1, 1).as(<span class="jxr_string">"ShortGender"</span>), avg(age).as(<span class="jxr_string">"AverageAge"</span>))
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>                     .from(person, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>                     .groupBy(substring(gender, 1, 1))
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>                     .orderBy(sortColumn(<span class="jxr_string">"ShortGender"</span>).descending())

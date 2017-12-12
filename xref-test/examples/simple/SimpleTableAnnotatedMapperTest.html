@@ -48,7 +48,7 @@
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.junit.platform.runner.JUnitPlatform;
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.junit.runner.RunWith;
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatement;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  @RunWith(JUnitPlatform.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../examples/simple/SimpleTableAnnotatedMapperTest.html">SimpleTableAnnotatedMapperTest</a> {
@@ -296,7 +296,7 @@
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>                 <strong class="jxr_keyword">int</strong> rows = mapper.insert(record);
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>                 softly.assertThat(rows).isEqualTo(1);
 <a class="jxr_linenumber" name="L290" href="#L290">290</a> 
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>                 UpdateStatement updateStatement = update(simpleTable)
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>                 UpdateStatementProvider updateStatement = update(simpleTable)
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>                         .set(occupation).equalToNull()
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>                         .set(employed).equalTo(false)
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>                         .where(id, isEqualTo(100))

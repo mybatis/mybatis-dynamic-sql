@@ -39,7 +39,7 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.FieldAndValue;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.FieldAndValueCollector;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.InsertStatement;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  @RunWith(JUnitPlatform.<strong class="jxr_keyword">class</strong>)
@@ -58,7 +58,7 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          record.setLastName(<span class="jxr_string">"jones"</span>);
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          record.setOccupation(<span class="jxr_string">"dino driver"</span>);
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>          
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          InsertStatement&lt;TestRecord&gt; insertStatement = insert(record)
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          InsertStatementProvider&lt;TestRecord&gt; insertStatement = insert(record)
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>                  .into(foo)
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>                  .map(id).toProperty(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>                  .map(firstName).toProperty(<span class="jxr_string">"firstName"</span>)
@@ -79,7 +79,7 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          <a href="../../../../../org/mybatis/dynamic/sql/insert/InsertStatementTest.html">TestRecord</a> record = <strong class="jxr_keyword">new</strong> <a href="../../../../../org/mybatis/dynamic/sql/insert/InsertStatementTest.html">TestRecord</a>();
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          InsertStatement&lt;TestRecord&gt; insertStatement = insert(record)
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          InsertStatementProvider&lt;TestRecord&gt; insertStatement = insert(record)
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>                  .into(foo)
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>                  .map(id).toProperty(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>                  .map(firstName).toProperty(<span class="jxr_string">"firstName"</span>)
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          <a href="../../../../../org/mybatis/dynamic/sql/insert/InsertStatementTest.html">TestRecord</a> record = <strong class="jxr_keyword">new</strong> <a href="../../../../../org/mybatis/dynamic/sql/insert/InsertStatementTest.html">TestRecord</a>();
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>          InsertStatement&lt;TestRecord&gt; insertStatement = insert(record)
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          InsertStatementProvider&lt;TestRecord&gt; insertStatement = insert(record)
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>                  .into(foo)
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>                  .map(id).toConstant(<span class="jxr_string">"3"</span>)
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                  .map(firstName).toProperty(<span class="jxr_string">"firstName"</span>)
@@ -118,7 +118,7 @@
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         record.setLastName(<span class="jxr_string">"jones"</span>);
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         record.setOccupation(<span class="jxr_string">"dino driver"</span>);
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>         InsertStatement&lt;TestRecord&gt; insertStatement = insert(record)
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>         InsertStatementProvider&lt;TestRecord&gt; insertStatement = insert(record)
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .into(foo)
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>                 .map(id).toPropertyWhenPresent(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>                 .map(firstName).toPropertyWhenPresent(<span class="jxr_string">"firstName"</span>)

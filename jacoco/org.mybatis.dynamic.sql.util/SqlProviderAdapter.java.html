@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.mybatis.dynamic.sql.delete.render.DeleteStatement;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatement;
-import org.mybatis.dynamic.sql.insert.render.InsertStatement;
-import org.mybatis.dynamic.sql.select.render.SelectStatement;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 /**
  * Adapter for use with MyBatis SQL provider annotations.
@@ -29,23 +29,23 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatement;
  */
 <span class="fc" id="L30">public class SqlProviderAdapter {</span>
 
-    public String delete(DeleteStatement deleteStatement) {
+    public String delete(DeleteStatementProvider deleteStatement) {
 <span class="fc" id="L33">        return deleteStatement.getDeleteStatement();</span>
     }
     
-    public String insert(InsertStatement&lt;?&gt; insertStatement) {
+    public String insert(InsertStatementProvider&lt;?&gt; insertStatement) {
 <span class="fc" id="L37">        return insertStatement.getInsertStatement();</span>
     }
     
-    public String insertSelect(InsertSelectStatement insertStatement) {
+    public String insertSelect(InsertSelectStatementProvider insertStatement) {
 <span class="fc" id="L41">        return insertStatement.getInsertStatement();</span>
     }
     
-    public String select(SelectStatement selectStatement) {
+    public String select(SelectStatementProvider selectStatement) {
 <span class="fc" id="L45">        return selectStatement.getSelectStatement();</span>
     }
 
-    public String update(UpdateStatement updateStatement) {
+    public String update(UpdateStatementProvider updateStatement) {
 <span class="fc" id="L49">        return updateStatement.getUpdateStatement();</span>
     }
 }

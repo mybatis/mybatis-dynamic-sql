@@ -31,7 +31,7 @@
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.InsertSelectModel;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatement;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/mybatis/dynamic/sql/insert/render/InsertSelectRenderer.html">InsertSelectRenderer</a> {
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  
@@ -43,10 +43,10 @@
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>      }
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/insert/render/InsertSelectStatement.html">InsertSelectStatement</a> render() {
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>          <a href="../../../../../../org/mybatis/dynamic/sql/select/render/SelectStatement.html">SelectStatement</a> selectStatement = model.selectModel().render(renderingStrategy);
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/insert/render/InsertSelectStatementProvider.html">InsertSelectStatementProvider</a> render() {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          <a href="../../../../../../org/mybatis/dynamic/sql/select/render/SelectStatementProvider.html">SelectStatementProvider</a> selectStatement = model.selectModel().render(renderingStrategy);
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>          
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">return</strong> InsertSelectStatement.withTableName(model.table().name())
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">return</strong> InsertSelectStatementProvider.withTableName(model.table().name())
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>                  .withColumnsPhrase(calculateColumnsPhrase())
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>                  .withSelectStatement(selectStatement.getSelectStatement())
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>                  .withParameters(selectStatement.getParameters())

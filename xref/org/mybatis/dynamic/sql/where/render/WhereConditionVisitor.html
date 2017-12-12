@@ -37,7 +37,7 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.TableAliasCalculator;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectRenderer;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatement;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.FragmentAndParameters;
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.FragmentCollector;
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  
@@ -102,7 +102,7 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      @Override
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html">FragmentAndParameters</a> visit(AbstractSubselectCondition&lt;T&gt; condition) {
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          <a href="../../../../../../org/mybatis/dynamic/sql/select/render/SelectStatement.html">SelectStatement</a> selectStatement = SelectRenderer.withSelectModel(condition.selectModel())
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          <a href="../../../../../../org/mybatis/dynamic/sql/select/render/SelectStatementProvider.html">SelectStatementProvider</a> selectStatement = SelectRenderer.withSelectModel(condition.selectModel())
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>                  .withRenderingStrategy(renderingStrategy)
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>                  .withSequence(sequence)
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>                 .build()

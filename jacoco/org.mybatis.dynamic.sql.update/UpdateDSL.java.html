@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
@@ -79,7 +79,7 @@ public class UpdateDSL&lt;R&gt; {
     }
     
     public static &lt;T&gt; UpdateDSL&lt;MyBatis3UpdateModelAdapter&lt;T&gt;&gt; updateWithMapper(
-            Function&lt;UpdateStatement, T&gt; mapperMethod, SqlTable table) {
+            Function&lt;UpdateStatementProvider, T&gt; mapperMethod, SqlTable table) {
 <span class="fc" id="L83">        return update(updateModel -&gt; MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);</span>
     }
     

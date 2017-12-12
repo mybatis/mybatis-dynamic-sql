@@ -33,7 +33,7 @@
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlCriterion;
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.VisitableCondition;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatement;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.ConstantMapping;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.NullMapping;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.StringConstantMapping;
@@ -87,7 +87,7 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      }
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; UpdateDSL&lt;MyBatis3UpdateModelAdapter&lt;T&gt;&gt; updateWithMapper(
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              Function&lt;UpdateStatement, T&gt; mapperMethod, <a href="../../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>              Function&lt;UpdateStatementProvider, T&gt; mapperMethod, <a href="../../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          <strong class="jxr_keyword">return</strong> update(updateModel -&gt; MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      

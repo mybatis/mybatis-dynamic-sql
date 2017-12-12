@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlColumn;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatement;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  @RunWith(JUnitPlatform.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/mybatis/dynamic/sql/update/UpdateStatementTest.html">UpdateStatementTest</a> {
@@ -47,7 +47,7 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      @Test
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateParameterWithMultipleCriteria() {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>          UpdateStatement updateStatement = update(foo)
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>          UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>                  .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>                  .set(lastName).equalTo(<span class="jxr_string">"jones"</span>)
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>                  .set(occupation).equalToNull()
@@ -69,7 +69,7 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      @Test
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateParameterWithMultipleNestedCriteria() {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          UpdateStatement updateStatement = update(foo)
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>                  .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>                  .set(lastName).equalTo(<span class="jxr_string">"jones"</span>)
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>                  .set(occupation).equalToNull()
@@ -91,7 +91,7 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      @Test
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateParameterStartWithNull() {
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>          UpdateStatement updateStatement = update(foo)
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>                  .set(occupation).equalToNull()
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>                  .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>                  .set(lastName).equalTo(<span class="jxr_string">"jones"</span>)
@@ -113,7 +113,7 @@
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>     @Test
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateParameterStartWithConstant() {
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         UpdateStatement updateStatement = update(foo)
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>                 .set(occupation).equalToStringConstant(<span class="jxr_string">"Y"</span>)
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>                 .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                 .set(lastName).equalTo(<span class="jxr_string">"jones"</span>)
@@ -136,7 +136,7 @@
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>     
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     @Test
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testFullUpdateStatement() {
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         UpdateStatement updateStatement = update(foo)
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>                 .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>                 .set(lastName).equalTo(<span class="jxr_string">"jones"</span>)
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>                 .set(occupation).equalToNull()
@@ -160,7 +160,7 @@
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> 
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>     @Test
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testFullUpdateStatementNoWhere() {
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>         UpdateStatement updateStatement = update(foo)
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>         UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>                 .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>                 .set(lastName).equalTo(<span class="jxr_string">"jones"</span>)
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>                 .set(occupation).equalToNull()

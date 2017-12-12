@@ -41,14 +41,14 @@ public class BatchInsert&lt;T&gt; {
      * 
      * @return a List of InsertStatements
      */
-    public List&lt;InsertStatement&lt;T&gt;&gt; insertStatements() {
+    public List&lt;InsertStatementProvider&lt;T&gt;&gt; insertStatements() {
 <span class="fc" id="L45">        return records.stream()</span>
 <span class="fc" id="L46">                .map(this::toInsertStatement)</span>
 <span class="fc" id="L47">                .collect(Collectors.toList());</span>
     }
     
-    private InsertStatement&lt;T&gt; toInsertStatement(T record) {
-<span class="fc" id="L51">        return InsertStatement.withRecord(record)</span>
+    private InsertStatementProvider&lt;T&gt; toInsertStatement(T record) {
+<span class="fc" id="L51">        return InsertStatementProvider.withRecord(record)</span>
 <span class="fc" id="L52">                .withTableName(tableName)</span>
 <span class="fc" id="L53">                .withColumnsPhrase(columnsPhrase)</span>
 <span class="fc" id="L54">                .withValuesPhrase(valuesPhrase)</span>

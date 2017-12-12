@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.update.render.UpdateStatement;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 /**
  * This adapter will render the underlying update model for MyBatis3, and then call a MyBatis mapper method.
@@ -30,9 +30,9 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatement;
 public class MyBatis3UpdateModelAdapter&lt;R&gt; {
 
     private UpdateModel updateModel;
-    private Function&lt;UpdateStatement, R&gt; mapperMethod;
+    private Function&lt;UpdateStatementProvider, R&gt; mapperMethod;
     
-<span class="fc" id="L35">    private MyBatis3UpdateModelAdapter(UpdateModel updateModel, Function&lt;UpdateStatement, R&gt; mapperMethod) {</span>
+<span class="fc" id="L35">    private MyBatis3UpdateModelAdapter(UpdateModel updateModel, Function&lt;UpdateStatementProvider, R&gt; mapperMethod) {</span>
 <span class="fc" id="L36">        this.updateModel = Objects.requireNonNull(updateModel);</span>
 <span class="fc" id="L37">        this.mapperMethod = Objects.requireNonNull(mapperMethod);</span>
 <span class="fc" id="L38">    }</span>
@@ -41,12 +41,12 @@ public class MyBatis3UpdateModelAdapter&lt;R&gt; {
 <span class="fc" id="L41">        return mapperMethod.apply(updateStatement());</span>
     }
     
-    private UpdateStatement updateStatement() {
+    private UpdateStatementProvider updateStatement() {
 <span class="fc" id="L45">        return updateModel.render(RenderingStrategy.MYBATIS3);</span>
     }
     
     public static &lt;R&gt; MyBatis3UpdateModelAdapter&lt;R&gt; of(UpdateModel updateModel,
-            Function&lt;UpdateStatement, R&gt; mapperMethod) {
+            Function&lt;UpdateStatementProvider, R&gt; mapperMethod) {
 <span class="fc" id="L50">        return new MyBatis3UpdateModelAdapter&lt;&gt;(updateModel, mapperMethod);</span>
     }
 }

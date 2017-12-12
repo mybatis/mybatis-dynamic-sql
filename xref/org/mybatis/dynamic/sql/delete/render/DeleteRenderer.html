@@ -28,7 +28,7 @@
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.DeleteModel;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.WhereModel;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/mybatis/dynamic/sql/delete/render/DeleteRenderer.html">DeleteRenderer</a> {
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/delete/DeleteModel.html">DeleteModel</a> deleteModel;
@@ -39,13 +39,13 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>          renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>      }
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>      
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/delete/render/DeleteStatement.html">DeleteStatement</a> render() {
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>          <strong class="jxr_keyword">return</strong> DeleteStatement.withTableName(deleteModel.table().name())
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>                  .withWhereClause(deleteModel.whereModel().map(<strong class="jxr_keyword">this</strong>::renderWhereModel))
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/delete/render/DeleteStatementProvider.html">DeleteStatementProvider</a> render() {
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>          <strong class="jxr_keyword">return</strong> DeleteStatementProvider.withTableName(deleteModel.table().name())
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>                  .withWhereClause(deleteModel.whereModel().map(<strong class="jxr_keyword">this</strong>::renderWhereClause))
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>                  .build();
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereClauseAndParameters.html">WhereClauseAndParameters</a> renderWhereModel(<a href="../../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> whereModel) {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereClauseProvider.html">WhereClauseProvider</a> renderWhereClause(<a href="../../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> whereModel) {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">return</strong> whereModel.render(renderingStrategy);
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>      }
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      

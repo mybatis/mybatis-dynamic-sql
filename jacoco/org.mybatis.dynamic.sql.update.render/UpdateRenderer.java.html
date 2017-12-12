@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 public class UpdateRenderer {
     private UpdateModel updateModel;
@@ -36,16 +36,16 @@ public class UpdateRenderer {
 <span class="fc" id="L36">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
 <span class="fc" id="L37">    }</span>
     
-    public UpdateStatement render() {
+    public UpdateStatementProvider render() {
 <span class="fc" id="L40">        SetPhraseVisitor visitor = new SetPhraseVisitor(renderingStrategy);</span>
 
 <span class="fc" id="L42">        FragmentCollector fc = updateModel.mapColumnValues(toFragmentAndParameters(visitor))</span>
 <span class="fc" id="L43">                .collect(FragmentCollector.collect());</span>
         
-<span class="fc" id="L45">        return UpdateStatement.withTableName(updateModel.table().name())</span>
+<span class="fc" id="L45">        return UpdateStatementProvider.withTableName(updateModel.table().name())</span>
 <span class="fc" id="L46">                .withSetClause(calculateSetPhrase(fc))</span>
 <span class="fc" id="L47">                .withParameters(fc.parameters())</span>
-<span class="fc" id="L48">                .withWhereClause(updateModel.whereModel().map(this::renderWhereModel))</span>
+<span class="fc" id="L48">                .withWhereClause(updateModel.whereModel().map(this::renderWhereClause))</span>
 <span class="fc" id="L49">                .build();</span>
     }
 
@@ -54,7 +54,7 @@ public class UpdateRenderer {
 <span class="fc" id="L54">                .collect(Collectors.joining(&quot;, &quot;, &quot;set &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
     
-    private WhereClauseAndParameters renderWhereModel(WhereModel whereModel) {
+    private WhereClauseProvider renderWhereClause(WhereModel whereModel) {
 <span class="fc" id="L58">        return whereModel.render(renderingStrategy);</span>
     }
 

@@ -36,7 +36,7 @@
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlColumn;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatement;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  @RunWith(JUnitPlatform.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/mybatis/dynamic/sql/select/SelectStatementTest.html">SelectStatementTest</a> {
@@ -49,7 +49,7 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSimpleCriteria() {
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          SelectStatement selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>                  .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>                  .where(column1, isEqualTo(d), and(column2, isEqualTo(33)))
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>                  .or(column2, isEqualTo(4))
@@ -76,7 +76,7 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testComplexCriteria() {
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          SelectStatement selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .where(column1, isEqualTo(d))
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .or(column2, isEqualTo(4))
@@ -113,7 +113,7 @@
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testOrderBySingleColumnAscending() {
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         SelectStatement selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>                 .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>                 .where(column1, isEqualTo(d))
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                 .orderBy(column1)
@@ -137,7 +137,7 @@
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testOrderBySingleColumnDescending() {
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         SelectStatement selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>                 .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>                 .where(column1, isEqualTo(d))
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>                 .orderBy(column2.descending())
@@ -161,7 +161,7 @@
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testOrderByMultipleColumns() {
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L155" href="#L155">155</a> 
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>         SelectStatement selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>         SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>                 .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>                 .where(column1, isEqualTo(d))
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>                 .orderBy(column2.descending(), column1)
@@ -185,7 +185,7 @@
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDistinct() {
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L179" href="#L179">179</a> 
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>         SelectStatement selectStatement = selectDistinct(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>         SelectStatementProvider selectStatement = selectDistinct(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>                 .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>                 .where(column1, isEqualTo(d))
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>                 .orderBy(column2.descending(), column1)
@@ -209,7 +209,7 @@
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCount() {
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> 
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>         SelectStatement selectStatement = select(count())
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>         SelectStatementProvider selectStatement = select(count())
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>                 .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>                 .where(column1, isEqualTo(d))
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>                 .build()
@@ -229,7 +229,7 @@
 <a class="jxr_linenumber" name="L221" href="#L221">221</a> 
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>     @Test
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testNoWhere() {
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>         SelectStatement selectStatement = select(count())
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>         SelectStatementProvider selectStatement = select(count())
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>                 .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>                 .build()
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>                 .render(RenderingStrategy.MYBATIS3);

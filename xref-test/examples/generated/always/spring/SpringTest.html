@@ -37,12 +37,12 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.junit.platform.runner.JUnitPlatform;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.junit.runner.RunWith;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.BatchInsert;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.InsertStatement;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatement;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatement;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.RowMapper;
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      @Test
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testRender() {
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          SelectStatement selectStatement = select(id.as(<span class="jxr_string">"A_ID"</span>), firstName, lastName, fullName)
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          SelectStatementProvider selectStatement = select(id.as(<span class="jxr_string">"A_ID"</span>), firstName, lastName, fullName)
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>                  .from(generatedAlways, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>                  .where(id, isGreaterThan(3))
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .orderBy(id.descending())
@@ -91,7 +91,7 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      @Test
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelect() {
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>          SelectStatement selectStatement = select(id, firstName, lastName, fullName)
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          SelectStatementProvider selectStatement = select(id, firstName, lastName, fullName)
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>                  .from(generatedAlways)
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>                  .where(id, isGreaterThan(3))
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>                  .orderBy(id.descending())
@@ -124,7 +124,7 @@
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> 
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>     @Test
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDelete() {
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>         DeleteStatement deleteStatement = deleteFrom(generatedAlways)
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>         DeleteStatementProvider deleteStatement = deleteFrom(generatedAlways)
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .where(id,  isLessThan(3))
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>                 .build()
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         record.setFirstName(<span class="jxr_string">"Bob"</span>);
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         record.setLastName(<span class="jxr_string">"Jones"</span>);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>         InsertStatement&lt;GeneratedAlwaysRecord&gt; insertStatement = insert(record)
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         InsertStatementProvider&lt;GeneratedAlwaysRecord&gt; insertStatement = insert(record)
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>                 .into(generatedAlways)
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                 .map(id).toProperty(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                 .map(firstName).toProperty(<span class="jxr_string">"firstName"</span>)
@@ -195,7 +195,7 @@
 <a class="jxr_linenumber" name="L187" href="#L187">187</a> 
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>     @Test
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdate() {
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>         UpdateStatement updateStatement = update(generatedAlways)
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>         UpdateStatementProvider updateStatement = update(generatedAlways)
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>                 .set(firstName).equalToStringConstant(<span class="jxr_string">"Rob"</span>)
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>                 .where(id,  isIn(1, 5, 22))
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>                 .build()

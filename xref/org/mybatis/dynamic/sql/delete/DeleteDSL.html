@@ -30,7 +30,7 @@
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlCriterion;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.VisitableCondition;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.render.DeleteStatement;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> DeleteDSL&lt;R&gt; {
@@ -72,7 +72,7 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      }
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; DeleteDSL&lt;MyBatis3DeleteModelAdapter&lt;T&gt;&gt; deleteFromWithMapper(
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>              Function&lt;DeleteStatement, T&gt; mapperMethod, <a href="../../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>              Function&lt;DeleteStatementProvider, T&gt; mapperMethod, <a href="../../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">return</strong> deleteFrom(deleteModel -&gt; MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      

@@ -23,14 +23,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 public class QueryExpression {
     
     private String tableName;
     private Optional&lt;String&gt; connector;
     private String columnList;
-    private Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters;
+    private Optional&lt;WhereClauseProvider&gt; whereClauseProvider;
     private boolean isDistinct;
     private Optional&lt;String&gt; joinClause;
     private Optional&lt;String&gt; groupByClause;
@@ -39,14 +39,14 @@ public class QueryExpression {
 <span class="fc" id="L39">        tableName = Objects.requireNonNull(builder.tableName);</span>
 <span class="fc" id="L40">        connector = Objects.requireNonNull(builder.connector);</span>
 <span class="fc" id="L41">        columnList = Objects.requireNonNull(builder.columnList);</span>
-<span class="fc" id="L42">        whereClauseAndParameters = Objects.requireNonNull(builder.whereClauseAndParameters);</span>
+<span class="fc" id="L42">        whereClauseProvider = Objects.requireNonNull(builder.whereClauseProvider);</span>
 <span class="fc" id="L43">        isDistinct = builder.isDistinct;</span>
 <span class="fc" id="L44">        joinClause = Objects.requireNonNull(builder.joinClause);</span>
 <span class="fc" id="L45">        groupByClause = Objects.requireNonNull(builder.groupByClause);</span>
 <span class="fc" id="L46">    }</span>
     
     public Map&lt;String, Object&gt; parameters() {
-<span class="fc" id="L49">        return whereClauseAndParameters.map(WhereClauseAndParameters::parameters)</span>
+<span class="fc" id="L49">        return whereClauseProvider.map(WhereClauseProvider::getParameters)</span>
 <span class="fc" id="L50">                .orElse(Collections.emptyMap());</span>
     }
     
@@ -58,7 +58,7 @@ public class QueryExpression {
                 + &quot; from &quot; //$NON-NLS-1$
                 + tableName
 <span class="fc" id="L60">                + spaceBefore(joinClause)</span>
-<span class="fc" id="L61">                + spaceBefore(whereClauseAndParameters.map(WhereClauseAndParameters::whereClause))</span>
+<span class="fc" id="L61">                + spaceBefore(whereClauseProvider.map(WhereClauseProvider::getWhereClause))</span>
 <span class="fc" id="L62">                + spaceBefore(groupByClause);</span>
     }
     
@@ -72,7 +72,7 @@ public class QueryExpression {
         private boolean isDistinct;
         private String columnList;
 <span class="fc" id="L74">        private Optional&lt;String&gt; joinClause = Optional.empty();</span>
-<span class="fc" id="L75">        private Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters = Optional.empty();</span>
+<span class="fc" id="L75">        private Optional&lt;WhereClauseProvider&gt; whereClauseProvider = Optional.empty();</span>
 <span class="fc" id="L76">        private Optional&lt;String&gt; groupByClause = Optional.empty();</span>
         
         public Builder withConnector(Optional&lt;String&gt; connector) {
@@ -90,8 +90,8 @@ public class QueryExpression {
 <span class="fc" id="L90">            return this;</span>
         }
         
-        public Builder withWhereClause(Optional&lt;WhereClauseAndParameters&gt; whereClauseAndParameters) {
-<span class="fc" id="L94">            this.whereClauseAndParameters = whereClauseAndParameters;</span>
+        public Builder withWhereClause(Optional&lt;WhereClauseProvider&gt; whereClauseProvider) {
+<span class="fc" id="L94">            this.whereClauseProvider = whereClauseProvider;</span>
 <span class="fc" id="L95">            return this;</span>
         }
         

@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.join.JoinModel;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.CustomCollectors;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.WhereModel;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereRenderer;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html">QueryExpressionRenderer</a> {
@@ -55,7 +55,7 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>                  .isDistinct(queryExpression.isDistinct())
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>                  .withTableName(calculateTableName(queryExpression.table()))
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>                  .withJoinClause(queryExpression.joinModel().map(<strong class="jxr_keyword">this</strong>::renderJoin))
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>                  .withWhereClause(queryExpression.whereModel().map(<strong class="jxr_keyword">this</strong>::renderWhere))
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>                  .withWhereClause(queryExpression.whereModel().map(<strong class="jxr_keyword">this</strong>::renderWhereClause))
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>                  .withGroupByClause(queryExpression.groupByModel().map(<strong class="jxr_keyword">this</strong>::renderGroupBy))
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>                  .build();
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      }
@@ -80,7 +80,7 @@
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .render();
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      }
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereClauseAndParameters.html">WhereClauseAndParameters</a> renderWhere(<a href="../../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> whereModel) {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/where/render/WhereClauseProvider.html">WhereClauseProvider</a> renderWhereClause(<a href="../../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> whereModel) {
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          <strong class="jxr_keyword">return</strong> WhereRenderer.withWhereModel(whereModel)
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>                  .withRenderingStrategy(renderingStrategy)
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>                  .withTableAliasCalculator(queryExpression.tableAliasCalculator())

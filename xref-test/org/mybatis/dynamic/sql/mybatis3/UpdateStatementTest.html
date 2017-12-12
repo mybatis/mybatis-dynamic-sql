@@ -34,7 +34,7 @@
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlColumn;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatement;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  @RunWith(JUnitPlatform.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/mybatis/dynamic/sql/mybatis3/UpdateStatementTest.html">UpdateStatementTest</a> {
@@ -46,7 +46,7 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      @Test
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateParameter() {
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>          UpdateStatement updateStatement = update(foo)
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>                  .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>                  .set(lastName).equalTo(<span class="jxr_string">"jones"</span>)
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>                  .set(occupation).equalToNull()
@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      @Test
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateParameterStartWithNull() {
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          UpdateStatement updateStatement = update(foo)
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>                  .set(occupation).equalToNull()
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>                  .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>                  .set(lastName).equalTo(<span class="jxr_string">"jones"</span>)

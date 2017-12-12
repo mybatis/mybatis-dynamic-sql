@@ -74,6 +74,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.where.render.WhereClauseProvider.java">org/mybatis/dynamic/sql/where/render/WhereClauseProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.render.TableAliasCalculator.java">org/mybatis/dynamic/sql/render/TableAliasCalculator.java</a>
                 </td>
                 <td>
@@ -89,20 +103,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.select.render.QueryExpressionRenderer.java">org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.insert.render.InsertSelectStatement.java">org/mybatis/dynamic/sql/insert/render/InsertSelectStatement.java</a>
                 </td>
                 <td>
                   0
@@ -256,6 +256,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.update.render.UpdateStatementProvider.java">org/mybatis/dynamic/sql/update/render/UpdateStatementProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.AbstractSingleValueCondition.java">org/mybatis/dynamic/sql/AbstractSingleValueCondition.java</a>
                 </td>
                 <td>
@@ -270,7 +284,35 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.select.render.SelectStatementProvider.java">org/mybatis/dynamic/sql/select/render/SelectStatementProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.util.NullMapping.java">org/mybatis/dynamic/sql/util/NullMapping.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#.mvn.wrapper.maven-wrapper.properties">.mvn/wrapper/maven-wrapper.properties</a>
                 </td>
                 <td>
                   0
@@ -1152,34 +1194,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.update.render.UpdateStatement.java">org/mybatis/dynamic/sql/update/render/UpdateStatement.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.insert.render.InsertStatement.java">org/mybatis/dynamic/sql/insert/render/InsertStatement.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.util.UpdateMappingVisitor.java">org/mybatis/dynamic/sql/util/UpdateMappingVisitor.java</a>
                 </td>
                 <td>
@@ -1264,20 +1278,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.where.render.WhereClauseAndParameters.java">org/mybatis/dynamic/sql/where/render/WhereClauseAndParameters.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.delete.DeleteDSL.java">org/mybatis/dynamic/sql/delete/DeleteDSL.java</a>
                 </td>
                 <td>
@@ -1335,6 +1335,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.util.StringUtilities.java">org/mybatis/dynamic/sql/util/StringUtilities.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider.java">org/mybatis/dynamic/sql/insert/render/InsertSelectStatementProvider.java</a>
                 </td>
                 <td>
                   0
@@ -1628,20 +1642,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#target.maven-archiver.pom.properties">target/maven-archiver/pom.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.SqlBuilder.java">org/mybatis/dynamic/sql/SqlBuilder.java</a>
                 </td>
                 <td>
@@ -1698,20 +1698,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.select.render.SelectStatement.java">org/mybatis/dynamic/sql/select/render/SelectStatement.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.select.aggregate.Max.java">org/mybatis/dynamic/sql/select/aggregate/Max.java</a>
                 </td>
                 <td>
@@ -1727,6 +1713,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.where.condition.IsNotLike.java">org/mybatis/dynamic/sql/where/condition/IsNotLike.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider.java">org/mybatis/dynamic/sql/delete/render/DeleteStatementProvider.java</a>
                 </td>
                 <td>
                   0
@@ -1810,6 +1810,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.insert.render.InsertStatementProvider.java">org/mybatis/dynamic/sql/insert/render/InsertStatementProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.BasicColumn.java">org/mybatis/dynamic/sql/BasicColumn.java</a>
                 </td>
                 <td>
@@ -1867,20 +1881,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.reflection.wrapper.BeanWrapper.java">org/mybatis/dynamic/sql/reflection/wrapper/BeanWrapper.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.delete.render.DeleteStatement.java">org/mybatis/dynamic/sql/delete/render/DeleteStatement.java</a>
                 </td>
                 <td>
                   0
