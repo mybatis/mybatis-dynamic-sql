@@ -7,10 +7,5 @@
       <username>${env.CI_DEPLOY_USERNAME}</username>
       <password>${env.CI_DEPLOY_PASSWORD}</password>
     </server>
-    <server>
-      <id>gh-pages</id>
-      <username>git</username>
-      <password>${env.CI_SITE_PASSWORD}</password>
-    </server>
   </servers>
 </settings>
