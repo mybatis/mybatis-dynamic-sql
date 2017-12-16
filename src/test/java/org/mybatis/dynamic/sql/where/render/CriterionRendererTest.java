@@ -41,7 +41,7 @@ public class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         
-        IsEqualTo<Integer> condition = IsEqualTo.of(3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
         SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
@@ -62,7 +62,7 @@ public class CriterionRendererTest {
     public void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-        IsEqualTo<Integer> condition = IsEqualTo.of(3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
         SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
@@ -87,7 +87,7 @@ public class CriterionRendererTest {
     public void testNoAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-        IsEqualTo<Integer> condition = IsEqualTo.of(3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
         SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
@@ -108,7 +108,7 @@ public class CriterionRendererTest {
     public void testNoAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-        IsEqualTo<Integer> condition = IsEqualTo.of(3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
         SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();

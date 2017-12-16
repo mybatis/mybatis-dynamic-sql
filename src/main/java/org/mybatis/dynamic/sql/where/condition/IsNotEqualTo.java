@@ -15,12 +15,14 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsNotEqualTo(T value) {
-        super(value);
+    protected IsNotEqualTo(Supplier<T> valueSupplier) {
+        super(valueSupplier);
     }
 
     @Override
@@ -28,7 +30,7 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
         return columnName + " <> " + placeholder; //$NON-NLS-1$
     }
     
-    public static <T> IsNotEqualTo<T> of(T value) {
-        return new IsNotEqualTo<>(value);
+    public static <T> IsNotEqualTo<T> of(Supplier<T> valueSupplier) {
+        return new IsNotEqualTo<>(valueSupplier);
     }
 }

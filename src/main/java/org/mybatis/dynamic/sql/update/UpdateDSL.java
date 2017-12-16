@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -107,13 +108,21 @@ public class UpdateDSL<R> {
         }
         
         public UpdateDSL<R> equalTo(T value) {
-            columnsAndValues.add(ValueMapping.of(column, value));
+            return equalTo(() -> value);
+        }
+
+        public UpdateDSL<R> equalTo(Supplier<T> valueSupplier) {
+            columnsAndValues.add(ValueMapping.of(column, valueSupplier));
             return UpdateDSL.this;
         }
 
         public UpdateDSL<R> equalToWhenPresent(T value) {
-            if (value != null) {
-                columnsAndValues.add(ValueMapping.of(column, value));
+            return equalToWhenPresent(() -> value);
+        }
+
+        public UpdateDSL<R> equalToWhenPresent(Supplier<T> valueSupplier) {
+            if (valueSupplier.get() != null) {
+                columnsAndValues.add(ValueMapping.of(column, valueSupplier));
             }
             return UpdateDSL.this;
         }

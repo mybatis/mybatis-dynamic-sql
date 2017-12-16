@@ -15,18 +15,20 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class ValueMapping<T> extends AbstractColumnMapping implements UpdateMapping {
 
-    private T value;
+    private Supplier<T> valueSupplier;
     
     private ValueMapping(SqlColumn<T> column) {
         super(column);
     }
     
     public T value() {
-        return value;
+        return valueSupplier.get();
     }
 
     @Override
@@ -34,9 +36,9 @@ public class ValueMapping<T> extends AbstractColumnMapping implements UpdateMapp
         return visitor.visit(this);
     }
 
-    public static <T> ValueMapping<T> of(SqlColumn<T> column, T value) {
+    public static <T> ValueMapping<T> of(SqlColumn<T> column, Supplier<T> valueSupplier) {
         ValueMapping<T> mapping = new ValueMapping<>(column);
-        mapping.value = value;
+        mapping.valueSupplier = valueSupplier;
         return mapping;
     }
 }

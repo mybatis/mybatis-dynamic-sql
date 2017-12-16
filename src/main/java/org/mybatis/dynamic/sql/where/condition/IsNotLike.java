@@ -15,12 +15,14 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotLike extends AbstractSingleValueCondition<String> {
 
-    protected IsNotLike(String value) {
-        super(value);
+    protected IsNotLike(Supplier<String> valueSupplier) {
+        super(valueSupplier);
     }
 
     @Override
@@ -28,7 +30,7 @@ public class IsNotLike extends AbstractSingleValueCondition<String> {
         return columnName + " not like " + placeholder; //$NON-NLS-1$
     }
     
-    public static IsNotLike of(String value) {
-        return new IsNotLike(value);
+    public static IsNotLike of(Supplier<String> valueSupplier) {
+        return new IsNotLike(valueSupplier);
     }
 }

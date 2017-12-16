@@ -15,11 +15,13 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
-    protected IsNotLikeCaseInsensitive(String value) {
-        super(value);
+    protected IsNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
+        super(valueSupplier);
     }
     
     @Override
@@ -32,7 +34,7 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
         return super.value().toUpperCase();
     }
 
-    public static IsNotLikeCaseInsensitive of(String value) {
-        return new IsNotLikeCaseInsensitive(value);
+    public static IsNotLikeCaseInsensitive of(Supplier<String> valueSupplier) {
+        return new IsNotLikeCaseInsensitive(valueSupplier);
     }
 }

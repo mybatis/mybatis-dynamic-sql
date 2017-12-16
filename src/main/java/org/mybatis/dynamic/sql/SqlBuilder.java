@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
@@ -213,7 +214,11 @@ public interface SqlBuilder {
     }
 
     static <T> IsEqualTo<T> isEqualTo(T value) {
-        return IsEqualTo.of(value);
+        return isEqualTo(() -> value);
+    }
+
+    static <T> IsEqualTo<T> isEqualTo(Supplier<T> valueSupplier) {
+        return IsEqualTo.of(valueSupplier);
     }
 
     static <T> IsEqualToWithSubselect<T> isEqualTo(Buildable<SelectModel> selectModelBuilder) {
@@ -221,7 +226,11 @@ public interface SqlBuilder {
     }
 
     static <T> IsNotEqualTo<T> isNotEqualTo(T value) {
-        return IsNotEqualTo.of(value);
+        return isNotEqualTo(() -> value);
+    }
+
+    static <T> IsNotEqualTo<T> isNotEqualTo(Supplier<T> valueSupplier) {
+        return IsNotEqualTo.of(valueSupplier);
     }
 
     static <T> IsNotEqualToWithSubselect<T> isNotEqualTo(Buildable<SelectModel> selectModelBuilder) {
@@ -229,7 +238,11 @@ public interface SqlBuilder {
     }
 
     static <T> IsGreaterThan<T> isGreaterThan(T value) {
-        return IsGreaterThan.of(value);
+        return isGreaterThan(() -> value);
+    }
+    
+    static <T> IsGreaterThan<T> isGreaterThan(Supplier<T> valueSupplier) {
+        return IsGreaterThan.of(valueSupplier);
     }
     
     static <T> IsGreaterThanWithSubselect<T> isGreaterThan(Buildable<SelectModel> selectModelBuilder) {
@@ -237,7 +250,11 @@ public interface SqlBuilder {
     }
     
     static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(T value) {
-        return IsGreaterThanOrEqualTo.of(value);
+        return isGreaterThanOrEqualTo(() -> value);
+    }
+    
+    static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(Supplier<T> valueSupplier) {
+        return IsGreaterThanOrEqualTo.of(valueSupplier);
     }
     
     static <T> IsGreaterThanOrEqualToWithSubselect<T> isGreaterThanOrEqualTo(
@@ -246,7 +263,11 @@ public interface SqlBuilder {
     }
     
     static <T> IsLessThan<T> isLessThan(T value) {
-        return IsLessThan.of(value);
+        return isLessThan(() -> value);
+    }
+    
+    static <T> IsLessThan<T> isLessThan(Supplier<T> valueSupplier) {
+        return IsLessThan.of(valueSupplier);
     }
     
     static <T> IsLessThanWithSubselect<T> isLessThan(Buildable<SelectModel> selectModelBuilder) {
@@ -254,7 +275,11 @@ public interface SqlBuilder {
     }
     
     static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(T value) {
-        return IsLessThanOrEqualTo.of(value);
+        return isLessThanOrEqualTo(() -> value);
+    }
+    
+    static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(Supplier<T> valueSupplier) {
+        return IsLessThanOrEqualTo.of(valueSupplier);
     }
     
     static <T> IsLessThanOrEqualToWithSubselect<T> isLessThanOrEqualTo(Buildable<SelectModel> selectModelBuilder) {
@@ -288,28 +313,52 @@ public interface SqlBuilder {
     }
 
     static <T> IsBetween.Builder<T> isBetween(T value1) {
-        return IsBetween.isBetween(value1);
+        return isBetween(() -> value1);
+    }
+    
+    static <T> IsBetween.Builder<T> isBetween(Supplier<T> valueSupplier1) {
+        return IsBetween.isBetween(valueSupplier1);
     }
     
     static <T> IsNotBetween.Builder<T> isNotBetween(T value1) {
-        return IsNotBetween.isNotBetween(value1);
+        return isNotBetween(() -> value1);
+    }
+    
+    static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<T> valueSupplier1) {
+        return IsNotBetween.isNotBetween(valueSupplier1);
     }
     
     // conditions for strings only
     static IsLike isLike(String value) {
-        return IsLike.of(value);
+        return isLike(() -> value);
+    }
+    
+    static IsLike isLike(Supplier<String> valueSupplier) {
+        return IsLike.of(valueSupplier);
     }
     
     static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
-        return IsLikeCaseInsensitive.of(value);
+        return isLikeCaseInsensitive(() -> value);
+    }
+    
+    static IsLikeCaseInsensitive isLikeCaseInsensitive(Supplier<String> valueSupplier) {
+        return IsLikeCaseInsensitive.of(valueSupplier);
     }
     
     static IsNotLike isNotLike(String value) {
-        return IsNotLike.of(value);
+        return isNotLike(() -> value);
+    }
+    
+    static IsNotLike isNotLike(Supplier<String> valueSupplier) {
+        return IsNotLike.of(valueSupplier);
     }
     
     static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
-        return IsNotLikeCaseInsensitive.of(value);
+        return isNotLikeCaseInsensitive(() -> value);
+    }
+
+    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
+        return IsNotLikeCaseInsensitive.of(valueSupplier);
     }
 
     static IsInCaseInsensitive isInCaseInsensitive(String...values) {

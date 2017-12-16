@@ -15,12 +15,14 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
 public class IsBetween<T> extends AbstractTwoValueCondition<T> {
 
     protected IsBetween(Builder<T> builder) {
-        super(builder.value1, builder.value2);
+        super(builder.valueSupplier1, builder.valueSupplier2);
     }
     
     @Override
@@ -29,20 +31,24 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
     }
 
     public static class Builder<T> {
-        private T value1;
-        private T value2;
+        private Supplier<T> valueSupplier1;
+        private Supplier<T> valueSupplier2;
         
-        private Builder(T value1) {
-            this.value1 = value1;
+        private Builder(Supplier<T> valueSupplier1) {
+            this.valueSupplier1 = valueSupplier1;
+        }
+        
+        public IsBetween<T> and(Supplier<T> valueSupplier2) {
+            this.valueSupplier2 = valueSupplier2;
+            return new IsBetween<>(this);
         }
         
         public IsBetween<T> and(T value2) {
-            this.value2 = value2;
-            return new IsBetween<>(this);
+            return and(() -> value2);
         }
     }
     
-    public static <T> Builder<T> isBetween(T value) {
-        return new Builder<>(value);
+    public static <T> Builder<T> isBetween(Supplier<T> valueSupplier) {
+        return new Builder<>(valueSupplier);
     }
 }

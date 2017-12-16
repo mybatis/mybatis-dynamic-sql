@@ -18,10 +18,12 @@ Update statements are composed by specifying the table and columns to update, an
 Notice the `set` method. It is used to set the value of a database column.  There are several options for setting a value:
 
 1. `set(column).equalToNull()` will set a null into a column
-2. `set(column).equalToConstant(constant_value)` will set a constant into a column.  The constant_value will be written into the generated update statement exactly as entered
-3. `set(column).equalToStringConstant(constant_value)` will set a constant into a column.  The constant_value will be written into the generated update statement surrounded by single quote marks (as an SQL String)
-4. `set(column).equalTo(value)` will set a value into a column.  The value will be bound to the SQL statement as a prepared statement parameter
-5. `set(column).equalToWhenPresent(value)` will set a value into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" update as defined in MyBatis Generator.
+2. `set(column).equalToConstant(String constant)` will set a constant into a column.  The constant_value will be written into the generated update statement exactly as entered
+3. `set(column).equalToStringConstant(String constant)` will set a constant into a column.  The constant_value will be written into the generated update statement surrounded by single quote marks (as an SQL String)
+4. `set(column).equalTo(T value)` will set a value into a column.  The value will be bound to the SQL statement as a prepared statement parameter
+5. `set(column).equalTo(Supplier<T> valueSupplier)` will set a value into a column.  The value will be bound to the SQL statement as a prepared statement parameter
+6. `set(column).equalToWhenPresent(T value)` will set a value into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" update as defined in MyBatis Generator.
+7. `set(column).equalToWhenPresent(Supplier<T> valueSupplier)` will set a value into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" update as defined in MyBatis Generator.
 
 You can also build an update statement without a where clause.  This will update every row in a table.
 For example:

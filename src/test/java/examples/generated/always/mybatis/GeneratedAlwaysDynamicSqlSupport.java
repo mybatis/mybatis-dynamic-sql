@@ -81,25 +81,25 @@ public final class GeneratedAlwaysDynamicSqlSupport {
 
     public static UpdateStatementProvider buildUpdateByPrimaryKeySelectiveStatement(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
-                .set(firstName).equalToWhenPresent(record.getFirstName())
-                .set(lastName).equalToWhenPresent(record.getLastName())
-                .where(id, isEqualTo(record.getId()))
+                .set(firstName).equalToWhenPresent(record.getFirstName()) // for test coverage
+                .set(lastName).equalToWhenPresent(record::getLastName)
+                .where(id, isEqualTo(record::getId))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
     }
 
     public static UpdateDSL<UpdateModel> updateByExample(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
-                .set(id).equalTo(record.getId())
-                .set(firstName).equalTo(record.getFirstName())
-                .set(lastName).equalTo(record.getLastName());
+                .set(id).equalTo(record::getId)
+                .set(firstName).equalTo(record::getFirstName)
+                .set(lastName).equalTo(record::getLastName);
     }
 
     public static UpdateDSL<UpdateModel> updateByExampleSelective(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
-                .set(id).equalToWhenPresent(record.getId())
-                .set(firstName).equalToWhenPresent(record.getFirstName())
-                .set(lastName).equalToWhenPresent(record.getLastName());
+                .set(id).equalToWhenPresent(record::getId)
+                .set(firstName).equalToWhenPresent(record::getFirstName)
+                .set(lastName).equalToWhenPresent(record::getLastName);
     }
     
     public static QueryExpressionDSL<SelectModel> selectByExample() {

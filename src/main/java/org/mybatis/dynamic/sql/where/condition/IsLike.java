@@ -15,12 +15,14 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsLike extends AbstractSingleValueCondition<String> {
 
-    protected IsLike(String value) {
-        super(value);
+    protected IsLike(Supplier<String> valueSupplier) {
+        super(valueSupplier);
     }
 
     @Override
@@ -28,7 +30,7 @@ public class IsLike extends AbstractSingleValueCondition<String> {
         return columnName + " like " + placeholder; //$NON-NLS-1$
     }
     
-    public static IsLike of(String value) {
-        return new IsLike(value);
+    public static IsLike of(Supplier<String> valueSupplier) {
+        return new IsLike(valueSupplier);
     }
 }

@@ -137,45 +137,45 @@ public interface SimpleTableAnnotatedMapper {
     default UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> updateByExample(SimpleTableRecord record) {
         return UpdateDSL.updateWithMapper(this::update, simpleTable)
                 .set(id).equalTo(record.getId())
-                .set(firstName).equalTo(record.getFirstName())
-                .set(lastName).equalTo(record.getLastName())
-                .set(birthDate).equalTo(record.getBirthDate())
-                .set(employed).equalTo(record.getEmployed())
-                .set(occupation).equalTo(record.getOccupation());
+                .set(firstName).equalTo(record::getFirstName)
+                .set(lastName).equalTo(record::getLastName)
+                .set(birthDate).equalTo(record::getBirthDate)
+                .set(employed).equalTo(record::getEmployed)
+                .set(occupation).equalTo(record::getOccupation);
     }
 
     default UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> updateByExampleSelective(SimpleTableRecord record) {
         return UpdateDSL.updateWithMapper(this::update, simpleTable)
-                .set(id).equalToWhenPresent(record.getId())
-                .set(firstName).equalToWhenPresent(record.getFirstName())
-                .set(lastName).equalToWhenPresent(record.getLastName())
-                .set(birthDate).equalToWhenPresent(record.getBirthDate())
-                .set(employed).equalToWhenPresent(record.getEmployed())
-                .set(occupation).equalToWhenPresent(record.getOccupation());
+                .set(id).equalToWhenPresent(record::getId)
+                .set(firstName).equalToWhenPresent(record::getFirstName)
+                .set(lastName).equalToWhenPresent(record::getLastName)
+                .set(birthDate).equalToWhenPresent(record::getBirthDate)
+                .set(employed).equalToWhenPresent(record::getEmployed)
+                .set(occupation).equalToWhenPresent(record::getOccupation);
     }
 
     default int updateByPrimaryKey(SimpleTableRecord record) {
         return UpdateDSL.updateWithMapper(this::update, simpleTable)
-                .set(id).equalTo(record.getId())
-                .set(firstName).equalTo(record.getFirstName())
-                .set(lastName).equalTo(record.getLastName())
-                .set(birthDate).equalTo(record.getBirthDate())
-                .set(employed).equalTo(record.getEmployed())
-                .set(occupation).equalTo(record.getOccupation())
-                .where(id, isEqualTo(record.getId()))
+                .set(id).equalTo(record::getId)
+                .set(firstName).equalTo(record::getFirstName)
+                .set(lastName).equalTo(record::getLastName)
+                .set(birthDate).equalTo(record::getBirthDate)
+                .set(employed).equalTo(record::getEmployed)
+                .set(occupation).equalTo(record::getOccupation)
+                .where(id, isEqualTo(record::getId))
                 .build()
                 .execute();
     }
 
     default int updateByPrimaryKeySelective(SimpleTableRecord record) {
         return UpdateDSL.updateWithMapper(this::update, simpleTable)
-                .set(id).equalToWhenPresent(record.getId())
-                .set(firstName).equalToWhenPresent(record.getFirstName())
-                .set(lastName).equalToWhenPresent(record.getLastName())
-                .set(birthDate).equalToWhenPresent(record.getBirthDate())
-                .set(employed).equalToWhenPresent(record.getEmployed())
-                .set(occupation).equalToWhenPresent(record.getOccupation())
-                .where(id, isEqualTo(record.getId()))
+                .set(id).equalToWhenPresent(record::getId)
+                .set(firstName).equalToWhenPresent(record::getFirstName)
+                .set(lastName).equalToWhenPresent(record::getLastName)
+                .set(birthDate).equalToWhenPresent(record::getBirthDate)
+                .set(employed).equalToWhenPresent(record::getEmployed)
+                .set(occupation).equalToWhenPresent(record::getOccupation)
+                .where(id, isEqualTo(record::getId))
                 .build()
                 .execute();
     }

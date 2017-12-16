@@ -15,12 +15,14 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsGreaterThan(T value) {
-        super(value);
+    protected IsGreaterThan(Supplier<T> valueSupplier) {
+        super(valueSupplier);
     }
     
     @Override
@@ -28,7 +30,7 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
         return columnName + " > " + placeholder; //$NON-NLS-1$
     }
 
-    public static <T> IsGreaterThan<T> of(T value) {
-        return new IsGreaterThan<>(value);
+    public static <T> IsGreaterThan<T> of(Supplier<T> valueSupplier) {
+        return new IsGreaterThan<>(valueSupplier);
     }
 }
