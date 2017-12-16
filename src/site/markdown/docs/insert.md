@@ -39,7 +39,7 @@ Notice the `map` method.  It is used to map a database column to an attribute of
 2. `map(column).toConstant(constant_value)` will insert a constant into a column.  The constant_value will be written into the generated insert statement exactly as entered
 3. `map(column).toStringConstant(constant_value)` will insert a constant into a column.  The constant_value will be written into the generated insert statement surrounded by single quote marks (as an SQL String)
 4. `map(column).toProperty(property)` will insert a value from the record into a column.  The value of the property will be bound to the SQL statement as a prepared statement parameter
-5. `map(column).toPropertyWhenPresent(property)` will insert a value from the record into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" insert as defined in MyBatis Generator.
+5. `map(column).toPropertyWhenPresent(property, Supplier<?> valueSupplier)` will insert a value from the record into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" insert as defined in MyBatis Generator.
 
 ### Annotated Mapper for Single Record Insert Statements
 The InsertStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
@@ -124,7 +124,7 @@ A batch insert is a collection of statements that can be used to execute a JDBC 
 
 It is important to open a MyBatis session by setting the executor type to BATCH.  The records are inserted on the commit.  You can call commit multiple times if you want to do intermediate commits.
 
-Notice that the same mapper method that is used to insert a single record is now executed multiple times.  The `map` methods are the same with the exception that the `map(column).toPropertyWhenPresent(property)` method is not supported for batch inserts. 
+Notice that the same mapper method that is used to insert a single record is now executed multiple times.  The `map` methods are the same with the exception that the `toPropertyWhenPresent` mapping is not supported for batch inserts. 
 
 ## Insert with Select
 An insert select is an SQL insert statement the inserts the results of a select.  For example:

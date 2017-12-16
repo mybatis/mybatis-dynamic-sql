@@ -106,12 +106,12 @@ public interface SimpleTableAnnotatedMapper {
     default int insertSelective(SimpleTableRecord record) {
         return insert(SqlBuilder.insert(record)
                 .into(simpleTable)
-                .map(id).toPropertyWhenPresent("id")
-                .map(firstName).toPropertyWhenPresent("firstName")
-                .map(lastName).toPropertyWhenPresent("lastName")
-                .map(birthDate).toPropertyWhenPresent("birthDate")
-                .map(employed).toPropertyWhenPresent("employed")
-                .map(occupation).toPropertyWhenPresent("occupation")
+                .map(id).toPropertyWhenPresent("id", record::getId)
+                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
+                .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
+                .map(birthDate).toPropertyWhenPresent("birthDate", record::getBirthDate)
+                .map(employed).toPropertyWhenPresent("employed", record::getEmployed)
+                .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
                 .build()
                 .render(RenderingStrategy.MYBATIS3));
     }
@@ -133,7 +133,7 @@ public interface SimpleTableAnnotatedMapper {
             .build()
             .execute();
     }
-    
+
     default UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> updateByExample(SimpleTableRecord record) {
         return UpdateDSL.updateWithMapper(this::update, simpleTable)
                 .set(id).equalTo(record.getId())

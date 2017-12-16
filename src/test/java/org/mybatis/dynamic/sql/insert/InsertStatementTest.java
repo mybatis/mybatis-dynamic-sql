@@ -112,10 +112,10 @@ public class InsertStatementTest {
         
         InsertStatementProvider<TestRecord> insertStatement = insert(record)
                 .into(foo)
-                .map(id).toPropertyWhenPresent("id")
-                .map(firstName).toPropertyWhenPresent("firstName")
-                .map(lastName).toPropertyWhenPresent("lastName")
-                .map(occupation).toPropertyWhenPresent("occupation")
+                .map(id).toPropertyWhenPresent("id", record::getId)
+                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
+                .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
+                .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 

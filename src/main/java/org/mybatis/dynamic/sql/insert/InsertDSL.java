@@ -17,10 +17,10 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.util.BeanPropertyGetter;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.InsertMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
@@ -77,8 +77,8 @@ public class InsertDSL<T> {
             return InsertDSL.this;
         }
             
-        public InsertDSL<T> toPropertyWhenPresent(String property) {
-            if (BeanPropertyGetter.instance().getPropertyValue(record, property) != null) {
+        public InsertDSL<T> toPropertyWhenPresent(String property, Supplier<?> valueSupplier) {
+            if (valueSupplier.get() != null) {
                 toProperty(property);
             }
             return InsertDSL.this;

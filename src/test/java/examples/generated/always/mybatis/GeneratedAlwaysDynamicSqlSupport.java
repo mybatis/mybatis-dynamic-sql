@@ -63,9 +63,9 @@ public final class GeneratedAlwaysDynamicSqlSupport {
     public static InsertStatementProvider<GeneratedAlwaysRecord> buildInsertSelectiveStatement(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
-                .map(id).toPropertyWhenPresent("id")
-                .map(firstName).toPropertyWhenPresent("firstName")
-                .map(lastName).toPropertyWhenPresent("lastName")
+                .map(id).toPropertyWhenPresent("id", record::getId)
+                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
+                .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
     }
