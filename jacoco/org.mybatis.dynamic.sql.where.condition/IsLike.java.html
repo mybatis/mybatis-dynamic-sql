@@ -15,21 +15,23 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsLike extends AbstractSingleValueCondition&lt;String&gt; {
 
-    protected IsLike(String value) {
-<span class="fc" id="L23">        super(value);</span>
-<span class="fc" id="L24">    }</span>
+    protected IsLike(Supplier&lt;String&gt; valueSupplier) {
+<span class="fc" id="L25">        super(valueSupplier);</span>
+<span class="fc" id="L26">    }</span>
 
     @Override
     public String renderCondition(String columnName, String placeholder) {
-<span class="fc" id="L28">        return columnName + &quot; like &quot; + placeholder; //$NON-NLS-1$</span>
+<span class="fc" id="L30">        return columnName + &quot; like &quot; + placeholder; //$NON-NLS-1$</span>
     }
     
-    public static IsLike of(String value) {
-<span class="fc" id="L32">        return new IsLike(value);</span>
+    public static IsLike of(Supplier&lt;String&gt; valueSupplier) {
+<span class="fc" id="L34">        return new IsLike(valueSupplier);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

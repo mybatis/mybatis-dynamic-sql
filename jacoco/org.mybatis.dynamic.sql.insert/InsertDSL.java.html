@@ -17,10 +17,10 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.util.BeanPropertyGetter;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.InsertMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
@@ -77,8 +77,8 @@ public class InsertDSL&lt;T&gt; {
 <span class="fc" id="L77">            return InsertDSL.this;</span>
         }
             
-        public InsertDSL&lt;T&gt; toPropertyWhenPresent(String property) {
-<span class="fc bfc" id="L81" title="All 2 branches covered.">            if (BeanPropertyGetter.instance().getPropertyValue(record, property) != null) {</span>
+        public InsertDSL&lt;T&gt; toPropertyWhenPresent(String property, Supplier&lt;?&gt; valueSupplier) {
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            if (valueSupplier.get() != null) {</span>
 <span class="fc" id="L82">                toProperty(property);</span>
             }
 <span class="fc" id="L84">            return InsertDSL.this;</span>

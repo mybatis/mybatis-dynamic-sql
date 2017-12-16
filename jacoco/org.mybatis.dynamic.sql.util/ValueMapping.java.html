@@ -15,29 +15,31 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class ValueMapping&lt;T&gt; extends AbstractColumnMapping implements UpdateMapping {
 
-    private T value;
+    private Supplier&lt;T&gt; valueSupplier;
     
     private ValueMapping(SqlColumn&lt;T&gt; column) {
-<span class="fc" id="L25">        super(column);</span>
-<span class="fc" id="L26">    }</span>
+<span class="fc" id="L27">        super(column);</span>
+<span class="fc" id="L28">    }</span>
     
     public T value() {
-<span class="fc" id="L29">        return value;</span>
+<span class="fc" id="L31">        return valueSupplier.get();</span>
     }
 
     @Override
     public &lt;R&gt; R accept(UpdateMappingVisitor&lt;R&gt; visitor) {
-<span class="fc" id="L34">        return visitor.visit(this);</span>
+<span class="fc" id="L36">        return visitor.visit(this);</span>
     }
 
-    public static &lt;T&gt; ValueMapping&lt;T&gt; of(SqlColumn&lt;T&gt; column, T value) {
-<span class="fc" id="L38">        ValueMapping&lt;T&gt; mapping = new ValueMapping&lt;&gt;(column);</span>
-<span class="fc" id="L39">        mapping.value = value;</span>
-<span class="fc" id="L40">        return mapping;</span>
+    public static &lt;T&gt; ValueMapping&lt;T&gt; of(SqlColumn&lt;T&gt; column, Supplier&lt;T&gt; valueSupplier) {
+<span class="fc" id="L40">        ValueMapping&lt;T&gt; mapping = new ValueMapping&lt;&gt;(column);</span>
+<span class="fc" id="L41">        mapping.valueSupplier = valueSupplier;</span>
+<span class="fc" id="L42">        return mapping;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

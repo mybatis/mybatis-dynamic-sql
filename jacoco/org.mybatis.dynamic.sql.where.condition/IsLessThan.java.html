@@ -15,21 +15,23 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Supplier;
+
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsLessThan&lt;T&gt; extends AbstractSingleValueCondition&lt;T&gt; {
 
-    protected IsLessThan(T value) {
-<span class="fc" id="L23">        super(value);</span>
-<span class="fc" id="L24">    }</span>
+    protected IsLessThan(Supplier&lt;T&gt; valueSupplier) {
+<span class="fc" id="L25">        super(valueSupplier);</span>
+<span class="fc" id="L26">    }</span>
     
     @Override
     public String renderCondition(String columnName, String placeholder) {
-<span class="fc" id="L28">        return columnName + &quot; &lt; &quot; + placeholder; //$NON-NLS-1$</span>
+<span class="fc" id="L30">        return columnName + &quot; &lt; &quot; + placeholder; //$NON-NLS-1$</span>
     }
 
-    public static &lt;T&gt; IsLessThan&lt;T&gt; of(T value) {
-<span class="fc" id="L32">        return new IsLessThan&lt;&gt;(value);</span>
+    public static &lt;T&gt; IsLessThan&lt;T&gt; of(Supplier&lt;T&gt; valueSupplier) {
+<span class="fc" id="L34">        return new IsLessThan&lt;&gt;(valueSupplier);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

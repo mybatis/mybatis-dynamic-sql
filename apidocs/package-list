@@ -3,10 +3,6 @@ org.mybatis.dynamic.sql.delete
 org.mybatis.dynamic.sql.delete.render
 org.mybatis.dynamic.sql.insert
 org.mybatis.dynamic.sql.insert.render
-org.mybatis.dynamic.sql.reflection
-org.mybatis.dynamic.sql.reflection.invoker
-org.mybatis.dynamic.sql.reflection.property
-org.mybatis.dynamic.sql.reflection.wrapper
 org.mybatis.dynamic.sql.render
 org.mybatis.dynamic.sql.select
 org.mybatis.dynamic.sql.select.aggregate

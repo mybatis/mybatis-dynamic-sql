@@ -49,7 +49,7 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>          SqlTable table = SqlTable.of(<span class="jxr_string">"foo"</span>);
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          SqlColumn&lt;Integer&gt; column = table.column(<span class="jxr_string">"id"</span>, JDBCType.INTEGER);
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(3);
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(() -&gt; 3);
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          SqlCriterion&lt;Integer&gt; criterion = SqlCriterion.withColumn(column)
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>                  .withCondition(condition)
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>                  .build();
@@ -71,7 +71,7 @@
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testAliasWithoutIgnore() {
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          SqlTable table = SqlTable.of(<span class="jxr_string">"foo"</span>);
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          SqlColumn&lt;Integer&gt; column = table.column(<span class="jxr_string">"id"</span>, JDBCType.INTEGER);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(3);
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(() -&gt; 3);
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          SqlCriterion&lt;Integer&gt; criterion = SqlCriterion.withColumn(column)
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>                  .withCondition(condition)
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>                  .build();
@@ -95,7 +95,7 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testNoAliasWithIgnore() {
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          SqlTable table = SqlTable.of(<span class="jxr_string">"foo"</span>);
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          SqlColumn&lt;Integer&gt; column = table.column(<span class="jxr_string">"id"</span>, JDBCType.INTEGER);
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>          IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(3);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>          IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(() -&gt; 3);
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          SqlCriterion&lt;Integer&gt; criterion = SqlCriterion.withColumn(column)
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>                  .withCondition(condition)
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                  .build();
@@ -117,7 +117,7 @@
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testNoAliasWithoutIgnore() {
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         SqlTable table = SqlTable.of(<span class="jxr_string">"foo"</span>);
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         SqlColumn&lt;Integer&gt; column = table.column(<span class="jxr_string">"id"</span>, JDBCType.INTEGER);
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(3);
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>         IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(() -&gt; 3);
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         SqlCriterion&lt;Integer&gt; criterion = SqlCriterion.withColumn(column)
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .withCondition(condition)
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>                 .build();
@@ -139,7 +139,7 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testTypeHandler() {
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         SqlTable table = SqlTable.of(<span class="jxr_string">"foo"</span>);
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         SqlColumn&lt;Date&gt; column = table.column(<span class="jxr_string">"id"</span>, JDBCType.DATE, <span class="jxr_string">"foo.Bar"</span>);
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         IsEqualTo&lt;Date&gt; condition = IsEqualTo.of(<strong class="jxr_keyword">new</strong> Date());
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         IsEqualTo&lt;Date&gt; condition = IsEqualTo.of(() -&gt; <strong class="jxr_keyword">new</strong> Date());
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         SqlCriterion&lt;Date&gt; criterion = SqlCriterion.withColumn(column)
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 .withCondition(condition)
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>                 .build();
@@ -161,7 +161,7 @@
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testTypeHandlerAndAlias() {
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         SqlTable table = SqlTable.of(<span class="jxr_string">"foo"</span>);
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>         SqlColumn&lt;Integer&gt; column = table.column(<span class="jxr_string">"id"</span>, JDBCType.INTEGER, <span class="jxr_string">"foo.Bar"</span>);
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>         IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(3);
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>         IsEqualTo&lt;Integer&gt; condition = IsEqualTo.of(() -&gt; 3);
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>         SqlCriterion&lt;Integer&gt; criterion = SqlCriterion.withColumn(column)
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>                 .withCondition(condition)
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>                 .build();

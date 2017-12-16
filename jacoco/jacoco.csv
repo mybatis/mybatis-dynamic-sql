@@ -1,6 +1,4 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection.invoker,GetFieldInvoker,0,15,0,0,0,5,0,3,0,3
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection.invoker,MethodInvoker,0,16,0,0,0,5,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.select.aggregate,Avg,0,26,0,0,0,5,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.select.aggregate,CountAll,0,21,0,0,0,8,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.select.aggregate,Count,0,26,0,0,0,5,0,4,0,4
@@ -23,23 +21,23 @@ MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert,BatchInser
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert,InsertSelectDSL.InsertColumnGatherer,0,25,0,0,0,5,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert,InsertDSL,0,37,0,0,0,11,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert,InsertModel.Builder,0,31,0,0,0,9,0,5,0,5
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert,InsertDSL.ColumnMappingFinisher,0,70,0,2,0,14,0,7,0,6
+MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert,InsertDSL.ColumnMappingFinisher,0,66,0,2,0,14,0,7,0,6
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.delete.render,DeleteRenderer,0,40,0,0,0,9,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.delete.render,DeleteStatementProvider.Builder,0,22,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.delete.render,DeleteStatementProvider,0,46,0,0,0,10,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.delete.render,DeleteRenderer.Builder,0,19,0,0,0,6,0,4,0,4
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update,UpdateDSL.SetClauseFinisher,0,70,0,2,0,14,0,7,0,6
+MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update,UpdateDSL.SetClauseFinisher,0,85,0,2,0,16,0,11,0,10
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update,UpdateModel.Builder,0,31,0,0,0,9,0,5,0,5
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update,MyBatis3UpdateModelAdapter,0,30,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update,UpdateDSL.UpdateWhereBuilder,0,38,0,0,0,12,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update,UpdateDSL,0,71,0,0,0,15,0,9,0,9
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update,UpdateModel,0,45,0,0,0,13,0,6,0,6
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,AbstractTwoValueCondition,0,21,0,0,0,7,0,4,0,4
+MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,AbstractTwoValueCondition,0,25,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,AbstractNoValueCondition,0,7,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,SqlColumn,0,138,0,0,0,33,0,13,0,13
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,AbstractSingleValueCondition,0,14,0,0,0,5,0,3,0,3
+MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,AbstractSingleValueCondition,0,16,0,0,0,5,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,BasicColumn,0,24,0,0,0,3,0,2,0,2
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,SqlBuilder,0,211,0,0,0,72,0,55,0,55
+MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,SqlBuilder,0,283,0,0,0,84,0,79,0,79
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,AbstractSubselectCondition,0,15,0,0,0,5,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,SqlColumn.Builder,0,29,0,0,0,10,0,6,0,6
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql,SqlCriterion.Builder,0,36,0,0,0,11,0,6,0,6
@@ -70,11 +68,6 @@ MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.select.render,Sel
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.select.render,SelectRenderer,0,94,0,2,0,24,0,7,0,6
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.select.render,SelectStatementProvider,0,43,0,0,0,8,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.select.render,QueryExpressionCollector,0,56,0,0,0,13,0,6,0,6
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection,MetaObject.NullMetaObject,0,7,0,0,0,3,0,2,0,2
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection,Reflector,4,390,0,48,0,85,2,53,2,29
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection,MetaObject,0,64,0,6,0,15,0,7,0,4
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection,ReflectionException,0,4,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection,ReflectorFactory,0,36,0,2,0,10,0,5,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update.render,UpdateStatementProvider.Builder,0,38,0,0,0,12,0,6,0,6
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update.render,SetPhraseVisitor,0,117,0,0,0,21,0,7,0,7
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.update.render,UpdateRenderer.Builder,0,19,0,0,0,6,0,4,0,4
@@ -92,7 +85,7 @@ MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,I
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsInWithSubselect,0,22,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsGreaterThanWithSubselect,0,22,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsGreaterThanOrEqualToWithSubselect,0,22,0,0,0,4,0,3,0,3
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsBetween.Builder,0,14,0,0,0,5,0,2,0,2
+MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsBetween.Builder,0,21,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsNotIn,0,25,0,0,0,6,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsLessThanOrEqualTo,0,20,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsLessThan,0,20,0,0,0,4,0,3,0,3
@@ -107,7 +100,7 @@ MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,I
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsBetween,0,28,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsGreaterThanOrEqualTo,0,20,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsNotLikeCaseInsensitive,0,27,0,0,0,5,0,4,0,4
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsNotBetween.Builder,0,14,0,0,0,5,0,2,0,2
+MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where.condition,IsNotBetween.Builder,0,21,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where,AbstractWhereDSL,0,110,0,0,0,36,0,9,0,9
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where,WhereDSL,0,29,0,0,0,8,0,6,0,6
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.where,WhereModel,0,66,0,0,0,17,0,8,0,8
@@ -127,10 +120,6 @@ MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert.render,Ins
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert.render,InsertRenderer,0,68,0,0,0,15,0,6,0,6
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert.render,InsertRenderer.Builder,0,19,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.insert.render,InsertSelectStatementProvider,0,55,0,0,0,12,0,4,0,4
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection.wrapper,ObjectWrapper,0,64,0,6,0,14,0,7,0,4
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection.wrapper,BeanWrapper,0,59,0,2,0,16,0,6,0,5
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection.wrapper,MapWrapper,0,25,0,2,0,7,0,3,0,2
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.reflection.property,PropertyTokenizer,0,81,0,6,0,18,0,9,0,6
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.render,TableAliasCalculator,0,40,0,0,0,10,0,6,0,6
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.render,RenderingStrategy,0,12,0,0,0,3,0,2,0,2
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.render,MyBatis3RenderingStrategy,0,41,0,0,0,5,0,3,0,3
@@ -174,8 +163,7 @@ MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,FragmentAndP
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,ConstantMapping,0,25,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,CustomCollectors,0,24,0,0,0,4,0,2,0,2
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,SqlProviderAdapter,0,18,0,0,0,6,0,6,0,6
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,ValueMapping,0,21,0,0,0,7,0,4,0,4
+MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,ValueMapping,0,22,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,StringConstantMapping,0,25,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,FragmentAndParameters,0,27,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,AbstractColumnMapping,0,13,0,0,0,4,0,2,0,2
-MyBatis Dynamic SQL - Unit Test Report,org.mybatis.dynamic.sql.util,BeanPropertyGetter,0,17,0,0,0,6,0,4,0,4
