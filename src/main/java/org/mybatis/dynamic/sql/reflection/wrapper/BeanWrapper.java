@@ -63,7 +63,7 @@ public class BeanWrapper extends ObjectWrapper {
         try {
             return invoker.invoke(object, NO_ARGUMENTS);
         } catch (ReflectiveOperationException e) {
-            log.log(Level.WARNING,
+            log.log(Level.FINEST,
                     "Invoker exception while retrieving property value, returning null", e); //$NON-NLS-1$
             return null;
         }
