@@ -5,4 +5,4 @@ The library also supports generating SQL that is formatted for use by Spring JDB
 
 Please read the user's guide for detailed instructions on use.  The user's guide is accessible through menu links to the left.
 
-The best examples of usage are the unit tests in the [src\test\java](https://github.com/jeffgbutler/mybatis-dynamic-sql/tree/master/src/test/java) directory in the source repository.  They cover all aspects of using the library.
+The best examples of usage are the unit tests in the [src\test\java](https://github.com/mybatis/mybatis-dynamic-sql/tree/master/src/test/java) directory in the source repository.  They cover all aspects of using the library.

@@ -165,24 +165,24 @@
   </dependencies>
 
   <scm>
-    <url>https://github.com/jeffgbutler/mybatis-dynamic-sql</url>
-    <connection>scm:git:ssh://github.com:jeffgbutler/mybatis-dynamic-sql.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com:jeffgbutler/mybatis-dynamic-sql.git</developerConnection>
+    <url>https://github.com/mybatis/mybatis-dynamic-sql</url>
+    <connection>scm:git:ssh://github.com:mybatis/mybatis-dynamic-sql.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:mybatis/mybatis-dynamic-sql.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>GitHub Issue Management</system>
-    <url>https://github.com/jeffgbutler/mybatis-dynamic-sql/issues</url>
+    <url>https://github.com/mybatis/mybatis-dynamic-sql/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Travis CI</system>
-    <url>https://travis-ci.org/jeffgbutler/mybatis-dynamic-sql</url>
+    <url>https://travis-ci.org/mybatis/mybatis-dynamic-sql</url>
   </ciManagement>
   <distributionManagement>
     <site>
       <id>gh-pages</id>
       <name>MyBatis Dynamic SQL GitHub Pages</name>
-      <url>git:ssh://git@github.com/jeffgbutler/mybatis-dynamic-sql.git?gh-pages#</url>
+      <url>git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git?gh-pages#</url>
     </site>
   </distributionManagement>
 </project>
