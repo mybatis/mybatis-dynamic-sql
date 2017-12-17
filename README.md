@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/mybatis/mybatis-dynamic-sql.svg?branch=master)](https://travis-ci.org/mybatis/mybatis-dynamic-sql)
 [![Coverage Status](https://coveralls.io/repos/github/mybatis/mybatis-dynamic-sql/badge.svg?branch=master)](https://coveralls.io/github/mybatis/mybatis-dynamic-sql?branch=master)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/org.mybatis.dynamic-sql/mybatis-dynamic-sql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mybatis.dynamic-sql/mybatis-dynamic-sql)
+[![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## What Is This?
 This library is a framework for generating dynamic SQL statements.  Think of it as a typesafe SQL templating library,
