@@ -166,8 +166,8 @@
 
   <scm>
     <url>https://github.com/mybatis/mybatis-dynamic-sql</url>
-    <connection>scm:git:ssh://github.com:mybatis/mybatis-dynamic-sql.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com:mybatis/mybatis-dynamic-sql.git</developerConnection>
+    <connection>scm:git:ssh://github.com/mybatis/mybatis-dynamic-sql.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
