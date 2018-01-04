@@ -16,11 +16,11 @@
 package org.mybatis.dynamic.sql.render;
 
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.SqlColumn;
 
-public abstract class RenderingStrategy {
-    public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();
-    public static final RenderingStrategy SIMPLEMYBATIS3 = new SimpleMyBatis3RenderingStrategy();
-    public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();
-    
-    public abstract String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName);
+public class SimpleMyBatis3RenderingStrategy extends RenderingStrategy {
+	@Override
+	public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
+		return "#{" + ((SqlColumn) column).name() + "}";
+	}
 }
