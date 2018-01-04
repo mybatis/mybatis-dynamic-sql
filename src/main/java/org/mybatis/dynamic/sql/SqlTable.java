@@ -30,19 +30,27 @@ public class SqlTable {
         return name;
     }
     
+    public static <T> SqlColumn<T> column(SqlTable table, String name, JDBCType jdbcType) {
+      return SqlColumn.withName(name)
+              .withJdbcType(jdbcType)
+              .withTable(table)
+              .build();
+    }
+
+    public static <T> SqlColumn<T> column(SqlTable table, String name, JDBCType jdbcType, String typeHandler) {
+      return SqlColumn.withName(name)
+              .withJdbcType(jdbcType)
+              .withTypeHandler(typeHandler)
+              .withTable(table)
+              .build();
+    }
+    
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType) {
-        return SqlColumn.withName(name)
-                .withJdbcType(jdbcType)
-                .withTable(this)
-                .build();
+        return column(this, name, jdbcType);
     }
 
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType, String typeHandler) {
-        return SqlColumn.withName(name)
-                .withJdbcType(jdbcType)
-                .withTypeHandler(typeHandler)
-                .withTable(this)
-                .build();
+    	return column(this, name, jdbcType, typeHandler);
     }
     
     public static SqlTable of(String name) {
