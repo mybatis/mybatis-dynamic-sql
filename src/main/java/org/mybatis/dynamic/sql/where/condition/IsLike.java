@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
-public class IsLike extends AbstractSingleValueCondition<String> {
+public class IsLike<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsLike(Supplier<String> valueSupplier) {
+    protected IsLike(Supplier<T> valueSupplier) {
         super(valueSupplier);
     }
 
@@ -30,7 +30,7 @@ public class IsLike extends AbstractSingleValueCondition<String> {
         return columnName + " like " + placeholder; //$NON-NLS-1$
     }
     
-    public static IsLike of(Supplier<String> valueSupplier) {
-        return new IsLike(valueSupplier);
+    public static <T> IsLike<T> of(Supplier<T> valueSupplier) {
+        return new IsLike<>(valueSupplier);
     }
 }

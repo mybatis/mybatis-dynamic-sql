@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -178,7 +178,7 @@ public class SimpleTableAnnotatedMapperTest {
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
-            record.setLastName("Jones");
+            record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
@@ -198,7 +198,7 @@ public class SimpleTableAnnotatedMapperTest {
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
-            record.setLastName("Jones");
+            record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(false);
             
@@ -217,7 +217,7 @@ public class SimpleTableAnnotatedMapperTest {
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
-            record.setLastName("Jones");
+            record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
@@ -246,7 +246,7 @@ public class SimpleTableAnnotatedMapperTest {
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
-            record.setLastName("Jones");
+            record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
@@ -279,7 +279,7 @@ public class SimpleTableAnnotatedMapperTest {
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
-            record.setLastName("Jones");
+            record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
@@ -316,7 +316,7 @@ public class SimpleTableAnnotatedMapperTest {
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
-            record.setLastName("Jones");
+            record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
@@ -353,6 +353,44 @@ public class SimpleTableAnnotatedMapperTest {
                     .execute();
             
             assertThat(rows).isEqualTo(2L);
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Test
+    public void testTypeHandledLike() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            
+            List<SimpleTableRecord> rows = mapper.selectByExample()
+                    .where(lastName, isLike(LastName.of("Fl%")))
+                    .orderBy(id)
+                    .build()
+                    .execute();
+            
+            assertThat(rows.size()).isEqualTo(3);
+            assertThat(rows.get(0).getFirstName()).isEqualTo("Fred");
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Test
+    public void testTypeHandledNotLike() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            
+            List<SimpleTableRecord> rows = mapper.selectByExample()
+                    .where(lastName, isNotLike(LastName.of("Fl%")))
+                    .orderBy(id)
+                    .build()
+                    .execute();
+            
+            assertThat(rows.size()).isEqualTo(3);
+            assertThat(rows.get(0).getFirstName()).isEqualTo("Barney");
         } finally {
             session.close();
         }
