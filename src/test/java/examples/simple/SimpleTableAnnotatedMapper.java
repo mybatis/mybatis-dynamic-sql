@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public interface SimpleTableAnnotatedMapper {
     @Results(id="SimpleTableResult", value= {
             @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
-            @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR),
+            @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR, typeHandler=LastNameTypeHandler.class),
             @Result(column="birth_date", property="birthDate", jdbcType=JdbcType.DATE),
             @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR, typeHandler=YesNoTypeHandler.class),
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)

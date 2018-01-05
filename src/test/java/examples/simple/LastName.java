@@ -13,24 +13,22 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where.condition;
+package examples.simple;
 
-import java.util.function.Supplier;
+public class LastName {
+    private String name;
 
-import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
-
-public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
-
-    protected IsNotLike(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public String renderCondition(String columnName, String placeholder) {
-        return columnName + " not like " + placeholder; //$NON-NLS-1$
+    public void setName(String name) {
+        this.name = name;
     }
     
-    public static <T> IsNotLike<T> of(Supplier<T> valueSupplier) {
-        return new IsNotLike<>(valueSupplier);
+    public static LastName of(String name) {
+        LastName lastName = new LastName();
+        lastName.setName(name);
+        return lastName;
     }
 }

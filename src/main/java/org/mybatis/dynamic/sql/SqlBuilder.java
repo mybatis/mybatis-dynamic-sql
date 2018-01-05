@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -327,30 +327,31 @@ public interface SqlBuilder {
     static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<T> valueSupplier1) {
         return IsNotBetween.isNotBetween(valueSupplier1);
     }
-    
-    // conditions for strings only
-    static IsLike isLike(String value) {
+
+    // for string columns, but generic for columns with type handlers
+    static <T> IsLike<T> isLike(T value) {
         return isLike(() -> value);
     }
     
-    static IsLike isLike(Supplier<String> valueSupplier) {
+    static <T> IsLike<T> isLike(Supplier<T> valueSupplier) {
         return IsLike.of(valueSupplier);
     }
     
+    static <T> IsNotLike<T> isNotLike(T value) {
+        return isNotLike(() -> value);
+    }
+    
+    static <T> IsNotLike<T> isNotLike(Supplier<T> valueSupplier) {
+        return IsNotLike.of(valueSupplier);
+    }
+    
+    // conditions for strings only
     static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
         return isLikeCaseInsensitive(() -> value);
     }
     
     static IsLikeCaseInsensitive isLikeCaseInsensitive(Supplier<String> valueSupplier) {
         return IsLikeCaseInsensitive.of(valueSupplier);
-    }
-    
-    static IsNotLike isNotLike(String value) {
-        return isNotLike(() -> value);
-    }
-    
-    static IsNotLike isNotLike(Supplier<String> valueSupplier) {
-        return IsNotLike.of(valueSupplier);
     }
     
     static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
