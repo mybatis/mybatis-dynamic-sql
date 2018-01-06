@@ -9,7 +9,6 @@ jdk:
   - oraclejdk8
 
 after_success:
-  - mvn clean test jacoco:report coveralls:report
   - chmod -R 777 ./travis/after_success.sh
   - ./travis/after_success.sh
 
