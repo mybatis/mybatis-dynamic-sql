@@ -32,16 +32,17 @@ echo "Current commit detected: ${commit_message}"
 #    a. Use -q option to only display Maven errors and warnings.
 #    b. Use --settings to force the usage of our "settings.xml" file.
 
-if [ $TRAVIS_JDK_VERSION == "oraclejdk8" ]; then
+if [ $TRAVIS_JDK_VERSION == "oraclejdk8" ] && [ $TRAVIS_REPO_SLUG == "mybatis/mybatis-dynamic-sql" ]; then
 
-  ./mvnw clean test jacoco:report coveralls:report
+  ./mvnw clean test jacoco:report coveralls:report -q
+  echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
 
-  if [ $TRAVIS_REPO_SLUG == "mybatis/mybatis-dynamic-sql" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
+  if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
     # Deploy to Sonatype
     ./mvnw clean deploy -q --settings ./travis/settings.xml
     echo -e "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
   else
-    echo "Java Version does not support additional activity for travis CI"
+    echo "Not a master branch commit so no deployment of the new snapshot needed"
   fi
 else
   echo "Travis Pull Request: $TRAVIS_PULL_REQUEST"
