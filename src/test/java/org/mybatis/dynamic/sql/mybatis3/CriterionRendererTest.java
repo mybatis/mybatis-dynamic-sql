@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -130,7 +130,11 @@ public class CriterionRendererTest {
     @Test
     public void testTypeHandler() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Date> column = table.column("id", JDBCType.DATE, "foo.Bar");
+        SqlColumn<Date> column = SqlColumn.withName("id")
+                .withTable(table)
+                .withJdbcType(JDBCType.DATE)
+                .withTypeHandler("foo.Bar")
+                .build();
         IsEqualTo<Date> condition = IsEqualTo.of(() -> new Date());
         SqlCriterion<Date> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)

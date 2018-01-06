@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -96,8 +96,21 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .orElseGet(this::name);
     }
     
+    public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
+        SqlColumn<S> column = new SqlColumn<>(this);
+        column.typeHandler = Optional.of(typeHandler);
+        return column;
+    }
+
     private String applyTableAlias(String tableAlias) {
         return tableAlias + "." + name(); //$NON-NLS-1$
+    }
+    
+    public static <T> SqlColumn<T> of(String name, SqlTable table, JDBCType jdbcType) {
+        return SqlColumn.withName(name)
+                .withTable(table)
+                .withJdbcType(jdbcType)
+                .build();
     }
     
     public static Builder withName(String name) {
