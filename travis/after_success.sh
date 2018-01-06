@@ -41,14 +41,6 @@ if [ $TRAVIS_REPO_SLUG == "mybatis/mybatis-dynamic-sql" ] && [ "$TRAVIS_PULL_REQ
     ./mvnw clean deploy -q --settings ./travis/settings.xml
     echo -e "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
 
-	# Deploy to Coveralls
-    ./mvnw clean test jacoco:report coveralls:report -q --settings ./travis/settings.xml
-    echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
-
-	# Deploy to site
-	# various issues exist currently in building this so comment for now
-	# ./mvnw site site:deploy -q --settings ./travis/settings.xml
-	# echo -e "Successfully deploy site under Travis job ${TRAVIS_JOB_NUMBER}"
   else
     echo "Java Version does not support additional activity for travis CI"
   fi
