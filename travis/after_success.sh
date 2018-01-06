@@ -35,6 +35,7 @@ echo "Current commit detected: ${commit_message}"
 if [ $TRAVIS_JDK_VERSION == "oraclejdk8" ] && [ $TRAVIS_REPO_SLUG == "mybatis/mybatis-dynamic-sql" ]; then
 
   ./mvnw clean test jacoco:report coveralls:report -q
+  echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
 
   if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
     # Deploy to Sonatype

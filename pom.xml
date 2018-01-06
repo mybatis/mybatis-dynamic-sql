@@ -96,11 +96,10 @@
       <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
-    <!-- added to support running JUnit5 tests with JUnit4.  Remove when eclipse/infinitest catch up. -->
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <version>4.12.2</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -113,6 +112,16 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- added to support running JUnit5 tests with JUnit4.  Remove when Infinitest catches up. -->
+    <!-- Note: DO NOT make this the org.junit.vintage support.  All the tests are written with JUnit5.
+         Once Infinitest is ready we can remove this dependency and the corresponding @RunWith annotations
+     -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
     
