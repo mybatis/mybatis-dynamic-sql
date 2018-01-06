@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -31,18 +31,11 @@ public class SqlTable {
     }
     
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType) {
-        return SqlColumn.withName(name)
-                .withJdbcType(jdbcType)
-                .withTable(this)
-                .build();
+        return SqlColumn.of(name, this, jdbcType);
     }
 
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType, String typeHandler) {
-        return SqlColumn.withName(name)
-                .withJdbcType(jdbcType)
-                .withTypeHandler(typeHandler)
-                .withTable(this)
-                .build();
+        return SqlColumn.of(name, this, jdbcType).withTypeHandler(typeHandler);
     }
     
     public static SqlTable of(String name) {
