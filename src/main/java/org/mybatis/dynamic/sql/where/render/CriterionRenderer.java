@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -34,14 +33,14 @@ public class CriterionRenderer<T> {
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
     private TableAliasCalculator tableAliasCalculator;
-    private Optional<String> parameterName = Optional.empty();
+    private String parameterName;
     
     private CriterionRenderer(Builder<T> builder) {
         sqlCriterion = Objects.requireNonNull(builder.sqlCriterion);
         sequence = Objects.requireNonNull(builder.sequence);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
-        parameterName = Objects.requireNonNull(builder.parameterName);
+        parameterName = builder.parameterName;
     }
     
     public FragmentAndParameters render() {
@@ -122,7 +121,7 @@ public class CriterionRenderer<T> {
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator;
-        private Optional<String> parameterName = Optional.empty();
+        private String parameterName;
         
         public Builder<T> withCriterion(SqlCriterion<T> sqlCriterion) {
             this.sqlCriterion = sqlCriterion;
@@ -145,7 +144,7 @@ public class CriterionRenderer<T> {
             return this;
         }
 
-        public Builder<T> withParameterName(Optional<String> parameterName) {
+        public Builder<T> withParameterName(String parameterName) {
             this.parameterName = parameterName;
             return this;
         }

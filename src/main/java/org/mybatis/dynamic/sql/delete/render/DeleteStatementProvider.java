@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,22 +26,23 @@ import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 public class DeleteStatementProvider {
     private String tableName;
-    private Optional<WhereClauseProvider> whereClauseProvider;
+    private Optional<String> whereClause;
+    private Map<String, Object> parameters;
     
     private DeleteStatementProvider(Builder builder) {
         tableName = Objects.requireNonNull(builder.tableName);
-        whereClauseProvider = Objects.requireNonNull(builder.whereClauseProvider);
+        whereClause = Optional.ofNullable(builder.whereClause);
+        parameters = Objects.requireNonNull(builder.parameters);
     }
     
     public Map<String, Object> getParameters() {
-        return whereClauseProvider.map(WhereClauseProvider::getParameters)
-                .orElse(Collections.emptyMap());
+        return parameters;
     }
     
     public String getDeleteStatement() {
         return "delete from" //$NON-NLS-1$
                 + spaceBefore(tableName)
-                + spaceBefore(whereClauseProvider.map(WhereClauseProvider::getWhereClause));
+                + spaceBefore(whereClause);
     }
 
     public static Builder withTableName(String tableName) {
@@ -50,7 +51,8 @@ public class DeleteStatementProvider {
     
     public static class Builder {
         private String tableName;
-        private Optional<WhereClauseProvider> whereClauseProvider = Optional.empty();
+        private String whereClause;
+        private Map<String, Object> parameters = new HashMap<>();
         
         public Builder withTableName(String tableName) {
             this.tableName = tableName;
@@ -58,7 +60,10 @@ public class DeleteStatementProvider {
         }
         
         public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
-            this.whereClauseProvider = whereClauseProvider;
+            whereClauseProvider.ifPresent(wcp -> {
+                whereClause = wcp.getWhereClause();
+                parameters.putAll(wcp.getParameters());
+            });
             return this;
         }
         

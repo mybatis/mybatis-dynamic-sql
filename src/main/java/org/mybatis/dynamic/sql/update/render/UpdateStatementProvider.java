@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.update.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -41,11 +40,8 @@ public class UpdateStatementProvider {
     private UpdateStatementProvider(Builder builder) {
         tableName = Objects.requireNonNull(builder.tableName);
         setClause = Objects.requireNonNull(builder.setClause);
-        whereClause = builder.whereClauseProvider.map(WhereClauseProvider::getWhereClause);
+        whereClause = Optional.ofNullable(builder.whereClause);
         parameters.putAll(builder.parameters);
-        parameters.putAll(builder.whereClauseProvider
-                .map(WhereClauseProvider::getParameters)
-                .orElse(Collections.emptyMap()));
     }
 
     public Map<String, Object> getParameters() {
@@ -66,7 +62,7 @@ public class UpdateStatementProvider {
     public static class Builder {
         private String tableName;
         private String setClause;
-        private Optional<WhereClauseProvider> whereClauseProvider = Optional.empty();
+        private String whereClause;
         private Map<String, Object> parameters = new HashMap<>();
         
         public Builder withTableName(String tableName) {
@@ -80,7 +76,10 @@ public class UpdateStatementProvider {
         }
         
         public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
-            this.whereClauseProvider = whereClauseProvider;
+            whereClauseProvider.ifPresent(wcp -> {
+                whereClause = wcp.getWhereClause();
+                parameters.putAll(wcp.getParameters());
+            });
             return this;
         }
         

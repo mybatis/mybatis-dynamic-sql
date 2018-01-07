@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,18 +26,18 @@ public class SqlCriterion<T> {
     
     private BindableColumn<T> column;
     private VisitableCondition<T> condition;
-    private Optional<String> connector;
+    private String connector;
     private List<SqlCriterion<?>> subCriteria;
     
     private SqlCriterion(Builder<T> builder) {
-        connector = Optional.ofNullable(builder.connector);
+        connector = builder.connector;
         column = Objects.requireNonNull(builder.column);
         condition = Objects.requireNonNull(builder.condition);
         subCriteria = Objects.requireNonNull(builder.subCriteria);
     }
     
     public Optional<String> connector() {
-        return connector;
+        return Optional.ofNullable(connector);
     }
     
     public BindableColumn<T> column() {

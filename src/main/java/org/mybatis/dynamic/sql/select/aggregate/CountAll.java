@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
  */
 public class CountAll implements BasicColumn {
     
-    private Optional<String> alias = Optional.empty();
+    private String alias;
 
     public CountAll() {
         super();
@@ -42,13 +42,13 @@ public class CountAll implements BasicColumn {
 
     @Override
     public Optional<String> alias() {
-        return alias;
+        return Optional.ofNullable(alias);
     }
 
     @Override
     public CountAll as(String alias) {
         CountAll copy = new CountAll();
-        copy.alias = Optional.of(alias);
+        copy.alias = alias;
         return copy;
     }
 }
