@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -46,8 +46,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         sequence = Objects.requireNonNull(builder.sequence);
         column = Objects.requireNonNull(builder.column);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
-        parameterPrefix = builder.parameterName.map(name -> name + ".parameters") //$NON-NLS-1$
-                .orElse("parameters"); //$NON-NLS-1$
+        parameterPrefix = Objects.requireNonNull(builder.parameterPrefix);
     }
 
     @Override
@@ -132,11 +131,12 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
     
     public static class Builder<T> {
+        private static final String DEFAULT_PARAMETER_PREFIX = "parameters"; //$NON-NLS-1$
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         private BindableColumn<T> column;
         private TableAliasCalculator tableAliasCalculator;
-        private Optional<String> parameterName = Optional.empty();
+        private String parameterPrefix = DEFAULT_PARAMETER_PREFIX;
         
         public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -158,8 +158,10 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
             return this;
         }
 
-        public Builder<T> withParameterName(Optional<String> parameterName) {
-            this.parameterName = parameterName;
+        public Builder<T> withParameterName(String parameterName) {
+            parameterPrefix = Optional.ofNullable(parameterName)
+                    .map(pn -> pn + "." + DEFAULT_PARAMETER_PREFIX)
+                    .orElse(DEFAULT_PARAMETER_PREFIX);
             return this;
         }
         

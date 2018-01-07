@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,11 +28,11 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class SelectModel {
     private List<QueryExpressionModel> queryExpressions;
-    private Optional<OrderByModel> orderByModel;
+    private OrderByModel orderByModel;
 
     private SelectModel(Builder builder) {
         queryExpressions = Objects.requireNonNull(builder.queryExpressions);
-        orderByModel = Optional.ofNullable(builder.orderByModel);
+        orderByModel = builder.orderByModel;
     }
     
     public <R> Stream<R> mapQueryExpressions(Function<QueryExpressionModel, R> mapper) {
@@ -40,7 +40,7 @@ public class SelectModel {
     }
     
     public Optional<OrderByModel> orderByModel() {
-        return orderByModel;
+        return Optional.ofNullable(orderByModel);
     }
     
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {

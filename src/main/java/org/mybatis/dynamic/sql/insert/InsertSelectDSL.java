@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -27,24 +28,22 @@ import org.mybatis.dynamic.sql.util.Buildable;
 public class InsertSelectDSL {
 
     private SqlTable table;
-    private Optional<InsertColumnListModel> columnList;
+    private InsertColumnListModel columnList;
     private SelectModel selectModel;
     
     private InsertSelectDSL(SqlTable table, InsertColumnListModel columnList, SelectModel selectModel) {
-        this.table = table;
-        this.columnList = Optional.of(columnList);
-        this.selectModel = selectModel;
+        this(table, selectModel);
+        this.columnList = columnList;
     }
     
     private InsertSelectDSL(SqlTable table, SelectModel selectModel) {
-        this.table = table;
-        this.columnList = Optional.empty();
-        this.selectModel = selectModel;
+        this.table = Objects.requireNonNull(table);
+        this.selectModel = Objects.requireNonNull(selectModel);
     }
     
     public InsertSelectModel build() {
         return InsertSelectModel.withTable(table)
-                .withColumnList(columnList)
+                .withColumnList(Optional.ofNullable(columnList))
                 .withSelectModel(selectModel)
                 .build();
     }

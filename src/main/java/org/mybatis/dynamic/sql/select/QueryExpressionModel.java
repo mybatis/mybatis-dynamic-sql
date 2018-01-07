@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -34,29 +34,29 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionModel {
-    private Optional<String> connector;
+    private String connector;
     private boolean isDistinct;
     private List<BasicColumn> selectList;
     private SqlTable table;
-    private Optional<JoinModel> joinModel;
+    private JoinModel joinModel;
     private TableAliasCalculator tableAliasCalculator;
-    private Optional<WhereModel> whereModel;
-    private Optional<GroupByModel> groupByModel;
+    private WhereModel whereModel;
+    private GroupByModel groupByModel;
 
     private QueryExpressionModel(Builder builder) {
-        connector = Optional.ofNullable(builder.connector);
+        connector = builder.connector;
         isDistinct = builder.isDistinct;
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);
-        joinModel = Optional.ofNullable(builder.joinModel);
-        tableAliasCalculator = joinModel.map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
+        joinModel = builder.joinModel;
+        tableAliasCalculator = joinModel().map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
                 .orElse(TableAliasCalculator.of(builder.tableAliases));
-        whereModel = Optional.ofNullable(builder.whereModel);
-        groupByModel = Optional.ofNullable(builder.groupByModel);
+        whereModel = builder.whereModel;
+        groupByModel = builder.groupByModel;
     }
     
     public Optional<String> connector() {
-        return connector;
+        return Optional.ofNullable(connector);
     }
     
     public boolean isDistinct() {
@@ -76,15 +76,15 @@ public class QueryExpressionModel {
     }
 
     public Optional<WhereModel> whereModel() {
-        return whereModel;
+        return Optional.ofNullable(whereModel);
     }
     
     public Optional<JoinModel> joinModel() {
-        return joinModel;
+        return Optional.ofNullable(joinModel);
     }
     
     public Optional<GroupByModel> groupByModel() {
-        return groupByModel;
+        return Optional.ofNullable(groupByModel);
     }
     
     public String calculateTableNameIncludingAlias(SqlTable table) {

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.select.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,7 +30,8 @@ public class QueryExpression {
     private String tableName;
     private Optional<String> connector;
     private String columnList;
-    private Optional<WhereClauseProvider> whereClauseProvider;
+    private Optional<String> whereClause;
+    private Map<String, Object> parameters;
     private boolean isDistinct;
     private Optional<String> joinClause;
     private Optional<String> groupByClause;
@@ -39,15 +40,15 @@ public class QueryExpression {
         tableName = Objects.requireNonNull(builder.tableName);
         connector = Objects.requireNonNull(builder.connector);
         columnList = Objects.requireNonNull(builder.columnList);
-        whereClauseProvider = Objects.requireNonNull(builder.whereClauseProvider);
+        whereClause = Optional.ofNullable(builder.whereClause);
+        parameters = Objects.requireNonNull(builder.parameters);
         isDistinct = builder.isDistinct;
         joinClause = Objects.requireNonNull(builder.joinClause);
         groupByClause = Objects.requireNonNull(builder.groupByClause);
     }
     
     public Map<String, Object> parameters() {
-        return whereClauseProvider.map(WhereClauseProvider::getParameters)
-                .orElse(Collections.emptyMap());
+        return parameters;
     }
     
     public String queryExpression() {
@@ -58,7 +59,7 @@ public class QueryExpression {
                 + " from " //$NON-NLS-1$
                 + tableName
                 + spaceBefore(joinClause)
-                + spaceBefore(whereClauseProvider.map(WhereClauseProvider::getWhereClause))
+                + spaceBefore(whereClause)
                 + spaceBefore(groupByClause);
     }
     
@@ -72,7 +73,8 @@ public class QueryExpression {
         private boolean isDistinct;
         private String columnList;
         private Optional<String> joinClause = Optional.empty();
-        private Optional<WhereClauseProvider> whereClauseProvider = Optional.empty();
+        private String whereClause;
+        private Map<String, Object> parameters = new HashMap<>();
         private Optional<String> groupByClause = Optional.empty();
         
         public Builder withConnector(Optional<String> connector) {
@@ -91,7 +93,10 @@ public class QueryExpression {
         }
         
         public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
-            this.whereClauseProvider = whereClauseProvider;
+            whereClauseProvider.ifPresent(wcp -> {
+                whereClause = wcp.getWhereClause();
+                parameters.putAll(wcp.getParameters());
+            });
             return this;
         }
         

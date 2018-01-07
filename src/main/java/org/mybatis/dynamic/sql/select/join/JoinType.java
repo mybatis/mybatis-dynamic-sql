@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,17 +23,16 @@ public enum JoinType {
     RIGHT("right"), //$NON-NLS-1$
     FULL("full"); //$NON-NLS-1$
     
-    private Optional<String> shortType;
+    private String shortType;
     
     private JoinType() {
-        this.shortType = Optional.empty();
     }
     
     private JoinType(String shortType) {
-        this.shortType = Optional.of(shortType);
+        this.shortType = shortType;
     }
     
     public Optional<String> shortType() {
-        return shortType;
+        return Optional.ofNullable(shortType);
     }
 }

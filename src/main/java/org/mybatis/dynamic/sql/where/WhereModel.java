@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -46,26 +45,37 @@ public class WhereModel {
      * @return rendered where clause
      */
     public WhereClauseProvider render(RenderingStrategy renderingStrategy) {
-        return render(renderingStrategy, TableAliasCalculator.empty(), Optional.empty());
+        return WhereRenderer.withWhereModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(new AtomicInteger(1))
+                .withTableAliasCalculator(TableAliasCalculator.empty())
+                .build()
+                .render();
     }
     
     public WhereClauseProvider render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator) {
-        return render(renderingStrategy, tableAliasCalculator, Optional.empty());
+        return WhereRenderer.withWhereModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(new AtomicInteger(1))
+                .withTableAliasCalculator(tableAliasCalculator)
+                .build()
+                .render();
     }
     
     public WhereClauseProvider render(RenderingStrategy renderingStrategy,
             String parameterName) {
-        return render(renderingStrategy, TableAliasCalculator.empty(), Optional.of(parameterName));
+        return WhereRenderer.withWhereModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(new AtomicInteger(1))
+                .withTableAliasCalculator(TableAliasCalculator.empty())
+                .withParameterName(parameterName)
+                .build()
+                .render();
     }
     
     public WhereClauseProvider render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator, String parameterName) {
-        return render(renderingStrategy, tableAliasCalculator, Optional.of(parameterName));
-    }
-    
-    private WhereClauseProvider render(RenderingStrategy renderingStrategy,
-            TableAliasCalculator tableAliasCalculator, Optional<String> parameterName) {
         return WhereRenderer.withWhereModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))

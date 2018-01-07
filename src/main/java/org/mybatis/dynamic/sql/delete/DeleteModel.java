@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteModel {
     private SqlTable table;
-    private Optional<WhereModel> whereModel;
+    private WhereModel whereModel;
     
     private DeleteModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
-        whereModel = Optional.ofNullable(builder.whereModel);
+        whereModel = builder.whereModel;
     }
     
     public SqlTable table() {
@@ -38,7 +38,7 @@ public class DeleteModel {
     }
     
     public Optional<WhereModel> whereModel() {
-        return whereModel;
+        return Optional.ofNullable(whereModel);
     }
     
     public DeleteStatementProvider render(RenderingStrategy renderingStrategy) {
