@@ -19,6 +19,8 @@ import java.sql.JDBCType;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -39,14 +41,9 @@ public class Add<T extends Number> implements BindableColumn<T> {
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        StringBuilder builder = new StringBuilder();
-        for (BindableColumn<T> column: columns) {
-            if (builder.length() > 0) {
-                builder.append(" + ");
-            }
-            builder.append(column.renderWithTableAlias(tableAliasCalculator));
-        }
-        return builder.toString();
+        return columns.stream()
+                      .map(column -> column.renderWithTableAlias(tableAliasCalculator))
+                      .collect(Collectors.joining(" + "));
     }
 
     @Override
