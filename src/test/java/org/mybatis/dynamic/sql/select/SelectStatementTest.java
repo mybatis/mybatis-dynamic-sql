@@ -236,4 +236,28 @@ public class SelectStatementTest {
             softly.assertThat(parameters.size()).isEqualTo(0);
         });
     }
+    
+    @Test
+    public void testGroupBySingleColumn() {
+        Date d = new Date();
+
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
+                .from(table, "a")
+                .where(column1, isEqualTo(d))
+                .groupBy(column2)
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                    + "from foo a "
+                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                    + "group by column2 ";
+
+            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        
+            Map<String, Object> parameters = selectStatement.getParameters();
+            softly.assertThat(parameters.get("p1")).isEqualTo(d);
+        });
+    }
 }

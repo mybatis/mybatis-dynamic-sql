@@ -216,6 +216,12 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             return selectDSL;
         }
         
+        public GroupByFinisher groupBy(BasicColumn...columns) {
+            groupByModel = GroupByModel.of(columns);
+            selectDSL.addQueryExpression(buildModel());
+            return new GroupByFinisher();
+        }
+        
         @Override
         public R build() {
             whereModel = buildWhereModel();
