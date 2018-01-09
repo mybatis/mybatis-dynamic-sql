@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ public class SelectStatementTest {
     public static final SqlTable table = SqlTable.of("foo");
     public static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
     public static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
+    public static final SqlColumn<Integer> column3 = table.column("column3", JDBCType.INTEGER);
+    public static final SqlColumn<Integer> column4 = table.column("column4", JDBCType.INTEGER);
 
     @Test
     public void testSimpleCriteria() {
@@ -234,6 +236,36 @@ public class SelectStatementTest {
         
             Map<String, Object> parameters = selectStatement.getParameters();
             softly.assertThat(parameters.size()).isEqualTo(0);
+        });
+    }
+    
+    @Test
+    public void testAdd() {
+        SelectStatementProvider selectStatement = select(add(column2, column3))
+                .from(table, "a")
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedFullStatement = "select a.column2 + a.column3 "
+                    + "from foo a";
+
+            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        });
+    }
+    
+    @Test
+    public void testSubstract() {
+        SelectStatementProvider selectStatement = select(substract(column2, column3, column4).as("substract"))
+                .from(table, "a")
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedFullStatement = "select (a.column2 - a.column3 - a.column4) as substract "
+                    + "from foo a";
+
+            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
         });
     }
 }
