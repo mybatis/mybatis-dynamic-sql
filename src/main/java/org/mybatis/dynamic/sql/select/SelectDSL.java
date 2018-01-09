@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ public class SelectDSL<R> {
     private Function<SelectModel, R> adapterFunction;
     private List<QueryExpressionModel> queryExpressions = new ArrayList<>();    
     private OrderByModel orderByModel;
+    private GroupByModel groupByModel;
     
     private SelectDSL(Function<SelectModel, R> adapterFunction) {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
@@ -96,9 +97,14 @@ public class SelectDSL<R> {
         this.orderByModel = orderByModel;
     }
     
+    void setGroupByModel(GroupByModel groupByModel) {
+        this.groupByModel = groupByModel;
+    }
+    
     public R build() {
         SelectModel selectModel = SelectModel.withQueryExpressions(queryExpressions)
                 .withOrderByModel(orderByModel)
+                .withGroupByModel(groupByModel)
                 .build();
         return adapterFunction.apply(selectModel);
     }

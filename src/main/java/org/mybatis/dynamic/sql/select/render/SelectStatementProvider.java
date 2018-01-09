@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,10 +28,12 @@ public class SelectStatementProvider {
     private String queryExpression;
     private Map<String, Object> parameters;
     private Optional<String> orderByClause;
+    private Optional<String> groupByClause;
     
     private SelectStatementProvider(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
         orderByClause = Objects.requireNonNull(builder.orderByClause);
+        groupByClause = Objects.requireNonNull(builder.groupByClause);
         parameters = Collections.unmodifiableMap(Objects.requireNonNull(builder.parameters));
     }
     
@@ -40,7 +42,7 @@ public class SelectStatementProvider {
     }
     
     public String getSelectStatement() {
-        return queryExpression + StringUtilities.spaceBefore(orderByClause);
+        return queryExpression + StringUtilities.spaceBefore(orderByClause) + StringUtilities.spaceBefore(groupByClause);
     }
     
     public static Builder withQueryExpression(String queryExpression) {
@@ -50,6 +52,7 @@ public class SelectStatementProvider {
     public static class Builder {
         private String queryExpression;
         private Optional<String> orderByClause = Optional.empty();
+        private Optional<String> groupByClause = Optional.empty();
         private Map<String, Object> parameters = new HashMap<>();
         
         public Builder withQueryExpression(String queryExpression) {
@@ -59,6 +62,11 @@ public class SelectStatementProvider {
         
         public Builder withOrderByClause(Optional<String> orderByClause) {
             this.orderByClause = orderByClause;
+            return this;
+        }
+        
+        public Builder withGroupByClause(Optional<String> groupByClause) {
+            this.groupByClause = groupByClause;
             return this;
         }
         

@@ -29,10 +29,12 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 public class SelectModel {
     private List<QueryExpressionModel> queryExpressions;
     private OrderByModel orderByModel;
+    private GroupByModel groupByModel;
 
     private SelectModel(Builder builder) {
         queryExpressions = Objects.requireNonNull(builder.queryExpressions);
         orderByModel = builder.orderByModel;
+        groupByModel = builder.groupByModel;
     }
     
     public <R> Stream<R> mapQueryExpressions(Function<QueryExpressionModel, R> mapper) {
@@ -41,6 +43,10 @@ public class SelectModel {
     
     public Optional<OrderByModel> orderByModel() {
         return Optional.ofNullable(orderByModel);
+    }
+    
+    public Optional<GroupByModel> groupByModel() {
+        return Optional.ofNullable(groupByModel);
     }
     
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
@@ -57,6 +63,7 @@ public class SelectModel {
     public static class Builder {
         private List<QueryExpressionModel> queryExpressions = new ArrayList<>();
         private OrderByModel orderByModel;
+        private GroupByModel groupByModel;
         
         public Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
             this.queryExpressions.addAll(queryExpressions);
@@ -65,6 +72,11 @@ public class SelectModel {
         
         public Builder withOrderByModel(OrderByModel orderByModel) {
             this.orderByModel = orderByModel;
+            return this;
+        }
+        
+        public Builder withGroupByModel(GroupByModel groupByModel) {
+            this.groupByModel = groupByModel;
             return this;
         }
         

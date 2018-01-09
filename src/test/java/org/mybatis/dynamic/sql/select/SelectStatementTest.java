@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -252,7 +252,7 @@ public class SelectStatementTest {
             String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                     + "from foo a "
                     + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "group by column2 ";
+                    + "group by column2";
 
             softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
         

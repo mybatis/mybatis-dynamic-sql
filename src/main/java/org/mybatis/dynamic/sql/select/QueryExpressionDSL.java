@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.Objects;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
@@ -217,8 +218,9 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
         
         public GroupByFinisher groupBy(BasicColumn...columns) {
-            groupByModel = GroupByModel.of(columns);
+            whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
+            selectDSL.setGroupByModel(GroupByModel.of(columns));
             return new GroupByFinisher();
         }
         
