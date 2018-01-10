@@ -27,10 +27,6 @@ public class Divide<T extends Number, S extends BaseMultipleColumnFunction<T, S>
         super(columns);
     }
     
-    private Divide(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
-        super(columns, otherOperation);
-    }
-    
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return columns.stream()
@@ -41,11 +37,6 @@ public class Divide<T extends Number, S extends BaseMultipleColumnFunction<T, S>
     public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Divide<T, S> of(List<BindableColumn<T>> columns) {
         return new Divide<>(columns);
     }
-    
-    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Divide<T, S> of(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
-        return new Divide<>(columns);
-    }
-    
     @Override
     protected Divide<T, S> copyWithColumn(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
         return new Divide<>(columns);

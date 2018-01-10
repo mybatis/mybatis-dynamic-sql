@@ -26,10 +26,6 @@ public class Substract<T extends Number, S extends BaseMultipleColumnFunction<T,
     private Substract(List<BindableColumn<T>> columns) {
         super(columns);
     }
-
-    private Substract(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
-        super(columns, otherOperation);
-    }
     
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
@@ -39,10 +35,6 @@ public class Substract<T extends Number, S extends BaseMultipleColumnFunction<T,
     }
 
     public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Substract<T, S> of(List<BindableColumn<T>> columns) {
-        return new Substract<>(columns);
-    }
-    
-    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Substract<T, S> of(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
         return new Substract<>(columns);
     }
     

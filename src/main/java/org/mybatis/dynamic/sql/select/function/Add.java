@@ -27,10 +27,6 @@ public class Add<T extends Number, S extends BaseMultipleColumnFunction<T, S>> e
         super(columns);
     }
     
-    private Add(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
-        super(columns, otherOperation);
-    }
-    
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return columns.stream()
@@ -39,10 +35,6 @@ public class Add<T extends Number, S extends BaseMultipleColumnFunction<T, S>> e
     }
     
     public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Add<T, S> of(List<BindableColumn<T>> columns) {
-        return new Add<>(columns);
-    }
-    
-    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Add<T, S> of(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
         return new Add<>(columns);
     }
     

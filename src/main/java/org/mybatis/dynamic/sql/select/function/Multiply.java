@@ -27,10 +27,6 @@ public class Multiply<T extends Number, S extends BaseMultipleColumnFunction<T, 
         super(columns);
     }
     
-    private Multiply(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
-        super(columns, otherOperation);
-    }
-    
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return columns.stream()
@@ -39,10 +35,6 @@ public class Multiply<T extends Number, S extends BaseMultipleColumnFunction<T, 
     }
     
     public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Multiply<T, S> of(List<BindableColumn<T>> columns) {
-        return new Multiply<>(columns);
-    }
-    
-    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Multiply<T, S> of(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
         return new Multiply<>(columns);
     }
     
