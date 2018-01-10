@@ -21,39 +21,39 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Add<T extends Number> extends BaseMultipleColumnFunction<T> {
-    
-    private Add(List<BindableColumn<T>> columns) {
+public class Substract<T extends Number> extends BaseMultipleColumnFunction<T> {
+        
+    private Substract(List<BindableColumn<T>> columns) {
         super(columns);
     }
     
-    private Add(BindableColumn<T> column, T number) {
+    private Substract(BindableColumn<T> column, T number) {
         super(column, number);
     }
     
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         if (number != null) {
-            return "(" + columns.get(0).renderWithTableAlias(tableAliasCalculator) + " + " + number + ")";
+            return "(" + columns.get(0).renderWithTableAlias(tableAliasCalculator) + " - " + number + ")";
         }
         return columns.stream()
                 .map(column -> column.renderWithTableAlias(tableAliasCalculator))
-                .collect(Collectors.joining(" + ", "(", ")"));
+                .collect(Collectors.joining(" - ", "(", ")"));
+    }
+
+    public static <T extends Number> Substract<T> of(List<BindableColumn<T>> columns) {
+        return new Substract<>(columns);
     }
     
-    public static <T extends Number> Add<T> of(List<BindableColumn<T>> columns) {
-        return new Add<>(columns);
-    }
-    
-    public static <T extends Number> Add<T> of(BindableColumn<T> column, T value) {
-        return new Add<>(column, value);
+    public static <T extends Number> Substract<T> of(BindableColumn<T> column, T value) {
+        return new Substract<>(column, value);
     }
     
     @Override
-    protected Add<T> copyWithColumn(List<BindableColumn<T>> columns) {
+    protected Substract<T> copyWithColumn(List<BindableColumn<T>> columns) {
         if (number != null) {
-            return new Add<>(columns.get(0), number);    
+            return new Substract<>(columns.get(0), number);    
         }
-        return new Add<>(columns);
+        return new Substract<>(columns);
     }
 }

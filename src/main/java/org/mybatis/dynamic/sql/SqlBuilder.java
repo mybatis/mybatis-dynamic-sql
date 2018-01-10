@@ -35,7 +35,11 @@ import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
 import org.mybatis.dynamic.sql.select.function.Add;
+import org.mybatis.dynamic.sql.select.function.BaseMultipleColumnFunction;
+import org.mybatis.dynamic.sql.select.function.Divide;
 import org.mybatis.dynamic.sql.select.function.Lower;
+import org.mybatis.dynamic.sql.select.function.Multiply;
+import org.mybatis.dynamic.sql.select.function.Substract;
 import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Upper;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
@@ -188,8 +192,36 @@ public interface SqlBuilder {
     }
 
     // functions
-    static <T extends Number> Add<T> add(BindableColumn<T> column1, BindableColumn<T> column2) {
-        return Add.of(column1, column2);
+    static <T extends Number> Add<T> add(BindableColumn<T>...columns) {
+        return Add.of(Arrays.asList(columns));
+    }
+    
+    static <T extends Number> Add<T> add(BindableColumn<T> column, T number) {
+        return Add.of(column, number);
+    }
+    
+    static <T extends Number> Substract<T> substract(BindableColumn<T>... columns) {
+        return Substract.of(Arrays.asList(columns));
+    }
+    
+    static <T extends Number> Substract<T> substract(BindableColumn<T> column, T number) {
+        return Substract.of(column, number);
+    }
+    
+    static <T extends Number> Multiply<T> multiply(BindableColumn<T>...columns) {
+        return Multiply.of(Arrays.asList(columns));
+    }
+    
+    static <T extends Number> Multiply<T> multiply(BindableColumn<T> column, T number) {
+        return Multiply.of(column, number);
+    }
+    
+    static <T extends Number> Divide<T> divide(BindableColumn<T>... columns) {
+        return Divide.of(Arrays.asList(columns));
+    }
+    
+    static <T extends Number> Divide<T> divide(BindableColumn<T> column, T number) {
+        return Divide.of(column, number);
     }
     
     static Lower lower(BindableColumn<String> column) {

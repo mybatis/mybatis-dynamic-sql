@@ -21,39 +21,39 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Add<T extends Number> extends BaseMultipleColumnFunction<T> {
+public class Multiply<T extends Number> extends BaseMultipleColumnFunction<T> {
     
-    private Add(List<BindableColumn<T>> columns) {
+    private Multiply(List<BindableColumn<T>> columns) {
         super(columns);
     }
     
-    private Add(BindableColumn<T> column, T number) {
+    private Multiply(BindableColumn<T> column, T number) {
         super(column, number);
     }
     
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         if (number != null) {
-            return "(" + columns.get(0).renderWithTableAlias(tableAliasCalculator) + " + " + number + ")";
+            return "(" + columns.get(0).renderWithTableAlias(tableAliasCalculator) + " * " + number + ")";
         }
         return columns.stream()
                 .map(column -> column.renderWithTableAlias(tableAliasCalculator))
-                .collect(Collectors.joining(" + ", "(", ")"));
+                .collect(Collectors.joining(" * ", "(", ")"));
     }
     
-    public static <T extends Number> Add<T> of(List<BindableColumn<T>> columns) {
-        return new Add<>(columns);
+    public static <T extends Number> Multiply<T> of(List<BindableColumn<T>> columns) {
+        return new Multiply<>(columns);
     }
     
-    public static <T extends Number> Add<T> of(BindableColumn<T> column, T value) {
-        return new Add<>(column, value);
+    public static <T extends Number> Multiply<T> of(BindableColumn<T> column, T value) {
+        return new Multiply<>(column, value);
     }
     
     @Override
-    protected Add<T> copyWithColumn(List<BindableColumn<T>> columns) {
+    protected Multiply<T> copyWithColumn(List<BindableColumn<T>> columns) {
         if (number != null) {
-            return new Add<>(columns.get(0), number);    
+            return new Multiply<>(columns.get(0), number);    
         }
-        return new Add<>(columns);
+        return new Multiply<>(columns);
     }
 }

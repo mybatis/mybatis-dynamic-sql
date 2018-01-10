@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ public class SelectStatementTest {
     public static final SqlTable table = SqlTable.of("foo");
     public static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
     public static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
+    public static final SqlColumn<Integer> column3 = table.column("column3", JDBCType.INTEGER);
+    public static final SqlColumn<Integer> column4 = table.column("column4", JDBCType.INTEGER);
 
     @Test
     public void testSimpleCriteria() {
@@ -234,6 +236,23 @@ public class SelectStatementTest {
         
             Map<String, Object> parameters = selectStatement.getParameters();
             softly.assertThat(parameters.size()).isEqualTo(0);
+        });
+    }
+    
+    @Test
+    public void testArithmeticFunctions() {
+        SelectStatementProvider selectStatement = select(divide(add(column2, column3, substract(column3, column4, multiply(column2, column4))), column3).as("dividedColumns"), add(column2, column3).as("addedColumns"), substract(column2, column3).as("substractedColumns"), multiply(column2, column3).as("multipliedColumns"), add(column2, 2).as("add2"), substract(column3, 3).as("substract3"), multiply(column4, 4).as("multiply4"), divide(column2, 5).as("divide5"))
+                .from(table, "a")
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+
+        System.out.println(selectStatement.getSelectStatement());
+        
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedFullStatement = "select ((a.column2 + a.column3 + (a.column3 - a.column4 - (a.column2 * a.column4))) / a.column3) as dividedColumns, (a.column2 + a.column3) as addedColumns, (a.column2 - a.column3) as substractedColumns, (a.column2 * a.column3) as multipliedColumns, (a.column2 + 2) as add2, (a.column3 - 3) as substract3, (a.column4 * 4) as multiply4, (a.column2 / 5) as divide5 "
+                    + "from foo a";
+
+            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
         });
     }
 }
