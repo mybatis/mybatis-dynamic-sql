@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Add<T extends Number, S extends BaseMultipleColumnFunction<T, S>> extends BaseMultipleColumnFunction<T, S> {
+public class Add<T extends Number> extends BaseMultipleColumnFunction<T> {
     
     private Add(List<BindableColumn<T>> columns) {
         super(columns);
@@ -34,12 +34,12 @@ public class Add<T extends Number, S extends BaseMultipleColumnFunction<T, S>> e
                 .collect(Collectors.joining(" + ", "(", ")"));
     }
     
-    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Add<T, S> of(List<BindableColumn<T>> columns) {
+    public static <T extends Number, S extends BaseMultipleColumnFunction<T>> Add<T> of(List<BindableColumn<T>> columns) {
         return new Add<>(columns);
     }
     
     @Override
-    protected Add<T, S> copyWithColumn(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
+    protected Add<T> copyWithColumn(List<BindableColumn<T>> columns) {
         return new Add<>(columns);
     }
 }

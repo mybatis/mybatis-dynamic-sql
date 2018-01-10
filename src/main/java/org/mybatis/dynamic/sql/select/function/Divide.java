@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Divide<T extends Number, S extends BaseMultipleColumnFunction<T, S>> extends BaseMultipleColumnFunction<T, S> {
+public class Divide<T extends Number> extends BaseMultipleColumnFunction<T> {
     
     private Divide(List<BindableColumn<T>> columns) {
         super(columns);
@@ -34,11 +34,11 @@ public class Divide<T extends Number, S extends BaseMultipleColumnFunction<T, S>
                 .collect(Collectors.joining(" / ", "(", ")"));
     }
     
-    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Divide<T, S> of(List<BindableColumn<T>> columns) {
+    public static <T extends Number> Divide<T> of(List<BindableColumn<T>> columns) {
         return new Divide<>(columns);
     }
     @Override
-    protected Divide<T, S> copyWithColumn(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
+    protected Divide<T> copyWithColumn(List<BindableColumn<T>> columns) {
         return new Divide<>(columns);
     }
 }

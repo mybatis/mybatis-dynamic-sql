@@ -22,20 +22,14 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 
-public abstract class BaseMultipleColumnFunction<T, S extends BaseMultipleColumnFunction<T, S>> implements BindableColumn<T> {
+public abstract class BaseMultipleColumnFunction<T> implements BindableColumn<T> {
     protected String alias;
     protected List<BindableColumn<T>> columns;
-    protected BaseMultipleColumnFunction<T, S> otherOperation;
     
     protected BaseMultipleColumnFunction(List<BindableColumn<T>> columns) {
         this.columns = Objects.requireNonNull(columns);
     }
     
-    protected BaseMultipleColumnFunction(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
-        this.columns = Objects.requireNonNull(columns);
-        this.otherOperation = otherOperation;
-    }
-
     @Override
     public Optional<String> alias() {
         return Optional.ofNullable(alias);
@@ -43,7 +37,7 @@ public abstract class BaseMultipleColumnFunction<T, S extends BaseMultipleColumn
 
     @Override
     public BindableColumn<T> as(String alias) {
-        BaseMultipleColumnFunction<T, S> newColumn = copyWithColumn(columns, otherOperation);
+        BaseMultipleColumnFunction<T> newColumn = copyWithColumn(columns);
         newColumn.alias = alias;
         return newColumn;
     }
@@ -58,5 +52,5 @@ public abstract class BaseMultipleColumnFunction<T, S extends BaseMultipleColumn
         return columns.get(0).typeHandler();
     }
     
-    protected abstract BaseMultipleColumnFunction<T, S> copyWithColumn(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation);
+    protected abstract BaseMultipleColumnFunction<T> copyWithColumn(List<BindableColumn<T>> columns);
 }

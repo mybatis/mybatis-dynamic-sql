@@ -241,7 +241,7 @@ public class SelectStatementTest {
     
     @Test
     public void testArithmeticFunctions() {
-        SelectStatementProvider selectStatement = select(divide(add(column2, column3, substract(column3, column4, multiply(column2, column4))), column3).as("addedColumns"))
+        SelectStatementProvider selectStatement = select(divide(add(column2, column3, substract(column3, column4, multiply(column2, column4))), column3).as("dividedColumns"), add(column2, column3).as("addedColumns"), substract(column2, column3).as("substractedColumns"), multiply(column2, column3).as("multipliedColumns"))
                 .from(table, "a")
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
@@ -249,7 +249,7 @@ public class SelectStatementTest {
         System.out.println(selectStatement.getSelectStatement());
         
         SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select ((a.column2 + a.column3 + (a.column3 - a.column4 - (a.column2 * a.column4))) / a.column3) as addedColumns "
+            String expectedFullStatement = "select ((a.column2 + a.column3 + (a.column3 - a.column4 - (a.column2 * a.column4))) / a.column3) as dividedColumns, (a.column2 + a.column3) as addedColumns, (a.column2 - a.column3) as substractedColumns, (a.column2 * a.column3) as multipliedColumns "
                     + "from foo a";
 
             softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
