@@ -15,29 +15,22 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
-import java.sql.JDBCType;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Substract<T extends Number> implements BindableColumn<T> {
-    
-    private String alias;
-    private List<BindableColumn<T>> columns;
-    
+public class Substract<T extends Number, S extends BaseMultipleColumnFunction<T, S>> extends BaseMultipleColumnFunction<T, S> {
+        
     private Substract(List<BindableColumn<T>> columns) {
-        this.columns = Objects.requireNonNull(columns);
+        super(columns);
     }
 
-    @Override
-    public Optional<String> alias() {
-        return Optional.ofNullable(alias);
+    private Substract(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
+        super(columns, otherOperation);
     }
-
+    
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return columns.stream()
@@ -45,24 +38,16 @@ public class Substract<T extends Number> implements BindableColumn<T> {
                 .collect(Collectors.joining(" - ", "(", ")"));
     }
 
-    @Override
-    public BindableColumn<T> as(String alias) {
-        Substract<T> newColumn = new Substract<>(columns);
-        newColumn.alias = alias;
-        return newColumn;
+    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Substract<T, S> of(List<BindableColumn<T>> columns) {
+        return new Substract<>(columns);
     }
-
-    @Override
-    public JDBCType jdbcType() {
-        return columns.get(0).jdbcType();
+    
+    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Substract<T, S> of(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
+        return new Substract<>(columns);
     }
-
+    
     @Override
-    public Optional<String> typeHandler() {
-        return columns.get(0).typeHandler();
-    }
-
-    public static <T extends Number> Substract<T> of(List<BindableColumn<T>> columns) {
+    protected Substract<T, S> copyWithColumn(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
         return new Substract<>(columns);
     }
 }

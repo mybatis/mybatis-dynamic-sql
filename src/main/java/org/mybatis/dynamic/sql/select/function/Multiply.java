@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Add<T extends Number, S extends BaseMultipleColumnFunction<T, S>> extends BaseMultipleColumnFunction<T, S> {
+public class Multiply<T extends Number, S extends BaseMultipleColumnFunction<T, S>> extends BaseMultipleColumnFunction<T, S> {
     
-    private Add(List<BindableColumn<T>> columns) {
+    private Multiply(List<BindableColumn<T>> columns) {
         super(columns);
     }
     
-    private Add(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
+    private Multiply(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
         super(columns, otherOperation);
     }
     
@@ -35,19 +35,19 @@ public class Add<T extends Number, S extends BaseMultipleColumnFunction<T, S>> e
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return columns.stream()
                 .map(column -> column.renderWithTableAlias(tableAliasCalculator))
-                .collect(Collectors.joining(" + ", "(", ")"));
+                .collect(Collectors.joining(" * ", "(", ")"));
     }
     
-    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Add<T, S> of(List<BindableColumn<T>> columns) {
-        return new Add<>(columns);
+    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Multiply<T, S> of(List<BindableColumn<T>> columns) {
+        return new Multiply<>(columns);
     }
     
-    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Add<T, S> of(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
-        return new Add<>(columns);
+    public static <T extends Number, S extends BaseMultipleColumnFunction<T, S>> Multiply<T, S> of(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
+        return new Multiply<>(columns);
     }
     
     @Override
-    protected Add<T, S> copyWithColumn(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
-        return new Add<>(columns);
+    protected Multiply<T, S> copyWithColumn(List<BindableColumn<T>> columns, BaseMultipleColumnFunction<T, S> otherOperation) {
+        return new Multiply<>(columns);
     }
 }

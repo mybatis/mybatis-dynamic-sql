@@ -240,29 +240,16 @@ public class SelectStatementTest {
     }
     
     @Test
-    public void testAdd() {
-        SelectStatementProvider selectStatement = select(add(column2, column3))
+    public void testArithmeticFunctions() {
+        SelectStatementProvider selectStatement = select(divide(add(column2, column3, substract(column3, column4, multiply(column2, column4))), column3).as("addedColumns"))
                 .from(table, "a")
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
+        System.out.println(selectStatement.getSelectStatement());
+        
         SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select a.column2 + a.column3 "
-                    + "from foo a";
-
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
-        });
-    }
-    
-    @Test
-    public void testSubstract() {
-        SelectStatementProvider selectStatement = select(substract(column2, column3, column4).as("substract"))
-                .from(table, "a")
-                .build()
-                .render(RenderingStrategy.MYBATIS3);
-
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select (a.column2 - a.column3 - a.column4) as substract "
+            String expectedFullStatement = "select ((a.column2 + a.column3 + (a.column3 - a.column4 - (a.column2 * a.column4))) / a.column3) as addedColumns "
                     + "from foo a";
 
             softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
