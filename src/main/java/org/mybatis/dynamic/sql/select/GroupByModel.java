@@ -22,7 +22,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.SqlColumn;
 
 public class GroupByModel {
     private List<BasicColumn> columns = new ArrayList<>();

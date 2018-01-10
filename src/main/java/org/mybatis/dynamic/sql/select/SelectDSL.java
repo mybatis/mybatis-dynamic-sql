@@ -37,7 +37,6 @@ public class SelectDSL<R> {
     private Function<SelectModel, R> adapterFunction;
     private List<QueryExpressionModel> queryExpressions = new ArrayList<>();    
     private OrderByModel orderByModel;
-    private GroupByModel groupByModel;
     
     private SelectDSL(Function<SelectModel, R> adapterFunction) {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
@@ -97,14 +96,9 @@ public class SelectDSL<R> {
         this.orderByModel = orderByModel;
     }
     
-    void setGroupByModel(GroupByModel groupByModel) {
-        this.groupByModel = groupByModel;
-    }
-    
     public R build() {
         SelectModel selectModel = SelectModel.withQueryExpressions(queryExpressions)
                 .withOrderByModel(orderByModel)
-                .withGroupByModel(groupByModel)
                 .build();
         return adapterFunction.apply(selectModel);
     }

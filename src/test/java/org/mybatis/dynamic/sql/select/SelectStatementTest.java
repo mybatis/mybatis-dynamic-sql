@@ -252,7 +252,7 @@ public class SelectStatementTest {
             String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                     + "from foo a "
                     + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "group by column2";
+                    + "group by a.column2";
 
             softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
         

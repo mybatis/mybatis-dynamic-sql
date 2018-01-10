@@ -25,7 +25,6 @@ import java.util.Objects;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
@@ -218,9 +217,9 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
         
         public GroupByFinisher groupBy(BasicColumn...columns) {
+            groupByModel = GroupByModel.of(columns);
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
-            selectDSL.setGroupByModel(GroupByModel.of(columns));
             return new GroupByFinisher();
         }
         

@@ -19,12 +19,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -49,7 +45,6 @@ public class SelectRenderer {
         return SelectStatementProvider.withQueryExpression(collector.queryExpression())
                 .withParameters(collector.parameters())
                 .withOrderByClause(selectModel.orderByModel().map(this::renderOrderBy))
-                .withGroupByClause(selectModel.groupByModel().map(this::renderGroupBy))
                 .build();
     }
 
@@ -66,20 +61,12 @@ public class SelectRenderer {
                 .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    private String renderGroupBy(GroupByModel groupByModel) {
-        return groupByModel.mapColumns(this::groupByPhrase).collect(CustomCollectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
-    
     private String orderByPhrase(SortSpecification column) {
         String phrase = column.aliasOrName();
         if (column.isDescending()) {
             phrase = phrase + " DESC"; //$NON-NLS-1$
         }
         return phrase;
-    }
-    
-    private String groupByPhrase(BasicColumn column) {
-        return ((SqlColumn) column).aliasOrName();
     }
     
     public static Builder withSelectModel(SelectModel selectModel) {
