@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.function;
 
 import java.sql.JDBCType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,9 +26,16 @@ import org.mybatis.dynamic.sql.BindableColumn;
 public abstract class BaseMultipleColumnFunction<T> implements BindableColumn<T> {
     protected String alias;
     protected List<BindableColumn<T>> columns;
+    protected T number;
     
     protected BaseMultipleColumnFunction(List<BindableColumn<T>> columns) {
         this.columns = Objects.requireNonNull(columns);
+    }
+    
+    protected BaseMultipleColumnFunction(BindableColumn<T> column, T number) {
+        this.columns = new ArrayList<>();
+        columns.add(column);
+        this.number = number;
     }
     
     @Override

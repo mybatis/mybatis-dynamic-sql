@@ -27,8 +27,15 @@ public class Multiply<T extends Number> extends BaseMultipleColumnFunction<T> {
         super(columns);
     }
     
+    private Multiply(BindableColumn<T> column, T number) {
+        super(column, number);
+    }
+    
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        if (number != null) {
+            return "(" + columns.get(0).renderWithTableAlias(tableAliasCalculator) + " * " + number + ")";
+        }
         return columns.stream()
                 .map(column -> column.renderWithTableAlias(tableAliasCalculator))
                 .collect(Collectors.joining(" * ", "(", ")"));
@@ -38,8 +45,15 @@ public class Multiply<T extends Number> extends BaseMultipleColumnFunction<T> {
         return new Multiply<>(columns);
     }
     
+    public static <T extends Number> Multiply<T> of(BindableColumn<T> column, T value) {
+        return new Multiply<>(column, value);
+    }
+    
     @Override
     protected Multiply<T> copyWithColumn(List<BindableColumn<T>> columns) {
+        if (number != null) {
+            return new Multiply<>(columns.get(0), number);    
+        }
         return new Multiply<>(columns);
     }
 }

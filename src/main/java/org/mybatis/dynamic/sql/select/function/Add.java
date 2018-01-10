@@ -27,19 +27,33 @@ public class Add<T extends Number> extends BaseMultipleColumnFunction<T> {
         super(columns);
     }
     
+    private Add(BindableColumn<T> column, T number) {
+        super(column, number);
+    }
+    
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        if (number != null) {
+            return "(" + columns.get(0).renderWithTableAlias(tableAliasCalculator) + " + " + number + ")";
+        }
         return columns.stream()
                 .map(column -> column.renderWithTableAlias(tableAliasCalculator))
                 .collect(Collectors.joining(" + ", "(", ")"));
     }
     
-    public static <T extends Number, S extends BaseMultipleColumnFunction<T>> Add<T> of(List<BindableColumn<T>> columns) {
+    public static <T extends Number> Add<T> of(List<BindableColumn<T>> columns) {
         return new Add<>(columns);
+    }
+    
+    public static <T extends Number> Add<T> of(BindableColumn<T> column, T value) {
+        return new Add<>(column, value);
     }
     
     @Override
     protected Add<T> copyWithColumn(List<BindableColumn<T>> columns) {
+        if (number != null) {
+            return new Add<>(columns.get(0), number);    
+        }
         return new Add<>(columns);
     }
 }

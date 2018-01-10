@@ -196,16 +196,32 @@ public interface SqlBuilder {
         return Add.of(Arrays.asList(columns));
     }
     
+    static <T extends Number> Add<T> add(BindableColumn<T> column, T number) {
+        return Add.of(column, number);
+    }
+    
     static <T extends Number> Substract<T> substract(BindableColumn<T>... columns) {
         return Substract.of(Arrays.asList(columns));
+    }
+    
+    static <T extends Number> Substract<T> substract(BindableColumn<T> column, T number) {
+        return Substract.of(column, number);
     }
     
     static <T extends Number> Multiply<T> multiply(BindableColumn<T>...columns) {
         return Multiply.of(Arrays.asList(columns));
     }
     
+    static <T extends Number> Multiply<T> multiply(BindableColumn<T> column, T number) {
+        return Multiply.of(column, number);
+    }
+    
     static <T extends Number> Divide<T> divide(BindableColumn<T>... columns) {
         return Divide.of(Arrays.asList(columns));
+    }
+    
+    static <T extends Number> Divide<T> divide(BindableColumn<T> column, T number) {
+        return Divide.of(column, number);
     }
     
     static Lower lower(BindableColumn<String> column) {

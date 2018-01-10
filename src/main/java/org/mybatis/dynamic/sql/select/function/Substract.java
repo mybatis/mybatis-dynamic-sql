@@ -27,8 +27,15 @@ public class Substract<T extends Number> extends BaseMultipleColumnFunction<T> {
         super(columns);
     }
     
+    private Substract(BindableColumn<T> column, T number) {
+        super(column, number);
+    }
+    
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        if (number != null) {
+            return "(" + columns.get(0).renderWithTableAlias(tableAliasCalculator) + " - " + number + ")";
+        }
         return columns.stream()
                 .map(column -> column.renderWithTableAlias(tableAliasCalculator))
                 .collect(Collectors.joining(" - ", "(", ")"));
@@ -38,8 +45,15 @@ public class Substract<T extends Number> extends BaseMultipleColumnFunction<T> {
         return new Substract<>(columns);
     }
     
+    public static <T extends Number> Substract<T> of(BindableColumn<T> column, T value) {
+        return new Substract<>(column, value);
+    }
+    
     @Override
     protected Substract<T> copyWithColumn(List<BindableColumn<T>> columns) {
+        if (number != null) {
+            return new Substract<>(columns.get(0), number);    
+        }
         return new Substract<>(columns);
     }
 }
