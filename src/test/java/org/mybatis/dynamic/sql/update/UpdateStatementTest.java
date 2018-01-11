@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,12 +27,15 @@ import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 @RunWith(JUnitPlatform.class)
 public class UpdateStatementTest {
     private static final SqlTable foo = SqlTable.of("foo");
+    private static final SqlTable foo2 = SqlTable.of("foo2");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
+    private static final SqlColumn<Integer> id2 = foo2.column("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = foo.column("firstName", JDBCType.VARCHAR);
     private static final SqlColumn<String> lastName = foo.column("lastName", JDBCType.VARCHAR);
     private static final SqlColumn<String> occupation = foo.column("occupation", JDBCType.VARCHAR);
@@ -168,6 +171,26 @@ public class UpdateStatementTest {
             softly.assertThat(updateStatement.getParameters().size()).isEqualTo(2);
             softly.assertThat(updateStatement.getParameters().get("up1")).isEqualTo("fred");
             softly.assertThat(updateStatement.getParameters().get("up2")).isEqualTo("jones");
+        });
+    }
+    
+    @Test
+    public void testUpdateWithSubquery() {        
+        UpdateStatementProvider updateStatement = update(foo)
+                .set(id).equalTo(select(id2).from(foo2).where(id2, isEqualTo(2)))
+                .where(id, isEqualTo(1))
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+        
+        System.out.println(updateStatement.getUpdateStatement());
+        
+        String expectedStatement = "update foo " 
+                + "set id = (select id from foo2 where id = #{parameters.p1,jdbcType=INTEGER}) where id = #{parameters.p2,jdbcType=INTEGER}";
+                
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement);
+        
+            softly.assertThat(updateStatement.getParameters().size()).isEqualTo(1);
         });
     }
 }

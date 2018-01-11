@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,7 +26,10 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.BuildableMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
@@ -113,6 +116,11 @@ public class UpdateDSL<R> {
 
         public UpdateDSL<R> equalTo(Supplier<T> valueSupplier) {
             columnsAndValues.add(ValueMapping.of(column, valueSupplier));
+            return UpdateDSL.this;
+        }
+        
+        public UpdateDSL<R> equalTo(Buildable<SelectModel> buildable) {
+            columnsAndValues.add(BuildableMapping.of(column, buildable));
             return UpdateDSL.this;
         }
 
