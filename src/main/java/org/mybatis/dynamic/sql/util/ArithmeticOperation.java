@@ -15,14 +15,19 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public interface UpdateMappingVisitor<T> {
-    T visit(NullMapping mapping);
-
-    T visit(ConstantMapping mapping);
-
-    T visit(StringConstantMapping mapping);
-
-    <S> T visit(ValueMapping<S> mapping);
+public enum ArithmeticOperation {
+    add("+"),
+    substract("-"),
+    multiply("*"),
+    divide("/");
     
-    <S> T visit(ArithmeticConstantMapping<S> mapping);
+    private String operator;
+    
+    private ArithmeticOperation(String operator) {
+        this.operator = operator;
+    }
+    
+    public String getOperator() {
+        return operator;
+    }
 }

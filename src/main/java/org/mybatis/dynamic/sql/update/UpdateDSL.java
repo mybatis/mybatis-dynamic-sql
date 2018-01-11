@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.util.ArithmeticConstantMapping;
+import org.mybatis.dynamic.sql.util.ArithmeticOperation;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
@@ -124,6 +126,42 @@ public class UpdateDSL<R> {
             if (valueSupplier.get() != null) {
                 columnsAndValues.add(ValueMapping.of(column, valueSupplier));
             }
+            return UpdateDSL.this;
+        }
+        
+        public UpdateDSL<R> incrementBy(T value) {
+            return incrementBy(() -> value);
+        }
+        
+        public UpdateDSL<R> incrementBy(Supplier<T> valueSupplier) {
+            columnsAndValues.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.add, valueSupplier));
+            return UpdateDSL.this;
+        }
+        
+        public UpdateDSL<R> decrementBy(T value) {
+            return decrementBy(() -> value);
+        }
+        
+        public UpdateDSL<R> decrementBy(Supplier<T> valueSupplier) {
+            columnsAndValues.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.substract, valueSupplier));
+            return UpdateDSL.this;
+        }
+        
+        public UpdateDSL<R> multiplyBy(T value) {
+            return multiplyBy(() -> value);
+        }
+        
+        public UpdateDSL<R> multiplyBy(Supplier<T> valueSupplier) {
+            columnsAndValues.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.multiply, valueSupplier));
+            return UpdateDSL.this;
+        }
+        
+        public UpdateDSL<R> divideBy(T value) {
+            return divideBy(() -> value);
+        }
+        
+        public UpdateDSL<R> divideBy(Supplier<T> valueSupplier) {
+            columnsAndValues.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.divide, valueSupplier));
             return UpdateDSL.this;
         }
     }

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -170,4 +170,28 @@ public class UpdateStatementTest {
             softly.assertThat(updateStatement.getParameters().get("up2")).isEqualTo("jones");
         });
     }
+    
+    @Test
+    public void testUpdateStatementArithmeticOperation() {
+        UpdateStatementProvider updateStatement = update(foo)
+                .set(id).incrementBy(1)
+                .set(id).decrementBy(2)
+                .set(id).multiplyBy(3)
+                .set(id).divideBy(4)
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+        
+        String expectedStatement = "update foo " 
+                + "set id = id + 1, "
+                + "id = id - 2, "
+                + "id = id * 3, "
+                + "id = id / 4";
+                
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement);
+        
+            softly.assertThat(updateStatement.getParameters().size()).isEqualTo(0);
+        });
+    }
 }
+
