@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -25,8 +26,8 @@ public class ArithmeticConstantMapping<T> extends AbstractColumnMapping implemen
 
     private ArithmeticConstantMapping(SqlColumn<?> column, ArithmeticOperation operation, Supplier<T> valueSupplier) {
         super(column);
-        this.operation = operation;
-        this.valueSupplier = valueSupplier;
+        this.operation = Objects.requireNonNull(operation);
+        this.valueSupplier = Objects.requireNonNull(valueSupplier);
     }
 
     public Supplier<T> valueSupplier() {
@@ -37,13 +38,13 @@ public class ArithmeticConstantMapping<T> extends AbstractColumnMapping implemen
         return operation;
     }
 
-    public static <T> ArithmeticConstantMapping<T> of(SqlColumn<?> column, ArithmeticOperation operation, Supplier<T> valueSupplier) {
-        ArithmeticConstantMapping<T> mapping = new ArithmeticConstantMapping<>(column, operation, valueSupplier);
-        return mapping;
-    }
-
     @Override
     public <R> R accept(UpdateMappingVisitor<R> visitor) {
         return visitor.visit(this);
+    }
+
+    public static <T> ArithmeticConstantMapping<T> of(SqlColumn<?> column, ArithmeticOperation operation,
+            Supplier<T> valueSupplier) {
+        return new ArithmeticConstantMapping<>(column, operation, valueSupplier);
     }
 }

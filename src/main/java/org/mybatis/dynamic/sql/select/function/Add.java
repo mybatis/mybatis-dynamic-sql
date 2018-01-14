@@ -42,7 +42,7 @@ public class Add<T extends Number> implements BindableColumn<T> {
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return columns.stream()
                 .map(column -> column.renderWithTableAlias(tableAliasCalculator))
-                .collect(Collectors.joining(" + "));
+                .collect(Collectors.joining(" + ")); //$NON-NLS-1$
     }
 
     @Override
