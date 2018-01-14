@@ -183,4 +183,34 @@ public class GroupByTest {
             session.close();
         }
     }
+
+    @Test
+    public void testGroupByAfterWhere() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(lastName, count().as("count"))
+                    .from(person, "a")
+                    .where(gender, isEqualTo("Male"))
+                    .groupBy(lastName)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select a.last_name, count(*) as count from Person a where a.gender = #{parameters.p1,jdbcType=VARCHAR} group by a.last_name";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(2);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Flintstone");
+            assertThat(row.get("COUNT")).isEqualTo(2L);
+
+            row = rows.get(1);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Rubble");
+            assertThat(row.get("COUNT")).isEqualTo(2L);
+        } finally {
+            session.close();
+        }
+    }
 }
