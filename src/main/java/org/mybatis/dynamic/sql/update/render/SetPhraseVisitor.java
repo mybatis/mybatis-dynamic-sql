@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.ArithmeticConstantMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.NullMapping;
@@ -77,5 +78,12 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
         return column -> renderingStrategy
                 .getFormattedJdbcPlaceholder(column, "parameters", parameterName); //$NON-NLS-1$
+    }
+
+    @Override
+    public <S> FragmentAndParameters visit(ArithmeticConstantMapping<S> mapping) {
+        String fragment = mapping.mapColumn(SqlColumn::name) + " = " + mapping.mapColumn(SqlColumn::name) + " " + mapping.operation().getOperator() + " " + mapping.valueSupplier().get(); //$NON-NLS-1$
+        return FragmentAndParameters.withFragment(fragment)
+                .build();
     }
 }
