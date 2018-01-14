@@ -16,8 +16,11 @@
 package org.mybatis.dynamic.sql.select.function;
 
 import java.sql.JDBCType;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -25,12 +28,10 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 public class Add<T extends Number> implements BindableColumn<T> {
     
     private String alias;
-    private BindableColumn<T> column1;
-    private BindableColumn<T> column2;
+    private List<BindableColumn<T>> columns;
     
-    private Add(BindableColumn<T> column1, BindableColumn<T> column2) {
-        this.column1 = Objects.requireNonNull(column1);
-        this.column2 = Objects.requireNonNull(column2);
+    private Add(List<BindableColumn<T>> columns) {
+        this.columns = Objects.requireNonNull(columns);
     }
 
     @Override
@@ -40,29 +41,29 @@ public class Add<T extends Number> implements BindableColumn<T> {
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return column1.renderWithTableAlias(tableAliasCalculator)
-                + " + " //$NON-NLS-1$
-                + column2.renderWithTableAlias(tableAliasCalculator);
+        return columns.stream()
+                      .map(column -> column.renderWithTableAlias(tableAliasCalculator))
+                      .collect(Collectors.joining(" + "));
     }
 
     @Override
     public BindableColumn<T> as(String alias) {
-        Add<T> newColumn = new Add<>(column1, column2);
+        Add<T> newColumn = new Add<>(columns);
         newColumn.alias = alias;
         return newColumn;
     }
 
     @Override
     public JDBCType jdbcType() {
-        return column1.jdbcType();
+        return columns.get(0).jdbcType();
     }
 
     @Override
     public Optional<String> typeHandler() {
-        return column1.typeHandler();
+        return columns.get(0).typeHandler();
     }
 
-    public static <T extends Number> Add<T> of(BindableColumn<T> column1, BindableColumn<T> column2) {
-        return new Add<>(column1, column2);
+    public static <T extends Number> Add<T> of(List<BindableColumn<T>> columns) {
+        return new Add<>(columns);
     }
 }

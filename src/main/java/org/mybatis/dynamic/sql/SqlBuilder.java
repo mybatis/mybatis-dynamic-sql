@@ -188,8 +188,8 @@ public interface SqlBuilder {
     }
 
     // functions
-    static <T extends Number> Add<T> add(BindableColumn<T> column1, BindableColumn<T> column2) {
-        return Add.of(column1, column2);
+    static <T extends Number> Add<T> add(BindableColumn<T>... columns) {
+        return Add.of(Arrays.asList(columns));
     }
     
     static Lower lower(BindableColumn<String> column) {
