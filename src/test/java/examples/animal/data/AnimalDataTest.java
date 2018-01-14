@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -1452,6 +1452,33 @@ public class AnimalDataTest {
 
             int rows = mapper.insertSelect(insertSelectStatement);
             assertThat(rows).isEqualTo(32);
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testUpdateWithSelect() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            UpdateStatementProvider updateStatement = update(animalData)
+                    .set(brainWeight).equalTo(select(avg(brainWeight)).from(animalData).where(brainWeight, isGreaterThan(22.0)))
+                    .where(brainWeight, isLessThan(1.0))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "update AnimalData "
+                    + "set brain_weight = (select avg(brain_weight) from AnimalData where brain_weight > #{parameters.p1,jdbcType=DOUBLE}) "
+                    + "where brain_weight < #{parameters.p2,jdbcType=DOUBLE}";
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
+            assertThat(updateStatement.getParameters().size()).isEqualTo(2);
+            assertThat(updateStatement.getParameters().get("p1")).isEqualTo(22.0);
+            assertThat(updateStatement.getParameters().get("p2")).isEqualTo(1.0);
+
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(20);
         } finally {
             sqlSession.close();
         }

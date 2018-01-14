@@ -26,11 +26,14 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.ArithmeticConstantMapping;
 import org.mybatis.dynamic.sql.util.ArithmeticOperation;
+import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
@@ -115,6 +118,11 @@ public class UpdateDSL<R> {
 
         public UpdateDSL<R> equalTo(Supplier<T> valueSupplier) {
             columnsAndValues.add(ValueMapping.of(column, valueSupplier));
+            return UpdateDSL.this;
+        }
+
+        public UpdateDSL<R> equalTo(Buildable<SelectModel> buildable) {
+            columnsAndValues.add(SelectMapping.of(column, buildable));
             return UpdateDSL.this;
         }
 
