@@ -25,4 +25,6 @@ public interface UpdateMappingVisitor<T> {
     <S> T visit(ValueMapping<S> mapping);
     
     <S> T visit(ArithmeticConstantMapping<S> mapping);
+    
+    T visit(SelectMapping mapping);
 }

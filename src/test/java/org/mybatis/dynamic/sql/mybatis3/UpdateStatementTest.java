@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -46,16 +46,16 @@ public class UpdateStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-        String expected = "update foo set firstName = #{parameters.up1,jdbcType=VARCHAR}, "
-                + "lastName = #{parameters.up2,jdbcType=VARCHAR}, "
+        String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, "
+                + "lastName = #{parameters.p2,jdbcType=VARCHAR}, "
                 + "occupation = null "
-                + "where id = #{parameters.p1,jdbcType=INTEGER}";
+                + "where id = #{parameters.p3,jdbcType=INTEGER}";
                 
         assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
         assertThat(updateStatement.getParameters().size()).isEqualTo(3);
-        assertThat(updateStatement.getParameters().get("up1")).isEqualTo("fred");
-        assertThat(updateStatement.getParameters().get("up2")).isEqualTo("jones");
-        assertThat(updateStatement.getParameters().get("p1")).isEqualTo(3);
+        assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred");
+        assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones");
+        assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3);
     }
 
     @Test
@@ -70,16 +70,16 @@ public class UpdateStatementTest {
                 .render(RenderingStrategy.MYBATIS3);
         
         String expectedSetClause = "update foo set occupation = null, "
-                + "firstName = #{parameters.up1,jdbcType=VARCHAR}, "
-                + "lastName = #{parameters.up2,jdbcType=VARCHAR} "
-                + "where id = #{parameters.p1,jdbcType=INTEGER} "
-                + "and firstName = #{parameters.p2,jdbcType=VARCHAR}";
+                + "firstName = #{parameters.p1,jdbcType=VARCHAR}, "
+                + "lastName = #{parameters.p2,jdbcType=VARCHAR} "
+                + "where id = #{parameters.p3,jdbcType=INTEGER} "
+                + "and firstName = #{parameters.p4,jdbcType=VARCHAR}";
                 
         assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedSetClause);
         assertThat(updateStatement.getParameters().size()).isEqualTo(4);
-        assertThat(updateStatement.getParameters().get("up1")).isEqualTo("fred");
-        assertThat(updateStatement.getParameters().get("up2")).isEqualTo("jones");
-        assertThat(updateStatement.getParameters().get("p1")).isEqualTo(3);
-        assertThat(updateStatement.getParameters().get("p2")).isEqualTo("barney");
+        assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred");
+        assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones");
+        assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3);
+        assertThat(updateStatement.getParameters().get("p4")).isEqualTo("barney");
     }
 }

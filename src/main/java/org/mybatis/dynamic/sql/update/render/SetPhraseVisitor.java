@@ -15,26 +15,31 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.SelectRenderer;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.ArithmeticConstantMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.UpdateMappingVisitor;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 
 public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParameters> {
     
-    private AtomicInteger sequence = new AtomicInteger(1);
+    private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
     
-    public SetPhraseVisitor(RenderingStrategy renderingStrategy) {
-        this.renderingStrategy = renderingStrategy;
+    public SetPhraseVisitor(AtomicInteger sequence, RenderingStrategy renderingStrategy) {
+        this.sequence = Objects.requireNonNull(sequence);
+        this.renderingStrategy = Objects.requireNonNull(renderingStrategy);
     }
 
     @Override
@@ -63,7 +68,7 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
     
     @Override
     public <T> FragmentAndParameters visit(ValueMapping<T> mapping) {
-        String mapKey = "up" + sequence.getAndIncrement(); //$NON-NLS-1$
+        String mapKey = "p" + sequence.getAndIncrement(); //$NON-NLS-1$
 
         String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
         String setPhrase = mapping.mapColumn(SqlColumn::name)
@@ -85,6 +90,24 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
                 + " " //$NON-NLS-1$
                 + mapping.valueSupplier().get();
         return FragmentAndParameters.withFragment(fragment)
+                .build();
+    }
+
+    @Override
+    public FragmentAndParameters visit(SelectMapping mapping) {
+        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(mapping.selectModel())
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(sequence)
+                .build()
+                .render();
+        
+        String fragment = mapping.mapColumn(SqlColumn::name)
+                + " = (" //$NON-NLS-1$
+                + selectStatement.getSelectStatement()
+                + ")"; //$NON-NLS-1$
+        
+        return FragmentAndParameters.withFragment(fragment)
+                .withParameters(selectStatement.getParameters())
                 .build();
     }
 
