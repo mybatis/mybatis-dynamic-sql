@@ -390,7 +390,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     public class UnionBuilder {
         public FromGatherer<R> select(BasicColumn...selectList) {
             return new FromGathererBuilder<R>()
-                    .withConnector("union")
+                    .withConnector("union") //$NON-NLS-1$
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
                     .build();
@@ -398,7 +398,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
 
         public FromGatherer<R> selectDistinct(BasicColumn...selectList) {
             return new FromGathererBuilder<R>()
-                    .withConnector("union")
+                    .withConnector("union") //$NON-NLS-1$
                     .isDistinct()
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)

@@ -160,7 +160,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
         public Builder<T> withParameterName(String parameterName) {
             parameterPrefix = Optional.ofNullable(parameterName)
-                    .map(pn -> pn + "." + DEFAULT_PARAMETER_PREFIX)
+                    .map(pn -> pn + "." + DEFAULT_PARAMETER_PREFIX) //$NON-NLS-1$
                     .orElse(DEFAULT_PARAMETER_PREFIX);
             return this;
         }

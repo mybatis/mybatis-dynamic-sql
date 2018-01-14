@@ -16,10 +16,10 @@
 package org.mybatis.dynamic.sql.util;
 
 public enum ArithmeticOperation {
-    add("+"),
-    substract("-"),
-    multiply("*"),
-    divide("/");
+    ADD("+"), //$NON-NLS-1$
+    SUBTRACT("-"), //$NON-NLS-1$
+    MULTIPLY("*"), //$NON-NLS-1$
+    DIVIDE("/"); //$NON-NLS-1$
     
     private String operator;
     

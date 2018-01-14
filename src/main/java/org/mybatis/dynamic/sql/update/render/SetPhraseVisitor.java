@@ -75,15 +75,21 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
                 .build();
     }
 
+    @Override
+    public <S> FragmentAndParameters visit(ArithmeticConstantMapping<S> mapping) {
+        String fragment = mapping.mapColumn(SqlColumn::name)
+                + " = " //$NON-NLS-1$
+                + mapping.mapColumn(SqlColumn::name)
+                + " " //$NON-NLS-1$
+                + mapping.operation().getOperator()
+                + " " //$NON-NLS-1$
+                + mapping.valueSupplier().get();
+        return FragmentAndParameters.withFragment(fragment)
+                .build();
+    }
+
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
         return column -> renderingStrategy
                 .getFormattedJdbcPlaceholder(column, "parameters", parameterName); //$NON-NLS-1$
-    }
-
-    @Override
-    public <S> FragmentAndParameters visit(ArithmeticConstantMapping<S> mapping) {
-        String fragment = mapping.mapColumn(SqlColumn::name) + " = " + mapping.mapColumn(SqlColumn::name) + " " + mapping.operation().getOperator() + " " + mapping.valueSupplier().get(); //$NON-NLS-1$
-        return FragmentAndParameters.withFragment(fragment)
-                .build();
     }
 }

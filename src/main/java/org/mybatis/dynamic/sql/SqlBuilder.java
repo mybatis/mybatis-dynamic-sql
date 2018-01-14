@@ -188,6 +188,7 @@ public interface SqlBuilder {
     }
 
     // functions
+    @SafeVarargs
     static <T extends Number> Add<T> add(BindableColumn<T>... columns) {
         return Add.of(Arrays.asList(columns));
     }
