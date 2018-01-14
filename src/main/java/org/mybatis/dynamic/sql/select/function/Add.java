@@ -16,10 +16,9 @@
 package org.mybatis.dynamic.sql.select.function;
 
 import java.sql.JDBCType;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -28,10 +27,10 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 public class Add<T extends Number> implements BindableColumn<T> {
     
     private String alias;
-    private List<BindableColumn<T>> columns;
+    private List<BindableColumn<T>> columns = new ArrayList<>();
     
     private Add(List<BindableColumn<T>> columns) {
-        this.columns = Objects.requireNonNull(columns);
+        this.columns.addAll(columns);
     }
 
     @Override
@@ -42,8 +41,8 @@ public class Add<T extends Number> implements BindableColumn<T> {
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return columns.stream()
-                      .map(column -> column.renderWithTableAlias(tableAliasCalculator))
-                      .collect(Collectors.joining(" + "));
+                .map(column -> column.renderWithTableAlias(tableAliasCalculator))
+                .collect(Collectors.joining(" + "));
     }
 
     @Override
