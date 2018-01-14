@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -91,6 +91,7 @@ public class SpringTest {
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
         
         SqlParameterSource namedParameters = new MapSqlParameterSource(selectStatement.getParameters());
+        
         List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), namedParameters,
                 new RowMapper<GeneratedAlwaysRecord>(){
                     @Override
@@ -112,6 +113,7 @@ public class SpringTest {
         
         assertThat(records.get(1).getId()).isEqualTo(5);
         assertThat(records.get(2).getId()).isEqualTo(4);
+        
     }
 
     @Test
@@ -151,6 +153,7 @@ public class SpringTest {
         
         assertThat(rows).isEqualTo(1);
         assertThat(generatedKey).isEqualTo("Bob Jones");
+        
     }
     
     @Test
@@ -198,6 +201,7 @@ public class SpringTest {
         int rows = template.update(updateStatement.getUpdateStatement(), parameterSource);
         
         assertThat(rows).isEqualTo(2);
+        
     }
     
     @AfterEach

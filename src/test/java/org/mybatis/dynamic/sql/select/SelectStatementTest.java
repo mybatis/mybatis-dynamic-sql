@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -234,6 +234,30 @@ public class SelectStatementTest {
         
             Map<String, Object> parameters = selectStatement.getParameters();
             softly.assertThat(parameters.size()).isEqualTo(0);
+        });
+    }
+    
+    @Test
+    public void testGroupBySingleColumn() {
+        Date d = new Date();
+
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
+                .from(table, "a")
+                .where(column1, isEqualTo(d))
+                .groupBy(column2)
+                .build()
+                .render(RenderingStrategy.MYBATIS3);
+
+        SoftAssertions.assertSoftly(softly -> {
+            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                    + "from foo a "
+                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                    + "group by a.column2";
+
+            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        
+            Map<String, Object> parameters = selectStatement.getParameters();
+            softly.assertThat(parameters.get("p1")).isEqualTo(d);
         });
     }
 }
