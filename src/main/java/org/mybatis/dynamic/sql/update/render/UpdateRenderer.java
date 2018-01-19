@@ -43,7 +43,7 @@ public class UpdateRenderer {
     public UpdateStatementProvider render() {
         SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy);
 
-        FragmentCollector fc = updateModel.mapColumnValues(toFragmentAndParameters(visitor))
+        FragmentCollector fc = updateModel.mapColumnMappings(toFragmentAndParameters(visitor))
                 .collect(FragmentCollector.collect());
         
         return UpdateStatementProvider.withTableName(updateModel.table().name())
