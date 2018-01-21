@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.select.function;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Substring extends BaseFunction<String, Substring> {
+public class Substring extends AbstractFunction<String, Substring> {
 
     private int offset;
     private int length;
@@ -41,7 +41,7 @@ public class Substring extends BaseFunction<String, Substring> {
     }
     
     @Override
-    protected Substring copyWithColumn(BindableColumn<String> column) {
+    protected Substring copy() {
         return new Substring(column, offset, length);
     }
     

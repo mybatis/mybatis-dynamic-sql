@@ -42,7 +42,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 public class UpdateDSL<R> {
 
     private Function<UpdateModel, R> adapterFunction;
-    private List<UpdateMapping> columnsAndValues = new ArrayList<>();
+    private List<UpdateMapping> columnMappings = new ArrayList<>();
     private SqlTable table;
     
     private UpdateDSL(SqlTable table, Function<UpdateModel, R> adapterFunction) {
@@ -71,7 +71,7 @@ public class UpdateDSL<R> {
      */
     public R build() {
         UpdateModel updateModel = UpdateModel.withTable(table)
-                .withColumnValues(columnsAndValues)
+                .withColumnMappings(columnMappings)
                 .build();
         return adapterFunction.apply(updateModel);
     }
@@ -98,17 +98,17 @@ public class UpdateDSL<R> {
         }
         
         public UpdateDSL<R> equalToNull() {
-            columnsAndValues.add(NullMapping.of(column));
+            columnMappings.add(NullMapping.of(column));
             return UpdateDSL.this;
         }
 
         public UpdateDSL<R> equalToConstant(String constant) {
-            columnsAndValues.add(ConstantMapping.of(column, constant));
+            columnMappings.add(ConstantMapping.of(column, constant));
             return UpdateDSL.this;
         }
         
         public UpdateDSL<R> equalToStringConstant(String constant) {
-            columnsAndValues.add(StringConstantMapping.of(column, constant));
+            columnMappings.add(StringConstantMapping.of(column, constant));
             return UpdateDSL.this;
         }
         
@@ -117,12 +117,12 @@ public class UpdateDSL<R> {
         }
 
         public UpdateDSL<R> equalTo(Supplier<T> valueSupplier) {
-            columnsAndValues.add(ValueMapping.of(column, valueSupplier));
+            columnMappings.add(ValueMapping.of(column, valueSupplier));
             return UpdateDSL.this;
         }
 
         public UpdateDSL<R> equalTo(Buildable<SelectModel> buildable) {
-            columnsAndValues.add(SelectMapping.of(column, buildable));
+            columnMappings.add(SelectMapping.of(column, buildable));
             return UpdateDSL.this;
         }
 
@@ -132,7 +132,7 @@ public class UpdateDSL<R> {
 
         public UpdateDSL<R> equalToWhenPresent(Supplier<T> valueSupplier) {
             if (valueSupplier.get() != null) {
-                columnsAndValues.add(ValueMapping.of(column, valueSupplier));
+                columnMappings.add(ValueMapping.of(column, valueSupplier));
             }
             return UpdateDSL.this;
         }
@@ -142,7 +142,7 @@ public class UpdateDSL<R> {
         }
         
         public UpdateDSL<R> incrementBy(Supplier<T> valueSupplier) {
-            columnsAndValues.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.ADD, valueSupplier));
+            columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.ADD, valueSupplier));
             return UpdateDSL.this;
         }
         
@@ -151,7 +151,7 @@ public class UpdateDSL<R> {
         }
         
         public UpdateDSL<R> decrementBy(Supplier<T> valueSupplier) {
-            columnsAndValues.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.SUBTRACT, valueSupplier));
+            columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.SUBTRACT, valueSupplier));
             return UpdateDSL.this;
         }
         
@@ -160,7 +160,7 @@ public class UpdateDSL<R> {
         }
         
         public UpdateDSL<R> multiplyBy(Supplier<T> valueSupplier) {
-            columnsAndValues.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.MULTIPLY, valueSupplier));
+            columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.MULTIPLY, valueSupplier));
             return UpdateDSL.this;
         }
         
@@ -169,7 +169,7 @@ public class UpdateDSL<R> {
         }
         
         public UpdateDSL<R> divideBy(Supplier<T> valueSupplier) {
-            columnsAndValues.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.DIVIDE, valueSupplier));
+            columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.DIVIDE, valueSupplier));
             return UpdateDSL.this;
         }
     }
@@ -187,7 +187,7 @@ public class UpdateDSL<R> {
         
         public R build() {
             UpdateModel updateModel = UpdateModel.withTable(table)
-                    .withColumnValues(columnsAndValues)
+                    .withColumnMappings(columnMappings)
                     .withWhereModel(buildWhereModel())
                     .build();
             return adapterFunction.apply(updateModel);
