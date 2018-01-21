@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,17 +21,24 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 
-public abstract class BaseFunction<T, S extends BaseFunction<T, S>> implements BindableColumn<T> {
-
+public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>> implements BindableColumn<T> {
     protected BindableColumn<T> column;
-    
-    protected BaseFunction(BindableColumn<T> column) {
+    protected String alias;
+
+    protected AbstractFunction(BindableColumn<T> column) {
         this.column = Objects.requireNonNull(column);
+    }
+    
+    @Override
+    public Optional<String> alias() {
+        return Optional.ofNullable(alias);
     }
 
     @Override
-    public S as(String alias) {
-        return copyWithColumn(column.as(alias));
+    public U as(String alias) {
+        U newThing = copy();
+        newThing.alias = alias;
+        return newThing;
     }
 
     @Override
@@ -43,11 +50,6 @@ public abstract class BaseFunction<T, S extends BaseFunction<T, S>> implements B
     public Optional<String> typeHandler() {
         return column.typeHandler();
     }
-
-    @Override
-    public Optional<String> alias() {
-        return column.alias();
-    }
     
-    protected abstract S copyWithColumn(BindableColumn<T> column);
+    protected abstract U copy();
 }

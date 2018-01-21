@@ -15,28 +15,30 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
+import java.util.List;
+
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Lower extends AbstractFunction<String, Lower> {
+public class Multiply<T extends Number> extends AbstractMultipleColumnArithmeticFunction<T, Multiply<T>> {
     
-    private Lower(BindableColumn<String> column) {
-        super(column);
-    }
-    
-    @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "lower(" //$NON-NLS-1$
-                + column.renderWithTableAlias(tableAliasCalculator)
-                + ")"; //$NON-NLS-1$
+    private Multiply(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            List<BasicColumn> subsequentColumns) {
+        super(firstColumn, secondColumn, subsequentColumns);
     }
 
     @Override
-    protected Lower copy() {
-        return new Lower(column);
+    protected Multiply<T> copy() {
+        return new Multiply<>(column, secondColumn, subsequentColumns);
     }
 
-    public static Lower of(BindableColumn<String> column) {
-        return new Lower(column);
+    @Override
+    protected String operator() {
+        return "*"; //$NON-NLS-1$
+    }
+
+    public static <T extends Number> Multiply<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            List<BasicColumn> subsequentColumns) {
+        return new Multiply<>(firstColumn, secondColumn, subsequentColumns);
     }
 }

@@ -35,8 +35,12 @@ import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
 import org.mybatis.dynamic.sql.select.function.Add;
+import org.mybatis.dynamic.sql.select.function.Constant;
+import org.mybatis.dynamic.sql.select.function.Divide;
 import org.mybatis.dynamic.sql.select.function.Lower;
+import org.mybatis.dynamic.sql.select.function.Multiply;
 import org.mybatis.dynamic.sql.select.function.Substring;
+import org.mybatis.dynamic.sql.select.function.Subtract;
 import org.mybatis.dynamic.sql.select.function.Upper;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
@@ -187,10 +191,38 @@ public interface SqlBuilder {
         return Sum.of(column);
     }
 
+    // constants
+    static <T extends Number> Constant<T> constant(T number) {
+        return Constant.of(number);
+    }
+    
+    static Constant<String> constant(String string) {
+        return Constant.of("'" + string + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
     // functions
     @SafeVarargs
-    static <T extends Number> Add<T> add(BindableColumn<T>... columns) {
-        return Add.of(Arrays.asList(columns));
+    static <T extends Number> Add<T> add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            BasicColumn... subsequentColumns) {
+        return Add.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+    }
+    
+    @SafeVarargs
+    static <T extends Number> Divide<T> divide(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            BasicColumn... subsequentColumns) {
+        return Divide.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+    }
+    
+    @SafeVarargs
+    static <T extends Number> Multiply<T> multiply(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            BasicColumn... subsequentColumns) {
+        return Multiply.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+    }
+    
+    @SafeVarargs
+    static <T extends Number> Subtract<T> subtract(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            BasicColumn... subsequentColumns) {
+        return Subtract.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
     
     static Lower lower(BindableColumn<String> column) {

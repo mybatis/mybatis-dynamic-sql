@@ -15,54 +15,30 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
-import java.sql.JDBCType;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Add<T extends Number> implements BindableColumn<T> {
+public class Add<T extends Number> extends AbstractMultipleColumnArithmeticFunction<T, Add<T>> {
     
-    private String alias;
-    private List<BindableColumn<T>> columns = new ArrayList<>();
-    
-    private Add(List<BindableColumn<T>> columns) {
-        this.columns.addAll(columns);
+    private Add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            List<BasicColumn> subsequentColumns) {
+        super(firstColumn, secondColumn, subsequentColumns);
     }
 
     @Override
-    public Optional<String> alias() {
-        return Optional.ofNullable(alias);
+    protected Add<T> copy() {
+        return new Add<>(column, secondColumn, subsequentColumns);
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return columns.stream()
-                .map(column -> column.renderWithTableAlias(tableAliasCalculator))
-                .collect(Collectors.joining(" + ")); //$NON-NLS-1$
+    protected String operator() {
+        return "+"; //$NON-NLS-1$
     }
 
-    @Override
-    public BindableColumn<T> as(String alias) {
-        Add<T> newColumn = new Add<>(columns);
-        newColumn.alias = alias;
-        return newColumn;
-    }
-
-    @Override
-    public JDBCType jdbcType() {
-        return columns.get(0).jdbcType();
-    }
-
-    @Override
-    public Optional<String> typeHandler() {
-        return columns.get(0).typeHandler();
-    }
-
-    public static <T extends Number> Add<T> of(List<BindableColumn<T>> columns) {
-        return new Add<>(columns);
+    public static <T extends Number> Add<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            List<BasicColumn> subsequentColumns) {
+        return new Add<>(firstColumn, secondColumn, subsequentColumns);
     }
 }

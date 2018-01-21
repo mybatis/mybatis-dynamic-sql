@@ -15,28 +15,39 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
-import org.mybatis.dynamic.sql.BindableColumn;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Lower extends AbstractFunction<String, Lower> {
+public class Constant<T> implements BasicColumn {
+
+    private String alias;
+    private T value;
     
-    private Lower(BindableColumn<String> column) {
-        super(column);
+    private Constant(T value) {
+        this.value = Objects.requireNonNull(value);
     }
-    
+
+    @Override
+    public Optional<String> alias() {
+        return Optional.ofNullable(alias);
+    }
+
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "lower(" //$NON-NLS-1$
-                + column.renderWithTableAlias(tableAliasCalculator)
-                + ")"; //$NON-NLS-1$
+        return value.toString();
     }
 
     @Override
-    protected Lower copy() {
-        return new Lower(column);
+    public Constant<T> as(String alias) {
+        Constant<T> copy = new Constant<>(value);
+        copy.alias = alias;
+        return copy;
     }
-
-    public static Lower of(BindableColumn<String> column) {
-        return new Lower(column);
+    
+    public static <T> Constant<T> of(T value) {
+        return new Constant<>(value);
     }
 }
