@@ -30,10 +30,11 @@
   <inceptionYear>2016</inceptionYear>
 
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
-    <maven.compiler.testSource>1.8</maven.compiler.testSource>
+    <java.version>8</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <maven.compiler.testTarget>${java.version}</maven.compiler.testTarget>
+    <maven.compiler.testSource>${java.version}</maven.compiler.testSource>
     <junit.jupiter.version>5.0.2</junit.jupiter.version>
     <junit.platform.version>1.0.2</junit.platform.version>
     <clirr.comparisonVersion>1.0.0</clirr.comparisonVersion>

@@ -42,7 +42,8 @@ public abstract class AbstractMultipleColumnArithmeticFunction<T extends Number,
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return Stream.of(Stream.of(column), Stream.of(secondColumn), subsequentColumns.stream())
+        // note - the cast below is added for a type inference bug in the Java9 compiler.
+        return Stream.of(Stream.of((BasicColumn) column), Stream.of(secondColumn), subsequentColumns.stream())
                 .flatMap(Function.identity())
                 .map(column -> column.renderWithTableAlias(tableAliasCalculator))
                 .collect(Collectors.joining(padOperator(), "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$
