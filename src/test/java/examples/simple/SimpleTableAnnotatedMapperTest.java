@@ -137,6 +137,8 @@ public class SimpleTableAnnotatedMapperTest {
                     .execute();
             
             assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone");
+            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble");
         } finally {
             session.close();
         }
