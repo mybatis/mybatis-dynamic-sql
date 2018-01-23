@@ -46,12 +46,6 @@ public class LastNameTypeHandler implements TypeHandler<LastName> {
     }
 
     private LastName toLastName(String s) {
-        LastName lastName = null;
-        
-        if (s != null) {
-            return null;
-        }
-        
-        return lastName;
+        return s == null ? null : LastName.of(s);
     }
 }

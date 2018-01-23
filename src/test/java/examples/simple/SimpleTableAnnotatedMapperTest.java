@@ -30,6 +30,7 @@ import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -86,6 +87,25 @@ public class SimpleTableAnnotatedMapperTest {
     }
 
     @Test
+    public void testSelectByExampleWithRowbounds() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            RowBounds rowBounds = new RowBounds(2, 2);
+            
+            List<SimpleTableRecord> rows = mapper.selectByExample(rowBounds)
+                    .where(id, isEqualTo(1))
+                    .or(occupation, isNull())
+                    .build()
+                    .execute();
+            
+            assertThat(rows.size()).isEqualTo(1);
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
     public void testSelectDistinctByExample() {
         SqlSession session = sqlSessionFactory.openSession();
         try {
@@ -98,6 +118,25 @@ public class SimpleTableAnnotatedMapperTest {
                     .execute();
             
             assertThat(rows.size()).isEqualTo(5);
+        } finally {
+            session.close();
+        }
+    }
+    
+    @Test
+    public void testSelectDistinctByExampleWithRowbounds() {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            RowBounds rowBounds = new RowBounds(2, 2);
+            
+            List<SimpleTableRecord> rows = mapper.selectDistinctByExample(rowBounds)
+                    .where(id, isGreaterThan(1))
+                    .or(occupation, isNull())
+                    .build()
+                    .execute();
+            
+            assertThat(rows.size()).isEqualTo(2);
         } finally {
             session.close();
         }
@@ -137,6 +176,8 @@ public class SimpleTableAnnotatedMapperTest {
                     .execute();
             
             assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone");
+            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble");
         } finally {
             session.close();
         }

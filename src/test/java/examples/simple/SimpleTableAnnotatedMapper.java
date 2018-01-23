@@ -19,6 +19,7 @@ import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -28,6 +29,7 @@ import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
@@ -44,6 +46,11 @@ import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
+/**
+ * 
+ * Note: this is the canonical mapper and represents the desired output for MyBatis Generator 
+ *
+ */
 @Mapper
 public interface SimpleTableAnnotatedMapper {
     
@@ -66,6 +73,10 @@ public interface SimpleTableAnnotatedMapper {
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("SimpleTableResult")
+    List<SimpleTableRecord> selectManyWithRowbounds(SelectStatementProvider selectStatement, RowBounds rowBounds);
+    
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    @ResultMap("SimpleTableResult")
     SimpleTableRecord selectOne(SelectStatementProvider selectStatement);
     
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
@@ -73,6 +84,10 @@ public interface SimpleTableAnnotatedMapper {
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
+    
+    default Function<SelectStatementProvider, List<SimpleTableRecord>> selectManyWithRowbounds(RowBounds rowBounds) {
+        return selectStatement -> selectManyWithRowbounds(selectStatement, rowBounds);
+    }
     
     default QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>> countByExample() {
         return SelectDSL.selectWithMapper(this::count, SqlBuilder.count())
@@ -121,8 +136,18 @@ public interface SimpleTableAnnotatedMapper {
             .from(simpleTable);
     }
     
+    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>> selectByExample(RowBounds rowBounds) {
+        return SelectDSL.selectWithMapper(selectManyWithRowbounds(rowBounds), id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+            .from(simpleTable);
+    }
+    
     default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>> selectDistinctByExample() {
         return SelectDSL.selectDistinctWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+            .from(simpleTable);
+    }
+    
+    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>> selectDistinctByExample(RowBounds rowBounds) {
+        return SelectDSL.selectDistinctWithMapper(selectManyWithRowbounds(rowBounds), id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable);
     }
     
@@ -156,7 +181,6 @@ public interface SimpleTableAnnotatedMapper {
 
     default int updateByPrimaryKey(SimpleTableRecord record) {
         return UpdateDSL.updateWithMapper(this::update, simpleTable)
-                .set(id).equalTo(record::getId)
                 .set(firstName).equalTo(record::getFirstName)
                 .set(lastName).equalTo(record::getLastName)
                 .set(birthDate).equalTo(record::getBirthDate)
@@ -169,7 +193,6 @@ public interface SimpleTableAnnotatedMapper {
 
     default int updateByPrimaryKeySelective(SimpleTableRecord record) {
         return UpdateDSL.updateWithMapper(this::update, simpleTable)
-                .set(id).equalToWhenPresent(record::getId)
                 .set(firstName).equalToWhenPresent(record::getFirstName)
                 .set(lastName).equalToWhenPresent(record::getLastName)
                 .set(birthDate).equalToWhenPresent(record::getBirthDate)
