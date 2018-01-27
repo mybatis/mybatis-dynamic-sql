@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package examples.generated.always.spring;
 
-import java.sql.JDBCType;
-
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
@@ -28,10 +26,10 @@ public final class GeneratedAlwaysDynamicSqlSupport {
     public static final SqlColumn<String> fullName = generatedAlways.fullName;
     
     public static final class GeneratedAlways extends SqlTable {
-        public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
-        public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
-        public final SqlColumn<String> lastName = column("last_name", JDBCType.VARCHAR);
-        public final SqlColumn<String> fullName = column("full_name", JDBCType.VARCHAR);
+        public final SqlColumn<Integer> id = column("id");
+        public final SqlColumn<String> firstName = column("first_name");
+        public final SqlColumn<String> lastName = column("last_name");
+        public final SqlColumn<String> fullName = column("full_name");
 
         public GeneratedAlways() {
             super("GeneratedAlways");

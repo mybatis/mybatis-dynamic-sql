@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
  */
 public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implements BasicColumn {
     protected BasicColumn column;
-    protected Optional<String> alias = Optional.empty();
+    protected String alias;
 
     protected AbstractAggregate(BasicColumn column) {
         this.column = Objects.requireNonNull(column);
@@ -38,7 +38,7 @@ public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implemen
 
     @Override
     public Optional<String> alias() {
-        return alias;
+        return Optional.ofNullable(alias);
     }
 
     @Override
@@ -49,7 +49,7 @@ public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implemen
     @Override
     public T as(String alias) {
         T copy = copy();
-        copy.alias = Optional.of(alias);
+        copy.alias = alias;
         return copy;
     }
 
