@@ -142,7 +142,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>5.0.2.RELEASE</version>
+      <version>5.0.3.RELEASE</version>
       <scope>test</scope>
     </dependency>
     <dependency>
