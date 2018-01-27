@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,10 +24,18 @@ public class MyBatis3RenderingStrategy extends RenderingStrategy {
                 + prefix
                 + "." //$NON-NLS-1$
                 + parameterName
-                + ",jdbcType=" //$NON-NLS-1$
-                + column.jdbcType().getName()
-                + column.typeHandler().map(th -> ",typeHandler=" + th) //$NON-NLS-1$
-                    .orElse("") //$NON-NLS-1$
+                + renderJdbcType(column)
+                + renderTypeHandler(column)
                 + "}"; //$NON-NLS-1$
+    }
+    
+    private String renderTypeHandler(BindableColumn<?> column) {
+        return column.typeHandler().map(th -> ",typeHandler=" + th) //$NON-NLS-1$
+                .orElse(""); //$NON-NLS-1$
+    }
+    
+    private String renderJdbcType(BindableColumn<?> column) {
+        return column.jdbcType().map(jt -> ",jdbcType=" + jt.getName()) //$NON-NLS-1$
+                .orElse(""); //$NON-NLS-1$
     }
 }

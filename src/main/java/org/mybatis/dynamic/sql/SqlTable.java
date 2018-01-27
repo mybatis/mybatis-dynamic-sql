@@ -30,6 +30,10 @@ public class SqlTable {
         return name;
     }
     
+    public <T> SqlColumn<T> column(String name) {
+        return SqlColumn.of(name, this);
+    }
+
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType) {
         return SqlColumn.of(name, this, jdbcType);
     }

@@ -27,14 +27,14 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected SqlTable table;
     protected JDBCType jdbcType;
     protected boolean isDescending = false;
-    protected Optional<String> alias = Optional.empty();
-    protected Optional<String> typeHandler;
+    protected String alias;
+    protected String typeHandler;
     
     private SqlColumn(Builder builder) {
         name = Objects.requireNonNull(builder.name);
-        jdbcType = Objects.requireNonNull(builder.jdbcType);
+        jdbcType = builder.jdbcType;
         table = Objects.requireNonNull(builder.table);
-        typeHandler = Optional.ofNullable(builder.typeHandler);
+        typeHandler = builder.typeHandler;
     }
     
     protected SqlColumn(SqlColumn<?> sqlColumn) {
@@ -51,18 +51,18 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
     
     @Override
-    public JDBCType jdbcType() {
-        return jdbcType;
+    public Optional<JDBCType> jdbcType() {
+        return Optional.ofNullable(jdbcType);
     }
 
     @Override
     public Optional<String> alias() {
-        return alias;
+        return Optional.ofNullable(alias);
     }
     
     @Override
     public Optional<String> typeHandler() {
-        return typeHandler;
+        return Optional.ofNullable(typeHandler);
     }
     
     @Override
@@ -75,7 +75,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     @Override
     public SqlColumn<T> as(String alias) {
         SqlColumn<T> column = new SqlColumn<>(this);
-        column.alias = Optional.of(alias);
+        column.alias = alias;
         return column;
     }
     
@@ -86,7 +86,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     
     @Override
     public String aliasOrName() {
-        return alias.orElse(name);
+        return alias().orElse(name);
     }
     
     @Override
@@ -98,12 +98,18 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
         SqlColumn<S> column = new SqlColumn<>(this);
-        column.typeHandler = Optional.of(typeHandler);
+        column.typeHandler = typeHandler;
         return column;
     }
 
     private String applyTableAlias(String tableAlias) {
         return tableAlias + "." + name(); //$NON-NLS-1$
+    }
+    
+    public static <T> SqlColumn<T> of(String name, SqlTable table) {
+        return SqlColumn.withName(name)
+                .withTable(table)
+                .build();
     }
     
     public static <T> SqlColumn<T> of(String name, SqlTable table, JDBCType jdbcType) {

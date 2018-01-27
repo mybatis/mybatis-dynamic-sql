@@ -42,7 +42,7 @@ public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>> impl
     }
 
     @Override
-    public JDBCType jdbcType() {
+    public Optional<JDBCType> jdbcType() {
         return column.jdbcType();
     }
 
