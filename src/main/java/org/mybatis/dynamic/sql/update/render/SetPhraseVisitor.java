@@ -91,7 +91,7 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
                 + " " //$NON-NLS-1$
                 + mapping.operation().getOperator()
                 + " " //$NON-NLS-1$
-                + jdbcPlaceholder;
+                + mapping.valueSupplier() == null ? jdbcPlaceholder : mapping.valueSupplier().get().toString();
         return FragmentAndParameters.withFragment(fragment)
                 .build();
     }
