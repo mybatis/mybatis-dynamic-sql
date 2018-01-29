@@ -87,8 +87,14 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
                 + mapping.mapColumn(SqlColumn::name)
                 + " " //$NON-NLS-1$
                 + mapping.operation().getOperator()
-                + " " //$NON-NLS-1$
-                + mapping.valueSupplier().get();
+                + " "; //$NON-NLS-1$
+        if (mapping.valueSupplier().get() == null) {
+            String mapKey = "p" + sequence.getAndIncrement(); //$NON-NLS-1$
+            String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
+            fragment += jdbcPlaceholder;
+        } else {
+            fragment += mapping.valueSupplier().get().toString();
+        }
         return FragmentAndParameters.withFragment(fragment)
                 .build();
     }

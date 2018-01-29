@@ -141,6 +141,10 @@ public class UpdateDSL<R> {
             return incrementBy(() -> value);
         }
         
+        public UpdateDSL<R> incrementBy() {
+            return incrementBy(() -> null);
+        }
+        
         public UpdateDSL<R> incrementBy(Supplier<T> valueSupplier) {
             columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.ADD, valueSupplier));
             return UpdateDSL.this;
@@ -148,6 +152,10 @@ public class UpdateDSL<R> {
         
         public UpdateDSL<R> decrementBy(T value) {
             return decrementBy(() -> value);
+        }
+        
+        public UpdateDSL<R> decrementBy() {
+            return decrementBy(() -> null);
         }
         
         public UpdateDSL<R> decrementBy(Supplier<T> valueSupplier) {
@@ -159,6 +167,10 @@ public class UpdateDSL<R> {
             return multiplyBy(() -> value);
         }
         
+        public UpdateDSL<R> multiplyBy() {
+            return multiplyBy(() -> null);
+        }
+        
         public UpdateDSL<R> multiplyBy(Supplier<T> valueSupplier) {
             columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.MULTIPLY, valueSupplier));
             return UpdateDSL.this;
@@ -166,6 +178,10 @@ public class UpdateDSL<R> {
         
         public UpdateDSL<R> divideBy(T value) {
             return divideBy(() -> value);
+        }
+        
+        public UpdateDSL<R> divideBy() {
+            return divideBy(() -> null);
         }
         
         public UpdateDSL<R> divideBy(Supplier<T> valueSupplier) {
