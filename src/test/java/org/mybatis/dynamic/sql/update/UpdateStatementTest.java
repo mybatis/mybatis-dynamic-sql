@@ -182,10 +182,10 @@ public class UpdateStatementTest {
                 .render(RenderingStrategy.MYBATIS3);
         
         String expectedStatement = "update foo " 
-                + "set id = id + 1, "
-                + "id = id - 2, "
-                + "id = id * 3, "
-                + "id = id / 4";
+                + "set id = id + #{parameters.p1,jdbcType=INTEGER}, "
+                + "id = id - #{parameters.p2,jdbcType=INTEGER}, "
+                + "id = id * #{parameters.p3,jdbcType=INTEGER}, "
+                + "id = id / #{parameters.p4,jdbcType=INTEGER}";
                 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement);
