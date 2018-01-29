@@ -82,16 +82,19 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
 
     @Override
     public <S> FragmentAndParameters visit(ArithmeticConstantMapping<S> mapping) {
-        String mapKey = "p" + sequence.getAndIncrement(); //$NON-NLS-1$
-
-        String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
         String fragment = mapping.mapColumn(SqlColumn::name)
                 + " = " //$NON-NLS-1$
                 + mapping.mapColumn(SqlColumn::name)
                 + " " //$NON-NLS-1$
                 + mapping.operation().getOperator()
-                + " " //$NON-NLS-1$
-                + mapping.valueSupplier() == null ? jdbcPlaceholder : mapping.valueSupplier().get().toString();
+                + " "; //$NON-NLS-1$
+        if (mapping.valueSupplier().get() == null) {
+            String mapKey = "p" + sequence.getAndIncrement(); //$NON-NLS-1$
+            String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
+            fragment += jdbcPlaceholder;
+        } else {
+            fragment += mapping.valueSupplier().get().toString();
+        }
         return FragmentAndParameters.withFragment(fragment)
                 .build();
     }
