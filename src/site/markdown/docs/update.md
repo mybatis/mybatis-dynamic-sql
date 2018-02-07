@@ -25,6 +25,7 @@ Notice the `set` method. It is used to set the value of a database column.  Ther
 6. `set(column).equalToWhenPresent(T value)` will set a value into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" update as defined in MyBatis Generator.
 7. `set(column).equalToWhenPresent(Supplier<T> valueSupplier)` will set a value into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" update as defined in MyBatis Generator.
 8. `set(column).equalTo(Buildable<SelectModel> selectModelBuilder)` will set the result of a sub-query into a column.  The query should only have one column and the type of the returned column must be able to be converted by the database if it is not the same type. These constraints are NOT validated by the library.
+9. `set(column).equalTo(BasicColumn rightColumn)` will set the value of a column the be the value of another column.  This is also useful for specifying a function such as add, subtract, etc.
 
 You can also build an update statement without a where clause.  This will update every row in a table.
 For example:

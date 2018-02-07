@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -28,9 +29,8 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.mybatis.dynamic.sql.util.ArithmeticConstantMapping;
-import org.mybatis.dynamic.sql.util.ArithmeticOperation;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.ColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.SelectMapping;
@@ -126,6 +126,11 @@ public class UpdateDSL<R> {
             return UpdateDSL.this;
         }
 
+        public UpdateDSL<R> equalTo(BasicColumn rightColumn) {
+            columnMappings.add(ColumnMapping.of(column, rightColumn));
+            return UpdateDSL.this;
+        }
+
         public UpdateDSL<R> equalToWhenPresent(T value) {
             return equalToWhenPresent(() -> value);
         }
@@ -134,42 +139,6 @@ public class UpdateDSL<R> {
             if (valueSupplier.get() != null) {
                 columnMappings.add(ValueMapping.of(column, valueSupplier));
             }
-            return UpdateDSL.this;
-        }
-        
-        public UpdateDSL<R> incrementBy(T value) {
-            return incrementBy(() -> value);
-        }
-        
-        public UpdateDSL<R> incrementBy(Supplier<T> valueSupplier) {
-            columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.ADD, valueSupplier));
-            return UpdateDSL.this;
-        }
-        
-        public UpdateDSL<R> decrementBy(T value) {
-            return decrementBy(() -> value);
-        }
-        
-        public UpdateDSL<R> decrementBy(Supplier<T> valueSupplier) {
-            columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.SUBTRACT, valueSupplier));
-            return UpdateDSL.this;
-        }
-        
-        public UpdateDSL<R> multiplyBy(T value) {
-            return multiplyBy(() -> value);
-        }
-        
-        public UpdateDSL<R> multiplyBy(Supplier<T> valueSupplier) {
-            columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.MULTIPLY, valueSupplier));
-            return UpdateDSL.this;
-        }
-        
-        public UpdateDSL<R> divideBy(T value) {
-            return divideBy(() -> value);
-        }
-        
-        public UpdateDSL<R> divideBy(Supplier<T> valueSupplier) {
-            columnMappings.add(ArithmeticConstantMapping.of(column, ArithmeticOperation.DIVIDE, valueSupplier));
             return UpdateDSL.this;
         }
     }

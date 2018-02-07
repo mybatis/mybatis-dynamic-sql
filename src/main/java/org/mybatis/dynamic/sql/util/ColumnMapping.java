@@ -15,19 +15,28 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public enum ArithmeticOperation {
-    ADD("+"), //$NON-NLS-1$
-    SUBTRACT("-"), //$NON-NLS-1$
-    MULTIPLY("*"), //$NON-NLS-1$
-    DIVIDE("/"); //$NON-NLS-1$
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SqlColumn;
+
+public class ColumnMapping extends AbstractColumnMapping implements UpdateMapping {
+
+    private BasicColumn rightColumn;
     
-    private String operator;
-    
-    private ArithmeticOperation(String operator) {
-        this.operator = operator;
+    private ColumnMapping(SqlColumn<?> column, BasicColumn rightColumn) {
+        super(column);
+        this.rightColumn = rightColumn;
     }
     
-    public String getOperator() {
-        return operator;
+    public BasicColumn rightColumn() {
+        return rightColumn;
+    }
+    
+    @Override
+    public <R> R accept(UpdateMappingVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+    public static ColumnMapping of(SqlColumn<?> column, BasicColumn rightColumn) {
+        return new ColumnMapping(column, rightColumn);
     }
 }

@@ -49,6 +49,7 @@ import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
@@ -639,7 +640,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectStatementProvider selectStatement = select(id, animalName, constant(3).as("some_number"))
+            SelectStatementProvider selectStatement = select(id, animalName, constant("3").as("some_number"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
                     .build()
@@ -672,7 +673,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectStatementProvider selectStatement = select(id, animalName, constant("fred").as("some_string"))
+            SelectStatementProvider selectStatement = select(id, animalName, stringConstant("fred").as("some_string"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
                     .build()
@@ -738,7 +739,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectStatementProvider selectStatement = select(id, animalName, add(bodyWeight, constant(22), constant(33)).as("calculated_weight"))
+            SelectStatementProvider selectStatement = select(id, animalName, add(bodyWeight, constant("22"), constant("33")).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
                     .build()
@@ -804,7 +805,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectStatementProvider selectStatement = select(id, animalName, divide(bodyWeight, constant(10.0)).as("calculated_weight"))
+            SelectStatementProvider selectStatement = select(id, animalName, divide(bodyWeight, constant("10.0")).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
                     .build()
@@ -870,7 +871,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectStatementProvider selectStatement = select(id, animalName, multiply(bodyWeight, constant(2.0)).as("calculated_weight"))
+            SelectStatementProvider selectStatement = select(id, animalName, multiply(bodyWeight, constant("2.0")).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
                     .build()
@@ -936,7 +937,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectStatementProvider selectStatement = select(id, animalName, subtract(bodyWeight, constant(5.5)).as("calculated_weight"))
+            SelectStatementProvider selectStatement = select(id, animalName, subtract(bodyWeight, constant("5.5")).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
                     .build()
@@ -969,7 +970,7 @@ public class AnimalDataTest {
         try {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
-            SelectStatementProvider selectStatement = select(id, animalName, add(multiply(bodyWeight, constant(5.5)), subtract(brainWeight, constant(2))).as("calculated_weight"))
+            SelectStatementProvider selectStatement = select(id, animalName, add(multiply(bodyWeight, constant("5.5")), subtract(brainWeight, constant("2"))).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
                     .build()
@@ -1809,6 +1810,80 @@ public class AnimalDataTest {
 
             int rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(20);
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testUpdateWithAddAndSubtract() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            UpdateStatementProvider updateStatement = update(animalData)
+                    .set(brainWeight).equalTo(add(brainWeight, constant("2")))
+                    .set(bodyWeight).equalTo(subtract(bodyWeight, constant("3")))
+                    .where(id, isEqualTo(1))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "update AnimalData "
+                    + "set brain_weight = (brain_weight + 2), body_weight = (body_weight - 3) "
+                    + "where id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
+            assertThat(updateStatement.getParameters().size()).isEqualTo(1);
+            assertThat(updateStatement.getParameters().get("p1")).isEqualTo(1);
+
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(1);
+            
+            AnimalData record = SelectDSL.selectWithMapper(mapper::selectOne, id, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id,  isEqualTo(1))
+                    .build()
+                    .execute();
+            
+            assertThat(record.getBodyWeight()).isEqualTo(-2.86);
+            assertThat(record.getBrainWeight()).isEqualTo(2.005);
+            
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testUpdateWithMultiplyAndDivide() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            UpdateStatementProvider updateStatement = update(animalData)
+                    .set(brainWeight).equalTo(divide(brainWeight, constant("2")))
+                    .set(bodyWeight).equalTo(multiply(bodyWeight, constant("3")))
+                    .where(id, isEqualTo(1))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "update AnimalData "
+                    + "set brain_weight = (brain_weight / 2), body_weight = (body_weight * 3) "
+                    + "where id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
+            assertThat(updateStatement.getParameters().size()).isEqualTo(1);
+            assertThat(updateStatement.getParameters().get("p1")).isEqualTo(1);
+
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(1);
+            
+            AnimalData record = SelectDSL.selectWithMapper(mapper::selectOne, id, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id,  isEqualTo(1))
+                    .build()
+                    .execute();
+            
+            assertThat(record.getBodyWeight()).isEqualTo(0.42, within(.001));
+            assertThat(record.getBrainWeight()).isEqualTo(.0025);
+            
         } finally {
             sqlSession.close();
         }

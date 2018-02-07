@@ -174,18 +174,18 @@ public class UpdateStatementTest {
     @Test
     public void testUpdateStatementArithmeticOperation() {
         UpdateStatementProvider updateStatement = update(foo)
-                .set(id).incrementBy(1)
-                .set(id).decrementBy(2)
-                .set(id).multiplyBy(3)
-                .set(id).divideBy(4)
+                .set(id).equalTo(add(id, constant("1")))
+                .set(id).equalTo(subtract(id, constant("2")))
+                .set(id).equalTo(multiply(id, constant("3")))
+                .set(id).equalTo(divide(id, constant("4")))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
         String expectedStatement = "update foo " 
-                + "set id = id + 1, "
-                + "id = id - 2, "
-                + "id = id * 3, "
-                + "id = id / 4";
+                + "set id = (id + 1), "
+                + "id = (id - 2), "
+                + "id = (id * 3), "
+                + "id = (id / 4)";
                 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement);
