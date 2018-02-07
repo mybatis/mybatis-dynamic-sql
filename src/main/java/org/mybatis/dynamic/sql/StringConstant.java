@@ -13,20 +13,19 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.function;
+package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Constant<T> implements BasicColumn {
+public class StringConstant implements BasicColumn {
 
     private String alias;
-    private T value;
+    private String value;
     
-    private Constant(T value) {
+    private StringConstant(String value) {
         this.value = Objects.requireNonNull(value);
     }
 
@@ -37,17 +36,17 @@ public class Constant<T> implements BasicColumn {
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return value.toString();
+        return "'" + value + "'"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
-    public Constant<T> as(String alias) {
-        Constant<T> copy = new Constant<>(value);
+    public StringConstant as(String alias) {
+        StringConstant copy = new StringConstant(value);
         copy.alias = alias;
         return copy;
     }
     
-    public static <T> Constant<T> of(T value) {
-        return new Constant<>(value);
+    public static StringConstant of(String value) {
+        return new StringConstant(value);
     }
 }

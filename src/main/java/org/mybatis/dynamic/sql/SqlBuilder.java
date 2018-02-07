@@ -35,7 +35,6 @@ import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
 import org.mybatis.dynamic.sql.select.function.Add;
-import org.mybatis.dynamic.sql.select.function.Constant;
 import org.mybatis.dynamic.sql.select.function.Divide;
 import org.mybatis.dynamic.sql.select.function.Lower;
 import org.mybatis.dynamic.sql.select.function.Multiply;
@@ -192,12 +191,12 @@ public interface SqlBuilder {
     }
 
     // constants
-    static <T extends Number> Constant<T> constant(T number) {
-        return Constant.of(number);
+    static Constant constant(String constant) {
+        return Constant.of(constant);
     }
     
-    static Constant<String> constant(String string) {
-        return Constant.of("'" + string + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+    static StringConstant stringConstant(String constant) {
+        return StringConstant.of(constant);
     }
     
     // functions
