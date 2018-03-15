@@ -42,7 +42,7 @@ public class SelectRenderer {
                 .mapQueryExpressions(this::renderQueryExpression)
                 .collect(QueryExpressionCollector.collect());
         
-        return SelectStatementProvider.withQueryExpression(collector.queryExpression())
+        return DefaultSelectStatementProvider.withQueryExpression(collector.queryExpression())
                 .withParameters(collector.parameters())
                 .withOrderByClause(selectModel.orderByModel().map(this::renderOrderBy))
                 .build();

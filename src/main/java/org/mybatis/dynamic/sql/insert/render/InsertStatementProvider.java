@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,66 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
-import java.util.Objects;
-
-public class InsertStatementProvider<T> {
-    private String tableName;
-    private String columnsPhrase;
-    private String valuesPhrase;
-    private T record;
+public interface InsertStatementProvider<T> {
+    T getRecord();
     
-    private InsertStatementProvider(Builder<T> builder) {
-        tableName = Objects.requireNonNull(builder.tableName);
-        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
-        valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
-        record = Objects.requireNonNull(builder.record);
-    }
-    
-    public T getRecord() {
-        return record;
-    }
-    
-    public String getInsertStatement() {
-        return "insert into" //$NON-NLS-1$
-                + spaceBefore(tableName)
-                + spaceBefore(columnsPhrase)
-                + spaceBefore(valuesPhrase);
-    }
-
-    public static <T> Builder<T> withRecord(T record) {
-        return new Builder<T>().withRecord(record);
-    }
-    
-    public static class Builder<T> {
-        private String tableName;
-        private String columnsPhrase;
-        private String valuesPhrase;
-        private T record;
-        
-        public Builder<T> withTableName(String tableName) {
-            this.tableName = tableName;
-            return this;
-        }
-
-        public Builder<T> withColumnsPhrase(String columnsPhrase) {
-            this.columnsPhrase = columnsPhrase;
-            return this;
-        }
-        
-        public Builder<T> withValuesPhrase(String valuesPhrase) {
-            this.valuesPhrase = valuesPhrase;
-            return this;
-        }
-        
-        public Builder<T> withRecord(T record) {
-            this.record = record;
-            return this;
-        }
-        
-        public InsertStatementProvider<T> build() {
-            return new InsertStatementProvider<>(this);
-        }
-    }
+    String getInsertStatement();
 }

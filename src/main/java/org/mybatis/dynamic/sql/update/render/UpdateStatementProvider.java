@@ -15,81 +15,10 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
+public interface UpdateStatementProvider {
+    Map<String, Object> getParameters();
 
-/**
- * This class combines a "set" clause and a "where" clause into one parameter object
- * that can be sent to a MyBatis3 mapper method.
- * 
- * @author Jeff Butler
- *
- */
-public class UpdateStatementProvider {
-    private String tableName;
-    private String setClause;
-    private Optional<String> whereClause;
-    private Map<String, Object> parameters = new HashMap<>();
-
-    private UpdateStatementProvider(Builder builder) {
-        tableName = Objects.requireNonNull(builder.tableName);
-        setClause = Objects.requireNonNull(builder.setClause);
-        whereClause = Optional.ofNullable(builder.whereClause);
-        parameters.putAll(builder.parameters);
-    }
-
-    public Map<String, Object> getParameters() {
-        return parameters;
-    }
-
-    public String getUpdateStatement() {
-        return "update" //$NON-NLS-1$
-                + spaceBefore(tableName)
-                + spaceBefore(setClause)
-                + spaceBefore(whereClause);
-    }
-    
-    public static Builder withTableName(String tableName) {
-        return new Builder().withTableName(tableName);
-    }
-    
-    public static class Builder {
-        private String tableName;
-        private String setClause;
-        private String whereClause;
-        private Map<String, Object> parameters = new HashMap<>();
-        
-        public Builder withTableName(String tableName) {
-            this.tableName = tableName;
-            return this;
-        }
-        
-        public Builder withSetClause(String setClause) {
-            this.setClause = setClause;
-            return this;
-        }
-        
-        public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
-            whereClauseProvider.ifPresent(wcp -> {
-                whereClause = wcp.getWhereClause();
-                parameters.putAll(wcp.getParameters());
-            });
-            return this;
-        }
-        
-        public Builder withParameters(Map<String, Object> parameters) {
-            this.parameters.putAll(parameters);
-            return this;
-        }
-        
-        public UpdateStatementProvider build() {
-            return new UpdateStatementProvider(this);
-        }
-    }
+    String getUpdateStatement();
 }

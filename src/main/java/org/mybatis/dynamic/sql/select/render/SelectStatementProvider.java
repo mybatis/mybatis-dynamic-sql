@@ -15,60 +15,10 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
-import org.mybatis.dynamic.sql.util.StringUtilities;
+public interface SelectStatementProvider {
+    Map<String, Object> getParameters();
 
-public class SelectStatementProvider {
-    
-    private String queryExpression;
-    private Map<String, Object> parameters;
-    private Optional<String> orderByClause;
-    
-    private SelectStatementProvider(Builder builder) {
-        queryExpression = Objects.requireNonNull(builder.queryExpression);
-        orderByClause = Objects.requireNonNull(builder.orderByClause);
-        parameters = Collections.unmodifiableMap(Objects.requireNonNull(builder.parameters));
-    }
-    
-    public Map<String, Object> getParameters() {
-        return parameters;
-    }
-    
-    public String getSelectStatement() {
-        return queryExpression + StringUtilities.spaceBefore(orderByClause);
-    }
-    
-    public static Builder withQueryExpression(String queryExpression) {
-        return new Builder().withQueryExpression(queryExpression);
-    }
-    
-    public static class Builder {
-        private String queryExpression;
-        private Optional<String> orderByClause = Optional.empty();
-        private Map<String, Object> parameters = new HashMap<>();
-        
-        public Builder withQueryExpression(String queryExpression) {
-            this.queryExpression = queryExpression;
-            return this;
-        }
-        
-        public Builder withOrderByClause(Optional<String> orderByClause) {
-            this.orderByClause = orderByClause;
-            return this;
-        }
-        
-        public Builder withParameters(Map<String, Object> parameters) {
-            this.parameters.putAll(parameters);
-            return this;
-        }
-        
-        public SelectStatementProvider build() {
-            return new SelectStatementProvider(this);
-        }
-    }
+    String getSelectStatement();
 }

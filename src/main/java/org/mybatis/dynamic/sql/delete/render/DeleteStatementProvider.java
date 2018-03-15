@@ -15,60 +15,10 @@
  */
 package org.mybatis.dynamic.sql.delete.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
-
-public class DeleteStatementProvider {
-    private String tableName;
-    private Optional<String> whereClause;
-    private Map<String, Object> parameters;
+public interface DeleteStatementProvider {
+    Map<String, Object> getParameters();
     
-    private DeleteStatementProvider(Builder builder) {
-        tableName = Objects.requireNonNull(builder.tableName);
-        whereClause = Optional.ofNullable(builder.whereClause);
-        parameters = Objects.requireNonNull(builder.parameters);
-    }
-    
-    public Map<String, Object> getParameters() {
-        return parameters;
-    }
-    
-    public String getDeleteStatement() {
-        return "delete from" //$NON-NLS-1$
-                + spaceBefore(tableName)
-                + spaceBefore(whereClause);
-    }
-
-    public static Builder withTableName(String tableName) {
-        return new Builder().withTableName(tableName);
-    }
-    
-    public static class Builder {
-        private String tableName;
-        private String whereClause;
-        private Map<String, Object> parameters = new HashMap<>();
-        
-        public Builder withTableName(String tableName) {
-            this.tableName = tableName;
-            return this;
-        }
-        
-        public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
-            whereClauseProvider.ifPresent(wcp -> {
-                whereClause = wcp.getWhereClause();
-                parameters.putAll(wcp.getParameters());
-            });
-            return this;
-        }
-        
-        public DeleteStatementProvider build() {
-            return new DeleteStatementProvider(this);
-        }
-    }
+    String getDeleteStatement();
 }

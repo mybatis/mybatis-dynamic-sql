@@ -17,65 +17,43 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-public class BatchInsert<T> {
+public class DefaultInsertStatementProvider<T> implements InsertStatementProvider<T> {
     private String tableName;
     private String columnsPhrase;
     private String valuesPhrase;
-    private List<T> records;
+    private T record;
     
-    private BatchInsert(Builder<T> builder) {
+    private DefaultInsertStatementProvider(Builder<T> builder) {
         tableName = Objects.requireNonNull(builder.tableName);
         columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
         valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
-        records = Collections.unmodifiableList(Objects.requireNonNull(builder.records));
+        record = Objects.requireNonNull(builder.record);
     }
     
-    /**
-     * Returns a list of InsertStatement objects.  This is useful for MyBatis batch support.
-     * 
-     * @return a List of InsertStatements
-     */
-    public List<InsertStatementProvider<T>> insertStatements() {
-        return records.stream()
-                .map(this::toInsertStatement)
-                .collect(Collectors.toList());
+    @Override
+    public T getRecord() {
+        return record;
     }
     
-    private InsertStatementProvider<T> toInsertStatement(T record) {
-        return DefaultInsertStatementProvider.withRecord(record)
-                .withTableName(tableName)
-                .withColumnsPhrase(columnsPhrase)
-                .withValuesPhrase(valuesPhrase)
-                .build();
-    }
-
-    /**
-     * Returns the generated SQL for this batch.  This is useful for Spring JDBC batch support.
-     * 
-     * @return the generated INSERT statement
-     */
-    public String getInsertStatementSQL() {
+    @Override
+    public String getInsertStatement() {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(tableName)
                 + spaceBefore(columnsPhrase)
                 + spaceBefore(valuesPhrase);
     }
-    
-    public static <T> Builder<T> withRecords(List<T> records) {
-        return new Builder<T>().withRecords(records);
+
+    public static <T> Builder<T> withRecord(T record) {
+        return new Builder<T>().withRecord(record);
     }
     
     public static class Builder<T> {
         private String tableName;
         private String columnsPhrase;
         private String valuesPhrase;
-        private List<T> records = new ArrayList<>();
+        private T record;
         
         public Builder<T> withTableName(String tableName) {
             this.tableName = tableName;
@@ -92,13 +70,13 @@ public class BatchInsert<T> {
             return this;
         }
         
-        public Builder<T> withRecords(List<T> records) {
-            this.records.addAll(records);
+        public Builder<T> withRecord(T record) {
+            this.record = record;
             return this;
         }
         
-        public BatchInsert<T> build() {
-            return new BatchInsert<>(this);
+        public DefaultInsertStatementProvider<T> build() {
+            return new DefaultInsertStatementProvider<>(this);
         }
     }
 }

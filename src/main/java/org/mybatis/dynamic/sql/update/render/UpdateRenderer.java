@@ -46,7 +46,7 @@ public class UpdateRenderer {
         FragmentCollector fc = updateModel.mapColumnMappings(toFragmentAndParameters(visitor))
                 .collect(FragmentCollector.collect());
         
-        return UpdateStatementProvider.withTableName(updateModel.table().name())
+        return DefaultUpdateStatementProvider.withTableName(updateModel.table().name())
                 .withSetClause(calculateSetPhrase(fc))
                 .withParameters(fc.parameters())
                 .withWhereClause(updateModel.whereModel().map(this::renderWhereClause))
