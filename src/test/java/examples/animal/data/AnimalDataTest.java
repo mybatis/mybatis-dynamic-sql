@@ -965,6 +965,25 @@ public class AnimalDataTest {
     }
     
     @Test
+    public void testModulo() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        try {
+            SelectStatementProvider selectStatement = select(id, animalName, modulo(bodyWeight, 2).as("calculated_weight"))
+                    .from(animalData, "a")
+                    .where(modulo(id, 2), isEqualTo(0))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+
+            String expected = "select a.id, a.animal_name, a.body_weight % 2 as calculated_weight "
+                    + "from AnimalData a "
+                    + "where a.id % 2 = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+        } finally {
+            sqlSession.close();
+        }
+    }
+    
+    @Test
     public void testComplexExpression() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
