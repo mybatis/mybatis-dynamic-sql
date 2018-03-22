@@ -74,8 +74,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     
     @Test
     public void testSelectByExample() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
             SelectStatementProvider selectStatement = selectByExample()
@@ -86,15 +85,12 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectStatement);
             
             assertThat(rows.size()).isEqualTo(1);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testFirstNameIn() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
             SelectStatementProvider selectStatement = selectByExample()
@@ -105,15 +101,12 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectStatement);
             
             assertThat(rows.size()).isEqualTo(2);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testInsert() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setId(100);
@@ -126,15 +119,12 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                 softly.assertThat(rows).isEqualTo(1);
                 softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
             });
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testBatchInsertWithList() {
-        SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH);
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
             
@@ -154,15 +144,12 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             assertThat(records.get(1).getFullName()).isEqualTo("Jane Jetson");
             assertThat(records.get(2).getFullName()).isEqualTo("Judy Jetson");
             assertThat(records.get(3).getFullName()).isEqualTo("Elroy Jetson");
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testBatchInsertWithArray() {
-        SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH);
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
 
             GeneratedAlwaysRecord record1 = new GeneratedAlwaysRecord();
@@ -189,8 +176,6 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             
             assertThat(record1.getFullName()).isEqualTo("George Jetson");
             assertThat(record2.getFullName()).isEqualTo("Jane Jetson");
-        } finally {
-            session.close();
         }
     }
     
@@ -225,8 +210,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
 
     @Test
     public void testInsertSelective() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setId(100);
@@ -239,15 +223,12 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                 softly.assertThat(rows).isEqualTo(1);
                 softly.assertThat(record.getFullName()).isEqualTo("Joe Jones");
             });
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testUpdateByPrimaryKey() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setId(100);
@@ -266,15 +247,12 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                 GeneratedAlwaysRecord newRecord = mapper.selectByPrimaryKey(selectByPrimaryKey(100));
                 softly.assertThat(newRecord.getFullName()).isEqualTo("Joe Smith");
             });
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testUpdateByExampleSelective() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setLastName("Jones");
@@ -300,15 +278,12 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                 softly.assertThat(records.get(1).getFullName()).isEqualTo("Pebbles Jones");
                 softly.assertThat(records.get(2).getFullName()).isEqualTo("Wilma Jones");
             });
-        } finally {
-            session.close();
         }
     }
     
     @Test
     public void testUpdateByExample() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
             record.setId(100);
@@ -330,8 +305,6 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                 softly.assertThat(newRecord.getLastName()).isEqualTo("Smith");
                 softly.assertThat(newRecord.getFullName()).isEqualTo("Joe Smith");
             });
-        } finally {
-            session.close();
         }
     }
 }
