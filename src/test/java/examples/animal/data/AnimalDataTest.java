@@ -18,6 +18,7 @@ package examples.animal.data;
 import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
@@ -37,7 +38,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -88,10 +88,10 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(animals.size()).isEqualTo(65);
-                softly.assertThat(animals.get(0).getId()).isEqualTo(1);
-            });
+            assertAll(
+                    () -> assertThat(animals.size()).isEqualTo(65),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -105,10 +105,10 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(animals.size()).isEqualTo(65);
-                softly.assertThat(animals.get(0).getId()).isEqualTo(65);
-            });
+            assertAll(
+                    () -> assertThat(animals.size()).isEqualTo(65),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(65)
+            );
         }
     }
     
@@ -201,9 +201,10 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3, "whereClauseProvider");
             
             List<AnimalData> animals = mapper.selectByExampleWithLimitAndOffset(whereClause, 5, 15);
-            assertThat(animals.size()).isEqualTo(5);
-            assertThat(animals.get(0).getId()).isEqualTo(16);
-            
+            assertAll(
+                    () -> assertThat(animals.size()).isEqualTo(5),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(16)
+            );
         }
     }
     
@@ -217,9 +218,10 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, "b"),  "whereClauseProvider");
             
             List<AnimalData> animals = mapper.selectByExampleWithAliasLimitAndOffset(whereClause, 3, 24);
-            assertThat(animals.size()).isEqualTo(3);
-            assertThat(animals.get(0).getId()).isEqualTo(25);
-            
+            assertAll(
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(25)
+            );
         }
     }
     
@@ -246,13 +248,15 @@ public class AnimalDataTest {
                     + "from AnimalData "
                     + "where id > #{parameters.p2,jdbcType=INTEGER}";
 
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(animals.size()).isEqualTo(44);
-            assertThat(selectStatement.getParameters().size()).isEqualTo(2);
-            assertThat(selectStatement.getParameters().get("p1")).isEqualTo(20);
-            assertThat(selectStatement.getParameters().get("p2")).isEqualTo(40);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(44),
+                    () -> assertThat(selectStatement.getParameters().size()).isEqualTo(2),
+                    () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(20),
+                    () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(40)
+            );
         }
     }
 
@@ -277,11 +281,12 @@ public class AnimalDataTest {
                     + "from AnimalData "
                     + "order by id";
 
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(animals.size()).isEqualTo(65);
-            assertThat(selectStatement.getParameters().size()).isEqualTo(0);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(65),
+                    () -> assertThat(selectStatement.getParameters().size()).isEqualTo(0)
+            );
         }
     }
     
@@ -310,13 +315,15 @@ public class AnimalDataTest {
                     + "where b.id > #{parameters.p2,jdbcType=INTEGER} "
                     + "order by id";
 
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(animals.size()).isEqualTo(44);
-            assertThat(selectStatement.getParameters().size()).isEqualTo(2);
-            assertThat(selectStatement.getParameters().get("p1")).isEqualTo(20);
-            assertThat(selectStatement.getParameters().get("p2")).isEqualTo(40);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(44),
+                    () -> assertThat(selectStatement.getParameters().size()).isEqualTo(2),
+                    () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(20),
+                    () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(40)
+            );
         }
     }
 
@@ -345,13 +352,15 @@ public class AnimalDataTest {
                     + "where b.id > #{parameters.p2,jdbcType=INTEGER} "
                     + "order by animalId";
 
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(animals.size()).isEqualTo(44);
-            assertThat(selectStatement.getParameters().size()).isEqualTo(2);
-            assertThat(selectStatement.getParameters().get("p1")).isEqualTo(20);
-            assertThat(selectStatement.getParameters().get("p2")).isEqualTo(40);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(44),
+                    () -> assertThat(selectStatement.getParameters().size()).isEqualTo(2),
+                    () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(20),
+                    () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(40)
+            );
         }
     }
 
@@ -511,11 +520,12 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(animals.size()).isEqualTo(2);
-            AnimalData animal = animals.get(0);
-            assertThat(animal.getAnimalName()).isEqualTo("Ground squirrel");
-            animal = animals.get(1);
-            assertThat(animal.getAnimalName()).isEqualTo("Artic ground squirrel");
+
+            assertAll(
+                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals.get(0).getAnimalName()).isEqualTo("Ground squirrel"),
+                    () -> assertThat(animals.get(1).getAnimalName()).isEqualTo("Artic ground squirrel")
+            );
         }
     }
     
@@ -531,11 +541,12 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
 
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(2);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMALNAME")).isEqualTo("ground squirrel");
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMALNAME")).isEqualTo("artic ground squirrel");
+
+            assertAll(
+                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals.get(0).get("ANIMALNAME")).isEqualTo("ground squirrel"),
+                    () -> assertThat(animals.get(1).get("ANIMALNAME")).isEqualTo("artic ground squirrel")
+            );
         }
     }
 
@@ -551,11 +562,12 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
 
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(2);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMALNAME")).isEqualTo("GROUND SQUIRREL");
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMALNAME")).isEqualTo("ARTIC GROUND SQUIRREL");
+
+            assertAll(
+                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals.get(0).get("ANIMALNAME")).isEqualTo("GROUND SQUIRREL"),
+                    () -> assertThat(animals.get(1).get("ANIMALNAME")).isEqualTo("ARTIC GROUND SQUIRREL")
+            );
         }
     }
 
@@ -573,19 +585,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, 3 as some_number "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("SOME_NUMBER")).isEqualTo(3);
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("SOME_NUMBER")).isEqualTo(3);
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("SOME_NUMBER")).isEqualTo(3);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("SOME_NUMBER")).isEqualTo(3),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("SOME_NUMBER")).isEqualTo(3),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("SOME_NUMBER")).isEqualTo(3)
+            );
         }
     }
 
@@ -603,19 +615,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, 'fred' as some_string "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("SOME_STRING")).isEqualTo("fred");
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("SOME_STRING")).isEqualTo("fred");
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("SOME_STRING")).isEqualTo("fred");
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("SOME_STRING")).isEqualTo("fred"),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("SOME_STRING")).isEqualTo("fred"),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("SOME_STRING")).isEqualTo("fred")
+            );
         }
     }
 
@@ -633,19 +645,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight + a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(12366.0);
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(11750.0);
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(87154.5);
+            
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("CALCULATED_WEIGHT")).isEqualTo(12366.0),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("CALCULATED_WEIGHT")).isEqualTo(11750.0),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("CALCULATED_WEIGHT")).isEqualTo(87154.5)
+            );
         }
     }
     
@@ -663,19 +675,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight + 22 + 33) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(5767.0);
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(105.0);
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(209.5);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("CALCULATED_WEIGHT")).isEqualTo(5767.0),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("CALCULATED_WEIGHT")).isEqualTo(105.0),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("CALCULATED_WEIGHT")).isEqualTo(209.5)
+            );
         }
     }
     
@@ -693,19 +705,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight / a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat((Double) animal.get("CALCULATED_WEIGHT")).isEqualTo(0.858, within(0.001));
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat((Double) animal.get("CALCULATED_WEIGHT")).isEqualTo(0.004, within(0.001));
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat((Double) animal.get("CALCULATED_WEIGHT")).isEqualTo(0.001, within(0.001));
+            
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat((Double) animals.get(0).get("CALCULATED_WEIGHT")).isEqualTo(0.858, within(0.001)),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat((Double) animals.get(1).get("CALCULATED_WEIGHT")).isEqualTo(0.004, within(0.001)),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat((Double) animals.get(2).get("CALCULATED_WEIGHT")).isEqualTo(0.001, within(0.001))
+            );
         }
     }
     
@@ -723,19 +735,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight / 10.0) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(571.2);
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(5.0);
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(15.45);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("CALCULATED_WEIGHT")).isEqualTo(571.2),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("CALCULATED_WEIGHT")).isEqualTo(5.0),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("CALCULATED_WEIGHT")).isEqualTo(15.45)
+            );
         }
     }
     
@@ -753,19 +765,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight * a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(38007648.0);
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(585000.0);
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(13441500.0);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("CALCULATED_WEIGHT")).isEqualTo(38007648.0),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("CALCULATED_WEIGHT")).isEqualTo(585000.0),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("CALCULATED_WEIGHT")).isEqualTo(13441500.0)
+            );
         }
     }
     
@@ -783,19 +795,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight * 2.0) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(11424.0);
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(100.0);
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(309.0);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("CALCULATED_WEIGHT")).isEqualTo(11424.0),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("CALCULATED_WEIGHT")).isEqualTo(100.0),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("CALCULATED_WEIGHT")).isEqualTo(309.0)
+            );
         }
     }
     
@@ -813,19 +825,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight - a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(-942.0);
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(-11650.0);
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(-86845.5);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("CALCULATED_WEIGHT")).isEqualTo(-942.0),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("CALCULATED_WEIGHT")).isEqualTo(-11650.0),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("CALCULATED_WEIGHT")).isEqualTo(-86845.5)
+            );
         }
     }
     
@@ -843,19 +855,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight - 5.5) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(5706.5);
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(44.5);
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(149.0);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("CALCULATED_WEIGHT")).isEqualTo(5706.5),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("CALCULATED_WEIGHT")).isEqualTo(44.5),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("CALCULATED_WEIGHT")).isEqualTo(149.0)
+            );
         }
     }
     
@@ -873,19 +885,19 @@ public class AnimalDataTest {
             String expected = "select a.id, a.animal_name, ((a.body_weight * 5.5) + (a.brain_weight - 2)) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
-            assertThat(animals.size()).isEqualTo(3);
-            Map<String, Object> animal = animals.get(0);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("African elephant");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(38068.0);
-            animal = animals.get(1);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Dipliodocus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(11973.0);
-            animal = animals.get(2);
-            assertThat(animal.get("ANIMAL_NAME")).isEqualTo("Brachiosaurus");
-            assertThat(animal.get("CALCULATED_WEIGHT")).isEqualTo(87847.75);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("African elephant"),
+                    () -> assertThat(animals.get(0).get("CALCULATED_WEIGHT")).isEqualTo(38068.0),
+                    () -> assertThat(animals.get(1).get("ANIMAL_NAME")).isEqualTo("Dipliodocus"),
+                    () -> assertThat(animals.get(1).get("CALCULATED_WEIGHT")).isEqualTo(11973.0),
+                    () -> assertThat(animals.get(2).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus"),
+                    () -> assertThat(animals.get(2).get("CALCULATED_WEIGHT")).isEqualTo(87847.75)
+            );
         }
     }
 
@@ -1111,15 +1123,16 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(animals.size()).isEqualTo(2);
-            
-            assertThat(animals.get(0).getId()).isEqualTo(100);
-            assertThat(animals.get(0).getBrainWeight()).isEqualTo(1.2);
-            assertThat(animals.get(0).getAnimalName()).isNull();
-            
-            assertThat(animals.get(1).getId()).isEqualTo(101);
-            assertThat(animals.get(1).getBrainWeight()).isEqualTo(1.2);
-            assertThat(animals.get(1).getAnimalName()).isNull();
+
+            assertAll(
+                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(100),
+                    () -> assertThat(animals.get(0).getBrainWeight()).isEqualTo(1.2),
+                    () -> assertThat(animals.get(0).getAnimalName()).isNull(),
+                    () -> assertThat(animals.get(1).getId()).isEqualTo(101),
+                    () -> assertThat(animals.get(1).getBrainWeight()).isEqualTo(1.2),
+                    () -> assertThat(animals.get(1).getAnimalName()).isNull()
+            );
         }
     }
     
@@ -1160,15 +1173,16 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(animals.size()).isEqualTo(2);
             
-            assertThat(animals.get(0).getId()).isEqualTo(100);
-            assertThat(animals.get(0).getBrainWeight()).isEqualTo(1.2);
-            assertThat(animals.get(0).getAnimalName()).isEqualTo("Old Fred");
-            
-            assertThat(animals.get(1).getId()).isEqualTo(101);
-            assertThat(animals.get(1).getBrainWeight()).isEqualTo(1.2);
-            assertThat(animals.get(1).getAnimalName()).isEqualTo("Old Fred");
+            assertAll(
+                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(100),
+                    () -> assertThat(animals.get(0).getBrainWeight()).isEqualTo(1.2),
+                    () -> assertThat(animals.get(0).getAnimalName()).isEqualTo("Old Fred"),
+                    () -> assertThat(animals.get(1).getId()).isEqualTo(101),
+                    () -> assertThat(animals.get(1).getBrainWeight()).isEqualTo(1.2),
+                    () -> assertThat(animals.get(1).getAnimalName()).isEqualTo("Old Fred")
+            );
         }
     }
 
@@ -1186,10 +1200,11 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             List<AnimalData> rows = mapper.selectMany(selectStatement);
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(rows.size()).isEqualTo(14);
-                softly.assertThat(rows.get(0).getId()).isEqualTo(65);
-            });
+            
+            assertAll(
+                    () -> assertThat(rows.size()).isEqualTo(14),
+                    () -> assertThat(rows.get(0).getId()).isEqualTo(65)
+            );
         }
     }
 
@@ -1207,10 +1222,11 @@ public class AnimalDataTest {
                     .render(RenderingStrategy.MYBATIS3);
             
             List<AnimalData> rows = mapper.selectMany(selectStatement);
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(rows.size()).isEqualTo(14);
-                softly.assertThat(rows.get(0).getId()).isEqualTo(65);
-            });
+            
+            assertAll(
+                    () -> assertThat(rows.size()).isEqualTo(14),
+                    () -> assertThat(rows.get(0).getId()).isEqualTo(65)
+            );
         }
     }
     
@@ -1224,12 +1240,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(*) as total from AnimalData a");
-            
-                Long count = mapper.selectALong(selectStatement);
-                softly.assertThat(count).isEqualTo(65);
-            });
+            Long count = mapper.selectALong(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(*) as total from AnimalData a"),
+                    () -> assertThat(count).isEqualTo(65)
+            );
         }
     }
 
@@ -1243,12 +1259,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(a.brain_weight) as total from AnimalData a");
-            
-                Long count = mapper.selectALong(selectStatement);
-                softly.assertThat(count).isEqualTo(65);
-            });
+            Long count = mapper.selectALong(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(a.brain_weight) as total from AnimalData a"),
+                    () -> assertThat(count).isEqualTo(65)
+            );
         }
     }
     
@@ -1262,12 +1278,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(*) from AnimalData");
-            
-                Long count = mapper.selectALong(selectStatement);
-                softly.assertThat(count).isEqualTo(65);
-            });
+            Long count = mapper.selectALong(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(*) from AnimalData"),
+                    () -> assertThat(count).isEqualTo(65)
+            );
         }
     }
 
@@ -1281,12 +1297,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select max(a.brain_weight) as total from AnimalData a");
-            
-                Double max = mapper.selectADouble(selectStatement);
-                softly.assertThat(max).isEqualTo(87000.0);
-            });
+            Double max = mapper.selectADouble(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select max(a.brain_weight) as total from AnimalData a"),
+                    () -> assertThat(max).isEqualTo(87000.0)
+            );
         }
     }
 
@@ -1300,12 +1316,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select max(brain_weight) from AnimalData");
-            
-                Double max = mapper.selectADouble(selectStatement);
-                softly.assertThat(max).isEqualTo(87000.0);
-            });
+            Double max = mapper.selectADouble(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select max(brain_weight) from AnimalData"),
+                    () -> assertThat(max).isEqualTo(87000.0)
+            );
         }
     }
 
@@ -1320,14 +1336,13 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight = (select max(b.brain_weight) from AnimalData b)");
-            
-                List<AnimalData> records = mapper.selectMany(selectStatement);
-                softly.assertThat(records.size()).isEqualTo(1);
-                AnimalData record = records.get(0);
-                softly.assertThat(record.getAnimalName()).isEqualTo("Brachiosaurus");
-            });
+            List<AnimalData> records = mapper.selectMany(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight = (select max(b.brain_weight) from AnimalData b)"),
+                    () -> assertThat(records.size()).isEqualTo(1),
+                    () -> assertThat(records.get(0).getAnimalName()).isEqualTo("Brachiosaurus")
+            );
         }
     }
 
@@ -1341,12 +1356,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select min(a.brain_weight) as total from AnimalData a");
-            
-                Double min = mapper.selectADouble(selectStatement);
-                softly.assertThat(min).isEqualTo(0.005);
-            });
+            Double min = mapper.selectADouble(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select min(a.brain_weight) as total from AnimalData a"),
+                    () -> assertThat(min).isEqualTo(0.005)
+            );
         }
     }
 
@@ -1360,12 +1375,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select min(brain_weight) from AnimalData");
-            
-                Double min = mapper.selectADouble(selectStatement);
-                softly.assertThat(min).isEqualTo(0.005);
-            });
+            Double min = mapper.selectADouble(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select min(brain_weight) from AnimalData"),
+                    () -> assertThat(min).isEqualTo(0.005)
+            );
         }
     }
 
@@ -1381,14 +1396,13 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <> (select min(b.brain_weight) from AnimalData b) order by animal_name");
-            
-                List<AnimalData> records = mapper.selectMany(selectStatement);
-                softly.assertThat(records.size()).isEqualTo(64);
-                AnimalData record = records.get(0);
-                softly.assertThat(record.getAnimalName()).isEqualTo("African elephant");
-            });
+            List<AnimalData> records = mapper.selectMany(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <> (select min(b.brain_weight) from AnimalData b) order by animal_name"),
+                    () -> assertThat(records.size()).isEqualTo(64),
+                    () -> assertThat(records.get(0).getAnimalName()).isEqualTo("African elephant")
+            );
         }
     }
 
@@ -1404,14 +1418,13 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where brain_weight <> (select min(brain_weight) from AnimalData) order by animal_name");
-            
-                List<AnimalData> records = mapper.selectMany(selectStatement);
-                softly.assertThat(records.size()).isEqualTo(64);
-                AnimalData record = records.get(0);
-                softly.assertThat(record.getAnimalName()).isEqualTo("African elephant");
-            });
+            List<AnimalData> records = mapper.selectMany(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where brain_weight <> (select min(brain_weight) from AnimalData) order by animal_name"),
+                    () -> assertThat(records.size()).isEqualTo(64),
+                    () -> assertThat(records.get(0).getAnimalName()).isEqualTo("African elephant")
+            );
         }
     }
 
@@ -1425,12 +1438,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select avg(a.brain_weight) as average from AnimalData a");
-            
-                Double average = mapper.selectADouble(selectStatement);
-                softly.assertThat(average).isEqualTo(1852.69, within(.01));
-            });
+            Double average = mapper.selectADouble(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select avg(a.brain_weight) as average from AnimalData a"),
+                    () -> assertThat(average).isEqualTo(1852.69, within(.01))
+            );
         }
     }
 
@@ -1444,12 +1457,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select sum(brain_weight) as total from AnimalData");
-            
-                Double total = mapper.selectADouble(selectStatement);
-                softly.assertThat(total).isEqualTo(120424.97, within(.01));
-            });
+            Double total = mapper.selectADouble(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select sum(brain_weight) as total from AnimalData"),
+                    () -> assertThat(total).isEqualTo(120424.97, within(.01))
+            );
         }
     }
 
@@ -1464,12 +1477,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight < (select max(b.brain_weight) from AnimalData b)");
-            
-                List<AnimalData> records = mapper.selectMany(selectStatement);
-                softly.assertThat(records.size()).isEqualTo(64);
-            });
+            List<AnimalData> records = mapper.selectMany(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight < (select max(b.brain_weight) from AnimalData b)"),
+                    () -> assertThat(records.size()).isEqualTo(64)
+            );
         }
     }
 
@@ -1484,12 +1497,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <= (select max(b.brain_weight) from AnimalData b)");
-            
-                List<AnimalData> records = mapper.selectMany(selectStatement);
-                softly.assertThat(records.size()).isEqualTo(65);
-            });
+            List<AnimalData> records = mapper.selectMany(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <= (select max(b.brain_weight) from AnimalData b)"),
+                    () -> assertThat(records.size()).isEqualTo(65)
+            );
         }
     }
 
@@ -1504,12 +1517,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight > (select min(b.brain_weight) from AnimalData b)");
-            
-                List<AnimalData> records = mapper.selectMany(selectStatement);
-                softly.assertThat(records.size()).isEqualTo(64);
-            });
+            List<AnimalData> records = mapper.selectMany(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight > (select min(b.brain_weight) from AnimalData b)"),
+                    () -> assertThat(records.size()).isEqualTo(64)
+            );
         }
     }
 
@@ -1524,12 +1537,12 @@ public class AnimalDataTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight >= (select min(b.brain_weight) from AnimalData b)");
-            
-                List<AnimalData> records = mapper.selectMany(selectStatement);
-                softly.assertThat(records.size()).isEqualTo(65);
-            });
+            List<AnimalData> records = mapper.selectMany(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight >= (select min(b.brain_weight) from AnimalData b)"),
+                    () -> assertThat(records.size()).isEqualTo(65)
+            );
         }
     }
     
@@ -1549,12 +1562,15 @@ public class AnimalDataTest {
                     + "select id, animal_name, body_weight, brain_weight "
                     + "from AnimalData "
                     + "where id < #{parameters.p1,jdbcType=INTEGER}";
-            assertThat(insertSelectStatement.getInsertStatement()).isEqualTo(expected);
-            assertThat(insertSelectStatement.getParameters().size()).isEqualTo(1);
-            assertThat(insertSelectStatement.getParameters().get("p1")).isEqualTo(22);
-
+            
             int rows = mapper.insertSelect(insertSelectStatement);
-            assertThat(rows).isEqualTo(21);
+
+            assertAll(
+                    () -> assertThat(insertSelectStatement.getInsertStatement()).isEqualTo(expected),
+                    () -> assertThat(insertSelectStatement.getParameters().size()).isEqualTo(1),
+                    () -> assertThat(insertSelectStatement.getParameters().get("p1")).isEqualTo(22),
+                    () -> assertThat(rows).isEqualTo(21)
+            );
         }
     }
 
@@ -1573,12 +1589,14 @@ public class AnimalDataTest {
                     + "select id, animal_name, body_weight, brain_weight "
                     + "from AnimalData "
                     + "where id < #{parameters.p1,jdbcType=INTEGER}";
-            assertThat(insertSelectStatement.getInsertStatement()).isEqualTo(expected);
-            assertThat(insertSelectStatement.getParameters().size()).isEqualTo(1);
-            assertThat(insertSelectStatement.getParameters().get("p1")).isEqualTo(33);
-
             int rows = mapper.insertSelect(insertSelectStatement);
-            assertThat(rows).isEqualTo(32);
+
+            assertAll(
+                    () -> assertThat(insertSelectStatement.getInsertStatement()).isEqualTo(expected),
+                    () -> assertThat(insertSelectStatement.getParameters().size()).isEqualTo(1),
+                    () -> assertThat(insertSelectStatement.getParameters().get("p1")).isEqualTo(33),
+                    () -> assertThat(rows).isEqualTo(32)
+            );
         }
     }
 
@@ -1596,13 +1614,15 @@ public class AnimalDataTest {
             String expected = "update AnimalData "
                     + "set brain_weight = (select avg(brain_weight) from AnimalData where brain_weight > #{parameters.p1,jdbcType=DOUBLE}) "
                     + "where brain_weight < #{parameters.p2,jdbcType=DOUBLE}";
-            assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
-            assertThat(updateStatement.getParameters().size()).isEqualTo(2);
-            assertThat(updateStatement.getParameters().get("p1")).isEqualTo(22.0);
-            assertThat(updateStatement.getParameters().get("p2")).isEqualTo(1.0);
-
             int rows = mapper.update(updateStatement);
-            assertThat(rows).isEqualTo(20);
+
+            assertAll(
+                    () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
+                    () -> assertThat(updateStatement.getParameters().size()).isEqualTo(2),
+                    () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo(22.0),
+                    () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo(1.0),
+                    () -> assertThat(rows).isEqualTo(20)
+            );
         }
     }
 
@@ -1621,6 +1641,7 @@ public class AnimalDataTest {
             String expected = "update AnimalData "
                     + "set brain_weight = (brain_weight + 2), body_weight = (body_weight - 3) "
                     + "where id = #{parameters.p1,jdbcType=INTEGER}";
+
             assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
             assertThat(updateStatement.getParameters().size()).isEqualTo(1);
             assertThat(updateStatement.getParameters().get("p1")).isEqualTo(1);
@@ -1636,7 +1657,6 @@ public class AnimalDataTest {
             
             assertThat(record.getBodyWeight()).isEqualTo(-2.86);
             assertThat(record.getBrainWeight()).isEqualTo(2.005);
-            
         }
     }
 
@@ -1670,7 +1690,6 @@ public class AnimalDataTest {
             
             assertThat(record.getBodyWeight()).isEqualTo(0.42, within(.001));
             assertThat(record.getBrainWeight()).isEqualTo(.0025);
-            
         }
     }
 }

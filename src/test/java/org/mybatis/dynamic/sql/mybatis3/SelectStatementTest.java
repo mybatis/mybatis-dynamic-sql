@@ -16,13 +16,13 @@
 package org.mybatis.dynamic.sql.mybatis3;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.Date;
 import java.util.Map;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -53,9 +53,12 @@ public class SelectStatementTest {
                 "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
 
         Map<String, Object> parameters = selectStatement.getParameters();
-        assertThat(parameters.get("p1")).isEqualTo(d);
-        assertThat(parameters.get("p2")).isEqualTo(4);
-        assertThat(parameters.get("p3")).isEqualTo(3);
+        
+        assertAll(
+                () -> assertThat(parameters.get("p1")).isEqualTo(d),
+                () -> assertThat(parameters.get("p2")).isEqualTo(4),
+                () -> assertThat(parameters.get("p3")).isEqualTo(3)
+        );
     }
 
     @Test
@@ -81,18 +84,18 @@ public class SelectStatementTest {
                 + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})"
                 + " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+        Map<String, Object> parameters = selectStatement.getParameters();
 
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-            softly.assertThat(parameters.get("p2")).isEqualTo(4);
-            softly.assertThat(parameters.get("p3")).isEqualTo(3);
-            softly.assertThat(parameters.get("p4")).isEqualTo(4);
-            softly.assertThat(parameters.get("p5")).isEqualTo(6);
-            softly.assertThat(parameters.get("p6")).isEqualTo(3);
-            softly.assertThat(parameters.get("p7")).isEqualTo(d);
-        });
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d),
+                () -> assertThat(parameters.get("p2")).isEqualTo(4),
+                () -> assertThat(parameters.get("p3")).isEqualTo(3),
+                () -> assertThat(parameters.get("p4")).isEqualTo(4),
+                () -> assertThat(parameters.get("p5")).isEqualTo(6),
+                () -> assertThat(parameters.get("p6")).isEqualTo(3),
+                () -> assertThat(parameters.get("p7")).isEqualTo(d)
+        );
     }
 
     @Test
@@ -107,15 +110,15 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
+        Map<String, Object> parameters = selectStatement.getParameters();
 
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-            softly.assertThat(parameters.get("p2")).isEqualTo(4);
-            softly.assertThat(parameters.get("p3")).isEqualTo(3);
-        });
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(
+                    "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}"),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d),
+                () -> assertThat(parameters.get("p2")).isEqualTo(4),
+                () -> assertThat(parameters.get("p3")).isEqualTo(3)
+        );
     }
 
     @Test
@@ -141,19 +144,19 @@ public class SelectStatementTest {
                 + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and (a.column2 = #{parameters.p5,jdbcType=INTEGER} or a.column2 = #{parameters.p6,jdbcType=INTEGER}))"
                 + " and (a.column2 < #{parameters.p7,jdbcType=INTEGER} or (a.column1 = #{parameters.p8,jdbcType=DATE} and a.column2 = #{parameters.p9,jdbcType=INTEGER}))";
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+        Map<String, Object> parameters = selectStatement.getParameters();
 
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-            softly.assertThat(parameters.get("p2")).isEqualTo(4);
-            softly.assertThat(parameters.get("p3")).isEqualTo(3);
-            softly.assertThat(parameters.get("p4")).isEqualTo(4);
-            softly.assertThat(parameters.get("p5")).isEqualTo(6);
-            softly.assertThat(parameters.get("p6")).isEqualTo(7);
-            softly.assertThat(parameters.get("p7")).isEqualTo(3);
-            softly.assertThat(parameters.get("p8")).isEqualTo(d);
-            softly.assertThat(parameters.get("p9")).isEqualTo(88);
-        });
+        assertAll(
+            () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+            () -> assertThat(parameters.get("p1")).isEqualTo(d),
+            () -> assertThat(parameters.get("p2")).isEqualTo(4),
+            () -> assertThat(parameters.get("p3")).isEqualTo(3),
+            () -> assertThat(parameters.get("p4")).isEqualTo(4),
+            () -> assertThat(parameters.get("p5")).isEqualTo(6),
+            () -> assertThat(parameters.get("p6")).isEqualTo(7),
+            () -> assertThat(parameters.get("p7")).isEqualTo(3),
+            () -> assertThat(parameters.get("p8")).isEqualTo(d),
+            () -> assertThat(parameters.get("p9")).isEqualTo(88)
+        );
     }
 }

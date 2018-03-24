@@ -17,6 +17,7 @@ package examples.simple;
 
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
@@ -35,7 +36,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -141,11 +141,11 @@ public class SimpleTableAnnotatedMapperTest {
                     .build()
                     .execute();
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(rows.size()).isEqualTo(2);
-                softly.assertThat(rows.get(0).getId()).isEqualTo(3);
-                softly.assertThat(rows.get(1).getId()).isEqualTo(6);
-            });
+            assertAll(
+                    () -> assertThat(rows.size()).isEqualTo(2),
+                    () -> assertThat(rows.get(0).getId()).isEqualTo(3),
+                    () -> assertThat(rows.get(1).getId()).isEqualTo(6)
+            );
         }
     }
 
@@ -159,9 +159,11 @@ public class SimpleTableAnnotatedMapperTest {
                     .build()
                     .execute();
             
-            assertThat(rows.size()).isEqualTo(2);
-            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone");
-            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble");
+            assertAll(
+                    () -> assertThat(rows.size()).isEqualTo(2),
+                    () -> assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone"),
+                    () -> assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble")
+            );
         }
     }
 
@@ -232,17 +234,15 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(record);
-                softly.assertThat(rows).isEqualTo(1);
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
             
-                record.setOccupation("Programmer");
-                rows = mapper.updateByPrimaryKey(record);
-                softly.assertThat(rows).isEqualTo(1);
+            record.setOccupation("Programmer");
+            rows = mapper.updateByPrimaryKey(record);
+            assertThat(rows).isEqualTo(1);
             
-                SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
-                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-            });
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
         }
     }
 
@@ -258,20 +258,18 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(record);
-                softly.assertThat(rows).isEqualTo(1);
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord updateRecord = new SimpleTableRecord();
-                updateRecord.setId(100);
-                updateRecord.setOccupation("Programmer");
-                rows = mapper.updateByPrimaryKeySelective(updateRecord);
-                softly.assertThat(rows).isEqualTo(1);
+            SimpleTableRecord updateRecord = new SimpleTableRecord();
+            updateRecord.setId(100);
+            updateRecord.setOccupation("Programmer");
+            rows = mapper.updateByPrimaryKeySelective(updateRecord);
+            assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
-                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-                softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
-            });
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
+            assertThat(newRecord.getFirstName()).isEqualTo("Joe");
         }
     }
 
@@ -287,25 +285,25 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(record);
-                softly.assertThat(rows).isEqualTo(1);
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
 
-                UpdateStatementProvider updateStatement = update(simpleTable)
-                        .set(occupation).equalToNull()
-                        .set(employed).equalTo(false)
-                        .where(id, isEqualTo(100))
-                        .build()
-                        .render(RenderingStrategy.MYBATIS3);
+            UpdateStatementProvider updateStatement = update(simpleTable)
+                    .set(occupation).equalToNull()
+                    .set(employed).equalTo(false)
+                    .where(id, isEqualTo(100))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
-                rows = mapper.update(updateStatement);
-                softly.assertThat(rows).isEqualTo(1);
+            rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
-                softly.assertThat(newRecord.getOccupation()).isNull();
-                softly.assertThat(newRecord.getEmployed()).isEqualTo(false);
-                softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
-            });
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertAll(
+                    () -> assertThat(newRecord.getOccupation()).isNull(),
+                    () -> assertThat(newRecord.getEmployed()).isEqualTo(false),
+                    () -> assertThat(newRecord.getFirstName()).isEqualTo("Joe")
+            );
         }
     }
 
@@ -321,22 +319,20 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(record);
-                softly.assertThat(rows).isEqualTo(1);
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
 
-                record.setOccupation("Programmer");
-                rows = mapper.updateByExample(record)
-                        .where(id, isEqualTo(100))
-                        .and(firstName, isEqualTo("Joe"))
-                        .build()
-                        .execute();
+            record.setOccupation("Programmer");
+            rows = mapper.updateByExample(record)
+                    .where(id, isEqualTo(100))
+                    .and(firstName, isEqualTo("Joe"))
+                    .build()
+                    .execute();
 
-                softly.assertThat(rows).isEqualTo(1);
+            assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
-                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-            });
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
         }
     }
 

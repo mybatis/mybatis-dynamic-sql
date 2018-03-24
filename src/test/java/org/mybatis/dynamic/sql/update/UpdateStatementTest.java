@@ -16,11 +16,11 @@
 package org.mybatis.dynamic.sql.update;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -49,14 +49,16 @@ public class UpdateStatementTest {
         
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
                 + "where (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER})";
-                
-        assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
-        assertThat(updateStatement.getParameters().size()).isEqualTo(5);
-        assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred");
-        assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones");
-        assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3);
-        assertThat(updateStatement.getParameters().get("p4")).isEqualTo(4);
-        assertThat(updateStatement.getParameters().get("p5")).isEqualTo(5);
+
+        assertAll(
+                () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
+                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(5),
+                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
+                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
+                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3),
+                () -> assertThat(updateStatement.getParameters().get("p4")).isEqualTo(4),
+                () -> assertThat(updateStatement.getParameters().get("p5")).isEqualTo(5)
+        );
     }
 
     @Test
@@ -72,13 +74,15 @@ public class UpdateStatementTest {
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
                 + "where (id = #{parameters.p3,jdbcType=INTEGER} or (id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER}))";
                 
-        assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
-        assertThat(updateStatement.getParameters().size()).isEqualTo(5);
-        assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred");
-        assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones");
-        assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3);
-        assertThat(updateStatement.getParameters().get("p4")).isEqualTo(4);
-        assertThat(updateStatement.getParameters().get("p5")).isEqualTo(5);
+        assertAll(
+                () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
+                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(5),
+                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
+                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
+                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3),
+                () -> assertThat(updateStatement.getParameters().get("p4")).isEqualTo(4),
+                () -> assertThat(updateStatement.getParameters().get("p5")).isEqualTo(5)
+        );
     }
     
     @Test
@@ -94,13 +98,15 @@ public class UpdateStatementTest {
         
         String expected = "update foo set occupation = null, firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR} "
                 + "where id = #{parameters.p3,jdbcType=INTEGER} and firstName = #{parameters.p4,jdbcType=VARCHAR}";
-                
-        assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
-        assertThat(updateStatement.getParameters().size()).isEqualTo(4);
-        assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred");
-        assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones");
-        assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3);
-        assertThat(updateStatement.getParameters().get("p4")).isEqualTo("barney");
+        
+        assertAll(
+                () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
+                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(4),
+                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
+                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
+                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3),
+                () -> assertThat(updateStatement.getParameters().get("p4")).isEqualTo("barney")
+        );
     }
     
     @Test
@@ -117,13 +123,15 @@ public class UpdateStatementTest {
         
         String expected = "update foo set occupation = 'Y', firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, id = 4 "
                 + "where id = #{parameters.p3,jdbcType=INTEGER} and firstName = #{parameters.p4,jdbcType=VARCHAR}";
-                
-        assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
-        assertThat(updateStatement.getParameters().size()).isEqualTo(4);
-        assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred");
-        assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones");
-        assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3);
-        assertThat(updateStatement.getParameters().get("p4")).isEqualTo("barney");
+        
+        assertAll(
+                () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
+                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(4),
+                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
+                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
+                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3),
+                () -> assertThat(updateStatement.getParameters().get("p4")).isEqualTo("barney")
+        );
     }
     
     @Test
@@ -140,14 +148,13 @@ public class UpdateStatementTest {
                 + "set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
                 + "where id = #{parameters.p3,jdbcType=INTEGER}";
                 
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement);
-        
-            softly.assertThat(updateStatement.getParameters().size()).isEqualTo(3);
-            softly.assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred");
-            softly.assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones");
-            softly.assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3);
-        });
+        assertAll(
+                () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
+                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(3),
+                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
+                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
+                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3)
+        );
     }
 
     @Test
@@ -162,13 +169,12 @@ public class UpdateStatementTest {
         String expectedStatement = "update foo " 
                 + "set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null";
                 
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement);
-        
-            softly.assertThat(updateStatement.getParameters().size()).isEqualTo(2);
-            softly.assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred");
-            softly.assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones");
-        });
+        assertAll(
+                () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
+                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(2),
+                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
+                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones")
+        );
     }
     
     @Test
@@ -187,11 +193,10 @@ public class UpdateStatementTest {
                 + "id = (id * 3), "
                 + "id = (id / 4)";
                 
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement);
-        
-            softly.assertThat(updateStatement.getParameters().size()).isEqualTo(0);
-        });
+        assertAll(
+                () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
+                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(0)
+        );
     }
 
     @Test
@@ -207,11 +212,13 @@ public class UpdateStatementTest {
                 + "set lastName = #{parameters.p1,jdbcType=VARCHAR}, firstName = (select firstName from foo where id = #{parameters.p2,jdbcType=INTEGER}) "
                 + "where id = #{parameters.p3,jdbcType=INTEGER}";
 
-        assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement);
-        assertThat(updateStatement.getParameters().size()).isEqualTo(3);
-        assertThat(updateStatement.getParameters().get("p1")).isEqualTo("Jones");
-        assertThat(updateStatement.getParameters().get("p2")).isEqualTo(4);
-        assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3);
+        assertAll(
+                () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
+                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(3),
+                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("Jones"),
+                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo(4),
+                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3)
+        );
     }
 }
 

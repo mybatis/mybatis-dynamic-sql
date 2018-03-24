@@ -15,13 +15,14 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.Date;
 import java.util.Map;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -49,19 +50,19 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
-                    + "from foo a "
-                    + "where (a.column1 = #{parameters.p1,jdbcType=DATE} and a.column2 = #{parameters.p2,jdbcType=INTEGER}) or a.column2 = #{parameters.p3,jdbcType=INTEGER} and a.column2 < #{parameters.p4,jdbcType=INTEGER}";
+        String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "where (a.column1 = #{parameters.p1,jdbcType=DATE} and a.column2 = #{parameters.p2,jdbcType=INTEGER}) or a.column2 = #{parameters.p3,jdbcType=INTEGER} and a.column2 < #{parameters.p4,jdbcType=INTEGER}";
 
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        Map<String, Object> parameters = selectStatement.getParameters();
 
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-            softly.assertThat(parameters.get("p2")).isEqualTo(33);
-            softly.assertThat(parameters.get("p3")).isEqualTo(4);
-            softly.assertThat(parameters.get("p4")).isEqualTo(3);
-        });
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d),
+                () -> assertThat(parameters.get("p2")).isEqualTo(33),
+                () -> assertThat(parameters.get("p3")).isEqualTo(4),
+                () -> assertThat(parameters.get("p4")).isEqualTo(3)
+        );
     }
 
     @Test
@@ -78,27 +79,26 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
+        String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
+                + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
+                + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
+                + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})"
+                + " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
-                    + "from foo a "
-                    + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
-                    + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
-                    + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
-                    + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})"
-                    + " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
+        Map<String, Object> parameters = selectStatement.getParameters();
 
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
-
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-            softly.assertThat(parameters.get("p2")).isEqualTo(4);
-            softly.assertThat(parameters.get("p3")).isEqualTo(3);
-            softly.assertThat(parameters.get("p4")).isEqualTo(4);
-            softly.assertThat(parameters.get("p5")).isEqualTo(6);
-            softly.assertThat(parameters.get("p6")).isEqualTo(3);
-            softly.assertThat(parameters.get("p7")).isEqualTo(d);
-        });
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d),
+                () -> assertThat(parameters.get("p2")).isEqualTo(4),
+                () -> assertThat(parameters.get("p3")).isEqualTo(3),
+                () -> assertThat(parameters.get("p4")).isEqualTo(4),
+                () -> assertThat(parameters.get("p5")).isEqualTo(6),
+                () -> assertThat(parameters.get("p6")).isEqualTo(3),
+                () -> assertThat(parameters.get("p7")).isEqualTo(d)
+        );
     }
 
     @Test
@@ -112,17 +112,17 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
-                    + "from foo a "
-                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "order by column1";
+        String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                + "order by column1";
 
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        Map<String, Object> parameters = selectStatement.getParameters();
 
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-        });
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+        );
     }
 
     @Test
@@ -136,17 +136,17 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
-                    + "from foo a "
-                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "order by column2 DESC";
-
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                + "order by column2 DESC";
         
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-        });
+        Map<String, Object> parameters = selectStatement.getParameters();
+
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+        );
     }
 
     @Test
@@ -160,17 +160,17 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
-                    + "from foo a "
-                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "order by column2 DESC, column1";
-
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                + "order by column2 DESC, column1";
         
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-        });
+        Map<String, Object> parameters = selectStatement.getParameters();
+
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+        );
     }
 
     @Test
@@ -184,17 +184,17 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select distinct a.column1 as A_COLUMN1, a.column2 "
-                    + "from foo a "
-                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "order by column2 DESC, column1";
-
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        String expectedFullStatement = "select distinct a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                + "order by column2 DESC, column1";
         
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-        });
+        Map<String, Object> parameters = selectStatement.getParameters();
+
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+        );
     }
 
     @Test
@@ -207,16 +207,16 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select count(*) "
-                    + "from foo a "
-                    + "where a.column1 = #{parameters.p1,jdbcType=DATE}";
-
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        String expectedFullStatement = "select count(*) "
+                + "from foo a "
+                + "where a.column1 = #{parameters.p1,jdbcType=DATE}";
         
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-        });
+        Map<String, Object> parameters = selectStatement.getParameters();
+
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+        );
     }
 
     @Test
@@ -226,15 +226,15 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select count(*) "
-                    + "from foo a";
-
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        String expectedFullStatement = "select count(*) "
+                + "from foo a";
         
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.size()).isEqualTo(0);
-        });
+        Map<String, Object> parameters = selectStatement.getParameters();
+
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(parameters.size()).isEqualTo(0)
+        );
     }
     
     @Test
@@ -248,16 +248,16 @@ public class SelectStatementTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
-                    + "from foo a "
-                    + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
-                    + "group by a.column2";
-
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
+        String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
+                + "group by a.column2";
         
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(d);
-        });
+        Map<String, Object> parameters = selectStatement.getParameters();
+
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+        );
     }
 }

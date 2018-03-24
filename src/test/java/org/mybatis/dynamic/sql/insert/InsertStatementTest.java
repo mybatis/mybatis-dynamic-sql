@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.insert;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 
 import java.sql.JDBCType;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -144,13 +144,13 @@ public class InsertStatementTest {
                         FieldAndValueCollector::add,
                         FieldAndValueCollector::merge));
                 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-            softly.assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase);
-
-            String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
-            softly.assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase);
-        });
+        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
+        
+        assertAll(
+                () -> assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase),
+                () -> assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase)
+        );
     }
     
     private FieldAndValue newFieldAndValue(String fieldName, String valuePhrase) {
