@@ -15,13 +15,15 @@
  */
 package org.mybatis.dynamic.sql.mybatis3;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import java.sql.JDBCType;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -53,10 +55,10 @@ public class CriterionRendererTest {
                 .build()
                 .render();
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
-            softly.assertThat(fp.parameters().size()).isEqualTo(1);
-        });
+        assertAll(
+                () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
+                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+        );
     }
 
     @Test
@@ -77,10 +79,10 @@ public class CriterionRendererTest {
                 .build()
                 .render();
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
-            softly.assertThat(fp.parameters().size()).isEqualTo(1);
-        });
+        assertAll(
+                () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}"),
+                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+        );
     }
 
     @Test
@@ -99,10 +101,10 @@ public class CriterionRendererTest {
                 .build()
                 .render();
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
-            softly.assertThat(fp.parameters().size()).isEqualTo(1);
-        });
+        assertAll(
+                () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
+                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+        );
     }
 
     @Test
@@ -121,10 +123,10 @@ public class CriterionRendererTest {
                 .build()
                 .render();
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
-            softly.assertThat(fp.parameters().size()).isEqualTo(1);
-        });
+        assertAll(
+                () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
+                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+        );
     }
 
     @Test
@@ -147,10 +149,10 @@ public class CriterionRendererTest {
                 .build()
                 .render();
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}");
-            softly.assertThat(fp.parameters().size()).isEqualTo(1);
-        });
+        assertAll(
+                () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"),
+                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+        );
     }
 
     @Test
@@ -172,9 +174,9 @@ public class CriterionRendererTest {
                 .build()
                 .render();
         
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}");
-            softly.assertThat(fp.parameters().size()).isEqualTo(1);
-        });
+        assertAll(
+                () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"),
+                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+        );
     }
 }

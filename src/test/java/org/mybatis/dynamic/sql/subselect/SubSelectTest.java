@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 package org.mybatis.dynamic.sql.subselect;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.Date;
-import java.util.Map;
 
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -49,17 +48,16 @@ public class SubSelectTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
-
         String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                 + "from foo a "
                 + "where a.column2 in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER}) "
                 + "and a.column1 < #{parameters.p2,jdbcType=DATE}";
 
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
-
-        Map<String, Object> parameters = selectStatement.getParameters();
-        assertThat(parameters.get("p1")).isEqualTo(3);
-        assertThat(parameters.get("p2")).isEqualTo(d);
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(3),
+                () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(d)
+        );
     }
 
     @Test
@@ -73,18 +71,15 @@ public class SubSelectTest {
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
         
+        String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "where a.column2 not in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER})"
+                + " and a.column1 < #{parameters.p2,jdbcType=DATE}";
 
-        SoftAssertions.assertSoftly(softly -> {
-            String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
-                    + "from foo a "
-                    + "where a.column2 not in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER})"
-                    + " and a.column1 < #{parameters.p2,jdbcType=DATE}";
-
-            softly.assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
-
-            Map<String, Object> parameters = selectStatement.getParameters();
-            softly.assertThat(parameters.get("p1")).isEqualTo(3);
-            softly.assertThat(parameters.get("p2")).isEqualTo(d);
-        });
+        assertAll(
+                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+                () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(3),
+                () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(d)
+        );
     }
 }

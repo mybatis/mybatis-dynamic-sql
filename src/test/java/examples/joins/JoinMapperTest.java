@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -72,8 +72,7 @@ public class JoinMapperTest {
     
     @Test
     public void testSingleTableJoin() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
@@ -102,8 +101,6 @@ public class JoinMapperTest {
             assertThat(orderMaster.getDetails().size()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
-        } finally {
-            session.close();
         }
     }
     
@@ -138,8 +135,7 @@ public class JoinMapperTest {
     
     @Test
     public void testMultipleTableJoinWithWhereClause() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
@@ -165,15 +161,12 @@ public class JoinMapperTest {
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
             assertThat(orderDetail.getLineNumber()).isEqualTo(2);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testMultipleTableJoinWithComplexWhereClause() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
@@ -197,15 +190,12 @@ public class JoinMapperTest {
             assertThat(orderMaster.getDetails().size()).isEqualTo(1);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(2);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testMultipleTableJoinWithOrderBy() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
@@ -237,15 +227,12 @@ public class JoinMapperTest {
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
             assertThat(orderDetail.getLineNumber()).isEqualTo(2);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testMultibleTableJoinNoAliasWithOrderBy() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
@@ -273,15 +260,12 @@ public class JoinMapperTest {
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
             assertThat(orderDetail.getLineNumber()).isEqualTo(2);
-        } finally {
-            session.close();
         }
     }
     
     @Test
     public void testRightJoin() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
@@ -310,15 +294,12 @@ public class JoinMapperTest {
             assertThat(row.get("QUANTITY")).isNull();
             assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
             assertThat(row.get("ITEM_ID")).isEqualTo(55);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testRightJoin2() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
@@ -349,15 +330,12 @@ public class JoinMapperTest {
             assertThat(row.get("QUANTITY")).isEqualTo(1);
             assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
             assertThat(row.get("ITEM_ID")).isEqualTo(44);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testLeftJoin() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
@@ -386,15 +364,12 @@ public class JoinMapperTest {
             assertThat(row.get("QUANTITY")).isNull();
             assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
             assertThat(row.get("ITEM_ID")).isEqualTo(55);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testLeftJoin2() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
@@ -425,15 +400,12 @@ public class JoinMapperTest {
             assertThat(row.get("QUANTITY")).isEqualTo(1);
             assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
             assertThat(row.get("ITEM_ID")).isEqualTo(44);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testFullJoin() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
@@ -469,15 +441,12 @@ public class JoinMapperTest {
             assertThat(row.get("QUANTITY")).isNull();
             assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
             assertThat(row.get("IM_ITEMID")).isEqualTo(55);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testFullJoin2() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
@@ -514,8 +483,6 @@ public class JoinMapperTest {
             assertThat(row.get("QUANTITY")).isEqualTo(1);
             assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
             assertThat(row.get("ITEM_ID")).isEqualTo(44);
-        } finally {
-            session.close();
         }
     }
 }

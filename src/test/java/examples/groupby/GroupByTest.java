@@ -68,8 +68,7 @@ public class GroupByTest {
     
     @Test
     public void testBasicGroupBy() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
             SelectStatementProvider selectStatement = select(gender, count())
@@ -90,15 +89,12 @@ public class GroupByTest {
             row = rows.get(1);
             assertThat(row.get("GENDER")).isEqualTo("Female");
             assertThat(row.get("C2")).isEqualTo(3L);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testBasicGroupByWithAggregateAlias() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
             SelectStatementProvider selectStatement = select(gender, count().as("count"))
@@ -119,15 +115,12 @@ public class GroupByTest {
             row = rows.get(1);
             assertThat(row.get("GENDER")).isEqualTo("Female");
             assertThat(row.get("COUNT")).isEqualTo(3L);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testBasicGroupByOrderByWithAggregateAlias() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
             SelectStatementProvider selectStatement = select(gender, count().as("count"))
@@ -149,15 +142,12 @@ public class GroupByTest {
             row = rows.get(1);
             assertThat(row.get("GENDER")).isEqualTo("Male");
             assertThat(row.get("COUNT")).isEqualTo(4L);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testBasicGroupByOrderByWithCalculatedColumnAndTableAlias() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
             SelectStatementProvider selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
@@ -179,15 +169,12 @@ public class GroupByTest {
             row = rows.get(1);
             assertThat(row.get("SHORTGENDER")).isEqualTo("F");
             assertThat(row.get("AVERAGEAGE")).isEqualTo(27);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testGroupByAfterWhere() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             GroupByMapper mapper = session.getMapper(GroupByMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
@@ -209,8 +196,6 @@ public class GroupByTest {
             row = rows.get(1);
             assertThat(row.get("LAST_NAME")).isEqualTo("Rubble");
             assertThat(row.get("COUNT")).isEqualTo(2L);
-        } finally {
-            session.close();
         }
     }
 }

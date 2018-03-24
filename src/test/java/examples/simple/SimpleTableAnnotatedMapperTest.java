@@ -17,6 +17,7 @@ package examples.simple;
 
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
@@ -35,7 +36,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -70,8 +70,7 @@ public class SimpleTableAnnotatedMapperTest {
     
     @Test
     public void testSelectByExample() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
             List<SimpleTableRecord> rows = mapper.selectByExample()
@@ -81,15 +80,12 @@ public class SimpleTableAnnotatedMapperTest {
                     .execute();
             
             assertThat(rows.size()).isEqualTo(3);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testSelectByExampleWithRowbounds() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             RowBounds rowBounds = new RowBounds(2, 2);
             
@@ -100,15 +96,12 @@ public class SimpleTableAnnotatedMapperTest {
                     .execute();
             
             assertThat(rows.size()).isEqualTo(1);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testSelectDistinctByExample() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
             List<SimpleTableRecord> rows = mapper.selectDistinctByExample()
@@ -118,15 +111,12 @@ public class SimpleTableAnnotatedMapperTest {
                     .execute();
             
             assertThat(rows.size()).isEqualTo(5);
-        } finally {
-            session.close();
         }
     }
     
     @Test
     public void testSelectDistinctByExampleWithRowbounds() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             RowBounds rowBounds = new RowBounds(2, 2);
             
@@ -137,15 +127,12 @@ public class SimpleTableAnnotatedMapperTest {
                     .execute();
             
             assertThat(rows.size()).isEqualTo(2);
-        } finally {
-            session.close();
         }
     }
     
     @Test
     public void testSelectByExampleWithTypeHandler() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
             List<SimpleTableRecord> rows = mapper.selectByExample()
@@ -154,20 +141,17 @@ public class SimpleTableAnnotatedMapperTest {
                     .build()
                     .execute();
             
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(rows.size()).isEqualTo(2);
-                softly.assertThat(rows.get(0).getId()).isEqualTo(3);
-                softly.assertThat(rows.get(1).getId()).isEqualTo(6);
-            });
-        } finally {
-            session.close();
+            assertAll(
+                    () -> assertThat(rows.size()).isEqualTo(2),
+                    () -> assertThat(rows.get(0).getId()).isEqualTo(3),
+                    () -> assertThat(rows.get(1).getId()).isEqualTo(6)
+            );
         }
     }
 
     @Test
     public void testFirstNameIn() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
             List<SimpleTableRecord> rows = mapper.selectByExample()
@@ -175,46 +159,39 @@ public class SimpleTableAnnotatedMapperTest {
                     .build()
                     .execute();
             
-            assertThat(rows.size()).isEqualTo(2);
-            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone");
-            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble");
-        } finally {
-            session.close();
+            assertAll(
+                    () -> assertThat(rows.size()).isEqualTo(2),
+                    () -> assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone"),
+                    () -> assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble")
+            );
         }
     }
 
     @Test
     public void testDeleteByExample() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             int rows = mapper.deleteByExample()
                     .where(occupation, isNull())
                     .build()
                     .execute();
             assertThat(rows).isEqualTo(2);
-        } finally {
-            session.close();
         }
     }
     
     @Test
     public void testDeleteByPrimaryKey() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             int rows = mapper.deleteByPrimaryKey(2);
             
             assertThat(rows).isEqualTo(1);
-        } finally {
-            session.close();
         }
     }
     
     @Test
     public void testInsert() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
@@ -226,15 +203,12 @@ public class SimpleTableAnnotatedMapperTest {
             
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testInsertSelective() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
@@ -245,15 +219,12 @@ public class SimpleTableAnnotatedMapperTest {
             
             int rows = mapper.insertSelective(record);
             assertThat(rows).isEqualTo(1);
-        } finally {
-            session.close();
         }
     }
 
     @Test
     public void testUpdateByPrimaryKey() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
@@ -263,26 +234,21 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(record);
-                softly.assertThat(rows).isEqualTo(1);
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
             
-                record.setOccupation("Programmer");
-                rows = mapper.updateByPrimaryKey(record);
-                softly.assertThat(rows).isEqualTo(1);
+            record.setOccupation("Programmer");
+            rows = mapper.updateByPrimaryKey(record);
+            assertThat(rows).isEqualTo(1);
             
-                SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
-                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-            });
-        } finally {
-            session.close();
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
         }
     }
 
     @Test
     public void testUpdateByPrimaryKeySelective() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
@@ -292,30 +258,24 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(record);
-                softly.assertThat(rows).isEqualTo(1);
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord updateRecord = new SimpleTableRecord();
-                updateRecord.setId(100);
-                updateRecord.setOccupation("Programmer");
-                rows = mapper.updateByPrimaryKeySelective(updateRecord);
-                softly.assertThat(rows).isEqualTo(1);
+            SimpleTableRecord updateRecord = new SimpleTableRecord();
+            updateRecord.setId(100);
+            updateRecord.setOccupation("Programmer");
+            rows = mapper.updateByPrimaryKeySelective(updateRecord);
+            assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
-                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-                softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
-            });
-            
-        } finally {
-            session.close();
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
+            assertThat(newRecord.getFirstName()).isEqualTo("Joe");
         }
     }
 
     @Test
     public void testUpdateWithNulls() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
@@ -325,34 +285,31 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(record);
-                softly.assertThat(rows).isEqualTo(1);
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
 
-                UpdateStatementProvider updateStatement = update(simpleTable)
-                        .set(occupation).equalToNull()
-                        .set(employed).equalTo(false)
-                        .where(id, isEqualTo(100))
-                        .build()
-                        .render(RenderingStrategy.MYBATIS3);
+            UpdateStatementProvider updateStatement = update(simpleTable)
+                    .set(occupation).equalToNull()
+                    .set(employed).equalTo(false)
+                    .where(id, isEqualTo(100))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
 
-                rows = mapper.update(updateStatement);
-                softly.assertThat(rows).isEqualTo(1);
+            rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
-                softly.assertThat(newRecord.getOccupation()).isNull();
-                softly.assertThat(newRecord.getEmployed()).isEqualTo(false);
-                softly.assertThat(newRecord.getFirstName()).isEqualTo("Joe");
-            });
-        } finally {
-            session.close();
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertAll(
+                    () -> assertThat(newRecord.getOccupation()).isNull(),
+                    () -> assertThat(newRecord.getEmployed()).isEqualTo(false),
+                    () -> assertThat(newRecord.getFirstName()).isEqualTo("Joe")
+            );
         }
     }
 
     @Test
     public void testUpdateByExample() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
@@ -362,31 +319,26 @@ public class SimpleTableAnnotatedMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             
-            SoftAssertions.assertSoftly(softly -> {
-                int rows = mapper.insert(record);
-                softly.assertThat(rows).isEqualTo(1);
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
 
-                record.setOccupation("Programmer");
-                rows = mapper.updateByExample(record)
-                        .where(id, isEqualTo(100))
-                        .and(firstName, isEqualTo("Joe"))
-                        .build()
-                        .execute();
+            record.setOccupation("Programmer");
+            rows = mapper.updateByExample(record)
+                    .where(id, isEqualTo(100))
+                    .and(firstName, isEqualTo("Joe"))
+                    .build()
+                    .execute();
 
-                softly.assertThat(rows).isEqualTo(1);
+            assertThat(rows).isEqualTo(1);
 
-                SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
-                softly.assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
-            });
-        } finally {
-            session.close();
+            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
         }
     }
 
     @Test
     public void testCountByExample() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             long rows = mapper.countByExample()
                     .where(occupation, isNull())
@@ -394,15 +346,12 @@ public class SimpleTableAnnotatedMapperTest {
                     .execute();
             
             assertThat(rows).isEqualTo(2L);
-        } finally {
-            session.close();
         }
     }
     
     @Test
     public void testTypeHandledLike() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
             List<SimpleTableRecord> rows = mapper.selectByExample()
@@ -413,15 +362,12 @@ public class SimpleTableAnnotatedMapperTest {
             
             assertThat(rows.size()).isEqualTo(3);
             assertThat(rows.get(0).getFirstName()).isEqualTo("Fred");
-        } finally {
-            session.close();
         }
     }
     
     @Test
     public void testTypeHandledNotLike() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
             List<SimpleTableRecord> rows = mapper.selectByExample()
@@ -432,8 +378,6 @@ public class SimpleTableAnnotatedMapperTest {
             
             assertThat(rows.size()).isEqualTo(3);
             assertThat(rows.get(0).getFirstName()).isEqualTo("Barney");
-        } finally {
-            session.close();
         }
     }
 }

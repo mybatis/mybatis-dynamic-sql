@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.assertj.core.api.SoftAssertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -25,28 +27,27 @@ public class FragmentCollectorTest {
 
     @Test
     public void testWhereFragmentCollectorMerge() {
-        SoftAssertions.assertSoftly(softly -> {
-            FragmentCollector fc1 = new FragmentCollector();
-            FragmentAndParameters fp1 = FragmentAndParameters.withFragment(":p1")
-                    .withParameter("p1", 1)
-                    .build();
-            fc1.add(fp1);
+        FragmentCollector fc1 = new FragmentCollector();
+        FragmentAndParameters fp1 = FragmentAndParameters.withFragment(":p1")
+                .withParameter("p1", 1)
+                .build();
+        fc1.add(fp1);
 
-            FragmentCollector fc2 = new FragmentCollector();
-            FragmentAndParameters fp2 = FragmentAndParameters.withFragment(":p2")
-                    .withParameter("p2", 2)
-                    .build();
-            fc2.add(fp2);
+        FragmentCollector fc2 = new FragmentCollector();
+        FragmentAndParameters fp2 = FragmentAndParameters.withFragment(":p2")
+                .withParameter("p2", 2)
+                .build();
+        fc2.add(fp2);
 
-            fc1 = fc1.merge(fc2);
+        fc1.merge(fc2);
 
-            softly.assertThat(fc1.fragments.size()).isEqualTo(2);
-            softly.assertThat(fc1.fragments.get(0)).isEqualTo(":p1");
-            softly.assertThat(fc1.fragments.get(1)).isEqualTo(":p2");
-
-            softly.assertThat(fc1.parameters.size()).isEqualTo(2);
-            softly.assertThat(fc1.parameters.get("p1")).isEqualTo(1);
-            softly.assertThat(fc1.parameters.get("p2")).isEqualTo(2);
-        });
+        assertAll(
+                () -> assertThat(fc1.fragments.size()).isEqualTo(2),
+                () -> assertThat(fc1.fragments.get(0)).isEqualTo(":p1"),
+                () -> assertThat(fc1.fragments.get(1)).isEqualTo(":p2"),
+                () -> assertThat(fc1.parameters.size()).isEqualTo(2),
+                () -> assertThat(fc1.parameters.get("p1")).isEqualTo(1),
+                () -> assertThat(fc1.parameters.get("p2")).isEqualTo(2)
+        );
     }
 }
