@@ -50,22 +50,28 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.WhereDSL;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn;
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThan;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanColumn;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToColumn;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
 import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitive;
 import org.mybatis.dynamic.sql.where.condition.IsInWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLessThan;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanColumn;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToColumn;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLike;
 import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitive;
 import org.mybatis.dynamic.sql.where.condition.IsNotBetween;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualToColumn;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsNotIn;
 import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive;
@@ -256,6 +262,10 @@ public interface SqlBuilder {
     static <T> IsEqualToWithSubselect<T> isEqualTo(Buildable<SelectModel> selectModelBuilder) {
         return IsEqualToWithSubselect.of(selectModelBuilder);
     }
+    
+    static <T> IsEqualToColumn<T> isEqualTo(BasicColumn column) {
+        return IsEqualToColumn.of(column);
+    }
 
     static <T> IsNotEqualTo<T> isNotEqualTo(T value) {
         return isNotEqualTo(() -> value);
@@ -267,6 +277,10 @@ public interface SqlBuilder {
 
     static <T> IsNotEqualToWithSubselect<T> isNotEqualTo(Buildable<SelectModel> selectModelBuilder) {
         return IsNotEqualToWithSubselect.of(selectModelBuilder);
+    }
+
+    static <T> IsNotEqualToColumn<T> isNotEqualTo(BasicColumn column) {
+        return IsNotEqualToColumn.of(column);
     }
 
     static <T> IsGreaterThan<T> isGreaterThan(T value) {
@@ -281,6 +295,10 @@ public interface SqlBuilder {
         return IsGreaterThanWithSubselect.of(selectModelBuilder);
     }
     
+    static <T> IsGreaterThanColumn<T> isGreaterThan(BasicColumn column) {
+        return IsGreaterThanColumn.of(column);
+    }
+
     static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(T value) {
         return isGreaterThanOrEqualTo(() -> value);
     }
@@ -294,6 +312,10 @@ public interface SqlBuilder {
         return IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);
     }
     
+    static <T> IsGreaterThanOrEqualToColumn<T> isGreaterThanOrEqualTo(BasicColumn column) {
+        return IsGreaterThanOrEqualToColumn.of(column);
+    }
+
     static <T> IsLessThan<T> isLessThan(T value) {
         return isLessThan(() -> value);
     }
@@ -306,6 +328,10 @@ public interface SqlBuilder {
         return IsLessThanWithSubselect.of(selectModelBuilder);
     }
     
+    static <T> IsLessThanColumn<T> isLessThan(BasicColumn column) {
+        return IsLessThanColumn.of(column);
+    }
+
     static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(T value) {
         return isLessThanOrEqualTo(() -> value);
     }
@@ -318,6 +344,10 @@ public interface SqlBuilder {
         return IsLessThanOrEqualToWithSubselect.of(selectModelBuilder);
     }
     
+    static <T> IsLessThanOrEqualToColumn<T> isLessThanOrEqualTo(BasicColumn column) {
+        return IsLessThanOrEqualToColumn.of(column);
+    }
+
     @SafeVarargs
     static <T> IsIn<T> isIn(T...values) {
         return isIn(Arrays.asList(values));

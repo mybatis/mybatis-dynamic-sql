@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mybatis.dynamic.sql.AbstractColumnComparisonCondition;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
@@ -104,6 +105,12 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         return FragmentAndParameters.withFragment(fragment)
                 .withParameters(selectStatement.getParameters())
                 .build();
+    }
+    
+    @Override
+    public FragmentAndParameters visit(AbstractColumnComparisonCondition<T> condition) {
+        String fragment = condition.renderCondition(columnName(), tableAliasCalculator);
+        return FragmentAndParameters.withFragment(fragment).build();
     }
     
     private FragmentAndParameters toFragmentAndParameters(Object value) {
