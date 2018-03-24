@@ -13,18 +13,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql;
+package examples.column.comparison;
 
-public interface ConditionVisitor<T, R> {
-    R visit(AbstractListValueCondition<T> condition);
+public class ColumnComparisonRecord {
+    private int number1;
+    private int number2;
 
-    R visit(AbstractNoValueCondition<T> condition);
+    public int getNumber1() {
+        return number1;
+    }
 
-    R visit(AbstractSingleValueCondition<T> condition);
+    public void setNumber1(int number1) {
+        this.number1 = number1;
+    }
 
-    R visit(AbstractTwoValueCondition<T> condition);
+    public int getNumber2() {
+        return number2;
+    }
 
-    R visit(AbstractSubselectCondition<T> condition);
-
-    R visit(AbstractColumnComparisonCondition<T> condition);
+    public void setNumber2(int number2) {
+        this.number2 = number2;
+    }
 }

@@ -13,18 +13,23 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql;
+package org.mybatis.dynamic.sql.where.condition;
 
-public interface ConditionVisitor<T, R> {
-    R visit(AbstractListValueCondition<T> condition);
+import org.mybatis.dynamic.sql.AbstractColumnComparisonCondition;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-    R visit(AbstractNoValueCondition<T> condition);
+public class IsLessThanOrEqualToColumn<T> extends AbstractColumnComparisonCondition<T> {
 
-    R visit(AbstractSingleValueCondition<T> condition);
+    protected IsLessThanOrEqualToColumn(BasicColumn column) {
+        super(column);
+    }
 
-    R visit(AbstractTwoValueCondition<T> condition);
-
-    R visit(AbstractSubselectCondition<T> condition);
-
-    R visit(AbstractColumnComparisonCondition<T> condition);
+    @Override
+    protected String renderCondition(String leftColumn, String rightColumn) {
+        return leftColumn + " <= " + rightColumn; //$NON-NLS-1$
+    }
+    
+    public static <T> IsLessThanOrEqualToColumn<T> of(BasicColumn column) {
+        return new IsLessThanOrEqualToColumn<>(column);
+    }
 }
