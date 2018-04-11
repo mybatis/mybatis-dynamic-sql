@@ -98,6 +98,7 @@ public class CriterionRenderer<T> {
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withParameterName(parameterName)
                 .build()
                 .render();
     }
