@@ -35,8 +35,8 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.testTarget>${java.version}</maven.compiler.testTarget>
     <maven.compiler.testSource>${java.version}</maven.compiler.testSource>
-    <junit.jupiter.version>5.1.0</junit.jupiter.version>
-    <junit.platform.version>1.1.0</junit.platform.version>
+    <junit.jupiter.version>5.1.1</junit.jupiter.version>
+    <junit.platform.version>1.1.1</junit.platform.version>
     <clirr.comparisonVersion>1.0.0</clirr.comparisonVersion>
   </properties>
   
@@ -142,7 +142,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>5.0.4.RELEASE</version>
+      <version>5.0.5.RELEASE</version>
       <scope>test</scope>
     </dependency>
     <dependency>
