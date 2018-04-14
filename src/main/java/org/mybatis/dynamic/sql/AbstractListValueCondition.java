@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,14 +17,15 @@ package org.mybatis.dynamic.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
-    private List<T> values = new ArrayList<>();
+    private List<T> values;
 
-    protected AbstractListValueCondition(List<T> values) {
-        this.values.addAll(values);
+    protected AbstractListValueCondition(AbstractBuilder<T, ?> builder) {
+        values = Objects.requireNonNull(builder.values);
     }
     
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
@@ -54,4 +55,15 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     }
     
     public abstract String renderCondition(String columnName, Stream<String> placeholders);
+    
+    public abstract static class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
+        private List<T> values = new ArrayList<>();
+        
+        public B withValues(List<T> values) {
+            this.values.addAll(values);
+            return getThis();
+        }
+        
+        public abstract B getThis();
+    }
 }

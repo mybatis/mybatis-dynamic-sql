@@ -17,24 +17,18 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Supplier;
 
-import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
+public class IsLessThanWhenPresent<T> extends IsLessThan<T> {
 
-public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
-    protected IsNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
+    protected IsLessThanWhenPresent(Supplier<T> valueSupplier) {
         super(valueSupplier);
     }
     
     @Override
-    public String renderCondition(String columnName, String placeholder) {
-        return "upper(" + columnName + ") not like " + placeholder; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    
-    @Override
-    public String value() {
-        return super.value().toUpperCase();
+    public boolean shouldRender() {
+        return value() != null;
     }
 
-    public static IsNotLikeCaseInsensitive of(Supplier<String> valueSupplier) {
-        return new IsNotLikeCaseInsensitive(valueSupplier);
+    public static <T> IsLessThanWhenPresent<T> of(Supplier<T> valueSupplier) {
+        return new IsLessThanWhenPresent<>(valueSupplier);
     }
 }

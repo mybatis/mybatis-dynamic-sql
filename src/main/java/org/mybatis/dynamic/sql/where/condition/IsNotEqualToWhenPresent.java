@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,22 +13,22 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package org.mybatis.dynamic.sql.where.condition;
 
-public class ClassWithPrimitiveProperties {
-    private int id;
-    private int privateId;
-    
-    public ClassWithPrimitiveProperties(int id, int privateId) {
-        this.id = id;
-        this.privateId = privateId;
+import java.util.function.Supplier;
+
+public class IsNotEqualToWhenPresent<T> extends IsNotEqualTo<T> {
+
+    protected IsNotEqualToWhenPresent(Supplier<T> valueSupplier) {
+        super(valueSupplier);
     }
-    
-    public int getId() {
-        return id;
+
+    @Override
+    public boolean shouldRender() {
+        return value() != null;
     }
-    
-    public int getInternalId() {
-        return privateId;
+
+    public static <T> IsNotEqualToWhenPresent<T> of(Supplier<T> valueSupplier) {
+        return new IsNotEqualToWhenPresent<>(valueSupplier);
     }
 }

@@ -16,11 +16,15 @@
 package org.mybatis.dynamic.sql.delete.render;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
+import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class DeleteRenderer {
     private DeleteModel deleteModel;
@@ -33,12 +37,17 @@ public class DeleteRenderer {
     
     public DeleteStatementProvider render() {
         return DefaultDeleteStatementProvider.withTableName(deleteModel.table().name())
-                .withWhereClause(deleteModel.whereModel().map(this::renderWhereClause))
+                .withWhereClause(deleteModel.whereModel().flatMap(this::renderWhereClause))
                 .build();
     }
     
-    private WhereClauseProvider renderWhereClause(WhereModel whereModel) {
-        return whereModel.render(renderingStrategy);
+    private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
+        return WhereRenderer.withWhereModel(whereModel)
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(new AtomicInteger(1))
+                .withTableAliasCalculator(TableAliasCalculator.empty())
+                .build()
+                .render();
     }
     
     public static Builder withDeleteModel(DeleteModel deleteModel) {

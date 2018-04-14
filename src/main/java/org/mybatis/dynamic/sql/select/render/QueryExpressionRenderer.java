@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,7 @@ public class QueryExpressionRenderer {
                 .isDistinct(queryExpression.isDistinct())
                 .withTableName(calculateTableName(queryExpression.table()))
                 .withJoinClause(queryExpression.joinModel().map(this::renderJoin))
-                .withWhereClause(queryExpression.whereModel().map(this::renderWhereClause))
+                .withWhereClause(queryExpression.whereModel().flatMap(this::renderWhereClause))
                 .withGroupByClause(queryExpression.groupByModel().map(this::renderGroupBy))
                 .build();
     }
@@ -72,7 +73,7 @@ public class QueryExpressionRenderer {
                 .render();
     }
     
-    private WhereClauseProvider renderWhereClause(WhereModel whereModel) {
+    private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(queryExpression.tableAliasCalculator())

@@ -17,24 +17,21 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Supplier;
 
-import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
+public class IsNotLikeCaseInsensitiveWhenPresent extends IsNotLikeCaseInsensitive {
 
-public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
-    protected IsNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
+    private boolean shouldRender;
+    
+    protected IsNotLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
         super(valueSupplier);
+        shouldRender = valueSupplier.get() != null;
     }
     
     @Override
-    public String renderCondition(String columnName, String placeholder) {
-        return "upper(" + columnName + ") not like " + placeholder; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    
-    @Override
-    public String value() {
-        return super.value().toUpperCase();
+    public boolean shouldRender() {
+        return shouldRender;
     }
 
-    public static IsNotLikeCaseInsensitive of(Supplier<String> valueSupplier) {
-        return new IsNotLikeCaseInsensitive(valueSupplier);
+    public static IsNotLikeCaseInsensitiveWhenPresent of(Supplier<String> valueSupplier) {
+        return new IsNotLikeCaseInsensitiveWhenPresent(valueSupplier);
     }
 }

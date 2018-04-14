@@ -48,10 +48,6 @@ public class SqlCriterion<T> {
         return condition;
     }
     
-    public boolean hasSubCriteria() {
-        return !subCriteria.isEmpty();
-    }
-    
     public <R> Stream<R> mapSubCriteria(Function<SqlCriterion<?>, R> mapper) {
         return subCriteria.stream().map(mapper);
     }

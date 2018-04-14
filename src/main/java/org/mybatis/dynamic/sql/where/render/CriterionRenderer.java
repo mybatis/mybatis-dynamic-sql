@@ -15,10 +15,9 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -26,7 +25,6 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class CriterionRenderer<T> {
     private SqlCriterion<T> sqlCriterion;
@@ -43,57 +41,21 @@ public class CriterionRenderer<T> {
         parameterName = builder.parameterName;
     }
     
-    public FragmentAndParameters render() {
-        if (sqlCriterion.hasSubCriteria()) {
-            return renderWithSubcriteria();
-        } else {
-            return renderWithoutSubcriteria();
-        }
-    }
-    
-    private FragmentAndParameters renderWithSubcriteria() {
-        String connector = renderConnector();
-        FragmentAndParameters renderedCondition = renderCondition();
+    public Optional<RenderedCriterion> render() {
+        FragmentAndParameters initialCondition = renderCondition();
+        List<RenderedCriterion> subCriteria = sqlCriterion.mapSubCriteria(this::renderSubCriterion)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
         
-        FragmentCollector renderedSubCriteria = sqlCriterion.mapSubCriteria(this::renderSubCriterion)
-                .collect(FragmentCollector.collect());
-        String fragment = calculateFragment(connector, renderedCondition, renderedSubCriteria);
-        
-        return FragmentAndParameters.withFragment(fragment)
-                .withParameters(renderedCondition.parameters())
-                .withParameters(renderedSubCriteria.parameters())
+        return new RenderedCriterion.Builder()
+                .withConnector(sqlCriterion.connector())
+                .withInitialCondition(initialCondition)
+                .withSubCriteria(subCriteria)
                 .build();
     }
 
-    private FragmentAndParameters renderWithoutSubcriteria() {
-        String connector = renderConnector();
-        FragmentAndParameters renderedCondition = renderCondition();
-        
-        String fragment = calculateFragment(connector, renderedCondition);
-        
-        return FragmentAndParameters.withFragment(fragment)
-                .withParameters(renderedCondition.parameters())
-                .build();
-    }
-    
-    private String calculateFragment(String connector, FragmentAndParameters renderedCondition) {
-        return connector + renderedCondition.fragment();
-    }
-    
-    private String calculateFragment(String connector, FragmentAndParameters renderedCondition,
-            FragmentCollector renderedSubCriteria) {
-        return connector
-                + "("  //$NON-NLS-1$
-                + renderedCondition.fragment()
-                + spaceBefore(renderedSubCriteria.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
-                + ")"; //$NON-NLS-1$
-    }
-    
-    private String renderConnector() {
-        return spaceAfter(sqlCriterion.connector());
-    }
-    
-    private <S> FragmentAndParameters renderSubCriterion(SqlCriterion<S> subCriterion) {
+    private <S> Optional<RenderedCriterion> renderSubCriterion(SqlCriterion<S> subCriterion) {
         return CriterionRenderer.withCriterion(subCriterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)
@@ -103,7 +65,12 @@ public class CriterionRenderer<T> {
                 .render();
     }
     
+    // caution - may return null
     private FragmentAndParameters renderCondition() {
+        if (!sqlCriterion.condition().shouldRender()) {
+            return null;
+        }
+        
         WhereConditionVisitor<T> visitor = WhereConditionVisitor.withColumn(sqlCriterion.column())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
@@ -112,7 +79,7 @@ public class CriterionRenderer<T> {
                 .build();
         return sqlCriterion.condition().accept(visitor);
     }
-    
+
     public static <T> Builder<T> withCriterion(SqlCriterion<T> sqlCriterion) {
         return new Builder<T>().withCriterion(sqlCriterion);
     }
