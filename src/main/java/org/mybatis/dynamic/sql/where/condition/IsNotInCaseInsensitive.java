@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
 
-    protected IsNotInCaseInsensitive(List<String> values) {
-        super(values);
+    protected IsNotInCaseInsensitive(Builder builder) {
+        super(builder);
     }
     
     @Override
@@ -40,6 +40,18 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
     }
     
     public static IsNotInCaseInsensitive of(List<String> values) {
-        return new IsNotInCaseInsensitive(values);
+        return new IsNotInCaseInsensitive.Builder().withValues(values).build();
+    }
+    
+    public static class Builder extends AbstractBuilder<String, Builder> {
+
+        @Override
+        public Builder getThis() {
+            return this;
+        }
+        
+        public IsNotInCaseInsensitive build() {
+            return new IsNotInCaseInsensitive(this);
+        }
     }
 }

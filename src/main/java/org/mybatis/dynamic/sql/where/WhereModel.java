@@ -28,6 +28,9 @@ import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class WhereModel {
+    private static final WhereClauseProvider EMPTY_WHERE_CLAUSE =
+            new WhereClauseProvider.Builder().withWhereClause("").build(); //$NON-NLS-1$
+    
     private List<SqlCriterion<?>> criteria = new ArrayList<>();
     
     private WhereModel(List<SqlCriterion<?>> criteria) {
@@ -50,7 +53,8 @@ public class WhereModel {
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render();
+                .render()
+                .orElse(EMPTY_WHERE_CLAUSE);
     }
     
     public WhereClauseProvider render(RenderingStrategy renderingStrategy,
@@ -60,7 +64,8 @@ public class WhereModel {
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(tableAliasCalculator)
                 .build()
-                .render();
+                .render()
+                .orElse(EMPTY_WHERE_CLAUSE);
     }
     
     public WhereClauseProvider render(RenderingStrategy renderingStrategy,
@@ -71,7 +76,8 @@ public class WhereModel {
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .withParameterName(parameterName)
                 .build()
-                .render();
+                .render()
+                .orElse(EMPTY_WHERE_CLAUSE);
     }
     
     public WhereClauseProvider render(RenderingStrategy renderingStrategy,
@@ -82,7 +88,8 @@ public class WhereModel {
                 .withTableAliasCalculator(tableAliasCalculator)
                 .withParameterName(parameterName)
                 .build()
-                .render();
+                .render()
+                .orElse(EMPTY_WHERE_CLAUSE);
     }
     
     public static WhereModel of(List<SqlCriterion<?>> criteria) {

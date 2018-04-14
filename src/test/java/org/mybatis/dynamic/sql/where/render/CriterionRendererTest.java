@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -51,7 +51,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters().size()).isEqualTo(1);
@@ -76,7 +78,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters().size()).isEqualTo(1);
@@ -97,7 +101,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters().size()).isEqualTo(1);
@@ -118,7 +124,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters().size()).isEqualTo(1);

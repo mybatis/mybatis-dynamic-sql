@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.update.render;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,7 +50,7 @@ public class UpdateRenderer {
         return DefaultUpdateStatementProvider.withTableName(updateModel.table().name())
                 .withSetClause(calculateSetPhrase(fc))
                 .withParameters(fc.parameters())
-                .withWhereClause(updateModel.whereModel().map(this::renderWhereClause))
+                .withWhereClause(updateModel.whereModel().flatMap(this::renderWhereClause))
                 .build();
     }
     
@@ -58,7 +59,7 @@ public class UpdateRenderer {
                 .collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    private WhereClauseProvider renderWhereClause(WhereModel whereModel) {
+    private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)

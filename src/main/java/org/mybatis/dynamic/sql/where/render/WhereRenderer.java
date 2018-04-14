@@ -15,7 +15,9 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -41,16 +43,32 @@ public class WhereRenderer {
         parameterName = builder.parameterName;
     }
     
-    public WhereClauseProvider render() {
-        FragmentCollector fc = whereModel.mapCriteria(this::render)
-                .collect(FragmentCollector.collect());
+    public Optional<WhereClauseProvider> render() {
+        List<RenderedCriterion> renderedCriteria = whereModel.mapCriteria(this::render)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        
+        if (renderedCriteria.isEmpty()) {
+            return Optional.empty();
+        }
 
-        return WhereClauseProvider.withWhereClause(calculateWhereClause(fc))
+        // The first is rendered without the initial connector because we don't want something like
+        // where and(id = ?).  This can happen if the first condition doesn't render. 
+        FragmentAndParameters initialCriterion = renderedCriteria.get(0).renderWithoutInitialConnector();
+        
+        FragmentCollector fc = renderedCriteria.stream()
+                .skip(1)
+                .map(RenderedCriterion::renderWithInitialConnector)
+                .collect(FragmentCollector.collect(initialCriterion));
+        
+        WhereClauseProvider wcp = WhereClauseProvider.withWhereClause(calculateWhereClause(fc))
                 .withParameters(fc.parameters())
                 .build();
+        return Optional.of(wcp);
     }
     
-    private FragmentAndParameters render(SqlCriterion<?> criterion) {
+    private Optional<RenderedCriterion> render(SqlCriterion<?> criterion) {
         return CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(renderingStrategy)

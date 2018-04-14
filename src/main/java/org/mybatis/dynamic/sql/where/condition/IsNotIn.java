@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsNotIn<T> extends AbstractListValueCondition<T> {
 
-    protected IsNotIn(List<T> values) {
-        super(values);
+    protected IsNotIn(Builder<T> builder) {
+        super(builder);
     }
 
     @Override
@@ -37,6 +37,18 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
     }
 
     public static <T> IsNotIn<T> of(List<T> values) {
-        return new IsNotIn<>(values);
+        return new IsNotIn.Builder<T>().withValues(values).build();
+    }
+    
+    public static class Builder<T> extends AbstractBuilder<T, Builder<T>> {
+
+        @Override
+        public Builder<T> getThis() {
+            return this;
+        }
+
+        public IsNotIn<T> build() {
+            return new IsNotIn<>(this);
+        }
     }
 }

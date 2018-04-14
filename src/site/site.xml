@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-       Copyright 2016-2017 the original author or authors.
+       Copyright 2016-2018 the original author or authors.
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -36,7 +36,9 @@
     <menu name="User's Guide">
       <item href="docs/introduction.html" name="Introduction" />
       <item href="docs/quickStart.html" name="Quick Start" />
-      <item href="docs/whereClauses.html" name="WHERE Clause Support" />
+      <item href="docs/whereClauses.html" name="WHERE Clause Support" >
+        <item href="docs/conditions.html" name="WHERE Conditions"/>
+      </item>
       <item href="docs/select.html" name="SELECT Statements" />
       <item href="docs/delete.html" name="DELETE Statements" />
       <item href="docs/insert.html" name="INSERT Statements" />

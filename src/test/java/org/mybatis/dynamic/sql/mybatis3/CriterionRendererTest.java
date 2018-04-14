@@ -53,7 +53,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
@@ -77,7 +79,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}"),
@@ -99,7 +103,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
@@ -121,7 +127,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
@@ -147,7 +155,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"),
@@ -172,7 +182,9 @@ public class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategy.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
                 .build()
-                .render();
+                .render()
+                .get()
+                .renderWithInitialConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"),
