@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsBetweenWhenPresent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsBetweenWhenPresent.java</span></div><h1>IsBetweenWhenPresent.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2018 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.where.condition;
+
+import java.util.function.Supplier;
+
+import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
+
+public class IsBetweenWhenPresent&lt;T&gt; extends AbstractTwoValueCondition&lt;T&gt; {
+
+    protected IsBetweenWhenPresent(Builder&lt;T&gt; builder) {
+<span class="fc" id="L25">        super(builder.valueSupplier1, builder.valueSupplier2);</span>
+<span class="fc" id="L26">    }</span>
+    
+    @Override
+    public boolean shouldRender() {
+<span class="fc bfc" id="L30" title="All 4 branches covered.">        return value1() != null &amp;&amp; value2() != null;</span>
+    }
+    
+    @Override
+    public String renderCondition(String columnName, String placeholder1, String placeholder2) {
+<span class="fc" id="L35">        return columnName + &quot; between &quot; + placeholder1 + &quot; and &quot; + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$</span>
+    }
+
+    public static class Builder&lt;T&gt; {
+        private Supplier&lt;T&gt; valueSupplier1;
+        private Supplier&lt;T&gt; valueSupplier2;
+        
+<span class="fc" id="L42">        private Builder(Supplier&lt;T&gt; valueSupplier1) {</span>
+<span class="fc" id="L43">            this.valueSupplier1 = valueSupplier1;</span>
+<span class="fc" id="L44">        }</span>
+        
+        public IsBetweenWhenPresent&lt;T&gt; and(Supplier&lt;T&gt; valueSupplier2) {
+<span class="fc" id="L47">            this.valueSupplier2 = valueSupplier2;</span>
+<span class="fc" id="L48">            return new IsBetweenWhenPresent&lt;&gt;(this);</span>
+        }
+        
+        public IsBetweenWhenPresent&lt;T&gt; and(T value2) {
+<span class="fc" id="L52">            return and(() -&gt; value2);</span>
+        }
+    }
+    
+    public static &lt;T&gt; Builder&lt;T&gt; isBetweenWhenPresent(Supplier&lt;T&gt; valueSupplier) {
+<span class="fc" id="L57">        return new Builder&lt;&gt;(valueSupplier);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

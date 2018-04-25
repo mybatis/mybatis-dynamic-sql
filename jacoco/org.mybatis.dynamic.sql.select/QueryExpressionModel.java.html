@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">QueryExpressionModel.java</span></div><h1>QueryExpressionModel.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -34,29 +34,29 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionModel {
-    private Optional&lt;String&gt; connector;
+    private String connector;
     private boolean isDistinct;
     private List&lt;BasicColumn&gt; selectList;
     private SqlTable table;
-    private Optional&lt;JoinModel&gt; joinModel;
+    private JoinModel joinModel;
     private TableAliasCalculator tableAliasCalculator;
-    private Optional&lt;WhereModel&gt; whereModel;
-    private Optional&lt;GroupByModel&gt; groupByModel;
+    private WhereModel whereModel;
+    private GroupByModel groupByModel;
 
 <span class="fc" id="L46">    private QueryExpressionModel(Builder builder) {</span>
-<span class="fc" id="L47">        connector = Optional.ofNullable(builder.connector);</span>
+<span class="fc" id="L47">        connector = builder.connector;</span>
 <span class="fc" id="L48">        isDistinct = builder.isDistinct;</span>
 <span class="fc" id="L49">        selectList = Objects.requireNonNull(builder.selectList);</span>
 <span class="fc" id="L50">        table = Objects.requireNonNull(builder.table);</span>
-<span class="fc" id="L51">        joinModel = Optional.ofNullable(builder.joinModel);</span>
-<span class="fc" id="L52">        tableAliasCalculator = joinModel.map(jm -&gt; GuaranteedTableAliasCalculator.of(builder.tableAliases))</span>
+<span class="fc" id="L51">        joinModel = builder.joinModel;</span>
+<span class="fc" id="L52">        tableAliasCalculator = joinModel().map(jm -&gt; GuaranteedTableAliasCalculator.of(builder.tableAliases))</span>
 <span class="fc" id="L53">                .orElse(TableAliasCalculator.of(builder.tableAliases));</span>
-<span class="fc" id="L54">        whereModel = Optional.ofNullable(builder.whereModel);</span>
-<span class="fc" id="L55">        groupByModel = Optional.ofNullable(builder.groupByModel);</span>
+<span class="fc" id="L54">        whereModel = builder.whereModel;</span>
+<span class="fc" id="L55">        groupByModel = builder.groupByModel;</span>
 <span class="fc" id="L56">    }</span>
     
     public Optional&lt;String&gt; connector() {
-<span class="fc" id="L59">        return connector;</span>
+<span class="fc" id="L59">        return Optional.ofNullable(connector);</span>
     }
     
     public boolean isDistinct() {
@@ -76,15 +76,15 @@ public class QueryExpressionModel {
     }
 
     public Optional&lt;WhereModel&gt; whereModel() {
-<span class="fc" id="L79">        return whereModel;</span>
+<span class="fc" id="L79">        return Optional.ofNullable(whereModel);</span>
     }
     
     public Optional&lt;JoinModel&gt; joinModel() {
-<span class="fc" id="L83">        return joinModel;</span>
+<span class="fc" id="L83">        return Optional.ofNullable(joinModel);</span>
     }
     
     public Optional&lt;GroupByModel&gt; groupByModel() {
-<span class="fc" id="L87">        return groupByModel;</span>
+<span class="fc" id="L87">        return Optional.ofNullable(groupByModel);</span>
     }
     
     public String calculateTableNameIncludingAlias(SqlTable table) {

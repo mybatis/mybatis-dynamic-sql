@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhereConditionVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.render</a> &gt; <span class="el_source">WhereConditionVisitor.java</span></div><h1>WhereConditionVisitor.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mybatis.dynamic.sql.AbstractColumnComparisonCondition;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
@@ -41,13 +42,12 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Fr
     private TableAliasCalculator tableAliasCalculator;
     private String parameterPrefix;
     
-<span class="fc" id="L44">    private WhereConditionVisitor(Builder&lt;T&gt; builder) {</span>
-<span class="fc" id="L45">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
-<span class="fc" id="L46">        sequence = Objects.requireNonNull(builder.sequence);</span>
-<span class="fc" id="L47">        column = Objects.requireNonNull(builder.column);</span>
-<span class="fc" id="L48">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
-<span class="fc" id="L49">        parameterPrefix = builder.parameterName.map(name -&gt; name + &quot;.parameters&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L50">                .orElse(&quot;parameters&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L45">    private WhereConditionVisitor(Builder&lt;T&gt; builder) {</span>
+<span class="fc" id="L46">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L47">        sequence = Objects.requireNonNull(builder.sequence);</span>
+<span class="fc" id="L48">        column = Objects.requireNonNull(builder.column);</span>
+<span class="fc" id="L49">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
+<span class="fc" id="L50">        parameterPrefix = Objects.requireNonNull(builder.parameterPrefix);</span>
 <span class="fc" id="L51">    }</span>
 
     @Override
@@ -107,64 +107,73 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Fr
 <span class="fc" id="L107">                .build();</span>
     }
     
+    @Override
+    public FragmentAndParameters visit(AbstractColumnComparisonCondition&lt;T&gt; condition) {
+<span class="fc" id="L112">        String fragment = condition.renderCondition(columnName(), tableAliasCalculator);</span>
+<span class="fc" id="L113">        return FragmentAndParameters.withFragment(fragment).build();</span>
+    }
+    
     private FragmentAndParameters toFragmentAndParameters(Object value) {
-<span class="fc" id="L111">        String mapKey = formatParameterMapKey(sequence.getAndIncrement());</span>
+<span class="fc" id="L117">        String mapKey = formatParameterMapKey(sequence.getAndIncrement());</span>
         
-<span class="fc" id="L113">        return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))</span>
-<span class="fc" id="L114">                .withParameter(mapKey, value)</span>
-<span class="fc" id="L115">                .build();</span>
+<span class="fc" id="L119">        return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))</span>
+<span class="fc" id="L120">                .withParameter(mapKey, value)</span>
+<span class="fc" id="L121">                .build();</span>
     }
 
     private String formatParameterMapKey(int number) {
-<span class="fc" id="L119">        return &quot;p&quot; + number; //$NON-NLS-1$</span>
+<span class="fc" id="L125">        return &quot;p&quot; + number; //$NON-NLS-1$</span>
     }
     
     private String getFormattedJdbcPlaceholder(String mapKey) {
-<span class="fc" id="L123">        return renderingStrategy.getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        </span>
+<span class="fc" id="L129">        return renderingStrategy.getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        </span>
     }
     
     private String columnName() {
-<span class="fc" id="L127">        return column.renderWithTableAlias(tableAliasCalculator);</span>
+<span class="fc" id="L133">        return column.renderWithTableAlias(tableAliasCalculator);</span>
     }
     
     public static &lt;T&gt; Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
-<span class="fc" id="L131">        return new Builder&lt;T&gt;().withColumn(column);</span>
+<span class="fc" id="L137">        return new Builder&lt;T&gt;().withColumn(column);</span>
     }
     
-<span class="fc" id="L134">    public static class Builder&lt;T&gt; {</span>
+<span class="fc" id="L140">    public static class Builder&lt;T&gt; {</span>
+        private static final String DEFAULT_PARAMETER_PREFIX = &quot;parameters&quot;; //$NON-NLS-1$
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         private BindableColumn&lt;T&gt; column;
         private TableAliasCalculator tableAliasCalculator;
-<span class="fc" id="L139">        private Optional&lt;String&gt; parameterName = Optional.empty();</span>
+<span class="fc" id="L146">        private String parameterPrefix = DEFAULT_PARAMETER_PREFIX;</span>
         
         public Builder&lt;T&gt; withSequence(AtomicInteger sequence) {
-<span class="fc" id="L142">            this.sequence = sequence;</span>
-<span class="fc" id="L143">            return this;</span>
+<span class="fc" id="L149">            this.sequence = sequence;</span>
+<span class="fc" id="L150">            return this;</span>
         }
         
         public Builder&lt;T&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L147">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L148">            return this;</span>
+<span class="fc" id="L154">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L155">            return this;</span>
         }
         
         public Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
-<span class="fc" id="L152">            this.column = column;</span>
-<span class="fc" id="L153">            return this;</span>
+<span class="fc" id="L159">            this.column = column;</span>
+<span class="fc" id="L160">            return this;</span>
         }
         
         public Builder&lt;T&gt; withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L157">            this.tableAliasCalculator = tableAliasCalculator;</span>
-<span class="fc" id="L158">            return this;</span>
+<span class="fc" id="L164">            this.tableAliasCalculator = tableAliasCalculator;</span>
+<span class="fc" id="L165">            return this;</span>
         }
 
-        public Builder&lt;T&gt; withParameterName(Optional&lt;String&gt; parameterName) {
-<span class="fc" id="L162">            this.parameterName = parameterName;</span>
-<span class="fc" id="L163">            return this;</span>
+        public Builder&lt;T&gt; withParameterName(String parameterName) {
+<span class="fc" id="L169">            parameterPrefix = Optional.ofNullable(parameterName)</span>
+<span class="fc" id="L170">                    .map(pn -&gt; pn + &quot;.&quot; + DEFAULT_PARAMETER_PREFIX) //$NON-NLS-1$</span>
+<span class="fc" id="L171">                    .orElse(DEFAULT_PARAMETER_PREFIX);</span>
+<span class="fc" id="L172">            return this;</span>
         }
         
         public WhereConditionVisitor&lt;T&gt; build() {
-<span class="fc" id="L167">            return new WhereConditionVisitor&lt;&gt;(this);</span>
+<span class="fc" id="L176">            return new WhereConditionVisitor&lt;&gt;(this);</span>
         }
     }
 }

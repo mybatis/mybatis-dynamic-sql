@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractListValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractListValueCondition.java</span></div><h1>AbstractListValueCondition.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -17,25 +17,26 @@ package org.mybatis.dynamic.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public abstract class AbstractListValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {
-<span class="fc" id="L24">    private List&lt;T&gt; values = new ArrayList&lt;&gt;();</span>
+    private List&lt;T&gt; values;
 
-<span class="fc" id="L26">    protected AbstractListValueCondition(List&lt;T&gt; values) {</span>
-<span class="fc" id="L27">        this.values.addAll(values);</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L27">    protected AbstractListValueCondition(AbstractBuilder&lt;T, ?&gt; builder) {</span>
+<span class="fc" id="L28">        values = Objects.requireNonNull(builder.values);</span>
+<span class="fc" id="L29">    }</span>
     
     public final &lt;R&gt; Stream&lt;R&gt; mapValues(Function&lt;T, R&gt; mapper) {
-<span class="fc" id="L31">        return values.stream()</span>
-<span class="fc" id="L32">                .map(this::mapValue)</span>
-<span class="fc" id="L33">                .map(mapper);</span>
+<span class="fc" id="L32">        return values.stream()</span>
+<span class="fc" id="L33">                .map(this::mapValue)</span>
+<span class="fc" id="L34">                .map(mapper);</span>
     }
     
     @Override
     public &lt;R&gt; R accept(ConditionVisitor&lt;T, R&gt; visitor) {
-<span class="fc" id="L38">        return visitor.visit(this);</span>
+<span class="fc" id="L39">        return visitor.visit(this);</span>
     }
 
     /**
@@ -50,9 +51,20 @@ public abstract class AbstractListValueCondition&lt;T&gt; implements VisitableCo
      * @return the mapped value - in most cases the value is not changed
      */
     protected T mapValue(T value) {
-<span class="fc" id="L53">        return value;</span>
+<span class="fc" id="L54">        return value;</span>
     }
     
     public abstract String renderCondition(String columnName, Stream&lt;String&gt; placeholders);
+    
+<span class="fc" id="L59">    public abstract static class AbstractBuilder&lt;T, B extends AbstractBuilder&lt;T, B&gt;&gt; {</span>
+<span class="fc" id="L60">        private List&lt;T&gt; values = new ArrayList&lt;&gt;();</span>
+        
+        public B withValues(List&lt;T&gt; values) {
+<span class="fc" id="L63">            this.values.addAll(values);</span>
+<span class="fc" id="L64">            return getThis();</span>
+        }
+        
+        public abstract B getThis();
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

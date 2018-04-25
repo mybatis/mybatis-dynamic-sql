@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../testapidocs/examples/animal/data/AnimalDataMapper.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2017 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2018 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
@@ -55,66 +55,70 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      List&lt;AnimalData&gt; selectMany(SelectStatementProvider selectStatement);
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      @SelectProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      List&lt;Map&lt;String, Object&gt;&gt; generalSelect(SelectStatementProvider selectStatement);
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>      @SelectProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      Long selectALong(SelectStatementProvider selectStatement);
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      @SelectProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      Double selectADouble(SelectStatementProvider selectStatement);
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      @DeleteProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"delete"</span>)
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">int</strong> delete(DeleteStatementProvider deleteStatement);
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      @UpdateProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"update"</span>)
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">int</strong> update(UpdateStatementProvider updateStatement);
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      @InsertProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"insert"</span>)
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">int</strong> insert(InsertStatementProvider&lt;AnimalData&gt; insertStatement);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      @InsertProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"insertSelect"</span>)
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">int</strong> insertSelect(InsertSelectStatementProvider insertSelectStatement);
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      @Select({
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <span class="jxr_string">"select id, animal_name, brain_weight, body_weight"</span>,
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          <span class="jxr_string">"from AnimalData"</span>,
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          <span class="jxr_string">"${whereClause}"</span>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      })
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      List&lt;AnimalData&gt; selectByExample(WhereClauseProvider whereClause);
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      @Select({
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          <span class="jxr_string">"select a.id, a.animal_name, a.brain_weight, a.body_weight"</span>,
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          <span class="jxr_string">"from AnimalData a"</span>,
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          <span class="jxr_string">"${whereClause}"</span>
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      })
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>      List&lt;AnimalData&gt; selectByExampleWithAlias(WhereClauseProvider whereClause);
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      @Select({
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          <span class="jxr_string">"select id, animal_name, brain_weight, body_weight"</span>,
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>          <span class="jxr_string">"from AnimalData"</span>,
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <span class="jxr_string">"${whereClauseProvider.whereClause}"</span>,
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>          <span class="jxr_string">"order by id"</span>,
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          <span class="jxr_string">"OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"</span>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      })
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      List&lt;AnimalData&gt; selectByExampleWithLimitAndOffset(@Param(<span class="jxr_string">"whereClauseProvider"</span>) WhereClauseProvider whereClause,
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>              @Param(<span class="jxr_string">"limit"</span>) <strong class="jxr_keyword">int</strong> limit, @Param(<span class="jxr_string">"offset"</span>) <strong class="jxr_keyword">int</strong> offset);
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      @Select({
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>          <span class="jxr_string">"select b.id, b.animal_name, b.brain_weight, b.body_weight"</span>,
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          <span class="jxr_string">"from AnimalData b"</span>,
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         <span class="jxr_string">"${whereClauseProvider.whereClause}"</span>,
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>         <span class="jxr_string">"order by id"</span>,
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         <span class="jxr_string">"OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"</span>
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     })
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     List&lt;AnimalData&gt; selectByExampleWithAliasLimitAndOffset(@Param(<span class="jxr_string">"whereClauseProvider"</span>) WhereClauseProvider whereClause,
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>             @Param(<span class="jxr_string">"limit"</span>) <strong class="jxr_keyword">int</strong> limit, @Param(<span class="jxr_string">"offset"</span>) <strong class="jxr_keyword">int</strong> offset);
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> }
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <a href="../../../examples/animal/data/AnimalDataDynamicSqlSupport.html">AnimalData</a> selectOne(SelectStatementProvider selectStatement);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      @SelectProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      List&lt;Map&lt;String, Object&gt;&gt; generalSelect(SelectStatementProvider selectStatement);
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      @SelectProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      Long selectALong(SelectStatementProvider selectStatement);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      @SelectProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      Double selectADouble(SelectStatementProvider selectStatement);
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      @DeleteProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"delete"</span>)
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">int</strong> delete(DeleteStatementProvider deleteStatement);
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      @UpdateProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"update"</span>)
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">int</strong> update(UpdateStatementProvider updateStatement);
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      @InsertProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"insert"</span>)
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">int</strong> insert(InsertStatementProvider&lt;AnimalData&gt; insertStatement);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      @InsertProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"insertSelect"</span>)
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">int</strong> insertSelect(InsertSelectStatementProvider insertSelectStatement);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>      
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      @Select({
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          <span class="jxr_string">"select id, animal_name, brain_weight, body_weight"</span>,
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          <span class="jxr_string">"from AnimalData"</span>,
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>          <span class="jxr_string">"${whereClause}"</span>
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      })
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      List&lt;AnimalData&gt; selectByExample(WhereClauseProvider whereClause);
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      @Select({
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          <span class="jxr_string">"select a.id, a.animal_name, a.brain_weight, a.body_weight"</span>,
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          <span class="jxr_string">"from AnimalData a"</span>,
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          <span class="jxr_string">"${whereClause}"</span>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      })
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      List&lt;AnimalData&gt; selectByExampleWithAlias(WhereClauseProvider whereClause);
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      @Select({
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          <span class="jxr_string">"select id, animal_name, brain_weight, body_weight"</span>,
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          <span class="jxr_string">"from AnimalData"</span>,
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          <span class="jxr_string">"${whereClauseProvider.whereClause}"</span>,
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          <span class="jxr_string">"order by id"</span>,
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>          <span class="jxr_string">"OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"</span>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      })
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      List&lt;AnimalData&gt; selectByExampleWithLimitAndOffset(@Param(<span class="jxr_string">"whereClauseProvider"</span>) WhereClauseProvider whereClause,
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>              @Param(<span class="jxr_string">"limit"</span>) <strong class="jxr_keyword">int</strong> limit, @Param(<span class="jxr_string">"offset"</span>) <strong class="jxr_keyword">int</strong> offset);
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> 
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>     @Select({
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         <span class="jxr_string">"select b.id, b.animal_name, b.brain_weight, b.body_weight"</span>,
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>         <span class="jxr_string">"from AnimalData b"</span>,
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         <span class="jxr_string">"${whereClauseProvider.whereClause}"</span>,
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         <span class="jxr_string">"order by id"</span>,
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         <span class="jxr_string">"OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"</span>
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>     })
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>     @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     List&lt;AnimalData&gt; selectByExampleWithAliasLimitAndOffset(@Param(<span class="jxr_string">"whereClauseProvider"</span>) WhereClauseProvider whereClause,
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>             @Param(<span class="jxr_string">"limit"</span>) <strong class="jxr_keyword">int</strong> limit, @Param(<span class="jxr_string">"offset"</span>) <strong class="jxr_keyword">int</strong> offset);
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2017 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2018 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

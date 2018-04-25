@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CountAll.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.aggregate</a> &gt; <span class="el_source">CountAll.java</span></div><h1>CountAll.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
  */
 public class CountAll implements BasicColumn {
     
-<span class="fc" id="L32">    private Optional&lt;String&gt; alias = Optional.empty();</span>
+    private String alias;
 
     public CountAll() {
 <span class="fc" id="L35">        super();</span>
@@ -42,13 +42,13 @@ public class CountAll implements BasicColumn {
 
     @Override
     public Optional&lt;String&gt; alias() {
-<span class="fc" id="L45">        return alias;</span>
+<span class="fc" id="L45">        return Optional.ofNullable(alias);</span>
     }
 
     @Override
     public CountAll as(String alias) {
 <span class="fc" id="L50">        CountAll copy = new CountAll();</span>
-<span class="fc" id="L51">        copy.alias = Optional.of(alias);</span>
+<span class="fc" id="L51">        copy.alias = alias;</span>
 <span class="fc" id="L52">        return copy;</span>
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SqlColumn.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">SqlColumn.java</span></div><h1>SqlColumn.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
     protected SqlTable table;
     protected JDBCType jdbcType;
 <span class="fc" id="L29">    protected boolean isDescending = false;</span>
-<span class="fc" id="L30">    protected Optional&lt;String&gt; alias = Optional.empty();</span>
-    protected Optional&lt;String&gt; typeHandler;
+    protected String alias;
+    protected String typeHandler;
     
 <span class="fc" id="L33">    private SqlColumn(Builder builder) {</span>
 <span class="fc" id="L34">        name = Objects.requireNonNull(builder.name);</span>
-<span class="fc" id="L35">        jdbcType = Objects.requireNonNull(builder.jdbcType);</span>
+<span class="fc" id="L35">        jdbcType = builder.jdbcType;</span>
 <span class="fc" id="L36">        table = Objects.requireNonNull(builder.table);</span>
-<span class="fc" id="L37">        typeHandler = Optional.ofNullable(builder.typeHandler);</span>
+<span class="fc" id="L37">        typeHandler = builder.typeHandler;</span>
 <span class="fc" id="L38">    }</span>
     
 <span class="fc" id="L40">    protected SqlColumn(SqlColumn&lt;?&gt; sqlColumn) {</span>
@@ -51,18 +51,18 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
     }
     
     @Override
-    public JDBCType jdbcType() {
-<span class="fc" id="L55">        return jdbcType;</span>
+    public Optional&lt;JDBCType&gt; jdbcType() {
+<span class="fc" id="L55">        return Optional.ofNullable(jdbcType);</span>
     }
 
     @Override
     public Optional&lt;String&gt; alias() {
-<span class="fc" id="L60">        return alias;</span>
+<span class="fc" id="L60">        return Optional.ofNullable(alias);</span>
     }
     
     @Override
     public Optional&lt;String&gt; typeHandler() {
-<span class="fc" id="L65">        return typeHandler;</span>
+<span class="fc" id="L65">        return Optional.ofNullable(typeHandler);</span>
     }
     
     @Override
@@ -75,7 +75,7 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
     @Override
     public SqlColumn&lt;T&gt; as(String alias) {
 <span class="fc" id="L77">        SqlColumn&lt;T&gt; column = new SqlColumn&lt;&gt;(this);</span>
-<span class="fc" id="L78">        column.alias = Optional.of(alias);</span>
+<span class="fc" id="L78">        column.alias = alias;</span>
 <span class="fc" id="L79">        return column;</span>
     }
     
@@ -86,7 +86,7 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
     
     @Override
     public String aliasOrName() {
-<span class="fc" id="L89">        return alias.orElse(name);</span>
+<span class="fc" id="L89">        return alias().orElse(name);</span>
     }
     
     @Override
@@ -96,42 +96,61 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
 <span class="fc" id="L96">                .orElseGet(this::name);</span>
     }
     
+    public &lt;S&gt; SqlColumn&lt;S&gt; withTypeHandler(String typeHandler) {
+<span class="fc" id="L100">        SqlColumn&lt;S&gt; column = new SqlColumn&lt;&gt;(this);</span>
+<span class="fc" id="L101">        column.typeHandler = typeHandler;</span>
+<span class="fc" id="L102">        return column;</span>
+    }
+
     private String applyTableAlias(String tableAlias) {
-<span class="fc" id="L100">        return tableAlias + &quot;.&quot; + name(); //$NON-NLS-1$</span>
+<span class="fc" id="L106">        return tableAlias + &quot;.&quot; + name(); //$NON-NLS-1$</span>
+    }
+    
+    public static &lt;T&gt; SqlColumn&lt;T&gt; of(String name, SqlTable table) {
+<span class="fc" id="L110">        return SqlColumn.withName(name)</span>
+<span class="fc" id="L111">                .withTable(table)</span>
+<span class="fc" id="L112">                .build();</span>
+    }
+    
+    public static &lt;T&gt; SqlColumn&lt;T&gt; of(String name, SqlTable table, JDBCType jdbcType) {
+<span class="fc" id="L116">        return SqlColumn.withName(name)</span>
+<span class="fc" id="L117">                .withTable(table)</span>
+<span class="fc" id="L118">                .withJdbcType(jdbcType)</span>
+<span class="fc" id="L119">                .build();</span>
     }
     
     public static Builder withName(String name) {
-<span class="fc" id="L104">        return new Builder().withName(name);</span>
+<span class="fc" id="L123">        return new Builder().withName(name);</span>
     }
     
-<span class="fc" id="L107">    public static class Builder {</span>
+<span class="fc" id="L126">    public static class Builder {</span>
         private SqlTable table;
         private String name;
         private JDBCType jdbcType;
         private String typeHandler;
         
         public Builder withTable(SqlTable table) {
-<span class="fc" id="L114">            this.table = table;</span>
-<span class="fc" id="L115">            return this;</span>
+<span class="fc" id="L133">            this.table = table;</span>
+<span class="fc" id="L134">            return this;</span>
         }
         
         public Builder withName(String name) {
-<span class="fc" id="L119">            this.name = name;</span>
-<span class="fc" id="L120">            return this;</span>
+<span class="fc" id="L138">            this.name = name;</span>
+<span class="fc" id="L139">            return this;</span>
         }
         
         public Builder withJdbcType(JDBCType jdbcType) {
-<span class="fc" id="L124">            this.jdbcType = jdbcType;</span>
-<span class="fc" id="L125">            return this;</span>
+<span class="fc" id="L143">            this.jdbcType = jdbcType;</span>
+<span class="fc" id="L144">            return this;</span>
         }
         
         public Builder withTypeHandler(String typeHandler) {
-<span class="fc" id="L129">            this.typeHandler = typeHandler;</span>
-<span class="fc" id="L130">            return this;</span>
+<span class="fc" id="L148">            this.typeHandler = typeHandler;</span>
+<span class="fc" id="L149">            return this;</span>
         }
         
         public &lt;T&gt; SqlColumn&lt;T&gt; build() {
-<span class="fc" id="L134">            return new SqlColumn&lt;&gt;(this);</span>
+<span class="fc" id="L153">            return new SqlColumn&lt;&gt;(this);</span>
         }
     }
 }
