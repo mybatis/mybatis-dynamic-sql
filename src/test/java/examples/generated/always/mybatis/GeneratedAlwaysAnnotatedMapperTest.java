@@ -38,8 +38,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -47,7 +45,6 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 import examples.generated.always.GeneratedAlwaysRecord;
 
-@RunWith(JUnitPlatform.class)
 public class GeneratedAlwaysAnnotatedMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";

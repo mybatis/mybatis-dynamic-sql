@@ -21,11 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-@RunWith(JUnitPlatform.class)
 public class RenderedCriterionTest {
 
     @Test

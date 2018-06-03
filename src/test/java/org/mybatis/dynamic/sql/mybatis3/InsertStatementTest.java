@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,14 +21,11 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 import java.sql.JDBCType;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
-@RunWith(JUnitPlatform.class)
 public class InsertStatementTest {
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);

@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.stream.Collector;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValue;
@@ -34,7 +32,6 @@ import org.mybatis.dynamic.sql.insert.render.FieldAndValueCollector;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
-@RunWith(JUnitPlatform.class)
 public class InsertStatementTest {
 
     private static final SqlTable foo = SqlTable.of("foo");

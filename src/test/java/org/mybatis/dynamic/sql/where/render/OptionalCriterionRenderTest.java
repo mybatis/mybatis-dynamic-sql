@@ -15,18 +15,15 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.assertj.core.api.Assertions.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
-@RunWith(JUnitPlatform.class)
 public class OptionalCriterionRenderTest {
     private static SqlTable person = SqlTable.of("person");
     private static SqlColumn<Integer> id = person.column("id");
