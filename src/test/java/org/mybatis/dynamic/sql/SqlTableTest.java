@@ -47,6 +47,7 @@ public class SqlTableTest {
         assertThat(table1.equals(table2)).isFalse();
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEqualsDifferentObject() {
         SqlTable table = SqlTable.of("fred");
