@@ -21,14 +21,11 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import java.sql.JDBCType;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
-@RunWith(JUnitPlatform.class)
 public class WhereModelTest {
 
     @Test

@@ -27,8 +27,6 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
@@ -49,7 +47,6 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import examples.generated.always.GeneratedAlwaysRecord;
 
-@RunWith(JUnitPlatform.class)
 public class SpringTest {
     private EmbeddedDatabase db;
     private NamedParameterJdbcTemplate template;

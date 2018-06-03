@@ -23,14 +23,11 @@ import java.sql.JDBCType;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-@RunWith(JUnitPlatform.class)
 public class SubSelectTest {
     
     public static final SqlTable table = SqlTable.of("foo");

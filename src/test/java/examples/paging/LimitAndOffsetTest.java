@@ -15,8 +15,8 @@
  */
 package examples.paging;
 
-import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
-import static org.assertj.core.api.Assertions.*;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.id;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,12 +34,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import examples.animal.data.AnimalData;
 
-@RunWith(JUnitPlatform.class)
 public class LimitAndOffsetTest {
     
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
