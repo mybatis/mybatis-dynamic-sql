@@ -54,7 +54,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     
     @BeforeEach
     public void setup() throws Exception {
-        Class.forName(JDBC_DRIVER).newInstance();
+        Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/generated/always/CreateGeneratedAlwaysDB.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
