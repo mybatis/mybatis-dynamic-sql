@@ -124,7 +124,12 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
 
     public UnionBuilder union() {
         selectDSL.addQueryExpression(buildModel());
-        return new UnionBuilder();
+        return new UnionBuilder("union"); //$NON-NLS-1$
+    }
+
+    public UnionBuilder unionAll() {
+        selectDSL.addQueryExpression(buildModel());
+        return new UnionBuilder("union all"); //$NON-NLS-1$
     }
 
     protected QueryExpressionModel buildModel() {
@@ -206,7 +211,13 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         public UnionBuilder union() {
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
-            return new UnionBuilder();
+            return new UnionBuilder("union"); //$NON-NLS-1$
+        }
+
+        public UnionBuilder unionAll() {
+            whereModel = buildWhereModel();
+            selectDSL.addQueryExpression(buildModel());
+            return new UnionBuilder("union all"); //$NON-NLS-1$
         }
 
         public SelectDSL<R> orderBy(SortSpecification...columns) {
@@ -388,9 +399,15 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     }
     
     public class UnionBuilder {
+        private String connector;
+        
+        public UnionBuilder(String connector) {
+            this.connector = Objects.requireNonNull(connector);
+        }
+        
         public FromGatherer<R> select(BasicColumn...selectList) {
             return new FromGathererBuilder<R>()
-                    .withConnector("union") //$NON-NLS-1$
+                    .withConnector(connector)
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
                     .build();
@@ -398,7 +415,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
 
         public FromGatherer<R> selectDistinct(BasicColumn...selectList) {
             return new FromGathererBuilder<R>()
-                    .withConnector("union") //$NON-NLS-1$
+                    .withConnector(connector)
                     .isDistinct()
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)

@@ -6,7 +6,7 @@ select statements, but purposely does not cover every possibility.
 In general, the following are supported:
 
 1. The typical parts of a select statement including SELECT, DISTINCT, FROM, JOIN, WHERE, GROUP BY, UNION,
-   ORDER BY
+   UNION ALL, ORDER BY
 2. Tables can be aliased per select statement
 3. Columns can be aliased per select statement
 4. Some support for aggregates (avg, min, max, sum)
@@ -70,7 +70,7 @@ The library supports four join types:
 4. `.fullJoin(...)` is a FULL OUTER join
 
 ## Union Queries
-The library supports the generation of UNION queries.  Foe example:
+The library supports the generation of UNION and UNION ALL queries.  For example:
 
 ```java
     SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
