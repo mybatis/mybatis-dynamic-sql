@@ -1,9 +1,6 @@
 language: java
 sudo: false
 
-before_install:
-  - chmod +x mvnw
-
 jdk:
   - oraclejdk9
   - oraclejdk8

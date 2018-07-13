@@ -13,3 +13,4 @@ buildNumber.properties
 /.vscode/
 /bin/
 .mvn/wrapper/maven-wrapper.jar
+.DS_Store
