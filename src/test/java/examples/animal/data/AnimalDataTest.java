@@ -288,6 +288,36 @@ public class AnimalDataTest {
     }
     
     @Test
+    public void testUnionAllSelectWithoutWhere() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .unionAll()
+                    .selectDistinct(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select id, animal_name, body_weight, brain_weight "
+                    + "from AnimalData "
+                    + "union all "
+                    + "select distinct id, animal_name, body_weight, brain_weight "
+                    + "from AnimalData "
+                    + "order by id";
+
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(130),
+                    () -> assertThat(selectStatement.getParameters().size()).isEqualTo(0)
+            );
+        }
+    }
+    
+    @Test
     public void testUnionSelectWithTableAliases() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
@@ -307,6 +337,43 @@ public class AnimalDataTest {
                     + "from AnimalData a "
                     + "where a.id < #{parameters.p1,jdbcType=INTEGER} "
                     + "union "
+                    + "select b.id, b.animal_name, b.body_weight, b.brain_weight "
+                    + "from AnimalData b "
+                    + "where b.id > #{parameters.p2,jdbcType=INTEGER} "
+                    + "order by id";
+
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals.size()).isEqualTo(44),
+                    () -> assertThat(selectStatement.getParameters().size()).isEqualTo(2),
+                    () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(20),
+                    () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(40)
+            );
+        }
+    }
+
+    @Test
+    public void testUnionAllSelectWithTableAliases() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "a")
+                    .where(id, isLessThan(20))
+                    .unionAll()
+                    .select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData, "b")
+                    .where(id, isGreaterThan(40))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select a.id, a.animal_name, a.body_weight, a.brain_weight "
+                    + "from AnimalData a "
+                    + "where a.id < #{parameters.p1,jdbcType=INTEGER} "
+                    + "union all "
                     + "select b.id, b.animal_name, b.body_weight, b.brain_weight "
                     + "from AnimalData b "
                     + "where b.id > #{parameters.p2,jdbcType=INTEGER} "
