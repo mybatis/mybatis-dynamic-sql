@@ -16,10 +16,11 @@
 package examples.joins;
 
 import static examples.joins.ItemMasterDynamicSQLSupport.itemMaster;
-import static examples.joins.OrderDetailDynamicSQLSupport.orderDetail;
+import static examples.joins.OrderDetailDynamicSQLSupport.*;
 import static examples.joins.OrderLineDynamicSQLSupport.orderLine;
 import static examples.joins.OrderMasterDynamicSQLSupport.orderDate;
 import static examples.joins.OrderMasterDynamicSQLSupport.orderMaster;
+import static examples.joins.UserDynamicSQLSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -480,6 +481,34 @@ public class JoinMapperTest {
             assertThat(row.get("QUANTITY")).isEqualTo(1);
             assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
             assertThat(row.get("ITEM_ID")).isEqualTo(44);
+        }
+    }
+
+    @Test
+    public void testSelf() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            // get Bamm Bamm's parent - should be Barney
+            SelectStatementProvider selectStatement = select(user1.userId, user1.userName, user1.parentId)
+                    .from(user1, "u1")
+                    .join(user2, "u2").on(user1.userId, equalTo(user2.parentId))
+                    .where(user2.userId, isEqualTo(4))
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expectedStatment = "select u1.user_id, u1.user_name, u1.parent_id"
+                    + " from User u1 join User u2 on u1.user_id = u2.parent_id"
+                    + " where u2.user_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<User> rows = mapper.selectUsers(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(1);
+            User row = rows.get(0);
+            assertThat(row.getUserId()).isEqualTo(2);
+            assertThat(row.getUserName()).isEqualTo("Barney");
+            assertThat(row.getParentId()).isNull();
         }
     }
 }
