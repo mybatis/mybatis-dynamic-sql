@@ -1,5 +1,5 @@
 --
---    Copyright 2016-2017 the original author or authors.
+--    Copyright 2016-2018 the original author or authors.
 --
 --    Licensed under the Apache License, Version 2.0 (the "License");
 --    you may not use this file except in compliance with the License.
@@ -18,6 +18,14 @@ drop table OrderLine if exists;
 drop table ItemMaster if exists;
 drop table OrderDetail if exists;
 drop table OrderMaster if exists;
+drop table User if exists;
+
+create table User (
+  user_id int not null,
+  user_name varchar(30) not null,
+  parent_id int null,
+  primary key (user_id)
+);
 
 create table OrderMaster (
    order_id int not null,
@@ -65,3 +73,7 @@ insert into OrderLine(order_id, item_id, line_number, quantity) values(2, 22, 1,
 insert into OrderLine(order_id, item_id, line_number, quantity) values(2, 44, 2, 1);
 insert into OrderLine(order_id, item_id, line_number, quantity) values(2, 66, 3, 6);
 
+insert into User(user_id, user_name) values(1, 'Fred');
+insert into User(user_id, user_name) values(2, 'Barney');
+insert into User(user_id, user_name, parent_id) values(3, 'Pebbles', 1);
+insert into User(user_id, user_name, parent_id) values(4, 'Bamm Bamm', 2);

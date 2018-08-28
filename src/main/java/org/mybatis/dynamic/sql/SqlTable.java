@@ -45,23 +45,4 @@ public class SqlTable {
     public static SqlTable of(String name) {
         return new SqlTable(name);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(name);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (!(obj instanceof SqlTable)) {
-            return false;
-        }
-
-        SqlTable other = (SqlTable) obj;
-        return Objects.equals(name, other.name);
-    }
 }
