@@ -25,6 +25,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.MultiInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
@@ -48,6 +49,10 @@ public interface GeneratedAlwaysAnnotatedMapper {
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @Options(useGeneratedKeys=true, keyProperty="record.fullName")
     int insert(InsertStatementProvider<GeneratedAlwaysRecord> insertStatement);
+    
+    @InsertProvider(type=SqlProviderAdapter.class, method="multiInsert")
+    @Options(useGeneratedKeys=true, keyProperty="fullName")
+    int multiInsert(MultiInsertStatementProvider multiInsert);
     
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
