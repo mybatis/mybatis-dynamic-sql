@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>30</version>
+    <version>31-SNAPSHOT</version>
   </parent>
   <groupId>org.mybatis.dynamic-sql</groupId>
   <artifactId>mybatis-dynamic-sql</artifactId>
@@ -33,35 +33,13 @@
     <java.version>1.8</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <maven.compiler.testTarget>${java.version}</maven.compiler.testTarget>
-    <maven.compiler.testSource>${java.version}</maven.compiler.testSource>
-    <junit.jupiter.version>5.2.0</junit.jupiter.version>
-    <junit.platform.version>1.2.0</junit.platform.version>
+    <junit.jupiter.version>5.3.0</junit.jupiter.version>
+    <junit.platform.version>1.3.0</junit.platform.version>
     <clirr.comparisonVersion>1.1.0</clirr.comparisonVersion>
   </properties>
   
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.1</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>report</report>
-            </reports>
-            <configuration>
-              <title>${project.name} - Unit Test Report</title>
-            </configuration>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin> <!-- JDK 10 -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.1</version>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -69,65 +47,8 @@
           <configLocation>checkstyle-override.xml</configLocation>
         </configuration>
       </plugin>
-      <!-- Added for JDK 10 -->
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>3.1.5</version>
-      </plugin>
     </plugins>
   </reporting>
-  
-  <build>
-    <pluginManagement>
-      <!-- Added for JDK 10 -->
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.0.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.1</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <configuration>
-          <signature>
-            <groupId>org.codehaus.mojo.signature</groupId>
-            <artifactId>java18</artifactId>
-            <version>1.0</version>
-          </signature>
-        </configuration>
-        <executions>
-          <execution>
-            <id>check-java-1.8-compat</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
   
   <dependencies>
     <dependency>
@@ -152,7 +73,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.10.0</version>
+      <version>3.11.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -170,7 +91,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>5.0.7.RELEASE</version>
+      <version>5.0.8.RELEASE</version>
       <scope>test</scope>
     </dependency>
     <dependency>
