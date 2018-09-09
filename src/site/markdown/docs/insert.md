@@ -76,7 +76,7 @@ The XML element should look like this (with attributes added for generated value
 ```xml
   <insert id="insert">
     ${insertStatement}
-  </delete>
+  </insert>
 ```
 
 ### Generated Values
@@ -179,5 +179,5 @@ The XML element should look like this:
 ```xml
   <insert id="insertSelect">
     ${insertStatement}
-  </delete>
+  </insert>
 ```
