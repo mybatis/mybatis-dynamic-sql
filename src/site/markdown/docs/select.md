@@ -47,9 +47,9 @@ The library supports the generation of equijoin statements - joins defined by co
             .render(RenderingStrategy.MYBATIS3);
 ```
 
-Notice that you can give an alias to a tables if desired.  If you don't specify an alias, the full table name wil be used in the generated SQL.
+Notice that you can give an alias to a table if desired. If you don't specify an alias, the full table name will be used in the generated SQL.
 
-Multiple tables can be joined in a single statement.  For example:
+Multiple tables can be joined in a single statement. For example:
 
 ```java
     SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
@@ -60,7 +60,7 @@ Multiple tables can be joined in a single statement.  For example:
             .build()
             .render(RenderingStrategy.MYBATIS3);
 ```
-Join queries will likely require you to define a MyBatis result mapping in XML.  This is the only instance where XML is required.  This is due to the limitations of the MyBatis annotations when mapping collections.
+Join queries will likely require you to define a MyBatis result mapping in XML. This is the only instance where XML is required.  This is due to the limitations of the MyBatis annotations when mapping collections.
 
 The library supports four join types:
 
@@ -70,7 +70,7 @@ The library supports four join types:
 4. `.fullJoin(...)` is a FULL OUTER join
 
 ## Union Queries
-The library supports the generation of UNION and UNION ALL queries.  For example:
+The library supports the generation of UNION and UNION ALL queries. For example:
 
 ```java
     SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -83,11 +83,11 @@ The library supports the generation of UNION and UNION ALL queries.  For example
             .render(RenderingStrategy.MYBATIS3);
 ```
 
-Any number of SELECT statements can be added to a UNION query.  Only one ORDER BY phrase is allowed.
+Any number of SELECT statements can be added to a UNION query. Only one ORDER BY phrase is allowed.
 
 ## Annotated Mapper for Select Statements
 
-The SelectStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
+The SelectStatementProvider object can be used as a parameter to a MyBatis mapper method directly. If you
 are using an annotated mapper, the select method should look like this (note that we recommend coding a "selectMany" and a "selectOne" method with a shared result mapping):
   
 ```java
@@ -117,7 +117,7 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ## XML Mapper for Join Statements
 
-If you are coding a join, it is likely you will need to code an XML mapper to define the result map.  This is due to a MyBatis limitation - the annotations cannot define a collection mapping.  If you have to do this, the Java code looks like this:
+If you are coding a join, it is likely you will need to code an XML mapper to define the result map. This is due to a MyBatis limitation - the annotations cannot define a collection mapping. If you have to do this, the Java code looks like this:
 
 ```java
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -142,7 +142,7 @@ And the corresponding XML looks like this:
 </mapper>
 ```
 
-Notice that the resultMap is the only element in the XML mapper.  This is our recommended practice.
+Notice that the resultMap is the only element in the XML mapper. This is our recommended practice.
 
 ## XML Mapper for Select Statements
 We do not recommend using an XML mapper for select statements, but if you want to do so the SelectStatementProvider object can be used as a parameter to a MyBatis mapper method directly.
