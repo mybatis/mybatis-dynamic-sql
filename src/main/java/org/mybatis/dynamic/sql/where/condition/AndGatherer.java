@@ -15,31 +15,33 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
-
-public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
-
-    protected IsLessThan(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+/**
+ * Utility class supporting the "and" part of a between condition. This class supports builders,
+ * so it is mutable.
+ * 
+ * @author Jeff Butler
+ *
+ * @param <T> the type of field for the between condition 
+ * @param <R> the type of condition being built
+ */
+public abstract class AndGatherer<T, R> {
+    protected Supplier<T> valueSupplier1;
+    protected Supplier<T> valueSupplier2;
+    
+    protected AndGatherer(Supplier<T> valueSupplier1) {
+        this.valueSupplier1 = valueSupplier1;
     }
     
-    protected IsLessThan(Supplier<T> valueSupplier, Predicate<T> predicate) {
-        super(valueSupplier, predicate);
-    }
-    
-    @Override
-    public String renderCondition(String columnName, String placeholder) {
-        return columnName + " < " + placeholder; //$NON-NLS-1$
+    public R and(T value2) {
+        return and(() -> value2);
     }
 
-    public static <T> IsLessThan<T> of(Supplier<T> valueSupplier) {
-        return new IsLessThan<>(valueSupplier);
+    public R and(Supplier<T> valueSupplier2) {
+        this.valueSupplier2 = valueSupplier2;
+        return build();
     }
     
-    public IsLessThan<T> when(Predicate<T> predicate) {
-        return new IsLessThan<>(valueSupplier, predicate);
-    }
+    protected abstract R build();
 }

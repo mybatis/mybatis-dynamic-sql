@@ -16,41 +16,34 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
 
-    protected IsInCaseInsensitive(Builder builder) {
-        super(builder);
+    protected IsInCaseInsensitive(List<String> values) {
+        super(values, s -> s.map(StringUtilities::safelyUpperCase));
     }
-    
+
+    protected IsInCaseInsensitive(List<String> values, UnaryOperator<Stream<String>> valueStreamOperations) {
+        super(values, StringUtilities.upperCaseAfter(valueStreamOperations));
+    }
+
     @Override
     public String renderCondition(String columnName, Stream<String> placeholders) {
         return "upper(" + columnName + ") " + //$NON-NLS-1$ //$NON-NLS-2$
                 placeholders.collect(Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    @Override
-    public String mapValue(String value) {
-        return value.toUpperCase();
+    public IsInCaseInsensitive withValueStreamOperations(UnaryOperator<Stream<String>> valueStreamOperations) {
+        return new IsInCaseInsensitive(values, valueStreamOperations);
     }
     
     public static IsInCaseInsensitive of(List<String> values) {
-        return new IsInCaseInsensitive.Builder().withValues(values).build();
-    }
-    
-    public static class Builder extends AbstractBuilder<String, Builder> {
-
-        @Override
-        public Builder getThis() {
-            return this;
-        }
-        
-        public IsInCaseInsensitive build() {
-            return new IsInCaseInsensitive(this);
-        }
+        return new IsInCaseInsensitive(values);
     }
 }

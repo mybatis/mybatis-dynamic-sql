@@ -15,19 +15,15 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class IsGreaterThanWhenPresent<T> extends IsGreaterThan<T> {
 
     protected IsGreaterThanWhenPresent(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+        super(valueSupplier, Objects::nonNull);
     }
     
-    @Override
-    public boolean shouldRender() {
-        return value() != null;
-    }
-
     public static <T> IsGreaterThanWhenPresent<T> of(Supplier<T> valueSupplier) {
         return new IsGreaterThanWhenPresent<>(valueSupplier);
     }

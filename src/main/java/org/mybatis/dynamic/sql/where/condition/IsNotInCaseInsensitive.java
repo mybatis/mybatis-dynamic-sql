@@ -16,17 +16,23 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
 
-    protected IsNotInCaseInsensitive(Builder builder) {
-        super(builder);
+    protected IsNotInCaseInsensitive(List<String> values) {
+        super(values, s -> s.map(StringUtilities::safelyUpperCase));
     }
-    
+
+    protected IsNotInCaseInsensitive(List<String> values, UnaryOperator<Stream<String>> valueStreamOperations) {
+        super(values, StringUtilities.upperCaseAfter(valueStreamOperations));
+    }
+
     @Override
     public String renderCondition(String columnName, Stream<String> placeholders) {
         return "upper(" + columnName + ") " + //$NON-NLS-1$ //$NON-NLS-2$
@@ -34,24 +40,11 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
                         Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    @Override
-    protected String mapValue(String value) {
-        return value.toUpperCase();
+    public IsNotInCaseInsensitive withValueStreamOperations(UnaryOperator<Stream<String>> valueStreamOperations) {
+        return new IsNotInCaseInsensitive(values, valueStreamOperations);
     }
-    
-    public static IsNotInCaseInsensitive of(List<String> values) {
-        return new IsNotInCaseInsensitive.Builder().withValues(values).build();
-    }
-    
-    public static class Builder extends AbstractBuilder<String, Builder> {
 
-        @Override
-        public Builder getThis() {
-            return this;
-        }
-        
-        public IsNotInCaseInsensitive build() {
-            return new IsNotInCaseInsensitive(this);
-        }
+    public static IsNotInCaseInsensitive of(List<String> values) {
+        return new IsNotInCaseInsensitive(values);
     }
 }

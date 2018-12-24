@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,14 +15,19 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
 public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
 
-    protected IsNotBetween(Builder<T> builder) {
-        super(builder.valueSupplier1, builder.valueSupplier2);
+    protected IsNotBetween(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2) {
+        super(valueSupplier1, valueSupplier2);
+    }
+    
+    protected IsNotBetween(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2, BiPredicate<T, T> predicate) {
+        super(valueSupplier1, valueSupplier2, predicate);
     }
     
     @Override
@@ -30,25 +35,23 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
         return columnName + " not between " + placeholder1 + " and " + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public static class Builder<T> {
-        private Supplier<T> valueSupplier1;
-        private Supplier<T> valueSupplier2;
+    public static class Builder<T> extends AndGatherer<T, IsNotBetween<T>> {
         
         private Builder(Supplier<T> valueSupplier1) {
-            this.valueSupplier1 = valueSupplier1;
+            super(valueSupplier1);
         }
-        
-        public IsNotBetween<T> and(Supplier<T> valueSupplier2) {
-            this.valueSupplier2 = valueSupplier2;
-            return new IsNotBetween<>(this);
-        }
-        
-        public IsNotBetween<T> and(T value2) {
-            return and(() -> value2);
+
+        @Override
+        protected IsNotBetween<T> build() {
+            return new IsNotBetween<>(valueSupplier1, valueSupplier2);
         }
     }
     
     public static <T> Builder<T> isNotBetween(Supplier<T> valueSupplier1) {
         return new Builder<>(valueSupplier1);
+    }
+    
+    public IsNotBetween<T> when(BiPredicate<T, T> predicate) {
+        return new IsNotBetween<>(valueSupplier1, valueSupplier2, predicate);
     }
 }

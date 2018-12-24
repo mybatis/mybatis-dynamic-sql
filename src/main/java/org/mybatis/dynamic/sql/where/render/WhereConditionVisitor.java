@@ -55,6 +55,10 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters)
                 .collect(FragmentCollector.collect());
         
+        if (fc.isEmpty()) {
+            return null;
+        }
+        
         return FragmentAndParameters.withFragment(condition.renderCondition(columnName(), fc.fragments()))
                 .withParameters(fc.parameters())
                 .build();

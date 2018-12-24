@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.where.condition;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,8 +26,12 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsNotIn<T> extends AbstractListValueCondition<T> {
 
-    protected IsNotIn(Builder<T> builder) {
-        super(builder);
+    protected IsNotIn(List<T> values, UnaryOperator<Stream<T>> valueStreamOperations) {
+        super(values, valueStreamOperations);
+    }
+
+    protected IsNotIn(List<T> values) {
+        super(values);
     }
 
     @Override
@@ -36,19 +41,11 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
                         Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    public static <T> IsNotIn<T> of(List<T> values) {
-        return new IsNotIn.Builder<T>().withValues(values).build();
+    public IsNotIn<T> withValueStreamOperations(UnaryOperator<Stream<T>> valueStreamOperations) {
+        return new IsNotIn<>(values, valueStreamOperations);
     }
-    
-    public static class Builder<T> extends AbstractBuilder<T, Builder<T>> {
 
-        @Override
-        public Builder<T> getThis() {
-            return this;
-        }
-
-        public IsNotIn<T> build() {
-            return new IsNotIn<>(this);
-        }
+    public static <T> IsNotIn<T> of(List<T> values) {
+        return new IsNotIn<>(values);
     }
 }

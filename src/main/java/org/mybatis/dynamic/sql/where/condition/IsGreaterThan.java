@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
@@ -25,6 +26,10 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
         super(valueSupplier);
     }
     
+    protected IsGreaterThan(Supplier<T> valueSupplier, Predicate<T> predicate) {
+        super(valueSupplier, predicate);
+    }
+    
     @Override
     public String renderCondition(String columnName, String placeholder) {
         return columnName + " > " + placeholder; //$NON-NLS-1$
@@ -32,5 +37,9 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
 
     public static <T> IsGreaterThan<T> of(Supplier<T> valueSupplier) {
         return new IsGreaterThan<>(valueSupplier);
+    }
+    
+    public IsGreaterThan<T> when(Predicate<T> predicate) {
+        return new IsGreaterThan<>(valueSupplier, predicate);
     }
 }
