@@ -15,17 +15,13 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class IsLikeWhenPresent<T> extends IsLike<T> {
 
     protected IsLikeWhenPresent(Supplier<T> valueSupplier) {
-        super(valueSupplier);
-    }
-
-    @Override
-    public boolean shouldRender() {
-        return value() != null;
+        super(valueSupplier, Objects::nonNull);
     }
 
     public static <T> IsLikeWhenPresent<T> of(Supplier<T> valueSupplier) {

@@ -13,18 +13,22 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where.condition;
+package examples.animal.data;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
-public class IsEqualToWhenPresent<T> extends IsEqualTo<T> {
+import org.mybatis.dynamic.sql.where.condition.IsIn;
 
-    protected IsEqualToWhenPresent(Supplier<T> valueSupplier) {
-        super(valueSupplier, Objects::nonNull);
+public class MyInCondition extends IsIn<String> {
+    protected MyInCondition(List<String> values) {
+        super(values, s -> s.filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(st -> !st.isEmpty()));
     }
 
-    public static <T> IsEqualToWhenPresent<T> of(Supplier<T> valueSupplier) {
-        return new IsEqualToWhenPresent<>(valueSupplier);
+    public static MyInCondition isIn(String...values) {
+        return new MyInCondition(Arrays.asList(values));
     }
 }

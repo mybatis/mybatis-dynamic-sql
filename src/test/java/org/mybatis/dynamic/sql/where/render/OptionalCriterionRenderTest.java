@@ -45,6 +45,68 @@ public class OptionalCriterionRenderTest {
     }
 
     @Test
+    public void testNoRenderableCriteriaWithIf() {
+        Integer nullId = null;
+        
+        WhereClauseProvider whereClause = where(id, isEqualTo(nullId).when(v -> v != null))
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+ 
+        assertAll(
+                () -> assertThat(whereClause.getWhereClause()).isEqualTo(""),
+                () -> assertThat(whereClause.getParameters().isEmpty()).isTrue()
+        );
+    }
+
+    @Test
+    public void testDisabledIsNull() {
+        WhereClauseProvider whereClause = where(id, isNull().when(() -> false))
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+ 
+        assertAll(
+                () -> assertThat(whereClause.getWhereClause()).isEqualTo(""),
+                () -> assertThat(whereClause.getParameters().isEmpty()).isTrue()
+        );
+    }
+
+    @Test
+    public void testEnabledIsNull() {
+        WhereClauseProvider whereClause = where(id, isNull().when(() -> true))
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+ 
+        assertAll(
+                () -> assertThat(whereClause.getWhereClause()).isEqualTo("where id is null"),
+                () -> assertThat(whereClause.getParameters().isEmpty()).isTrue()
+        );
+    }
+
+    @Test
+    public void testDisabledIsNotNull() {
+        WhereClauseProvider whereClause = where(id, isNotNull().when(() -> false))
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+ 
+        assertAll(
+                () -> assertThat(whereClause.getWhereClause()).isEqualTo(""),
+                () -> assertThat(whereClause.getParameters().isEmpty()).isTrue()
+        );
+    }
+
+    @Test
+    public void testEnabledIsNotNull() {
+        WhereClauseProvider whereClause = where(id, isNotNull().when(() -> true))
+                .build()
+                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+ 
+        assertAll(
+                () -> assertThat(whereClause.getWhereClause()).isEqualTo("where id is not null"),
+                () -> assertThat(whereClause.getParameters().isEmpty()).isTrue()
+        );
+    }
+
+    @Test
     public void testOneRenderableCriteriaBeforeNull() {
         String nullFirstName = null;
         

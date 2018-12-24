@@ -15,7 +15,11 @@
  */
 package examples.animal.data;
 
-import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.animalData;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.animalName;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.bodyWeight;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.brainWeight;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.id;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -25,6 +29,7 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -38,8 +43,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.Predicates;
 
-public class OptionalConditionsAnimalDataTest {
+public class OptionalConditionsWithPredicatesAnimalDataTest {
     
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
@@ -70,7 +76,7 @@ public class OptionalConditionsAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isGreaterThanWhenPresent(NULL_INTEGER))  // the where clause should not render
+                    .where(id, isGreaterThan(NULL_INTEGER).when(Objects::nonNull))  // the where clause should not render
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -91,8 +97,8 @@ public class OptionalConditionsAnimalDataTest {
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isEqualTo(3))
-                    .and(id, isNotEqualToWhenPresent(NULL_INTEGER))
-                    .or(id, isEqualToWhenPresent(4))
+                    .and(id, isNotEqualTo(NULL_INTEGER).when(Objects::nonNull))
+                    .or(id, isEqualTo(4).when(Objects::nonNull))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -112,9 +118,9 @@ public class OptionalConditionsAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThanWhenPresent(NULL_INTEGER))
-                    .and(id, isEqualToWhenPresent(3))
-                    .or(id, isEqualToWhenPresent(4))
+                    .where(id, isLessThan(NULL_INTEGER).when(Objects::nonNull))
+                    .and(id, isEqualTo(3).when(Objects::nonNull))
+                    .or(id, isEqualTo(4).when(Objects::nonNull))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -134,10 +140,10 @@ public class OptionalConditionsAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThanWhenPresent(NULL_INTEGER), and(id, isGreaterThanOrEqualToWhenPresent(NULL_INTEGER)))
-                    .and(id, isEqualToWhenPresent(NULL_INTEGER), or(id, isEqualTo(3), and(id, isLessThanWhenPresent(NULL_INTEGER))))
-                    .or(id, isEqualToWhenPresent(4), and(id, isGreaterThanOrEqualToWhenPresent(NULL_INTEGER)))
-                    .and(id, isNotEqualToWhenPresent(NULL_INTEGER))
+                    .where(id, isLessThan(NULL_INTEGER).when(Objects::nonNull), and(id, isGreaterThanOrEqualTo(NULL_INTEGER).when(Objects::nonNull)))
+                    .and(id, isEqualTo(NULL_INTEGER).when(Objects::nonNull), or(id, isEqualTo(3), and(id, isLessThan(NULL_INTEGER).when(Objects::nonNull))))
+                    .or(id, isEqualTo(4).when(Objects::nonNull), and(id, isGreaterThanOrEqualTo(NULL_INTEGER).when(Objects::nonNull)))
+                    .and(id, isNotEqualTo(NULL_INTEGER).when(Objects::nonNull))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -157,8 +163,8 @@ public class OptionalConditionsAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThanWhenPresent(NULL_INTEGER), and(id, isEqualToWhenPresent(3)))
-                    .or(id, isEqualToWhenPresent(4))
+                    .where(id, isLessThan(NULL_INTEGER).when(Objects::nonNull), and(id, isEqualTo(3).when(Objects::nonNull)))
+                    .or(id, isEqualTo(4).when(Objects::nonNull))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -173,12 +179,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testEqualWhenPresentWithValue() {
+    public void testEqualWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isEqualToWhenPresent(4))
+                    .where(id, isEqualTo(4).when(Objects::nonNull))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -192,12 +198,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testEqualWhenPresentWithoutValue() {
+    public void testEqualWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isEqualToWhenPresent(NULL_INTEGER))
+                    .where(id, isEqualTo(NULL_INTEGER).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -212,12 +218,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testNotEqualWhenPresentWithValue() {
+    public void testNotEqualWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotEqualToWhenPresent(4))
+                    .where(id, isNotEqualTo(4).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -232,12 +238,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testNotEqualWhenPresentWithoutValue() {
+    public void testNotEqualWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotEqualToWhenPresent(NULL_INTEGER))
+                    .where(id, isNotEqualTo(NULL_INTEGER).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -252,12 +258,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testGreaterThanWhenPresentWithValue() {
+    public void testGreaterThanWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isGreaterThanWhenPresent(4))
+                    .where(id, isGreaterThan(4).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -272,12 +278,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testGreaterThanWhenPresentWithoutValue() {
+    public void testGreaterThanWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isGreaterThanWhenPresent(NULL_INTEGER))
+                    .where(id, isGreaterThan(NULL_INTEGER).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -292,12 +298,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testGreaterThanOrEqualToWhenPresentWithValue() {
+    public void testGreaterThanOrEqualToWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isGreaterThanOrEqualToWhenPresent(4))
+                    .where(id, isGreaterThanOrEqualTo(4).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -312,12 +318,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testGreaterThanOrEqualToWhenPresentWithoutValue() {
+    public void testGreaterThanOrEqualToWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isGreaterThanOrEqualToWhenPresent(NULL_INTEGER))
+                    .where(id, isGreaterThanOrEqualTo(NULL_INTEGER).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -332,12 +338,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testLessThanWhenPresentWithValue() {
+    public void testLessThanWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThanWhenPresent(4))
+                    .where(id, isLessThan(4).when(Objects::nonNull))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -351,12 +357,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testLessThanWhenPresentWithoutValue() {
+    public void testLessThanWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThanWhenPresent(NULL_INTEGER))
+                    .where(id, isLessThan(NULL_INTEGER).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -371,12 +377,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testLessThanOrEqualToWhenPresentWithValue() {
+    public void testLessThanOrEqualToWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThanOrEqualToWhenPresent(4))
+                    .where(id, isLessThanOrEqualTo(4).when(Objects::nonNull))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -390,12 +396,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testLessThanOrEqualToWhenPresentWithoutValue() {
+    public void testLessThanOrEqualToWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThanOrEqualToWhenPresent(NULL_INTEGER))
+                    .where(id, isLessThanOrEqualTo(NULL_INTEGER).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -410,12 +416,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsInWhenPresentWithValue() {
+    public void testIsInWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isInWhenPresent(4, 5, 6))
+                    .where(id, isIn(4, 5, 6))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -429,12 +435,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsInWhenPresentWithSomeValues() {
+    public void testIsInWhenWithSomeValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isInWhenPresent(3, NULL_INTEGER, 5))
+                    .where(id, isIn(3, NULL_INTEGER, 5).withValueStreamOperations(s -> s.filter(Objects::nonNull).map(i -> i + 3)))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -442,18 +448,98 @@ public class OptionalConditionsAnimalDataTest {
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) order by id"),
                     () -> assertThat(animals.size()).isEqualTo(2),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(3)
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(6),
+                    () -> assertThat(animals.get(1).getId()).isEqualTo(8)
             );
         }
     }
 
     @Test
-    public void testIsInWhenPresentWithNoValues() {
+    public void testIsInCaseInsensitiveWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isInWhenPresent())
+                    .where(animalName, isInCaseInsensitive("mouse", "musk shrew"))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
+                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
+        }
+    }
+
+    @Test
+    public void testValueStreamOperations() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(animalName, isIn("  Mouse", "  ", null, "", "Musk shrew  ")
+                            .withValueStreamOperations(s -> s.filter(Objects::nonNull)
+                                    .map(String::trim)
+                                    .filter(st -> !st.isEmpty())))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
+                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
+        }
+    }
+    
+    @Test
+    public void testValueStreamOperationsWithCustomCondition() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(animalName, MyInCondition.isIn("  Mouse", "  ", null, "", "Musk shrew  "))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
+                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
+        }
+    }
+    
+    @Test
+    public void testIsInCaseInsensitiveWhenWithSomeValues() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(animalName, isInCaseInsensitive("mouse", null, "musk shrew").withValueStreamOperations(s -> s.filter(Objects::nonNull)))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
+                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
+        }
+    }
+
+    @Test
+    public void testIsInCaseInsensitiveWhenWithNoValues() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(animalName, isInCaseInsensitive())
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -468,70 +554,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsInCaseInsensitiveWhenPresentWithValue() {
+    public void testIsNotInWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isInCaseInsensitiveWhenPresent("mouse", "musk shrew"))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
-            );
-        }
-    }
-
-    @Test
-    public void testIsInCaseInsensitiveWhenPresentWithSomeValues() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, isInCaseInsensitiveWhenPresent("mouse", null, "musk shrew"))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
-            );
-        }
-    }
-
-    @Test
-    public void testIsInCaseInsensitiveWhenPresentWithNoValues() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, isInCaseInsensitiveWhenPresent())
-                    .and(id, isLessThanOrEqualTo(10))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
-            );
-        }
-    }
-
-    @Test
-    public void testIsNotInWhenPresentWithValue() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(id, isNotInWhenPresent(4, 5, 6))
+                    .where(id, isNotIn(4, 5, 6))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -546,12 +574,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotInWhenPresentWithSomeValues() {
+    public void testIsNotInWhenWithSomeValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotInWhenPresent(3, NULL_INTEGER, 5))
+                    .where(id, isNotIn(3, NULL_INTEGER, 5).withValueStreamOperations(s -> s.filter(Objects::nonNull)))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -566,32 +594,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotInWhenPresentWithNoValues() {
+    public void testIsNotInCaseInsensitiveWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotInWhenPresent())
-                    .and(id, isLessThanOrEqualTo(10))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
-            );
-        }
-    }
-
-    @Test
-    public void testIsNotInCaseInsensitiveWhenPresentWithValue() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, isNotInCaseInsensitiveWhenPresent("mouse", "musk shrew"))
+                    .where(animalName, isNotInCaseInsensitive("mouse", "musk shrew"))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -606,12 +614,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotInCaseInsensitiveWhenPresentWithSomeValues() {
+    public void testIsNotInCaseInsensitiveWhenWithSomeValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotInCaseInsensitiveWhenPresent("mouse", null, "musk shrew"))
+                    .where(animalName, isNotInCaseInsensitive("mouse", null, "musk shrew").withValueStreamOperations(s -> s.filter(Objects::nonNull)))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -626,12 +634,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotInCaseInsensitiveWhenPresentWithNoValues() {
+    public void testIsNotInCaseInsensitiveWhenWithNoValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotInCaseInsensitiveWhenPresent())
+                    .where(animalName, isNotInCaseInsensitive())
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -646,12 +654,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsBetweenWhenPresentWithValues() {
+    public void testIsBetweenWhenWithValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isBetweenWhenPresent(3).and(6))
+                    .where(id, isBetween(3).and(6).when(Predicates.bothPresent()))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -665,12 +673,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsBetweenWhenPresentWithFirstMissing() {
+    public void testIsBetweenWhenWithFirstMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isBetweenWhenPresent(NULL_INTEGER).and(6))
+                    .where(id, isBetween(NULL_INTEGER).and(6).when(Predicates.bothPresent()))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -685,12 +693,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsBetweenWhenPresentWithSecondMissing() {
+    public void testIsBetweenWhenWithSecondMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isBetweenWhenPresent(3).and(NULL_INTEGER))
+                    .where(id, isBetween(3).and(NULL_INTEGER).when(Predicates.bothPresent()))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -705,12 +713,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsBetweenWhenPresentWithBothMissing() {
+    public void testIsBetweenWhenWithBothMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isBetweenWhenPresent(NULL_INTEGER).and(NULL_INTEGER))
+                    .where(id, isBetween(NULL_INTEGER).and(NULL_INTEGER).when(Predicates.bothPresent()))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -725,12 +733,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotBetweenWhenPresentWithValues() {
+    public void testIsNotBetweenWhenWithValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotBetweenWhenPresent(3).and(6))
+                    .where(id, isNotBetween(3).and(6).when(Predicates.bothPresent()))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -745,12 +753,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotBetweenWhenPresentWithFirstMissing() {
+    public void testIsNotBetweenWhenWithFirstMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotBetweenWhenPresent(NULL_INTEGER).and(6))
+                    .where(id, isNotBetween(NULL_INTEGER).and(6).when(Predicates.bothPresent()))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -765,12 +773,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotBetweenWhenPresentWithSecondMissing() {
+    public void testIsNotBetweenWhenWithSecondMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotBetweenWhenPresent(3).and(NULL_INTEGER))
+                    .where(id, isNotBetween(3).and(NULL_INTEGER).when(Predicates.bothPresent()))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -785,12 +793,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotBetweenWhenPresentWithBothMissing() {
+    public void testIsNotBetweenWhenWithBothMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotBetweenWhenPresent(NULL_INTEGER).and(NULL_INTEGER))
+                    .where(id, isNotBetween(NULL_INTEGER).and(NULL_INTEGER).when(Predicates.bothPresent()))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -805,12 +813,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsLikeWhenPresentWithValue() {
+    public void testIsLikeWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isLikeWhenPresent("%mole"))
+                    .where(animalName, isLike("%mole").when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -825,12 +833,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsLikeWhenPresentWithoutValue() {
+    public void testIsLikeWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isLikeWhenPresent((String) null))
+                    .where(animalName, isLike((String) null).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -845,12 +853,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsLikeCaseInsensitiveWhenPresentWithValue() {
+    public void testIsLikeCaseInsensitiveWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isLikeCaseInsensitiveWhenPresent("%MoLe"))
+                    .where(animalName, isLikeCaseInsensitive("%MoLe").when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -865,12 +873,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsLikeCaseInsensitiveWhenPresentWithoutValue() {
+    public void testIsLikeCaseInsensitiveWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isLikeCaseInsensitiveWhenPresent((String) null))
+                    .where(animalName, isLikeCaseInsensitive((String) null).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -885,12 +893,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotLikeWhenPresentWithValue() {
+    public void testIsNotLikeWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotLikeWhenPresent("%mole"))
+                    .where(animalName, isNotLike("%mole").when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -905,12 +913,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotLikeWhenPresentWithoutValue() {
+    public void testIsNotLikeWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotLikeWhenPresent((String) null))
+                    .where(animalName, isNotLike((String) null).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -925,12 +933,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotLikeCaseInsensitiveWhenPresentWithValue() {
+    public void testIsNotLikeCaseInsensitiveWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotLikeCaseInsensitiveWhenPresent("%MoLe"))
+                    .where(animalName, isNotLikeCaseInsensitive("%MoLe").when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -945,12 +953,12 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotLikeCaseInsensitiveWhenPresentWithoutValue() {
+    public void testIsNotLikeCaseInsensitiveWhenWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotLikeCaseInsensitiveWhenPresent((String) null))
+                    .where(animalName, isNotLikeCaseInsensitive((String) null).when(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()

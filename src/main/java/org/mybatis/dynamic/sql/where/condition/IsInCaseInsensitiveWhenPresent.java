@@ -17,47 +17,14 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class IsInCaseInsensitiveWhenPresent extends IsInCaseInsensitive {
 
-    private boolean shouldRender;
-    
-    protected IsInCaseInsensitiveWhenPresent(FilteringBuilder builder) {
-        super(builder);
-        shouldRender = builder.shouldRender;
-    }
-    
-    @Override
-    public boolean shouldRender() {
-        return shouldRender;
+    protected IsInCaseInsensitiveWhenPresent(List<String> values) {
+        super(values, s -> s.filter(Objects::nonNull));
     }
 
     public static IsInCaseInsensitiveWhenPresent of(List<String> values) {
-        return new IsInCaseInsensitiveWhenPresent.FilteringBuilder().withValues(values).build();
-    }
-    
-    public static class FilteringBuilder extends IsInCaseInsensitive.Builder {
-        private boolean shouldRender;
-
-        @Override
-        public FilteringBuilder getThis() {
-            return this;
-        }
-
-        @Override
-        public IsInCaseInsensitiveWhenPresent build() {
-            return new IsInCaseInsensitiveWhenPresent(this);
-        }
-
-        @Override
-        public FilteringBuilder withValues(List<String> values) {
-            if (values != null) {
-                List<String> filteredValues = values.stream().filter(Objects::nonNull).collect(Collectors.toList());
-                super.withValues(filteredValues);
-                shouldRender = !filteredValues.isEmpty();
-            }
-            return this;
-        }
+        return new IsInCaseInsensitiveWhenPresent(values);
     }
 }

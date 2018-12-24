@@ -13,18 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where.condition;
+package org.mybatis.dynamic.sql.util;
 
-import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.function.BiPredicate;
 
-public class IsEqualToWhenPresent<T> extends IsEqualTo<T> {
-
-    protected IsEqualToWhenPresent(Supplier<T> valueSupplier) {
-        super(valueSupplier, Objects::nonNull);
-    }
-
-    public static <T> IsEqualToWhenPresent<T> of(Supplier<T> valueSupplier) {
-        return new IsEqualToWhenPresent<>(valueSupplier);
+public class Predicates {
+    private Predicates() {}
+    
+    public static <T> BiPredicate<T, T> bothPresent() {
+        return (v1, v2) -> v1 != null && v2 != null;
     }
 }

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,15 +16,24 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 public abstract class AbstractTwoValueCondition<T> implements VisitableCondition<T> {
-    private Supplier<T> valueSupplier1;
-    private Supplier<T> valueSupplier2;
+    protected Supplier<T> valueSupplier1;
+    protected Supplier<T> valueSupplier2;
+    private BiPredicate<T, T> predicate;
     
     protected AbstractTwoValueCondition(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2) {
         this.valueSupplier1 = Objects.requireNonNull(valueSupplier1);
         this.valueSupplier2 = Objects.requireNonNull(valueSupplier2);
+        predicate = (v1, v2) -> true;
+    }
+
+    protected AbstractTwoValueCondition(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2,
+            BiPredicate<T, T> predicate) {
+        this(valueSupplier1, valueSupplier2);
+        this.predicate = Objects.requireNonNull(predicate);
     }
 
     public T value1() {
@@ -34,7 +43,12 @@ public abstract class AbstractTwoValueCondition<T> implements VisitableCondition
     public T value2() {
         return valueSupplier2.get();
     }
-
+    
+    @Override
+    public boolean shouldRender() {
+        return predicate.test(value1(), value2());
+    }
+    
     @Override
     public <R> R accept(ConditionVisitor<T,R> visitor) {
         return visitor.visit(this);
