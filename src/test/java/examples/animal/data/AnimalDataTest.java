@@ -110,6 +110,42 @@ public class AnimalDataTest {
     }
     
     @Test
+    public void testSelectAllRowsAllColumnsWithOrder() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(animalData.allColumns())
+                    .from(animalData)
+                    .orderBy(id.descending())
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id DESC"),
+                    () -> assertThat(animals.size()).isEqualTo(65),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(65)
+            );
+        }
+    }
+    
+    @Test
+    public void testSelectAllRowsAllColumnsWithOrderAndAlias() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(animalData.allColumns())
+                    .from(animalData, "ad")
+                    .orderBy(id.descending())
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select ad.* from AnimalData ad order by id DESC"),
+                    () -> assertThat(animals.size()).isEqualTo(65),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(65)
+            );
+        }
+    }
+    
+    @Test
     public void testSelectRowsLessThan20() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
