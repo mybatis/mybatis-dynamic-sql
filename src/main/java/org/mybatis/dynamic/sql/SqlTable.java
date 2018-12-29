@@ -30,6 +30,10 @@ public class SqlTable {
         return name;
     }
     
+    public <T> SqlColumn<T> allColumns() {
+        return SqlColumn.of("*", this); //$NON-NLS-1$
+    }
+    
     public <T> SqlColumn<T> column(String name) {
         return SqlColumn.of(name, this);
     }
