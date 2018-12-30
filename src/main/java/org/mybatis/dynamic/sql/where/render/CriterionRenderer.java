@@ -42,7 +42,8 @@ public class CriterionRenderer<T> {
     }
     
     public Optional<RenderedCriterion> render() {
-        FragmentAndParameters initialCondition = renderCondition();
+        Optional<FragmentAndParameters> initialCondition = renderCondition();
+        
         List<RenderedCriterion> subCriteria = sqlCriterion.mapSubCriteria(this::renderSubCriterion)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -65,12 +66,11 @@ public class CriterionRenderer<T> {
                 .render();
     }
     
-    // caution - may return null
-    private FragmentAndParameters renderCondition() {
+    private Optional<FragmentAndParameters> renderCondition() {
         if (!sqlCriterion.condition().shouldRender()) {
-            return null;
+            return Optional.empty();
         }
-        
+
         WhereConditionVisitor<T> visitor = WhereConditionVisitor.withColumn(sqlCriterion.column())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)

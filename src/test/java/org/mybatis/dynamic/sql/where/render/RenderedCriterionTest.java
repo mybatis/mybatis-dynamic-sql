@@ -26,19 +26,10 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 public class RenderedCriterionTest {
 
     @Test
-    public void testNoCriteria() {
-        Optional<RenderedCriterion> rc = new RenderedCriterion.Builder()
-        .withConnector(Optional.empty())
-        .build();
-        
-        assertThat(rc.isPresent()).isFalse();
-    }
-
-    @Test
     public void testSimpleCriteria() {
         RenderedCriterion rc = new RenderedCriterion.Builder()
                 .withConnector(Optional.of("and"))
-                .withInitialCondition(FragmentAndParameters.withFragment("col1 = :p1").build())
+                .withInitialCondition(FragmentAndParameters.withFragment("col1 = :p1").buildOptional())
                 .build()
                 .get();
         
