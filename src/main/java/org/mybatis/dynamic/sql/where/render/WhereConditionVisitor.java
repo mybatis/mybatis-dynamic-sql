@@ -34,7 +34,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
-public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
+public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<FragmentAndParameters>> {
     
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
@@ -51,38 +51,38 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
+    public Optional<FragmentAndParameters> visit(AbstractListValueCondition<T> condition) {
         FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters)
                 .collect(FragmentCollector.collect());
         
         if (fc.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         
         return FragmentAndParameters.withFragment(condition.renderCondition(columnName(), fc.fragments()))
                 .withParameters(fc.parameters())
-                .build();
+                .buildOptional();
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractNoValueCondition<T> condition) {
+    public Optional<FragmentAndParameters> visit(AbstractNoValueCondition<T> condition) {
         return FragmentAndParameters.withFragment(condition.renderCondition(columnName()))
-                .build();
+                .buildOptional();
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
+    public Optional<FragmentAndParameters> visit(AbstractSingleValueCondition<T> condition) {
         String mapKey = formatParameterMapKey(sequence.getAndIncrement());
         String fragment = condition.renderCondition(columnName(),
                 getFormattedJdbcPlaceholder(mapKey));
 
         return FragmentAndParameters.withFragment(fragment)
                 .withParameter(mapKey, condition.value())
-                .build();
+                .buildOptional();
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractTwoValueCondition<T> condition) {
+    public Optional<FragmentAndParameters> visit(AbstractTwoValueCondition<T> condition) {
         String mapKey1 = formatParameterMapKey(sequence.getAndIncrement());
         String mapKey2 = formatParameterMapKey(sequence.getAndIncrement());
         String fragment = condition.renderCondition(columnName(),
@@ -92,12 +92,12 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         return FragmentAndParameters.withFragment(fragment)
                 .withParameter(mapKey1, condition.value1())
                 .withParameter(mapKey2, condition.value2())
-                .build();
+                .buildOptional();
     }
     
 
     @Override
-    public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
+    public Optional<FragmentAndParameters> visit(AbstractSubselectCondition<T> condition) {
         SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(condition.selectModel())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
@@ -108,13 +108,13 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         
         return FragmentAndParameters.withFragment(fragment)
                 .withParameters(selectStatement.getParameters())
-                .build();
+                .buildOptional();
     }
     
     @Override
-    public FragmentAndParameters visit(AbstractColumnComparisonCondition<T> condition) {
+    public Optional<FragmentAndParameters> visit(AbstractColumnComparisonCondition<T> condition) {
         String fragment = condition.renderCondition(columnName(), tableAliasCalculator);
-        return FragmentAndParameters.withFragment(fragment).build();
+        return FragmentAndParameters.withFragment(fragment).buildOptional();
     }
     
     private FragmentAndParameters toFragmentAndParameters(Object value) {
@@ -170,9 +170,9 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
         }
 
         public Builder<T> withParameterName(String parameterName) {
-            parameterPrefix = Optional.ofNullable(parameterName)
-                    .map(pn -> pn + "." + DEFAULT_PARAMETER_PREFIX) //$NON-NLS-1$
-                    .orElse(DEFAULT_PARAMETER_PREFIX);
+            if (parameterName != null) {
+                parameterPrefix = parameterName + "." + DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
+            }
             return this;
         }
         

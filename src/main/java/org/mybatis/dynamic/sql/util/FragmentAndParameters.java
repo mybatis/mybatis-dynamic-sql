@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class FragmentAndParameters {
     
@@ -68,6 +69,10 @@ public class FragmentAndParameters {
         
         public FragmentAndParameters build() {
             return new FragmentAndParameters(this);
+        }
+        
+        public Optional<FragmentAndParameters> buildOptional() {
+            return Optional.of(build());
         }
     }
 }
