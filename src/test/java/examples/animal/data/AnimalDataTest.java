@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -105,6 +105,25 @@ public class AnimalDataTest {
             assertAll(
                     () -> assertThat(animals.size()).isEqualTo(65),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(65)
+            );
+        }
+    }
+    
+    @Test
+    public void testSelectAllRowsAllColumns() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(animalData.allColumns())
+                    .from(animalData)
+                    .orderBy(id.descending())
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id DESC"),
+                    () -> assertThat(animals.size()).isEqualTo(65),
+                    () -> assertThat(animals.get(0).get("ID")).isEqualTo(65),
+                    () -> assertThat(animals.get(0).get("ANIMAL_NAME")).isEqualTo("Brachiosaurus")
             );
         }
     }

@@ -1,6 +1,6 @@
 <!--
 
-       Copyright 2016-2018 the original author or authors.
+       Copyright 2016-2019 the original author or authors.
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>31-SNAPSHOT</version>
+    <version>31</version>
   </parent>
   <groupId>org.mybatis.dynamic-sql</groupId>
   <artifactId>mybatis-dynamic-sql</artifactId>
@@ -94,7 +94,7 @@
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
-      <version>3.4.6</version>
+      <version>3.5.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -106,7 +106,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>5.1.3.RELEASE</version>
+      <version>5.1.4.RELEASE</version>
       <scope>test</scope>
     </dependency>
     <dependency>
