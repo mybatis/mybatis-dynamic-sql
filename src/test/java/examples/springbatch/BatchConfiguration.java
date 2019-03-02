@@ -44,7 +44,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
@@ -62,12 +61,11 @@ public class BatchConfiguration {
     
     @Bean
     public DataSource dataSource() {
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        EmbeddedDatabase db = builder.setType(EmbeddedDatabaseType.HSQL)
+        return new EmbeddedDatabaseBuilder()
+                .setType(EmbeddedDatabaseType.HSQL)
                 .addScript("classpath:/examples/springbatch/schema.sql")
                 .addScript("classpath:/examples/springbatch/data.sql")
                 .build();
-        return db;
     }
     
     @Bean
@@ -98,11 +96,6 @@ public class BatchConfiguration {
     }
     
     @Bean
-    public PersonProcessor processor() {
-        return new PersonProcessor();
-    }
-    
-    @Bean
     public MyBatisBatchItemWriter<Person> writer(SqlSessionFactory sqlSessionFactory,
             Converter<Person, UpdateStatementProvider> convertor) {
         MyBatisBatchItemWriter<Person> writer = new MyBatisBatchItemWriter<>();
@@ -110,11 +103,6 @@ public class BatchConfiguration {
         writer.setItemToParameterConverter(convertor);
         writer.setStatementId(PersonMapper.class.getName() + ".update");
         return writer;
-    }
-    
-    @Bean
-    public Converter<Person, UpdateStatementProvider> convertor() {
-        return new UpdateStatementConvertor();
     }
     
     @Bean

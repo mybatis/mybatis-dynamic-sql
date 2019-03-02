@@ -18,6 +18,7 @@ package examples.springbatch;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -27,7 +28,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.springbatch.SpringBatchProviderAdapter;
 
-
+@Mapper
 public interface PersonMapper {
 
     @SelectProvider(type=SpringBatchProviderAdapter.class, method="select")

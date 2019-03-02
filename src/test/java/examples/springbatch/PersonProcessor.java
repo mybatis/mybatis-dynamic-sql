@@ -19,7 +19,9 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PersonProcessor implements ItemProcessor<Person, Person> {
     
     private ExecutionContext executionContext;
