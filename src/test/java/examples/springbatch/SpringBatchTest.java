@@ -26,6 +26,9 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -40,15 +43,26 @@ public class SpringBatchTest {
     private SqlSessionFactoryBean sqlSessionFactory;
 
     @Test
-    public void testJob() throws Exception {
-        assertThat(getCount()).isEqualTo(0);
+    public void testThatRowsAreTransformedToUpperCase() throws Exception {
+        // starting condition
+        assertThat(upperCaseRowCount()).isEqualTo(0);
 
-        jobLauncherTestUtils.launchJob();
+        JobExecution execution = jobLauncherTestUtils.launchJob();
+        assertThat(execution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
+        assertThat(numberOfRowsProcessed(execution)).isEqualTo(2);
 
-        assertThat(getCount()).isEqualTo(2);
+        // ending condition
+        assertThat(upperCaseRowCount()).isEqualTo(2);
     }
 
-    private long getCount() throws Exception {
+    private int numberOfRowsProcessed(JobExecution jobExecution) {
+        return jobExecution.getStepExecutions().stream()
+                .map(StepExecution::getExecutionContext)
+                .mapToInt(ec -> ec.getInt("row_count"))
+                .sum();
+    }
+    
+    private long upperCaseRowCount() throws Exception {
         try (SqlSession sqlSession = sqlSessionFactory.getObject().openSession()) {
             PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
 

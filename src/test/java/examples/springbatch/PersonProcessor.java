@@ -15,16 +15,33 @@
  */
 package examples.springbatch;
 
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 
 public class PersonProcessor implements ItemProcessor<Person, Person> {
+    
+    private ExecutionContext executionContext;
 
     @Override
     public Person process(Person person) throws Exception {
+        incrementRowCount();
+        
         Person transformed = new Person();
         transformed.setId(person.getId());
         transformed.setFirstName(person.getFirstName().toUpperCase());
         transformed.setLastName(person.getLastName().toUpperCase());
         return transformed;
+    }
+
+    @BeforeStep
+    public void beforeStep(StepExecution stepExecution) {
+        executionContext = stepExecution.getExecutionContext();
+    }
+
+    private void incrementRowCount() {
+        executionContext.putInt("row_count",
+                executionContext.getInt("row_count", 0) + 1);
     }
 }

@@ -128,8 +128,8 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job importUserJob(Step step1) {
-        return jobBuilderFactory.get("importUserJob")
+    public Job upperCaseLastName(Step step1) {
+        return jobBuilderFactory.get("upperCaseLastName")
                 .incrementer(new RunIdIncrementer())
                 .flow(step1)
                 .end()
