@@ -31,7 +31,6 @@ import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.mybatis.spring.batch.MyBatisCursorItemReader;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -42,6 +41,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
@@ -51,6 +51,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 @EnableBatchProcessing
 @Configuration
 @MapperScan("examples.springbatch")
+@ComponentScan("examples.springbatch")
 public class BatchConfiguration {
     
     @Autowired
@@ -70,11 +71,6 @@ public class BatchConfiguration {
     }
     
     @Bean
-    public BatchConfigurer batchConfigurer() {
-        return new NoPersistenceBatchConfigurer();
-    }
-    
-    @Bean
     public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource) {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
@@ -82,7 +78,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public JobLauncherTestUtils jobLauncherTestUtils(Job job) {
+    public JobLauncherTestUtils jobLauncherTestUtils() {
         return new JobLauncherTestUtils();
     }
     
