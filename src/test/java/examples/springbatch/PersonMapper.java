@@ -16,6 +16,7 @@
 package examples.springbatch;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -35,7 +36,7 @@ public interface PersonMapper {
         @Result(column="first_name", property="firstName"),
         @Result(column="last_name", property="lastName")
     })
-    List<Person> selectMany(SelectStatementProvider selectStatement);
+    List<Person> selectMany(Map<String, Object> parameterValues);
 
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
