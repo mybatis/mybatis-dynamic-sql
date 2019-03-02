@@ -24,11 +24,11 @@ MyBatis Dynamic SQL provides utilities for each of these requirements. Each util
 MyBatis Dynamic SQL provides a specialized rendering strategy for queries used with the MyBatis Spring `ItemReader` implementations. Queries should be rendered as follows:
 
 ```java
-        SelectStatementProvider selectStatement =  SelectDSL.select(person.allColumns())
-                .from(person)
-                .where(lastName, isEqualTo("flintstone"))
-                .build()
-                .render(SpringBatchUtility.SPRING_BATCH_READER_RENDERING_STRATEGY);
+  SelectStatementProvider selectStatement =  SelectDSL.select(person.allColumns())
+      .from(person)
+      .where(lastName, isEqualTo("flintstone"))
+      .build()
+      .render(SpringBatchUtility.SPRING_BATCH_READER_RENDERING_STRATEGY); // render for Spring Batch
 ```
 
 ### Creating the Parameter Map
@@ -36,24 +36,24 @@ MyBatis Dynamic SQL provides a specialized rendering strategy for queries used w
 The `SpringBatchUtility` provides a method to create the parameter values Map needed by the MyBatis Spring `ItemReader`. It can be used as follows:
 
 ```java
-        MyBatisCursorItemReader<Person> reader = new MyBatisCursorItemReader<>();
-        reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
-        reader.setSqlSessionFactory(sqlSessionFactory);
-        reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement));
+  MyBatisCursorItemReader<Person> reader = new MyBatisCursorItemReader<>();
+  reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
+  reader.setSqlSessionFactory(sqlSessionFactory);
+  reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement)); // create parameter map
 ```
 
 ### Specialized @SelectProvider Adapter
 
-MyBatis mappers should be configured to use the specialized `@SelectProvider` adapter as follows:
+MyBatis mapper methods should be configured to use the specialized `@SelectProvider` adapter as follows:
 
 ```java
-    @SelectProvider(type=SpringBatchProviderAdapter.class, method="select")
-    @Results({
-        @Result(column="id", property="id", id=true),
-        @Result(column="first_name", property="firstName"),
-        @Result(column="last_name", property="lastName")
-    })
-    List<Person> selectMany(Map<String, Object> parameterValues);
+  @SelectProvider(type=SpringBatchProviderAdapter.class, method="select") // use the Spring batch adapter
+  @Results({
+    @Result(column="id", property="id", id=true),
+    @Result(column="first_name", property="firstName"),
+    @Result(column="last_name", property="lastName")
+  })
+  List<Person> selectMany(Map<String, Object> parameterValues);
 ```
 
 ## Complete Example
