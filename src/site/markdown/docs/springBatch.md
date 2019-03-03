@@ -76,8 +76,8 @@ For paging based queries...
   MyBatisPagingItemReader<Person> reader = new MyBatisPagingItemReader<>();
   reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
   reader.setSqlSessionFactory(sqlSessionFactory);
-  reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement));
   reader.setPageSize(7);
+  reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement)); // create parameter map
 ```
 
 
