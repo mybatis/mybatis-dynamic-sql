@@ -33,8 +33,8 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-@SpringJUnitConfig(classes=BatchConfiguration.class)
-public class SpringBatchTest {
+@SpringJUnitConfig(classes=CursorReaderBatchConfiguration.class)
+public class SpringBatchCursorTest {
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;

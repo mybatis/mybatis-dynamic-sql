@@ -19,21 +19,50 @@ The solution involves these steps:
 
 MyBatis Dynamic SQL provides utilities for each of these requirements. Each utility uses a shared Map key for consistency.
 
-### Specialized Rendering
+## Spring Batch Item Readers
 
-MyBatis Dynamic SQL provides a specialized rendering strategy for queries used with the MyBatis Spring `ItemReader` implementations. Queries should be rendered as follows:
+MyBatis Spring support supplies two implementations of the `ItemReader` interface:
+
+1. `org.mybatis.spring.batch.MyBatisCursorItemReader` - for queries that can be efficiently processed through a single select statement and a cursor
+1. `org.mybatis.spring.batch.MyBatisPagingItemReader` - for queries that should be processed as a series of paged selects. Note that MyBatis does not provide any native support for paged queries - it is up to the user to write SQL for paging. The `MyBatisPagingItemWriter` simply makes properties available that specify which page should be read currently.
+
+MyBatis Dynamic SQL supplies specialized select statements that will render properly for the different implementations of `ItemReader`:
+
+1. `SpringBatchUtility.selectForCursor(...)` will create a select statement that is appropriate for the `MyBatisCursorItemReader` - a single select statement that will be read with a cursor
+1. `SpringBatchUtility.selectForPaging(...)` will create a select statement that is appropriate for the `MyBatisPagingItemReader` - a select statement that will be called multiple times - one for each page as configured on the batch job.
+
+**Very Important:** The paging implementation will only work for databases that support limit and offset in select statements. Fortunately, most databases do support this - with the notable exception of Oracle.
+
+
+### Rendering for Cursor
+
+Queries intended for the `MyBatisCursorItemReader` should be rendered as follows:
 
 ```java
-  SelectStatementProvider selectStatement =  SelectDSL.select(person.allColumns())
+  SelectStatementProvider selectStatement =  SpringBatchUtility.selectForCursor(person.allColumns())
       .from(person)
       .where(lastName, isEqualTo("flintstone"))
       .build()
-      .render(SpringBatchUtility.SPRING_BATCH_READER_RENDERING_STRATEGY); // render for Spring Batch
+      .render(); // renders for MyBatisCursorItemReader
 ```
 
-### Creating the Parameter Map
+### Rendering for Paging
 
-The `SpringBatchUtility` provides a method to create the parameter values Map needed by the MyBatis Spring `ItemReader`. It can be used as follows:
+Queries intended for the `MyBatisPagingItemReader` should be rendered as follows:
+
+```java
+  SelectStatementProvider selectStatement =  SpringBatchUtility.selectForPaging(person.allColumns())
+      .from(person)
+      .where(lastName, isEqualTo("flintstone"))
+      .build()
+      .render(); // renders for MyBatisPagingItemReader
+```
+
+## Creating the Parameter Map
+
+The `SpringBatchUtility` provides a method to create the parameter values Map needed by the MyBatis Spring `ItemReader` implementations. It can be used as follows:
+
+For cursor based queries...
 
 ```java
   MyBatisCursorItemReader<Person> reader = new MyBatisCursorItemReader<>();
@@ -41,8 +70,18 @@ The `SpringBatchUtility` provides a method to create the parameter values Map ne
   reader.setSqlSessionFactory(sqlSessionFactory);
   reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement)); // create parameter map
 ```
+For paging based queries...
 
-### Specialized @SelectProvider Adapter
+```java
+  MyBatisPagingItemReader<Person> reader = new MyBatisPagingItemReader<>();
+  reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
+  reader.setSqlSessionFactory(sqlSessionFactory);
+  reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement));
+  reader.setPageSize(7);
+```
+
+
+## Specialized @SelectProvider Adapter
 
 MyBatis mapper methods should be configured to use the specialized `@SelectProvider` adapter as follows:
 
@@ -58,4 +97,4 @@ MyBatis mapper methods should be configured to use the specialized `@SelectProvi
 
 ## Complete Example
 
-The unit tests for MyBatis Dynamic SQL include a complete example of using MyBatis Spring Batch support using both a reader and writer. You can see the full example here: [https://github.com/mybatis/mybatis-dynamic-sql/tree/master/src/test/java/examples/springbatch](https://github.com/mybatis/mybatis-dynamic-sql/tree/master/src/test/java/examples/springbatch)
+The unit tests for MyBatis Dynamic SQL include a complete examples of using MyBatis Spring Batch support using the MyBatis supplied reader as well as both types of MyBatis supplied writers. You can see the full example here: [https://github.com/mybatis/mybatis-dynamic-sql/tree/master/src/test/java/examples/springbatch](https://github.com/mybatis/mybatis-dynamic-sql/tree/master/src/test/java/examples/springbatch)

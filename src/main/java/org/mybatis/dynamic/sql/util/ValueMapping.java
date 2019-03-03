@@ -38,7 +38,6 @@ public class ValueMapping<T> extends AbstractColumnMapping implements UpdateMapp
     }
 
     public static <T> ValueMapping<T> of(SqlColumn<T> column, Supplier<T> valueSupplier) {
-        ValueMapping<T> mapping = new ValueMapping<>(column, valueSupplier);
-        return mapping;
+        return new ValueMapping<>(column, valueSupplier);
     }
 }

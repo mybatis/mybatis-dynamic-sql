@@ -21,14 +21,13 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.springbatch.SpringBatchUtility;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
-import org.mybatis.spring.batch.MyBatisCursorItemReader;
+import org.mybatis.spring.batch.MyBatisPagingItemReader;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -49,9 +48,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 @EnableBatchProcessing
 @Configuration
-@MapperScan("examples.springbatch")
 @ComponentScan("examples.springbatch")
-public class BatchConfiguration {
+@MapperScan("examples.springbatch")
+public class PagingReaderBatchConfiguration {
     
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -81,17 +80,19 @@ public class BatchConfiguration {
     }
     
     @Bean
-    public MyBatisCursorItemReader<Person> reader(SqlSessionFactory sqlSessionFactory) {
-        SelectStatementProvider selectStatement =  SelectDSL.select(person.allColumns())
+    public MyBatisPagingItemReader<Person> reader(SqlSessionFactory sqlSessionFactory) {
+        SelectStatementProvider selectStatement =  SpringBatchUtility.selectForPaging(person.allColumns())
                 .from(person)
-                .where(lastName, isEqualTo("flintstone"))
+                .where(forPagingTest, isEqualTo(true))
+                .orderBy(id)
                 .build()
-                .render(SpringBatchUtility.SPRING_BATCH_READER_RENDERING_STRATEGY);
+                .render();
         
-        MyBatisCursorItemReader<Person> reader = new MyBatisCursorItemReader<>();
+        MyBatisPagingItemReader<Person> reader = new MyBatisPagingItemReader<>();
         reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
         reader.setSqlSessionFactory(sqlSessionFactory);
         reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement));
+        reader.setPageSize(7);
         return reader;
     }
     
@@ -108,7 +109,7 @@ public class BatchConfiguration {
     @Bean
     public Step step1(ItemReader<Person> reader, ItemProcessor<Person, Person> processor, ItemWriter<Person> writer) {
         return stepBuilderFactory.get("step1")
-                .<Person, Person>chunk(10)
+                .<Person, Person>chunk(7)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
