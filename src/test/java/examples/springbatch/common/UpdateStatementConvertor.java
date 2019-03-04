@@ -13,9 +13,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.springbatch;
+package examples.springbatch.common;
 
-import static examples.springbatch.PersonDynamicSqlSupport.*;
+import static examples.springbatch.mapper.PersonDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;

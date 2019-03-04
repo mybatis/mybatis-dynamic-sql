@@ -13,9 +13,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.springbatch;
+package examples.springbatch.paging;
 
-import static examples.springbatch.PersonDynamicSqlSupport.*;
+import static examples.springbatch.mapper.PersonDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import javax.sql.DataSource;
@@ -37,19 +37,22 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
+import examples.springbatch.common.Person;
+import examples.springbatch.mapper.PersonMapper;
+
 @EnableBatchProcessing
 @Configuration
-@ComponentScan("examples.springbatch")
-@MapperScan("examples.springbatch")
+@ComponentScan("examples.springbatch.common")
+@MapperScan("examples.springbatch.mapper")
 public class PagingReaderBatchConfiguration {
     
     @Autowired
@@ -62,23 +65,25 @@ public class PagingReaderBatchConfiguration {
     public DataSource dataSource() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.HSQL)
+                .addScript("classpath:/org/springframework/batch/core/schema-drop-hsqldb.sql")
+                .addScript("classpath:/org/springframework/batch/core/schema-hsqldb.sql")
                 .addScript("classpath:/examples/springbatch/schema.sql")
                 .addScript("classpath:/examples/springbatch/data.sql")
                 .build();
     }
     
     @Bean
-    public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource) {
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setDataSource(dataSource);
-        return bean;
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+        SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource);
+        return sessionFactory.getObject();
     }
 
     @Bean
-    public JobLauncherTestUtils jobLauncherTestUtils() {
-        return new JobLauncherTestUtils();
+    public DataSourceTransactionManager dtm(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
-    
+
     @Bean
     public MyBatisPagingItemReader<Person> reader(SqlSessionFactory sqlSessionFactory) {
         SelectStatementProvider selectStatement =  SpringBatchUtility.selectForPaging(person.allColumns())

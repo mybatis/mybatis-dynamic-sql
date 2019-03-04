@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.springbatch;
+package examples.springbatch.mapper;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +27,8 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.springbatch.SpringBatchProviderAdapter;
+
+import examples.springbatch.common.Person;
 
 @Mapper
 public interface PersonMapper {
