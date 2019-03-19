@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,11 +27,15 @@ public class DefaultSelectStatementProvider implements SelectStatementProvider {
     private String queryExpression;
     private Map<String, Object> parameters;
     private Optional<String> orderByClause;
+    private Optional<String> limitClause;
+    private Optional<String> offsetClause;
     
     private DefaultSelectStatementProvider(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
         orderByClause = Objects.requireNonNull(builder.orderByClause);
         parameters = Collections.unmodifiableMap(Objects.requireNonNull(builder.parameters));
+        limitClause = Objects.requireNonNull(builder.limitClause);
+        offsetClause = Objects.requireNonNull(builder.offsetClause);
     }
     
     @Override
@@ -41,7 +45,7 @@ public class DefaultSelectStatementProvider implements SelectStatementProvider {
     
     @Override
     public String getSelectStatement() {
-        return queryExpression + spaceBefore(orderByClause);
+        return queryExpression + spaceBefore(orderByClause) + spaceBefore(limitClause) + spaceBefore(offsetClause);
     }
     
     public static Builder withQueryExpression(String queryExpression) {
@@ -52,6 +56,8 @@ public class DefaultSelectStatementProvider implements SelectStatementProvider {
         private String queryExpression;
         private Optional<String> orderByClause = Optional.empty();
         private Map<String, Object> parameters = new HashMap<>();
+        private Optional<String> limitClause = Optional.empty();
+        private Optional<String> offsetClause = Optional.empty();
         
         public Builder withQueryExpression(String queryExpression) {
             this.queryExpression = queryExpression;
@@ -65,6 +71,16 @@ public class DefaultSelectStatementProvider implements SelectStatementProvider {
         
         public Builder withParameters(Map<String, Object> parameters) {
             this.parameters.putAll(parameters);
+            return this;
+        }
+        
+        public Builder withLimitClause(Optional<String> limitClause) {
+            this.limitClause = limitClause;
+            return this;
+        }
+        
+        public Builder withOffsetClause(Optional<String> offsetClause) {
+            this.offsetClause = offsetClause;
             return this;
         }
         

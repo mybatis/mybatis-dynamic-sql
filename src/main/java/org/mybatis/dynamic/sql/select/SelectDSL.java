@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGathererBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.Buildable;
 
 /**
  * Implements a standard SQL dialect for building model classes.
@@ -32,11 +33,13 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
  *
  * @param <R> the type of model produced by this builder
  */
-public class SelectDSL<R> {
+public class SelectDSL<R> implements Buildable<R> {
 
     private Function<SelectModel, R> adapterFunction;
     private List<QueryExpressionModel> queryExpressions = new ArrayList<>();    
     private OrderByModel orderByModel;
+    private Long limit;
+    private Long offset;
     
     private SelectDSL(Function<SelectModel, R> adapterFunction) {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
@@ -96,10 +99,41 @@ public class SelectDSL<R> {
         this.orderByModel = orderByModel;
     }
     
+    public LimitFinisher limit(long limit) {
+        this.limit = limit;
+        return new LimitFinisher();
+    }
+
+    public OffsetFinisher offset(long offset) {
+        this.offset = offset;
+        return new OffsetFinisher();
+    }
+
+    @Override
     public R build() {
         SelectModel selectModel = SelectModel.withQueryExpressions(queryExpressions)
                 .withOrderByModel(orderByModel)
+                .withLimit(limit)
+                .withOffset(offset)
                 .build();
         return adapterFunction.apply(selectModel);
+    }
+    
+    public class LimitFinisher implements Buildable<R> {
+        public OffsetFinisher offset(int offset) {
+            return SelectDSL.this.offset(offset);
+        }
+        
+        @Override
+        public R build() {
+            return SelectDSL.this.build();
+        }
+    }
+
+    public class OffsetFinisher implements Buildable<R> {
+        @Override
+        public R build() {
+            return SelectDSL.this.build();
+        }
     }
 }
