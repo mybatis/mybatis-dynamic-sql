@@ -33,7 +33,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     private SqlColumn(Builder builder) {
         name = Objects.requireNonNull(builder.name);
         jdbcType = builder.jdbcType;
-        table = builder.table;
+        table = Objects.requireNonNull(builder.table);
         typeHandler = builder.typeHandler;
     }
     
@@ -89,14 +89,9 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return alias().orElse(name);
     }
     
-    public Optional<SqlTable> table() {
-        return Optional.ofNullable(table);
-    }
-    
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return table()
-                .flatMap(tableAliasCalculator::aliasForColumn)
+        return tableAliasCalculator.aliasForColumn(table)
                 .map(this::applyTableAlias)
                 .orElseGet(this::name);
     }
@@ -111,10 +106,6 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return tableAlias + "." + name(); //$NON-NLS-1$
     }
     
-    public static <T> SqlColumn<T> of(String name) {
-        return SqlColumn.withName(name).build();
-    }
-
     public static <T> SqlColumn<T> of(String name, SqlTable table) {
         return SqlColumn.withName(name)
                 .withTable(table)

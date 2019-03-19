@@ -20,9 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
@@ -81,15 +79,13 @@ public class SelectRenderer {
     }
     
     private String renderLimit(Map<String, Object> parameters, Long limit) {
-        BindableColumn<Integer> bc = SqlColumn.of(LIMIT_PARAMETER);
-        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder(bc, "parameters", LIMIT_PARAMETER); //$NON-NLS-1$ 
+        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder("parameters", LIMIT_PARAMETER); //$NON-NLS-1$ 
         parameters.put(LIMIT_PARAMETER, limit);
         return "limit " + placeholder; //$NON-NLS-1$
     }
     
     private String renderOffset(Map<String, Object> parameters, Long offset) {
-        BindableColumn<Integer> bc = SqlColumn.of(OFFSET_PARAMETER);
-        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder(bc, "parameters", OFFSET_PARAMETER); //$NON-NLS-1$
+        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder("parameters", OFFSET_PARAMETER); //$NON-NLS-1$
         parameters.put(OFFSET_PARAMETER, offset);
         return "offset " + placeholder; //$NON-NLS-1$
     }

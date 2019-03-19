@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,11 +15,21 @@
  */
 package org.mybatis.dynamic.sql.render;
 
+import java.util.Optional;
+
 import org.mybatis.dynamic.sql.BindableColumn;
 
 public abstract class RenderingStrategy {
     public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();
     public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();
     
-    public abstract String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName);
+    public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
+        return getFormattedJdbcPlaceholder(Optional.of(column), prefix, parameterName);
+    }
+
+    public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
+        return getFormattedJdbcPlaceholder(Optional.empty(), prefix, parameterName);
+    }
+
+    public abstract String getFormattedJdbcPlaceholder(Optional<BindableColumn<?>> column, String prefix, String parameterName);
 }
