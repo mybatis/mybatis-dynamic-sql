@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 public abstract class RenderingStrategy {
     public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();
     public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();
+    public static final String DEFAULT_PARAMETER_PREFIX = "parameters"; //$NON-NLS-1$
     
     public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
         return getFormattedJdbcPlaceholder(Optional.of(column), prefix, parameterName);

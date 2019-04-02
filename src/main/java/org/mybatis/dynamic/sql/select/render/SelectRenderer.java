@@ -79,13 +79,13 @@ public class SelectRenderer {
     }
     
     private String renderLimit(Map<String, Object> parameters, Long limit) {
-        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder("parameters", LIMIT_PARAMETER); //$NON-NLS-1$ 
+        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, LIMIT_PARAMETER); 
         parameters.put(LIMIT_PARAMETER, limit);
         return "limit " + placeholder; //$NON-NLS-1$
     }
     
     private String renderOffset(Map<String, Object> parameters, Long offset) {
-        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder("parameters", OFFSET_PARAMETER); //$NON-NLS-1$
+        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, OFFSET_PARAMETER);
         parameters.put(OFFSET_PARAMETER, offset);
         return "offset " + placeholder; //$NON-NLS-1$
     }
