@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -144,6 +144,16 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
                 .build();
     }
     
+    public SelectDSL<R>.LimitFinisher limit(long limit) {
+        selectDSL.addQueryExpression(buildModel());
+        return selectDSL.limit(limit);
+    }
+
+    public SelectDSL<R>.OffsetFinisher offset(long offset) {
+        selectDSL.addQueryExpression(buildModel());
+        return selectDSL.offset(offset);
+    }
+
     public static class FromGatherer<R> {
         private FromGathererBuilder<R> builder;
         private Map<SqlTable, String> tableAliasMap = new HashMap<>();
@@ -232,6 +242,18 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
             return new GroupByFinisher();
+        }
+        
+        public SelectDSL<R>.LimitFinisher limit(long limit) {
+            whereModel = buildWhereModel();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.limit(limit);
+        }
+        
+        public SelectDSL<R>.OffsetFinisher offset(long offset) {
+            whereModel = buildWhereModel();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.offset(offset);
         }
         
         @Override
@@ -384,6 +406,18 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             selectDSL.setOrderByModel(OrderByModel.of(columns));
             return selectDSL;
         }
+
+        public SelectDSL<R>.LimitFinisher limit(long limit) {
+            joinModel = buildJoinModel();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.limit(limit);
+        }
+
+        public SelectDSL<R>.OffsetFinisher offset(long offset) {
+            joinModel = buildJoinModel();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.offset(offset);
+        }
     }
     
     public class GroupByFinisher implements Buildable<R> {
@@ -395,6 +429,14 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         @Override
         public R build() {
             return selectDSL.build();
+        }
+
+        public SelectDSL<R>.LimitFinisher limit(long limit) {
+            return selectDSL.limit(limit);
+        }
+
+        public SelectDSL<R>.OffsetFinisher offset(long offset) {
+            return selectDSL.offset(offset);
         }
     }
     

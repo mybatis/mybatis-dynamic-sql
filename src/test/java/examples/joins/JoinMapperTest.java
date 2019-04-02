@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -509,6 +509,109 @@ public class JoinMapperTest {
             assertThat(row.getUserId()).isEqualTo(2);
             assertThat(row.getUserName()).isEqualTo("Barney");
             assertThat(row.getParentId()).isNull();
+        }
+    }
+
+    @Test
+    public void testLimitAndOffsetAfterJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(itemMaster, "im")
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .limit(2)
+                    .offset(1)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
+                    + " limit #{parameters._limit} offset #{parameters._offset}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(2);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
+            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+
+            row = rows.get(1);
+            assertThat(row.get("ORDER_ID")).isEqualTo(1);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
+            assertThat(row.get("ITEM_ID")).isEqualTo(33);
+        }
+    }
+
+    @Test
+    public void testLimitOnlyAfterJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(itemMaster, "im")
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .limit(2)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
+                    + " limit #{parameters._limit}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(2);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("ORDER_ID")).isEqualTo(1);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
+            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+
+            row = rows.get(1);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
+            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+        }
+    }
+
+    @Test
+    public void testOffsetOnlyAfterJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(itemMaster, "im")
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .offset(2)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
+                    + " offset #{parameters._offset}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(3);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("ORDER_ID")).isEqualTo(1);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
+            assertThat(row.get("ITEM_ID")).isEqualTo(33);
+
+            row = rows.get(1);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
+            assertThat(row.get("ITEM_ID")).isEqualTo(44);
         }
     }
 }

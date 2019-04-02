@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -142,12 +142,11 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
     }
     
     public static class Builder<T> {
-        private static final String DEFAULT_PARAMETER_PREFIX = "parameters"; //$NON-NLS-1$
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         private BindableColumn<T> column;
         private TableAliasCalculator tableAliasCalculator;
-        private String parameterPrefix = DEFAULT_PARAMETER_PREFIX;
+        private String parameterPrefix = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
         
         public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -171,7 +170,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
 
         public Builder<T> withParameterName(String parameterName) {
             if (parameterName != null) {
-                parameterPrefix = parameterName + "." + DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
+                parameterPrefix = parameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
             }
             return this;
         }
