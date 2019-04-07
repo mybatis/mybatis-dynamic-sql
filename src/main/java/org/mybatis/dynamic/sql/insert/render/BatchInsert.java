@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,15 +22,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class BatchInsert<T> {
-    private String tableName;
-    private String columnsPhrase;
-    private String valuesPhrase;
+    private String insertStatement;
     private List<T> records;
     
     private BatchInsert(Builder<T> builder) {
-        tableName = Objects.requireNonNull(builder.tableName);
-        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
-        valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
+        insertStatement = Objects.requireNonNull(builder.insertStatement);
         records = Collections.unmodifiableList(Objects.requireNonNull(builder.records));
     }
     
@@ -49,9 +43,7 @@ public class BatchInsert<T> {
     
     private InsertStatementProvider<T> toInsertStatement(T record) {
         return DefaultInsertStatementProvider.withRecord(record)
-                .withTableName(tableName)
-                .withColumnsPhrase(columnsPhrase)
-                .withValuesPhrase(valuesPhrase)
+                .withInsertStatement(insertStatement)
                 .build();
     }
 
@@ -61,10 +53,7 @@ public class BatchInsert<T> {
      * @return the generated INSERT statement
      */
     public String getInsertStatementSQL() {
-        return "insert into" //$NON-NLS-1$
-                + spaceBefore(tableName)
-                + spaceBefore(columnsPhrase)
-                + spaceBefore(valuesPhrase);
+        return insertStatement;
     }
     
     public static <T> Builder<T> withRecords(List<T> records) {
@@ -72,26 +61,14 @@ public class BatchInsert<T> {
     }
     
     public static class Builder<T> {
-        private String tableName;
-        private String columnsPhrase;
-        private String valuesPhrase;
+        private String insertStatement;
         private List<T> records = new ArrayList<>();
         
-        public Builder<T> withTableName(String tableName) {
-            this.tableName = tableName;
+        public Builder<T> withInsertStatement(String insertStatement) {
+            this.insertStatement = insertStatement;
             return this;
         }
 
-        public Builder<T> withColumnsPhrase(String columnsPhrase) {
-            this.columnsPhrase = columnsPhrase;
-            return this;
-        }
-        
-        public Builder<T> withValuesPhrase(String valuesPhrase) {
-            this.valuesPhrase = valuesPhrase;
-            return this;
-        }
-        
         public Builder<T> withRecords(List<T> records) {
             this.records.addAll(records);
             return this;

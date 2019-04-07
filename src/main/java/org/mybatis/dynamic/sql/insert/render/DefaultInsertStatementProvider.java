@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,20 +15,14 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.Objects;
 
 public class DefaultInsertStatementProvider<T> implements InsertStatementProvider<T> {
-    private String tableName;
-    private String columnsPhrase;
-    private String valuesPhrase;
+    private String insertStatement;
     private T record;
     
     private DefaultInsertStatementProvider(Builder<T> builder) {
-        tableName = Objects.requireNonNull(builder.tableName);
-        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
-        valuesPhrase = Objects.requireNonNull(builder.valuesPhrase);
+        insertStatement = Objects.requireNonNull(builder.insertStatement);
         record = Objects.requireNonNull(builder.record);
     }
     
@@ -39,10 +33,7 @@ public class DefaultInsertStatementProvider<T> implements InsertStatementProvide
     
     @Override
     public String getInsertStatement() {
-        return "insert into" //$NON-NLS-1$
-                + spaceBefore(tableName)
-                + spaceBefore(columnsPhrase)
-                + spaceBefore(valuesPhrase);
+        return insertStatement;
     }
 
     public static <T> Builder<T> withRecord(T record) {
@@ -50,26 +41,14 @@ public class DefaultInsertStatementProvider<T> implements InsertStatementProvide
     }
     
     public static class Builder<T> {
-        private String tableName;
-        private String columnsPhrase;
-        private String valuesPhrase;
+        private String insertStatement;
         private T record;
         
-        public Builder<T> withTableName(String tableName) {
-            this.tableName = tableName;
+        public Builder<T> withInsertStatement(String insertStatement) {
+            this.insertStatement = insertStatement;
             return this;
         }
 
-        public Builder<T> withColumnsPhrase(String columnsPhrase) {
-            this.columnsPhrase = columnsPhrase;
-            return this;
-        }
-        
-        public Builder<T> withValuesPhrase(String valuesPhrase) {
-            this.valuesPhrase = valuesPhrase;
-            return this;
-        }
-        
         public Builder<T> withRecord(T record) {
             this.record = record;
             return this;
