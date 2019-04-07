@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractTwoValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractTwoValueCondition.java</span></div><h1>AbstractTwoValueCondition.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2017 the original author or authors.
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractTwoValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractTwoValueCondition.java</span></div><h1>AbstractTwoValueCondition.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -16,30 +16,44 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 public abstract class AbstractTwoValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {
-    private Supplier&lt;T&gt; valueSupplier1;
-    private Supplier&lt;T&gt; valueSupplier2;
+    protected Supplier&lt;T&gt; valueSupplier1;
+    protected Supplier&lt;T&gt; valueSupplier2;
+    private BiPredicate&lt;T, T&gt; predicate;
     
-<span class="fc" id="L25">    protected AbstractTwoValueCondition(Supplier&lt;T&gt; valueSupplier1, Supplier&lt;T&gt; valueSupplier2) {</span>
-<span class="fc" id="L26">        this.valueSupplier1 = Objects.requireNonNull(valueSupplier1);</span>
-<span class="fc" id="L27">        this.valueSupplier2 = Objects.requireNonNull(valueSupplier2);</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L27">    protected AbstractTwoValueCondition(Supplier&lt;T&gt; valueSupplier1, Supplier&lt;T&gt; valueSupplier2) {</span>
+<span class="fc" id="L28">        this.valueSupplier1 = Objects.requireNonNull(valueSupplier1);</span>
+<span class="fc" id="L29">        this.valueSupplier2 = Objects.requireNonNull(valueSupplier2);</span>
+<span class="fc" id="L30">        predicate = (v1, v2) -&gt; true;</span>
+<span class="fc" id="L31">    }</span>
+
+    protected AbstractTwoValueCondition(Supplier&lt;T&gt; valueSupplier1, Supplier&lt;T&gt; valueSupplier2,
+            BiPredicate&lt;T, T&gt; predicate) {
+<span class="fc" id="L35">        this(valueSupplier1, valueSupplier2);</span>
+<span class="fc" id="L36">        this.predicate = Objects.requireNonNull(predicate);</span>
+<span class="fc" id="L37">    }</span>
 
     public T value1() {
-<span class="fc" id="L31">        return valueSupplier1.get();</span>
+<span class="fc" id="L40">        return valueSupplier1.get();</span>
     }
 
     public T value2() {
-<span class="fc" id="L35">        return valueSupplier2.get();</span>
+<span class="fc" id="L44">        return valueSupplier2.get();</span>
     }
-
+    
+    @Override
+    public boolean shouldRender() {
+<span class="fc" id="L49">        return predicate.test(value1(), value2());</span>
+    }
+    
     @Override
     public &lt;R&gt; R accept(ConditionVisitor&lt;T,R&gt; visitor) {
-<span class="fc" id="L40">        return visitor.visit(this);</span>
+<span class="fc" id="L54">        return visitor.visit(this);</span>
     }
 
     public abstract String renderCondition(String columnName, String placeholder1, String placeholder2);
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

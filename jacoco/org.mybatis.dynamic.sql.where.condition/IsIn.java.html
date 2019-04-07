@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsIn.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsIn.java</span></div><h1>IsIn.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsIn.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsIn.java</span></div><h1>IsIn.java</h1><pre class="source lang-java linenums">/**
  *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.where.condition;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,29 +26,26 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsIn&lt;T&gt; extends AbstractListValueCondition&lt;T&gt; {
 
-    protected IsIn(Builder&lt;T&gt; builder) {
-<span class="fc" id="L29">        super(builder);</span>
-<span class="fc" id="L30">    }</span>
-    
+    protected IsIn(List&lt;T&gt; values, UnaryOperator&lt;Stream&lt;T&gt;&gt; valueStreamOperations) {
+<span class="fc" id="L30">        super(values, valueStreamOperations);</span>
+<span class="fc" id="L31">    }</span>
+
+    protected IsIn(List&lt;T&gt; values) {
+<span class="fc" id="L34">        super(values);</span>
+<span class="fc" id="L35">    }</span>
+
     @Override
     public String renderCondition(String columnName, Stream&lt;String&gt; placeholders) {
-<span class="fc" id="L34">        return spaceAfter(columnName)</span>
-<span class="fc" id="L35">                + placeholders.collect(Collectors.joining(&quot;,&quot;, &quot;in (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L39">        return spaceAfter(columnName)</span>
+<span class="fc" id="L40">                + placeholders.collect(Collectors.joining(&quot;,&quot;, &quot;in (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+    }
+
+    public IsIn&lt;T&gt; withValueStreamOperations(UnaryOperator&lt;Stream&lt;T&gt;&gt; valueStreamOperations) {
+<span class="fc" id="L44">        return new IsIn&lt;&gt;(values, valueStreamOperations);</span>
     }
 
     public static &lt;T&gt; IsIn&lt;T&gt; of(List&lt;T&gt; values) {
-<span class="fc" id="L39">        return new IsIn.Builder&lt;T&gt;().withValues(values).build();</span>
-    }
-    
-<span class="fc" id="L42">    public static class Builder&lt;T&gt; extends AbstractBuilder&lt;T, Builder&lt;T&gt;&gt; {</span>
-        @Override
-        public Builder&lt;T&gt; getThis() {
-<span class="fc" id="L45">            return this;</span>
-        }
-        
-        public IsIn&lt;T&gt; build() {
-<span class="fc" id="L49">            return new IsIn&lt;&gt;(this);</span>
-        }
+<span class="fc" id="L48">        return new IsIn&lt;&gt;(values);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

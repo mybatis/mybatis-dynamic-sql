@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhereConditionVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.render</a> &gt; <span class="el_source">WhereConditionVisitor.java</span></div><h1>WhereConditionVisitor.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2018 the original author or authors.
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhereConditionVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.render</a> &gt; <span class="el_source">WhereConditionVisitor.java</span></div><h1>WhereConditionVisitor.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
-public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, FragmentAndParameters&gt; {
+public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Optional&lt;FragmentAndParameters&gt;&gt; {
     
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
@@ -51,130 +51,133 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Fr
 <span class="fc" id="L51">    }</span>
 
     @Override
-    public FragmentAndParameters visit(AbstractListValueCondition&lt;T&gt; condition) {
+    public Optional&lt;FragmentAndParameters&gt; visit(AbstractListValueCondition&lt;T&gt; condition) {
 <span class="fc" id="L55">        FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters)</span>
 <span class="fc" id="L56">                .collect(FragmentCollector.collect());</span>
         
-<span class="fc" id="L58">        return FragmentAndParameters.withFragment(condition.renderCondition(columnName(), fc.fragments()))</span>
-<span class="fc" id="L59">                .withParameters(fc.parameters())</span>
-<span class="fc" id="L60">                .build();</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (fc.isEmpty()) {</span>
+<span class="fc" id="L59">            return Optional.empty();</span>
+        }
+        
+<span class="fc" id="L62">        return FragmentAndParameters.withFragment(condition.renderCondition(columnName(), fc.fragments()))</span>
+<span class="fc" id="L63">                .withParameters(fc.parameters())</span>
+<span class="fc" id="L64">                .buildOptional();</span>
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractNoValueCondition&lt;T&gt; condition) {
-<span class="fc" id="L65">        return FragmentAndParameters.withFragment(condition.renderCondition(columnName()))</span>
-<span class="fc" id="L66">                .build();</span>
+    public Optional&lt;FragmentAndParameters&gt; visit(AbstractNoValueCondition&lt;T&gt; condition) {
+<span class="fc" id="L69">        return FragmentAndParameters.withFragment(condition.renderCondition(columnName()))</span>
+<span class="fc" id="L70">                .buildOptional();</span>
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractSingleValueCondition&lt;T&gt; condition) {
-<span class="fc" id="L71">        String mapKey = formatParameterMapKey(sequence.getAndIncrement());</span>
-<span class="fc" id="L72">        String fragment = condition.renderCondition(columnName(),</span>
-<span class="fc" id="L73">                getFormattedJdbcPlaceholder(mapKey));</span>
+    public Optional&lt;FragmentAndParameters&gt; visit(AbstractSingleValueCondition&lt;T&gt; condition) {
+<span class="fc" id="L75">        String mapKey = formatParameterMapKey(sequence.getAndIncrement());</span>
+<span class="fc" id="L76">        String fragment = condition.renderCondition(columnName(),</span>
+<span class="fc" id="L77">                getFormattedJdbcPlaceholder(mapKey));</span>
 
-<span class="fc" id="L75">        return FragmentAndParameters.withFragment(fragment)</span>
-<span class="fc" id="L76">                .withParameter(mapKey, condition.value())</span>
-<span class="fc" id="L77">                .build();</span>
+<span class="fc" id="L79">        return FragmentAndParameters.withFragment(fragment)</span>
+<span class="fc" id="L80">                .withParameter(mapKey, condition.value())</span>
+<span class="fc" id="L81">                .buildOptional();</span>
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractTwoValueCondition&lt;T&gt; condition) {
-<span class="fc" id="L82">        String mapKey1 = formatParameterMapKey(sequence.getAndIncrement());</span>
-<span class="fc" id="L83">        String mapKey2 = formatParameterMapKey(sequence.getAndIncrement());</span>
-<span class="fc" id="L84">        String fragment = condition.renderCondition(columnName(),</span>
-<span class="fc" id="L85">                getFormattedJdbcPlaceholder(mapKey1),</span>
-<span class="fc" id="L86">                getFormattedJdbcPlaceholder(mapKey2));</span>
+    public Optional&lt;FragmentAndParameters&gt; visit(AbstractTwoValueCondition&lt;T&gt; condition) {
+<span class="fc" id="L86">        String mapKey1 = formatParameterMapKey(sequence.getAndIncrement());</span>
+<span class="fc" id="L87">        String mapKey2 = formatParameterMapKey(sequence.getAndIncrement());</span>
+<span class="fc" id="L88">        String fragment = condition.renderCondition(columnName(),</span>
+<span class="fc" id="L89">                getFormattedJdbcPlaceholder(mapKey1),</span>
+<span class="fc" id="L90">                getFormattedJdbcPlaceholder(mapKey2));</span>
                 
-<span class="fc" id="L88">        return FragmentAndParameters.withFragment(fragment)</span>
-<span class="fc" id="L89">                .withParameter(mapKey1, condition.value1())</span>
-<span class="fc" id="L90">                .withParameter(mapKey2, condition.value2())</span>
-<span class="fc" id="L91">                .build();</span>
+<span class="fc" id="L92">        return FragmentAndParameters.withFragment(fragment)</span>
+<span class="fc" id="L93">                .withParameter(mapKey1, condition.value1())</span>
+<span class="fc" id="L94">                .withParameter(mapKey2, condition.value2())</span>
+<span class="fc" id="L95">                .buildOptional();</span>
     }
     
 
     @Override
-    public FragmentAndParameters visit(AbstractSubselectCondition&lt;T&gt; condition) {
-<span class="fc" id="L97">        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(condition.selectModel())</span>
-<span class="fc" id="L98">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L99">                .withSequence(sequence)</span>
-<span class="fc" id="L100">                .build()</span>
-<span class="fc" id="L101">                .render();</span>
+    public Optional&lt;FragmentAndParameters&gt; visit(AbstractSubselectCondition&lt;T&gt; condition) {
+<span class="fc" id="L101">        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(condition.selectModel())</span>
+<span class="fc" id="L102">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L103">                .withSequence(sequence)</span>
+<span class="fc" id="L104">                .build()</span>
+<span class="fc" id="L105">                .render();</span>
         
-<span class="fc" id="L103">        String fragment = condition.renderCondition(columnName(), selectStatement.getSelectStatement());</span>
+<span class="fc" id="L107">        String fragment = condition.renderCondition(columnName(), selectStatement.getSelectStatement());</span>
         
-<span class="fc" id="L105">        return FragmentAndParameters.withFragment(fragment)</span>
-<span class="fc" id="L106">                .withParameters(selectStatement.getParameters())</span>
-<span class="fc" id="L107">                .build();</span>
+<span class="fc" id="L109">        return FragmentAndParameters.withFragment(fragment)</span>
+<span class="fc" id="L110">                .withParameters(selectStatement.getParameters())</span>
+<span class="fc" id="L111">                .buildOptional();</span>
     }
     
     @Override
-    public FragmentAndParameters visit(AbstractColumnComparisonCondition&lt;T&gt; condition) {
-<span class="fc" id="L112">        String fragment = condition.renderCondition(columnName(), tableAliasCalculator);</span>
-<span class="fc" id="L113">        return FragmentAndParameters.withFragment(fragment).build();</span>
+    public Optional&lt;FragmentAndParameters&gt; visit(AbstractColumnComparisonCondition&lt;T&gt; condition) {
+<span class="fc" id="L116">        String fragment = condition.renderCondition(columnName(), tableAliasCalculator);</span>
+<span class="fc" id="L117">        return FragmentAndParameters.withFragment(fragment).buildOptional();</span>
     }
     
     private FragmentAndParameters toFragmentAndParameters(Object value) {
-<span class="fc" id="L117">        String mapKey = formatParameterMapKey(sequence.getAndIncrement());</span>
+<span class="fc" id="L121">        String mapKey = formatParameterMapKey(sequence.getAndIncrement());</span>
         
-<span class="fc" id="L119">        return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))</span>
-<span class="fc" id="L120">                .withParameter(mapKey, value)</span>
-<span class="fc" id="L121">                .build();</span>
+<span class="fc" id="L123">        return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))</span>
+<span class="fc" id="L124">                .withParameter(mapKey, value)</span>
+<span class="fc" id="L125">                .build();</span>
     }
 
     private String formatParameterMapKey(int number) {
-<span class="fc" id="L125">        return &quot;p&quot; + number; //$NON-NLS-1$</span>
+<span class="fc" id="L129">        return &quot;p&quot; + number; //$NON-NLS-1$</span>
     }
     
     private String getFormattedJdbcPlaceholder(String mapKey) {
-<span class="fc" id="L129">        return renderingStrategy.getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        </span>
+<span class="fc" id="L133">        return renderingStrategy.getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        </span>
     }
     
     private String columnName() {
-<span class="fc" id="L133">        return column.renderWithTableAlias(tableAliasCalculator);</span>
+<span class="fc" id="L137">        return column.renderWithTableAlias(tableAliasCalculator);</span>
     }
     
     public static &lt;T&gt; Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
-<span class="fc" id="L137">        return new Builder&lt;T&gt;().withColumn(column);</span>
+<span class="fc" id="L141">        return new Builder&lt;T&gt;().withColumn(column);</span>
     }
     
-<span class="fc" id="L140">    public static class Builder&lt;T&gt; {</span>
-        private static final String DEFAULT_PARAMETER_PREFIX = &quot;parameters&quot;; //$NON-NLS-1$
+<span class="fc" id="L144">    public static class Builder&lt;T&gt; {</span>
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         private BindableColumn&lt;T&gt; column;
         private TableAliasCalculator tableAliasCalculator;
-<span class="fc" id="L146">        private String parameterPrefix = DEFAULT_PARAMETER_PREFIX;</span>
+<span class="fc" id="L149">        private String parameterPrefix = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;</span>
         
         public Builder&lt;T&gt; withSequence(AtomicInteger sequence) {
-<span class="fc" id="L149">            this.sequence = sequence;</span>
-<span class="fc" id="L150">            return this;</span>
+<span class="fc" id="L152">            this.sequence = sequence;</span>
+<span class="fc" id="L153">            return this;</span>
         }
         
         public Builder&lt;T&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L154">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L155">            return this;</span>
+<span class="fc" id="L157">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L158">            return this;</span>
         }
         
         public Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
-<span class="fc" id="L159">            this.column = column;</span>
-<span class="fc" id="L160">            return this;</span>
+<span class="fc" id="L162">            this.column = column;</span>
+<span class="fc" id="L163">            return this;</span>
         }
         
         public Builder&lt;T&gt; withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L164">            this.tableAliasCalculator = tableAliasCalculator;</span>
-<span class="fc" id="L165">            return this;</span>
+<span class="fc" id="L167">            this.tableAliasCalculator = tableAliasCalculator;</span>
+<span class="fc" id="L168">            return this;</span>
         }
 
         public Builder&lt;T&gt; withParameterName(String parameterName) {
-<span class="fc" id="L169">            parameterPrefix = Optional.ofNullable(parameterName)</span>
-<span class="fc" id="L170">                    .map(pn -&gt; pn + &quot;.&quot; + DEFAULT_PARAMETER_PREFIX) //$NON-NLS-1$</span>
-<span class="fc" id="L171">                    .orElse(DEFAULT_PARAMETER_PREFIX);</span>
-<span class="fc" id="L172">            return this;</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">            if (parameterName != null) {</span>
+<span class="fc" id="L173">                parameterPrefix = parameterName + &quot;.&quot; + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$</span>
+            }
+<span class="fc" id="L175">            return this;</span>
         }
         
         public WhereConditionVisitor&lt;T&gt; build() {
-<span class="fc" id="L176">            return new WhereConditionVisitor&lt;&gt;(this);</span>
+<span class="fc" id="L179">            return new WhereConditionVisitor&lt;&gt;(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

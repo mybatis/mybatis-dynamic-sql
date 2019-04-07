@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultUpdateStatementProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update.render</a> &gt; <span class="el_source">DefaultUpdateStatementProvider.java</span></div><h1>DefaultUpdateStatementProvider.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2018 the original author or authors.
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultUpdateStatementProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update.render</a> &gt; <span class="el_source">DefaultUpdateStatementProvider.java</span></div><h1>DefaultUpdateStatementProvider.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,84 +15,50 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
-
-/**
- * This class combines a &quot;set&quot; clause and a &quot;where&quot; clause into one parameter object
- * that can be sent to a MyBatis3 mapper method.
- * 
- * @author Jeff Butler
- *
- */
 public class DefaultUpdateStatementProvider implements UpdateStatementProvider {
-    private String tableName;
-    private String setClause;
-    private Optional&lt;String&gt; whereClause;
-<span class="fc" id="L38">    private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+    private String updateStatement;
+<span class="fc" id="L24">    private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
 
-<span class="fc" id="L40">    private DefaultUpdateStatementProvider(Builder builder) {</span>
-<span class="fc" id="L41">        tableName = Objects.requireNonNull(builder.tableName);</span>
-<span class="fc" id="L42">        setClause = Objects.requireNonNull(builder.setClause);</span>
-<span class="fc" id="L43">        whereClause = Optional.ofNullable(builder.whereClause);</span>
-<span class="fc" id="L44">        parameters.putAll(builder.parameters);</span>
-<span class="fc" id="L45">    }</span>
+<span class="fc" id="L26">    private DefaultUpdateStatementProvider(Builder builder) {</span>
+<span class="fc" id="L27">        updateStatement = Objects.requireNonNull(builder.updateStatement);</span>
+<span class="fc" id="L28">        parameters.putAll(builder.parameters);</span>
+<span class="fc" id="L29">    }</span>
 
     @Override
     public Map&lt;String, Object&gt; getParameters() {
-<span class="fc" id="L49">        return parameters;</span>
+<span class="fc" id="L33">        return parameters;</span>
     }
 
     @Override
     public String getUpdateStatement() {
-<span class="fc" id="L54">        return &quot;update&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L55">                + spaceBefore(tableName)</span>
-<span class="fc" id="L56">                + spaceBefore(setClause)</span>
-<span class="fc" id="L57">                + spaceBefore(whereClause);</span>
+<span class="fc" id="L38">        return updateStatement;</span>
     }
     
-    public static Builder withTableName(String tableName) {
-<span class="fc" id="L61">        return new Builder().withTableName(tableName);</span>
+    public static Builder withUpdateStatement(String updateStatement) {
+<span class="fc" id="L42">        return new Builder().withUpdateStatement(updateStatement);</span>
     }
     
-<span class="fc" id="L64">    public static class Builder {</span>
-        private String tableName;
-        private String setClause;
-        private String whereClause;
-<span class="fc" id="L68">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L45">    public static class Builder {</span>
+        private String updateStatement;
+<span class="fc" id="L47">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
         
-        public Builder withTableName(String tableName) {
-<span class="fc" id="L71">            this.tableName = tableName;</span>
-<span class="fc" id="L72">            return this;</span>
-        }
-        
-        public Builder withSetClause(String setClause) {
-<span class="fc" id="L76">            this.setClause = setClause;</span>
-<span class="fc" id="L77">            return this;</span>
-        }
-        
-        public Builder withWhereClause(Optional&lt;WhereClauseProvider&gt; whereClauseProvider) {
-<span class="fc" id="L81">            whereClauseProvider.ifPresent(wcp -&gt; {</span>
-<span class="fc" id="L82">                whereClause = wcp.getWhereClause();</span>
-<span class="fc" id="L83">                parameters.putAll(wcp.getParameters());</span>
-<span class="fc" id="L84">            });</span>
-<span class="fc" id="L85">            return this;</span>
+        public Builder withUpdateStatement(String updateStatement) {
+<span class="fc" id="L50">            this.updateStatement = updateStatement;</span>
+<span class="fc" id="L51">            return this;</span>
         }
         
         public Builder withParameters(Map&lt;String, Object&gt; parameters) {
-<span class="fc" id="L89">            this.parameters.putAll(parameters);</span>
-<span class="fc" id="L90">            return this;</span>
+<span class="fc" id="L55">            this.parameters.putAll(parameters);</span>
+<span class="fc" id="L56">            return this;</span>
         }
         
         public DefaultUpdateStatementProvider build() {
-<span class="fc" id="L94">            return new DefaultUpdateStatementProvider(this);</span>
+<span class="fc" id="L60">            return new DefaultUpdateStatementProvider(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

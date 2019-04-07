@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractListValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractListValueCondition.java</span></div><h1>AbstractListValueCondition.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractListValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractListValueCondition.java</span></div><h1>AbstractListValueCondition.java</h1><pre class="source lang-java linenums">/**
  *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -19,52 +19,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 public abstract class AbstractListValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {
-    private List&lt;T&gt; values;
+    protected List&lt;T&gt; values;
+    protected UnaryOperator&lt;Stream&lt;T&gt;&gt; valueStreamOperations;
 
-<span class="fc" id="L27">    protected AbstractListValueCondition(AbstractBuilder&lt;T, ?&gt; builder) {</span>
-<span class="fc" id="L28">        values = Objects.requireNonNull(builder.values);</span>
-<span class="fc" id="L29">    }</span>
+    protected AbstractListValueCondition(List&lt;T&gt; values) {
+<span class="fc" id="L30">        this(values, UnaryOperator.identity());</span>
+<span class="fc" id="L31">    }</span>
+
+<span class="fc" id="L33">    protected AbstractListValueCondition(List&lt;T&gt; values, UnaryOperator&lt;Stream&lt;T&gt;&gt; valueStreamOperations) {</span>
+<span class="fc" id="L34">        this.values = new ArrayList&lt;&gt;(Objects.requireNonNull(values));</span>
+<span class="fc" id="L35">        this.valueStreamOperations = Objects.requireNonNull(valueStreamOperations);</span>
+<span class="fc" id="L36">    }</span>
     
     public final &lt;R&gt; Stream&lt;R&gt; mapValues(Function&lt;T, R&gt; mapper) {
-<span class="fc" id="L32">        return values.stream()</span>
-<span class="fc" id="L33">                .map(this::mapValue)</span>
-<span class="fc" id="L34">                .map(mapper);</span>
+<span class="fc" id="L39">        return valueStreamOperations.apply(values.stream()).map(mapper);</span>
     }
     
     @Override
     public &lt;R&gt; R accept(ConditionVisitor&lt;T, R&gt; visitor) {
-<span class="fc" id="L39">        return visitor.visit(this);</span>
+<span class="fc" id="L44">        return visitor.visit(this);</span>
     }
 
-    /**
-     * This method allows subclasses to alter the value before it is placed
-     * into the parameter map.  An example of this is when the case insensitive
-     * conditions will change a value to upper case.
-     * 
-     * &lt;p&gt;We do not expose the values stream because we cannot allow subclasses
-     * to change the order or number of values.
-     *  
-     * @param value the value
-     * @return the mapped value - in most cases the value is not changed
-     */
-    protected T mapValue(T value) {
-<span class="fc" id="L54">        return value;</span>
-    }
-    
     public abstract String renderCondition(String columnName, Stream&lt;String&gt; placeholders);
-    
-<span class="fc" id="L59">    public abstract static class AbstractBuilder&lt;T, B extends AbstractBuilder&lt;T, B&gt;&gt; {</span>
-<span class="fc" id="L60">        private List&lt;T&gt; values = new ArrayList&lt;&gt;();</span>
-        
-        public B withValues(List&lt;T&gt; values) {
-<span class="fc" id="L63">            this.values.addAll(values);</span>
-<span class="fc" id="L64">            return getThis();</span>
-        }
-        
-        public abstract B getThis();
-    }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

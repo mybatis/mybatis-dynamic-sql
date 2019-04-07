@@ -13,7 +13,7 @@
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> *    You may obtain a copy of the License at</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2." target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.</a>0</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *    Unless required by applicable law or agreed to in writing, software</em>
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
@@ -105,10 +105,10 @@
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.condition.IsNotNull;
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.condition.IsNull;
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  
-<a class="jxr_linenumber" name="L100" href="#L100">100</a> <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlBuilder.html">SqlBuilder</a> {
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="SqlBuilder" href="../../../../org/mybatis/dynamic/sql/SqlBuilder.html#SqlBuilder">SqlBuilder</a> {
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> 
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     <em class="jxr_comment">// statements</em>
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">static</strong> DeleteDSL&lt;DeleteModel&gt; deleteFrom(<a href="../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">static</strong> DeleteDSL&lt;DeleteModel&gt; deleteFrom(<a name="SqlTable" href="../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table) {
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         <strong class="jxr_keyword">return</strong> DeleteDSL.deleteFrom(table);
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     }
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> 
@@ -125,7 +125,7 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         <strong class="jxr_keyword">return</strong> BatchInsertDSL.insert(records);
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>     }
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>     
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">static</strong> InsertSelectDSL.InsertColumnGatherer insertInto(<a href="../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">static</strong> InsertSelectDSL.InsertColumnGatherer insertInto(<a name="SqlTable" href="../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table) {
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         <strong class="jxr_keyword">return</strong> InsertSelectDSL.insertInto(table);
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>     }
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     
@@ -137,15 +137,15 @@
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         <strong class="jxr_keyword">return</strong> SelectDSL.selectDistinct(selectList);
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     }
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>     
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     <strong class="jxr_keyword">static</strong> UpdateDSL&lt;UpdateModel&gt; update(<a href="../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>     <strong class="jxr_keyword">static</strong> UpdateDSL&lt;UpdateModel&gt; update(<a name="SqlTable" href="../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table) {
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         <strong class="jxr_keyword">return</strong> UpdateDSL.update(table);
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>     }
 <a class="jxr_linenumber" name="L135" href="#L135">135</a> 
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; <a href="../../../../org/mybatis/dynamic/sql/where/WhereDSL.html">WhereDSL</a> where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; <a name="WhereDSL" href="../../../../org/mybatis/dynamic/sql/where/WhereDSL.html#WhereDSL">WhereDSL</a> where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         <strong class="jxr_keyword">return</strong> WhereDSL.where(column, condition);
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>     }
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>     
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; <a href="../../../../org/mybatis/dynamic/sql/where/WhereDSL.html">WhereDSL</a> where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; <a name="WhereDSL" href="../../../../org/mybatis/dynamic/sql/where/WhereDSL.html#WhereDSL">WhereDSL</a> where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>             SqlCriterion&lt;?&gt;... subCriteria) {
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         <strong class="jxr_keyword">return</strong> WhereDSL.where(column, condition, subCriteria);
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     }
@@ -184,85 +184,85 @@
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>     }
 <a class="jxr_linenumber" name="L177" href="#L177">177</a> 
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>     <em class="jxr_comment">// join support</em>
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html">JoinCriterion</a> and(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> joinColumn, <a href="../../../../org/mybatis/dynamic/sql/select/join/JoinCondition.html">JoinCondition</a> joinCondition) {
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>     <strong class="jxr_keyword">static</strong> <a name="JoinCriterion" href="../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html#JoinCriterion">JoinCriterion</a> and(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> joinColumn, <a name="JoinCondition" href="../../../../org/mybatis/dynamic/sql/select/join/JoinCondition.html#JoinCondition">JoinCondition</a> joinCondition) {
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>         <strong class="jxr_keyword">return</strong> JoinCriterion.withJoinColumn(joinColumn)
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>                 .withJoinCondition(joinCondition)
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>                 .withConnector(<span class="jxr_string">"and"</span>) <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>                 .build();
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>     }
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>     
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/join/EqualTo.html">EqualTo</a> equalTo(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/mybatis/dynamic/sql/select/join/EqualTo.html">EqualTo</a>(column);
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>     <strong class="jxr_keyword">static</strong> <a name="EqualTo" href="../../../../org/mybatis/dynamic/sql/select/join/EqualTo.html#EqualTo">EqualTo</a> equalTo(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="EqualTo" href="../../../../org/mybatis/dynamic/sql/select/join/EqualTo.html#EqualTo">EqualTo</a>(column);
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>     }
 <a class="jxr_linenumber" name="L189" href="#L189">189</a> 
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>     <em class="jxr_comment">// aggregate support</em>
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/aggregate/CountAll.html">CountAll</a> count() {
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/mybatis/dynamic/sql/select/aggregate/CountAll.html">CountAll</a>();
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">static</strong> <a name="CountAll" href="../../../../org/mybatis/dynamic/sql/select/aggregate/CountAll.html#CountAll">CountAll</a> count() {
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="CountAll" href="../../../../org/mybatis/dynamic/sql/select/aggregate/CountAll.html#CountAll">CountAll</a>();
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>     }
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>     
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/aggregate/Count.html">Count</a> count(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>     <strong class="jxr_keyword">static</strong> <a name="Count" href="../../../../org/mybatis/dynamic/sql/select/aggregate/Count.html#Count">Count</a> count(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         <strong class="jxr_keyword">return</strong> Count.of(column);
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>     }
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>     
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/aggregate/Max.html">Max</a> max(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>     <strong class="jxr_keyword">static</strong> <a name="Max" href="../../../../org/mybatis/dynamic/sql/select/aggregate/Max.html#Max">Max</a> max(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>         <strong class="jxr_keyword">return</strong> Max.of(column);
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>     }
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>     
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/aggregate/Min.html">Min</a> min(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>     <strong class="jxr_keyword">static</strong> <a name="Min" href="../../../../org/mybatis/dynamic/sql/select/aggregate/Min.html#Min">Min</a> min(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>         <strong class="jxr_keyword">return</strong> Min.of(column);
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>     }
 <a class="jxr_linenumber" name="L206" href="#L206">206</a> 
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/aggregate/Avg.html">Avg</a> avg(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>     <strong class="jxr_keyword">static</strong> <a name="Avg" href="../../../../org/mybatis/dynamic/sql/select/aggregate/Avg.html#Avg">Avg</a> avg(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>         <strong class="jxr_keyword">return</strong> Avg.of(column);
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>     }
 <a class="jxr_linenumber" name="L210" href="#L210">210</a> 
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/aggregate/Sum.html">Sum</a> sum(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>     <strong class="jxr_keyword">static</strong> <a name="Sum" href="../../../../org/mybatis/dynamic/sql/select/aggregate/Sum.html#Sum">Sum</a> sum(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L212" href="#L212">212</a>         <strong class="jxr_keyword">return</strong> Sum.of(column);
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>     }
 <a class="jxr_linenumber" name="L214" href="#L214">214</a> 
 <a class="jxr_linenumber" name="L215" href="#L215">215</a>     <em class="jxr_comment">// constants</em>
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/Constant.html">Constant</a> constant(String constant) {
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>     <strong class="jxr_keyword">static</strong> <a name="Constant" href="../../../../org/mybatis/dynamic/sql/Constant.html#Constant">Constant</a> constant(String constant) {
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         <strong class="jxr_keyword">return</strong> Constant.of(constant);
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>     }
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>     
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/StringConstant.html">StringConstant</a> stringConstant(String constant) {
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>     <strong class="jxr_keyword">static</strong> <a name="StringConstant" href="../../../../org/mybatis/dynamic/sql/StringConstant.html#StringConstant">StringConstant</a> stringConstant(String constant) {
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>         <strong class="jxr_keyword">return</strong> StringConstant.of(constant);
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>     }
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>     
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>     <em class="jxr_comment">// functions</em>
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>     @SafeVarargs
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>     <strong class="jxr_keyword">static</strong> &lt;T <strong class="jxr_keyword">extends</strong> Number&gt; Add&lt;T&gt; add(BindableColumn&lt;T&gt; firstColumn, <a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> secondColumn,
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>     <strong class="jxr_keyword">static</strong> &lt;T <strong class="jxr_keyword">extends</strong> Number&gt; Add&lt;T&gt; add(BindableColumn&lt;T&gt; firstColumn, <a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>             BasicColumn... subsequentColumns) {
 <a class="jxr_linenumber" name="L228" href="#L228">228</a>         <strong class="jxr_keyword">return</strong> Add.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>     }
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>     
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>     @SafeVarargs
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>     <strong class="jxr_keyword">static</strong> &lt;T <strong class="jxr_keyword">extends</strong> Number&gt; Divide&lt;T&gt; divide(BindableColumn&lt;T&gt; firstColumn, <a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> secondColumn,
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>     <strong class="jxr_keyword">static</strong> &lt;T <strong class="jxr_keyword">extends</strong> Number&gt; Divide&lt;T&gt; divide(BindableColumn&lt;T&gt; firstColumn, <a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>             BasicColumn... subsequentColumns) {
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>         <strong class="jxr_keyword">return</strong> Divide.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>     }
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>     
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>     @SafeVarargs
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>     <strong class="jxr_keyword">static</strong> &lt;T <strong class="jxr_keyword">extends</strong> Number&gt; Multiply&lt;T&gt; multiply(BindableColumn&lt;T&gt; firstColumn, <a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> secondColumn,
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>     <strong class="jxr_keyword">static</strong> &lt;T <strong class="jxr_keyword">extends</strong> Number&gt; Multiply&lt;T&gt; multiply(BindableColumn&lt;T&gt; firstColumn, <a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>             BasicColumn... subsequentColumns) {
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>         <strong class="jxr_keyword">return</strong> Multiply.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>     }
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>     
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>     @SafeVarargs
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>     <strong class="jxr_keyword">static</strong> &lt;T <strong class="jxr_keyword">extends</strong> Number&gt; Subtract&lt;T&gt; subtract(BindableColumn&lt;T&gt; firstColumn, <a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> secondColumn,
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>     <strong class="jxr_keyword">static</strong> &lt;T <strong class="jxr_keyword">extends</strong> Number&gt; Subtract&lt;T&gt; subtract(BindableColumn&lt;T&gt; firstColumn, <a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>             BasicColumn... subsequentColumns) {
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>         <strong class="jxr_keyword">return</strong> Subtract.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>     }
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>     
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/function/Lower.html">Lower</a> lower(BindableColumn&lt;String&gt; column) {
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>     <strong class="jxr_keyword">static</strong> <a name="Lower" href="../../../../org/mybatis/dynamic/sql/select/function/Lower.html#Lower">Lower</a> lower(BindableColumn&lt;String&gt; column) {
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>         <strong class="jxr_keyword">return</strong> Lower.of(column);
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>     }
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>     
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/function/Substring.html">Substring</a> substring(BindableColumn&lt;String&gt; column, <strong class="jxr_keyword">int</strong> offset, <strong class="jxr_keyword">int</strong> length) {
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>     <strong class="jxr_keyword">static</strong> <a name="Substring" href="../../../../org/mybatis/dynamic/sql/select/function/Substring.html#Substring">Substring</a> substring(BindableColumn&lt;String&gt; column, <strong class="jxr_keyword">int</strong> offset, <strong class="jxr_keyword">int</strong> length) {
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>         <strong class="jxr_keyword">return</strong> Substring.of(column, offset, length);
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>     }
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>     
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/select/function/Upper.html">Upper</a> upper(BindableColumn&lt;String&gt; column) {
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>     <strong class="jxr_keyword">static</strong> <a name="Upper" href="../../../../org/mybatis/dynamic/sql/select/function/Upper.html#Upper">Upper</a> upper(BindableColumn&lt;String&gt; column) {
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>         <strong class="jxr_keyword">return</strong> Upper.of(column);
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>     }
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>     
@@ -287,7 +287,7 @@
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>         <strong class="jxr_keyword">return</strong> IsEqualToWithSubselect.of(selectModelBuilder);
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>     }
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>     
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsEqualToColumn&lt;T&gt; isEqualTo(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsEqualToColumn&lt;T&gt; isEqualTo(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>         <strong class="jxr_keyword">return</strong> IsEqualToColumn.of(column);
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>     }
 <a class="jxr_linenumber" name="L285" href="#L285">285</a> 
@@ -311,7 +311,7 @@
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>         <strong class="jxr_keyword">return</strong> IsNotEqualToWithSubselect.of(selectModelBuilder);
 <a class="jxr_linenumber" name="L304" href="#L304">304</a>     }
 <a class="jxr_linenumber" name="L305" href="#L305">305</a> 
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsNotEqualToColumn&lt;T&gt; isNotEqualTo(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsNotEqualToColumn&lt;T&gt; isNotEqualTo(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>         <strong class="jxr_keyword">return</strong> IsNotEqualToColumn.of(column);
 <a class="jxr_linenumber" name="L308" href="#L308">308</a>     }
 <a class="jxr_linenumber" name="L309" href="#L309">309</a> 
@@ -335,7 +335,7 @@
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>         <strong class="jxr_keyword">return</strong> IsGreaterThanWithSubselect.of(selectModelBuilder);
 <a class="jxr_linenumber" name="L328" href="#L328">328</a>     }
 <a class="jxr_linenumber" name="L329" href="#L329">329</a>     
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsGreaterThanColumn&lt;T&gt; isGreaterThan(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsGreaterThanColumn&lt;T&gt; isGreaterThan(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L331" href="#L331">331</a>         <strong class="jxr_keyword">return</strong> IsGreaterThanColumn.of(column);
 <a class="jxr_linenumber" name="L332" href="#L332">332</a>     }
 <a class="jxr_linenumber" name="L333" href="#L333">333</a> 
@@ -360,7 +360,7 @@
 <a class="jxr_linenumber" name="L352" href="#L352">352</a>         <strong class="jxr_keyword">return</strong> IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>     }
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>     
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsGreaterThanOrEqualToColumn&lt;T&gt; isGreaterThanOrEqualTo(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsGreaterThanOrEqualToColumn&lt;T&gt; isGreaterThanOrEqualTo(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>         <strong class="jxr_keyword">return</strong> IsGreaterThanOrEqualToColumn.of(column);
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>     }
 <a class="jxr_linenumber" name="L358" href="#L358">358</a> 
@@ -384,7 +384,7 @@
 <a class="jxr_linenumber" name="L376" href="#L376">376</a>         <strong class="jxr_keyword">return</strong> IsLessThanWithSubselect.of(selectModelBuilder);
 <a class="jxr_linenumber" name="L377" href="#L377">377</a>     }
 <a class="jxr_linenumber" name="L378" href="#L378">378</a>     
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsLessThanColumn&lt;T&gt; isLessThan(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsLessThanColumn&lt;T&gt; isLessThan(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L380" href="#L380">380</a>         <strong class="jxr_keyword">return</strong> IsLessThanColumn.of(column);
 <a class="jxr_linenumber" name="L381" href="#L381">381</a>     }
 <a class="jxr_linenumber" name="L382" href="#L382">382</a> 
@@ -408,7 +408,7 @@
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>         <strong class="jxr_keyword">return</strong> IsLessThanOrEqualToWithSubselect.of(selectModelBuilder);
 <a class="jxr_linenumber" name="L401" href="#L401">401</a>     }
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>     
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsLessThanOrEqualToColumn&lt;T&gt; isLessThanOrEqualTo(<a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>     <strong class="jxr_keyword">static</strong> &lt;T&gt; IsLessThanOrEqualToColumn&lt;T&gt; isLessThanOrEqualTo(<a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>         <strong class="jxr_keyword">return</strong> IsLessThanOrEqualToColumn.of(column);
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>     }
 <a class="jxr_linenumber" name="L406" href="#L406">406</a> 
@@ -530,77 +530,77 @@
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>     }
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>     
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>     <em class="jxr_comment">// conditions for strings only</em>
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html">IsLikeCaseInsensitive</a> isLikeCaseInsensitive(String value) {
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>     <strong class="jxr_keyword">static</strong> <a name="IsLikeCaseInsensitive" href="../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html#IsLikeCaseInsensitive">IsLikeCaseInsensitive</a> isLikeCaseInsensitive(String value) {
 <a class="jxr_linenumber" name="L526" href="#L526">526</a>         <strong class="jxr_keyword">return</strong> isLikeCaseInsensitive(() -&gt; value);
 <a class="jxr_linenumber" name="L527" href="#L527">527</a>     }
 <a class="jxr_linenumber" name="L528" href="#L528">528</a>     
-<a class="jxr_linenumber" name="L529" href="#L529">529</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html">IsLikeCaseInsensitive</a> isLikeCaseInsensitive(Supplier&lt;String&gt; valueSupplier) {
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>     <strong class="jxr_keyword">static</strong> <a name="IsLikeCaseInsensitive" href="../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html#IsLikeCaseInsensitive">IsLikeCaseInsensitive</a> isLikeCaseInsensitive(Supplier&lt;String&gt; valueSupplier) {
 <a class="jxr_linenumber" name="L530" href="#L530">530</a>         <strong class="jxr_keyword">return</strong> IsLikeCaseInsensitive.of(valueSupplier);
 <a class="jxr_linenumber" name="L531" href="#L531">531</a>     }
 <a class="jxr_linenumber" name="L532" href="#L532">532</a>     
-<a class="jxr_linenumber" name="L533" href="#L533">533</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitiveWhenPresent.html">IsLikeCaseInsensitiveWhenPresent</a> isLikeCaseInsensitiveWhenPresent(String value) {
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>     <strong class="jxr_keyword">static</strong> <a name="IsLikeCaseInsensitiveWhenPresent" href="../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitiveWhenPresent.html#IsLikeCaseInsensitiveWhenPresent">IsLikeCaseInsensitiveWhenPresent</a> isLikeCaseInsensitiveWhenPresent(String value) {
 <a class="jxr_linenumber" name="L534" href="#L534">534</a>         <strong class="jxr_keyword">return</strong> isLikeCaseInsensitiveWhenPresent(() -&gt; value);
 <a class="jxr_linenumber" name="L535" href="#L535">535</a>     }
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>     
-<a class="jxr_linenumber" name="L537" href="#L537">537</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitiveWhenPresent.html">IsLikeCaseInsensitiveWhenPresent</a> isLikeCaseInsensitiveWhenPresent(Supplier&lt;String&gt; valueSupplier) {
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>     <strong class="jxr_keyword">static</strong> <a name="IsLikeCaseInsensitiveWhenPresent" href="../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitiveWhenPresent.html#IsLikeCaseInsensitiveWhenPresent">IsLikeCaseInsensitiveWhenPresent</a> isLikeCaseInsensitiveWhenPresent(Supplier&lt;String&gt; valueSupplier) {
 <a class="jxr_linenumber" name="L538" href="#L538">538</a>         <strong class="jxr_keyword">return</strong> IsLikeCaseInsensitiveWhenPresent.of(valueSupplier);
 <a class="jxr_linenumber" name="L539" href="#L539">539</a>     }
 <a class="jxr_linenumber" name="L540" href="#L540">540</a>     
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotLikeCaseInsensitive.html">IsNotLikeCaseInsensitive</a> isNotLikeCaseInsensitive(String value) {
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>     <strong class="jxr_keyword">static</strong> <a name="IsNotLikeCaseInsensitive" href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotLikeCaseInsensitive.html#IsNotLikeCaseInsensitive">IsNotLikeCaseInsensitive</a> isNotLikeCaseInsensitive(String value) {
 <a class="jxr_linenumber" name="L542" href="#L542">542</a>         <strong class="jxr_keyword">return</strong> isNotLikeCaseInsensitive(() -&gt; value);
 <a class="jxr_linenumber" name="L543" href="#L543">543</a>     }
 <a class="jxr_linenumber" name="L544" href="#L544">544</a> 
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotLikeCaseInsensitive.html">IsNotLikeCaseInsensitive</a> isNotLikeCaseInsensitive(Supplier&lt;String&gt; valueSupplier) {
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>     <strong class="jxr_keyword">static</strong> <a name="IsNotLikeCaseInsensitive" href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotLikeCaseInsensitive.html#IsNotLikeCaseInsensitive">IsNotLikeCaseInsensitive</a> isNotLikeCaseInsensitive(Supplier&lt;String&gt; valueSupplier) {
 <a class="jxr_linenumber" name="L546" href="#L546">546</a>         <strong class="jxr_keyword">return</strong> IsNotLikeCaseInsensitive.of(valueSupplier);
 <a class="jxr_linenumber" name="L547" href="#L547">547</a>     }
 <a class="jxr_linenumber" name="L548" href="#L548">548</a> 
-<a class="jxr_linenumber" name="L549" href="#L549">549</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotLikeCaseInsensitiveWhenPresent.html">IsNotLikeCaseInsensitiveWhenPresent</a> isNotLikeCaseInsensitiveWhenPresent(String value) {
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>     <strong class="jxr_keyword">static</strong> <a name="IsNotLikeCaseInsensitiveWhenPresent" href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotLikeCaseInsensitiveWhenPresent.html#IsNotLikeCaseInsensitiveWhenPresent">IsNotLikeCaseInsensitiveWhenPresent</a> isNotLikeCaseInsensitiveWhenPresent(String value) {
 <a class="jxr_linenumber" name="L550" href="#L550">550</a>         <strong class="jxr_keyword">return</strong> isNotLikeCaseInsensitiveWhenPresent(() -&gt; value);
 <a class="jxr_linenumber" name="L551" href="#L551">551</a>     }
 <a class="jxr_linenumber" name="L552" href="#L552">552</a>     
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotLikeCaseInsensitiveWhenPresent.html">IsNotLikeCaseInsensitiveWhenPresent</a> isNotLikeCaseInsensitiveWhenPresent(Supplier&lt;String&gt; valueSupplier) {
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>     <strong class="jxr_keyword">static</strong> <a name="IsNotLikeCaseInsensitiveWhenPresent" href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotLikeCaseInsensitiveWhenPresent.html#IsNotLikeCaseInsensitiveWhenPresent">IsNotLikeCaseInsensitiveWhenPresent</a> isNotLikeCaseInsensitiveWhenPresent(Supplier&lt;String&gt; valueSupplier) {
 <a class="jxr_linenumber" name="L554" href="#L554">554</a>         <strong class="jxr_keyword">return</strong> IsNotLikeCaseInsensitiveWhenPresent.of(valueSupplier);
 <a class="jxr_linenumber" name="L555" href="#L555">555</a>     }
 <a class="jxr_linenumber" name="L556" href="#L556">556</a>     
-<a class="jxr_linenumber" name="L557" href="#L557">557</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsInCaseInsensitive.html">IsInCaseInsensitive</a> isInCaseInsensitive(String...values) {
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>     <strong class="jxr_keyword">static</strong> <a name="IsInCaseInsensitive" href="../../../../org/mybatis/dynamic/sql/where/condition/IsInCaseInsensitive.html#IsInCaseInsensitive">IsInCaseInsensitive</a> isInCaseInsensitive(String...values) {
 <a class="jxr_linenumber" name="L558" href="#L558">558</a>         <strong class="jxr_keyword">return</strong> isInCaseInsensitive(Arrays.asList(values));
 <a class="jxr_linenumber" name="L559" href="#L559">559</a>     }
 <a class="jxr_linenumber" name="L560" href="#L560">560</a> 
-<a class="jxr_linenumber" name="L561" href="#L561">561</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsInCaseInsensitive.html">IsInCaseInsensitive</a> isInCaseInsensitive(List&lt;String&gt; values) {
+<a class="jxr_linenumber" name="L561" href="#L561">561</a>     <strong class="jxr_keyword">static</strong> <a name="IsInCaseInsensitive" href="../../../../org/mybatis/dynamic/sql/where/condition/IsInCaseInsensitive.html#IsInCaseInsensitive">IsInCaseInsensitive</a> isInCaseInsensitive(List&lt;String&gt; values) {
 <a class="jxr_linenumber" name="L562" href="#L562">562</a>         <strong class="jxr_keyword">return</strong> IsInCaseInsensitive.of(values);
 <a class="jxr_linenumber" name="L563" href="#L563">563</a>     }
 <a class="jxr_linenumber" name="L564" href="#L564">564</a> 
-<a class="jxr_linenumber" name="L565" href="#L565">565</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsInCaseInsensitiveWhenPresent.html">IsInCaseInsensitiveWhenPresent</a> isInCaseInsensitiveWhenPresent(String...values) {
+<a class="jxr_linenumber" name="L565" href="#L565">565</a>     <strong class="jxr_keyword">static</strong> <a name="IsInCaseInsensitiveWhenPresent" href="../../../../org/mybatis/dynamic/sql/where/condition/IsInCaseInsensitiveWhenPresent.html#IsInCaseInsensitiveWhenPresent">IsInCaseInsensitiveWhenPresent</a> isInCaseInsensitiveWhenPresent(String...values) {
 <a class="jxr_linenumber" name="L566" href="#L566">566</a>         <strong class="jxr_keyword">return</strong> isInCaseInsensitiveWhenPresent(Arrays.asList(values));
 <a class="jxr_linenumber" name="L567" href="#L567">567</a>     }
 <a class="jxr_linenumber" name="L568" href="#L568">568</a> 
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsInCaseInsensitiveWhenPresent.html">IsInCaseInsensitiveWhenPresent</a> isInCaseInsensitiveWhenPresent(List&lt;String&gt; values) {
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>     <strong class="jxr_keyword">static</strong> <a name="IsInCaseInsensitiveWhenPresent" href="../../../../org/mybatis/dynamic/sql/where/condition/IsInCaseInsensitiveWhenPresent.html#IsInCaseInsensitiveWhenPresent">IsInCaseInsensitiveWhenPresent</a> isInCaseInsensitiveWhenPresent(List&lt;String&gt; values) {
 <a class="jxr_linenumber" name="L570" href="#L570">570</a>         <strong class="jxr_keyword">return</strong> IsInCaseInsensitiveWhenPresent.of(values);
 <a class="jxr_linenumber" name="L571" href="#L571">571</a>     }
 <a class="jxr_linenumber" name="L572" href="#L572">572</a> 
-<a class="jxr_linenumber" name="L573" href="#L573">573</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotInCaseInsensitive.html">IsNotInCaseInsensitive</a> isNotInCaseInsensitive(String...values) {
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>     <strong class="jxr_keyword">static</strong> <a name="IsNotInCaseInsensitive" href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotInCaseInsensitive.html#IsNotInCaseInsensitive">IsNotInCaseInsensitive</a> isNotInCaseInsensitive(String...values) {
 <a class="jxr_linenumber" name="L574" href="#L574">574</a>         <strong class="jxr_keyword">return</strong> isNotInCaseInsensitive(Arrays.asList(values));
 <a class="jxr_linenumber" name="L575" href="#L575">575</a>     }
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>     
-<a class="jxr_linenumber" name="L577" href="#L577">577</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotInCaseInsensitive.html">IsNotInCaseInsensitive</a> isNotInCaseInsensitive(List&lt;String&gt; values) {
+<a class="jxr_linenumber" name="L577" href="#L577">577</a>     <strong class="jxr_keyword">static</strong> <a name="IsNotInCaseInsensitive" href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotInCaseInsensitive.html#IsNotInCaseInsensitive">IsNotInCaseInsensitive</a> isNotInCaseInsensitive(List&lt;String&gt; values) {
 <a class="jxr_linenumber" name="L578" href="#L578">578</a>         <strong class="jxr_keyword">return</strong> IsNotInCaseInsensitive.of(values);
 <a class="jxr_linenumber" name="L579" href="#L579">579</a>     }
 <a class="jxr_linenumber" name="L580" href="#L580">580</a>     
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotInCaseInsensitiveWhenPresent.html">IsNotInCaseInsensitiveWhenPresent</a> isNotInCaseInsensitiveWhenPresent(String...values) {
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>     <strong class="jxr_keyword">static</strong> <a name="IsNotInCaseInsensitiveWhenPresent" href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotInCaseInsensitiveWhenPresent.html#IsNotInCaseInsensitiveWhenPresent">IsNotInCaseInsensitiveWhenPresent</a> isNotInCaseInsensitiveWhenPresent(String...values) {
 <a class="jxr_linenumber" name="L582" href="#L582">582</a>         <strong class="jxr_keyword">return</strong> isNotInCaseInsensitiveWhenPresent(Arrays.asList(values));
 <a class="jxr_linenumber" name="L583" href="#L583">583</a>     }
 <a class="jxr_linenumber" name="L584" href="#L584">584</a> 
-<a class="jxr_linenumber" name="L585" href="#L585">585</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotInCaseInsensitiveWhenPresent.html">IsNotInCaseInsensitiveWhenPresent</a> isNotInCaseInsensitiveWhenPresent(List&lt;String&gt; values) {
+<a class="jxr_linenumber" name="L585" href="#L585">585</a>     <strong class="jxr_keyword">static</strong> <a name="IsNotInCaseInsensitiveWhenPresent" href="../../../../org/mybatis/dynamic/sql/where/condition/IsNotInCaseInsensitiveWhenPresent.html#IsNotInCaseInsensitiveWhenPresent">IsNotInCaseInsensitiveWhenPresent</a> isNotInCaseInsensitiveWhenPresent(List&lt;String&gt; values) {
 <a class="jxr_linenumber" name="L586" href="#L586">586</a>         <strong class="jxr_keyword">return</strong> IsNotInCaseInsensitiveWhenPresent.of(values);
 <a class="jxr_linenumber" name="L587" href="#L587">587</a>     }
 <a class="jxr_linenumber" name="L588" href="#L588">588</a> 
 <a class="jxr_linenumber" name="L589" href="#L589">589</a>     <em class="jxr_comment">// order by support</em>
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>     <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/SortSpecification.html">SortSpecification</a> sortColumn(String name) {
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>     <strong class="jxr_keyword">static</strong> <a name="SortSpecification" href="../../../../org/mybatis/dynamic/sql/SortSpecification.html#SortSpecification">SortSpecification</a> sortColumn(String name) {
 <a class="jxr_linenumber" name="L591" href="#L591">591</a>         <strong class="jxr_keyword">return</strong> SimpleSortSpecification.of(name);
 <a class="jxr_linenumber" name="L592" href="#L592">592</a>     }
 <a class="jxr_linenumber" name="L593" href="#L593">593</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2018 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

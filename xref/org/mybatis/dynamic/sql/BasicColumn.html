@@ -13,7 +13,7 @@
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> *    You may obtain a copy of the License at</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2." target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.</a>0</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *    Unless required by applicable law or agreed to in writing, software</em>
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> * @author Jeff Butler</em>
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> {
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">     * Returns the columns alias if one has been specified.</em>
@@ -50,7 +50,7 @@
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     * @param alias the column alias to set</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">     * @return new instance with alias set</em>
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <a href="../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> as(String alias);
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <a name="BasicColumn" href="../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> as(String alias);
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">     * Returns the name of the item aliased with a table name if appropriate.</em>
@@ -59,7 +59,7 @@
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  <em class="jxr_javadoccomment">     * @param tableAliasCalculator the table alias calculator for the current renderer</em>
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_javadoccomment">     * @return the item name with the table alias applied</em>
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      String renderWithTableAlias(<a href="../../../../org/mybatis/dynamic/sql/render/TableAliasCalculator.html">TableAliasCalculator</a> tableAliasCalculator);
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      String renderWithTableAlias(<a name="TableAliasCalculator" href="../../../../org/mybatis/dynamic/sql/render/TableAliasCalculator.html#TableAliasCalculator">TableAliasCalculator</a> tableAliasCalculator);
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">     * Returns the name of the item aliased with a table name and column alias if appropriate.</em>
@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     * @param tableAliasCalculator the table alias calculator for the current renderer</em>
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">     * @return the item name with the table and column aliases applied</em>
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">default</strong> String renderWithTableAndColumnAlias(<a href="../../../../org/mybatis/dynamic/sql/render/TableAliasCalculator.html">TableAliasCalculator</a> tableAliasCalculator) {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">default</strong> String renderWithTableAndColumnAlias(<a name="TableAliasCalculator" href="../../../../org/mybatis/dynamic/sql/render/TableAliasCalculator.html#TableAliasCalculator">TableAliasCalculator</a> tableAliasCalculator) {
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          String nameAndTableAlias = renderWithTableAlias(tableAliasCalculator);
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">return</strong> alias().map(a -&gt; nameAndTableAlias + <span class="jxr_string">" as "</span> + a) <em class="jxr_comment">//$NON-NLS-1$</em>
@@ -77,6 +77,6 @@
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2018 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

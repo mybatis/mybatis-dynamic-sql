@@ -7,13 +7,13 @@
 <body>
 <div id="overview"><a href="../../../../../apidocs/org/mybatis/dynamic/sql/SqlColumn.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2018 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2019 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> *    You may obtain a copy of the License at</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2." target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.</a>0</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *    Unless required by applicable law or agreed to in writing, software</em>
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
@@ -29,23 +29,23 @@
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.TableAliasCalculator;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> SqlColumn&lt;T&gt; <strong class="jxr_keyword">implements</strong> BindableColumn&lt;T&gt;, <a href="../../../../org/mybatis/dynamic/sql/SortSpecification.html">SortSpecification</a> {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> SqlColumn&lt;T&gt; <strong class="jxr_keyword">implements</strong> BindableColumn&lt;T&gt;, <a name="SortSpecification" href="../../../../org/mybatis/dynamic/sql/SortSpecification.html#SortSpecification">SortSpecification</a> {
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>      
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">protected</strong> String name;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">protected</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">protected</strong> <a name="SqlTable" href="../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">protected</strong> JDBCType jdbcType;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> isDescending = false;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">protected</strong> String alias;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">protected</strong> String typeHandler;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>      
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlColumn.html">SqlColumn</a>(<a href="../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> builder) {
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">private</strong> <a name="SqlColumn" href="../../../../org/mybatis/dynamic/sql/SqlColumn.html#SqlColumn">SqlColumn</a>(Builder builder) {
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          name = Objects.requireNonNull(builder.name);
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          jdbcType = builder.jdbcType;
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>          table = Objects.requireNonNull(builder.table);
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>          typeHandler = builder.typeHandler;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">protected</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlColumn.html">SqlColumn</a>(SqlColumn&lt;?&gt; sqlColumn) {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">protected</strong> <a name="SqlColumn" href="../../../../org/mybatis/dynamic/sql/SqlColumn.html#SqlColumn">SqlColumn</a>(SqlColumn&lt;?&gt; sqlColumn) {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>          name = sqlColumn.name;
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          table = sqlColumn.table;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          jdbcType = sqlColumn.jdbcType;
@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      }
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      @Override
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/mybatis/dynamic/sql/SortSpecification.html">SortSpecification</a> descending() {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">public</strong> <a name="SortSpecification" href="../../../../org/mybatis/dynamic/sql/SortSpecification.html#SortSpecification">SortSpecification</a> descending() {
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          SqlColumn&lt;T&gt; column = <strong class="jxr_keyword">new</strong> SqlColumn&lt;&gt;(<strong class="jxr_keyword">this</strong>);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          column.isDescending = <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">return</strong> column;
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      @Override
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">public</strong> String renderWithTableAlias(<a href="../../../../org/mybatis/dynamic/sql/render/TableAliasCalculator.html">TableAliasCalculator</a> tableAliasCalculator) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">public</strong> String renderWithTableAlias(<a name="TableAliasCalculator" href="../../../../org/mybatis/dynamic/sql/render/TableAliasCalculator.html#TableAliasCalculator">TableAliasCalculator</a> tableAliasCalculator) {
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          <strong class="jxr_keyword">return</strong> tableAliasCalculator.aliasForColumn(table)
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>                  .map(<strong class="jxr_keyword">this</strong>::applyTableAlias)
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                  .orElseGet(<strong class="jxr_keyword">this</strong>::name);
@@ -114,45 +114,45 @@
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         <strong class="jxr_keyword">return</strong> tableAlias + <span class="jxr_string">"."</span> + name(); <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>     }
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; SqlColumn&lt;T&gt; of(String name, <a href="../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; SqlColumn&lt;T&gt; of(String name, <a name="SqlTable" href="../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table) {
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         <strong class="jxr_keyword">return</strong> SqlColumn.withName(name)
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                 .withTable(table)
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>                 .build();
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>     }
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>     
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; SqlColumn&lt;T&gt; of(String name, <a href="../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table, JDBCType jdbcType) {
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; SqlColumn&lt;T&gt; of(String name, <a name="SqlTable" href="../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table, JDBCType jdbcType) {
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         <strong class="jxr_keyword">return</strong> SqlColumn.withName(name)
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>                 .withTable(table)
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>                 .withJdbcType(jdbcType)
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                 .build();
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>     }
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>     
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withName(String name) {
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a>().withName(name);
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Builder withName(String name) {
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Builder().withName(name);
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>     }
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>     
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> {
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table;
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Builder {
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>         <strong class="jxr_keyword">private</strong> <a name="SqlTable" href="../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table;
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         <strong class="jxr_keyword">private</strong> String name;
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         <strong class="jxr_keyword">private</strong> JDBCType jdbcType;
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         <strong class="jxr_keyword">private</strong> String typeHandler;
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withTable(<a href="../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">public</strong> Builder withTable(<a name="SqlTable" href="../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table) {
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>             <strong class="jxr_keyword">this</strong>.table = table;
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         }
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withName(String name) {
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <strong class="jxr_keyword">public</strong> Builder withName(String name) {
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>             <strong class="jxr_keyword">this</strong>.name = name;
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         }
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withJdbcType(JDBCType jdbcType) {
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>         <strong class="jxr_keyword">public</strong> Builder withJdbcType(JDBCType jdbcType) {
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>             <strong class="jxr_keyword">this</strong>.jdbcType = jdbcType;
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>         }
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withTypeHandler(String typeHandler) {
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>         <strong class="jxr_keyword">public</strong> Builder withTypeHandler(String typeHandler) {
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>             <strong class="jxr_keyword">this</strong>.typeHandler = typeHandler;
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>         }
@@ -164,6 +164,6 @@
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2018 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

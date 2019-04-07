@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">SelectDSL.java</span></div><h1>SelectDSL.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2018 the original author or authors.
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">SelectDSL.java</span></div><h1>SelectDSL.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGathererBuilder;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.Buildable;
 
 /**
  * Implements a standard SQL dialect for building model classes.
@@ -32,75 +33,108 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
  *
  * @param &lt;R&gt; the type of model produced by this builder
  */
-public class SelectDSL&lt;R&gt; {
+public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 
     private Function&lt;SelectModel, R&gt; adapterFunction;
-<span class="fc" id="L38">    private List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();    </span>
+<span class="fc" id="L39">    private List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();    </span>
     private OrderByModel orderByModel;
+    private Long limit;
+    private Long offset;
     
-<span class="fc" id="L41">    private SelectDSL(Function&lt;SelectModel, R&gt; adapterFunction) {</span>
-<span class="fc" id="L42">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L44">    private SelectDSL(Function&lt;SelectModel, R&gt; adapterFunction) {</span>
+<span class="fc" id="L45">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
+<span class="fc" id="L46">    }</span>
 
     private FromGatherer&lt;R&gt; queryExpressionBuilder(BasicColumn...selectList) {
-<span class="fc" id="L46">        return new FromGathererBuilder&lt;R&gt;()</span>
-<span class="fc" id="L47">                .withSelectDSL(this)</span>
-<span class="fc" id="L48">                .withSelectList(selectList)</span>
-<span class="fc" id="L49">                .build();</span>
+<span class="fc" id="L49">        return new FromGathererBuilder&lt;R&gt;()</span>
+<span class="fc" id="L50">                .withSelectDSL(this)</span>
+<span class="fc" id="L51">                .withSelectList(selectList)</span>
+<span class="fc" id="L52">                .build();</span>
     }
     
     private FromGatherer&lt;R&gt; distinctQueryExpressionBuilder(BasicColumn...selectList) {
-<span class="fc" id="L53">        return new FromGathererBuilder&lt;R&gt;()</span>
-<span class="fc" id="L54">                .withSelectDSL(this)</span>
-<span class="fc" id="L55">                .withSelectList(selectList)</span>
-<span class="fc" id="L56">                .isDistinct()</span>
-<span class="fc" id="L57">                .build();</span>
+<span class="fc" id="L56">        return new FromGathererBuilder&lt;R&gt;()</span>
+<span class="fc" id="L57">                .withSelectDSL(this)</span>
+<span class="fc" id="L58">                .withSelectList(selectList)</span>
+<span class="fc" id="L59">                .isDistinct()</span>
+<span class="fc" id="L60">                .build();</span>
     }
     
     public static FromGatherer&lt;SelectModel&gt; select(BasicColumn...selectList) {
-<span class="fc" id="L61">        return select(Function.identity(), selectList);</span>
+<span class="fc" id="L64">        return select(Function.identity(), selectList);</span>
     }
     
     public static &lt;R&gt; FromGatherer&lt;R&gt; select(Function&lt;SelectModel, R&gt; adapterFunction,
             BasicColumn...selectList) {
-<span class="fc" id="L66">        SelectDSL&lt;R&gt; selectModelBuilder = new SelectDSL&lt;&gt;(adapterFunction);</span>
-<span class="fc" id="L67">        return selectModelBuilder.queryExpressionBuilder(selectList);</span>
+<span class="fc" id="L69">        SelectDSL&lt;R&gt; selectModelBuilder = new SelectDSL&lt;&gt;(adapterFunction);</span>
+<span class="fc" id="L70">        return selectModelBuilder.queryExpressionBuilder(selectList);</span>
     }
     
     public static FromGatherer&lt;SelectModel&gt; selectDistinct(BasicColumn...selectList) {
-<span class="fc" id="L71">        return selectDistinct(Function.identity(), selectList);</span>
+<span class="fc" id="L74">        return selectDistinct(Function.identity(), selectList);</span>
     }
     
     public static &lt;R&gt; FromGatherer&lt;R&gt; selectDistinct(Function&lt;SelectModel, R&gt; adapterFunction,
             BasicColumn...selectList) {
-<span class="fc" id="L76">        SelectDSL&lt;R&gt; selectModelBuilder = new SelectDSL&lt;&gt;(adapterFunction);</span>
-<span class="fc" id="L77">        return selectModelBuilder.distinctQueryExpressionBuilder(selectList);</span>
+<span class="fc" id="L79">        SelectDSL&lt;R&gt; selectModelBuilder = new SelectDSL&lt;&gt;(adapterFunction);</span>
+<span class="fc" id="L80">        return selectModelBuilder.distinctQueryExpressionBuilder(selectList);</span>
     }
     
     public static &lt;T&gt; FromGatherer&lt;MyBatis3SelectModelAdapter&lt;T&gt;&gt; selectWithMapper(
             Function&lt;SelectStatementProvider, T&gt; mapperMethod, BasicColumn...selectList) {
-<span class="fc" id="L82">        return select(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);</span>
+<span class="fc" id="L85">        return select(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);</span>
     }
     
     public static &lt;T&gt; FromGatherer&lt;MyBatis3SelectModelAdapter&lt;T&gt;&gt; selectDistinctWithMapper(
             Function&lt;SelectStatementProvider, T&gt; mapperMethod, BasicColumn...selectList) {
-<span class="fc" id="L87">        return selectDistinct(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),</span>
+<span class="fc" id="L90">        return selectDistinct(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),</span>
                 selectList);
     }
     
     void addQueryExpression(QueryExpressionModel queryExpression) {
-<span class="fc" id="L92">        queryExpressions.add(queryExpression);</span>
-<span class="fc" id="L93">    }</span>
+<span class="fc" id="L95">        queryExpressions.add(queryExpression);</span>
+<span class="fc" id="L96">    }</span>
     
     void setOrderByModel(OrderByModel orderByModel) {
-<span class="fc" id="L96">        this.orderByModel = orderByModel;</span>
-<span class="fc" id="L97">    }</span>
+<span class="fc" id="L99">        this.orderByModel = orderByModel;</span>
+<span class="fc" id="L100">    }</span>
     
+    public LimitFinisher limit(long limit) {
+<span class="fc" id="L103">        this.limit = limit;</span>
+<span class="fc" id="L104">        return new LimitFinisher();</span>
+    }
+
+    public OffsetFinisher offset(long offset) {
+<span class="fc" id="L108">        this.offset = offset;</span>
+<span class="fc" id="L109">        return new OffsetFinisher();</span>
+    }
+
+    @Override
     public R build() {
-<span class="fc" id="L100">        SelectModel selectModel = SelectModel.withQueryExpressions(queryExpressions)</span>
-<span class="fc" id="L101">                .withOrderByModel(orderByModel)</span>
-<span class="fc" id="L102">                .build();</span>
-<span class="fc" id="L103">        return adapterFunction.apply(selectModel);</span>
+<span class="fc" id="L114">        SelectModel selectModel = SelectModel.withQueryExpressions(queryExpressions)</span>
+<span class="fc" id="L115">                .withOrderByModel(orderByModel)</span>
+<span class="fc" id="L116">                .withLimit(limit)</span>
+<span class="fc" id="L117">                .withOffset(offset)</span>
+<span class="fc" id="L118">                .build();</span>
+<span class="fc" id="L119">        return adapterFunction.apply(selectModel);</span>
+    }
+    
+<span class="fc" id="L122">    public class LimitFinisher implements Buildable&lt;R&gt; {</span>
+        public OffsetFinisher offset(int offset) {
+<span class="fc" id="L124">            return SelectDSL.this.offset(offset);</span>
+        }
+        
+        @Override
+        public R build() {
+<span class="fc" id="L129">            return SelectDSL.this.build();</span>
+        }
+    }
+
+<span class="fc" id="L133">    public class OffsetFinisher implements Buildable&lt;R&gt; {</span>
+        @Override
+        public R build() {
+<span class="fc" id="L136">            return SelectDSL.this.build();</span>
+        }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

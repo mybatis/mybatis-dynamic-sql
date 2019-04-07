@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsNotBetweenWhenPresent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL - Unit Test Report</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsNotBetweenWhenPresent.java</span></div><h1>IsNotBetweenWhenPresent.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsNotBetweenWhenPresent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsNotBetweenWhenPresent.java</span></div><h1>IsNotBetweenWhenPresent.java</h1><pre class="source lang-java linenums">/**
  *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -17,44 +17,27 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Supplier;
 
-import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
+import org.mybatis.dynamic.sql.util.Predicates;
 
-public class IsNotBetweenWhenPresent&lt;T&gt; extends AbstractTwoValueCondition&lt;T&gt; {
+public class IsNotBetweenWhenPresent&lt;T&gt; extends IsNotBetween&lt;T&gt; {
 
-    protected IsNotBetweenWhenPresent(Builder&lt;T&gt; builder) {
-<span class="fc" id="L25">        super(builder.valueSupplier1, builder.valueSupplier2);</span>
+    protected IsNotBetweenWhenPresent(Supplier&lt;T&gt; valueSupplier1, Supplier&lt;T&gt; valueSupplier2) {
+<span class="fc" id="L25">        super(valueSupplier1, valueSupplier2, Predicates.bothPresent());</span>
 <span class="fc" id="L26">    }</span>
     
-    @Override
-    public String renderCondition(String columnName, String placeholder1, String placeholder2) {
-<span class="fc" id="L30">        return columnName + &quot; not between &quot; + placeholder1 + &quot; and &quot; + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$</span>
-    }
-
-    @Override
-    public boolean shouldRender() {
-<span class="fc bfc" id="L35" title="All 4 branches covered.">        return value1() != null &amp;&amp; value2() != null;</span>
-    }
-    
-    public static class Builder&lt;T&gt; {
-        private Supplier&lt;T&gt; valueSupplier1;
-        private Supplier&lt;T&gt; valueSupplier2;
+    public static class Builder&lt;T&gt; extends AndGatherer&lt;T, IsNotBetweenWhenPresent&lt;T&gt;&gt; {
+        private Builder(Supplier&lt;T&gt; valueSupplier1) {
+<span class="fc" id="L30">            super(valueSupplier1);</span>
+<span class="fc" id="L31">        }</span>
         
-<span class="fc" id="L42">        private Builder(Supplier&lt;T&gt; valueSupplier1) {</span>
-<span class="fc" id="L43">            this.valueSupplier1 = valueSupplier1;</span>
-<span class="fc" id="L44">        }</span>
-        
-        public IsNotBetweenWhenPresent&lt;T&gt; and(Supplier&lt;T&gt; valueSupplier2) {
-<span class="fc" id="L47">            this.valueSupplier2 = valueSupplier2;</span>
-<span class="fc" id="L48">            return new IsNotBetweenWhenPresent&lt;&gt;(this);</span>
-        }
-        
-        public IsNotBetweenWhenPresent&lt;T&gt; and(T value2) {
-<span class="fc" id="L52">            return and(() -&gt; value2);</span>
+        @Override
+        protected IsNotBetweenWhenPresent&lt;T&gt; build() {
+<span class="fc" id="L35">            return new IsNotBetweenWhenPresent&lt;&gt;(valueSupplier1, valueSupplier2);</span>
         }
     }
     
     public static &lt;T&gt; Builder&lt;T&gt; isNotBetweenWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L57">        return new Builder&lt;&gt;(valueSupplier);</span>
+<span class="fc" id="L40">        return new Builder&lt;&gt;(valueSupplier);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

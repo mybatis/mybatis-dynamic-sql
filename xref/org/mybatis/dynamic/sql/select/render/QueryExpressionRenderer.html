@@ -7,13 +7,13 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2018 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2019 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> *    You may obtain a copy of the License at</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2." target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.</a>0</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *    Unless required by applicable law or agreed to in writing, software</em>
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
@@ -23,113 +23,134 @@
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">package</strong> org.mybatis.dynamic.sql.select.render;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicInteger;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.BasicColumn;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.GroupByModel;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.QueryExpressionModel;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.join.JoinModel;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.CustomCollectors;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.WhereModel;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereRenderer;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html">QueryExpressionRenderer</a> {
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html">QueryExpressionModel</a> queryExpression;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html">RenderingStrategy</a> renderingStrategy;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">private</strong> AtomicInteger sequence;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html">QueryExpressionRenderer</a>(<a href="../../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> builder) {
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>          queryExpression = Objects.requireNonNull(builder.queryExpression);
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>          renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>          sequence = Objects.requireNonNull(builder.sequence);
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>      }
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicInteger;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.BasicColumn;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.GroupByModel;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.QueryExpressionModel;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.join.JoinModel;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.CustomCollectors;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.FragmentAndParameters;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.WhereModel;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereRenderer;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="QueryExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html#QueryExpressionRenderer">QueryExpressionRenderer</a> {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">private</strong> <a name="QueryExpressionModel" href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html#QueryExpressionModel">QueryExpressionModel</a> queryExpression;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">private</strong> <a name="RenderingStrategy" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html#RenderingStrategy">RenderingStrategy</a> renderingStrategy;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">private</strong> AtomicInteger sequence;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>      
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpression.html">QueryExpression</a> render() {
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          <strong class="jxr_keyword">return</strong> QueryExpression.withColumnList(calculateColumnList())
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>                  .withConnector(queryExpression.connector())
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>                  .isDistinct(queryExpression.isDistinct())
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>                  .withTableName(calculateTableName(queryExpression.table()))
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>                  .withJoinClause(queryExpression.joinModel().map(<strong class="jxr_keyword">this</strong>::renderJoin))
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>                  .withWhereClause(queryExpression.whereModel().flatMap(<strong class="jxr_keyword">this</strong>::renderWhereClause))
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>                  .withGroupByClause(queryExpression.groupByModel().map(<strong class="jxr_keyword">this</strong>::renderGroupBy))
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>                  .build();
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      }
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">private</strong> String calculateColumnList() {
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>          <strong class="jxr_keyword">return</strong> queryExpression.mapColumns(<strong class="jxr_keyword">this</strong>::applyTableAndColumnAlias)
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>                  .collect(Collectors.joining(<span class="jxr_string">", "</span>)); <em class="jxr_comment">//$NON-NLS-1$</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      }
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      <strong class="jxr_keyword">private</strong> String calculateTableName(<a href="../../../../../../org/mybatis/dynamic/sql/SqlTable.html">SqlTable</a> table) {
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          <strong class="jxr_keyword">return</strong> queryExpression.calculateTableNameIncludingAlias(table);
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      }
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">private</strong> String applyTableAndColumnAlias(<a href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> selectListItem) {
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">return</strong> selectListItem.renderWithTableAndColumnAlias(queryExpression.tableAliasCalculator());
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">private</strong> String renderJoin(<a href="../../../../../../org/mybatis/dynamic/sql/select/join/JoinModel.html">JoinModel</a> joinModel) {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">return</strong> JoinRenderer.withJoinModel(joinModel)
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  .withQueryExpression(queryExpression)
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .build()
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .render();
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">private</strong> Optional&lt;WhereClauseProvider&gt; renderWhereClause(<a href="../../../../../../org/mybatis/dynamic/sql/where/WhereModel.html">WhereModel</a> whereModel) {
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          <strong class="jxr_keyword">return</strong> WhereRenderer.withWhereModel(whereModel)
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>                  .withRenderingStrategy(renderingStrategy)
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>                  .withTableAliasCalculator(queryExpression.tableAliasCalculator())
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>                  .withSequence(sequence)
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>                  .build()
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>                  .render();
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      }
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">private</strong> String renderGroupBy(<a href="../../../../../../org/mybatis/dynamic/sql/select/GroupByModel.html">GroupByModel</a> groupByModel) {
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <strong class="jxr_keyword">return</strong> groupByModel.mapColumns(<strong class="jxr_keyword">this</strong>::applyTableAlias)
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>                  .collect(CustomCollectors.joining(<span class="jxr_string">", "</span>, <span class="jxr_string">"group by "</span>, <span class="jxr_string">""</span>)); <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">private</strong> <a name="QueryExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html#QueryExpressionRenderer">QueryExpressionRenderer</a>(Builder builder) {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          queryExpression = Objects.requireNonNull(builder.queryExpression);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          sequence = Objects.requireNonNull(builder.sequence);
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      }
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">public</strong> <a name="FragmentAndParameters" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> render() {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          Optional&lt;WhereClauseProvider&gt; whereClause = queryExpression.whereModel().flatMap(<strong class="jxr_keyword">this</strong>::renderWhereClause);
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">return</strong> FragmentAndParameters.withFragment(calculateQueryExpression(whereClause))
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>                  .withParameters(calculateParameters(whereClause))
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>                  .build();
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      }
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">private</strong> String calculateQueryExpression(Optional&lt;WhereClauseProvider&gt; whereClause) {
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          <strong class="jxr_keyword">return</strong> spaceAfter(queryExpression.connector())
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  + <span class="jxr_string">"select "</span> <em class="jxr_comment">//$NON-NLS-1$</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>                  + (queryExpression.isDistinct() ? <span class="jxr_string">"distinct "</span> : <span class="jxr_string">""</span>) <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>                  + calculateColumnList()
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>                  + <span class="jxr_string">" from "</span> <em class="jxr_comment">//$NON-NLS-1$</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  + calculateTableName(queryExpression.table())
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>                  + spaceBefore(queryExpression.joinModel().map(<strong class="jxr_keyword">this</strong>::renderJoin))
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>                  + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause))
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  + spaceBefore(queryExpression.groupByModel().map(<strong class="jxr_keyword">this</strong>::renderGroupBy));
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">private</strong> Map&lt;String, Object&gt; calculateParameters(Optional&lt;WhereClauseProvider&gt; whereClause) {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">return</strong> whereClause
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .map(WhereClauseProvider::getParameters)
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .orElse(Collections.emptyMap());
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      }
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">private</strong> String calculateColumnList() {
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          <strong class="jxr_keyword">return</strong> queryExpression.mapColumns(<strong class="jxr_keyword">this</strong>::applyTableAndColumnAlias)
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>                  .collect(Collectors.joining(<span class="jxr_string">", "</span>)); <em class="jxr_comment">//$NON-NLS-1$</em>
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      }
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">private</strong> String calculateTableName(<a name="SqlTable" href="../../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          <strong class="jxr_keyword">return</strong> queryExpression.calculateTableNameIncludingAlias(table);
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">private</strong> String applyTableAndColumnAlias(<a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> selectListItem) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          <strong class="jxr_keyword">return</strong> selectListItem.renderWithTableAndColumnAlias(queryExpression.tableAliasCalculator());
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>      
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">private</strong> String applyTableAlias(<a href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html">BasicColumn</a> column) {
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          <strong class="jxr_keyword">return</strong> column.renderWithTableAlias(queryExpression.tableAliasCalculator());
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      }
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withQueryExpression(<a href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html">QueryExpressionModel</a> model) {
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a>().withQueryExpression(model);
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      }
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html">QueryExpressionModel</a> queryExpression;
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         <strong class="jxr_keyword">private</strong> <a href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html">RenderingStrategy</a> renderingStrategy;
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>         <strong class="jxr_keyword">private</strong> AtomicInteger sequence;
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withQueryExpression(<a href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html">QueryExpressionModel</a> queryExpression) {
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>             <strong class="jxr_keyword">this</strong>.queryExpression = queryExpression;
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         }
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>         
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withRenderingStrategy(<a href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html">RenderingStrategy</a> renderingStrategy) {
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>             <strong class="jxr_keyword">this</strong>.renderingStrategy = renderingStrategy;
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         }
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/SqlCriterion.html">Builder</a> withSequence(AtomicInteger sequence) {
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>             <strong class="jxr_keyword">this</strong>.sequence = sequence;
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>         }
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>         
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html">QueryExpressionRenderer</a> build() {
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html">QueryExpressionRenderer</a>(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>         }
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>     }
-<a class="jxr_linenumber" name="L122" href="#L122">122</a> }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">private</strong> String renderJoin(<a name="JoinModel" href="../../../../../../org/mybatis/dynamic/sql/select/join/JoinModel.html#JoinModel">JoinModel</a> joinModel) {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          <strong class="jxr_keyword">return</strong> JoinRenderer.withJoinModel(joinModel)
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>                  .withQueryExpression(queryExpression)
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>                  .build()
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>                  .render();
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      <strong class="jxr_keyword">private</strong> Optional&lt;WhereClauseProvider&gt; renderWhereClause(<a name="WhereModel" href="../../../../../../org/mybatis/dynamic/sql/where/WhereModel.html#WhereModel">WhereModel</a> whereModel) {
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>          <strong class="jxr_keyword">return</strong> WhereRenderer.withWhereModel(whereModel)
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>                  .withRenderingStrategy(renderingStrategy)
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>                 .withTableAliasCalculator(queryExpression.tableAliasCalculator())
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>                 .withSequence(sequence)
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>                 .build()
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>                 .render();
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     }
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">private</strong> String renderGroupBy(<a name="GroupByModel" href="../../../../../../org/mybatis/dynamic/sql/select/GroupByModel.html#GroupByModel">GroupByModel</a> groupByModel) {
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>         <strong class="jxr_keyword">return</strong> groupByModel.mapColumns(<strong class="jxr_keyword">this</strong>::applyTableAlias)
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>                 .collect(CustomCollectors.joining(<span class="jxr_string">", "</span>, <span class="jxr_string">"group by "</span>, <span class="jxr_string">""</span>)); <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</em>
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     }
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>     
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>     <strong class="jxr_keyword">private</strong> String applyTableAlias(<a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>         <strong class="jxr_keyword">return</strong> column.renderWithTableAlias(queryExpression.tableAliasCalculator());
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>     }
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>     
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Builder withQueryExpression(<a name="QueryExpressionModel" href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html#QueryExpressionModel">QueryExpressionModel</a> model) {
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Builder().withQueryExpression(model);
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>     }
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>     
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Builder {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>         <strong class="jxr_keyword">private</strong> <a name="QueryExpressionModel" href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html#QueryExpressionModel">QueryExpressionModel</a> queryExpression;
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>         <strong class="jxr_keyword">private</strong> <a name="RenderingStrategy" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html#RenderingStrategy">RenderingStrategy</a> renderingStrategy;
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>         <strong class="jxr_keyword">private</strong> AtomicInteger sequence;
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>         <strong class="jxr_keyword">public</strong> Builder withQueryExpression(<a name="QueryExpressionModel" href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html#QueryExpressionModel">QueryExpressionModel</a> queryExpression) {
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>             <strong class="jxr_keyword">this</strong>.queryExpression = queryExpression;
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>         }
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>         
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>         <strong class="jxr_keyword">public</strong> Builder withRenderingStrategy(<a name="RenderingStrategy" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html#RenderingStrategy">RenderingStrategy</a> renderingStrategy) {
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>             <strong class="jxr_keyword">this</strong>.renderingStrategy = renderingStrategy;
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         }
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         <strong class="jxr_keyword">public</strong> Builder withSequence(AtomicInteger sequence) {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>             <strong class="jxr_keyword">this</strong>.sequence = sequence;
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         }
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>         <strong class="jxr_keyword">public</strong> <a name="QueryExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html#QueryExpressionRenderer">QueryExpressionRenderer</a> build() {
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="QueryExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.html#QueryExpressionRenderer">QueryExpressionRenderer</a>(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>         }
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>     }
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2018 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>
