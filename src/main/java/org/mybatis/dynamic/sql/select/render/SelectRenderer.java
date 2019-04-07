@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class SelectRenderer {
     private static final String LIMIT_PARAMETER = "_limit"; //$NON-NLS-1$
@@ -59,7 +60,7 @@ public class SelectRenderer {
                 .build();
     }
 
-    private QueryExpression renderQueryExpression(QueryExpressionModel queryExpressionModel) {
+    private FragmentAndParameters renderQueryExpression(QueryExpressionModel queryExpressionModel) {
         return QueryExpressionRenderer.withQueryExpression(queryExpressionModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,44 +21,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class QueryExpressionCollectorTest {
 
     @Test
     public void testQueryExpressionCollectorMerge() {
-        List<QueryExpression> queryExpressions = new ArrayList<>();
+        List<FragmentAndParameters> queryExpressions = new ArrayList<>();
         
         Map<String, Object> parms1 = new HashMap<>();
         parms1.put("p1", 1);
 
-        WhereClauseProvider wcp1 = WhereClauseProvider.withWhereClause("where fred = ?")
+        FragmentAndParameters fp1 = FragmentAndParameters.withFragment("select foo from bar where fred = ?")
                 .withParameters(parms1)
                 .build();
-        
-        QueryExpression qe1 = QueryExpression.withColumnList("foo")
-                .withConnector(Optional.empty())
-                .withTableName("bar")
-                .withWhereClause(Optional.of(wcp1))
-                .build();
-        queryExpressions.add(qe1);
+        queryExpressions.add(fp1);
 
         Map<String, Object> parms2 = new HashMap<>();
         parms2.put("p2", 2);
 
-        WhereClauseProvider wcp2 = WhereClauseProvider.withWhereClause("where betty = ?")
+        FragmentAndParameters fp2 = FragmentAndParameters.withFragment("union select bar from foo where betty = ?")
                 .withParameters(parms2)
                 .build();
-        
-        QueryExpression qe2 = QueryExpression.withColumnList("bar")
-                .withConnector(Optional.of("union"))
-                .withTableName("foo")
-                .withWhereClause(Optional.of(wcp2))
-                .build();
-        queryExpressions.add(qe2);
+        queryExpressions.add(fp2);
 
         // parallelStream should trigger the merge
         QueryExpressionCollector collector = queryExpressions.parallelStream()
