@@ -32,5 +32,6 @@ public abstract class RenderingStrategy {
         return getFormattedJdbcPlaceholder(Optional.empty(), prefix, parameterName);
     }
 
-    public abstract String getFormattedJdbcPlaceholder(Optional<BindableColumn<?>> column, String prefix, String parameterName);
+    public abstract String getFormattedJdbcPlaceholder(Optional<BindableColumn<?>> column, String prefix,
+            String parameterName);
 }

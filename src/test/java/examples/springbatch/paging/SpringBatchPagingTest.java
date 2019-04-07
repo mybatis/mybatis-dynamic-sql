@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,17 +63,25 @@ public class SpringBatchPagingTest {
     private int numberOfRowsProcessed(JobExecution jobExecution) {
         return jobExecution.getStepExecutions().stream()
                 .map(StepExecution::getExecutionContext)
-                .mapToInt(ec -> ec.getInt("row_count"))
+                .mapToInt(this::getRowCount)
                 .sum();
+    }
+    
+    private int getRowCount(ExecutionContext executionContext) {
+        return executionContext.getInt("row_count", 0);
     }
     
     private int numberOfChunks(JobExecution jobExecution) {
         return jobExecution.getStepExecutions().stream()
                 .map(StepExecution::getExecutionContext)
-                .mapToInt(ec -> ec.getInt("chunk_count"))
+                .mapToInt(this::getChunkCount)
                 .sum();
     }
 
+    private int getChunkCount(ExecutionContext executionContext) {
+        return executionContext.getInt("chunk_count", 0);
+    }
+    
     private long upperCaseRowCount() throws Exception {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
