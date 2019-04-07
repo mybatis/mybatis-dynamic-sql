@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,23 +15,16 @@
  */
 package org.mybatis.dynamic.sql.delete.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 public class DefaultDeleteStatementProvider implements DeleteStatementProvider {
-    private String tableName;
-    private Optional<String> whereClause;
+    private String deleteStatement;
     private Map<String, Object> parameters;
     
     private DefaultDeleteStatementProvider(Builder builder) {
-        tableName = Objects.requireNonNull(builder.tableName);
-        whereClause = Optional.ofNullable(builder.whereClause);
+        deleteStatement = Objects.requireNonNull(builder.deleteStatement);
         parameters = Objects.requireNonNull(builder.parameters);
     }
     
@@ -42,30 +35,24 @@ public class DefaultDeleteStatementProvider implements DeleteStatementProvider {
     
     @Override
     public String getDeleteStatement() {
-        return "delete from" //$NON-NLS-1$
-                + spaceBefore(tableName)
-                + spaceBefore(whereClause);
+        return deleteStatement;
     }
 
-    public static Builder withTableName(String tableName) {
-        return new Builder().withTableName(tableName);
+    public static Builder withDeleteStatement(String deleteStatement) {
+        return new Builder().withDeleteStatement(deleteStatement);
     }
     
     public static class Builder {
-        private String tableName;
-        private String whereClause;
+        private String deleteStatement;
         private Map<String, Object> parameters = new HashMap<>();
         
-        public Builder withTableName(String tableName) {
-            this.tableName = tableName;
+        public Builder withDeleteStatement(String deleteStatement) {
+            this.deleteStatement = deleteStatement;
             return this;
         }
         
-        public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
-            whereClauseProvider.ifPresent(wcp -> {
-                whereClause = wcp.getWhereClause();
-                parameters.putAll(wcp.getParameters());
-            });
+        public Builder withParameters(Map<String, Object> parameters) {
+            this.parameters.putAll(parameters);
             return this;
         }
         
