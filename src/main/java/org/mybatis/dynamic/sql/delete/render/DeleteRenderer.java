@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package org.mybatis.dynamic.sql.delete.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,11 +40,13 @@ public class DeleteRenderer {
     }
     
     public DeleteStatementProvider render() {
-        return DefaultDeleteStatementProvider.withTableName(deleteModel.table().name())
-                .withWhereClause(deleteModel.whereModel().flatMap(this::renderWhereClause))
+        Optional<WhereClauseProvider> whereClause = deleteModel.whereModel().flatMap(this::renderWhereClause);
+        
+        return DefaultDeleteStatementProvider.withDeleteStatement(calculateDeleteStatement(whereClause))
+                .withParameters(calculateParameters(whereClause))
                 .build();
     }
-    
+
     private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
@@ -50,6 +56,18 @@ public class DeleteRenderer {
                 .render();
     }
     
+    private String calculateDeleteStatement(Optional<WhereClauseProvider> whereClause) {
+        return "delete from" //$NON-NLS-1$
+                + spaceBefore(deleteModel.table().name())
+                + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause));
+    }
+    
+    private Map<String, Object> calculateParameters(Optional<WhereClauseProvider> whereClause) {
+        return whereClause
+                .map(WhereClauseProvider::getParameters)
+                .orElse(Collections.emptyMap());
+    }
+
     public static Builder withDeleteModel(DeleteModel deleteModel) {
         return new Builder().withDeleteModel(deleteModel);
     }

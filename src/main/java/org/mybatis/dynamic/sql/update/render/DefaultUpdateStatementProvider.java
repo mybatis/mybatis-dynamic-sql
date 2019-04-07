@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,32 +15,16 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
-
-/**
- * This class combines a "set" clause and a "where" clause into one parameter object
- * that can be sent to a MyBatis3 mapper method.
- * 
- * @author Jeff Butler
- *
- */
 public class DefaultUpdateStatementProvider implements UpdateStatementProvider {
-    private String tableName;
-    private String setClause;
-    private Optional<String> whereClause;
+    private String updateStatement;
     private Map<String, Object> parameters = new HashMap<>();
 
     private DefaultUpdateStatementProvider(Builder builder) {
-        tableName = Objects.requireNonNull(builder.tableName);
-        setClause = Objects.requireNonNull(builder.setClause);
-        whereClause = Optional.ofNullable(builder.whereClause);
+        updateStatement = Objects.requireNonNull(builder.updateStatement);
         parameters.putAll(builder.parameters);
     }
 
@@ -51,37 +35,19 @@ public class DefaultUpdateStatementProvider implements UpdateStatementProvider {
 
     @Override
     public String getUpdateStatement() {
-        return "update" //$NON-NLS-1$
-                + spaceBefore(tableName)
-                + spaceBefore(setClause)
-                + spaceBefore(whereClause);
+        return updateStatement;
     }
     
-    public static Builder withTableName(String tableName) {
-        return new Builder().withTableName(tableName);
+    public static Builder withUpdateStatement(String updateStatement) {
+        return new Builder().withUpdateStatement(updateStatement);
     }
     
     public static class Builder {
-        private String tableName;
-        private String setClause;
-        private String whereClause;
+        private String updateStatement;
         private Map<String, Object> parameters = new HashMap<>();
         
-        public Builder withTableName(String tableName) {
-            this.tableName = tableName;
-            return this;
-        }
-        
-        public Builder withSetClause(String setClause) {
-            this.setClause = setClause;
-            return this;
-        }
-        
-        public Builder withWhereClause(Optional<WhereClauseProvider> whereClauseProvider) {
-            whereClauseProvider.ifPresent(wcp -> {
-                whereClause = wcp.getWhereClause();
-                parameters.putAll(wcp.getParameters());
-            });
+        public Builder withUpdateStatement(String updateStatement) {
+            this.updateStatement = updateStatement;
             return this;
         }
         

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,32 +15,22 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DefaultInsertSelectStatementProvider implements InsertSelectStatementProvider {
-    private String tableName;
-    private Optional<String> columnsPhrase;
-    private String selectStatement;
+    private String insertStatement;
     private Map<String, Object> parameters;
     
     private DefaultInsertSelectStatementProvider(Builder builder) {
-        tableName = Objects.requireNonNull(builder.tableName);
-        columnsPhrase = Objects.requireNonNull(builder.columnsPhrase);
-        selectStatement = Objects.requireNonNull(builder.selectStatement);
+        insertStatement = Objects.requireNonNull(builder.insertStatement);
         parameters = Objects.requireNonNull(builder.parameters);
     }
     
     @Override
     public String getInsertStatement() {
-        return "insert into" //$NON-NLS-1$
-                + spaceBefore(tableName)
-                + spaceBefore(columnsPhrase)
-                + spaceBefore(selectStatement);
+        return insertStatement;
     }
     
     @Override
@@ -48,31 +38,19 @@ public class DefaultInsertSelectStatementProvider implements InsertSelectStateme
         return parameters;
     }
 
-    public static Builder withTableName(String tableName) {
-        return new Builder().withTableName(tableName);
+    public static Builder withInsertStatement(String insertStatement) {
+        return new Builder().withInsertStatement(insertStatement);
     }
     
     public static class Builder {
-        private String tableName;
-        private Optional<String> columnsPhrase;
-        private String selectStatement;
+        private String insertStatement;
         private Map<String, Object> parameters = new HashMap<>();
         
-        public Builder withTableName(String tableName) {
-            this.tableName = tableName;
+        public Builder withInsertStatement(String insertStatement) {
+            this.insertStatement = insertStatement;
             return this;
         }
 
-        public Builder withColumnsPhrase(Optional<String> columnsPhrase) {
-            this.columnsPhrase = columnsPhrase;
-            return this;
-        }
-        
-        public Builder withSelectStatement(String selectStatement) {
-            this.selectStatement = selectStatement;
-            return this;
-        }
-        
         public Builder withParameters(Map<String, Object> parameters) {
             this.parameters.putAll(parameters);
             return this;

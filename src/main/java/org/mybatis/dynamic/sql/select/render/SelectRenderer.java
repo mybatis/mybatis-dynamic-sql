@@ -15,10 +15,13 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -26,6 +29,8 @@ import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class SelectRenderer {
     private static final String LIMIT_PARAMETER = "_limit"; //$NON-NLS-1$
@@ -37,27 +42,27 @@ public class SelectRenderer {
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        sequence = builder.sequence.orElse(new AtomicInteger(1));
+        sequence = builder.sequence().orElse(new AtomicInteger(1));
     }
     
     public SelectStatementProvider render() {
-        QueryExpressionCollector collector = selectModel
+        FragmentCollector queryExpressionCollector = selectModel
                 .mapQueryExpressions(this::renderQueryExpression)
-                .collect(QueryExpressionCollector.collect());
+                .collect(FragmentCollector.collect());
         
-        Map<String, Object> parameters = collector.parameters();
-        Optional<String> limitClause = selectModel.limit().map(l -> renderLimit(parameters, l));
-        Optional<String> offsetClause = selectModel.offset().map(o -> renderOffset(parameters, o));
+        Map<String, Object> parameters = queryExpressionCollector.parameters();
         
-        return DefaultSelectStatementProvider.withQueryExpression(collector.queryExpression())
+        String selectStatement = queryExpressionCollector.fragments().collect(Collectors.joining(" ")) //$NON-NLS-1$
+                + spaceBefore(renderOrderBy())
+                + spaceBefore(renderLimit(parameters))
+                + spaceBefore(renderOffset(parameters));
+        
+        return DefaultSelectStatementProvider.withSelectStatement(selectStatement)
                 .withParameters(parameters)
-                .withOrderByClause(selectModel.orderByModel().map(this::renderOrderBy))
-                .withLimitClause(limitClause)
-                .withOffsetClause(offsetClause)
                 .build();
     }
 
-    private QueryExpression renderQueryExpression(QueryExpressionModel queryExpressionModel) {
+    private FragmentAndParameters renderQueryExpression(QueryExpressionModel queryExpressionModel) {
         return QueryExpressionRenderer.withQueryExpression(queryExpressionModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
@@ -65,12 +70,17 @@ public class SelectRenderer {
                 .render();
     }
 
+    private Optional<String> renderOrderBy() {
+        return selectModel.orderByModel()
+                .map(this::renderOrderBy);
+    }
+    
     private String renderOrderBy(OrderByModel orderByModel) {
-        return orderByModel.mapColumns(this::orderByPhrase)
+        return orderByModel.mapColumns(this::calculateOrderByPhrase)
                 .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    private String orderByPhrase(SortSpecification column) {
+    private String calculateOrderByPhrase(SortSpecification column) {
         String phrase = column.aliasOrName();
         if (column.isDescending()) {
             phrase = phrase + " DESC"; //$NON-NLS-1$
@@ -78,11 +88,19 @@ public class SelectRenderer {
         return phrase;
     }
     
+    private Optional<String> renderLimit(Map<String, Object> parameters) {
+        return selectModel.limit().map(l -> renderLimit(parameters, l));
+    }
+    
     private String renderLimit(Map<String, Object> parameters, Long limit) {
         String placeholder = renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX,
                 LIMIT_PARAMETER); 
         parameters.put(LIMIT_PARAMETER, limit);
         return "limit " + placeholder; //$NON-NLS-1$
+    }
+    
+    private Optional<String> renderOffset(Map<String, Object> parameters) {
+        return selectModel.offset().map(o -> renderOffset(parameters, o));
     }
     
     private String renderOffset(Map<String, Object> parameters, Long offset) {
@@ -99,7 +117,7 @@ public class SelectRenderer {
     public static class Builder {
         private SelectModel selectModel;
         private RenderingStrategy renderingStrategy;
-        private Optional<AtomicInteger> sequence = Optional.empty();
+        private AtomicInteger sequence;
         
         public Builder withSelectModel(SelectModel selectModel) {
             this.selectModel = selectModel;
@@ -112,8 +130,12 @@ public class SelectRenderer {
         }
         
         public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = Optional.of(sequence);
+            this.sequence = sequence;
             return this;
+        }
+        
+        private Optional<AtomicInteger> sequence() {
+            return Optional.ofNullable(sequence);
         }
         
         public SelectRenderer build() {
