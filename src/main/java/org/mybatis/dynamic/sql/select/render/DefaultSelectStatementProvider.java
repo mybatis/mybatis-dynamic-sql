@@ -15,27 +15,18 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DefaultSelectStatementProvider implements SelectStatementProvider {
-    private String queryExpression;
+    private String selectStatement;
     private Map<String, Object> parameters;
-    private Optional<String> orderByClause;
-    private Optional<String> limitClause;
-    private Optional<String> offsetClause;
     
     private DefaultSelectStatementProvider(Builder builder) {
-        queryExpression = Objects.requireNonNull(builder.queryExpression);
-        orderByClause = Objects.requireNonNull(builder.orderByClause);
+        selectStatement = Objects.requireNonNull(builder.selectStatement);
         parameters = Collections.unmodifiableMap(Objects.requireNonNull(builder.parameters));
-        limitClause = Objects.requireNonNull(builder.limitClause);
-        offsetClause = Objects.requireNonNull(builder.offsetClause);
     }
     
     @Override
@@ -45,42 +36,24 @@ public class DefaultSelectStatementProvider implements SelectStatementProvider {
     
     @Override
     public String getSelectStatement() {
-        return queryExpression + spaceBefore(orderByClause) + spaceBefore(limitClause) + spaceBefore(offsetClause);
+        return selectStatement;
     }
     
-    public static Builder withQueryExpression(String queryExpression) {
-        return new Builder().withQueryExpression(queryExpression);
+    public static Builder withSelectStatement(String selectStatement) {
+        return new Builder().withSelectStatement(selectStatement);
     }
     
     public static class Builder {
-        private String queryExpression;
-        private Optional<String> orderByClause = Optional.empty();
+        private String selectStatement;
         private Map<String, Object> parameters = new HashMap<>();
-        private Optional<String> limitClause = Optional.empty();
-        private Optional<String> offsetClause = Optional.empty();
         
-        public Builder withQueryExpression(String queryExpression) {
-            this.queryExpression = queryExpression;
-            return this;
-        }
-        
-        public Builder withOrderByClause(Optional<String> orderByClause) {
-            this.orderByClause = orderByClause;
+        public Builder withSelectStatement(String selectStatement) {
+            this.selectStatement = selectStatement;
             return this;
         }
         
         public Builder withParameters(Map<String, Object> parameters) {
             this.parameters.putAll(parameters);
-            return this;
-        }
-        
-        public Builder withLimitClause(Optional<String> limitClause) {
-            this.limitClause = limitClause;
-            return this;
-        }
-        
-        public Builder withOffsetClause(Optional<String> offsetClause) {
-            this.offsetClause = offsetClause;
             return this;
         }
         
