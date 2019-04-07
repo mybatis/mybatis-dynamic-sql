@@ -81,7 +81,7 @@ public class RenderedCriterion {
     }
     
     public static class Builder {
-        private Optional<String> connector;
+        private Optional<String> connector = Optional.empty();
         private Optional<FragmentAndParameters> initialCondition = Optional.empty();
         private List<RenderedCriterion> subCriteria = new ArrayList<>();
 

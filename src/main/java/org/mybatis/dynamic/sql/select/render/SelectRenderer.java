@@ -42,7 +42,7 @@ public class SelectRenderer {
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        sequence = builder.sequence.orElse(new AtomicInteger(1));
+        sequence = builder.sequence().orElse(new AtomicInteger(1));
     }
     
     public SelectStatementProvider render() {
@@ -117,7 +117,7 @@ public class SelectRenderer {
     public static class Builder {
         private SelectModel selectModel;
         private RenderingStrategy renderingStrategy;
-        private Optional<AtomicInteger> sequence = Optional.empty();
+        private AtomicInteger sequence;
         
         public Builder withSelectModel(SelectModel selectModel) {
             this.selectModel = selectModel;
@@ -130,8 +130,12 @@ public class SelectRenderer {
         }
         
         public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = Optional.of(sequence);
+            this.sequence = sequence;
             return this;
+        }
+        
+        private Optional<AtomicInteger> sequence() {
+            return Optional.ofNullable(sequence);
         }
         
         public SelectRenderer build() {
