@@ -64,10 +64,10 @@ public class UpdateRenderer {
     }
     
     private String calculateUpdateStatement(FragmentCollector fc, Optional<WhereClauseProvider> whereClause) {
-      return "update" //$NON-NLS-1$
-              + spaceBefore(updateModel.table().name())
-              + spaceBefore(calculateSetPhrase(fc))
-              + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause));
+        return "update" //$NON-NLS-1$
+                + spaceBefore(updateModel.table().name())
+                + spaceBefore(calculateSetPhrase(fc))
+                + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause));
     }
     
     private Map<String, Object> calculateWhereParameters(Optional<WhereClauseProvider> whereClause) {
