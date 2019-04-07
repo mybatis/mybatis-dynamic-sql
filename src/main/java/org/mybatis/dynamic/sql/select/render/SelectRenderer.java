@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -29,6 +30,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class SelectRenderer {
     private static final String LIMIT_PARAMETER = "_limit"; //$NON-NLS-1$
@@ -44,13 +46,13 @@ public class SelectRenderer {
     }
     
     public SelectStatementProvider render() {
-        QueryExpressionCollector collector = selectModel
+        FragmentCollector queryExpressionCollector = selectModel
                 .mapQueryExpressions(this::renderQueryExpression)
-                .collect(QueryExpressionCollector.collect());
+                .collect(FragmentCollector.collect());
         
-        Map<String, Object> parameters = collector.parameters();
+        Map<String, Object> parameters = queryExpressionCollector.parameters();
         
-        String selectStatement = collector.queryExpression()
+        String selectStatement = queryExpressionCollector.fragments().collect(Collectors.joining(" ")) //$NON-NLS-1$
                 + spaceBefore(renderOrderBy())
                 + spaceBefore(renderLimit(parameters))
                 + spaceBefore(renderOffset(parameters));
