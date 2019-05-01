@@ -25,10 +25,10 @@ public enum JoinType {
     
     private String shortType;
     
-    private JoinType() {
+    JoinType() {
     }
     
-    private JoinType(String shortType) {
+    JoinType(String shortType) {
         this.shortType = shortType;
     }
     

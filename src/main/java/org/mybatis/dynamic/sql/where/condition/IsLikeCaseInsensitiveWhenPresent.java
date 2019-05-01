@@ -15,22 +15,15 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class IsLikeCaseInsensitiveWhenPresent extends IsLikeCaseInsensitive {
 
-    private boolean shouldRender;
-    
     protected IsLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
-        super(valueSupplier);
-        shouldRender = valueSupplier.get() != null;
+        super(valueSupplier, Objects::nonNull);
     }
     
-    @Override
-    public boolean shouldRender() {
-        return shouldRender;
-    }
-
     public static IsLikeCaseInsensitiveWhenPresent of(Supplier<String> valueSupplier) {
         return new IsLikeCaseInsensitiveWhenPresent(valueSupplier);
     }

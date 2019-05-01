@@ -17,39 +17,22 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Supplier;
 
-import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
+import org.mybatis.dynamic.sql.util.Predicates;
 
-public class IsNotBetweenWhenPresent<T> extends AbstractTwoValueCondition<T> {
+public class IsNotBetweenWhenPresent<T> extends IsNotBetween<T> {
 
-    protected IsNotBetweenWhenPresent(Builder<T> builder) {
-        super(builder.valueSupplier1, builder.valueSupplier2);
+    protected IsNotBetweenWhenPresent(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2) {
+        super(valueSupplier1, valueSupplier2, Predicates.bothPresent());
     }
     
-    @Override
-    public String renderCondition(String columnName, String placeholder1, String placeholder2) {
-        return columnName + " not between " + placeholder1 + " and " + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    @Override
-    public boolean shouldRender() {
-        return value1() != null && value2() != null;
-    }
-    
-    public static class Builder<T> {
-        private Supplier<T> valueSupplier1;
-        private Supplier<T> valueSupplier2;
-        
+    public static class Builder<T> extends AndGatherer<T, IsNotBetweenWhenPresent<T>> {
         private Builder(Supplier<T> valueSupplier1) {
-            this.valueSupplier1 = valueSupplier1;
+            super(valueSupplier1);
         }
         
-        public IsNotBetweenWhenPresent<T> and(Supplier<T> valueSupplier2) {
-            this.valueSupplier2 = valueSupplier2;
-            return new IsNotBetweenWhenPresent<>(this);
-        }
-        
-        public IsNotBetweenWhenPresent<T> and(T value2) {
-            return and(() -> value2);
+        @Override
+        protected IsNotBetweenWhenPresent<T> build() {
+            return new IsNotBetweenWhenPresent<>(valueSupplier1, valueSupplier2);
         }
     }
     

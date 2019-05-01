@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,12 +26,12 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class RenderedCriterion {
     private Optional<String> connector;
-    private FragmentAndParameters initialCondition; // may be null
+    private Optional<FragmentAndParameters> initialCondition;
     private List<RenderedCriterion> subCriteria;
     
     private RenderedCriterion(Builder builder) {
         connector = Objects.requireNonNull(builder.connector);
-        initialCondition = builder.initialCondition;
+        initialCondition = Objects.requireNonNull(builder.initialCondition);
         subCriteria = Objects.requireNonNull(builder.subCriteria);
     }
 
@@ -52,11 +52,8 @@ public class RenderedCriterion {
     }
 
     private FragmentCollector internalRender() {
-        if (initialCondition == null) {
-            return renderSubCriteriaOnly();
-        } else {
-            return renderConditionAndSubCriteria();
-        }
+        return initialCondition.map(this::renderConditionAndSubCriteria)
+                .orElseGet(this::renderSubCriteriaOnly);
     }
 
     private FragmentCollector renderSubCriteriaOnly() {
@@ -68,7 +65,7 @@ public class RenderedCriterion {
                 .collect(FragmentCollector.collect(initial));
     }
 
-    private FragmentCollector renderConditionAndSubCriteria() {
+    private FragmentCollector renderConditionAndSubCriteria(FragmentAndParameters initialCondition) {
         return subCriteria.stream()
                 .map(RenderedCriterion::renderWithInitialConnector)
                 .collect(FragmentCollector.collect(initialCondition));
@@ -84,8 +81,8 @@ public class RenderedCriterion {
     }
     
     public static class Builder {
-        private Optional<String> connector;
-        private FragmentAndParameters initialCondition;
+        private Optional<String> connector = Optional.empty();
+        private Optional<FragmentAndParameters> initialCondition = Optional.empty();
         private List<RenderedCriterion> subCriteria = new ArrayList<>();
 
         public Builder withConnector(Optional<String> connector) {
@@ -93,7 +90,7 @@ public class RenderedCriterion {
             return this;
         }
         
-        public Builder withInitialCondition(FragmentAndParameters initialCondition) {
+        public Builder withInitialCondition(Optional<FragmentAndParameters> initialCondition) {
             this.initialCondition = initialCondition;
             return this;
         }
@@ -104,9 +101,10 @@ public class RenderedCriterion {
         }
         
         public Optional<RenderedCriterion> build() {
-            if (initialCondition == null && subCriteria.isEmpty()) {
+            if (!initialCondition.isPresent() && subCriteria.isEmpty()) {
                 return Optional.empty();
             }
+
             return Optional.of(new RenderedCriterion(this));
         }
     }

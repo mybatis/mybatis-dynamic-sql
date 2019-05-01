@@ -17,48 +17,14 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class IsInWhenPresent<T> extends IsIn<T> {
 
-    private boolean shouldRender;
-    
-    protected IsInWhenPresent(FilteringBuilder<T> builder) {
-        super(builder);
-        shouldRender = builder.shouldRender;
-    }
-    
-    @Override
-    public boolean shouldRender() {
-        return shouldRender;
+    protected IsInWhenPresent(List<T> values) {
+        super(values, s -> s.filter(Objects::nonNull));
     }
 
     public static <T> IsInWhenPresent<T> of(List<T> values) {
-        return new IsInWhenPresent.FilteringBuilder<T>().withValues(values).build();
-    }
-    
-    public static class FilteringBuilder<T> extends IsIn.Builder<T> {
-        
-        private boolean shouldRender;
-
-        @Override
-        public FilteringBuilder<T> withValues(List<T> values) {
-            if (values != null) {
-                List<T> filteredValues = values.stream().filter(Objects::nonNull).collect(Collectors.toList());
-                super.withValues(filteredValues);
-                shouldRender = !filteredValues.isEmpty();
-            }
-            return this;
-        }
-
-        @Override
-        public FilteringBuilder<T> getThis() {
-            return this;
-        }
-
-        @Override
-        public IsInWhenPresent<T> build() {
-            return new IsInWhenPresent<>(this);
-        }
+        return new IsInWhenPresent<>(values);
     }
 }

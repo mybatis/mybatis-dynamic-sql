@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 package org.mybatis.dynamic.sql.insert.render;
+
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -36,11 +38,17 @@ public class InsertRenderer<T> {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
+        
         return DefaultInsertStatementProvider.withRecord(model.record())
-                .withTableName(model.table().name())
-                .withColumnsPhrase(collector.columnsPhrase())
-                .withValuesPhrase(collector.valuesPhrase())
+                .withInsertStatement(calculateInsertStatement(collector))
                 .build();
+    }
+
+    private String calculateInsertStatement(FieldAndValueCollector<T> collector) {
+        return "insert into" //$NON-NLS-1$
+                + spaceBefore(model.table().name())
+                + spaceBefore(collector.columnsPhrase())
+                + spaceBefore(collector.valuesPhrase());
     }
 
     private Function<InsertMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {

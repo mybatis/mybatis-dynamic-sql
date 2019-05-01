@@ -468,26 +468,6 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsInWhenPresentWithNullList() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(id, isInWhenPresent((List<Integer>) null))
-                    .and(id, isLessThanOrEqualTo(10))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
-            );
-        }
-    }
-
-    @Test
     public void testIsInCaseInsensitiveWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
@@ -532,26 +512,6 @@ public class OptionalConditionsAnimalDataTest {
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isInCaseInsensitiveWhenPresent())
-                    .and(id, isLessThanOrEqualTo(10))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
-            );
-        }
-    }
-
-    @Test
-    public void testIsInCaseInsensitiveWhenPresentWithNullList() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, isInCaseInsensitiveWhenPresent((List<String>) null))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -626,26 +586,6 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIsNotInWhenPresentWithNullList() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(id, isNotInWhenPresent((List<Integer>) null))
-                    .and(id, isLessThanOrEqualTo(10))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
-            );
-        }
-    }
-
-    @Test
     public void testIsNotInCaseInsensitiveWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
@@ -692,26 +632,6 @@ public class OptionalConditionsAnimalDataTest {
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotInCaseInsensitiveWhenPresent())
-                    .and(id, isLessThanOrEqualTo(10))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
-            );
-        }
-    }
-
-    @Test
-    public void testIsNotInCaseInsensitiveWhenPresentWithNullList() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, isNotInCaseInsensitiveWhenPresent((List<String>) null))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()

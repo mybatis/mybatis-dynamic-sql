@@ -19,19 +19,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
-    private List<T> values;
+    protected List<T> values;
+    protected UnaryOperator<Stream<T>> valueStreamOperations;
 
-    protected AbstractListValueCondition(AbstractBuilder<T, ?> builder) {
-        values = Objects.requireNonNull(builder.values);
+    protected AbstractListValueCondition(List<T> values) {
+        this(values, UnaryOperator.identity());
+    }
+
+    protected AbstractListValueCondition(List<T> values, UnaryOperator<Stream<T>> valueStreamOperations) {
+        this.values = new ArrayList<>(Objects.requireNonNull(values));
+        this.valueStreamOperations = Objects.requireNonNull(valueStreamOperations);
     }
     
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
-        return values.stream()
-                .map(this::mapValue)
-                .map(mapper);
+        return valueStreamOperations.apply(values.stream()).map(mapper);
     }
     
     @Override
@@ -39,31 +44,5 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
         return visitor.visit(this);
     }
 
-    /**
-     * This method allows subclasses to alter the value before it is placed
-     * into the parameter map.  An example of this is when the case insensitive
-     * conditions will change a value to upper case.
-     * 
-     * <p>We do not expose the values stream because we cannot allow subclasses
-     * to change the order or number of values.
-     *  
-     * @param value the value
-     * @return the mapped value - in most cases the value is not changed
-     */
-    protected T mapValue(T value) {
-        return value;
-    }
-    
     public abstract String renderCondition(String columnName, Stream<String> placeholders);
-    
-    public abstract static class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
-        private List<T> values = new ArrayList<>();
-        
-        public B withValues(List<T> values) {
-            this.values.addAll(values);
-            return getThis();
-        }
-        
-        public abstract B getThis();
-    }
 }

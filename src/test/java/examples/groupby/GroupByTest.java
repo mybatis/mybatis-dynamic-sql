@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -193,6 +193,76 @@ public class GroupByTest {
             row = rows.get(1);
             assertThat(row.get("LAST_NAME")).isEqualTo("Rubble");
             assertThat(row.get("COUNT")).isEqualTo(2L);
+        }
+    }
+
+    @Test
+    public void testLimitAndOffsetAfterGroupBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(lastName, count().as("count"))
+                    .from(person)
+                    .groupBy(lastName)
+                    .limit(1)
+                    .offset(1)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters._limit} offset #{parameters._offset}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Rubble");
+            assertThat(row.get("COUNT")).isEqualTo(3L);
+        }
+    }
+
+    @Test
+    public void testLimitOnlyAfterGroupBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(lastName, count().as("count"))
+                    .from(person)
+                    .groupBy(lastName)
+                    .limit(1)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters._limit}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Flintstone");
+            assertThat(row.get("COUNT")).isEqualTo(4L);
+        }
+    }
+
+    @Test
+    public void testOffsetOnlyAfterGroupBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(lastName, count().as("count"))
+                    .from(person)
+                    .groupBy(lastName)
+                    .offset(1)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Rubble");
+            assertThat(row.get("COUNT")).isEqualTo(3L);
         }
     }
 }
