@@ -92,8 +92,7 @@ public class SpringBatchPagingTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            long count = personMapper.count(selectStatement);
-            return count;
+            return personMapper.count(selectStatement);;
         }
     }
 }
