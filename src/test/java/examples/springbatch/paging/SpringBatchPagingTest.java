@@ -92,7 +92,7 @@ public class SpringBatchPagingTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
 
-            return personMapper.count(selectStatement);;
+            return personMapper.count(selectStatement);
         }
     }
 }
