@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,11 +26,11 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsNotIn<T> extends AbstractListValueCondition<T> {
 
-    protected IsNotIn(List<T> values, UnaryOperator<Stream<T>> valueStreamOperations) {
+    protected IsNotIn(Collection<T> values, UnaryOperator<Stream<T>> valueStreamOperations) {
         super(values, valueStreamOperations);
     }
 
-    protected IsNotIn(List<T> values) {
+    protected IsNotIn(Collection<T> values) {
         super(values);
     }
 
@@ -45,7 +45,7 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
         return new IsNotIn<>(values, valueStreamOperations);
     }
 
-    public static <T> IsNotIn<T> of(List<T> values) {
+    public static <T> IsNotIn<T> of(Collection<T> values) {
         return new IsNotIn<>(values);
     }
 }
