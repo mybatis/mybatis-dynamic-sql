@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -29,11 +30,11 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class BatchInsertDSL<T> {
 
-    private List<T> records;
+    private Collection<T> records;
     private SqlTable table;
     private List<InsertMapping> columnMappings = new ArrayList<>();
     
-    private BatchInsertDSL(List<T> records, SqlTable table) {
+    private BatchInsertDSL(Collection<T> records, SqlTable table) {
         this.records = records;
         this.table = table;
     }
@@ -54,14 +55,14 @@ public class BatchInsertDSL<T> {
         return new IntoGatherer<>(Arrays.asList(records));
     }
     
-    public static <T> IntoGatherer<T> insert(List<T> records) {
+    public static <T> IntoGatherer<T> insert(Collection<T> records) {
         return new IntoGatherer<>(records);
     }
     
     public static class IntoGatherer<T> {
-        private List<T> records;
+        private Collection<T> records;
         
-        private IntoGatherer(List<T> records) {
+        private IntoGatherer(Collection<T> records) {
             this.records = records;
         }
 
