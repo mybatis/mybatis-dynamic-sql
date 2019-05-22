@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,11 +25,11 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
 
-    protected IsInCaseInsensitive(List<String> values) {
+    protected IsInCaseInsensitive(Collection<String> values) {
         super(values, s -> s.map(StringUtilities::safelyUpperCase));
     }
 
-    protected IsInCaseInsensitive(List<String> values, UnaryOperator<Stream<String>> valueStreamOperations) {
+    protected IsInCaseInsensitive(Collection<String> values, UnaryOperator<Stream<String>> valueStreamOperations) {
         super(values, StringUtilities.upperCaseAfter(valueStreamOperations));
     }
 
@@ -43,7 +43,7 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
         return new IsInCaseInsensitive(values, valueStreamOperations);
     }
     
-    public static IsInCaseInsensitive of(List<String> values) {
+    public static IsInCaseInsensitive of(Collection<String> values) {
         return new IsInCaseInsensitive(values);
     }
 }
