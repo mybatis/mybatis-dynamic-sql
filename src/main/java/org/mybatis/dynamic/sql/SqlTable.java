@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,17 +17,63 @@ package org.mybatis.dynamic.sql;
 
 import java.sql.JDBCType;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class SqlTable {
-
-    private String name;
+    
+    private Supplier<String> nameSupplier;
 
     protected SqlTable(String name) {
-        this.name = Objects.requireNonNull(name);
+        Objects.requireNonNull(name);
+        
+        this.nameSupplier = () -> name;
     }
 
+    protected SqlTable(Supplier<Optional<String>> schemaSupplier, String tableName) {
+        Objects.requireNonNull(schemaSupplier);
+        Objects.requireNonNull(tableName);
+        
+        this.nameSupplier = () -> compose(schemaSupplier, tableName);
+    }
+    
+    protected SqlTable(Supplier<Optional<String>> catalogSupplier, Supplier<Optional<String>> schemaSupplier, String tableName) {
+        Objects.requireNonNull(catalogSupplier);
+        Objects.requireNonNull(schemaSupplier);
+        Objects.requireNonNull(tableName);
+        
+        this.nameSupplier = () -> compose(catalogSupplier, schemaSupplier, tableName);
+    }
+    
+    private String compose(Supplier<Optional<String>> catalogSupplier, Supplier<Optional<String>> schemaSupplier, String tableName) {
+        return catalogSupplier.get().map(c -> compose(c, schemaSupplier, tableName))
+                .orElse(compose(schemaSupplier, tableName));
+    }
+    
+    private String compose(String catalog, Supplier<Optional<String>> schemaSupplier, String tableName) {
+        return schemaSupplier.get().map(s -> composeCatalogSchemaAndAndTable(catalog, s, tableName))
+                .orElse(composeCatalogAndTable(catalog, tableName));
+    }
+
+    private String compose(Supplier<Optional<String>> schemaSupplier, String tableName) {
+        return schemaSupplier.get().map(s -> composeSchemaAndTable(s, tableName))
+                .orElse(tableName);
+    }
+    
+    private String composeCatalogAndTable(String catalog, String tableName) {
+        return catalog + ".." + tableName; //$NON-NLS-1$
+    }
+
+    private String composeSchemaAndTable(String schema, String tableName) {
+        return schema + "." + tableName; //$NON-NLS-1$
+    }
+
+    private String composeCatalogSchemaAndAndTable(String catalog, String schema, String tableName) {
+        return catalog + "." + schema + "." + tableName; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
     public String name() {
-        return name;
+        return nameSupplier.get();
     }
     
     public <T> SqlColumn<T> allColumns() {
