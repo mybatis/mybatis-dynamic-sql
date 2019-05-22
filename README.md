@@ -254,9 +254,8 @@ an example from `examples.simple.SimpleTableAnnotatedMapperTest`:
 ```java
     @Test
     public void testSelectByExample() {
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
-            SimpleTableXmlMapper mapper = session.getMapper(SimpleTableXmlMapper.class);
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
             
             SelectStatementProvider selectStatement = select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
                     .from(simpleTable)
@@ -268,8 +267,6 @@ an example from `examples.simple.SimpleTableAnnotatedMapperTest`:
             List<SimpleTableRecord> rows = mapper.selectMany(selectStatement);
             
             assertThat(rows.size()).isEqualTo(3);
-        } finally {
-            session.close();
         }
     }
 ```
