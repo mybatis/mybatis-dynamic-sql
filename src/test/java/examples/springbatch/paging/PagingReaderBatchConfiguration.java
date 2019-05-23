@@ -45,6 +45,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import examples.springbatch.common.Person;
 import examples.springbatch.mapper.PersonMapper;
@@ -80,7 +81,7 @@ public class PagingReaderBatchConfiguration {
     }
 
     @Bean
-    public DataSourceTransactionManager dtm(DataSource dataSource) {
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
