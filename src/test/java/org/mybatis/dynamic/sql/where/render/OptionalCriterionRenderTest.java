@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.mybatis.dynamic.sql.where.render;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
+
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -48,7 +50,7 @@ public class OptionalCriterionRenderTest {
     public void testNoRenderableCriteriaWithIf() {
         Integer nullId = null;
         
-        WhereClauseProvider whereClause = where(id, isEqualTo(nullId).when(v -> v != null))
+        WhereClauseProvider whereClause = where(id, isEqualTo(nullId).when(Objects::nonNull))
                 .build()
                 .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
  
