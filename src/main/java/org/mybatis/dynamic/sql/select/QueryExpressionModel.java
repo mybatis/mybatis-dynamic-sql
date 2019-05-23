@@ -88,7 +88,7 @@ public class QueryExpressionModel {
     }
     
     public String calculateTableNameIncludingAlias(SqlTable table) {
-        return table.name()
+        return table.fullyQualifiedTableName()
                 + spaceBefore(tableAliasCalculator.aliasForTable(table));
     }
     

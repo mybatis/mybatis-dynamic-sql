@@ -65,7 +65,7 @@ public class UpdateRenderer {
     
     private String calculateUpdateStatement(FragmentCollector fc, Optional<WhereClauseProvider> whereClause) {
         return "update" //$NON-NLS-1$
-                + spaceBefore(updateModel.table().name())
+                + spaceBefore(updateModel.table().fullyQualifiedTableName())
                 + spaceBefore(calculateSetPhrase(fc))
                 + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause));
     }
