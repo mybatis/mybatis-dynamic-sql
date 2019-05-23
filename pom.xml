@@ -40,8 +40,8 @@
     <java.version>1.8</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <junit.jupiter.version>5.4.1</junit.jupiter.version>
-    <junit.platform.version>1.4.1</junit.platform.version>
+    <junit.jupiter.version>5.4.2</junit.jupiter.version>
+    <junit.platform.version>1.4.2</junit.platform.version>
     <spring.batch.version>4.1.2.RELEASE</spring.batch.version>
     <clirr.comparisonVersion>1.1.0</clirr.comparisonVersion>
     <module.name>org.mybatis.dynamic.sql</module.name>
@@ -144,7 +144,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>5.1.6.RELEASE</version>
+      <version>5.1.7.RELEASE</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -169,6 +169,13 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>1.2.3</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Hamcrest is only here to make Infinitest happy. Not really used in the project. -->
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>2.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

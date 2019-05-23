@@ -82,7 +82,7 @@ public class CursorReaderBatchConfiguration {
     }
     
     @Bean
-    public PlatformTransactionManager dtm(DataSource dataSource) {
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
