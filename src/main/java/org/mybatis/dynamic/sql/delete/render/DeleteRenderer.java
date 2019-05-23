@@ -58,7 +58,7 @@ public class DeleteRenderer {
     
     private String calculateDeleteStatement(Optional<WhereClauseProvider> whereClause) {
         return "delete from" //$NON-NLS-1$
-                + spaceBefore(deleteModel.table().name())
+                + spaceBefore(deleteModel.table().fullyQualifiedTableName())
                 + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause));
     }
     
