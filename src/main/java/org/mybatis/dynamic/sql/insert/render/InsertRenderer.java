@@ -46,7 +46,7 @@ public class InsertRenderer<T> {
 
     private String calculateInsertStatement(FieldAndValueCollector<T> collector) {
         return "insert into" //$NON-NLS-1$
-                + spaceBefore(model.table().fullyQualifiedTableName())
+                + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(collector.columnsPhrase())
                 + spaceBefore(collector.valuesPhrase());
     }

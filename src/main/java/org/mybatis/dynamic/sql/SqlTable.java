@@ -24,10 +24,16 @@ public class SqlTable {
     
     private Supplier<String> nameSupplier;
 
-    protected SqlTable(String fullyQualifiedTableName) {
-        Objects.requireNonNull(fullyQualifiedTableName);
+    protected SqlTable(String tableName) {
+        Objects.requireNonNull(tableName);
         
-        this.nameSupplier = () -> fullyQualifiedTableName;
+        this.nameSupplier = () -> tableName;
+    }
+
+    protected SqlTable(Supplier<String> tableNameSupplier) {
+        Objects.requireNonNull(tableNameSupplier);
+        
+        this.nameSupplier = tableNameSupplier;
     }
 
     protected SqlTable(Supplier<Optional<String>> schemaSupplier, String tableName) {
@@ -69,7 +75,7 @@ public class SqlTable {
         return catalog + "." + schema + "." + tableName; //$NON-NLS-1$ //$NON-NLS-2$
     }
     
-    public String fullyQualifiedTableName() {
+    public String tableNameAtRuntime() {
         return nameSupplier.get();
     }
     
