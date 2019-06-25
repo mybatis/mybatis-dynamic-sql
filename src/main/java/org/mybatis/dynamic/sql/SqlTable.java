@@ -40,7 +40,8 @@ public class SqlTable {
         this(Optional::empty, schemaSupplier, tableName);
     }
     
-    protected SqlTable(Supplier<Optional<String>> catalogSupplier, Supplier<Optional<String>> schemaSupplier, String tableName) {
+    protected SqlTable(Supplier<Optional<String>> catalogSupplier, Supplier<Optional<String>> schemaSupplier,
+            String tableName) {
         Objects.requireNonNull(catalogSupplier);
         Objects.requireNonNull(schemaSupplier);
         Objects.requireNonNull(tableName);
@@ -48,7 +49,8 @@ public class SqlTable {
         this.nameSupplier = () -> compose(catalogSupplier, schemaSupplier, tableName);
     }
     
-    private String compose(Supplier<Optional<String>> catalogSupplier, Supplier<Optional<String>> schemaSupplier, String tableName) {
+    private String compose(Supplier<Optional<String>> catalogSupplier, Supplier<Optional<String>> schemaSupplier,
+            String tableName) {
         return catalogSupplier.get().map(c -> compose(c, schemaSupplier, tableName))
                 .orElse(compose(schemaSupplier, tableName));
     }

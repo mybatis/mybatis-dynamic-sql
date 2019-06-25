@@ -29,14 +29,12 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 public class SelectModel {
     private List<QueryExpressionModel> queryExpressions;
     private OrderByModel orderByModel;
-    private Long limit;
-    private Long offset;
+    private PagingModel pagingModel;
 
     private SelectModel(Builder builder) {
         queryExpressions = Objects.requireNonNull(builder.queryExpressions);
         orderByModel = builder.orderByModel;
-        limit = builder.limit;
-        offset = builder.offset;
+        pagingModel = builder.pagingModel;
     }
     
     public <R> Stream<R> mapQueryExpressions(Function<QueryExpressionModel, R> mapper) {
@@ -47,12 +45,8 @@ public class SelectModel {
         return Optional.ofNullable(orderByModel);
     }
     
-    public Optional<Long> limit() {
-        return Optional.ofNullable(limit);
-    }
-    
-    public Optional<Long> offset() {
-        return Optional.ofNullable(offset);
+    public Optional<PagingModel> pagingModel() {
+        return Optional.ofNullable(pagingModel);
     }
     
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
@@ -69,8 +63,7 @@ public class SelectModel {
     public static class Builder {
         private List<QueryExpressionModel> queryExpressions = new ArrayList<>();
         private OrderByModel orderByModel;
-        private Long limit;
-        private Long offset;
+        private PagingModel pagingModel;
         
         public Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
             this.queryExpressions.addAll(queryExpressions);
@@ -81,14 +74,9 @@ public class SelectModel {
             this.orderByModel = orderByModel;
             return this;
         }
-        
-        public Builder withLimit(Long limit) {
-            this.limit = limit;
-            return this;
-        }
-        
-        public Builder withOffset(Long offset) {
-            this.offset = offset;
+
+        public Builder withPagingModel(PagingModel pagingModel) {
+            this.pagingModel = pagingModel;
             return this;
         }
         
