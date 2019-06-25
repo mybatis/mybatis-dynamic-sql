@@ -102,8 +102,12 @@ public class SelectDSL<R> implements Buildable<R> {
         return new LimitFinisher(limit);
     }
 
-    public OffsetFinisher offset(long offset) {
-        return new OffsetFinisher(offset);
+    public OffsetFirstFinisher offset(long offset) {
+        return new OffsetFirstFinisher(offset);
+    }
+
+    public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+        return new FetchFirstFinisher(fetchFirstRows);
     }
 
     @Override
@@ -145,15 +149,66 @@ public class SelectDSL<R> implements Buildable<R> {
                     .build();
         }
         
-        public OffsetFinisher(long offset) {
-            pagingModel = new LimitAndOffsetPagingModel.Builder()
-                    .withOffset(offset)
-                    .build();
+        @Override
+        public R build() {
+            SelectDSL.this.pagingModel = pagingModel;
+            return SelectDSL.this.build();
+        }
+    }
+
+    public class OffsetFirstFinisher implements Buildable<R> {
+        private long offset;
+
+        public OffsetFirstFinisher(long offset) {
+            this.offset = offset;
+        }
+        
+        public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            return new FetchFirstFinisher(offset, fetchFirstRows);
         }
         
         @Override
         public R build() {
-            SelectDSL.this.pagingModel = pagingModel;
+            SelectDSL.this.pagingModel = new LimitAndOffsetPagingModel.Builder()
+                    .withOffset(offset)
+                    .build();
+            return SelectDSL.this.build();
+        }
+    }
+    
+    public class FetchFirstFinisher {
+        private Long offset;
+        private Long fetchFirstRows;
+        
+        public FetchFirstFinisher(long fetchFirstRows) {
+            this.fetchFirstRows = fetchFirstRows;
+        }
+
+        public FetchFirstFinisher(long offset, long fetchFirstRows) {
+            this.offset = offset;
+            this.fetchFirstRows = fetchFirstRows;
+        }
+
+        public RowsOnlyFinisher rowsOnly() {
+            return new RowsOnlyFinisher(offset, fetchFirstRows);
+        }
+    }
+    
+    public class RowsOnlyFinisher implements Buildable<R> {
+        private Long offset;
+        private Long fetchFirstRows;
+        
+        public RowsOnlyFinisher(Long offset, Long fetchFirstRows) {
+            this.offset = offset;
+            this.fetchFirstRows = fetchFirstRows;
+        }
+        
+        @Override
+        public R build() {
+            SelectDSL.this.pagingModel = new FetchFirstPagingModel.Builder()
+                    .withOffset(offset)
+                    .withFetchFirstRows(fetchFirstRows)
+                    .build();
             return SelectDSL.this.build();
         }
     }
