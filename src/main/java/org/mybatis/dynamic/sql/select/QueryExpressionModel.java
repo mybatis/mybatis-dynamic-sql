@@ -50,7 +50,7 @@ public class QueryExpressionModel {
         table = Objects.requireNonNull(builder.table);
         joinModel = builder.joinModel;
         tableAliasCalculator = joinModel().map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
-                .orElse(TableAliasCalculator.of(builder.tableAliases));
+                .orElseGet(() -> TableAliasCalculator.of(builder.tableAliases));
         whereModel = builder.whereModel;
         groupByModel = builder.groupByModel;
     }

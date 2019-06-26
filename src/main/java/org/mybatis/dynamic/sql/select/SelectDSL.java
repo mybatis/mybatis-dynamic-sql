@@ -140,10 +140,8 @@ public class SelectDSL<R> implements Buildable<R> {
     }
 
     public class OffsetFinisher implements Buildable<R> {
-        private LimitAndOffsetPagingModel pagingModel;
-
         public OffsetFinisher(long limit, long offset) {
-            pagingModel = new LimitAndOffsetPagingModel.Builder()
+            SelectDSL.this.pagingModel = new LimitAndOffsetPagingModel.Builder()
                     .withLimit(limit)
                     .withOffset(offset)
                     .build();
@@ -151,7 +149,6 @@ public class SelectDSL<R> implements Buildable<R> {
         
         @Override
         public R build() {
-            SelectDSL.this.pagingModel = pagingModel;
             return SelectDSL.this.build();
         }
     }
@@ -169,7 +166,7 @@ public class SelectDSL<R> implements Buildable<R> {
         
         @Override
         public R build() {
-            SelectDSL.this.pagingModel = new LimitAndOffsetPagingModel.Builder()
+            SelectDSL.this.pagingModel = new FetchFirstPagingModel.Builder()
                     .withOffset(offset)
                     .build();
             return SelectDSL.this.build();
@@ -196,7 +193,6 @@ public class SelectDSL<R> implements Buildable<R> {
     }
     
     public class RowsOnlyFinisher implements Buildable<R> {
-        
         @Override
         public R build() {
             return SelectDSL.this.build();

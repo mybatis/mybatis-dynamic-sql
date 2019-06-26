@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class LimitAndOffsetPagingModel implements PagingModel {
@@ -23,12 +24,12 @@ public class LimitAndOffsetPagingModel implements PagingModel {
     private Long offset;
     
     private LimitAndOffsetPagingModel(Builder builder) {
-        this.limit = builder.limit;
+        this.limit = Objects.requireNonNull(builder.limit);
         this.offset = builder.offset;
     }
     
-    public Optional<Long> limit() {
-        return Optional.ofNullable(limit);
+    public Long limit() {
+        return limit;
     }
     
     public Optional<Long> offset() {

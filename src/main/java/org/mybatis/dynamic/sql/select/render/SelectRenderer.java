@@ -38,7 +38,7 @@ public class SelectRenderer {
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        sequence = builder.sequence().orElse(new AtomicInteger(1));
+        sequence = builder.sequence().orElseGet(() -> new AtomicInteger(1));
     }
     
     public SelectStatementProvider render() {

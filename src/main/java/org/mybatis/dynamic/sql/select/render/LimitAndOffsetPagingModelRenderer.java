@@ -34,38 +34,21 @@ public class LimitAndOffsetPagingModelRenderer {
     }
     
     public Optional<FragmentAndParameters> render() {
-        return pagingModel.limit()
-                .map(this::renderWithLimit)
-                .orElse(renderOffsetOnly());
+        return pagingModel.offset()
+                .map(this::renderLimitAndOffset)
+                .orElseGet(this::renderLimitOnly);
     }
 
-    private Optional<FragmentAndParameters> renderWithLimit(Long limit) {
-        return pagingModel.offset()
-                .map(o -> renderLimitAndOffset(limit, o))
-                .orElse(renderLimitOnly(limit));
-    }
-    
-    private Optional<FragmentAndParameters> renderOffsetOnly() {
-        return pagingModel.offset().flatMap(this::renderOffsetOnly);
-    }
-    
-    private Optional<FragmentAndParameters> renderOffsetOnly(Long offset) {
-        return FragmentAndParameters
-                .withFragment("offset " + renderPlaceholder(OFFSET_PARAMETER)) //$NON-NLS-1$
-                .withParameter(OFFSET_PARAMETER, offset)
-                .buildOptional();
-    }
-    
-    private Optional<FragmentAndParameters> renderLimitOnly(Long limit) {
+    private Optional<FragmentAndParameters> renderLimitOnly() {
         return FragmentAndParameters.withFragment("limit " + renderPlaceholder(LIMIT_PARAMETER)) //$NON-NLS-1$
-                .withParameter(LIMIT_PARAMETER, limit)
+                .withParameter(LIMIT_PARAMETER, pagingModel.limit())
                 .buildOptional();
     }
     
-    private Optional<FragmentAndParameters> renderLimitAndOffset(Long limit, Long offset) {
+    private Optional<FragmentAndParameters> renderLimitAndOffset(Long offset) {
         return FragmentAndParameters.withFragment("limit " + renderPlaceholder(LIMIT_PARAMETER) //$NON-NLS-1$
                     + " offset " + renderPlaceholder(OFFSET_PARAMETER)) //$NON-NLS-1$
-                .withParameter(LIMIT_PARAMETER, limit)
+                .withParameter(LIMIT_PARAMETER, pagingModel.limit())
                 .withParameter(OFFSET_PARAMETER, offset)
                 .buildOptional();
     }

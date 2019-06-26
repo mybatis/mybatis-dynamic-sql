@@ -36,13 +36,13 @@ public class FetchFirstPagingModelRenderer {
     public Optional<FragmentAndParameters> render() {
         return pagingModel.offset()
                 .map(this::renderWithOffset)
-                .orElse(renderFetchFirstRowsOnly());
+                .orElseGet(this::renderFetchFirstRowsOnly);
     }
 
     private Optional<FragmentAndParameters> renderWithOffset(Long offset) {
         return pagingModel.fetchFirstRows()
                 .map(ffr -> renderOffsetAndFetchFirstRows(offset, ffr))
-                .orElse(renderOffsetOnly(offset));
+                .orElseGet(() -> renderOffsetOnly(offset));
     }
     
     private Optional<FragmentAndParameters> renderFetchFirstRowsOnly() {
