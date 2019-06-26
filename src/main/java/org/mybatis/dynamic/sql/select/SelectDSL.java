@@ -177,38 +177,28 @@ public class SelectDSL<R> implements Buildable<R> {
     }
     
     public class FetchFirstFinisher {
-        private Long offset;
-        private Long fetchFirstRows;
-        
         public FetchFirstFinisher(long fetchFirstRows) {
-            this.fetchFirstRows = fetchFirstRows;
+            SelectDSL.this.pagingModel = new FetchFirstPagingModel.Builder()
+                    .withFetchFirstRows(fetchFirstRows)
+                    .build();
         }
 
         public FetchFirstFinisher(long offset, long fetchFirstRows) {
-            this.offset = offset;
-            this.fetchFirstRows = fetchFirstRows;
-        }
-
-        public RowsOnlyFinisher rowsOnly() {
-            return new RowsOnlyFinisher(offset, fetchFirstRows);
-        }
-    }
-    
-    public class RowsOnlyFinisher implements Buildable<R> {
-        private Long offset;
-        private Long fetchFirstRows;
-        
-        public RowsOnlyFinisher(Long offset, Long fetchFirstRows) {
-            this.offset = offset;
-            this.fetchFirstRows = fetchFirstRows;
-        }
-        
-        @Override
-        public R build() {
             SelectDSL.this.pagingModel = new FetchFirstPagingModel.Builder()
                     .withOffset(offset)
                     .withFetchFirstRows(fetchFirstRows)
                     .build();
+        }
+
+        public RowsOnlyFinisher rowsOnly() {
+            return new RowsOnlyFinisher();
+        }
+    }
+    
+    public class RowsOnlyFinisher implements Buildable<R> {
+        
+        @Override
+        public R build() {
             return SelectDSL.this.build();
         }
     }

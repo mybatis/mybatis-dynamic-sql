@@ -429,6 +429,12 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.offset(offset);
         }
+
+        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            joinModel = buildJoinModel();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.fetchFirst(fetchFirstRows);
+        }
     }
     
     public class GroupByFinisher implements Buildable<R> {
@@ -448,6 +454,10 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
 
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
             return selectDSL.offset(offset);
+        }
+
+        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            return selectDSL.fetchFirst(fetchFirstRows);
         }
     }
     
