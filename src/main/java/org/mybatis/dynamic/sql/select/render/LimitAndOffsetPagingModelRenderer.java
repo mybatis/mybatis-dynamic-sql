@@ -36,13 +36,13 @@ public class LimitAndOffsetPagingModelRenderer {
     public Optional<FragmentAndParameters> render() {
         return pagingModel.limit()
                 .map(this::renderWithLimit)
-                .orElse(renderOffsetOnly());
+                .orElseGet(this::renderOffsetOnly);
     }
 
     private Optional<FragmentAndParameters> renderWithLimit(Long limit) {
         return pagingModel.offset()
                 .map(o -> renderLimitAndOffset(limit, o))
-                .orElse(renderLimitOnly(limit));
+                .orElseGet(() -> renderLimitOnly(limit));
     }
     
     private Optional<FragmentAndParameters> renderOffsetOnly() {

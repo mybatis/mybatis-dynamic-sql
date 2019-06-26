@@ -37,7 +37,7 @@ public class GuaranteedTableAliasCalculator extends TableAliasCalculator {
     public Optional<String> aliasForColumn(SqlTable table) {
         return super.aliasForColumn(table)
                 .map(Optional::of)
-                .orElse(Optional.of(table.tableNameAtRuntime()));
+                .orElseGet(() -> Optional.of(table.tableNameAtRuntime()));
     }
     
     public static TableAliasCalculator of(Map<SqlTable, String> aliases) {

@@ -52,12 +52,12 @@ public class SqlTable {
     private String compose(Supplier<Optional<String>> catalogSupplier, Supplier<Optional<String>> schemaSupplier,
             String tableName) {
         return catalogSupplier.get().map(c -> compose(c, schemaSupplier, tableName))
-                .orElse(compose(schemaSupplier, tableName));
+                .orElseGet(() -> compose(schemaSupplier, tableName));
     }
     
     private String compose(String catalog, Supplier<Optional<String>> schemaSupplier, String tableName) {
         return schemaSupplier.get().map(s -> composeCatalogSchemaAndAndTable(catalog, s, tableName))
-                .orElse(composeCatalogAndTable(catalog, tableName));
+                .orElseGet(() -> composeCatalogAndTable(catalog, tableName));
     }
 
     private String compose(Supplier<Optional<String>> schemaSupplier, String tableName) {
