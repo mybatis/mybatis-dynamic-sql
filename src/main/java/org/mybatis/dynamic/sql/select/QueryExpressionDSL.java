@@ -149,11 +149,16 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         return selectDSL.limit(limit);
     }
 
-    public SelectDSL<R>.OffsetFinisher offset(long offset) {
+    public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
         selectDSL.addQueryExpression(buildModel());
         return selectDSL.offset(offset);
     }
 
+    public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+        selectDSL.addQueryExpression(buildModel());
+        return selectDSL.fetchFirst(fetchFirstRows);
+    }
+    
     public static class FromGatherer<R> {
         private FromGathererBuilder<R> builder;
         private Map<SqlTable, String> tableAliasMap = new HashMap<>();
@@ -250,10 +255,16 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             return selectDSL.limit(limit);
         }
         
-        public SelectDSL<R>.OffsetFinisher offset(long offset) {
+        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.offset(offset);
+        }
+        
+        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            whereModel = buildWhereModel();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.fetchFirst(fetchFirstRows);
         }
         
         @Override
@@ -413,7 +424,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             return selectDSL.limit(limit);
         }
 
-        public SelectDSL<R>.OffsetFinisher offset(long offset) {
+        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
             joinModel = buildJoinModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.offset(offset);
@@ -435,7 +446,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             return selectDSL.limit(limit);
         }
 
-        public SelectDSL<R>.OffsetFinisher offset(long offset) {
+        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
             return selectDSL.offset(offset);
         }
     }

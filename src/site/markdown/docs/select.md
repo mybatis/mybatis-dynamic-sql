@@ -196,10 +196,43 @@ When using a column function (lower, upper, etc.), then is is customary to give 
 In this example the `substring` function is used in both the select list and the GROUP BY expression.  In the ORDER BY expression, we use the `sortColumn` function to duplicate the alias given to the column in the select list.
 
 ## Limit and Offset Support
-Since version 1.1.1, the select statement supports limit and offset. You can specify:
+Since version 1.1.1 the select statement supports limit and offset for paging (or slicing) queries. You can specify:
 
 - Limit only
 - Offset only
 - Both limit and offset
 
 It is important to note that the select renderer writes limit and offset clauses into the generated select statement as is. The library does not attempt to normalize those values for databases that don't support limit and offset directly. Therefore, it is very important for users to understand whether or not the target database supports limit and offset. If the target database does not support limit and offset, then it is likely that using this support will create SQL that has runtime errors.
+
+An example follows:
+
+```java
+    SelectStatementProvider selectStatement = select(animalData.allColumns())
+            .from(animalData)
+            .orderBy(id)
+            .limit(3)
+            .offset(22)
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+```
+
+## Fetch First Support
+Since version 1.1.2 the select statement supports fetch first for paging (or slicing) queries. You can specify:
+
+- Fetch first only
+- Offset only
+- Both offset and fetch first
+
+Fetch first is an SQL standard and is supported by most databases.
+
+An example follows:
+
+```java
+    SelectStatementProvider selectStatement = select(animalData.allColumns())
+            .from(animalData)
+            .orderBy(id)
+            .offset(22)
+            .fetchFirst(3).rowsOnly()
+            .build()
+            .render(RenderingStrategy.MYBATIS3);
+```
