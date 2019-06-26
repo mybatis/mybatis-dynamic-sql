@@ -58,14 +58,15 @@ public class FetchFirstPagingModelRenderer {
     }
     
     private Optional<FragmentAndParameters> renderOffsetOnly(Long offset) {
-        return FragmentAndParameters.withFragment("offset " + renderPlaceholder(OFFSET_PARAMETER)) //$NON-NLS-1$
+        return FragmentAndParameters.withFragment("offset " + renderPlaceholder(OFFSET_PARAMETER) //$NON-NLS-1$
+                    + " rows") //$NON-NLS-1$
                 .withParameter(OFFSET_PARAMETER, offset)
                 .buildOptional();
     }
     
     private Optional<FragmentAndParameters> renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
         return FragmentAndParameters.withFragment("offset " + renderPlaceholder(OFFSET_PARAMETER) //$NON-NLS-1$
-                    + " fetch first " + renderPlaceholder(FETCH_FIRST_ROWS_PARAMETER) //$NON-NLS-1$
+                    + " rows fetch first " + renderPlaceholder(FETCH_FIRST_ROWS_PARAMETER) //$NON-NLS-1$
                     + " rows only") //$NON-NLS-1$
                 .withParameter(OFFSET_PARAMETER, offset)
                 .withParameter(FETCH_FIRST_ROWS_PARAMETER, fetchFirstRows)
