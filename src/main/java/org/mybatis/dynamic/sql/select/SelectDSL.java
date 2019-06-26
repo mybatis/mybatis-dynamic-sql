@@ -166,7 +166,7 @@ public class SelectDSL<R> implements Buildable<R> {
         
         @Override
         public R build() {
-            SelectDSL.this.pagingModel = new LimitAndOffsetPagingModel.Builder()
+            SelectDSL.this.pagingModel = new FetchFirstPagingModel.Builder()
                     .withOffset(offset)
                     .build();
             return SelectDSL.this.build();
