@@ -45,29 +45,14 @@ public class SelectDSL<R> implements Buildable<R> {
         buildDelegateMethod = this::internalBuild;
     }
 
-    private QueryExpressionDSL.FromGatherer<R> queryExpressionBuilder(BasicColumn...selectList) {
-        return new QueryExpressionDSL.FromGathererBuilder<R>()
-                .withSelectDSL(this)
-                .withSelectList(selectList)
-                .build();
-    }
-    
-    private QueryExpressionDSL.FromGatherer<R> distinctQueryExpressionBuilder(BasicColumn...selectList) {
-        return new QueryExpressionDSL.FromGathererBuilder<R>()
-                .withSelectDSL(this)
-                .withSelectList(selectList)
-                .isDistinct()
-                .build();
-    }
-    
     public static QueryExpressionDSL.FromGatherer<SelectModel> select(BasicColumn...selectList) {
         return select(Function.identity(), selectList);
     }
     
     public static <R> QueryExpressionDSL.FromGatherer<R> select(Function<SelectModel, R> adapterFunction,
             BasicColumn...selectList) {
-        SelectDSL<R> selectModelBuilder = new SelectDSL<>(adapterFunction);
-        return selectModelBuilder.queryExpressionBuilder(selectList);
+        SelectDSL<R> selectDSL = new SelectDSL<>(adapterFunction);
+        return QueryExpressionDSL.select(selectDSL, selectList);
     }
     
     public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
@@ -76,8 +61,8 @@ public class SelectDSL<R> implements Buildable<R> {
     
     public static <R> QueryExpressionDSL.FromGatherer<R> selectDistinct(Function<SelectModel, R> adapterFunction,
             BasicColumn...selectList) {
-        SelectDSL<R> selectModelBuilder = new SelectDSL<>(adapterFunction);
-        return selectModelBuilder.distinctQueryExpressionBuilder(selectList);
+        SelectDSL<R> selectDSL = new SelectDSL<>(adapterFunction);
+        return QueryExpressionDSL.selectDistinct(selectDSL, selectList);
     }
     
     public static <T> QueryExpressionDSL.FromGatherer<MyBatis3SelectModelAdapter<T>> selectWithMapper(
