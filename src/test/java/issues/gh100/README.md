@@ -1,0 +1,102 @@
+# About these Tests
+
+GitHub issues 100 and 102 exposed issues where calling the `build()` method at an unexpected location caused the rendered SQL to be incorrect. Changes for this issue now allow for the `build()` method to be called on any intermediate object in the select statement chain - regardless if further operations have been performed - and consistent renderings will occur.
+
+Tests in this directory cover the possible places where a `build()` method could be called and virtually all the possible paths through a select statement.
+
+- from
+- from join
+    - from join where
+        - from join where union
+            - from join where union order by
+                - from join where union order by limit
+                    - from join where union order by limit offset
+                - from join where union order by offset
+                    - from join where union order by offset fetch first
+                - from join where union order by fetch first
+            - from join where union limit
+                - from join where union limit offset
+            - from join where union offset
+                - from join where union offset fetch first
+            - from join where union fetch first
+        - from join where order by
+            - from join where order by limit
+                - from join where order by limit offset
+            - from join where order by offset
+                - from join where order by offset fetch first
+            - from join where order by fetch first
+        - from join where limit
+            - from join where limit offset
+        - from join where offset
+            - from join where offset fetch first
+        - from join where fetch first
+    - from join union
+        - from join union order by
+            - from join union order by limit
+                - from join union order by limit offset
+            - from join union order by offset
+                - from join union order by offset fetch first
+            - from join union order by fetch first
+        - from join union limit
+            - from join union limit offset
+        - from join union offset
+            - from join union offset fetch first
+        - from join union fetch first
+    - from join order by
+        - from join order by limit
+            - from join order by limit offset
+        - from join order by offset
+            - from join order by offset fetch first
+        - from join order by fetch first
+    - from join limit
+        - from join limit offset
+    - from join offset
+        - from join offset fetch first
+    - from join fetch first
+- from where
+    - from where union
+        - from where union order by
+            - from where union order by limit
+                - from where union order by limit offset
+            - from where union order by offset
+                - from where union order by offset fetch first
+            - from where union order by fetch first
+        - from where union limit
+            - from where union limit offset
+        - from where union offset
+            - from where union offset fetch first
+        - from where union fetch first
+    - from where order by
+        - from where order by limit
+            - from where order by limit offset
+        - from where order by offset
+            - from where order by offset fetch first
+        - from where order by fetch first
+    - from where limit
+        - from where limit offset
+    - from where offset
+        - from where offset fetch first
+    - from where fetch first
+- from union
+    - from union order by
+        - from union order by limit
+            - from union order by limit offset
+        - from union order by offset
+            - from union order by offset fetch first
+        - from union order by fetch first
+    - from union limit
+        - from union limit offset
+    - from union offset
+        - from union offset fetch first
+    - from union fetch first
+- from order by
+    - from order by limit
+        - from order by limit offset
+    - from order by offset
+        - from order by offset fetch first
+    - from order by fetch first
+- from limit
+    - from limit offset
+- from offset
+    - from offset fetch first
+- from fetch first
