@@ -24,18 +24,6 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-/**
- * This set of tests is related to issues raised in https://github.com/mybatis/mybatis-dynamic-sql/issues/100 and
- * https://github.com/mybatis/mybatis-dynamic-sql/issues/102.
- * 
- * The basic idea is that we want to enable the user to call the build() method from any object along the
- * DSL chain and have predictable results.
- * 
- * So this set of test cases tests calling the build() method at various points along the chain.
- * 
- * @author Jeff Butler
- *
- */
 public class Issue100Test {
 
     @Test

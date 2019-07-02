@@ -300,12 +300,14 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
         
         public SelectDSL<R>.LimitFinisher limit(long limit) {
+            buildDelegateMethod = selectDSL::build;
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.limit(limit);
         }
         
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
+            buildDelegateMethod = selectDSL::build;
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.offset(offset);
