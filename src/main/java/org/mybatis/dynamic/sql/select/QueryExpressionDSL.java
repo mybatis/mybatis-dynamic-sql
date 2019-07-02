@@ -51,12 +51,31 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
     private QueryExpressionDSL(FromGatherer<R> fromGatherer) {
-        connector = fromGatherer.builder.connector;
-        selectList = Arrays.asList(fromGatherer.builder.selectList);
-        isDistinct = fromGatherer.builder.isDistinct;
-        selectDSL = Objects.requireNonNull(fromGatherer.builder.selectDSL);
+        connector = fromGatherer.connector;
+        selectList = Arrays.asList(fromGatherer.selectList);
+        isDistinct = fromGatherer.isDistinct;
+        selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
         table = Objects.requireNonNull(fromGatherer.table);
-        tableAliases.putAll(fromGatherer.tableAliasMap);
+    }
+    
+    private QueryExpressionDSL(FromGatherer<R> fromGatherer, String tableAlias) {
+        this(fromGatherer);
+        tableAliases.put(table, tableAlias);
+    }
+    
+    public static <R> FromGatherer<R> select(SelectDSL<R> selectDSL, BasicColumn...selectList) {
+        return new FromGatherer.Builder<R>()
+                .withSelectList(selectList)
+                .withSelectDSL(selectDSL)
+                .build();
+    }
+    
+    public static <R> FromGatherer<R> selectDistinct(SelectDSL<R> selectDSL, BasicColumn...selectList) {
+        return new FromGatherer.Builder<R>()
+                .withSelectList(selectList)
+                .withSelectDSL(selectDSL)
+                .isDistinct()
+                .build();
     }
     
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
@@ -160,55 +179,58 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     }
     
     public static class FromGatherer<R> {
-        private FromGathererBuilder<R> builder;
-        private Map<SqlTable, String> tableAliasMap = new HashMap<>();
+        private String connector;
+        private BasicColumn[] selectList;
+        private SelectDSL<R> selectDSL;
+        private boolean isDistinct;
         private SqlTable table;
         
-        public FromGatherer(FromGathererBuilder<R> builder) {
-            this.builder = builder;
+        public FromGatherer(Builder<R> builder) {
+            this.connector = builder.connector;
+            this.selectList = Objects.requireNonNull(builder.selectList);
+            this.selectDSL = Objects.requireNonNull(builder.selectDSL);
+            this.isDistinct = builder.isDistinct;
         }
         
         public QueryExpressionDSL<R> from(SqlTable table) {
             this.table = table;
-            
             return new QueryExpressionDSL<>(this);
         }
 
         public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
             this.table = table;
-            tableAliasMap.put(table, tableAlias);
-            return new QueryExpressionDSL<>(this);
+            return new QueryExpressionDSL<>(this, tableAlias);
         }
-    }
-    
-    public static class FromGathererBuilder<R> {
-        private String connector;
-        private BasicColumn[] selectList;
-        private SelectDSL<R> selectDSL;
-        private boolean isDistinct;
         
-        public FromGathererBuilder<R> withConnector(String connector) {
-            this.connector = connector;
-            return this;
-        }
+        public static class Builder<R> {
+            private String connector;
+            private BasicColumn[] selectList;
+            private SelectDSL<R> selectDSL;
+            private boolean isDistinct;
+            
+            public Builder<R> withConnector(String connector) {
+                this.connector = connector;
+                return this;
+            }
 
-        public FromGathererBuilder<R> withSelectList(BasicColumn[] selectList) {
-            this.selectList = selectList;
-            return this;
-        }
+            public Builder<R> withSelectList(BasicColumn[] selectList) {
+                this.selectList = selectList;
+                return this;
+            }
 
-        public FromGathererBuilder<R> withSelectDSL(SelectDSL<R> selectDSL) {
-            this.selectDSL = selectDSL;
-            return this;
-        }
-        
-        public FromGathererBuilder<R> isDistinct() {
-            this.isDistinct = true;
-            return this;
-        }
-        
-        public FromGatherer<R> build() {
-            return new FromGatherer<>(this);
+            public Builder<R> withSelectDSL(SelectDSL<R> selectDSL) {
+                this.selectDSL = selectDSL;
+                return this;
+            }
+            
+            public Builder<R> isDistinct() {
+                this.isDistinct = true;
+                return this;
+            }
+            
+            public FromGatherer<R> build() {
+                return new FromGatherer<>(this);
+            }
         }
     }
     
@@ -469,7 +491,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
         
         public FromGatherer<R> select(BasicColumn...selectList) {
-            return new FromGathererBuilder<R>()
+            return new FromGatherer.Builder<R>()
                     .withConnector(connector)
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
@@ -477,11 +499,11 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
 
         public FromGatherer<R> selectDistinct(BasicColumn...selectList) {
-            return new FromGathererBuilder<R>()
+            return new FromGatherer.Builder<R>()
                     .withConnector(connector)
-                    .isDistinct()
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
+                    .isDistinct()
                     .build();
         }
     }
