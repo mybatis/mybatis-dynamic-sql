@@ -9,7 +9,8 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 ### Added
 
 - Changed the public SQLBuilder API to accept Collection instead of List for in conditions and batch record inserts. This should have no impact on existing code, but allow for some future flexibility
-- Added the ability have have table catalog and/or schema calculated at query runtime. This is useful for situations where there are different database schemas for different environments, or in some sharding situations 
+- Added the ability have have table catalog and/or schema calculated at query runtime. This is useful for situations where there are different database schemas for different environments, or in some sharding situations
+- Added the ability to call a builder method on any intermediate object in a select statement and receive a fully rendered statement. This makes it easier to build very dynamic queries
 
 
 ## Release 1.1.1 - April 7, 2019
