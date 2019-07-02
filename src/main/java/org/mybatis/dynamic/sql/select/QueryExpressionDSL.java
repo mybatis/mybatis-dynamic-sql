@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -195,22 +196,29 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         private SelectDSL<R> selectDSL;
         private boolean isDistinct;
         private SqlTable table;
+        private Optional<QueryExpressionDSL<R>> priorQuery;
         
         public FromGatherer(Builder<R> builder) {
             this.connector = builder.connector;
             this.selectList = Objects.requireNonNull(builder.selectList);
             this.selectDSL = Objects.requireNonNull(builder.selectDSL);
             this.isDistinct = builder.isDistinct;
+            this.priorQuery = Optional.ofNullable(builder.priorQuery);
         }
         
         public QueryExpressionDSL<R> from(SqlTable table) {
             this.table = table;
-            return new QueryExpressionDSL<>(this);
+            return setPriorBuildDelegate(new QueryExpressionDSL<>(this));
         }
 
         public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
             this.table = table;
-            return new QueryExpressionDSL<>(this, tableAlias);
+            return setPriorBuildDelegate(new QueryExpressionDSL<>(this, tableAlias));
+        }
+        
+        private QueryExpressionDSL<R> setPriorBuildDelegate(QueryExpressionDSL<R> newQuery) {
+            priorQuery.ifPresent(pq -> pq.buildDelegateMethod = newQuery::build);
+            return newQuery;
         }
         
         public static class Builder<R> {
@@ -218,6 +226,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             private BasicColumn[] selectList;
             private SelectDSL<R> selectDSL;
             private boolean isDistinct;
+            private QueryExpressionDSL<R> priorQuery;
             
             public Builder<R> withConnector(String connector) {
                 this.connector = connector;
@@ -236,6 +245,11 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             
             public Builder<R> isDistinct() {
                 this.isDistinct = true;
+                return this;
+            }
+            
+            public Builder<R> withPriorQuery(QueryExpressionDSL<R> priorQuery) {
+                this.priorQuery = priorQuery;
                 return this;
             }
             
@@ -535,6 +549,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
                     .withConnector(connector)
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
+                    .withPriorQuery(QueryExpressionDSL.this)
                     .build();
         }
 
@@ -544,6 +559,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
                     .isDistinct()
+                    .withPriorQuery(QueryExpressionDSL.this)
                     .build();
         }
     }
