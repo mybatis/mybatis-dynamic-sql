@@ -1,7 +1,21 @@
+/**
+ *    Copyright 2016-2019 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package issues.gh100;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.junit.jupiter.api.Test;
@@ -61,7 +75,7 @@ public class FromJoinWhereTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
+        builder1.join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
         
         String expected = "select student.id, student.name, student.idcard" 
@@ -98,7 +112,7 @@ public class FromJoinWhereTest {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
         
-        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
+        builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -118,7 +132,7 @@ public class FromJoinWhereTest {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
         
-        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
+        builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -160,7 +174,7 @@ public class FromJoinWhereTest {
         
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
         
-        QueryExpressionDSL<SelectModel> builder4 = builder3.union()
+        builder3.union()
                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -187,7 +201,7 @@ public class FromJoinWhereTest {
         
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
         
-        QueryExpressionDSL<SelectModel> builder4 = builder3.union()
+        builder3.union()
                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -214,7 +228,7 @@ public class FromJoinWhereTest {
         
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
         
-        QueryExpressionDSL<SelectModel> builder4 = builder3.union()
+        builder3.union()
                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -259,6 +273,196 @@ public class FromJoinWhereTest {
     }
     
     @Test
+    public void testFromJoinWhereUnionUnionB1() {
+        QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student);
+
+        QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
+                .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder4 = builder3.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNotNull());
+
+        builder4.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNull());
+        
+        String expected = "select student.id, student.name, student.idcard" 
+                + " from student"
+                + " join student_reg on student.id = student_reg.studentId"
+                + " where student.idcard = #{parameters.p1}"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is not null"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is null";
+
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
+    
+    @Test
+    public void testFromJoinWhereUnionUnionB2() {
+        QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student);
+
+        QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
+                .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder4 = builder3.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNotNull());
+
+        builder4.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNull());
+        
+        String expected = "select student.id, student.name, student.idcard" 
+                + " from student"
+                + " join student_reg on student.id = student_reg.studentId"
+                + " where student.idcard = #{parameters.p1}"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is not null"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is null";
+
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
+    
+    @Test
+    public void testFromJoinWhereUnionUnionB3() {
+        QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student);
+
+        QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
+                .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder4 = builder3.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNotNull());
+
+        builder4.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNull());
+        
+        String expected = "select student.id, student.name, student.idcard" 
+                + " from student"
+                + " join student_reg on student.id = student_reg.studentId"
+                + " where student.idcard = #{parameters.p1}"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is not null"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is null";
+
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
+    
+    @Test
+    public void testFromJoinWhereUnionUnionB4() {
+        QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student);
+
+        QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
+                .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder4 = builder3.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNotNull());
+
+        builder4.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNull());
+        
+        String expected = "select student.id, student.name, student.idcard" 
+                + " from student"
+                + " join student_reg on student.id = student_reg.studentId"
+                + " where student.idcard = #{parameters.p1}"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is not null"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is null";
+
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
+    
+    @Test
+    public void testFromJoinWhereUnionUnionB5() {
+        QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student);
+
+        QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
+                .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
+        
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder4 = builder3.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNotNull());
+
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder5 = builder4.union()
+                .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+                .from(StudentDynamicSqlSupport.student)
+                .where(StudentDynamicSqlSupport.id, isNull());
+        
+        String expected = "select student.id, student.name, student.idcard" 
+                + " from student"
+                + " join student_reg on student.id = student_reg.studentId"
+                + " where student.idcard = #{parameters.p1}"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is not null"
+                + " union"
+                + " select id, name, idcard"
+                + " from student"
+                + " where id is null";
+
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
+    
+    @Test
     public void testFromJoinWhereUnionOrderByB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
@@ -272,7 +476,7 @@ public class FromJoinWhereTest {
                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
         
-        SelectDSL<SelectModel> builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
+        builder4.orderBy(StudentDynamicSqlSupport.id);
 
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -302,7 +506,7 @@ public class FromJoinWhereTest {
                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
         
-        SelectDSL<SelectModel> builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
+        builder4.orderBy(StudentDynamicSqlSupport.id);
 
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -332,7 +536,7 @@ public class FromJoinWhereTest {
                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
         
-        SelectDSL<SelectModel> builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
+        builder4.orderBy(StudentDynamicSqlSupport.id);
 
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -362,7 +566,7 @@ public class FromJoinWhereTest {
                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
         
-        SelectDSL<SelectModel> builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
+        builder4.orderBy(StudentDynamicSqlSupport.id);
 
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -424,7 +628,7 @@ public class FromJoinWhereTest {
         
         SelectDSL<SelectModel> builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
         
-        SelectDSL<SelectModel>.LimitFinisher builder6 = builder5.limit(3);
+        builder5.limit(3);
 
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -457,7 +661,7 @@ public class FromJoinWhereTest {
         
         SelectDSL<SelectModel> builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
         
-        SelectDSL<SelectModel>.LimitFinisher builder6 = builder5.limit(3);
+        builder5.limit(3);
 
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -490,7 +694,7 @@ public class FromJoinWhereTest {
         
         SelectDSL<SelectModel> builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
         
-        SelectDSL<SelectModel>.LimitFinisher builder6 = builder5.limit(3);
+        builder5.limit(3);
 
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -523,7 +727,7 @@ public class FromJoinWhereTest {
         
         SelectDSL<SelectModel> builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
         
-        SelectDSL<SelectModel>.LimitFinisher builder6 = builder5.limit(3);
+        builder5.limit(3);
 
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -556,7 +760,7 @@ public class FromJoinWhereTest {
         
         SelectDSL<SelectModel> builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
         
-        SelectDSL<SelectModel>.LimitFinisher builder6 = builder5.limit(3);
+        builder5.limit(3);
 
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
