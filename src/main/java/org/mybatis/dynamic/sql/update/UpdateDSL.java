@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -52,6 +52,10 @@ public class UpdateDSL<R> {
     
     public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
         return new SetClauseFinisher<>(column);
+    }
+    
+    public UpdateWhereBuilder where() {
+        return new UpdateWhereBuilder();
     }
     
     public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
@@ -144,6 +148,10 @@ public class UpdateDSL<R> {
     }
 
     public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> {
+        
+        public <T> UpdateWhereBuilder() {
+            super();
+        }
         
         public <T> UpdateWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
