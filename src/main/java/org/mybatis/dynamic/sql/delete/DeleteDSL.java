@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -33,6 +33,10 @@ public class DeleteDSL<R> {
     private DeleteDSL(SqlTable table, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
+    }
+    
+    public DeleteWhereBuilder where() {
+        return new DeleteWhereBuilder();
     }
     
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
@@ -69,6 +73,10 @@ public class DeleteDSL<R> {
     }
     
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> {
+        
+        private <T> DeleteWhereBuilder() {
+            super();
+        }
         
         private <T> DeleteWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
