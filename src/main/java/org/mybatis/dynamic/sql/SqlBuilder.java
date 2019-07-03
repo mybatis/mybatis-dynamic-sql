@@ -133,6 +133,10 @@ public interface SqlBuilder {
         return UpdateDSL.update(table);
     }
 
+    static WhereDSL where() {
+        return WhereDSL.where();
+    }
+    
     static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition) {
         return WhereDSL.where(column, condition);
     }

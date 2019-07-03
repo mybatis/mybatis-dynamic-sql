@@ -82,6 +82,10 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
                 .build();
     }
     
+    public QueryExpressionWhereBuilder where() {
+        return new QueryExpressionWhereBuilder();
+    }
+
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
         return new QueryExpressionWhereBuilder(column, condition);
     }
@@ -261,6 +265,10 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<R> {
+        private <T> QueryExpressionWhereBuilder() {
+            buildDelegateMethod = this::internalBuild;
+        }
+
         private <T> QueryExpressionWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
             buildDelegateMethod = this::internalBuild;
@@ -411,6 +419,11 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             joinModel = buildJoinModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.build();
+        }
+        
+        public QueryExpressionWhereBuilder where() {
+            joinModel = buildJoinModel();
+            return new QueryExpressionWhereBuilder();
         }
         
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
