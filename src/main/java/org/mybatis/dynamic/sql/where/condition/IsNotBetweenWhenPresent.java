@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.util.Predicates;
 
@@ -38,5 +39,11 @@ public class IsNotBetweenWhenPresent<T> extends IsNotBetween<T> {
     
     public static <T> Builder<T> isNotBetweenWhenPresent(Supplier<T> valueSupplier) {
         return new Builder<>(valueSupplier);
+    }
+
+    @Override
+    public IsNotBetweenWhenPresent<T> then(UnaryOperator<T> transformer1, UnaryOperator<T> transformer2) {
+        return shouldRender() ? new IsNotBetweenWhenPresent<>(() -> transformer1.apply(value1()),
+                () -> transformer2.apply(value2())) : this;
     }
 }

@@ -26,8 +26,8 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsIn<T> extends AbstractListValueCondition<T> {
 
-    protected IsIn(Collection<T> values, UnaryOperator<Stream<T>> valueStreamOperations) {
-        super(values, valueStreamOperations);
+    protected IsIn(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer) {
+        super(values, valueStreamTransformer);
     }
 
     protected IsIn(Collection<T> values) {
@@ -40,8 +40,35 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
                 + placeholders.collect(Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    public IsIn<T> withValueStreamOperations(UnaryOperator<Stream<T>> valueStreamOperations) {
-        return new IsIn<>(values, valueStreamOperations);
+    /**
+     * This method allows you to modify the condition's values before they are placed into the parameter map.
+     * For example, you could filter nulls, or trim strings, etc. This process will run before final rendering of SQL.
+     * If you filter values out of the stream, then final condition will not reference those values. If you filter all
+     * values out of the stream, then the condition will not render.
+     *   
+     * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
+     *     the values are placed in the parameter map
+     * @return new condition with the specified transformer
+     */
+    public IsIn<T> then(UnaryOperator<Stream<T>> valueStreamTransformer) {
+        return new IsIn<>(values, valueStreamTransformer);
+    }
+
+    /**
+     * This method allows you to modify the condition's values before they are placed into the parameter map.
+     * For example, you could filter nulls, or trim strings, etc. This process will run before final rendering of SQL.
+     * If you filter values out of the stream, then final condition will not reference those values. If you filter all
+     * values out of the stream, then the condition will not render.
+     *   
+     * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
+     *     the values are placed in the parameter map
+     * @return new condition with the specified transformer
+     * 
+     * @deprecated See {@link IsIn#then(UnaryOperator)}
+     */
+    @Deprecated
+    public IsIn<T> withValueStreamOperations(UnaryOperator<Stream<T>> valueStreamTransformer) {
+        return then(valueStreamTransformer);
     }
 
     public static <T> IsIn<T> of(Collection<T> values) {

@@ -143,13 +143,13 @@ The following table shows the different supplied In conditions and how they will
 
 If none of these options meet your needs, there is an extension point where you can add your own filter and/or map conditions to the value stream. This gives you great flexibility to alter or filter the value list before the condition is rendered.
 
-The extension point for modifying the value list is the method `withValueStreamOperations(UnaryOperator<Stream<T>>)`. This method accepts a `UnaryOperator<Stream<T>>` in which you can specify map and/or filter operations for the value stream. For example, suppose you wanted to code an "in" condition that accepted a list of strings, but you want to filter out any null or blank string, and you want to trim all strings. This can be accomplished with code like this:
+The extension point for modifying the value list is the method `then(UnaryOperator<Stream<T>>)`. This method accepts a `UnaryOperator<Stream<T>>` in which you can specify map and/or filter operations for the value stream. For example, suppose you wanted to code an "in" condition that accepted a list of strings, but you want to filter out any null or blank string, and you want to trim all strings. This can be accomplished with code like this:
 
 ```java
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isIn("  Mouse", "  ", null, "", "Musk shrew  ")
-                            .withValueStreamOperations(s -> s.filter(Objects::nonNull)
+                            .then(s -> s.filter(Objects::nonNull)
                                     .map(String::trim)
                                     .filter(st -> !st.isEmpty())))
                     .orderBy(id)

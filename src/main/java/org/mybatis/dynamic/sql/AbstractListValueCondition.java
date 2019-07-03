@@ -24,19 +24,19 @@ import java.util.stream.Stream;
 
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
     protected Collection<T> values;
-    protected UnaryOperator<Stream<T>> valueStreamOperations;
+    protected UnaryOperator<Stream<T>> valueStreamTransformer;
 
     protected AbstractListValueCondition(Collection<T> values) {
         this(values, UnaryOperator.identity());
     }
 
-    protected AbstractListValueCondition(Collection<T> values, UnaryOperator<Stream<T>> valueStreamOperations) {
+    protected AbstractListValueCondition(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer) {
         this.values = new ArrayList<>(Objects.requireNonNull(values));
-        this.valueStreamOperations = Objects.requireNonNull(valueStreamOperations);
+        this.valueStreamTransformer = Objects.requireNonNull(valueStreamTransformer);
     }
     
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
-        return valueStreamOperations.apply(values.stream()).map(mapper);
+        return valueStreamTransformer.apply(values.stream()).map(mapper);
     }
     
     @Override
