@@ -41,7 +41,9 @@
       <item href="docs/whereClauses.html" name="WHERE Clause Support" >
         <item href="docs/conditions.html" name="WHERE Conditions"/>
       </item>
-      <item href="docs/select.html" name="SELECT Statements" />
+      <item href="docs/select.html" name="SELECT Statements" >
+        <item href="docs/complexQueries.html" name="Complex Queries"/>
+      </item>
       <item href="docs/delete.html" name="DELETE Statements" />
       <item href="docs/insert.html" name="INSERT Statements" />
       <item href="docs/update.html" name="UPDATE Statements" />
