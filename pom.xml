@@ -31,7 +31,7 @@
   </parent>
   <groupId>org.mybatis.dynamic-sql</groupId>
   <artifactId>mybatis-dynamic-sql</artifactId>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.1.2</version>
   <name>MyBatis Dynamic SQL</name>
   <description>MyBatis framework for generating dynamic SQL</description>
   <inceptionYear>2016</inceptionYear>
@@ -184,7 +184,7 @@
     <url>https://github.com/mybatis/mybatis-dynamic-sql</url>
     <connection>scm:git:ssh://github.com/mybatis/mybatis-dynamic-sql.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>mybatis-dynamic-sql-1.1.2</tag>
   </scm>
   <issueManagement>
     <system>GitHub Issue Management</system>
