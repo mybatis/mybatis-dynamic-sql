@@ -603,7 +603,7 @@
 <a class="jxr_linenumber" name="L595" href="#L595">595</a>             
 <a class="jxr_linenumber" name="L596" href="#L596">596</a>             String expectedStatment = <span class="jxr_string">"select ol.order_id, ol.quantity, im.item_id, im.description"</span>
 <a class="jxr_linenumber" name="L597" href="#L597">597</a>                     + <span class="jxr_string">" from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"</span>
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>                     + <span class="jxr_string">" offset #{parameters._offset}"</span>;
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>                     + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L599" href="#L599">599</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
 <a class="jxr_linenumber" name="L600" href="#L600">600</a>             
 <a class="jxr_linenumber" name="L601" href="#L601">601</a>             List&lt;Map&lt;String, Object&gt;&gt; rows = mapper.generalSelect(selectStatement);
@@ -622,7 +622,76 @@
 <a class="jxr_linenumber" name="L614" href="#L614">614</a>             assertThat(row.get(<span class="jxr_string">"ITEM_ID"</span>)).isEqualTo(44);
 <a class="jxr_linenumber" name="L615" href="#L615">615</a>         }
 <a class="jxr_linenumber" name="L616" href="#L616">616</a>     }
-<a class="jxr_linenumber" name="L617" href="#L617">617</a> }
+<a class="jxr_linenumber" name="L617" href="#L617">617</a> 
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>     @Test
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testOffsetAndFetchFirstAfterJoin() {
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
+<a class="jxr_linenumber" name="L621" href="#L621">621</a>             <a name="JoinMapper" href="../../examples/joins/JoinMapper.html#JoinMapper">JoinMapper</a> mapper = session.getMapper(JoinMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L622" href="#L622">622</a>             
+<a class="jxr_linenumber" name="L623" href="#L623">623</a>             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+<a class="jxr_linenumber" name="L624" href="#L624">624</a>                     .from(itemMaster, <span class="jxr_string">"im"</span>)
+<a class="jxr_linenumber" name="L625" href="#L625">625</a>                     .leftJoin(orderLine, <span class="jxr_string">"ol"</span>).on(orderLine.itemId, equalTo(itemMaster.itemId))
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>                     .offset(1)
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>                     .fetchFirst(2).rowsOnly()
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>                     .build()
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>             
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>             String expectedStatment = <span class="jxr_string">"select ol.order_id, ol.quantity, im.item_id, im.description"</span>
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>                     + <span class="jxr_string">" from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"</span>
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>                     + <span class="jxr_string">" offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only"</span>;
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>             
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>             List&lt;Map&lt;String, Object&gt;&gt; rows = mapper.generalSelect(selectStatement);
+<a class="jxr_linenumber" name="L637" href="#L637">637</a> 
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>             assertThat(rows.size()).isEqualTo(2);
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>             Map&lt;String, Object&gt; row = rows.get(0);
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>             assertThat(row.get(<span class="jxr_string">"ORDER_ID"</span>)).isEqualTo(2);
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>             assertThat(row.get(<span class="jxr_string">"QUANTITY"</span>)).isEqualTo(1);
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>             assertThat(row.get(<span class="jxr_string">"DESCRIPTION"</span>)).isEqualTo(<span class="jxr_string">"Helmet"</span>);
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>             assertThat(row.get(<span class="jxr_string">"ITEM_ID"</span>)).isEqualTo(22);
+<a class="jxr_linenumber" name="L644" href="#L644">644</a> 
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>             row = rows.get(1);
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>             assertThat(row.get(<span class="jxr_string">"ORDER_ID"</span>)).isEqualTo(1);
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>             assertThat(row.get(<span class="jxr_string">"QUANTITY"</span>)).isEqualTo(1);
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>             assertThat(row.get(<span class="jxr_string">"DESCRIPTION"</span>)).isEqualTo(<span class="jxr_string">"First Base Glove"</span>);
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>             assertThat(row.get(<span class="jxr_string">"ITEM_ID"</span>)).isEqualTo(33);
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>         }
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>     }
+<a class="jxr_linenumber" name="L652" href="#L652">652</a> 
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>     @Test
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testFetchFirstOnlyAfterJoin() {
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>             <a name="JoinMapper" href="../../examples/joins/JoinMapper.html#JoinMapper">JoinMapper</a> mapper = session.getMapper(JoinMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>             
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>                     .from(itemMaster, <span class="jxr_string">"im"</span>)
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>                     .leftJoin(orderLine, <span class="jxr_string">"ol"</span>).on(orderLine.itemId, equalTo(itemMaster.itemId))
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>                     .fetchFirst(2).rowsOnly()
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>                     .build()
+<a class="jxr_linenumber" name="L663" href="#L663">663</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L664" href="#L664">664</a>             
+<a class="jxr_linenumber" name="L665" href="#L665">665</a>             String expectedStatment = <span class="jxr_string">"select ol.order_id, ol.quantity, im.item_id, im.description"</span>
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>                     + <span class="jxr_string">" from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"</span>
+<a class="jxr_linenumber" name="L667" href="#L667">667</a>                     + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
+<a class="jxr_linenumber" name="L668" href="#L668">668</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>             
+<a class="jxr_linenumber" name="L670" href="#L670">670</a>             List&lt;Map&lt;String, Object&gt;&gt; rows = mapper.generalSelect(selectStatement);
+<a class="jxr_linenumber" name="L671" href="#L671">671</a> 
+<a class="jxr_linenumber" name="L672" href="#L672">672</a>             assertThat(rows.size()).isEqualTo(2);
+<a class="jxr_linenumber" name="L673" href="#L673">673</a>             Map&lt;String, Object&gt; row = rows.get(0);
+<a class="jxr_linenumber" name="L674" href="#L674">674</a>             assertThat(row.get(<span class="jxr_string">"ORDER_ID"</span>)).isEqualTo(1);
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>             assertThat(row.get(<span class="jxr_string">"QUANTITY"</span>)).isEqualTo(1);
+<a class="jxr_linenumber" name="L676" href="#L676">676</a>             assertThat(row.get(<span class="jxr_string">"DESCRIPTION"</span>)).isEqualTo(<span class="jxr_string">"Helmet"</span>);
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>             assertThat(row.get(<span class="jxr_string">"ITEM_ID"</span>)).isEqualTo(22);
+<a class="jxr_linenumber" name="L678" href="#L678">678</a> 
+<a class="jxr_linenumber" name="L679" href="#L679">679</a>             row = rows.get(1);
+<a class="jxr_linenumber" name="L680" href="#L680">680</a>             assertThat(row.get(<span class="jxr_string">"ORDER_ID"</span>)).isEqualTo(2);
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>             assertThat(row.get(<span class="jxr_string">"QUANTITY"</span>)).isEqualTo(1);
+<a class="jxr_linenumber" name="L682" href="#L682">682</a>             assertThat(row.get(<span class="jxr_string">"DESCRIPTION"</span>)).isEqualTo(<span class="jxr_string">"Helmet"</span>);
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>             assertThat(row.get(<span class="jxr_string">"ITEM_ID"</span>)).isEqualTo(22);
+<a class="jxr_linenumber" name="L684" href="#L684">684</a>         }
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>     }
+<a class="jxr_linenumber" name="L686" href="#L686">686</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>

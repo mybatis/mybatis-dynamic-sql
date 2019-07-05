@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BatchInsertDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert</a> &gt; <span class="el_source">BatchInsertDSL.java</span></div><h1>BatchInsertDSL.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -29,72 +30,72 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class BatchInsertDSL&lt;T&gt; {
 
-    private List&lt;T&gt; records;
+    private Collection&lt;T&gt; records;
     private SqlTable table;
-<span class="fc" id="L34">    private List&lt;InsertMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L35">    private List&lt;InsertMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
     
-<span class="fc" id="L36">    private BatchInsertDSL(List&lt;T&gt; records, SqlTable table) {</span>
-<span class="fc" id="L37">        this.records = records;</span>
-<span class="fc" id="L38">        this.table = table;</span>
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L37">    private BatchInsertDSL(Collection&lt;T&gt; records, SqlTable table) {</span>
+<span class="fc" id="L38">        this.records = records;</span>
+<span class="fc" id="L39">        this.table = table;</span>
+<span class="fc" id="L40">    }</span>
     
     public &lt;F&gt; BatchColumnMappingFinisher&lt;F&gt; map(SqlColumn&lt;F&gt; column) {
-<span class="fc" id="L42">        return new BatchColumnMappingFinisher&lt;&gt;(column);</span>
+<span class="fc" id="L43">        return new BatchColumnMappingFinisher&lt;&gt;(column);</span>
     }
     
     public BatchInsertModel&lt;T&gt; build() {
-<span class="fc" id="L46">        return BatchInsertModel.withRecords(records)</span>
-<span class="fc" id="L47">                .withTable(table)</span>
-<span class="fc" id="L48">                .withColumnMappings(columnMappings)</span>
-<span class="fc" id="L49">                .build();</span>
+<span class="fc" id="L47">        return BatchInsertModel.withRecords(records)</span>
+<span class="fc" id="L48">                .withTable(table)</span>
+<span class="fc" id="L49">                .withColumnMappings(columnMappings)</span>
+<span class="fc" id="L50">                .build();</span>
     }
 
     @SafeVarargs
     public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(T...records) {
-<span class="fc" id="L54">        return new IntoGatherer&lt;&gt;(Arrays.asList(records));</span>
+<span class="fc" id="L55">        return new IntoGatherer&lt;&gt;(Arrays.asList(records));</span>
     }
     
-    public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(List&lt;T&gt; records) {
-<span class="fc" id="L58">        return new IntoGatherer&lt;&gt;(records);</span>
+    public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(Collection&lt;T&gt; records) {
+<span class="fc" id="L59">        return new IntoGatherer&lt;&gt;(records);</span>
     }
     
     public static class IntoGatherer&lt;T&gt; {
-        private List&lt;T&gt; records;
+        private Collection&lt;T&gt; records;
         
-<span class="fc" id="L64">        private IntoGatherer(List&lt;T&gt; records) {</span>
-<span class="fc" id="L65">            this.records = records;</span>
-<span class="fc" id="L66">        }</span>
+<span class="fc" id="L65">        private IntoGatherer(Collection&lt;T&gt; records) {</span>
+<span class="fc" id="L66">            this.records = records;</span>
+<span class="fc" id="L67">        }</span>
 
         public BatchInsertDSL&lt;T&gt; into(SqlTable table) {
-<span class="fc" id="L69">            return new BatchInsertDSL&lt;&gt;(records, table);</span>
+<span class="fc" id="L70">            return new BatchInsertDSL&lt;&gt;(records, table);</span>
         }
     }
     
     public class BatchColumnMappingFinisher&lt;F&gt; {
         private SqlColumn&lt;F&gt; column;
             
-<span class="fc" id="L76">        public BatchColumnMappingFinisher(SqlColumn&lt;F&gt; column) {</span>
-<span class="fc" id="L77">            this.column = column;</span>
-<span class="fc" id="L78">        }</span>
+<span class="fc" id="L77">        public BatchColumnMappingFinisher(SqlColumn&lt;F&gt; column) {</span>
+<span class="fc" id="L78">            this.column = column;</span>
+<span class="fc" id="L79">        }</span>
             
         public BatchInsertDSL&lt;T&gt; toProperty(String property) {
-<span class="fc" id="L81">            columnMappings.add(PropertyMapping.of(column, property));</span>
-<span class="fc" id="L82">            return BatchInsertDSL.this;</span>
+<span class="fc" id="L82">            columnMappings.add(PropertyMapping.of(column, property));</span>
+<span class="fc" id="L83">            return BatchInsertDSL.this;</span>
         }
             
         public BatchInsertDSL&lt;T&gt; toNull() {
-<span class="fc" id="L86">            columnMappings.add(NullMapping.of(column));</span>
-<span class="fc" id="L87">            return BatchInsertDSL.this;</span>
+<span class="fc" id="L87">            columnMappings.add(NullMapping.of(column));</span>
+<span class="fc" id="L88">            return BatchInsertDSL.this;</span>
         }
             
         public BatchInsertDSL&lt;T&gt; toConstant(String constant) {
-<span class="fc" id="L91">            columnMappings.add(ConstantMapping.of(column, constant));</span>
-<span class="fc" id="L92">            return BatchInsertDSL.this;</span>
+<span class="fc" id="L92">            columnMappings.add(ConstantMapping.of(column, constant));</span>
+<span class="fc" id="L93">            return BatchInsertDSL.this;</span>
         }
             
         public BatchInsertDSL&lt;T&gt; toStringConstant(String constant) {
-<span class="fc" id="L96">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
-<span class="fc" id="L97">            return BatchInsertDSL.this;</span>
+<span class="fc" id="L97">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
+<span class="fc" id="L98">            return BatchInsertDSL.this;</span>
         }
     }
 }

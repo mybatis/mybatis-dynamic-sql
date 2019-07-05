@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/where/condition/IsBetween.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2018 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2019 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
@@ -25,43 +25,49 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.function.BiPredicate;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.function.Supplier;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.AbstractTwoValueCondition;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> IsBetween&lt;T&gt; <strong class="jxr_keyword">extends</strong> AbstractTwoValueCondition&lt;T&gt; {
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>      <strong class="jxr_keyword">protected</strong> <a name="IsBetween" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsBetween.html#IsBetween">IsBetween</a>(Supplier&lt;T&gt; valueSupplier1, Supplier&lt;T&gt; valueSupplier2) {
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>          <strong class="jxr_keyword">super</strong>(valueSupplier1, valueSupplier2);
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>      }
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">protected</strong> <a name="IsBetween" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsBetween.html#IsBetween">IsBetween</a>(Supplier&lt;T&gt; valueSupplier1, Supplier&lt;T&gt; valueSupplier2, BiPredicate&lt;T, T&gt; predicate) {
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>          <strong class="jxr_keyword">super</strong>(valueSupplier1, valueSupplier2, predicate);
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      }
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>      
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      @Override
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">public</strong> String renderCondition(String columnName, String placeholder1, String placeholder2) {
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>          <strong class="jxr_keyword">return</strong> columnName + <span class="jxr_string">" between "</span> + placeholder1 + <span class="jxr_string">" and "</span> + placeholder2; <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$</em>
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>      }
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Builder&lt;T&gt; <strong class="jxr_keyword">extends</strong> AndGatherer&lt;T, IsBetween&lt;T&gt;&gt; {
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>          <strong class="jxr_keyword">private</strong> Builder(Supplier&lt;T&gt; valueSupplier1) {
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>              <strong class="jxr_keyword">super</strong>(valueSupplier1);
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>          }
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>          
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>          @Override
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          <strong class="jxr_keyword">protected</strong> IsBetween&lt;T&gt; build() {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> IsBetween&lt;&gt;(valueSupplier1, valueSupplier2);
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          }
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      }
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; Builder&lt;T&gt; isBetween(Supplier&lt;T&gt; valueSupplier1) {
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Builder&lt;&gt;(valueSupplier1);
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      }
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">public</strong> IsBetween&lt;T&gt; when(BiPredicate&lt;T, T&gt; predicate) {
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> IsBetween&lt;&gt;(valueSupplier1, valueSupplier2, predicate);
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      }
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  }
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.function.UnaryOperator;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.AbstractTwoValueCondition;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> IsBetween&lt;T&gt; <strong class="jxr_keyword">extends</strong> AbstractTwoValueCondition&lt;T&gt; {
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">protected</strong> <a name="IsBetween" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsBetween.html#IsBetween">IsBetween</a>(Supplier&lt;T&gt; valueSupplier1, Supplier&lt;T&gt; valueSupplier2) {
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>          <strong class="jxr_keyword">super</strong>(valueSupplier1, valueSupplier2);
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      }
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">protected</strong> <a name="IsBetween" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsBetween.html#IsBetween">IsBetween</a>(Supplier&lt;T&gt; valueSupplier1, Supplier&lt;T&gt; valueSupplier2, BiPredicate&lt;T, T&gt; predicate) {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          <strong class="jxr_keyword">super</strong>(valueSupplier1, valueSupplier2, predicate);
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      }
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      @Override
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">public</strong> String renderCondition(String columnName, String placeholder1, String placeholder2) {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <strong class="jxr_keyword">return</strong> columnName + <span class="jxr_string">" between "</span> + placeholder1 + <span class="jxr_string">" and "</span> + placeholder2; <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$</em>
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Builder&lt;T&gt; <strong class="jxr_keyword">extends</strong> AndGatherer&lt;T, IsBetween&lt;T&gt;&gt; {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          <strong class="jxr_keyword">private</strong> Builder(Supplier&lt;T&gt; valueSupplier1) {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>              <strong class="jxr_keyword">super</strong>(valueSupplier1);
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>          }
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          @Override
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          <strong class="jxr_keyword">protected</strong> IsBetween&lt;T&gt; build() {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> IsBetween&lt;&gt;(valueSupplier1, valueSupplier2);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          }
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      }
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; Builder&lt;T&gt; isBetween(Supplier&lt;T&gt; valueSupplier1) {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Builder&lt;&gt;(valueSupplier1);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      }
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">public</strong> IsBetween&lt;T&gt; when(BiPredicate&lt;T, T&gt; predicate) {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> IsBetween&lt;&gt;(valueSupplier1, valueSupplier2, predicate);
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      }
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      <strong class="jxr_keyword">public</strong> IsBetween&lt;T&gt; then(UnaryOperator&lt;T&gt; transformer1, UnaryOperator&lt;T&gt; transformer2) {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">return</strong> shouldRender() ? <strong class="jxr_keyword">new</strong> IsBetween&lt;&gt;(() -&gt; transformer1.apply(value1()),
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>                  () -&gt; transformer2.apply(value2())) : <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      }
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>

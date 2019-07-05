@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeleteDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.delete</a> &gt; <span class="el_source">DeleteDSL.java</span></div><h1>DeleteDSL.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -35,13 +35,17 @@ public class DeleteDSL&lt;R&gt; {
 <span class="fc" id="L35">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
 <span class="fc" id="L36">    }</span>
     
+    public DeleteWhereBuilder where() {
+<span class="fc" id="L39">        return new DeleteWhereBuilder();</span>
+    }
+    
     public &lt;T&gt; DeleteWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L39">        return new DeleteWhereBuilder(column, condition);</span>
+<span class="fc" id="L43">        return new DeleteWhereBuilder(column, condition);</span>
     }
     
     public &lt;T&gt; DeleteWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;...subCriteria) {
-<span class="fc" id="L44">        return new DeleteWhereBuilder(column, condition, subCriteria);</span>
+<span class="fc" id="L48">        return new DeleteWhereBuilder(column, condition, subCriteria);</span>
     }
     
     /**
@@ -51,44 +55,48 @@ public class DeleteDSL&lt;R&gt; {
      * @return the model class
      */
     public R build() {
-<span class="fc" id="L54">        DeleteModel deleteModel = DeleteModel.withTable(table).build();</span>
-<span class="fc" id="L55">        return adapterFunction.apply(deleteModel);</span>
+<span class="fc" id="L58">        DeleteModel deleteModel = DeleteModel.withTable(table).build();</span>
+<span class="fc" id="L59">        return adapterFunction.apply(deleteModel);</span>
     }
     
     public static &lt;R&gt; DeleteDSL&lt;R&gt; deleteFrom(Function&lt;DeleteModel, R&gt; adapterFunction, SqlTable table) {
-<span class="fc" id="L59">        return new DeleteDSL&lt;&gt;(table, adapterFunction);</span>
+<span class="fc" id="L63">        return new DeleteDSL&lt;&gt;(table, adapterFunction);</span>
     }
     
     public static DeleteDSL&lt;DeleteModel&gt; deleteFrom(SqlTable table) {
-<span class="fc" id="L63">        return deleteFrom(Function.identity(), table);</span>
+<span class="fc" id="L67">        return deleteFrom(Function.identity(), table);</span>
     }
     
     public static &lt;T&gt; DeleteDSL&lt;MyBatis3DeleteModelAdapter&lt;T&gt;&gt; deleteFromWithMapper(
             Function&lt;DeleteStatementProvider, T&gt; mapperMethod, SqlTable table) {
-<span class="fc" id="L68">        return deleteFrom(deleteModel -&gt; MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);</span>
+<span class="fc" id="L72">        return deleteFrom(deleteModel -&gt; MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);</span>
     }
     
     public class DeleteWhereBuilder extends AbstractWhereDSL&lt;DeleteWhereBuilder&gt; {
         
-<span class="fc" id="L73">        private &lt;T&gt; DeleteWhereBuilder(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {</span>
-<span class="fc" id="L74">            super(column, condition);</span>
-<span class="fc" id="L75">        }</span>
+<span class="fc" id="L77">        private &lt;T&gt; DeleteWhereBuilder() {</span>
+<span class="fc" id="L78">            super();</span>
+<span class="fc" id="L79">        }</span>
+        
+<span class="fc" id="L81">        private &lt;T&gt; DeleteWhereBuilder(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {</span>
+<span class="fc" id="L82">            super(column, condition);</span>
+<span class="fc" id="L83">        }</span>
         
         private &lt;T&gt; DeleteWhereBuilder(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
-<span class="fc" id="L78">                SqlCriterion&lt;?&gt;...subCriteria) {</span>
-<span class="fc" id="L79">            super(column, condition, subCriteria);</span>
-<span class="fc" id="L80">        }</span>
+<span class="fc" id="L86">                SqlCriterion&lt;?&gt;...subCriteria) {</span>
+<span class="fc" id="L87">            super(column, condition, subCriteria);</span>
+<span class="fc" id="L88">        }</span>
         
         public R build() {
-<span class="fc" id="L83">            DeleteModel deleteModel = DeleteModel.withTable(table)</span>
-<span class="fc" id="L84">                    .withWhereModel(buildWhereModel())</span>
-<span class="fc" id="L85">                    .build();</span>
-<span class="fc" id="L86">            return adapterFunction.apply(deleteModel);</span>
+<span class="fc" id="L91">            DeleteModel deleteModel = DeleteModel.withTable(table)</span>
+<span class="fc" id="L92">                    .withWhereModel(buildWhereModel())</span>
+<span class="fc" id="L93">                    .build();</span>
+<span class="fc" id="L94">            return adapterFunction.apply(deleteModel);</span>
         }
         
         @Override
         protected DeleteWhereBuilder getThis() {
-<span class="fc" id="L91">            return this;</span>
+<span class="fc" id="L99">            return this;</span>
         }
     }
 }

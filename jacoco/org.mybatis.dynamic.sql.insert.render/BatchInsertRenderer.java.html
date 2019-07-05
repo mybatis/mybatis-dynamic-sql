@@ -54,7 +54,7 @@ public class BatchInsertRenderer&lt;T&gt; {
 
     private String calculateInsertStatement(FieldAndValueCollector&lt;T&gt; collector) {
 <span class="fc" id="L56">        return &quot;insert into&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L57">                + spaceBefore(model.table().name())</span>
+<span class="fc" id="L57">                + spaceBefore(model.table().tableNameAtRuntime())</span>
 <span class="fc" id="L58">                + spaceBefore(collector.columnsPhrase())</span>
 <span class="fc" id="L59">                + spaceBefore(collector.valuesPhrase());</span>
     }

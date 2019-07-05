@@ -73,7 +73,7 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">private</strong> String calculateUpdateStatement(<a name="FragmentCollector" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentCollector.html#FragmentCollector">FragmentCollector</a> fc, Optional&lt;WhereClauseProvider&gt; whereClause) {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          <strong class="jxr_keyword">return</strong> <span class="jxr_string">"update"</span> <em class="jxr_comment">//$NON-NLS-1$</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  + spaceBefore(updateModel.table().name())
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  + spaceBefore(updateModel.table().tableNameAtRuntime())
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>                  + spaceBefore(calculateSetPhrase(fc))
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>                  + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause));
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      }
