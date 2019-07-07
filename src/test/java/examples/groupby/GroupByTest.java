@@ -312,4 +312,24 @@ public class GroupByTest {
             assertThat(row.get("COUNT")).isEqualTo(4L);
         }
     }
+
+    @Test
+    public void testCountDistinct() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(countDistinct(lastName).as("count"))
+                    .from(person)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select count(distinct last_name) as count from Person";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("COUNT")).isEqualTo(2L);
+        }
+    }
 }

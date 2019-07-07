@@ -2,6 +2,15 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
+## Release 1.1.3 - Unreleased
+
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.2+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.3+)
+
+### Added
+
+- Added support for `count(distinct ...)` [#112](https://github.com/mybatis/mybatis-dynamic-sql/issues/112)
+
+
 ## Release 1.1.2 - July 5, 2019
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.2+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.2+)

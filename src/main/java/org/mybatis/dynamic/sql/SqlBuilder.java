@@ -31,6 +31,7 @@ import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
+import org.mybatis.dynamic.sql.select.aggregate.CountDistinct;
 import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
@@ -198,6 +199,10 @@ public interface SqlBuilder {
     
     static Count count(BasicColumn column) {
         return Count.of(column);
+    }
+    
+    static CountDistinct countDistinct(BasicColumn column) {
+        return CountDistinct.of(column);
     }
     
     static Max max(BasicColumn column) {
