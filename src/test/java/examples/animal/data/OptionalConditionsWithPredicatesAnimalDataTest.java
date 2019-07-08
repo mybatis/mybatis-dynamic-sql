@@ -454,30 +454,6 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
         }
     }
 
-    /**
-     * Delete this test when the deprecated method is deleted
-     */
-    @Test
-    @Deprecated
-    public void testIsInWhenWithSomeValuesDeprecated() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(id, isIn(3, NULL_INTEGER, 5).withValueStreamOperations(s -> s.filter(Objects::nonNull).map(i -> i + 3)))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(6),
-                    () -> assertThat(animals.get(1).getId()).isEqualTo(8)
-            );
-        }
-    }
-
     @Test
     public void testIsInCaseInsensitiveWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -557,29 +533,6 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
         }
     }
 
-    /**
-     * Delete this test when the deprecated method is deleted
-     */
-    @Test
-    @Deprecated
-    public void testIsInCaseInsensitiveWhenWithSomeValuesDeprecated() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, isInCaseInsensitive("mouse", null, "musk shrew").withValueStreamOperations(s -> s.filter(Objects::nonNull)))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
-            );
-        }
-    }
-
     @Test
     public void testIsInCaseInsensitiveWhenWithNoValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -640,30 +593,6 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
         }
     }
 
-    /**
-     * Delete this test when the deprecated method is deleted
-     */
-    @Test
-    @Deprecated
-    public void testIsNotInWhenWithSomeValuesDeprecated() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(id, isNotIn(3, NULL_INTEGER, 5).withValueStreamOperations(s -> s.filter(Objects::nonNull)))
-                    .and(id, isLessThanOrEqualTo(10))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(8),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
-            );
-        }
-    }
-
     @Test
     public void testIsNotInCaseInsensitiveWhenWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -691,30 +620,6 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotInCaseInsensitive("mouse", null, "musk shrew").then(s -> s.filter(Objects::nonNull)))
-                    .and(id, isLessThanOrEqualTo(10))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategy.MYBATIS3);
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(8),
-                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
-            );
-        }
-    }
-
-    /**
-     * Delete this test when the deprecated method is deleted
-     */
-    @Test
-    @Deprecated
-    public void testIsNotInCaseInsensitiveWhenWithSomeValuesDeprecated() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, isNotInCaseInsensitive("mouse", null, "musk shrew").withValueStreamOperations(s -> s.filter(Objects::nonNull)))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()

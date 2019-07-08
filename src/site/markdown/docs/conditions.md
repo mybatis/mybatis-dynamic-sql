@@ -84,7 +84,7 @@ For example, you could code a search like this:
 
 In this example, the three conditions will only be rendered if the values passed to them are not null. If all three values are null, then no where clause will be generated.
 
-Each of the conditions accepts a lamba expression that can be used to determine if the condition should render or not. The lambas will all be of standard JDK types (either `java.util.function.BooleanSupplier`, `java.util.function.Predicate`, or `java.util.function.BiPredicate` depending on the type of condition). The following table lists the optional conditions and shows how to use them: 
+Each of the conditions accepts a lambda expression that can be used to determine if the condition should render or not. The lambdas will all be of standard JDK types (either `java.util.function.BooleanSupplier`, `java.util.function.Predicate`, or `java.util.function.BiPredicate` depending on the type of condition). The following table lists the optional conditions and shows how to use them: 
 
 | Condition | Example | Rendering Rules |
 |-----------|---------|-----------------|
