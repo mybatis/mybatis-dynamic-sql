@@ -36,7 +36,7 @@ For example:
             .set(animalName).equalToNull()
             .build()
             .render(RenderingStrategy.MYBATIS3);
-``` 
+```
 
 ## Annotated Mapper for Update Statements
 
@@ -52,7 +52,6 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
 ...
-
 ```
 
 ## XML Mapper for Update Statements
