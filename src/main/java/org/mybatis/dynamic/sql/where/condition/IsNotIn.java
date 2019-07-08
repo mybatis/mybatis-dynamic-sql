@@ -55,23 +55,6 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
         return new IsNotIn<>(values, valueStreamTransformer);
     }
 
-    /**
-     * This method allows you to modify the condition's values before they are placed into the parameter map.
-     * For example, you could filter nulls, or trim strings, etc. This process will run before final rendering of SQL.
-     * If you filter values out of the stream, then final condition will not reference those values. If you filter all
-     * values out of the stream, then the condition will not render.
-     * 
-     * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
-     *     the values are placed in the parameter map
-     * @return new condition with the specified transformer
-     * 
-     * @deprecated See {@link IsNotIn#then(UnaryOperator)}
-     */
-    @Deprecated
-    public IsNotIn<T> withValueStreamOperations(UnaryOperator<Stream<T>> valueStreamTransformer) {
-        return then(valueStreamTransformer);
-    }
-
     public static <T> IsNotIn<T> of(Collection<T> values) {
         return new IsNotIn<>(values);
     }
