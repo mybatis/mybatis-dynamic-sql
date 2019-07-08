@@ -35,7 +35,7 @@ public class SpringBatchPagingReaderSelectModel {
         return new LimitAndOffsetDecorator(selectStatement);
     }
 
-    public class LimitAndOffsetDecorator implements SelectStatementProvider {
+    public static class LimitAndOffsetDecorator implements SelectStatementProvider {
         private Map<String, Object> parameters = new HashMap<>();
         private String selectStatement;
         
