@@ -13,7 +13,7 @@ The SQL statement objects are created in exactly the same way as for MyBatis - o
 ```
 
 ## Executing Select Statements
-The Spring Named Parameter JDBC template expects an SQL statement with parameter markers in the Spring format, and a set of matched parameters.  MyBatis Dynamic SQL will generate both.  The parameters returned from the generated SQL statement can be wrapped in a Spring `MapSqlParameterSource`.  Spring also expects you to provide a row mapper for creating the returned objects.  The followin code shows a complete example:
+The Spring Named Parameter JDBC template expects an SQL statement with parameter markers in the Spring format, and a set of matched parameters.  MyBatis Dynamic SQL will generate both.  The parameters returned from the generated SQL statement can be wrapped in a Spring `MapSqlParameterSource`.  Spring also expects you to provide a row mapper for creating the returned objects.  The following code shows a complete example:
 
 ```java
     NamedParameterJdbcTemplate template = getTemplate();

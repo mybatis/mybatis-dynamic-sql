@@ -122,7 +122,7 @@ public class LimitAndOffsetTest {
             assertAll(
                     () -> assertThat(records.size()).isEqualTo(43),
                     () -> assertThat(records.get(0).getId()).isEqualTo(23),
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData offset #{parameters._offset}"),
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData offset #{parameters._offset} rows"),
                     () -> assertThat(selectStatement.getParameters().get("_offset")).isEqualTo(22L)
             );
         }
@@ -191,7 +191,7 @@ public class LimitAndOffsetTest {
             assertAll(
                     () -> assertThat(records.size()).isEqualTo(27),
                     () -> assertThat(records.get(0).getId()).isEqualTo(23),
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} offset #{parameters._offset}"),
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} offset #{parameters._offset} rows"),
                     () -> assertThat(selectStatement.getParameters().get("_offset")).isEqualTo(22L)
             );
         }
@@ -259,7 +259,7 @@ public class LimitAndOffsetTest {
             assertAll(
                     () -> assertThat(records.size()).isEqualTo(43),
                     () -> assertThat(records.get(0).getId()).isEqualTo(23),
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id offset #{parameters._offset}"),
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id offset #{parameters._offset} rows"),
                     () -> assertThat(selectStatement.getParameters().get("_offset")).isEqualTo(22L)
             );
         }

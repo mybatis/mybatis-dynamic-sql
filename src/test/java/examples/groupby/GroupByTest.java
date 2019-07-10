@@ -255,7 +255,7 @@ public class GroupByTest {
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
             
-            String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset}";
+            String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset} rows";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -263,6 +263,73 @@ public class GroupByTest {
             Map<String, Object> row = rows.get(0);
             assertThat(row.get("LAST_NAME")).isEqualTo("Rubble");
             assertThat(row.get("COUNT")).isEqualTo(3L);
+        }
+    }
+
+    @Test
+    public void testOffsetAndFetchFirstAfterGroupBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(lastName, count().as("count"))
+                    .from(person)
+                    .groupBy(lastName)
+                    .offset(1)
+                    .fetchFirst(1).rowsOnly()
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Rubble");
+            assertThat(row.get("COUNT")).isEqualTo(3L);
+        }
+    }
+
+    @Test
+    public void testFetchFirstOnlyAfterGroupBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(lastName, count().as("count"))
+                    .from(person)
+                    .groupBy(lastName)
+                    .fetchFirst(1).rowsOnly()
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select last_name, count(*) as count from Person group by last_name fetch first #{parameters._fetchFirstRows} rows only";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Flintstone");
+            assertThat(row.get("COUNT")).isEqualTo(4L);
+        }
+    }
+
+    @Test
+    public void testCountDistinct() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(countDistinct(lastName).as("count"))
+                    .from(person)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select count(distinct last_name) as count from Person";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("COUNT")).isEqualTo(2L);
         }
     }
 }

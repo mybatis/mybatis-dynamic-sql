@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -49,16 +51,41 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     private GroupByModel groupByModel;
     private JoinModel joinModel;
     private List<JoinSpecification> joinSpecifications = new ArrayList<>();
+    private Supplier<R> buildDelegateMethod;
     
     private QueryExpressionDSL(FromGatherer<R> fromGatherer) {
-        connector = fromGatherer.builder.connector;
-        selectList = Arrays.asList(fromGatherer.builder.selectList);
-        isDistinct = fromGatherer.builder.isDistinct;
-        selectDSL = Objects.requireNonNull(fromGatherer.builder.selectDSL);
+        connector = fromGatherer.connector;
+        selectList = Arrays.asList(fromGatherer.selectList);
+        isDistinct = fromGatherer.isDistinct;
+        selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
         table = Objects.requireNonNull(fromGatherer.table);
-        tableAliases.putAll(fromGatherer.tableAliasMap);
+        buildDelegateMethod = this::internalBuild;
     }
     
+    private QueryExpressionDSL(FromGatherer<R> fromGatherer, String tableAlias) {
+        this(fromGatherer);
+        tableAliases.put(table, tableAlias);
+    }
+    
+    public static <R> FromGatherer<R> select(SelectDSL<R> selectDSL, BasicColumn...selectList) {
+        return new FromGatherer.Builder<R>()
+                .withSelectList(selectList)
+                .withSelectDSL(selectDSL)
+                .build();
+    }
+    
+    public static <R> FromGatherer<R> selectDistinct(SelectDSL<R> selectDSL, BasicColumn...selectList) {
+        return new FromGatherer.Builder<R>()
+                .withSelectList(selectList)
+                .withSelectDSL(selectDSL)
+                .isDistinct()
+                .build();
+    }
+    
+    public QueryExpressionWhereBuilder where() {
+        return new QueryExpressionWhereBuilder();
+    }
+
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
         return new QueryExpressionWhereBuilder(column, condition);
     }
@@ -70,6 +97,10 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     
     @Override
     public R build() {
+        return buildDelegateMethod.get();
+    }
+
+    private R internalBuild() {
         selectDSL.addQueryExpression(buildModel());
         return selectDSL.build();
     }
@@ -117,6 +148,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     }
     
     public SelectDSL<R> orderBy(SortSpecification...columns) {
+        buildDelegateMethod = selectDSL::build;
         selectDSL.addQueryExpression(buildModel());
         selectDSL.setOrderByModel(OrderByModel.of(columns));
         return selectDSL;
@@ -145,77 +177,107 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     }
     
     public SelectDSL<R>.LimitFinisher limit(long limit) {
+        buildDelegateMethod = selectDSL::build;
         selectDSL.addQueryExpression(buildModel());
         return selectDSL.limit(limit);
     }
 
-    public SelectDSL<R>.OffsetFinisher offset(long offset) {
+    public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
+        buildDelegateMethod = selectDSL::build;
         selectDSL.addQueryExpression(buildModel());
         return selectDSL.offset(offset);
     }
 
-    public static class FromGatherer<R> {
-        private FromGathererBuilder<R> builder;
-        private Map<SqlTable, String> tableAliasMap = new HashMap<>();
-        private SqlTable table;
-        
-        public FromGatherer(FromGathererBuilder<R> builder) {
-            this.builder = builder;
-        }
-        
-        public QueryExpressionDSL<R> from(SqlTable table) {
-            this.table = table;
-            
-            return new QueryExpressionDSL<>(this);
-        }
-
-        public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
-            this.table = table;
-            tableAliasMap.put(table, tableAlias);
-            return new QueryExpressionDSL<>(this);
-        }
+    public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+        buildDelegateMethod = selectDSL::build;
+        selectDSL.addQueryExpression(buildModel());
+        return selectDSL.fetchFirst(fetchFirstRows);
     }
     
-    public static class FromGathererBuilder<R> {
+    public static class FromGatherer<R> {
         private String connector;
         private BasicColumn[] selectList;
         private SelectDSL<R> selectDSL;
         private boolean isDistinct;
+        private SqlTable table;
+        private Optional<QueryExpressionDSL<R>> priorQuery;
         
-        public FromGathererBuilder<R> withConnector(String connector) {
-            this.connector = connector;
-            return this;
+        public FromGatherer(Builder<R> builder) {
+            this.connector = builder.connector;
+            this.selectList = Objects.requireNonNull(builder.selectList);
+            this.selectDSL = Objects.requireNonNull(builder.selectDSL);
+            this.isDistinct = builder.isDistinct;
+            this.priorQuery = Optional.ofNullable(builder.priorQuery);
+        }
+        
+        public QueryExpressionDSL<R> from(SqlTable table) {
+            this.table = table;
+            return setPriorBuildDelegate(new QueryExpressionDSL<>(this));
         }
 
-        public FromGathererBuilder<R> withSelectList(BasicColumn[] selectList) {
-            this.selectList = selectList;
-            return this;
+        public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
+            this.table = table;
+            return setPriorBuildDelegate(new QueryExpressionDSL<>(this, tableAlias));
         }
+        
+        private QueryExpressionDSL<R> setPriorBuildDelegate(QueryExpressionDSL<R> newQuery) {
+            priorQuery.ifPresent(pq -> pq.buildDelegateMethod = newQuery::build);
+            return newQuery;
+        }
+        
+        public static class Builder<R> {
+            private String connector;
+            private BasicColumn[] selectList;
+            private SelectDSL<R> selectDSL;
+            private boolean isDistinct;
+            private QueryExpressionDSL<R> priorQuery;
+            
+            public Builder<R> withConnector(String connector) {
+                this.connector = connector;
+                return this;
+            }
 
-        public FromGathererBuilder<R> withSelectDSL(SelectDSL<R> selectDSL) {
-            this.selectDSL = selectDSL;
-            return this;
-        }
-        
-        public FromGathererBuilder<R> isDistinct() {
-            this.isDistinct = true;
-            return this;
-        }
-        
-        public FromGatherer<R> build() {
-            return new FromGatherer<>(this);
+            public Builder<R> withSelectList(BasicColumn[] selectList) {
+                this.selectList = selectList;
+                return this;
+            }
+
+            public Builder<R> withSelectDSL(SelectDSL<R> selectDSL) {
+                this.selectDSL = selectDSL;
+                return this;
+            }
+            
+            public Builder<R> isDistinct() {
+                this.isDistinct = true;
+                return this;
+            }
+            
+            public Builder<R> withPriorQuery(QueryExpressionDSL<R> priorQuery) {
+                this.priorQuery = priorQuery;
+                return this;
+            }
+            
+            public FromGatherer<R> build() {
+                return new FromGatherer<>(this);
+            }
         }
     }
     
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<R> {
+        private <T> QueryExpressionWhereBuilder() {
+            buildDelegateMethod = this::internalBuild;
+        }
+
         private <T> QueryExpressionWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
+            buildDelegateMethod = this::internalBuild;
         }
         
         private <T> QueryExpressionWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
+            buildDelegateMethod = this::internalBuild;
         }
         
         public UnionBuilder union() {
@@ -231,6 +293,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
 
         public SelectDSL<R> orderBy(SortSpecification...columns) {
+            buildDelegateMethod = selectDSL::build;
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
             selectDSL.setOrderByModel(OrderByModel.of(columns));
@@ -245,19 +308,32 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
         
         public SelectDSL<R>.LimitFinisher limit(long limit) {
+            buildDelegateMethod = selectDSL::build;
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.limit(limit);
         }
         
-        public SelectDSL<R>.OffsetFinisher offset(long offset) {
+        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
+            buildDelegateMethod = selectDSL::build;
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.offset(offset);
         }
         
+        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            buildDelegateMethod = selectDSL::build;
+            whereModel = buildWhereModel();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.fetchFirst(fetchFirstRows);
+        }
+        
         @Override
         public R build() {
+            return buildDelegateMethod.get();
+        }
+        
+        private R internalBuild() {
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.build();
@@ -289,7 +365,6 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     }
 
     public class JoinSpecificationFinisher implements Buildable<R> {
-
         private SqlTable joinTable;
         private List<JoinCriterion> joinCriteria = new ArrayList<>();
         private JoinType joinType;
@@ -305,6 +380,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
                     .build();
             
             joinCriteria.add(joinCriterion);
+            buildDelegateMethod = this::internalbuild;
         }
 
         public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
@@ -319,6 +395,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             
             this.joinCriteria.add(joinCriterion);
             this.joinCriteria.addAll(Arrays.asList(joinCriteria));
+            buildDelegateMethod = this::internalbuild;
         }
         
         protected JoinSpecification buildJoinSpecification() {
@@ -335,9 +412,18 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         
         @Override
         public R build() {
+            return buildDelegateMethod.get();
+        }
+        
+        private R internalbuild() {
             joinModel = buildJoinModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.build();
+        }
+        
+        public QueryExpressionWhereBuilder where() {
+            joinModel = buildJoinModel();
+            return new QueryExpressionWhereBuilder();
         }
         
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
@@ -401,6 +487,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
 
         public SelectDSL<R> orderBy(SortSpecification...columns) {
+            buildDelegateMethod = selectDSL::build;
             joinModel = buildJoinModel();
             selectDSL.addQueryExpression(buildModel());
             selectDSL.setOrderByModel(OrderByModel.of(columns));
@@ -408,35 +495,60 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
 
         public SelectDSL<R>.LimitFinisher limit(long limit) {
+            buildDelegateMethod = selectDSL::build;
             joinModel = buildJoinModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.limit(limit);
         }
 
-        public SelectDSL<R>.OffsetFinisher offset(long offset) {
+        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
+            buildDelegateMethod = selectDSL::build;
             joinModel = buildJoinModel();
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.offset(offset);
         }
+
+        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            buildDelegateMethod = selectDSL::build;
+            joinModel = buildJoinModel();
+            selectDSL.addQueryExpression(buildModel());
+            return selectDSL.fetchFirst(fetchFirstRows);
+        }
     }
     
     public class GroupByFinisher implements Buildable<R> {
+        public GroupByFinisher() {
+            buildDelegateMethod = this::internalBuild;
+        }
+        
         public SelectDSL<R> orderBy(SortSpecification...columns) {
+            buildDelegateMethod = selectDSL::build;
             selectDSL.setOrderByModel(OrderByModel.of(columns));
             return selectDSL;
         }
 
         @Override
         public R build() {
+            return buildDelegateMethod.get();
+        }
+        
+        private R internalBuild() {
             return selectDSL.build();
         }
 
         public SelectDSL<R>.LimitFinisher limit(long limit) {
+            buildDelegateMethod = selectDSL::build;
             return selectDSL.limit(limit);
         }
 
-        public SelectDSL<R>.OffsetFinisher offset(long offset) {
+        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
+            buildDelegateMethod = selectDSL::build;
             return selectDSL.offset(offset);
+        }
+
+        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            buildDelegateMethod = selectDSL::build;
+            return selectDSL.fetchFirst(fetchFirstRows);
         }
     }
     
@@ -448,19 +560,21 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
         
         public FromGatherer<R> select(BasicColumn...selectList) {
-            return new FromGathererBuilder<R>()
+            return new FromGatherer.Builder<R>()
                     .withConnector(connector)
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
+                    .withPriorQuery(QueryExpressionDSL.this)
                     .build();
         }
 
         public FromGatherer<R> selectDistinct(BasicColumn...selectList) {
-            return new FromGathererBuilder<R>()
+            return new FromGatherer.Builder<R>()
                     .withConnector(connector)
-                    .isDistinct()
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
+                    .isDistinct()
+                    .withPriorQuery(QueryExpressionDSL.this)
                     .build();
         }
     }

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -440,7 +440,7 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isIn(3, NULL_INTEGER, 5).withValueStreamOperations(s -> s.filter(Objects::nonNull).map(i -> i + 3)))
+                    .where(id, isIn(3, NULL_INTEGER, 5).then(s -> s.filter(Objects::nonNull).map(i -> i + 3)))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -474,13 +474,13 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
     }
 
     @Test
-    public void testValueStreamOperations() {
+    public void testValueStreamTransformer() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isIn("  Mouse", "  ", null, "", "Musk shrew  ")
-                            .withValueStreamOperations(s -> s.filter(Objects::nonNull)
+                            .then(s -> s.filter(Objects::nonNull)
                                     .map(String::trim)
                                     .filter(st -> !st.isEmpty())))
                     .orderBy(id)
@@ -496,7 +496,7 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
     }
     
     @Test
-    public void testValueStreamOperationsWithCustomCondition() {
+    public void testValueStreamTransformerWithCustomCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -520,7 +520,7 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isInCaseInsensitive("mouse", null, "musk shrew").withValueStreamOperations(s -> s.filter(Objects::nonNull)))
+                    .where(animalName, isInCaseInsensitive("mouse", null, "musk shrew").then(s -> s.filter(Objects::nonNull)))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategy.MYBATIS3);
@@ -579,7 +579,7 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotIn(3, NULL_INTEGER, 5).withValueStreamOperations(s -> s.filter(Objects::nonNull)))
+                    .where(id, isNotIn(3, NULL_INTEGER, 5).then(s -> s.filter(Objects::nonNull)))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -619,7 +619,7 @@ public class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotInCaseInsensitive("mouse", null, "musk shrew").withValueStreamOperations(s -> s.filter(Objects::nonNull)))
+                    .where(animalName, isNotInCaseInsensitive("mouse", null, "musk shrew").then(s -> s.filter(Objects::nonNull)))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()

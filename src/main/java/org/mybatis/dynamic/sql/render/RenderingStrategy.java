@@ -20,7 +20,9 @@ import java.util.Optional;
 import org.mybatis.dynamic.sql.BindableColumn;
 
 public abstract class RenderingStrategy {
+    @SuppressWarnings("squid:S2390")
     public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();
+    @SuppressWarnings("squid:S2390")
     public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();
     public static final String DEFAULT_PARAMETER_PREFIX = "parameters"; //$NON-NLS-1$
     

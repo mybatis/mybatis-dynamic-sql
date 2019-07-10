@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class QueryExpressionModel {
         table = Objects.requireNonNull(builder.table);
         joinModel = builder.joinModel;
         tableAliasCalculator = joinModel().map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
-                .orElse(TableAliasCalculator.of(builder.tableAliases));
+                .orElseGet(() -> TableAliasCalculator.of(builder.tableAliases));
         whereModel = builder.whereModel;
         groupByModel = builder.groupByModel;
     }
@@ -88,7 +88,7 @@ public class QueryExpressionModel {
     }
     
     public String calculateTableNameIncludingAlias(SqlTable table) {
-        return table.name()
+        return table.tableNameAtRuntime()
                 + spaceBefore(tableAliasCalculator.aliasForTable(table));
     }
     

@@ -84,7 +84,7 @@ For example, you could code a search like this:
 
 In this example, the three conditions will only be rendered if the values passed to them are not null. If all three values are null, then no where clause will be generated.
 
-Each of the conditions accepts a lamba expression that can be used to determine if the condition should render or not. The lambas will all be of standard JDK types (either `java.util.function.BooleanSupplier`, `java.util.function.Predicate`, or `java.util.function.BiPredicate` depending on the type of condition). The following table lists the optional conditions and shows how to use them: 
+Each of the conditions accepts a lambda expression that can be used to determine if the condition should render or not. The lambdas will all be of standard JDK types (either `java.util.function.BooleanSupplier`, `java.util.function.Predicate`, or `java.util.function.BiPredicate` depending on the type of condition). The following table lists the optional conditions and shows how to use them: 
 
 | Condition | Example | Rendering Rules |
 |-----------|---------|-----------------|
@@ -143,13 +143,13 @@ The following table shows the different supplied In conditions and how they will
 
 If none of these options meet your needs, there is an extension point where you can add your own filter and/or map conditions to the value stream. This gives you great flexibility to alter or filter the value list before the condition is rendered.
 
-The extension point for modifying the value list is the method `withValueStreamOperations(UnaryOperator<Stream<T>>)`. This method accepts a `UnaryOperator<Stream<T>>` in which you can specify map and/or filter operations for the value stream. For example, suppose you wanted to code an "in" condition that accepted a list of strings, but you want to filter out any null or blank string, and you want to trim all strings. This can be accomplished with code like this:
+The extension point for modifying the value list is the method `then(UnaryOperator<Stream<T>>)`. This method accepts a `UnaryOperator<Stream<T>>` in which you can specify map and/or filter operations for the value stream. For example, suppose you wanted to code an "in" condition that accepted a list of strings, but you want to filter out any null or blank string, and you want to trim all strings. This can be accomplished with code like this:
 
 ```java
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isIn("  Mouse", "  ", null, "", "Musk shrew  ")
-                            .withValueStreamOperations(s -> s.filter(Objects::nonNull)
+                            .then(s -> s.filter(Objects::nonNull)
                                     .map(String::trim)
                                     .filter(st -> !st.isEmpty())))
                     .orderBy(id)

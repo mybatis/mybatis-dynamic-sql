@@ -47,7 +47,7 @@ public class InsertSelectRenderer {
     
     private String calculateInsertStatement(SelectStatementProvider selectStatement) {
         return "insert into" //$NON-NLS-1$
-                + spaceBefore(model.table().name())
+                + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(calculateColumnsPhrase())
                 + spaceBefore(selectStatement.getSelectStatement());
     }

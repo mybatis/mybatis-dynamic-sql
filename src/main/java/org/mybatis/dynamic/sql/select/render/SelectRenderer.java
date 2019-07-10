@@ -15,9 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,6 +23,7 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.OrderByModel;
+import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.CustomCollectors;
@@ -33,8 +31,6 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class SelectRenderer {
-    private static final String LIMIT_PARAMETER = "_limit"; //$NON-NLS-1$
-    private static final String OFFSET_PARAMETER = "_offset"; //$NON-NLS-1$
     private SelectModel selectModel;
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
@@ -42,23 +38,20 @@ public class SelectRenderer {
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        sequence = builder.sequence().orElse(new AtomicInteger(1));
+        sequence = builder.sequence().orElseGet(() -> new AtomicInteger(1));
     }
     
     public SelectStatementProvider render() {
-        FragmentCollector queryExpressionCollector = selectModel
+        FragmentCollector fragmentCollector = selectModel
                 .mapQueryExpressions(this::renderQueryExpression)
                 .collect(FragmentCollector.collect());
+        fragmentCollector.add(renderOrderBy());
+        fragmentCollector.add(renderPagingModel());
         
-        Map<String, Object> parameters = queryExpressionCollector.parameters();
-        
-        String selectStatement = queryExpressionCollector.fragments().collect(Collectors.joining(" ")) //$NON-NLS-1$
-                + spaceBefore(renderOrderBy())
-                + spaceBefore(renderLimit(parameters))
-                + spaceBefore(renderOffset(parameters));
+        String selectStatement = fragmentCollector.fragments().collect(Collectors.joining(" ")); //$NON-NLS-1$
         
         return DefaultSelectStatementProvider.withSelectStatement(selectStatement)
-                .withParameters(parameters)
+                .withParameters(fragmentCollector.parameters())
                 .build();
     }
 
@@ -70,14 +63,15 @@ public class SelectRenderer {
                 .render();
     }
 
-    private Optional<String> renderOrderBy() {
+    private Optional<FragmentAndParameters> renderOrderBy() {
         return selectModel.orderByModel()
                 .map(this::renderOrderBy);
     }
     
-    private String renderOrderBy(OrderByModel orderByModel) {
-        return orderByModel.mapColumns(this::calculateOrderByPhrase)
+    private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
+        String phrase = orderByModel.mapColumns(this::calculateOrderByPhrase)
                 .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return FragmentAndParameters.withFragment(phrase).build();
     }
     
     private String calculateOrderByPhrase(SortSpecification column) {
@@ -88,28 +82,14 @@ public class SelectRenderer {
         return phrase;
     }
     
-    private Optional<String> renderLimit(Map<String, Object> parameters) {
-        return selectModel.limit().map(l -> renderLimit(parameters, l));
+    private Optional<FragmentAndParameters> renderPagingModel() {
+        return selectModel.pagingModel().flatMap(this::renderPagingModel);
     }
     
-    private String renderLimit(Map<String, Object> parameters, Long limit) {
-        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX,
-                LIMIT_PARAMETER); 
-        parameters.put(LIMIT_PARAMETER, limit);
-        return "limit " + placeholder; //$NON-NLS-1$
+    private Optional<FragmentAndParameters> renderPagingModel(PagingModel pagingModel) {
+        return pagingModel.accept(new PagingModelRenderer(renderingStrategy));
     }
-    
-    private Optional<String> renderOffset(Map<String, Object> parameters) {
-        return selectModel.offset().map(o -> renderOffset(parameters, o));
-    }
-    
-    private String renderOffset(Map<String, Object> parameters, Long offset) {
-        String placeholder = renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX,
-                OFFSET_PARAMETER);
-        parameters.put(OFFSET_PARAMETER, offset);
-        return "offset " + placeholder; //$NON-NLS-1$
-    }
-    
+
     public static Builder withSelectModel(SelectModel selectModel) {
         return new Builder().withSelectModel(selectModel);
     }

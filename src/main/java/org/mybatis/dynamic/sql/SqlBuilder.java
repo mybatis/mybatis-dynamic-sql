@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
@@ -31,6 +31,7 @@ import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
+import org.mybatis.dynamic.sql.select.aggregate.CountDistinct;
 import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
@@ -113,7 +114,7 @@ public interface SqlBuilder {
         return BatchInsertDSL.insert(records);
     }
     
-    static <T> BatchInsertDSL.IntoGatherer<T> insert(List<T> records) {
+    static <T> BatchInsertDSL.IntoGatherer<T> insert(Collection<T> records) {
         return BatchInsertDSL.insert(records);
     }
     
@@ -133,6 +134,10 @@ public interface SqlBuilder {
         return UpdateDSL.update(table);
     }
 
+    static WhereDSL where() {
+        return WhereDSL.where();
+    }
+    
     static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition) {
         return WhereDSL.where(column, condition);
     }
@@ -194,6 +199,10 @@ public interface SqlBuilder {
     
     static Count count(BasicColumn column) {
         return Count.of(column);
+    }
+    
+    static CountDistinct countDistinct(BasicColumn column) {
+        return CountDistinct.of(column);
     }
     
     static Max max(BasicColumn column) {
@@ -417,7 +426,7 @@ public interface SqlBuilder {
         return isIn(Arrays.asList(values));
     }
 
-    static <T> IsIn<T> isIn(List<T> values) {
+    static <T> IsIn<T> isIn(Collection<T> values) {
         return IsIn.of(values);
     }
     
@@ -430,7 +439,7 @@ public interface SqlBuilder {
         return isInWhenPresent(Arrays.asList(values));
     }
 
-    static <T> IsInWhenPresent<T> isInWhenPresent(List<T> values) {
+    static <T> IsInWhenPresent<T> isInWhenPresent(Collection<T> values) {
         return IsInWhenPresent.of(values);
     }
     
@@ -439,7 +448,7 @@ public interface SqlBuilder {
         return isNotIn(Arrays.asList(values));
     }
     
-    static <T> IsNotIn<T> isNotIn(List<T> values) {
+    static <T> IsNotIn<T> isNotIn(Collection<T> values) {
         return IsNotIn.of(values);
     }
     
@@ -452,7 +461,7 @@ public interface SqlBuilder {
         return isNotInWhenPresent(Arrays.asList(values));
     }
 
-    static <T> IsNotInWhenPresent<T> isNotInWhenPresent(List<T> values) {
+    static <T> IsNotInWhenPresent<T> isNotInWhenPresent(Collection<T> values) {
         return IsNotInWhenPresent.of(values);
     }
     
@@ -558,7 +567,7 @@ public interface SqlBuilder {
         return isInCaseInsensitive(Arrays.asList(values));
     }
 
-    static IsInCaseInsensitive isInCaseInsensitive(List<String> values) {
+    static IsInCaseInsensitive isInCaseInsensitive(Collection<String> values) {
         return IsInCaseInsensitive.of(values);
     }
 
@@ -566,7 +575,7 @@ public interface SqlBuilder {
         return isInCaseInsensitiveWhenPresent(Arrays.asList(values));
     }
 
-    static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(List<String> values) {
+    static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(Collection<String> values) {
         return IsInCaseInsensitiveWhenPresent.of(values);
     }
 
@@ -574,7 +583,7 @@ public interface SqlBuilder {
         return isNotInCaseInsensitive(Arrays.asList(values));
     }
     
-    static IsNotInCaseInsensitive isNotInCaseInsensitive(List<String> values) {
+    static IsNotInCaseInsensitive isNotInCaseInsensitive(Collection<String> values) {
         return IsNotInCaseInsensitive.of(values);
     }
     
@@ -582,7 +591,7 @@ public interface SqlBuilder {
         return isNotInCaseInsensitiveWhenPresent(Arrays.asList(values));
     }
 
-    static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(List<String> values) {
+    static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(Collection<String> values) {
         return IsNotInCaseInsensitiveWhenPresent.of(values);
     }
 

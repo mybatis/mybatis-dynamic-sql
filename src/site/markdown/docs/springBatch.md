@@ -14,7 +14,7 @@ The `ItemReader` implementations need special care. Those classes assume that al
 The solution involves these steps:
 
 1. The SQL must be rendered such that the parameter markers are aware of the enclosing parameter Map in the `ItemReader`
-1. The `SelectStatamentProvider` must be placed in the `ItemReader` parameter Map with a known key.
+1. The `SelectStatementProvider` must be placed in the `ItemReader` parameter Map with a known key.
 1. The `@SelectProvider` must be configured to be aware of the enclosing parameter Map
 
 MyBatis Dynamic SQL provides utilities for each of these requirements. Each utility uses a shared Map key for consistency.

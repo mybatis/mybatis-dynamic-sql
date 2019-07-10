@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,27 +16,27 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
-    protected List<T> values;
-    protected UnaryOperator<Stream<T>> valueStreamOperations;
+    protected Collection<T> values;
+    protected UnaryOperator<Stream<T>> valueStreamTransformer;
 
-    protected AbstractListValueCondition(List<T> values) {
+    protected AbstractListValueCondition(Collection<T> values) {
         this(values, UnaryOperator.identity());
     }
 
-    protected AbstractListValueCondition(List<T> values, UnaryOperator<Stream<T>> valueStreamOperations) {
+    protected AbstractListValueCondition(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer) {
         this.values = new ArrayList<>(Objects.requireNonNull(values));
-        this.valueStreamOperations = Objects.requireNonNull(valueStreamOperations);
+        this.valueStreamTransformer = Objects.requireNonNull(valueStreamTransformer);
     }
     
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
-        return valueStreamOperations.apply(values.stream()).map(mapper);
+        return valueStreamTransformer.apply(values.stream()).map(mapper);
     }
     
     @Override

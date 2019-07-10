@@ -595,7 +595,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
-                    + " offset #{parameters._offset}";
+                    + " offset #{parameters._offset} rows";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -612,6 +612,75 @@ public class JoinMapperTest {
             assertThat(row.get("QUANTITY")).isEqualTo(1);
             assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
             assertThat(row.get("ITEM_ID")).isEqualTo(44);
+        }
+    }
+
+    @Test
+    public void testOffsetAndFetchFirstAfterJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(itemMaster, "im")
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .offset(1)
+                    .fetchFirst(2).rowsOnly()
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
+                    + " offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(2);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
+            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+
+            row = rows.get(1);
+            assertThat(row.get("ORDER_ID")).isEqualTo(1);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
+            assertThat(row.get("ITEM_ID")).isEqualTo(33);
+        }
+    }
+
+    @Test
+    public void testFetchFirstOnlyAfterJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(itemMaster, "im")
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .fetchFirst(2).rowsOnly()
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
+                    + " fetch first #{parameters._fetchFirstRows} rows only";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(2);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("ORDER_ID")).isEqualTo(1);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
+            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+
+            row = rows.get(1);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
+            assertThat(row.get("ITEM_ID")).isEqualTo(22);
         }
     }
 }
