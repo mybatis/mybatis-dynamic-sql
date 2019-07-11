@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -51,7 +51,8 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
-import org.mybatis.dynamic.sql.insert.render.MultiInsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.DefaultMultiRowInsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -194,6 +195,31 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
     
     @Test
+    public void testMultiInsertWithRawMyBatisAnnotations() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
+            List<GeneratedAlwaysRecord> records = getTestRecords();
+            
+            String statement = "insert into GeneratedAlways (id, first_name, last_name)" +
+                    " values" +
+                    " (#{records[0].id,jdbcType=INTEGER}, #{records[0].firstName,jdbcType=VARCHAR}, #{records[0].lastName,jdbcType=VARCHAR})," +
+                    " (#{records[1].id,jdbcType=INTEGER}, #{records[1].firstName,jdbcType=VARCHAR}, #{records[1].lastName,jdbcType=VARCHAR})," +
+                    " (#{records[2].id,jdbcType=INTEGER}, #{records[2].firstName,jdbcType=VARCHAR}, #{records[2].lastName,jdbcType=VARCHAR})," +
+                    " (#{records[3].id,jdbcType=INTEGER}, #{records[3].firstName,jdbcType=VARCHAR}, #{records[3].lastName,jdbcType=VARCHAR})";
+            
+            int rows = mapper.multiInsert(statement, records);
+            
+            assertAll(
+                    () -> assertThat(rows).isEqualTo(4),
+                    () -> assertThat(records.get(0).getFullName()).isEqualTo("George Jetson"),
+                    () -> assertThat(records.get(1).getFullName()).isEqualTo("Jane Jetson"),
+                    () -> assertThat(records.get(2).getFullName()).isEqualTo("Judy Jetson"),
+                    () -> assertThat(records.get(3).getFullName()).isEqualTo("Elroy Jetson")
+            );
+        }
+    }
+    
+    @Test
     public void testMultiInsertWithList() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
@@ -207,18 +233,18 @@ public class GeneratedAlwaysAnnotatedMapperTest {
 //                    .build()
 //                    .render(RenderingStrategy.MYBATIS3);
             
-            MultiInsertStatementProvider insertStatement = new MultiInsertStatementProvider();
-
             String statement = "insert into GeneratedAlways (id, first_name, last_name)" +
-                    " values (#{list[0].id,jdbcType=INTEGER}, #{list[0].firstName,jdbcType=VARCHAR}, #{list[0].lastName,jdbcType=VARCHAR})," +
-                    " (#{list[1].id,jdbcType=INTEGER}, #{list[1].firstName,jdbcType=VARCHAR}, #{list[1].lastName,jdbcType=VARCHAR})," +
-                    " (#{list[2].id,jdbcType=INTEGER}, #{list[2].firstName,jdbcType=VARCHAR}, #{list[2].lastName,jdbcType=VARCHAR})," +
-                    " (#{list[3].id,jdbcType=INTEGER}, #{list[3].firstName,jdbcType=VARCHAR}, #{list[3].lastName,jdbcType=VARCHAR})";
+                    " values" +
+                    " (#{records[0].id,jdbcType=INTEGER}, #{records[0].firstName,jdbcType=VARCHAR}, #{records[0].lastName,jdbcType=VARCHAR})," +
+                    " (#{records[1].id,jdbcType=INTEGER}, #{records[1].firstName,jdbcType=VARCHAR}, #{records[1].lastName,jdbcType=VARCHAR})," +
+                    " (#{records[2].id,jdbcType=INTEGER}, #{records[2].firstName,jdbcType=VARCHAR}, #{records[2].lastName,jdbcType=VARCHAR})," +
+                    " (#{records[3].id,jdbcType=INTEGER}, #{records[3].firstName,jdbcType=VARCHAR}, #{records[3].lastName,jdbcType=VARCHAR})";
             
-            insertStatement.setInsertStatement(statement);
-            insertStatement.setList(records);
+            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> insertStatement = new DefaultMultiRowInsertStatementProvider.Builder<GeneratedAlwaysRecord>()
+                    .withInsertStatement(statement)
+                    .withRecords(records)
+                    .build();
             
-            // must use a Map...MyBatis is broken for using real objects
             mapper.multiInsert(insertStatement);
             
             assertAll(

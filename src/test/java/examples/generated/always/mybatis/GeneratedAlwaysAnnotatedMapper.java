@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,13 +19,14 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.MultiInsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
@@ -50,10 +51,17 @@ public interface GeneratedAlwaysAnnotatedMapper {
     @Options(useGeneratedKeys=true, keyProperty="record.fullName")
     int insert(InsertStatementProvider<GeneratedAlwaysRecord> insertStatement);
     
-    @InsertProvider(type=SqlProviderAdapter.class, method="multiInsert")
-    @Options(useGeneratedKeys=true, keyProperty="fullName")
-    int multiInsert(MultiInsertStatementProvider multiInsert);
-    
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
+    
+    @InsertProvider(type=SqlProviderAdapter.class, method="multiInsert")
+    @Options(useGeneratedKeys=true, keyProperty="records.fullName")
+    int multiInsert(@Param("statement") String statement, @Param("records") List<GeneratedAlwaysRecord> records);
+
+    // TODO - this is kludgy. Currently MyBatis does not support nested lists in parameter objects,
+    // so we need to do this silliness and decompose the multi insert into its component parts
+    // for the actual MyBatis call
+    default int multiInsert(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert) {
+        return multiInsert(multiInsert.getInsertStatement(), multiInsert.getRecords());
+    }
 }
