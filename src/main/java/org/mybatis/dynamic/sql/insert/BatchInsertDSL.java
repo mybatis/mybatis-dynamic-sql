@@ -51,18 +51,18 @@ public class BatchInsertDSL<T> {
     }
 
     @SafeVarargs
-    public static <T> IntoGatherer<T> insert(T...records) {
-        return new IntoGatherer<>(Arrays.asList(records));
+    public static <T> BatchIntoGatherer<T> insert(T...records) {
+        return new BatchIntoGatherer<>(Arrays.asList(records));
     }
     
-    public static <T> IntoGatherer<T> insert(Collection<T> records) {
-        return new IntoGatherer<>(records);
+    public static <T> BatchIntoGatherer<T> insert(Collection<T> records) {
+        return new BatchIntoGatherer<>(records);
     }
     
-    public static class IntoGatherer<T> {
+    public static class BatchIntoGatherer<T> {
         private Collection<T> records;
         
-        private IntoGatherer(Collection<T> records) {
+        private BatchIntoGatherer(Collection<T> records) {
             this.records = records;
         }
 
