@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,37 +20,36 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class FieldAndValueCollector<T> {
+public class FieldAndValueCollector {
     
-    private List<String> columnNames = new ArrayList<>();
-    private List<String> valuePhrases = new ArrayList<>();
+    private List<FieldAndValue> fieldsAndValue = new ArrayList<>();
     
     public FieldAndValueCollector() {
         super();
     }
     
     public void add(FieldAndValue fieldAndValue) {
-        columnNames.add(fieldAndValue.fieldName());
-        valuePhrases.add(fieldAndValue.valuePhrase());
+        fieldsAndValue.add(fieldAndValue);
     }
     
-    public FieldAndValueCollector<T> merge(FieldAndValueCollector<T> other) {
-        columnNames.addAll(other.columnNames);
-        valuePhrases.addAll(other.valuePhrases);
+    public FieldAndValueCollector merge(FieldAndValueCollector other) {
+        fieldsAndValue.addAll(other.fieldsAndValue);
         return this;
     }
 
     public String columnsPhrase() {
-        return columnNames.stream()
+        return fieldsAndValue.stream()
+                .map(FieldAndValue::fieldName)
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public String valuesPhrase() {
-        return valuePhrases.stream()
+        return fieldsAndValue.stream()
+                .map(FieldAndValue::valuePhrase)
                 .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    public static <T> Collector<FieldAndValue, FieldAndValueCollector<T>, FieldAndValueCollector<T>> collect() {
+    public static Collector<FieldAndValue, FieldAndValueCollector, FieldAndValueCollector> collect() {
         return Collector.of(FieldAndValueCollector::new,
                 FieldAndValueCollector::add,
                 FieldAndValueCollector::merge);

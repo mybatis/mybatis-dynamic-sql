@@ -15,22 +15,10 @@
  */
 package examples.generated.always.mybatis;
 
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.buildInsert;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.buildInsertSelectiveStatement;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.buildUpdateByPrimaryKeySelectiveStatement;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.buildUpdateByPrimaryKeyStatement;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.firstName;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.generatedAlways;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.id;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.lastName;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.selectByExample;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.selectByPrimaryKey;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.updateByExampleSelective;
+import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mybatis.dynamic.sql.SqlBuilder.insert;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,7 +39,6 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
-import org.mybatis.dynamic.sql.insert.render.DefaultMultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -207,7 +194,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                     " (#{records[2].id,jdbcType=INTEGER}, #{records[2].firstName,jdbcType=VARCHAR}, #{records[2].lastName,jdbcType=VARCHAR})," +
                     " (#{records[3].id,jdbcType=INTEGER}, #{records[3].firstName,jdbcType=VARCHAR}, #{records[3].lastName,jdbcType=VARCHAR})";
             
-            int rows = mapper.multiInsert(statement, records);
+            int rows = mapper.multiInsertWithGeneratedKeys(statement, records);
             
             assertAll(
                     () -> assertThat(rows).isEqualTo(4),
@@ -225,13 +212,13 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
             
-//            MultiInsert<GeneratedAlwaysRecord> multiInsert = multiInsert(records)
-//                    .into(generatedAlways)
-//                    .map(id).toProperty("id")
-//                    .map(firstName).toProperty("firstName")
-//                    .map(lastName).toProperty("lastName")
-//                    .build()
-//                    .render(RenderingStrategy.MYBATIS3);
+            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiRowInsert = multiRowInsert(records)
+                    .into(generatedAlways)
+                    .map(id).toProperty("id")
+                    .map(firstName).toProperty("firstName")
+                    .map(lastName).toProperty("lastName")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
             
             String statement = "insert into GeneratedAlways (id, first_name, last_name)" +
                     " values" +
@@ -239,15 +226,13 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                     " (#{records[1].id,jdbcType=INTEGER}, #{records[1].firstName,jdbcType=VARCHAR}, #{records[1].lastName,jdbcType=VARCHAR})," +
                     " (#{records[2].id,jdbcType=INTEGER}, #{records[2].firstName,jdbcType=VARCHAR}, #{records[2].lastName,jdbcType=VARCHAR})," +
                     " (#{records[3].id,jdbcType=INTEGER}, #{records[3].firstName,jdbcType=VARCHAR}, #{records[3].lastName,jdbcType=VARCHAR})";
+
+            assertThat(multiRowInsert.getInsertStatement()).isEqualTo(statement);
             
-            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> insertStatement = new DefaultMultiRowInsertStatementProvider.Builder<GeneratedAlwaysRecord>()
-                    .withInsertStatement(statement)
-                    .withRecords(records)
-                    .build();
-            
-            mapper.multiInsert(insertStatement);
+            int rows = mapper.multiInsertWithGeneratedKeys(multiRowInsert);
             
             assertAll(
+                    () -> assertThat(rows).isEqualTo(4),
                     () -> assertThat(records.get(0).getFullName()).isEqualTo("George Jetson"),
                     () -> assertThat(records.get(1).getFullName()).isEqualTo("Jane Jetson"),
                     () -> assertThat(records.get(2).getFullName()).isEqualTo("Judy Jetson"),
@@ -256,39 +241,73 @@ public class GeneratedAlwaysAnnotatedMapperTest {
         }
     }
 
-//    @Test
-//    public void testMultiInsertWithArray() {
-//        try (SqlSession session = sqlSessionFactory.openSession()) {
-//            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
-//
-//            GeneratedAlwaysRecord record1 = new GeneratedAlwaysRecord();
-//            record1.setId(1000);
-//            record1.setFirstName("George");
-//            record1.setLastName("Jetson");
-//
-//            GeneratedAlwaysRecord record2 = new GeneratedAlwaysRecord();
-//            record2.setId(1001);
-//            record2.setFirstName("Jane");
-//            record2.setLastName("Jetson");
-//            
-//            MultiInsert<GeneratedAlwaysRecord> batchInsert = multiInsert(record1, record2)
-//                    .into(generatedAlways)
-//                    .map(id).toProperty("id")
-//                    .map(firstName).toProperty("firstName")
-//                    .map(lastName).toProperty("lastName")
-//                    .build()
-//                    .render(RenderingStrategy.MYBATIS3);
-//            
-//            batchInsert.insertStatements().stream().forEach(mapper::insert);
-//            
-//            session.commit();
-//            
-//            assertAll(
-//                    () -> assertThat(record1.getFullName()).isEqualTo("George Jetson"),
-//                    () -> assertThat(record2.getFullName()).isEqualTo("Jane Jetson")
-//            );
-//        }
-//    }
+    @Test
+    public void testMultiInsertWithArray() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
+
+            GeneratedAlwaysRecord record1 = new GeneratedAlwaysRecord();
+            record1.setId(1000);
+            record1.setFirstName("George");
+            record1.setLastName("Jetson");
+
+            GeneratedAlwaysRecord record2 = new GeneratedAlwaysRecord();
+            record2.setId(1001);
+            record2.setFirstName("Jane");
+            record2.setLastName("Jetson");
+            
+            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiRowInsert = multiRowInsert(record1, record2)
+                    .into(generatedAlways)
+                    .map(id).toProperty("id")
+                    .map(firstName).toProperty("firstName")
+                    .map(lastName).toProperty("lastName")
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String statement = "insert into GeneratedAlways (id, first_name, last_name)" +
+                    " values" +
+                    " (#{records[0].id,jdbcType=INTEGER}, #{records[0].firstName,jdbcType=VARCHAR}, #{records[0].lastName,jdbcType=VARCHAR})," +
+                    " (#{records[1].id,jdbcType=INTEGER}, #{records[1].firstName,jdbcType=VARCHAR}, #{records[1].lastName,jdbcType=VARCHAR})";
+
+            assertThat(multiRowInsert.getInsertStatement()).isEqualTo(statement);
+            
+            int rows = mapper.multiInsert(multiRowInsert);
+            assertThat(rows).isEqualTo(2);
+        }
+    }
+    
+    @Test
+    public void testMultiInsertWithArrayAndVariousMappings() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
+
+            GeneratedAlwaysRecord record1 = new GeneratedAlwaysRecord();
+            record1.setId(1000);
+            record1.setFirstName("George");
+            record1.setLastName("Jetson");
+
+            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiRowInsert = multiRowInsert(record1)
+                    .into(generatedAlways)
+                    .map(id).toConstant("1000")
+                    .map(firstName).toStringConstant("George")
+                    .map(lastName).toProperty("lastName")
+                    .map(age).toNull()
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String statement = "insert into GeneratedAlways (id, first_name, last_name, age)" +
+                    " values (1000, 'George', #{records[0].lastName,jdbcType=VARCHAR}, null)";
+
+            assertThat(multiRowInsert.getInsertStatement()).isEqualTo(statement);
+            
+            int rows = mapper.multiInsertWithGeneratedKeys(multiRowInsert);
+            
+            assertAll(
+                    () -> assertThat(rows).isEqualTo(1),
+                    () -> assertThat(record1.getFullName()).isEqualTo("George Jetson")
+            );
+        }
+    }
     
     private List<GeneratedAlwaysRecord> getTestRecords() {
         List<GeneratedAlwaysRecord> records = new ArrayList<>();

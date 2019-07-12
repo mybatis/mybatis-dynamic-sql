@@ -15,11 +15,10 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import java.util.Map;
-
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
@@ -39,8 +38,8 @@ public class SqlProviderAdapter {
         return insertStatement.getInsertStatement();
     }
     
-    public String multiInsert(Map<String, Object> parameter) {
-        return (String) parameter.get("statement"); //$NON-NLS-1$
+    public String multiRowInsert(MultiRowInsertStatementProvider<?> insertStatement) {
+        return insertStatement.getInsertStatement();
     }
     
     public String insertSelect(InsertSelectStatementProvider insertStatement) {

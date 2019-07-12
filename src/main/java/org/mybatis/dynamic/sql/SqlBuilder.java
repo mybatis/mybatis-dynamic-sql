@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -116,6 +117,15 @@ public interface SqlBuilder {
     
     static <T> BatchInsertDSL.IntoGatherer<T> insert(Collection<T> records) {
         return BatchInsertDSL.insert(records);
+    }
+    
+    @SafeVarargs
+    static <T> MultiRowInsertDSL.IntoGatherer<T> multiRowInsert(T...records) {
+        return MultiRowInsertDSL.insert(records);
+    }
+    
+    static <T> MultiRowInsertDSL.IntoGatherer<T> multiRowInsert(Collection<T> records) {
+        return MultiRowInsertDSL.insert(records);
     }
     
     static InsertSelectDSL.InsertColumnGatherer insertInto(SqlTable table) {

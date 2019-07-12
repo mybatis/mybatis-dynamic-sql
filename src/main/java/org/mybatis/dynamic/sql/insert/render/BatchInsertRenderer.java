@@ -36,7 +36,7 @@ public class BatchInsertRenderer<T> {
     
     public BatchInsert<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
-        FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
+        FieldAndValueCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
         
         return BatchInsert.withRecords(model.records())
@@ -52,7 +52,7 @@ public class BatchInsertRenderer<T> {
         return insertMapping.accept(visitor);
     }
 
-    private String calculateInsertStatement(FieldAndValueCollector<T> collector) {
+    private String calculateInsertStatement(FieldAndValueCollector collector) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(collector.columnsPhrase())

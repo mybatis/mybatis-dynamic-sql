@@ -17,18 +17,18 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.Collection;
 
-import org.mybatis.dynamic.sql.insert.render.BatchInsert;
-import org.mybatis.dynamic.sql.insert.render.BatchInsertRenderer;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertRenderer;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
-public class BatchInsertModel<T> extends AbstractMultiRowInsertModel<T> {
+public class MultiRowInsertModel<T> extends AbstractMultiRowInsertModel<T> {
     
-    private BatchInsertModel(Builder<T> builder) {
+    private MultiRowInsertModel(Builder<T> builder) {
         super(builder);
     }
-
-    public BatchInsert<T> render(RenderingStrategy renderingStrategy) {
-        return BatchInsertRenderer.withBatchInsertModel(this)
+    
+    public MultiRowInsertStatementProvider<T> render(RenderingStrategy renderingStrategy) {
+        return MultiRowInsertRenderer.withMultiRowInsertModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
@@ -43,9 +43,9 @@ public class BatchInsertModel<T> extends AbstractMultiRowInsertModel<T> {
         protected Builder<T> getThis() {
             return this;
         }
-        
-        public BatchInsertModel<T> build() {
-            return new BatchInsertModel<>(this);
+
+        public MultiRowInsertModel<T> build() {
+            return new MultiRowInsertModel<>(this);
         }
     }
 }

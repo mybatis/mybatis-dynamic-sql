@@ -17,6 +17,7 @@ package examples.generated.always.mybatis;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
@@ -54,14 +55,20 @@ public interface GeneratedAlwaysAnnotatedMapper {
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
     
-    @InsertProvider(type=SqlProviderAdapter.class, method="multiInsert")
-    @Options(useGeneratedKeys=true, keyProperty="records.fullName")
-    int multiInsert(@Param("statement") String statement, @Param("records") List<GeneratedAlwaysRecord> records);
+    @InsertProvider(type=SqlProviderAdapter.class, method="multiRowInsert")
+    int multiInsert(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert);
 
-    // TODO - this is kludgy. Currently MyBatis does not support nested lists in parameter objects,
-    // so we need to do this silliness and decompose the multi insert into its component parts
+    // TODO - this is kludgy. Currently MyBatis does not support nested lists in parameter objects
+    // when returning generated keys.
+    // So we need to do this silliness and decompose the multi row insert into its component parts
     // for the actual MyBatis call
-    default int multiInsert(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert) {
-        return multiInsert(multiInsert.getInsertStatement(), multiInsert.getRecords());
+    @Insert({
+        "${insertStatement}"
+    })
+    @Options(useGeneratedKeys=true, keyProperty="records.fullName")
+    int multiInsertWithGeneratedKeys(@Param("insertStatement") String statement, @Param("records") List<GeneratedAlwaysRecord> records);
+
+    default int multiInsertWithGeneratedKeys(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert) {
+        return multiInsertWithGeneratedKeys(multiInsert.getInsertStatement(), multiInsert.getRecords());
     }
 }

@@ -20,54 +20,57 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.insert.InsertModel;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.InsertMapping;
 
-public class InsertRenderer<T> {
+public class MultiRowInsertRenderer<T> {
 
-    private InsertModel<T> model;
+    private MultiRowInsertModel<T> model;
     private RenderingStrategy renderingStrategy;
     
-    private InsertRenderer(Builder<T> builder) {
+    private MultiRowInsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public InsertStatementProvider<T> render() {
-        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
-        FieldAndValueCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
-                .collect(FieldAndValueCollector.collect());
+    public MultiRowInsertStatementProvider<T> render() {
+        MultiRowInsertValuePhraseVisitor visitor =
+                new MultiRowInsertValuePhraseVisitor(renderingStrategy, model.recordCount());
+        FieldAndMultipleValuesCollector collector = model.mapColumnMappings(toFieldAndMultipleValues(visitor))
+                .collect(FieldAndMultipleValuesCollector.collect());
         
-        return DefaultInsertStatementProvider.withRecord(model.record())
+        return new DefaultMultiRowInsertStatementProvider.Builder<T>().withRecords(model.records())
                 .withInsertStatement(calculateInsertStatement(collector))
                 .build();
     }
+    
+    private Function<InsertMapping, FieldAndMultipleValues> toFieldAndMultipleValues(
+            MultiRowInsertValuePhraseVisitor visitor) {
+        return insertMapping -> toFieldAndValue(visitor, insertMapping);
+    }
+    
+    private FieldAndMultipleValues toFieldAndValue(MultiRowInsertValuePhraseVisitor visitor,
+            InsertMapping insertMapping) {
+        return insertMapping.accept(visitor);
+    }
 
-    private String calculateInsertStatement(FieldAndValueCollector collector) {
+    private String calculateInsertStatement(FieldAndMultipleValuesCollector collector) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(collector.columnsPhrase())
                 + spaceBefore(collector.valuesPhrase());
     }
-
-    private Function<InsertMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {
-        return insertMapping -> toFieldAndValue(visitor, insertMapping);
-    }
     
-    private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, InsertMapping insertMapping) {
-        return insertMapping.accept(visitor);
-    }
-    
-    public static <T> Builder<T> withInsertModel(InsertModel<T> model) {
-        return new Builder<T>().withInsertModel(model);
+    public static <T> Builder<T> withMultiRowInsertModel(MultiRowInsertModel<T> model) {
+        return new Builder<T>().withMultiRowInsertModel(model);
     }
     
     public static class Builder<T> {
-        private InsertModel<T> model;
+        private MultiRowInsertModel<T> model;
         private RenderingStrategy renderingStrategy;
         
-        public Builder<T> withInsertModel(InsertModel<T> model) {
+        public Builder<T> withMultiRowInsertModel(MultiRowInsertModel<T> model) {
             this.model = model;
             return this;
         }
@@ -77,8 +80,8 @@ public class InsertRenderer<T> {
             return this;
         }
         
-        public InsertRenderer<T> build() {
-            return new InsertRenderer<>(this);
+        public MultiRowInsertRenderer<T> build() {
+            return new MultiRowInsertRenderer<>(this);
         }
     }
 }
