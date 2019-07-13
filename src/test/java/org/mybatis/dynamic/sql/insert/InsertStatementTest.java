@@ -21,15 +21,12 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 
 import java.sql.JDBCType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collector;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.FieldAndMultipleValues;
-import org.mybatis.dynamic.sql.insert.render.FieldAndMultipleValuesCollector;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValue;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValueCollector;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
@@ -158,18 +155,18 @@ public class InsertStatementTest {
     @Test
     public void testParallelStreamForMultiRecord() {
 
-        List<FieldAndMultipleValues> mappings = new ArrayList<>();
+        List<FieldAndValue> mappings = new ArrayList<>();
         
-        mappings.add(newFieldAndValues(id.name(), "#{records[0].id}", "#{records[1].id}"));
-        mappings.add(newFieldAndValues(firstName.name(), "#{records[0].firstName}", "#{records[1].firstName}"));
-        mappings.add(newFieldAndValues(lastName.name(), "#{records[0].lastName}", "#{records[1].lastName}"));
-        mappings.add(newFieldAndValues(occupation.name(), "#{records[0].occupation}", "#{records[1].occupation}"));
+        mappings.add(newFieldAndValues(id.name(), "#{records[%s].id}"));
+        mappings.add(newFieldAndValues(firstName.name(), "#{records[%s].firstName}"));
+        mappings.add(newFieldAndValues(lastName.name(), "#{records[%s].lastName}"));
+        mappings.add(newFieldAndValues(occupation.name(), "#{records[%s].occupation}"));
         
-        FieldAndMultipleValuesCollector collector = 
+        FieldAndValueCollector collector = 
                 mappings.parallelStream().collect(Collector.of(
-                        FieldAndMultipleValuesCollector::new,
-                        FieldAndMultipleValuesCollector::add,
-                        FieldAndMultipleValuesCollector::merge));
+                        FieldAndValueCollector::new,
+                        FieldAndValueCollector::add,
+                        FieldAndValueCollector::merge));
                 
         String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
         String expectedValuesPhrase = "values"
@@ -178,13 +175,13 @@ public class InsertStatementTest {
         
         assertAll(
                 () -> assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase),
-                () -> assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase)
+                () -> assertThat(collector.multiRowInsertValuesPhrase(2)).isEqualTo(expectedValuesPhrase)
         );
     }
     
-    private FieldAndMultipleValues newFieldAndValues(String fieldName, String... valuePhrases) {
-        return FieldAndMultipleValues.withFieldName(fieldName)
-                .withValuePhrases(Arrays.asList(valuePhrases))
+    private FieldAndValue newFieldAndValues(String fieldName, String valuePhrase) {
+        return FieldAndValue.withFieldName(fieldName)
+                .withValuePhrase(valuePhrase)
                 .build();
     }
     

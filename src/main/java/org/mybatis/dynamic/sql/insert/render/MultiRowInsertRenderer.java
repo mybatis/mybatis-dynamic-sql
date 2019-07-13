@@ -35,31 +35,28 @@ public class MultiRowInsertRenderer<T> {
     }
     
     public MultiRowInsertStatementProvider<T> render() {
-        MultiRowInsertValuePhraseVisitor visitor =
-                new MultiRowInsertValuePhraseVisitor(renderingStrategy, model.recordCount());
-        FieldAndMultipleValuesCollector collector = model.mapColumnMappings(toFieldAndMultipleValues(visitor))
-                .collect(FieldAndMultipleValuesCollector.collect());
+        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy, "records[%s]"); //$NON-NLS-1$
+        FieldAndValueCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
+                .collect(FieldAndValueCollector.collect());
         
         return new DefaultMultiRowInsertStatementProvider.Builder<T>().withRecords(model.records())
                 .withInsertStatement(calculateInsertStatement(collector))
                 .build();
     }
     
-    private Function<InsertMapping, FieldAndMultipleValues> toFieldAndMultipleValues(
-            MultiRowInsertValuePhraseVisitor visitor) {
+    private Function<InsertMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
     
-    private FieldAndMultipleValues toFieldAndValue(MultiRowInsertValuePhraseVisitor visitor,
-            InsertMapping insertMapping) {
+    private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, InsertMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
 
-    private String calculateInsertStatement(FieldAndMultipleValuesCollector collector) {
+    private String calculateInsertStatement(FieldAndValueCollector collector) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(collector.columnsPhrase())
-                + spaceBefore(collector.valuesPhrase());
+                + spaceBefore(collector.multiRowInsertValuesPhrase(model.recordCount()));
     }
     
     public static <T> Builder<T> withMultiRowInsertModel(MultiRowInsertModel<T> model) {

@@ -35,7 +35,7 @@ public class InsertRenderer<T> {
     }
     
     public InsertStatementProvider<T> render() {
-        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
+        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy, "record"); //$NON-NLS-1$
         FieldAndValueCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
         
