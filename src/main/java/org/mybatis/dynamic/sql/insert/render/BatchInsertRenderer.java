@@ -18,11 +18,9 @@ package org.mybatis.dynamic.sql.insert.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
-import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.InsertMapping;
 
 public class BatchInsertRenderer<T> {
 
@@ -36,7 +34,7 @@ public class BatchInsertRenderer<T> {
     
     public BatchInsert<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy, "record"); //$NON-NLS-1$
-        FieldAndValueCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
+        FieldAndValueCollector collector = model.mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
         
         return BatchInsert.withRecords(model.records())
@@ -44,14 +42,6 @@ public class BatchInsertRenderer<T> {
                 .build();
     }
     
-    private Function<InsertMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {
-        return insertMapping -> toFieldAndValue(visitor, insertMapping);
-    }
-    
-    private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, InsertMapping insertMapping) {
-        return insertMapping.accept(visitor);
-    }
-
     private String calculateInsertStatement(FieldAndValueCollector collector) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
