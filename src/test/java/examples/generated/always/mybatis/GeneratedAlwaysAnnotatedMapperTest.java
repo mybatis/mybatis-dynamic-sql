@@ -212,7 +212,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
             
-            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiRowInsert = multiRowInsert(records)
+            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiRowInsert = insertMultiple(records)
                     .into(generatedAlways)
                     .map(id).toProperty("id")
                     .map(firstName).toProperty("firstName")
@@ -256,7 +256,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             record2.setFirstName("Jane");
             record2.setLastName("Jetson");
             
-            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiRowInsert = multiRowInsert(record1, record2)
+            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiRowInsert = insertMultiple(record1, record2)
                     .into(generatedAlways)
                     .map(id).toProperty("id")
                     .map(firstName).toProperty("firstName")
@@ -286,7 +286,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             record1.setFirstName("George");
             record1.setLastName("Jetson");
 
-            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiRowInsert = multiRowInsert(record1)
+            MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiRowInsert = insertMultiple(record1)
                     .into(generatedAlways)
                     .map(id).toConstant("1000")
                     .map(firstName).toStringConstant("George")
