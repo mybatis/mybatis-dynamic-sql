@@ -51,18 +51,18 @@ public class MultiRowInsertDSL<T> {
     }
 
     @SafeVarargs
-    public static <T> MultiRowIntoGatherer<T> insert(T...records) {
-        return new MultiRowIntoGatherer<>(Arrays.asList(records));
+    public static <T> IntoGatherer<T> insert(T...records) {
+        return MultiRowInsertDSL.insert(Arrays.asList(records));
     }
     
-    public static <T> MultiRowIntoGatherer<T> insert(Collection<T> records) {
-        return new MultiRowIntoGatherer<>(records);
+    public static <T> IntoGatherer<T> insert(Collection<T> records) {
+        return new IntoGatherer<>(records);
     }
     
-    public static class MultiRowIntoGatherer<T> {
+    public static class IntoGatherer<T> {
         private Collection<T> records;
         
-        private MultiRowIntoGatherer(Collection<T> records) {
+        private IntoGatherer(Collection<T> records) {
             this.records = records;
         }
 

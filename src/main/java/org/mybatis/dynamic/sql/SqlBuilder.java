@@ -111,20 +111,20 @@ public interface SqlBuilder {
     }
     
     @SafeVarargs
-    static <T> BatchInsertDSL.BatchIntoGatherer<T> insert(T...records) {
+    static <T> BatchInsertDSL.IntoGatherer<T> insert(T...records) {
         return BatchInsertDSL.insert(records);
     }
     
-    static <T> BatchInsertDSL.BatchIntoGatherer<T> insert(Collection<T> records) {
+    static <T> BatchInsertDSL.IntoGatherer<T> insert(Collection<T> records) {
         return BatchInsertDSL.insert(records);
     }
     
     @SafeVarargs
-    static <T> MultiRowInsertDSL.MultiRowIntoGatherer<T> insertMultiple(T...records) {
+    static <T> MultiRowInsertDSL.IntoGatherer<T> insertMultiple(T...records) {
         return MultiRowInsertDSL.insert(records);
     }
     
-    static <T> MultiRowInsertDSL.MultiRowIntoGatherer<T> insertMultiple(Collection<T> records) {
+    static <T> MultiRowInsertDSL.IntoGatherer<T> insertMultiple(Collection<T> records) {
         return MultiRowInsertDSL.insert(records);
     }
     

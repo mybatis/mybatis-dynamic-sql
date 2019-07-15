@@ -39,8 +39,8 @@ public class BatchInsertDSL<T> {
         this.table = table;
     }
     
-    public <F> BatchColumnMappingFinisher<F> map(SqlColumn<F> column) {
-        return new BatchColumnMappingFinisher<>(column);
+    public <F> ColumnMappingFinisher<F> map(SqlColumn<F> column) {
+        return new ColumnMappingFinisher<>(column);
     }
     
     public BatchInsertModel<T> build() {
@@ -51,18 +51,18 @@ public class BatchInsertDSL<T> {
     }
 
     @SafeVarargs
-    public static <T> BatchIntoGatherer<T> insert(T...records) {
-        return new BatchIntoGatherer<>(Arrays.asList(records));
+    public static <T> IntoGatherer<T> insert(T...records) {
+        return BatchInsertDSL.insert(Arrays.asList(records));
     }
     
-    public static <T> BatchIntoGatherer<T> insert(Collection<T> records) {
-        return new BatchIntoGatherer<>(records);
+    public static <T> IntoGatherer<T> insert(Collection<T> records) {
+        return new IntoGatherer<>(records);
     }
     
-    public static class BatchIntoGatherer<T> {
+    public static class IntoGatherer<T> {
         private Collection<T> records;
         
-        private BatchIntoGatherer(Collection<T> records) {
+        private IntoGatherer(Collection<T> records) {
             this.records = records;
         }
 
@@ -71,10 +71,10 @@ public class BatchInsertDSL<T> {
         }
     }
     
-    public class BatchColumnMappingFinisher<F> {
+    public class ColumnMappingFinisher<F> {
         private SqlColumn<F> column;
             
-        public BatchColumnMappingFinisher(SqlColumn<F> column) {
+        public ColumnMappingFinisher(SqlColumn<F> column) {
             this.column = column;
         }
             
