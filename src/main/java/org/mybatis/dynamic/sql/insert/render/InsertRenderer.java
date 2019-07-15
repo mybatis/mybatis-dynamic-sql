@@ -36,7 +36,7 @@ public class InsertRenderer<T> {
     
     public InsertStatementProvider<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
-        FieldAndValueCollector<T> collector = model.mapColumnMappings(toFieldAndValue(visitor))
+        FieldAndValueCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
         
         return DefaultInsertStatementProvider.withRecord(model.record())
@@ -44,7 +44,7 @@ public class InsertRenderer<T> {
                 .build();
     }
 
-    private String calculateInsertStatement(FieldAndValueCollector<T> collector) {
+    private String calculateInsertStatement(FieldAndValueCollector collector) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(collector.columnsPhrase())

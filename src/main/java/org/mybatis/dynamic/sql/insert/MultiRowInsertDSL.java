@@ -28,13 +28,13 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class BatchInsertDSL<T> {
+public class MultiRowInsertDSL<T> {
 
     private Collection<T> records;
     private SqlTable table;
     private List<InsertMapping> columnMappings = new ArrayList<>();
     
-    private BatchInsertDSL(Collection<T> records, SqlTable table) {
+    private MultiRowInsertDSL(Collection<T> records, SqlTable table) {
         this.records = records;
         this.table = table;
     }
@@ -43,8 +43,8 @@ public class BatchInsertDSL<T> {
         return new ColumnMappingFinisher<>(column);
     }
     
-    public BatchInsertModel<T> build() {
-        return BatchInsertModel.withRecords(records)
+    public MultiRowInsertModel<T> build() {
+        return MultiRowInsertModel.withRecords(records)
                 .withTable(table)
                 .withColumnMappings(columnMappings)
                 .build();
@@ -52,7 +52,7 @@ public class BatchInsertDSL<T> {
 
     @SafeVarargs
     public static <T> IntoGatherer<T> insert(T...records) {
-        return BatchInsertDSL.insert(Arrays.asList(records));
+        return MultiRowInsertDSL.insert(Arrays.asList(records));
     }
     
     public static <T> IntoGatherer<T> insert(Collection<T> records) {
@@ -66,8 +66,8 @@ public class BatchInsertDSL<T> {
             this.records = records;
         }
 
-        public BatchInsertDSL<T> into(SqlTable table) {
-            return new BatchInsertDSL<>(records, table);
+        public MultiRowInsertDSL<T> into(SqlTable table) {
+            return new MultiRowInsertDSL<>(records, table);
         }
     }
     
@@ -78,24 +78,24 @@ public class BatchInsertDSL<T> {
             this.column = column;
         }
             
-        public BatchInsertDSL<T> toProperty(String property) {
+        public MultiRowInsertDSL<T> toProperty(String property) {
             columnMappings.add(PropertyMapping.of(column, property));
-            return BatchInsertDSL.this;
+            return MultiRowInsertDSL.this;
         }
             
-        public BatchInsertDSL<T> toNull() {
+        public MultiRowInsertDSL<T> toNull() {
             columnMappings.add(NullMapping.of(column));
-            return BatchInsertDSL.this;
+            return MultiRowInsertDSL.this;
         }
             
-        public BatchInsertDSL<T> toConstant(String constant) {
+        public MultiRowInsertDSL<T> toConstant(String constant) {
             columnMappings.add(ConstantMapping.of(column, constant));
-            return BatchInsertDSL.this;
+            return MultiRowInsertDSL.this;
         }
             
-        public BatchInsertDSL<T> toStringConstant(String constant) {
+        public MultiRowInsertDSL<T> toStringConstant(String constant) {
             columnMappings.add(StringConstantMapping.of(column, constant));
-            return BatchInsertDSL.this;
+            return MultiRowInsertDSL.this;
         }
     }
 }

@@ -9,6 +9,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 ### Added
 
 - Added support for `count(distinct ...)` [#112](https://github.com/mybatis/mybatis-dynamic-sql/issues/112)
+- Added support for multiple row inserts [#116](https://github.com/mybatis/mybatis-dynamic-sql/issues/116)
 
 
 ## Release 1.1.2 - July 5, 2019

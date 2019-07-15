@@ -19,25 +19,25 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
 
-import org.mybatis.dynamic.sql.insert.BatchInsertModel;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
-public class BatchInsertRenderer<T> {
+public class MultiRowInsertRenderer<T> {
 
-    private BatchInsertModel<T> model;
+    private MultiRowInsertModel<T> model;
     private RenderingStrategy renderingStrategy;
     
-    private BatchInsertRenderer(Builder<T> builder) {
+    private MultiRowInsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public BatchInsert<T> render() {
-        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
+    public MultiRowInsertStatementProvider<T> render() {
+        ValuePhraseVisitor visitor = new MultiRowValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector collector = model.mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
         
-        return BatchInsert.withRecords(model.records())
+        return new DefaultMultiRowInsertStatementProvider.Builder<T>().withRecords(model.records())
                 .withInsertStatement(calculateInsertStatement(collector))
                 .build();
     }
@@ -46,18 +46,18 @@ public class BatchInsertRenderer<T> {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(collector.columnsPhrase())
-                + spaceBefore(collector.valuesPhrase());
+                + spaceBefore(collector.multiRowInsertValuesPhrase(model.recordCount()));
     }
     
-    public static <T> Builder<T> withBatchInsertModel(BatchInsertModel<T> model) {
-        return new Builder<T>().withBatchInsertModel(model);
+    public static <T> Builder<T> withMultiRowInsertModel(MultiRowInsertModel<T> model) {
+        return new Builder<T>().withMultiRowInsertModel(model);
     }
     
     public static class Builder<T> {
-        private BatchInsertModel<T> model;
+        private MultiRowInsertModel<T> model;
         private RenderingStrategy renderingStrategy;
         
-        public Builder<T> withBatchInsertModel(BatchInsertModel<T> model) {
+        public Builder<T> withMultiRowInsertModel(MultiRowInsertModel<T> model) {
             this.model = model;
             return this;
         }
@@ -67,8 +67,8 @@ public class BatchInsertRenderer<T> {
             return this;
         }
         
-        public BatchInsertRenderer<T> build() {
-            return new BatchInsertRenderer<>(this);
+        public MultiRowInsertRenderer<T> build() {
+            return new MultiRowInsertRenderer<>(this);
         }
     }
 }
