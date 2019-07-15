@@ -58,7 +58,7 @@ public interface GeneratedAlwaysAnnotatedMapper {
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert);
 
-    // TODO - this is kludgy. Currently MyBatis does not support nested lists in parameter objects
+    // This is kludgy. Currently MyBatis does not support nested lists in parameter objects
     // when returning generated keys.
     // So we need to do this silliness and decompose the multi row insert into its component parts
     // for the actual MyBatis call
