@@ -194,7 +194,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                     " (#{records[2].id,jdbcType=INTEGER}, #{records[2].firstName,jdbcType=VARCHAR}, #{records[2].lastName,jdbcType=VARCHAR})," +
                     " (#{records[3].id,jdbcType=INTEGER}, #{records[3].firstName,jdbcType=VARCHAR}, #{records[3].lastName,jdbcType=VARCHAR})";
             
-            int rows = mapper.multiInsertWithGeneratedKeys(statement, records);
+            int rows = mapper.insertMultipleWithGeneratedKeys(statement, records);
             
             assertAll(
                     () -> assertThat(rows).isEqualTo(4),
@@ -207,7 +207,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
     
     @Test
-    public void testMultiInsertWithList() {
+    public void testMultiInsertWithListAndGeneratedKeys() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
@@ -229,7 +229,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
 
             assertThat(multiRowInsert.getInsertStatement()).isEqualTo(statement);
             
-            int rows = mapper.multiInsertWithGeneratedKeys(multiRowInsert);
+            int rows = mapper.insertMultipleWithGeneratedKeys(multiRowInsert);
             
             assertAll(
                     () -> assertThat(rows).isEqualTo(4),
@@ -271,7 +271,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
 
             assertThat(multiRowInsert.getInsertStatement()).isEqualTo(statement);
             
-            int rows = mapper.multiInsert(multiRowInsert);
+            int rows = mapper.insertMultiple(multiRowInsert);
             assertThat(rows).isEqualTo(2);
         }
     }
@@ -300,7 +300,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
 
             assertThat(multiRowInsert.getInsertStatement()).isEqualTo(statement);
             
-            int rows = mapper.multiInsertWithGeneratedKeys(multiRowInsert);
+            int rows = mapper.insertMultipleWithGeneratedKeys(multiRowInsert);
             
             assertAll(
                     () -> assertThat(rows).isEqualTo(1),

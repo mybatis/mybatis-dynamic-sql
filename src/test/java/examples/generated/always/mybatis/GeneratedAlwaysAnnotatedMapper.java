@@ -55,8 +55,8 @@ public interface GeneratedAlwaysAnnotatedMapper {
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
     
-    @InsertProvider(type=SqlProviderAdapter.class, method="multiRowInsert")
-    int multiInsert(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert);
+    @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
+    int insertMultiple(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert);
 
     // TODO - this is kludgy. Currently MyBatis does not support nested lists in parameter objects
     // when returning generated keys.
@@ -66,9 +66,9 @@ public interface GeneratedAlwaysAnnotatedMapper {
         "${insertStatement}"
     })
     @Options(useGeneratedKeys=true, keyProperty="records.fullName")
-    int multiInsertWithGeneratedKeys(@Param("insertStatement") String statement, @Param("records") List<GeneratedAlwaysRecord> records);
+    int insertMultipleWithGeneratedKeys(@Param("insertStatement") String statement, @Param("records") List<GeneratedAlwaysRecord> records);
 
-    default int multiInsertWithGeneratedKeys(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert) {
-        return multiInsertWithGeneratedKeys(multiInsert.getInsertStatement(), multiInsert.getRecords());
+    default int insertMultipleWithGeneratedKeys(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert) {
+        return insertMultipleWithGeneratedKeys(multiInsert.getInsertStatement(), multiInsert.getRecords());
     }
 }

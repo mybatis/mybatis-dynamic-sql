@@ -38,7 +38,7 @@ public class SqlProviderAdapter {
         return insertStatement.getInsertStatement();
     }
     
-    public String multiRowInsert(MultiRowInsertStatementProvider<?> insertStatement) {
+    public String insertMultiple(MultiRowInsertStatementProvider<?> insertStatement) {
         return insertStatement.getInsertStatement();
     }
     
