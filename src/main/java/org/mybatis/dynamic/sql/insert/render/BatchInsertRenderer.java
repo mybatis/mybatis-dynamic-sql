@@ -33,7 +33,7 @@ public class BatchInsertRenderer<T> {
     }
     
     public BatchInsert<T> render() {
-        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy, "record"); //$NON-NLS-1$
+        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector collector = model.mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
         

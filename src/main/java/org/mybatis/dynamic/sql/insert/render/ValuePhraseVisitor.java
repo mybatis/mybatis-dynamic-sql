@@ -27,12 +27,10 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class ValuePhraseVisitor implements InsertMappingVisitor<FieldAndValue> {
     
-    private RenderingStrategy renderingStrategy;
-    private String prefix;
+    protected RenderingStrategy renderingStrategy;
     
-    public ValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
+    public ValuePhraseVisitor(RenderingStrategy renderingStrategy) {
         this.renderingStrategy = renderingStrategy;
-        this.prefix = prefix;
     }
 
     @Override
@@ -64,6 +62,6 @@ public class ValuePhraseVisitor implements InsertMappingVisitor<FieldAndValue> {
     }
     
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> renderingStrategy.getFormattedJdbcPlaceholder(column, prefix, parameterName);
+        return column -> renderingStrategy.getFormattedJdbcPlaceholder(column, "record", parameterName); //$NON-NLS-1$
     }
 }

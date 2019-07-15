@@ -33,7 +33,7 @@ public class MultiRowInsertRenderer<T> {
     }
     
     public MultiRowInsertStatementProvider<T> render() {
-        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy, "records[%s]"); //$NON-NLS-1$
+        ValuePhraseVisitor visitor = new MultiRowValuePhraseVisitor(renderingStrategy);
         FieldAndValueCollector collector = model.mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
                 .collect(FieldAndValueCollector.collect());
         
