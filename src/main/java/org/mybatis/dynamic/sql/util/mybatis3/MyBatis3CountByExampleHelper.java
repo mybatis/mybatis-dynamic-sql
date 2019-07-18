@@ -22,6 +22,6 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 @FunctionalInterface
-public interface MyBatis3CountByExampleSupport extends
+public interface MyBatis3CountByExampleHelper extends
         Function<QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>>, Buildable<MyBatis3SelectModelAdapter<Long>>> {
 }

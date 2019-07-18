@@ -22,6 +22,6 @@ import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 @FunctionalInterface
-public interface MyBatis3UpdateByExampleSupport extends
+public interface MyBatis3UpdateByExampleHelper extends
         Function<UpdateDSL<MyBatis3UpdateModelAdapter<Integer>>, Buildable<MyBatis3UpdateModelAdapter<Integer>>> {
 }

@@ -30,6 +30,6 @@ import org.mybatis.dynamic.sql.util.Buildable;
  *
  */
 @FunctionalInterface
-public interface MyBatis3DeleteByExampleSupport extends
+public interface MyBatis3DeleteByExampleHelper extends
         Function<DeleteDSL<MyBatis3DeleteModelAdapter<Integer>>, Buildable<MyBatis3DeleteModelAdapter<Integer>>> {
 }

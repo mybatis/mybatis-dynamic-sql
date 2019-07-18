@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 @FunctionalInterface
-public interface MyBatis3SelectByExampleSupport<T> extends
+public interface MyBatis3SelectByExampleHelper<T> extends
         Function<QueryExpressionDSL<MyBatis3SelectModelAdapter<List<T>>>,
         Buildable<MyBatis3SelectModelAdapter<List<T>>>> {
 }
