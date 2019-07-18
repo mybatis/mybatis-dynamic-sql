@@ -13,10 +13,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.update;
+package org.mybatis.dynamic.sql.util.mybatis3;
 
 import java.util.function.Function;
 
+import org.mybatis.dynamic.sql.update.MyBatis3UpdateModelAdapter;
+import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 @FunctionalInterface
