@@ -39,9 +39,9 @@ import org.mybatis.dynamic.sql.util.Buildable;
  *         &#64;Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR),
  *         &#64;Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
  * })
- * List&lt;SimpleTableRecord&gt; selectMany(SelectStatementProvider selectStatement);
+ * List&lt;SimpleRecord&gt; selectMany(SelectStatementProvider selectStatement);
  *
- * default List&lt;SimpleTableRecord&gt; selectByExample(MyBatis3SelectByExampleHelper&lt;SimpleTableRecord&gt; helper) {
+ * default List&lt;SimpleRecord&gt; selectByExample(MyBatis3SelectByExampleHelper&lt;SimpleRecord&gt; helper) {
  *     return helper.apply(SelectDSL.selectWithMapper(this::selectMany, simpleTable.allColumns())
  *             .from(simpleTable))
  *             .build()
@@ -52,7 +52,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>And then call the simplified default method like this:
  * 
  * <pre>
- * List&lt;SimpleTableRecord&gt; rows = mapper.selectByExample(q -&gt;
+ * List&lt;SimpleRecord&gt; rows = mapper.selectByExample(q -&gt;
  *     q.where(id, isEqualTo(1))
  *     .or(occupation, isNull()));
  * </pre>
@@ -60,7 +60,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>You can also do a "select all" with the following code:
  * 
  * <pre>
- * List&lt;SimpleTableRecord&gt; rows = mapper.selectByExample(q -&gt; q);
+ * List&lt;SimpleRecord&gt; rows = mapper.selectByExample(q -&gt; q);
  * </pre>
  * 
  * @author Jeff Butler
