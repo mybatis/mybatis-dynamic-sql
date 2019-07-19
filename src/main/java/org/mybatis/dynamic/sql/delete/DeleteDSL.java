@@ -23,9 +23,10 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
-public class DeleteDSL<R> {
+public class DeleteDSL<R> implements Buildable<R> {
 
     private Function<DeleteModel, R> adapterFunction;
     private SqlTable table;
@@ -54,6 +55,7 @@ public class DeleteDSL<R> {
      * 
      * @return the model class
      */
+    @Override
     public R build() {
         DeleteModel deleteModel = DeleteModel.withTable(table).build();
         return adapterFunction.apply(deleteModel);
@@ -72,7 +74,7 @@ public class DeleteDSL<R> {
         return deleteFrom(deleteModel -> MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);
     }
     
-    public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> {
+    public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> implements Buildable<R> {
         
         private <T> DeleteWhereBuilder() {
             super();
@@ -87,6 +89,7 @@ public class DeleteDSL<R> {
             super(column, condition, subCriteria);
         }
         
+        @Override
         public R build() {
             DeleteModel deleteModel = DeleteModel.withTable(table)
                     .withWhereModel(buildWhereModel())

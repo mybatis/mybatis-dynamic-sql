@@ -39,7 +39,7 @@ import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
-public class UpdateDSL<R> {
+public class UpdateDSL<R> implements Buildable<R> {
 
     private Function<UpdateModel, R> adapterFunction;
     private List<UpdateMapping> columnMappings = new ArrayList<>();
@@ -73,6 +73,7 @@ public class UpdateDSL<R> {
      * 
      * @return the update model
      */
+    @Override
     public R build() {
         UpdateModel updateModel = UpdateModel.withTable(table)
                 .withColumnMappings(columnMappings)
@@ -147,7 +148,7 @@ public class UpdateDSL<R> {
         }
     }
 
-    public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> {
+    public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> implements Buildable<R> {
         
         public <T> UpdateWhereBuilder() {
             super();
@@ -162,6 +163,7 @@ public class UpdateDSL<R> {
             super(column, condition, subCriteria);
         }
         
+        @Override
         public R build() {
             UpdateModel updateModel = UpdateModel.withTable(table)
                     .withColumnMappings(columnMappings)
