@@ -39,7 +39,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SimpleTableAnnotatedMapperTestNewStyle {
+public class SimpleTableAnnotatedNewStyleMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -293,9 +293,11 @@ public class SimpleTableAnnotatedMapperTestNewStyle {
             assertThat(rows).isEqualTo(1);
 
             record.setOccupation("Programmer");
-            rows = mapper.updateByExample(record, q ->
+            
+            rows = mapper.updateByExample(q ->
                     q.where(id, isEqualTo(100))
-                    .and(firstName, isEqualTo("Joe")));
+                    .and(firstName, isEqualTo("Joe")))
+                    .usingRecord(record);
 
             assertThat(rows).isEqualTo(1);
 
@@ -321,7 +323,7 @@ public class SimpleTableAnnotatedMapperTestNewStyle {
             
             record = new SimpleTableRecord();
             record.setOccupation("Programmer");
-            rows = mapper.updateByExampleSelective(record, q -> q);
+            rows = mapper.updateByExampleSelective(q -> q).usingRecord(record);
 
             assertThat(rows).isEqualTo(7);
 
