@@ -85,7 +85,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
             
-            List<SimpleTableRecord> rows = mapper.selectByExample(MyBatis3SelectByExampleHelper.all());
+            List<SimpleTableRecord> rows = mapper.selectByExample(MyBatis3SelectByExampleHelper.allRows());
             
             assertThat(rows.size()).isEqualTo(6);
         }
@@ -151,7 +151,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     public void testDeleteAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
-            int rows = mapper.deleteByExample(MyBatis3DeleteByExampleHelper.all());
+            int rows = mapper.deleteByExample(MyBatis3DeleteByExampleHelper.allRows());
                     
             assertThat(rows).isEqualTo(6);
         }
@@ -327,7 +327,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
             
             record = new SimpleTableRecord();
             record.setOccupation("Programmer");
-            rows = mapper.updateByExampleSelective(MyBatis3UpdateByExampleHelper.all()).usingRecord(record);
+            rows = mapper.updateByExampleSelective(MyBatis3UpdateByExampleHelper.allRows()).usingRecord(record);
 
             assertThat(rows).isEqualTo(7);
 
@@ -351,7 +351,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     public void testCountAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
-            long rows = mapper.countByExample(MyBatis3CountByExampleHelper.all());
+            long rows = mapper.countByExample(MyBatis3CountByExampleHelper.allRows());
             
             assertThat(rows).isEqualTo(6L);
         }

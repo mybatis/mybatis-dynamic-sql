@@ -56,7 +56,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>Or
  * 
  * <pre>
- * long rows = mapper.countByExample(MyBatis3CountByExampleHelper.all());
+ * long rows = mapper.countByExample(MyBatis3CountByExampleHelper.allRows());
  * </pre>
  *  
  * @author Jeff Butler
@@ -70,7 +70,7 @@ public interface MyBatis3CountByExampleHelper extends
      * 
      * @return the helper that will count every row in a table
      */
-    static MyBatis3CountByExampleHelper all() {
+    static MyBatis3CountByExampleHelper allRows() {
         return h -> h;
     }
 }

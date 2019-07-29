@@ -44,8 +44,8 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountByExampleHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteByExampleHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectByExampleHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateByExampleCompleter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateByExampleHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateByExampleRecordGatherer;
 
 /**
  * 
@@ -171,8 +171,8 @@ public interface SimpleTableAnnotatedMapperNewStyle {
             .execute();
     }
 
-    default MyBatis3UpdateByExampleRecordGatherer<SimpleTableRecord> updateByExample(MyBatis3UpdateByExampleHelper helper) {
-        return new MyBatis3UpdateByExampleRecordGatherer.Builder<SimpleTableRecord>()
+    default MyBatis3UpdateByExampleCompleter<SimpleTableRecord> updateByExample(MyBatis3UpdateByExampleHelper helper) {
+        return new MyBatis3UpdateByExampleCompleter.Builder<SimpleTableRecord>()
                 .withHelper(helper)
                 .withMapper(this::update)
                 .withTable(simpleTable)
@@ -186,8 +186,8 @@ public interface SimpleTableAnnotatedMapperNewStyle {
                 .build();
     }
     
-    default MyBatis3UpdateByExampleRecordGatherer<SimpleTableRecord> updateByExampleSelective(MyBatis3UpdateByExampleHelper helper) {
-        return new MyBatis3UpdateByExampleRecordGatherer.Builder<SimpleTableRecord>()
+    default MyBatis3UpdateByExampleCompleter<SimpleTableRecord> updateByExampleSelective(MyBatis3UpdateByExampleHelper helper) {
+        return new MyBatis3UpdateByExampleCompleter.Builder<SimpleTableRecord>()
                 .withHelper(helper)
                 .withMapper(this::update)
                 .withTable(simpleTable)

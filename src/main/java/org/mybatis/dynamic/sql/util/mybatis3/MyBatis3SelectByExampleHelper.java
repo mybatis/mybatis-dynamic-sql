@@ -66,7 +66,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>Or
  * 
  * <pre>
- * List&lt;SimpleRecord&gt; rows = mapper.selectByExample(MyBatis3SelectByExampleHelper.all());
+ * List&lt;SimpleRecord&gt; rows = mapper.selectByExample(MyBatis3SelectByExampleHelper.allRows());
  * </pre>
  * 
  * @author Jeff Butler
@@ -79,9 +79,11 @@ public interface MyBatis3SelectByExampleHelper<T> extends
     /**
      * Returns a helper that can be used to select every row in a table.
      * 
+     * @param <T> the type of row returned
+     * 
      * @return the helper that will select every row in a table
      */
-    static <T> MyBatis3SelectByExampleHelper<T> all() {
+    static <T> MyBatis3SelectByExampleHelper<T> allRows() {
         return h -> h;
     }
 }

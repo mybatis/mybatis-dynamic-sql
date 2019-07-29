@@ -55,7 +55,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>Or
  * 
  * <pre>
- * long rows = mapper.deleteByExample(MyBatis3DeleteByExampleHelper.all());
+ * long rows = mapper.deleteByExample(MyBatis3DeleteByExampleHelper.allRows());
  * </pre>
 
  * @author Jeff Butler
@@ -69,7 +69,7 @@ public interface MyBatis3DeleteByExampleHelper extends
      * 
      * @return the helper that will delete every row in a table
      */
-    static MyBatis3DeleteByExampleHelper all() {
+    static MyBatis3DeleteByExampleHelper allRows() {
         return h -> h;
     }
 }
