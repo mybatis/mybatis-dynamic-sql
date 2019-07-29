@@ -88,6 +88,22 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
             List<SimpleTableRecord> rows = mapper.selectByExample(MyBatis3SelectByExampleHelper.allRows());
             
             assertThat(rows.size()).isEqualTo(6);
+            assertThat(rows.get(0).getId()).isEqualTo(1);
+            assertThat(rows.get(5).getId()).isEqualTo(6);
+        }
+    }
+
+    @Test
+    public void testSelectAllOrdered() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            
+            List<SimpleTableRecord> rows = mapper
+                    .selectByExample(MyBatis3SelectByExampleHelper.allRowsOrderdBy(lastName.descending(), firstName.descending()));
+            
+            assertThat(rows.size()).isEqualTo(6);
+            assertThat(rows.get(0).getId()).isEqualTo(5);
+            assertThat(rows.get(5).getId()).isEqualTo(1);
         }
     }
 
