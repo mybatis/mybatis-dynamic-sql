@@ -53,10 +53,16 @@ import org.mybatis.dynamic.sql.util.Buildable;
  *                .and(firstName, isEqualTo("Joe")));
  * </pre>
  *  
- * <p>You can also do an "update all" with the following code:
+ * <p>You can implement an "update all" with the following code:
  * 
  * <pre>
  * int rows = mapper.updateByExampleSelective(record, q -&gt; q);
+ * </pre>
+ * 
+ * <p>Or
+ * 
+ * <pre>
+ * int rows = mapper.updateByExampleSelective(record, MyBatis3UpdateByExampleHelper.all());
  * </pre>
  * 
  * @author Jeff Butler
@@ -64,4 +70,13 @@ import org.mybatis.dynamic.sql.util.Buildable;
 @FunctionalInterface
 public interface MyBatis3UpdateByExampleHelper extends
         Function<UpdateDSL<MyBatis3UpdateModelAdapter<Integer>>, Buildable<MyBatis3UpdateModelAdapter<Integer>>> {
+
+    /**
+     * Returns a helper that can be used to update every row in a table.
+     * 
+     * @return the helper that will update every row in a table
+     */
+    static MyBatis3UpdateByExampleHelper all() {
+        return h -> h;
+    }
 }

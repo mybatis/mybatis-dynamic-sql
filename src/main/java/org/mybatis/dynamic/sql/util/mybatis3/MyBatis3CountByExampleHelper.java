@@ -47,10 +47,16 @@ import org.mybatis.dynamic.sql.util.Buildable;
  *         q.where(occupation, isNull()));
  * </pre>
  * 
- * <p>You can also do a "count all" with the following code:
+ * <p>You can implement a "count all" with the following code:
  * 
  * <pre>
  * long rows = mapper.countByExample(q -&gt; q);
+ * </pre>
+ * 
+ * <p>Or
+ * 
+ * <pre>
+ * long rows = mapper.countByExample(MyBatis3CountByExampleHelper.all());
  * </pre>
  *  
  * @author Jeff Butler
@@ -58,4 +64,13 @@ import org.mybatis.dynamic.sql.util.Buildable;
 @FunctionalInterface
 public interface MyBatis3CountByExampleHelper extends
         Function<QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>>, Buildable<MyBatis3SelectModelAdapter<Long>>> {
+    
+    /**
+     * Returns a helper that can be used to count every row in a table.
+     * 
+     * @return the helper that will count every row in a table
+     */
+    static MyBatis3CountByExampleHelper all() {
+        return h -> h;
+    }
 }

@@ -38,6 +38,10 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountByExampleHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteByExampleHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectByExampleHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateByExampleHelper;
 
 public class SimpleTableAnnotatedNewStyleMapperTest {
 
@@ -81,7 +85,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
             
-            List<SimpleTableRecord> rows = mapper.selectByExample(q -> q);
+            List<SimpleTableRecord> rows = mapper.selectByExample(MyBatis3SelectByExampleHelper.all());
             
             assertThat(rows.size()).isEqualTo(6);
         }
@@ -147,7 +151,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     public void testDeleteAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
-            int rows = mapper.deleteByExample(d -> d);
+            int rows = mapper.deleteByExample(MyBatis3DeleteByExampleHelper.all());
                     
             assertThat(rows).isEqualTo(6);
         }
@@ -323,7 +327,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
             
             record = new SimpleTableRecord();
             record.setOccupation("Programmer");
-            rows = mapper.updateByExampleSelective(q -> q).usingRecord(record);
+            rows = mapper.updateByExampleSelective(MyBatis3UpdateByExampleHelper.all()).usingRecord(record);
 
             assertThat(rows).isEqualTo(7);
 
@@ -347,7 +351,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     public void testCountAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
-            long rows = mapper.countByExample(q -> q);
+            long rows = mapper.countByExample(MyBatis3CountByExampleHelper.all());
             
             assertThat(rows).isEqualTo(6L);
         }
