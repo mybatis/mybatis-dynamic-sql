@@ -57,10 +57,16 @@ import org.mybatis.dynamic.sql.util.Buildable;
  *     .or(occupation, isNull()));
  * </pre>
  *  
- * <p>You can also do a "select all" with the following code:
+ * <p>You can implement a "select all" with the following code:
  * 
  * <pre>
  * List&lt;SimpleRecord&gt; rows = mapper.selectByExample(q -&gt; q);
+ * </pre>
+ * 
+ * <p>Or
+ * 
+ * <pre>
+ * List&lt;SimpleRecord&gt; rows = mapper.selectByExample(MyBatis3SelectByExampleHelper.allRows());
  * </pre>
  * 
  * @author Jeff Butler
@@ -69,4 +75,15 @@ import org.mybatis.dynamic.sql.util.Buildable;
 public interface MyBatis3SelectByExampleHelper<T> extends
         Function<QueryExpressionDSL<MyBatis3SelectModelAdapter<List<T>>>,
         Buildable<MyBatis3SelectModelAdapter<List<T>>>> {
+
+    /**
+     * Returns a helper that can be used to select every row in a table.
+     * 
+     * @param <T> the type of row returned
+     * 
+     * @return the helper that will select every row in a table
+     */
+    static <T> MyBatis3SelectByExampleHelper<T> allRows() {
+        return h -> h;
+    }
 }
