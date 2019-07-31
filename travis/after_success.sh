@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    Copyright 2016-2018 the original author or authors.
+#    Copyright 2016-2019 the original author or authors.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ echo "Current commit detected: ${commit_message}"
 #    a. Use -q option to only display Maven errors and warnings.
 #    b. Use --settings to force the usage of our "settings.xml" file.
 
-if [ $TRAVIS_JDK_VERSION == "oraclejdk8" ] && [ $TRAVIS_REPO_SLUG == "mybatis/mybatis-dynamic-sql" ]; then
+if [ $TRAVIS_JDK_VERSION == "openjdk8" ] && [ $TRAVIS_REPO_SLUG == "mybatis/mybatis-dynamic-sql" ]; then
 
   ./mvnw clean test jacoco:report coveralls:report -q
   echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"

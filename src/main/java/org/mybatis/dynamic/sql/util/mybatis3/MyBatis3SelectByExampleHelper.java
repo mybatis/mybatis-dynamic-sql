@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.util.mybatis3;
 import java.util.List;
 import java.util.function.Function;
 
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.select.MyBatis3SelectModelAdapter;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -85,5 +86,17 @@ public interface MyBatis3SelectByExampleHelper<T> extends
      */
     static <T> MyBatis3SelectByExampleHelper<T> allRows() {
         return h -> h;
+    }
+
+    /**
+     * Returns a helper that can be used to select every row in a table with a specified sort order.
+     * 
+     * @param <T> the type of row returned
+     * @param columns sort columns
+     * 
+     * @return the helper that will select every row in a table in the specified order
+     */
+    static <T> MyBatis3SelectByExampleHelper<T> allRowsOrderdBy(SortSpecification...columns) {
+        return h -> h.orderBy(columns);
     }
 }
