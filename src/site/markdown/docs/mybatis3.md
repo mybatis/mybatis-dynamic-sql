@@ -5,7 +5,13 @@ This support is added to the DELETE, SELECT, and UPDATE statement generators and
 
 With version 1.1.3, specialized interfaces were added that can further simplify client code.
 
-For example, it is possible to write a mapper interface like this:
+## CountByExample Support
+
+## DeleteByExample Support
+
+## SelectByExample Support
+
+Support for SelectByExample allows creating reusable methods where the user only need specify a where clause.
 
 ```java
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
@@ -31,7 +37,7 @@ public interface SimpleTableMapper {
             @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
             @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR),
             @Result(column="birth_date", property="birthDate", jdbcType=JdbcType.DATE),
-            @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR, typeHandler=YesNoTypeHandler.class),
+            @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR),
             @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
     })
     List<SimpleTableRecord> selectMany(SelectStatementProvider selectStatement);
@@ -53,6 +59,20 @@ The code is used like this:
     List<SimpleTableRecord> rows = mapper.selectByExample(q ->
             q.where(id, isEqualTo(1))
             .or(occupation, isNull()));
+```
+
+The following query will select all rows:
+
+```java
+    List<SimpleTableRecord> rows =
+        mapper.selectByExample(MyBatis3SelectByExampleHelper.allRows());
+```
+
+The following query will select all rows in a specified order:
+
+```java
+    List<SimpleTableRecord> rows =
+        mapper.selectByExample(MyBatis3SelectByExampleHelper.allRowsOrderedBy(lastName, firstName));
 ```
 
 

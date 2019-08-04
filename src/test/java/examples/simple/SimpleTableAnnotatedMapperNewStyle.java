@@ -38,13 +38,13 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.MyBatis3UpdateModelAdapter;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountByExampleHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteByExampleHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectByExampleHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateByExampleCompleter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateByExampleHelper;
 
 /**
@@ -171,57 +171,49 @@ public interface SimpleTableAnnotatedMapperNewStyle {
             .execute();
     }
 
-    default MyBatis3UpdateByExampleCompleter<SimpleTableRecord> updateByExample(MyBatis3UpdateByExampleHelper helper) {
-        return new MyBatis3UpdateByExampleCompleter.Builder<SimpleTableRecord>()
-                .withHelper(helper)
-                .withMapper(this::update)
-                .withTable(simpleTable)
-                .withValueSetter((record, dsl) ->
-                    dsl.set(id).equalTo(record::getId)
-                    .set(firstName).equalTo(record::getFirstName)
-                    .set(lastName).equalTo(record::getLastName)
-                    .set(birthDate).equalTo(record::getBirthDate)
-                    .set(employed).equalTo(record::getEmployed)
-                    .set(occupation).equalTo(record::getOccupation))
-                .build();
+    default int update(MyBatis3UpdateByExampleHelper helper) {
+        return helper.apply(UpdateDSL.updateWithMapper(this::update, simpleTable))
+                .build()
+                .execute();
     }
     
-    default MyBatis3UpdateByExampleCompleter<SimpleTableRecord> updateByExampleSelective(MyBatis3UpdateByExampleHelper helper) {
-        return new MyBatis3UpdateByExampleCompleter.Builder<SimpleTableRecord>()
-                .withHelper(helper)
-                .withMapper(this::update)
-                .withTable(simpleTable)
-                .withValueSetter((record, dsl) ->
-                    dsl.set(id).equalToWhenPresent(record::getId)
-                    .set(firstName).equalToWhenPresent(record::getFirstName)
-                    .set(lastName).equalToWhenPresent(record::getLastName)
-                    .set(birthDate).equalToWhenPresent(record::getBirthDate)
-                    .set(employed).equalToWhenPresent(record::getEmployed)
-                    .set(occupation).equalToWhenPresent(record::getOccupation))
-                .build();
-    }
-    
-    default int updateByPrimaryKey(SimpleTableRecord record) {
-        return UpdateDSL.updateWithMapper(this::update, simpleTable)
+    static UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> setAll(SimpleTableRecord record, UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> dsl) {
+        return dsl.set(id).equalTo(record::getId)
                 .set(firstName).equalTo(record::getFirstName)
                 .set(lastName).equalTo(record::getLastName)
                 .set(birthDate).equalTo(record::getBirthDate)
                 .set(employed).equalTo(record::getEmployed)
-                .set(occupation).equalTo(record::getOccupation)
-                .where(id, isEqualTo(record::getId))
-                .build()
-                .execute();
+                .set(occupation).equalTo(record::getOccupation);
     }
-
-    default int updateByPrimaryKeySelective(SimpleTableRecord record) {
-        return UpdateDSL.updateWithMapper(this::update, simpleTable)
+    
+    static UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> setSelective(SimpleTableRecord record, UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> dsl) {
+        return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(firstName).equalToWhenPresent(record::getFirstName)
                 .set(lastName).equalToWhenPresent(record::getLastName)
                 .set(birthDate).equalToWhenPresent(record::getBirthDate)
                 .set(employed).equalToWhenPresent(record::getEmployed)
-                .set(occupation).equalToWhenPresent(record::getOccupation)
-                .where(id, isEqualTo(record::getId))
-                .build()
-                .execute();
+                .set(occupation).equalToWhenPresent(record::getOccupation);
+    }
+    
+    default int updateByPrimaryKey(SimpleTableRecord record) {
+        return update(h ->
+            h.set(firstName).equalTo(record::getFirstName)
+            .set(lastName).equalTo(record::getLastName)
+            .set(birthDate).equalTo(record::getBirthDate)
+            .set(employed).equalTo(record::getEmployed)
+            .set(occupation).equalTo(record::getOccupation)
+            .where(id, isEqualTo(record::getId))
+        );
+    }
+
+    default int updateByPrimaryKeySelective(SimpleTableRecord record) {
+        return update(h ->
+            h.set(firstName).equalToWhenPresent(record::getFirstName)
+            .set(lastName).equalToWhenPresent(record::getLastName)
+            .set(birthDate).equalToWhenPresent(record::getBirthDate)
+            .set(employed).equalToWhenPresent(record::getEmployed)
+            .set(occupation).equalToWhenPresent(record::getOccupation)
+            .where(id, isEqualTo(record::getId))
+        );
     }
 }

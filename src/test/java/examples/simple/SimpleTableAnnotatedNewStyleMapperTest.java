@@ -41,7 +41,6 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountByExampleHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteByExampleHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectByExampleHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateByExampleHelper;
 
 public class SimpleTableAnnotatedNewStyleMapperTest {
 
@@ -314,10 +313,10 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
 
             record.setOccupation("Programmer");
             
-            rows = mapper.updateByExample(q ->
-                    q.where(id, isEqualTo(100))
-                    .and(firstName, isEqualTo("Joe")))
-                    .usingRecord(record);
+            rows = mapper.update(dsl ->
+                SimpleTableAnnotatedMapperNewStyle.setAll(record, dsl)
+                .where(id, isEqualTo(100))
+                .and(firstName, isEqualTo("Joe")));
 
             assertThat(rows).isEqualTo(1);
 
@@ -341,9 +340,10 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
             
-            record = new SimpleTableRecord();
-            record.setOccupation("Programmer");
-            rows = mapper.updateByExampleSelective(MyBatis3UpdateByExampleHelper.allRows()).usingRecord(record);
+            SimpleTableRecord updateRecord = new SimpleTableRecord();
+            updateRecord.setOccupation("Programmer");
+            rows = mapper.update(dsl ->
+                SimpleTableAnnotatedMapperNewStyle.setSelective(updateRecord, dsl));
 
             assertThat(rows).isEqualTo(7);
 
