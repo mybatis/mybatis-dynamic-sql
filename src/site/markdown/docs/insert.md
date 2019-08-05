@@ -187,8 +187,7 @@ A batch insert is a collection of statements that can be used to execute a JDBC 
 
 ```java
 ...
-    SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH);
-    try {
+    try(SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
         SimpleTableMapper mapper = session.getMapper(SimpleTableMapper.class);
         List<SimpleTableRecord> records = getRecordsToInsert(); // not shown
 
@@ -206,8 +205,6 @@ A batch insert is a collection of statements that can be used to execute a JDBC 
         batchInsert.insertStatements().stream().forEach(mapper::insert);
 
         session.commit();
-    } finally {
-        session.close();
     }
 ...
 ```

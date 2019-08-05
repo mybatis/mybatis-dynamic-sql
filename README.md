@@ -56,8 +56,7 @@ One capability is that very expressive dynamic queries can be generated.  Here's
 ```java
     @Test
     public void testComplexCondition() {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        try {
+        try(SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -72,8 +71,6 @@ One capability is that very expressive dynamic queries can be generated.  Here's
 
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertThat(animals.size()).isEqualTo(4);
-        } finally {
-            sqlSession.close();
         }
     }
 ```

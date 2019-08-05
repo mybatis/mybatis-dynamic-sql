@@ -61,14 +61,11 @@ public interface Mapper {
 Using this mapper with MyBatis looks like this:
 
 ```java
-  SqlSession sqlSession = sqlSessionFactory.openSession();
-  try {
+  try(SqlSession sqlSession = sqlSessionFactory.openSession()) {
     Mapper mapper = sqlSession.getMapper(Mapper.class);
     Parameter parameter = new Parameter(2);
     TableCode tableCode = mapper.getTableCode(parameter);
     assertThat(tableCode.getId()).isEqualTo(2);
-  } finally {
-    sqlSession.close();
   }
 ```
 
