@@ -58,7 +58,7 @@ import examples.simple.YesNoTypeHandler;
  *
  */
 @Mapper
-public interface SimpleTableAnnotatedMapperNewStyle {
+public interface SimpleTableMapperNewStyle {
     
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<SimpleTableRecord> insertStatement);

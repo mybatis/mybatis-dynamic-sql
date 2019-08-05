@@ -46,7 +46,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectHelper;
 import examples.simple.LastName;
 import examples.simple.SimpleTableRecord;
 
-public class SimpleTableAnnotatedNewStyleMapperTest {
+public class SimpleTableMapperNewStyleTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -66,14 +66,14 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
-        config.addMapper(SimpleTableAnnotatedMapperNewStyle.class);
+        config.addMapper(SimpleTableMapperNewStyle.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
     
     @Test
     public void testSelect() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> rows = mapper.select(h ->
                     h.where(id, isEqualTo(1))
@@ -86,7 +86,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testSelectAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> rows = mapper.select(MyBatis3SelectHelper.allRows());
             
@@ -99,7 +99,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testSelectAllOrdered() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> rows = mapper
                     .select(MyBatis3SelectHelper.allRowsOrderdBy(lastName.descending(), firstName.descending()));
@@ -113,7 +113,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testSelectDistinct() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> rows = mapper.selectDistinct(h ->
                     h.where(id, isGreaterThan(1))
@@ -126,7 +126,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testSelectWithTypeHandler() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> rows = mapper.select(h ->
                     h.where(employed, isEqualTo(false))
@@ -143,7 +143,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testSelectByPrimaryKeyWithMissingRecord() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             Optional<SimpleTableRecord> record = mapper.selectByPrimaryKey(300);
             assertThat(record.isPresent()).isFalse();
@@ -153,7 +153,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testFirstNameIn() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> rows = mapper.select(h ->
                     h.where(firstName, isIn("Fred", "Barney")));
@@ -169,7 +169,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testDelete() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             int rows = mapper.delete(h ->
                     h.where(occupation, isNull()));
             assertThat(rows).isEqualTo(2);
@@ -179,7 +179,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testDeleteAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             int rows = mapper.delete(MyBatis3DeleteHelper.allRows());
                     
             assertThat(rows).isEqualTo(6);
@@ -189,7 +189,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testDeleteByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             int rows = mapper.deleteByPrimaryKey(2);
             
             assertThat(rows).isEqualTo(1);
@@ -199,7 +199,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testInsert() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -216,7 +216,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testInsertMultiple() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> records = new ArrayList<>();
             
@@ -246,7 +246,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testInsertSelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -262,7 +262,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testUpdateByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -287,7 +287,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testUpdateByPrimaryKeySelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -315,7 +315,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testUpdate() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -330,7 +330,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
             record.setOccupation("Programmer");
             
             rows = mapper.update(h ->
-                SimpleTableAnnotatedMapperNewStyle.setAll(record, h)
+                SimpleTableMapperNewStyle.setAll(record, h)
                 .where(id, isEqualTo(100))
                 .and(firstName, isEqualTo("Joe")));
 
@@ -343,9 +343,36 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     }
 
     @Test
+    public void testUpdateOneField() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
+            SimpleTableRecord record = new SimpleTableRecord();
+            record.setId(100);
+            record.setFirstName("Joe");
+            record.setLastName(LastName.of("Jones"));
+            record.setBirthDate(new Date());
+            record.setEmployed(true);
+            record.setOccupation("Developer");
+            
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
+            
+            rows = mapper.update(h ->
+                h.set(occupation).equalTo("Programmer")
+                .where(id, isEqualTo(100)));
+
+            assertThat(rows).isEqualTo(1);
+
+            Optional<SimpleTableRecord> newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.isPresent()).isTrue();
+            assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+        }
+    }
+
+    @Test
     public void testUpdateAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             SimpleTableRecord record = new SimpleTableRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -360,7 +387,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
             SimpleTableRecord updateRecord = new SimpleTableRecord();
             updateRecord.setOccupation("Programmer");
             rows = mapper.update(h ->
-                SimpleTableAnnotatedMapperNewStyle.setSelective(updateRecord, h));
+                SimpleTableMapperNewStyle.setSelective(updateRecord, h));
 
             assertThat(rows).isEqualTo(7);
 
@@ -371,9 +398,38 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     }
 
     @Test
+    public void testUpdateSelective() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
+            SimpleTableRecord record = new SimpleTableRecord();
+            record.setId(100);
+            record.setFirstName("Joe");
+            record.setLastName(LastName.of("Jones"));
+            record.setBirthDate(new Date());
+            record.setEmployed(true);
+            record.setOccupation("Developer");
+            
+            int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
+            
+            SimpleTableRecord updateRecord = new SimpleTableRecord();
+            updateRecord.setOccupation("Programmer");
+            rows = mapper.update(h ->
+                SimpleTableMapperNewStyle.setSelective(updateRecord, h)
+                .where(id, isEqualTo(100)));
+
+            assertThat(rows).isEqualTo(1);
+
+            Optional<SimpleTableRecord> newRecord = mapper.selectByPrimaryKey(100);
+            assertThat(newRecord.isPresent()).isTrue();
+            assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+        }
+    }
+
+    @Test
     public void testCount() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             long rows = mapper.count(h ->
                     h.where(occupation, isNull()));
             
@@ -384,7 +440,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testCountAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             long rows = mapper.count(MyBatis3CountHelper.allRows());
             
             assertThat(rows).isEqualTo(6L);
@@ -394,7 +450,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testTypeHandledLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> rows = mapper.select(h ->
                     h.where(lastName, isLike(LastName.of("Fl%")))
@@ -408,7 +464,7 @@ public class SimpleTableAnnotatedNewStyleMapperTest {
     @Test
     public void testTypeHandledNotLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapperNewStyle mapper = session.getMapper(SimpleTableAnnotatedMapperNewStyle.class);
+            SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> rows = mapper.select(h -> 
                     h.where(lastName, isNotLike(LastName.of("Fl%")))
