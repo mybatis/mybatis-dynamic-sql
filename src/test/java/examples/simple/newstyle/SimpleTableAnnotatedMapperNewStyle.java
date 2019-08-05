@@ -19,6 +19,7 @@ import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -28,7 +29,6 @@ import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
-import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
@@ -82,11 +82,7 @@ public interface SimpleTableAnnotatedMapperNewStyle {
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("SimpleTableResult")
-    List<SimpleTableRecord> selectManyWithRowbounds(SelectStatementProvider selectStatement, RowBounds rowBounds);
-    
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @ResultMap("SimpleTableResult")
-    SimpleTableRecord selectOne(SelectStatementProvider selectStatement);
+    Optional<SimpleTableRecord> selectOne(SelectStatementProvider selectStatement);
     
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
@@ -166,7 +162,7 @@ public interface SimpleTableAnnotatedMapperNewStyle {
                 .execute();
     }
     
-    default SimpleTableRecord selectByPrimaryKey(Integer id_) {
+    default Optional<SimpleTableRecord> selectByPrimaryKey(Integer id_) {
         return SelectDSL.selectWithMapper(this::selectOne, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
             .from(simpleTable)
             .where(id, isEqualTo(id_))
