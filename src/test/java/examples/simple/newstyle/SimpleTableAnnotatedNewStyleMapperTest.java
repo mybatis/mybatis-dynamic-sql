@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.simple;
+package examples.simple.newstyle;
 
 import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +41,9 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectHelper;
+
+import examples.simple.LastName;
+import examples.simple.SimpleTableRecord;
 
 public class SimpleTableAnnotatedNewStyleMapperTest {
 
