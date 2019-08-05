@@ -55,7 +55,7 @@ This is a standard method for MyBatis Dynamic SQL that executes a delete and ret
 
 ```java
 default int delete(MyBatis3DeleteHelper helper) {
-    return helper.apply(DeleteDSL.deleteFromWithMapper(this::delete, simpleTable))
+    return helper.apply(MyBatis3Utils.deleteFrom(this::delete, simpleTable))
             .build()
             .execute();
 }
@@ -172,7 +172,7 @@ This is a standard method for MyBatis Dynamic SQL that executes a query and retu
 
 ```java
 default int update(MyBatis3UpdateHelper helper) {
-    return helper.apply(UpdateDSL.updateWithMapper(this::update, simpleTable))
+    return helper.apply(MyBatis3Utils.update(this::update, simpleTable))
             .build()
             .execute();
 }

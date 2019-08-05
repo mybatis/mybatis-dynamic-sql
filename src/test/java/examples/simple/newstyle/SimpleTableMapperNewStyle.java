@@ -31,14 +31,12 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.MyBatis3UpdateModelAdapter;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
@@ -46,6 +44,8 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateModelToIntAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 import examples.simple.LastNameTypeHandler;
 import examples.simple.SimpleTableRecord;
@@ -98,7 +98,7 @@ public interface SimpleTableMapperNewStyle {
     }
 
     default int delete(MyBatis3DeleteHelper helper) {
-        return helper.apply(DeleteDSL.deleteFromWithMapper(this::delete, simpleTable))
+        return helper.apply(MyBatis3Utils.deleteFrom(this::delete, simpleTable))
                 .build()
                 .execute();
     }
@@ -171,12 +171,13 @@ public interface SimpleTableMapperNewStyle {
     }
 
     default int update(MyBatis3UpdateHelper helper) {
-        return helper.apply(UpdateDSL.updateWithMapper(this::update, simpleTable))
+        return helper.apply(MyBatis3Utils.update(this::update, simpleTable))
                 .build()
                 .execute();
     }
     
-    static UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> setAll(SimpleTableRecord record, UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> dsl) {
+    static UpdateDSL<MyBatis3UpdateModelToIntAdapter> setAll(SimpleTableRecord record,
+            UpdateDSL<MyBatis3UpdateModelToIntAdapter> dsl) {
         return dsl.set(id).equalTo(record::getId)
                 .set(firstName).equalTo(record::getFirstName)
                 .set(lastName).equalTo(record::getLastName)
@@ -185,8 +186,8 @@ public interface SimpleTableMapperNewStyle {
                 .set(occupation).equalTo(record::getOccupation);
     }
     
-    static UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> setSelective(SimpleTableRecord record,
-            UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> dsl) {
+    static UpdateDSL<MyBatis3UpdateModelToIntAdapter> setSelective(SimpleTableRecord record,
+            UpdateDSL<MyBatis3UpdateModelToIntAdapter> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(firstName).equalToWhenPresent(record::getFirstName)
                 .set(lastName).equalToWhenPresent(record::getLastName)

@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.util.mybatis3;
 
 import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.update.MyBatis3UpdateModelAdapter;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.util.Buildable;
 
@@ -86,5 +85,5 @@ import org.mybatis.dynamic.sql.util.Buildable;
  */
 @FunctionalInterface
 public interface MyBatis3UpdateHelper extends
-        Function<UpdateDSL<MyBatis3UpdateModelAdapter<Integer>>, Buildable<MyBatis3UpdateModelAdapter<Integer>>> {
+        Function<UpdateDSL<MyBatis3UpdateModelToIntAdapter>, Buildable<MyBatis3UpdateModelToIntAdapter>> {
 }
