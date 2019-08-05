@@ -42,14 +42,14 @@ import org.mybatis.dynamic.sql.update.MyBatis3UpdateModelAdapter;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountByExampleHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteByExampleHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectByExampleHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateByExampleHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateHelper;
 
 /**
  * 
- * Note: this is the canonical mapper with the new style ByExample methods
+ * Note: this is the canonical mapper with the new style methods
  * and represents the desired output for MyBatis Generator 
  *
  */
@@ -90,24 +90,23 @@ public interface SimpleTableAnnotatedMapperNewStyle {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
     
-    default long countByExample(MyBatis3CountByExampleHelper helper) {
+    default long count(MyBatis3CountHelper helper) {
         return helper.apply(SelectDSL.selectWithMapper(this::count, SqlBuilder.count())
                 .from(simpleTable))
                 .build()
                 .execute();
     }
 
-    default int deleteByExample(MyBatis3DeleteByExampleHelper helper) {
+    default int delete(MyBatis3DeleteHelper helper) {
         return helper.apply(DeleteDSL.deleteFromWithMapper(this::delete, simpleTable))
                 .build()
                 .execute();
     }
     
     default int deleteByPrimaryKey(Integer id_) {
-        return DeleteDSL.deleteFromWithMapper(this::delete, simpleTable)
-                .where(id,  isEqualTo(id_))
-                .build()
-                .execute();
+        return delete(h ->
+            h.where(id, isEqualTo(id_))
+        );
     }
 
     default int insert(SimpleTableRecord record) {
@@ -149,14 +148,14 @@ public interface SimpleTableAnnotatedMapperNewStyle {
                 .render(RenderingStrategy.MYBATIS3));
     }
     
-    default List<SimpleTableRecord> selectByExample(MyBatis3SelectByExampleHelper<SimpleTableRecord> helper) {
+    default List<SimpleTableRecord> select(MyBatis3SelectHelper<SimpleTableRecord> helper) {
         return helper.apply(SelectDSL.selectWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
                 .from(simpleTable))
                 .build()
                 .execute();
     }
     
-    default List<SimpleTableRecord> selectDistinctByExample(MyBatis3SelectByExampleHelper<SimpleTableRecord> helper) {
+    default List<SimpleTableRecord> selectDistinct(MyBatis3SelectHelper<SimpleTableRecord> helper) {
         return helper.apply(SelectDSL.selectDistinctWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
                 .from(simpleTable))
                 .build()
@@ -171,7 +170,7 @@ public interface SimpleTableAnnotatedMapperNewStyle {
             .execute();
     }
 
-    default int update(MyBatis3UpdateByExampleHelper helper) {
+    default int update(MyBatis3UpdateHelper helper) {
         return helper.apply(UpdateDSL.updateWithMapper(this::update, simpleTable))
                 .build()
                 .execute();
@@ -186,7 +185,8 @@ public interface SimpleTableAnnotatedMapperNewStyle {
                 .set(occupation).equalTo(record::getOccupation);
     }
     
-    static UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> setSelective(SimpleTableRecord record, UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> dsl) {
+    static UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> setSelective(SimpleTableRecord record,
+            UpdateDSL<MyBatis3UpdateModelAdapter<Integer>> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(firstName).equalToWhenPresent(record::getFirstName)
                 .set(lastName).equalToWhenPresent(record::getLastName)
