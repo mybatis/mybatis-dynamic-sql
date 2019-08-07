@@ -73,7 +73,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * @author Jeff Butler
  */
 @FunctionalInterface
-public interface MyBatis3SelectHelper<T> extends
+public interface MyBatis3SelectListHelper<T> extends
         Function<QueryExpressionDSL<MyBatis3SelectModelAdapter<List<T>>>,
         Buildable<MyBatis3SelectModelAdapter<List<T>>>> {
 
@@ -84,7 +84,7 @@ public interface MyBatis3SelectHelper<T> extends
      * 
      * @return the helper that will select every row in a table
      */
-    static <T> MyBatis3SelectHelper<T> allRows() {
+    static <T> MyBatis3SelectListHelper<T> allRows() {
         return h -> h;
     }
 
@@ -96,7 +96,7 @@ public interface MyBatis3SelectHelper<T> extends
      * 
      * @return the helper that will select every row in a table in the specified order
      */
-    static <T> MyBatis3SelectHelper<T> allRowsOrderdBy(SortSpecification...columns) {
+    static <T> MyBatis3SelectListHelper<T> allRowsOrderdBy(SortSpecification...columns) {
         return h -> h.orderBy(columns);
     }
 }

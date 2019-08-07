@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 /**
- * Utility functions for building MyBatis3 mappers
+ * Utility functions for building MyBatis3 mappers.
  * 
  * @author Jeff Butler
  *
@@ -33,7 +33,7 @@ public class MyBatis3Utils {
     private MyBatis3Utils() {}
 
     /**
-     * Initiates a delete statement using the non-boxing adapter
+     * Initiates a delete statement using the non-boxing adapter.
      * 
      * @param mapper a MyBatis3 mapper delete method
      * @param table the table to delete from
@@ -45,7 +45,7 @@ public class MyBatis3Utils {
     }
 
     /**
-     * Initiates an update statement using the non-boxing adapter
+     * Initiates an update statement using the non-boxing adapter.
      * 
      * @param mapper a MyBatis3 mapper update method
      * @param table the table to update

@@ -99,23 +99,33 @@ Optional<SimpleTableRecord> selectOne(SelectStatementProvider selectStatement);
 
 These two methods are standard methods for MyBatis Dynamic SQL. They execute a select and return either a list of records, or a single record.
 
-The `selectOne` method can be used to implement a `selectByPrimaryKey` method:
+The `selectOne` method can be used to implement a generalized select one method:
+
+```java
+default Optional<SimpleTableRecord> selectOne(MyBatis3SelectOneHelper<SimpleTableRecord> helper) {
+    return helper.apply(SelectDSL.selectWithMapper(this::selectOne, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+            .from(simpleTable))
+            .build()
+            .execute();
+}
+```
+
+This method shows the use of `MyBatis3SelectOneHelper` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause.
+
+The general `selectOne` method can be used to implement a `selectByPrimaryKey` method:
 
 ```java
 default Optional<SimpleTableRecord> selectByPrimaryKey(Integer id_) {
-    return SelectDSL.selectWithMapper(this::selectOne, id.as("A_ID"), firstName, lastName, birthDate,
-            employed, occupation)
-        .from(simpleTable)
-        .where(id, isEqualTo(id_))
-        .build()
-        .execute();
+    return selectOne(h ->
+        h.where(id, isEqualTo(id_))
+    );
 }
 ```
 
 The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause and/or an order by clause. Typically we recommend two of these methods - for select, and select distinct: 
 
 ```java
-default List<SimpleTableRecord> select(MyBatis3SelectHelper<SimpleTableRecord> helper) {
+default List<SimpleTableRecord> select(MyBatis3SelectListHelper<SimpleTableRecord> helper) {
     return helper.apply(SelectDSL.selectWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate,
                 employed, occupation)
             .from(simpleTable))
@@ -123,7 +133,7 @@ default List<SimpleTableRecord> select(MyBatis3SelectHelper<SimpleTableRecord> h
             .execute();
 }
     
-default List<SimpleTableRecord> selectDistinct(MyBatis3SelectHelper<SimpleTableRecord> helper) {
+default List<SimpleTableRecord> selectDistinct(MyBatis3SelectListHelper<SimpleTableRecord> helper) {
     return helper.apply(SelectDSL.selectDistinctWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName,
                 birthDate, employed, occupation)
             .from(simpleTable))
@@ -133,7 +143,7 @@ default List<SimpleTableRecord> selectDistinct(MyBatis3SelectHelper<SimpleTableR
 ```
 
 
-These methods show the use of `MyBatis3SelectHelper` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause and/or an order by clause.
+These methods show the use of `MyBatis3SelectListHelper` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause and/or an order by clause.
 
 Clients can use the methods as follows:
 
@@ -147,14 +157,14 @@ There are utility methods that will select all rows in a table:
 
 ```java
 List<SimpleTableRecord> rows =
-    mapper.selectByExample(MyBatis3SelectHelper.allRows());
+    mapper.selectByExample(MyBatis3SelectListHelper.allRows());
 ```
 
 The following query will select all rows in a specified order:
 
 ```java
 List<SimpleTableRecord> rows =
-    mapper.selectByExample(MyBatis3SelectHelper.allRowsOrderedBy(lastName, firstName));
+    mapper.selectByExample(MyBatis3SelectListHelper.allRowsOrderedBy(lastName, firstName));
 ```
 
 ## Update Method Support

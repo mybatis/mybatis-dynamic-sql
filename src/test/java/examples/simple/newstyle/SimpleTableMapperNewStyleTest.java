@@ -41,7 +41,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectListHelper;
 
 import examples.simple.LastName;
 import examples.simple.SimpleTableRecord;
@@ -88,7 +88,7 @@ public class SimpleTableMapperNewStyleTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
-            List<SimpleTableRecord> rows = mapper.select(MyBatis3SelectHelper.allRows());
+            List<SimpleTableRecord> rows = mapper.select(MyBatis3SelectListHelper.allRows());
             
             assertThat(rows.size()).isEqualTo(6);
             assertThat(rows.get(0).getId()).isEqualTo(1);
@@ -102,7 +102,7 @@ public class SimpleTableMapperNewStyleTest {
             SimpleTableMapperNewStyle mapper = session.getMapper(SimpleTableMapperNewStyle.class);
             
             List<SimpleTableRecord> rows = mapper
-                    .select(MyBatis3SelectHelper.allRowsOrderdBy(lastName.descending(), firstName.descending()));
+                    .select(MyBatis3SelectListHelper.allRowsOrderdBy(lastName.descending(), firstName.descending()));
             
             assertThat(rows.size()).isEqualTo(6);
             assertThat(rows.get(0).getId()).isEqualTo(5);

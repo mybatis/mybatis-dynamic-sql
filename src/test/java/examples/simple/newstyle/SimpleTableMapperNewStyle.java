@@ -42,7 +42,8 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectListHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectOneHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateModelToIntAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
@@ -148,14 +149,21 @@ public interface SimpleTableMapperNewStyle {
                 .render(RenderingStrategy.MYBATIS3));
     }
     
-    default List<SimpleTableRecord> select(MyBatis3SelectHelper<SimpleTableRecord> helper) {
+    default Optional<SimpleTableRecord> selectOne(MyBatis3SelectOneHelper<SimpleTableRecord> helper) {
+        return helper.apply(SelectDSL.selectWithMapper(this::selectOne, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
+                .from(simpleTable))
+                .build()
+                .execute();
+    }
+    
+    default List<SimpleTableRecord> select(MyBatis3SelectListHelper<SimpleTableRecord> helper) {
         return helper.apply(SelectDSL.selectWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
                 .from(simpleTable))
                 .build()
                 .execute();
     }
     
-    default List<SimpleTableRecord> selectDistinct(MyBatis3SelectHelper<SimpleTableRecord> helper) {
+    default List<SimpleTableRecord> selectDistinct(MyBatis3SelectListHelper<SimpleTableRecord> helper) {
         return helper.apply(SelectDSL.selectDistinctWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
                 .from(simpleTable))
                 .build()
@@ -163,11 +171,9 @@ public interface SimpleTableMapperNewStyle {
     }
     
     default Optional<SimpleTableRecord> selectByPrimaryKey(Integer id_) {
-        return SelectDSL.selectWithMapper(this::selectOne, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
-            .from(simpleTable)
-            .where(id, isEqualTo(id_))
-            .build()
-            .execute();
+        return selectOne(h -> 
+            h.where(id, isEqualTo(id_))
+        );
     }
 
     default int update(MyBatis3UpdateHelper helper) {
