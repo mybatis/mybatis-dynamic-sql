@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 /**
- * Represents a function that can be used to create a "SelectByExample" method in the style
+ * Represents a function that can be used to create a general select method in the style
  * of MyBatis Generator. When using this function, you can create a method that does not require a user to
  * call the build().execute() methods - making client code look a bit cleaner.
  * 
@@ -42,7 +42,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * })
  * List&lt;SimpleRecord&gt; selectMany(SelectStatementProvider selectStatement);
  *
- * default List&lt;SimpleRecord&gt; selectByExample(MyBatis3SelectByExampleHelper&lt;SimpleRecord&gt; helper) {
+ * default List&lt;SimpleRecord&gt; select(MyBatis3SelectHelper&lt;SimpleRecord&gt; helper) {
  *     return helper.apply(SelectDSL.selectWithMapper(this::selectMany, simpleTable.allColumns())
  *             .from(simpleTable))
  *             .build()
@@ -53,7 +53,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>And then call the simplified default method like this:
  * 
  * <pre>
- * List&lt;SimpleRecord&gt; rows = mapper.selectByExample(q -&gt;
+ * List&lt;SimpleRecord&gt; rows = mapper.select(q -&gt;
  *     q.where(id, isEqualTo(1))
  *     .or(occupation, isNull()));
  * </pre>
@@ -61,19 +61,19 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>You can implement a "select all" with the following code:
  * 
  * <pre>
- * List&lt;SimpleRecord&gt; rows = mapper.selectByExample(q -&gt; q);
+ * List&lt;SimpleRecord&gt; rows = mapper.select(q -&gt; q);
  * </pre>
  * 
  * <p>Or
  * 
  * <pre>
- * List&lt;SimpleRecord&gt; rows = mapper.selectByExample(MyBatis3SelectByExampleHelper.allRows());
+ * List&lt;SimpleRecord&gt; rows = mapper.select(MyBatis3SelectHelper.allRows());
  * </pre>
  * 
  * @author Jeff Butler
  */
 @FunctionalInterface
-public interface MyBatis3SelectByExampleHelper<T> extends
+public interface MyBatis3SelectListHelper<T> extends
         Function<QueryExpressionDSL<MyBatis3SelectModelAdapter<List<T>>>,
         Buildable<MyBatis3SelectModelAdapter<List<T>>>> {
 
@@ -84,7 +84,7 @@ public interface MyBatis3SelectByExampleHelper<T> extends
      * 
      * @return the helper that will select every row in a table
      */
-    static <T> MyBatis3SelectByExampleHelper<T> allRows() {
+    static <T> MyBatis3SelectListHelper<T> allRows() {
         return h -> h;
     }
 
@@ -96,7 +96,7 @@ public interface MyBatis3SelectByExampleHelper<T> extends
      * 
      * @return the helper that will select every row in a table in the specified order
      */
-    static <T> MyBatis3SelectByExampleHelper<T> allRowsOrderdBy(SortSpecification...columns) {
+    static <T> MyBatis3SelectListHelper<T> allRowsOrderdBy(SortSpecification...columns) {
         return h -> h.orderBy(columns);
     }
 }
