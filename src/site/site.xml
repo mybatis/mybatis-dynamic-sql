@@ -48,6 +48,7 @@
       <item href="docs/insert.html" name="INSERT Statements" />
       <item href="docs/update.html" name="UPDATE Statements" />
       <item href="docs/mybatis3.html" name="MyBatis3 Support" />
+      <item href="docs/kotlin.html" name="Kotlin Support" />
       <item href="docs/spring.html" name="Spring Support" />
       <item href="docs/springBatch.html" name="Spring Batch Support" />
       <item href="docs/howItWorks.html" name="How it Works" />
