@@ -15,7 +15,7 @@
  */
 package examples.simple.legacy;
 
-import static examples.simple.legacy.SimpleTableDynamicSqlSupport.*;
+import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -40,6 +40,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+
+import examples.simple.LastName;
+import examples.simple.SimpleTableRecord;
 
 public class SimpleTableAnnotatedMapperTest {
 

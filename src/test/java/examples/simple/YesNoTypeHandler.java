@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.simple.legacy;
+package examples.simple;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -23,29 +23,25 @@ import java.sql.SQLException;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
-public class LastNameTypeHandler implements TypeHandler<LastName> {
+public class YesNoTypeHandler implements TypeHandler<Boolean> {
 
     @Override
-    public void setParameter(PreparedStatement ps, int i, LastName parameter, JdbcType jdbcType) throws SQLException {
-        ps.setString(i, parameter == null ? null : parameter.getName());
+    public void setParameter(PreparedStatement ps, int i, Boolean parameter, JdbcType jdbcType) throws SQLException {
+        ps.setString(i, parameter ? "Yes" : "No");
     }
 
     @Override
-    public LastName getResult(ResultSet rs, String columnName) throws SQLException {
-        return toLastName(rs.getString(columnName));
+    public Boolean getResult(ResultSet rs, String columnName) throws SQLException {
+        return "Yes".equals(rs.getString(columnName));
     }
 
     @Override
-    public LastName getResult(ResultSet rs, int columnIndex) throws SQLException {
-        return toLastName(rs.getString(columnIndex));
+    public Boolean getResult(ResultSet rs, int columnIndex) throws SQLException {
+        return "Yes".equals(rs.getString(columnIndex));
     }
 
     @Override
-    public LastName getResult(CallableStatement cs, int columnIndex) throws SQLException {
-        return toLastName(cs.getString(columnIndex));
-    }
-
-    private LastName toLastName(String s) {
-        return s == null ? null : LastName.of(s);
+    public Boolean getResult(CallableStatement cs, int columnIndex) throws SQLException {
+        return "Yes".equals(cs.getString(columnIndex));
     }
 }

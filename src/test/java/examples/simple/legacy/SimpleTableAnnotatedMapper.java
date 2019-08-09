@@ -15,7 +15,7 @@
  */
 package examples.simple.legacy;
 
-import static examples.simple.legacy.SimpleTableDynamicSqlSupport.*;
+import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.util.List;
@@ -45,6 +45,10 @@ import org.mybatis.dynamic.sql.update.MyBatis3UpdateModelAdapter;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+
+import examples.simple.LastNameTypeHandler;
+import examples.simple.SimpleTableRecord;
+import examples.simple.YesNoTypeHandler;
 
 /**
  * 

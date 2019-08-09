@@ -15,7 +15,7 @@
  */
 package examples.simple.legacy;
 
-import static examples.simple.legacy.SimpleTableDynamicSqlSupport.*;
+import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 

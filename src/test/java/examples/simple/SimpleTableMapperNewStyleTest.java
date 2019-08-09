@@ -15,7 +15,7 @@
  */
 package examples.simple;
 
-import static examples.simple.legacy.SimpleTableDynamicSqlSupport.*;
+import static examples.simple.SimpleTableDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -42,9 +42,6 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectListHelper;
-
-import examples.simple.legacy.LastName;
-import examples.simple.legacy.SimpleTableRecord;
 
 public class SimpleTableMapperNewStyleTest {
 

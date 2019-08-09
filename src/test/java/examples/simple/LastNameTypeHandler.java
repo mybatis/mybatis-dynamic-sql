@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2018 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.simple.legacy;
+package examples.simple;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -23,25 +23,29 @@ import java.sql.SQLException;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
-public class YesNoTypeHandler implements TypeHandler<Boolean> {
+public class LastNameTypeHandler implements TypeHandler<LastName> {
 
     @Override
-    public void setParameter(PreparedStatement ps, int i, Boolean parameter, JdbcType jdbcType) throws SQLException {
-        ps.setString(i, parameter ? "Yes" : "No");
+    public void setParameter(PreparedStatement ps, int i, LastName parameter, JdbcType jdbcType) throws SQLException {
+        ps.setString(i, parameter == null ? null : parameter.getName());
     }
 
     @Override
-    public Boolean getResult(ResultSet rs, String columnName) throws SQLException {
-        return "Yes".equals(rs.getString(columnName));
+    public LastName getResult(ResultSet rs, String columnName) throws SQLException {
+        return toLastName(rs.getString(columnName));
     }
 
     @Override
-    public Boolean getResult(ResultSet rs, int columnIndex) throws SQLException {
-        return "Yes".equals(rs.getString(columnIndex));
+    public LastName getResult(ResultSet rs, int columnIndex) throws SQLException {
+        return toLastName(rs.getString(columnIndex));
     }
 
     @Override
-    public Boolean getResult(CallableStatement cs, int columnIndex) throws SQLException {
-        return "Yes".equals(cs.getString(columnIndex));
+    public LastName getResult(CallableStatement cs, int columnIndex) throws SQLException {
+        return toLastName(cs.getString(columnIndex));
+    }
+
+    private LastName toLastName(String s) {
+        return s == null ? null : LastName.of(s);
     }
 }
