@@ -100,7 +100,7 @@ public class PersonMapperTest {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             
             List<PersonRecord> rows = mapper
-                    .select(MyBatis3SelectListHelper.allRowsOrderdBy(lastName.descending(), firstName.descending()));
+                    .select(MyBatis3SelectListHelper.allRowsOrderedBy(lastName.descending(), firstName.descending()));
             
             assertThat(rows.size()).isEqualTo(6);
             assertThat(rows.get(0).getId()).isEqualTo(5);
@@ -487,7 +487,7 @@ public class PersonMapperTest {
     public void testJoinAllRows() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
-            List<PersonWithAddress> records = mapper.select(MyBatis3SelectListHelper.allRowsOrderdBy(id));
+            List<PersonWithAddress> records = mapper.select(MyBatis3SelectListHelper.allRowsOrderedBy(id));
             
             assertThat(records.size()).isEqualTo(6L);
             assertThat(records.get(0).getId()).isEqualTo(1);

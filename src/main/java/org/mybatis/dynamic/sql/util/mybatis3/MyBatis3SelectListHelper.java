@@ -96,7 +96,7 @@ public interface MyBatis3SelectListHelper<T> extends
      * 
      * @return the helper that will select every row in a table in the specified order
      */
-    static <T> MyBatis3SelectListHelper<T> allRowsOrderdBy(SortSpecification...columns) {
+    static <T> MyBatis3SelectListHelper<T> allRowsOrderedBy(SortSpecification...columns) {
         return h -> h.orderBy(columns);
     }
 }
