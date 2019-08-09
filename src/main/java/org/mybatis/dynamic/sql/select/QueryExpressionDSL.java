@@ -39,7 +39,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class QueryExpressionDSL<R> implements Buildable<R> {
+public class QueryExpressionDSL<R> implements CompletableQuery<R> {
 
     private String connector;
     private SelectDSL<R> selectDSL;
@@ -82,14 +82,17 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
                 .build();
     }
     
+    @Override
     public QueryExpressionWhereBuilder where() {
         return new QueryExpressionWhereBuilder();
     }
 
+    @Override
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
         return new QueryExpressionWhereBuilder(column, condition);
     }
 
+    @Override
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
         return new QueryExpressionWhereBuilder(column, condition, subCriteria);
@@ -141,12 +144,14 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         return fullJoin(joinTable);
     }
 
+    @Override
     public GroupByFinisher groupBy(BasicColumn...columns) {
         groupByModel = GroupByModel.of(columns);
         selectDSL.addQueryExpression(buildModel());
         return new GroupByFinisher();
     }
     
+    @Override
     public SelectDSL<R> orderBy(SortSpecification...columns) {
         buildDelegateMethod = selectDSL::build;
         selectDSL.addQueryExpression(buildModel());
@@ -156,12 +161,12 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
 
     public UnionBuilder union() {
         selectDSL.addQueryExpression(buildModel());
-        return new UnionBuilder("union"); //$NON-NLS-1$
+        return new UnionBuilder();
     }
 
     public UnionBuilder unionAll() {
         selectDSL.addQueryExpression(buildModel());
-        return new UnionBuilder("union all"); //$NON-NLS-1$
+        return new UnionAllBuilder();
     }
 
     protected QueryExpressionModel buildModel() {
@@ -176,18 +181,21 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
                 .build();
     }
     
+    @Override
     public SelectDSL<R>.LimitFinisher limit(long limit) {
         buildDelegateMethod = selectDSL::build;
         selectDSL.addQueryExpression(buildModel());
         return selectDSL.limit(limit);
     }
 
+    @Override
     public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
         buildDelegateMethod = selectDSL::build;
         selectDSL.addQueryExpression(buildModel());
         return selectDSL.offset(offset);
     }
 
+    @Override
     public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
         buildDelegateMethod = selectDSL::build;
         selectDSL.addQueryExpression(buildModel());
@@ -283,13 +291,13 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         public UnionBuilder union() {
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
-            return new UnionBuilder("union"); //$NON-NLS-1$
+            return new UnionBuilder();
         }
 
         public UnionBuilder unionAll() {
             whereModel = buildWhereModel();
             selectDSL.addQueryExpression(buildModel());
-            return new UnionBuilder("union all"); //$NON-NLS-1$
+            return new UnionAllBuilder();
         }
 
         public SelectDSL<R> orderBy(SortSpecification...columns) {
@@ -364,7 +372,7 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         }
     }
 
-    public class JoinSpecificationFinisher implements Buildable<R> {
+    public class JoinSpecificationFinisher implements CompletableQuery<R> {
         private SqlTable joinTable;
         private List<JoinCriterion> joinCriteria = new ArrayList<>();
         private JoinType joinType;
@@ -420,17 +428,20 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             selectDSL.addQueryExpression(buildModel());
             return selectDSL.build();
         }
-        
+
+        @Override
         public QueryExpressionWhereBuilder where() {
             joinModel = buildJoinModel();
             return new QueryExpressionWhereBuilder();
         }
         
+        @Override
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
             joinModel = buildJoinModel();
             return new QueryExpressionWhereBuilder(column, condition);
         }
 
+        @Override
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             joinModel = buildJoinModel();
@@ -486,33 +497,44 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             return fullJoin(joinTable);
         }
 
+        @Override
+        public GroupByFinisher groupBy(BasicColumn...columns) {
+            joinModel = buildJoinModel();
+            return QueryExpressionDSL.this.groupBy(columns);
+        }
+        
+        public UnionBuilder union() {
+            joinModel = buildJoinModel();
+            return QueryExpressionDSL.this.union();
+        }
+
+        public UnionBuilder unionAll() {
+            joinModel = buildJoinModel();
+            return QueryExpressionDSL.this.unionAll();
+        }
+
+        @Override
         public SelectDSL<R> orderBy(SortSpecification...columns) {
-            buildDelegateMethod = selectDSL::build;
             joinModel = buildJoinModel();
-            selectDSL.addQueryExpression(buildModel());
-            selectDSL.setOrderByModel(OrderByModel.of(columns));
-            return selectDSL;
+            return QueryExpressionDSL.this.orderBy(columns);
         }
 
+        @Override
         public SelectDSL<R>.LimitFinisher limit(long limit) {
-            buildDelegateMethod = selectDSL::build;
             joinModel = buildJoinModel();
-            selectDSL.addQueryExpression(buildModel());
-            return selectDSL.limit(limit);
+            return QueryExpressionDSL.this.limit(limit);
         }
 
+        @Override
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            buildDelegateMethod = selectDSL::build;
             joinModel = buildJoinModel();
-            selectDSL.addQueryExpression(buildModel());
-            return selectDSL.offset(offset);
+            return QueryExpressionDSL.this.offset(offset);
         }
 
+        @Override
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            buildDelegateMethod = selectDSL::build;
             joinModel = buildJoinModel();
-            selectDSL.addQueryExpression(buildModel());
-            return selectDSL.fetchFirst(fetchFirstRows);
+            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
     }
     
@@ -536,6 +558,14 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
             return selectDSL.build();
         }
 
+        public UnionBuilder union() {
+            return new UnionBuilder();
+        }
+        
+        public UnionBuilder unionAll() {
+            return new UnionAllBuilder();
+        }
+        
         public SelectDSL<R>.LimitFinisher limit(long limit) {
             buildDelegateMethod = selectDSL::build;
             return selectDSL.limit(limit);
@@ -553,10 +583,10 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
     }
     
     public class UnionBuilder {
-        private String connector;
+        protected String connector;
         
-        public UnionBuilder(String connector) {
-            this.connector = Objects.requireNonNull(connector);
+        public UnionBuilder() {
+            this.connector = "union"; //$NON-NLS-1$
         }
         
         public FromGatherer<R> select(BasicColumn...selectList) {
@@ -576,6 +606,12 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
                     .isDistinct()
                     .withPriorQuery(QueryExpressionDSL.this)
                     .build();
+        }
+    }
+    
+    public class UnionAllBuilder extends UnionBuilder {
+        public UnionAllBuilder() {
+            connector = "union all"; //$NON-NLS-1$
         }
     }
 }

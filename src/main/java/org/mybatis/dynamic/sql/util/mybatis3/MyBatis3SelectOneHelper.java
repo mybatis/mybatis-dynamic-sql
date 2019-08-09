@@ -18,8 +18,8 @@ package org.mybatis.dynamic.sql.util.mybatis3;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.mybatis.dynamic.sql.select.CompletableQuery;
 import org.mybatis.dynamic.sql.select.MyBatis3SelectModelAdapter;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 /**
@@ -53,6 +53,6 @@ import org.mybatis.dynamic.sql.util.Buildable;
  */
 @FunctionalInterface
 public interface MyBatis3SelectOneHelper<T> extends
-        Function<QueryExpressionDSL<MyBatis3SelectModelAdapter<Optional<T>>>,
+        Function<CompletableQuery<MyBatis3SelectModelAdapter<Optional<T>>>,
         Buildable<MyBatis3SelectModelAdapter<Optional<T>>>> {
 }
