@@ -14,3 +14,5 @@ buildNumber.properties
 /bin/
 .mvn/wrapper/maven-wrapper.jar
 .DS_Store
+.idea
+*.iml
