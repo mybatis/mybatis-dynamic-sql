@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.simple;
+package examples.simple.legacy;
 
 import java.sql.JDBCType;
 import java.util.Date;
