@@ -15,7 +15,9 @@
  */
 package examples.groupby;
 
+import static examples.groupby.AddressDynamicSqlSupport.*;
 import static examples.groupby.PersonDynamicSqlSupport.*;
+import static examples.groupby.Person2DynamicSqlSupport.person2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -111,6 +113,196 @@ public class GroupByTest {
 
             row = rows.get(1);
             assertThat(row.get("GENDER")).isEqualTo("Female");
+            assertThat(row.get("COUNT")).isEqualTo(3L);
+        }
+    }
+
+    @Test
+    public void testGroupByAfterJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(lastName, streetAddress, count().as("count"))
+                    .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
+                    .groupBy(lastName, streetAddress)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select p.last_name, a.street_address, count(*) as count" +
+                    " from Person p join Address a on p.address_id = a.address_id" +
+                    " group by p.last_name, a.street_address";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(2);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Flintstone");
+            assertThat(row.get("STREET_ADDRESS")).isEqualTo("123 Main Street");
+            assertThat(row.get("COUNT")).isEqualTo(4L);
+
+            row = rows.get(1);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Rubble");
+            assertThat(row.get("STREET_ADDRESS")).isEqualTo("456 Main Street");
+            assertThat(row.get("COUNT")).isEqualTo(3L);
+        }
+    }
+
+    @Test
+    public void testUnionAfterJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
+                    .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
+                    .union()
+                    .select(person2.lastName, person2.firstName, streetAddress)
+                    .from(person2, "p").join(address, "a").on(person2.addressId, equalTo(address.id))
+                    .orderBy(lastName, firstName)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select p.last_name, p.first_name, a.street_address" +
+                    " from Person p join Address a on p.address_id = a.address_id" +
+                    " union" +
+                    " select p.last_name, p.first_name, a.street_address" +
+                    " from Person2 p join Address a on p.address_id = a.address_id" +
+                    " order by last_name, first_name";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(10);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Flintstone");
+            assertThat(row.get("FIRST_NAME")).isEqualTo("Dino");
+            assertThat(row.get("STREET_ADDRESS")).isEqualTo("123 Main Street");
+
+            row = rows.get(9);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Smith");
+            assertThat(row.get("FIRST_NAME")).isEqualTo("Suzy");
+            assertThat(row.get("STREET_ADDRESS")).isEqualTo("123 Main Street");
+        }
+    }
+
+    @Test
+    public void testUnionAllAfterJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
+                    .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
+                    .unionAll()
+                    .select(person2.lastName, person2.firstName, streetAddress)
+                    .from(person2, "p").join(address, "a").on(person2.addressId, equalTo(address.id))
+                    .orderBy(lastName, firstName)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select p.last_name, p.first_name, a.street_address" +
+                    " from Person p join Address a on p.address_id = a.address_id" +
+                    " union all" +
+                    " select p.last_name, p.first_name, a.street_address" +
+                    " from Person2 p join Address a on p.address_id = a.address_id" +
+                    " order by last_name, first_name";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(10);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Flintstone");
+            assertThat(row.get("FIRST_NAME")).isEqualTo("Dino");
+            assertThat(row.get("STREET_ADDRESS")).isEqualTo("123 Main Street");
+
+            row = rows.get(9);
+            assertThat(row.get("LAST_NAME")).isEqualTo("Smith");
+            assertThat(row.get("FIRST_NAME")).isEqualTo("Suzy");
+            assertThat(row.get("STREET_ADDRESS")).isEqualTo("123 Main Street");
+        }
+    }
+
+    @Test
+    public void testUnionAfterGroupBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(stringConstant("Gender"), gender.as("value"), count().as("count"))
+                    .from(person)
+                    .groupBy(gender)
+                    .union()
+                    .select(stringConstant("Last Name"), lastName.as("value"), count().as("count"))
+                    .from(person)
+                    .groupBy(lastName)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select 'Gender', gender as value, count(*) as count from Person group by gender" +
+                    " union" +
+                    " select 'Last Name', last_name as value, count(*) as count from Person group by last_name";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(4);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("C1")).isEqualTo("Gender   ");
+            assertThat(row.get("VALUE")).isEqualTo("Female");
+            assertThat(row.get("COUNT")).isEqualTo(3L);
+
+            row = rows.get(1);
+            assertThat(row.get("C1")).isEqualTo("Gender   ");
+            assertThat(row.get("VALUE")).isEqualTo("Male");
+            assertThat(row.get("COUNT")).isEqualTo(4L);
+
+            row = rows.get(2);
+            assertThat(row.get("C1")).isEqualTo("Last Name");
+            assertThat(row.get("VALUE")).isEqualTo("Flintstone");
+            assertThat(row.get("COUNT")).isEqualTo(4L);
+
+            row = rows.get(3);
+            assertThat(row.get("C1")).isEqualTo("Last Name");
+            assertThat(row.get("VALUE")).isEqualTo("Rubble");
+            assertThat(row.get("COUNT")).isEqualTo(3L);
+        }
+    }
+
+    @Test
+    public void testUnionAllAfterGroupBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+        
+            SelectStatementProvider selectStatement = select(stringConstant("Gender"), gender.as("value"), count().as("count"))
+                    .from(person)
+                    .groupBy(gender)
+                    .unionAll()
+                    .select(stringConstant("Last Name"), lastName.as("value"), count().as("count"))
+                    .from(person)
+                    .groupBy(lastName)
+                    .build()
+                    .render(RenderingStrategy.MYBATIS3);
+            
+            String expected = "select 'Gender', gender as value, count(*) as count from Person group by gender" +
+                    " union all" +
+                    " select 'Last Name', last_name as value, count(*) as count from Person group by last_name";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            assertThat(rows.size()).isEqualTo(4);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("C1")).isEqualTo("Gender   ");
+            assertThat(row.get("VALUE")).isEqualTo("Male");
+            assertThat(row.get("COUNT")).isEqualTo(4L);
+
+            row = rows.get(1);
+            assertThat(row.get("C1")).isEqualTo("Gender   ");
+            assertThat(row.get("VALUE")).isEqualTo("Female");
+            assertThat(row.get("COUNT")).isEqualTo(3L);
+
+            row = rows.get(2);
+            assertThat(row.get("C1")).isEqualTo("Last Name");
+            assertThat(row.get("VALUE")).isEqualTo("Flintstone");
+            assertThat(row.get("COUNT")).isEqualTo(4L);
+
+            row = rows.get(3);
+            assertThat(row.get("C1")).isEqualTo("Last Name");
+            assertThat(row.get("VALUE")).isEqualTo("Rubble");
             assertThat(row.get("COUNT")).isEqualTo(3L);
         }
     }

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,25 +21,27 @@ import java.util.Date;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
-public final class SimpleTableDynamicSqlSupport {
-    public static final SimpleTable simpleTable = new SimpleTable();
-    public static final SqlColumn<Integer> id = simpleTable.id;
-    public static final SqlColumn<String> firstName = simpleTable.firstName;
-    public static final SqlColumn<LastName> lastName = simpleTable.lastName;
-    public static final SqlColumn<Date> birthDate = simpleTable.birthDate;
-    public static final SqlColumn<Boolean> employed = simpleTable.employed;
-    public static final SqlColumn<String> occupation = simpleTable.occupation;
+public final class PersonDynamicSqlSupport {
+    public static final Person person = new Person();
+    public static final SqlColumn<Integer> id = person.id;
+    public static final SqlColumn<String> firstName = person.firstName;
+    public static final SqlColumn<LastName> lastName = person.lastName;
+    public static final SqlColumn<Date> birthDate = person.birthDate;
+    public static final SqlColumn<Boolean> employed = person.employed;
+    public static final SqlColumn<String> occupation = person.occupation;
+    public static final SqlColumn<Integer> addressId = person.addressId;
     
-    public static final class SimpleTable extends SqlTable {
+    public static final class Person extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
         public final SqlColumn<LastName> lastName = column("last_name", JDBCType.VARCHAR, "examples.simple.LastNameTypeHandler");
         public final SqlColumn<Date> birthDate = column("birth_date", JDBCType.DATE);
         public final SqlColumn<Boolean> employed = column("employed", JDBCType.VARCHAR, "examples.simple.YesNoTypeHandler");
         public final SqlColumn<String> occupation = column("occupation", JDBCType.VARCHAR);
+        public final SqlColumn<Integer> addressId = column("address_id", JDBCType.INTEGER);
 
-        public SimpleTable() {
-            super("SimpleTable");
+        public Person() {
+            super("Person");
         }
     }
 }

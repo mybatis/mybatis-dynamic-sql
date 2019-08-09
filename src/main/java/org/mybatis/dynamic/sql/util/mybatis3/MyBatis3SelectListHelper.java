@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.select.CompletableQuery;
 import org.mybatis.dynamic.sql.select.MyBatis3SelectModelAdapter;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 /**
@@ -74,7 +74,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  */
 @FunctionalInterface
 public interface MyBatis3SelectListHelper<T> extends
-        Function<QueryExpressionDSL<MyBatis3SelectModelAdapter<List<T>>>,
+        Function<CompletableQuery<MyBatis3SelectModelAdapter<List<T>>>,
         Buildable<MyBatis3SelectModelAdapter<List<T>>>> {
 
     /**
@@ -96,7 +96,7 @@ public interface MyBatis3SelectListHelper<T> extends
      * 
      * @return the helper that will select every row in a table in the specified order
      */
-    static <T> MyBatis3SelectListHelper<T> allRowsOrderdBy(SortSpecification...columns) {
+    static <T> MyBatis3SelectListHelper<T> allRowsOrderedBy(SortSpecification...columns) {
         return h -> h.orderBy(columns);
     }
 }

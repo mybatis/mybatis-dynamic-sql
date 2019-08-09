@@ -20,17 +20,17 @@ import java.sql.JDBCType;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
-public final class PersonDynamicSqlSupport {
-    public static final Person person = new Person();
-    public static final SqlColumn<Integer> id = person.id;
-    public static final SqlColumn<String> firstName = person.firstName;
-    public static final SqlColumn<String> lastName = person.lastName;
-    public static final SqlColumn<String> gender = person.gender;
-    public static final SqlColumn<String> human = person.human;
-    public static final SqlColumn<Integer> age = person.age;
-    public static final SqlColumn<Integer> addressId = person.addressId;
+public final class Person2DynamicSqlSupport {
+    public static final Person2 person2 = new Person2();
+    public static final SqlColumn<Integer> id = person2.id;
+    public static final SqlColumn<String> firstName = person2.firstName;
+    public static final SqlColumn<String> lastName = person2.lastName;
+    public static final SqlColumn<String> gender = person2.gender;
+    public static final SqlColumn<String> human = person2.human;
+    public static final SqlColumn<Integer> age = person2.age;
+    public static final SqlColumn<Integer> addressId = person2.addressId;
 
-    public static final class Person extends SqlTable {
+    public static final class Person2 extends SqlTable {
         public final SqlColumn<Integer> id = column("person_id", JDBCType.INTEGER);
         public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
         public final SqlColumn<String> lastName = column("last_name", JDBCType.VARCHAR);
@@ -39,8 +39,8 @@ public final class PersonDynamicSqlSupport {
         public final SqlColumn<Integer> age = column("age", JDBCType.INTEGER);
         public final SqlColumn<Integer> addressId = column("address_id", JDBCType.INTEGER);
 
-        public Person() {
-            super("Person");
+        public Person2() {
+            super("Person2");
         }
     }
 }

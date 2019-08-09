@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.simple;
+package examples.simple.legacy;
 
-import static examples.simple.SimpleTableDynamicSqlSupport.*;
+import static examples.simple.PersonDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -41,7 +41,10 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
-public class SimpleTableAnnotatedMapperTest {
+import examples.simple.LastName;
+import examples.simple.PersonRecord;
+
+public class LegacyPersonMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -61,16 +64,16 @@ public class SimpleTableAnnotatedMapperTest {
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
-        config.addMapper(SimpleTableAnnotatedMapper.class);
+        config.addMapper(LegacyPersonMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
     
     @Test
     public void testSelectByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
-            List<SimpleTableRecord> rows = mapper.selectByExample()
+            List<PersonRecord> rows = mapper.selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
@@ -83,10 +86,10 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testSelectByExampleWithRowbounds() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             RowBounds rowBounds = new RowBounds(2, 2);
             
-            List<SimpleTableRecord> rows = mapper.selectByExample(rowBounds)
+            List<PersonRecord> rows = mapper.selectByExample(rowBounds)
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
@@ -99,9 +102,9 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testSelectDistinctByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
-            List<SimpleTableRecord> rows = mapper.selectDistinctByExample()
+            List<PersonRecord> rows = mapper.selectDistinctByExample()
                     .where(id, isGreaterThan(1))
                     .or(occupation, isNull())
                     .build()
@@ -114,10 +117,10 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testSelectDistinctByExampleWithRowbounds() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             RowBounds rowBounds = new RowBounds(2, 2);
             
-            List<SimpleTableRecord> rows = mapper.selectDistinctByExample(rowBounds)
+            List<PersonRecord> rows = mapper.selectDistinctByExample(rowBounds)
                     .where(id, isGreaterThan(1))
                     .or(occupation, isNull())
                     .build()
@@ -130,9 +133,9 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testSelectByExampleWithTypeHandler() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
-            List<SimpleTableRecord> rows = mapper.selectByExample()
+            List<PersonRecord> rows = mapper.selectByExample()
                     .where(employed, isEqualTo(false))
                     .orderBy(id)
                     .build()
@@ -149,9 +152,9 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testFirstNameIn() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
-            List<SimpleTableRecord> rows = mapper.selectByExample()
+            List<PersonRecord> rows = mapper.selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build()
                     .execute();
@@ -167,7 +170,7 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testDeleteByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             int rows = mapper.deleteByExample()
                     .where(occupation, isNull())
                     .build()
@@ -179,7 +182,7 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testDeleteByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             int rows = mapper.deleteByPrimaryKey(2);
             
             assertThat(rows).isEqualTo(1);
@@ -189,14 +192,15 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testInsert() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            SimpleTableRecord record = new SimpleTableRecord();
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
+            PersonRecord record = new PersonRecord();
             record.setId(100);
             record.setFirstName("Joe");
             record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
+            record.setAddressId(1);
             
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
@@ -206,13 +210,14 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testInsertSelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            SimpleTableRecord record = new SimpleTableRecord();
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
+            PersonRecord record = new PersonRecord();
             record.setId(100);
             record.setFirstName("Joe");
             record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(false);
+            record.setAddressId(1);
             
             int rows = mapper.insertSelective(record);
             assertThat(rows).isEqualTo(1);
@@ -222,14 +227,15 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testUpdateByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            SimpleTableRecord record = new SimpleTableRecord();
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
+            PersonRecord record = new PersonRecord();
             record.setId(100);
             record.setFirstName("Joe");
             record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
+            record.setAddressId(1);
             
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
@@ -238,7 +244,7 @@ public class SimpleTableAnnotatedMapperTest {
             rows = mapper.updateByPrimaryKey(record);
             assertThat(rows).isEqualTo(1);
             
-            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            PersonRecord newRecord = mapper.selectByPrimaryKey(100);
             assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
         }
     }
@@ -246,25 +252,26 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testUpdateByPrimaryKeySelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            SimpleTableRecord record = new SimpleTableRecord();
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
+            PersonRecord record = new PersonRecord();
             record.setId(100);
             record.setFirstName("Joe");
             record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
+            record.setAddressId(1);
             
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
 
-            SimpleTableRecord updateRecord = new SimpleTableRecord();
+            PersonRecord updateRecord = new PersonRecord();
             updateRecord.setId(100);
             updateRecord.setOccupation("Programmer");
             rows = mapper.updateByPrimaryKeySelective(updateRecord);
             assertThat(rows).isEqualTo(1);
 
-            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            PersonRecord newRecord = mapper.selectByPrimaryKey(100);
             assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
             assertThat(newRecord.getFirstName()).isEqualTo("Joe");
         }
@@ -273,19 +280,20 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testUpdateWithNulls() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            SimpleTableRecord record = new SimpleTableRecord();
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
+            PersonRecord record = new PersonRecord();
             record.setId(100);
             record.setFirstName("Joe");
             record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
+            record.setAddressId(1);
             
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
 
-            UpdateStatementProvider updateStatement = update(simpleTable)
+            UpdateStatementProvider updateStatement = update(person)
                     .set(occupation).equalToNull()
                     .set(employed).equalTo(false)
                     .where(id, isEqualTo(100))
@@ -295,7 +303,7 @@ public class SimpleTableAnnotatedMapperTest {
             rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(1);
 
-            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            PersonRecord newRecord = mapper.selectByPrimaryKey(100);
             assertAll(
                     () -> assertThat(newRecord.getOccupation()).isNull(),
                     () -> assertThat(newRecord.getEmployed()).isEqualTo(false),
@@ -307,14 +315,15 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testUpdateByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
-            SimpleTableRecord record = new SimpleTableRecord();
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
+            PersonRecord record = new PersonRecord();
             record.setId(100);
             record.setFirstName("Joe");
             record.setLastName(LastName.of("Jones"));
             record.setBirthDate(new Date());
             record.setEmployed(true);
             record.setOccupation("Developer");
+            record.setAddressId(1);
             
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
@@ -328,7 +337,7 @@ public class SimpleTableAnnotatedMapperTest {
 
             assertThat(rows).isEqualTo(1);
 
-            SimpleTableRecord newRecord = mapper.selectByPrimaryKey(100);
+            PersonRecord newRecord = mapper.selectByPrimaryKey(100);
             assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
         }
     }
@@ -336,7 +345,7 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testCountByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             long rows = mapper.countByExample()
                     .where(occupation, isNull())
                     .build()
@@ -349,9 +358,9 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testTypeHandledLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
-            List<SimpleTableRecord> rows = mapper.selectByExample()
+            List<PersonRecord> rows = mapper.selectByExample()
                     .where(lastName, isLike(LastName.of("Fl%")))
                     .orderBy(id)
                     .build()
@@ -365,9 +374,9 @@ public class SimpleTableAnnotatedMapperTest {
     @Test
     public void testTypeHandledNotLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            SimpleTableAnnotatedMapper mapper = session.getMapper(SimpleTableAnnotatedMapper.class);
+            LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
-            List<SimpleTableRecord> rows = mapper.selectByExample()
+            List<PersonRecord> rows = mapper.selectByExample()
                     .where(lastName, isNotLike(LastName.of("Fl%")))
                     .orderBy(id)
                     .build()
