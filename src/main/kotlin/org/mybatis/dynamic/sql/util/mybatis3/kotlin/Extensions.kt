@@ -30,11 +30,12 @@ import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.select.CompletableQuery
 
-typealias CountHelper = QueryExpressionDSL<SelectModelAdapter<Long>>.() -> Buildable<SelectModelAdapter<Long>>
+typealias CountHelper = CompletableQuery<SelectModelAdapter<Long>>.() -> Buildable<SelectModelAdapter<Long>>
 typealias DeleteHelper = DeleteDSL<DeleteModelAdapter>.() -> Buildable<DeleteModelAdapter>
-typealias SelectListHelper<T> = QueryExpressionDSL<SelectModelAdapter<List<T>>>.() -> Buildable<SelectModelAdapter<List<T>>>
-typealias SelectOneHelper<T> = QueryExpressionDSL<SelectModelAdapter<T?>>.() -> Buildable<SelectModelAdapter<T?>>
+typealias SelectListHelper<T> = CompletableQuery<SelectModelAdapter<List<T>>>.() -> Buildable<SelectModelAdapter<List<T>>>
+typealias SelectOneHelper<T> = CompletableQuery<SelectModelAdapter<T?>>.() -> Buildable<SelectModelAdapter<T?>>
 typealias UpdateHelper = UpdateDSL<UpdateModelAdapter>.() -> Buildable<UpdateModelAdapter>
 
 class DeleteModelAdapter(private val deleteModel: DeleteModel, private val mapperMethod: (DeleteStatementProvider) -> Int) {
@@ -62,6 +63,6 @@ fun updateWithKotlinMapper(mapperMethod: (UpdateStatementProvider) -> Int, table
         UpdateDSL.update({ UpdateModelAdapter(it, mapperMethod) }, table) as UpdateDSL<UpdateModelAdapter>
 
 fun DeleteDSL<DeleteModelAdapter>.allRows() = this as Buildable<DeleteModelAdapter>
-fun <T> QueryExpressionDSL<SelectModelAdapter<T>>.allRows() = this as Buildable<SelectModelAdapter<T>>
-fun <T> QueryExpressionDSL<SelectModelAdapter<T>>.allRowsOrderedBy(vararg columns: SortSpecification) =
+fun <T> CompletableQuery<SelectModelAdapter<T>>.allRows() = this as Buildable<SelectModelAdapter<T>>
+fun <T> CompletableQuery<SelectModelAdapter<T>>.allRowsOrderedBy(vararg columns: SortSpecification) =
         orderBy(*columns) as Buildable<SelectModelAdapter<T>>

@@ -421,6 +421,29 @@ internal class KotlinTest {
         }
     }
 
+    @Test
+    fun testJoinHelperFunction() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonWithAddressMapper::class.java)
+
+            val rows = mapper.select {
+                where(id, isEqualTo(1))
+            }
+
+            assertThat(rows.size).isEqualTo(1)
+            assertThat(rows[0].id).isEqualTo(1)
+            assertThat(rows[0].firstName).isEqualTo("Fred")
+            assertThat(rows[0].lastName).isEqualTo("Flintstone")
+            assertThat(rows[0].birthDate).isNotNull()
+            assertThat(rows[0].employed).isTrue()
+            assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(rows[0].address?.id).isEqualTo(1)
+            assertThat(rows[0].address?.streetAddress).isEqualTo("123 Main Street")
+            assertThat(rows[0].address?.city).isEqualTo("Bedrock")
+            assertThat(rows[0].address?.state).isEqualTo("IN")
+        }
+    }
+
     companion object {
         const val JDBC_URL = "jdbc:hsqldb:mem:aname"
         const val JDBC_DRIVER = "org.hsqldb.jdbcDriver"
