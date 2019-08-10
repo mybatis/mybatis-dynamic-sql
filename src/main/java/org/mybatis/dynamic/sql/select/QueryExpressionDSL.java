@@ -147,7 +147,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     @Override
     public GroupByFinisher groupBy(BasicColumn...columns) {
         groupByModel = GroupByModel.of(columns);
-        selectDSL.addQueryExpression(buildModel());
         return new GroupByFinisher();
     }
     
@@ -290,50 +289,37 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         
         public UnionBuilder union() {
             whereModel = buildWhereModel();
-            selectDSL.addQueryExpression(buildModel());
-            return new UnionBuilder();
+            return QueryExpressionDSL.this.union();
         }
 
         public UnionBuilder unionAll() {
             whereModel = buildWhereModel();
-            selectDSL.addQueryExpression(buildModel());
-            return new UnionAllBuilder();
+            return QueryExpressionDSL.this.unionAll();
         }
 
         public SelectDSL<R> orderBy(SortSpecification...columns) {
-            buildDelegateMethod = selectDSL::build;
             whereModel = buildWhereModel();
-            selectDSL.addQueryExpression(buildModel());
-            selectDSL.setOrderByModel(OrderByModel.of(columns));
-            return selectDSL;
+            return QueryExpressionDSL.this.orderBy(columns);
         }
         
         public GroupByFinisher groupBy(BasicColumn...columns) {
-            groupByModel = GroupByModel.of(columns);
             whereModel = buildWhereModel();
-            selectDSL.addQueryExpression(buildModel());
-            return new GroupByFinisher();
+            return QueryExpressionDSL.this.groupBy(columns);
         }
         
         public SelectDSL<R>.LimitFinisher limit(long limit) {
-            buildDelegateMethod = selectDSL::build;
             whereModel = buildWhereModel();
-            selectDSL.addQueryExpression(buildModel());
-            return selectDSL.limit(limit);
+            return QueryExpressionDSL.this.limit(limit);
         }
         
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            buildDelegateMethod = selectDSL::build;
             whereModel = buildWhereModel();
-            selectDSL.addQueryExpression(buildModel());
-            return selectDSL.offset(offset);
+            return QueryExpressionDSL.this.offset(offset);
         }
         
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            buildDelegateMethod = selectDSL::build;
             whereModel = buildWhereModel();
-            selectDSL.addQueryExpression(buildModel());
-            return selectDSL.fetchFirst(fetchFirstRows);
+            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
         
         @Override
@@ -343,8 +329,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         
         private R internalBuild() {
             whereModel = buildWhereModel();
-            selectDSL.addQueryExpression(buildModel());
-            return selectDSL.build();
+            return QueryExpressionDSL.this.internalBuild();
         }
         
         @Override
@@ -425,8 +410,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         
         private R internalbuild() {
             joinModel = buildJoinModel();
-            selectDSL.addQueryExpression(buildModel());
-            return selectDSL.build();
+            return QueryExpressionDSL.this.internalBuild();
         }
 
         @Override
@@ -544,9 +528,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         }
         
         public SelectDSL<R> orderBy(SortSpecification...columns) {
-            buildDelegateMethod = selectDSL::build;
-            selectDSL.setOrderByModel(OrderByModel.of(columns));
-            return selectDSL;
+            return QueryExpressionDSL.this.orderBy(columns);
         }
 
         @Override
@@ -555,30 +537,27 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         }
         
         private R internalBuild() {
-            return selectDSL.build();
+            return QueryExpressionDSL.this.internalBuild();
         }
 
         public UnionBuilder union() {
-            return new UnionBuilder();
+            return QueryExpressionDSL.this.union();
         }
         
         public UnionBuilder unionAll() {
-            return new UnionAllBuilder();
+            return QueryExpressionDSL.this.unionAll();
         }
         
         public SelectDSL<R>.LimitFinisher limit(long limit) {
-            buildDelegateMethod = selectDSL::build;
-            return selectDSL.limit(limit);
+            return QueryExpressionDSL.this.limit(limit);
         }
 
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            buildDelegateMethod = selectDSL::build;
-            return selectDSL.offset(offset);
+            return QueryExpressionDSL.this.offset(offset);
         }
 
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            buildDelegateMethod = selectDSL::build;
-            return selectDSL.fetchFirst(fetchFirstRows);
+            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
     }
     
