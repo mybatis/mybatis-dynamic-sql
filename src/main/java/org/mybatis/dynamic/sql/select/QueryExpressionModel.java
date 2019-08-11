@@ -40,7 +40,7 @@ public class QueryExpressionModel {
     private SqlTable table;
     private JoinModel joinModel;
     private TableAliasCalculator tableAliasCalculator;
-    private WhereModel whereModel;
+    private Optional<WhereModel> whereModel;
     private GroupByModel groupByModel;
 
     private QueryExpressionModel(Builder builder) {
@@ -51,7 +51,7 @@ public class QueryExpressionModel {
         joinModel = builder.joinModel;
         tableAliasCalculator = joinModel().map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
                 .orElseGet(() -> TableAliasCalculator.of(builder.tableAliases));
-        whereModel = builder.whereModel;
+        whereModel = Objects.requireNonNull(builder.whereModel);
         groupByModel = builder.groupByModel;
     }
     
@@ -76,7 +76,7 @@ public class QueryExpressionModel {
     }
 
     public Optional<WhereModel> whereModel() {
-        return Optional.ofNullable(whereModel);
+        return whereModel;
     }
     
     public Optional<JoinModel> joinModel() {
@@ -102,7 +102,7 @@ public class QueryExpressionModel {
         private List<BasicColumn> selectList = new ArrayList<>();
         private SqlTable table;
         private Map<SqlTable, String> tableAliases = new HashMap<>();
-        private WhereModel whereModel;
+        private Optional<WhereModel> whereModel = Optional.empty();
         private JoinModel joinModel;
         private GroupByModel groupByModel;
         
@@ -131,7 +131,7 @@ public class QueryExpressionModel {
             return this;
         }
         
-        public Builder withWhereModel(WhereModel whereModel) {
+        public Builder withWhereModel(Optional<WhereModel> whereModel) {
             this.whereModel = whereModel;
             return this;
         }

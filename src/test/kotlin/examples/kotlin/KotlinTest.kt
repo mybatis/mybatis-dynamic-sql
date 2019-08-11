@@ -73,7 +73,7 @@ internal class KotlinTest {
             val rows = mapper.select {
                 where(id, isEqualTo(1))
                         .or(occupation, isNull())
-                        .orderBy(id)
+                orderBy(id)
             }
 
             assertThat(rows.size).isEqualTo(3)
