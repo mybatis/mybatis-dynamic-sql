@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
 
@@ -35,7 +37,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 public class SelectDSL<R> implements Buildable<R> {
 
     private Function<SelectModel, R> adapterFunction;
-    private List<QueryExpressionModel> queryExpressions = new ArrayList<>();    
+    private List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();
     private OrderByModel orderByModel;
     private PagingModel pagingModel;
     private Supplier<R> buildDelegateMethod;
@@ -51,8 +53,10 @@ public class SelectDSL<R> implements Buildable<R> {
     
     public static <R> QueryExpressionDSL.FromGatherer<R> select(Function<SelectModel, R> adapterFunction,
             BasicColumn...selectList) {
-        SelectDSL<R> selectDSL = new SelectDSL<>(adapterFunction);
-        return QueryExpressionDSL.select(selectDSL, selectList);
+        return new FromGatherer.Builder<R>()
+                .withSelectList(selectList)
+                .withSelectDSL(new SelectDSL<>(adapterFunction))
+                .build();
     }
     
     public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
@@ -61,8 +65,11 @@ public class SelectDSL<R> implements Buildable<R> {
     
     public static <R> QueryExpressionDSL.FromGatherer<R> selectDistinct(Function<SelectModel, R> adapterFunction,
             BasicColumn...selectList) {
-        SelectDSL<R> selectDSL = new SelectDSL<>(adapterFunction);
-        return QueryExpressionDSL.selectDistinct(selectDSL, selectList);
+        return new FromGatherer.Builder<R>()
+                .withSelectList(selectList)
+                .withSelectDSL(new SelectDSL<>(adapterFunction))
+                .isDistinct()
+                .build();
     }
     
     public static <T> QueryExpressionDSL.FromGatherer<MyBatis3SelectModelAdapter<T>> selectWithMapper(
@@ -76,8 +83,16 @@ public class SelectDSL<R> implements Buildable<R> {
                 selectList);
     }
     
-    void addQueryExpression(QueryExpressionModel queryExpression) {
+    public QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer) {
+        QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer);
         queryExpressions.add(queryExpression);
+        return queryExpression;
+    }
+    
+    public QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer, String tableAlias) {
+        QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer, tableAlias);
+        queryExpressions.add(queryExpression);
+        return queryExpression;
     }
     
     void setOrderByModel(OrderByModel orderByModel) {
@@ -102,11 +117,17 @@ public class SelectDSL<R> implements Buildable<R> {
     }
     
     private R internalBuild() {
-        SelectModel selectModel = SelectModel.withQueryExpressions(queryExpressions)
+        SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
                 .withOrderByModel(orderByModel)
                 .withPagingModel(pagingModel)
                 .build();
         return adapterFunction.apply(selectModel);
+    }
+    
+    private List<QueryExpressionModel> buildModels() {
+        return queryExpressions.stream()
+                .map(QueryExpressionDSL::buildModel)
+                .collect(Collectors.toList());
     }
     
     public class LimitFinisher implements Buildable<R> {

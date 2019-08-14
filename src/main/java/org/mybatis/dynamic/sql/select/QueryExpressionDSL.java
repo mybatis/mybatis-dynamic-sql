@@ -52,7 +52,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     private List<JoinSpecification> joinSpecifications = new ArrayList<>();
     private Supplier<R> buildDelegateMethod;
     
-    private QueryExpressionDSL(FromGatherer<R> fromGatherer) {
+    QueryExpressionDSL(FromGatherer<R> fromGatherer) {
         connector = fromGatherer.connector;
         selectList = Arrays.asList(fromGatherer.selectList);
         isDistinct = fromGatherer.isDistinct;
@@ -61,24 +61,9 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         buildDelegateMethod = this::internalBuild;
     }
     
-    private QueryExpressionDSL(FromGatherer<R> fromGatherer, String tableAlias) {
+    QueryExpressionDSL(FromGatherer<R> fromGatherer, String tableAlias) {
         this(fromGatherer);
         tableAliases.put(table, tableAlias);
-    }
-    
-    public static <R> FromGatherer<R> select(SelectDSL<R> selectDSL, BasicColumn...selectList) {
-        return new FromGatherer.Builder<R>()
-                .withSelectList(selectList)
-                .withSelectDSL(selectDSL)
-                .build();
-    }
-    
-    public static <R> FromGatherer<R> selectDistinct(SelectDSL<R> selectDSL, BasicColumn...selectList) {
-        return new FromGatherer.Builder<R>()
-                .withSelectList(selectList)
-                .withSelectDSL(selectDSL)
-                .isDistinct()
-                .build();
     }
     
     @Override
@@ -106,7 +91,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     }
 
     private R internalBuild() {
-        selectDSL.addQueryExpression(buildModel());
         return selectDSL.build();
     }
 
@@ -155,18 +139,15 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     @Override
     public SelectDSL<R> orderBy(SortSpecification...columns) {
         buildDelegateMethod = selectDSL::build;
-        selectDSL.addQueryExpression(buildModel());
         selectDSL.setOrderByModel(OrderByModel.of(columns));
         return selectDSL;
     }
 
     public UnionBuilder union() {
-        selectDSL.addQueryExpression(buildModel());
         return new UnionBuilder("union"); //$NON-NLS-1$
     }
 
     public UnionBuilder unionAll() {
-        selectDSL.addQueryExpression(buildModel());
         return new UnionBuilder("union all"); //$NON-NLS-1$
     }
 
@@ -185,21 +166,18 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     @Override
     public SelectDSL<R>.LimitFinisher limit(long limit) {
         buildDelegateMethod = selectDSL::build;
-        selectDSL.addQueryExpression(buildModel());
         return selectDSL.limit(limit);
     }
 
     @Override
     public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
         buildDelegateMethod = selectDSL::build;
-        selectDSL.addQueryExpression(buildModel());
         return selectDSL.offset(offset);
     }
 
     @Override
     public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
         buildDelegateMethod = selectDSL::build;
-        selectDSL.addQueryExpression(buildModel());
         return selectDSL.fetchFirst(fetchFirstRows);
     }
     
@@ -221,12 +199,12 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         
         public QueryExpressionDSL<R> from(SqlTable table) {
             this.table = table;
-            return setPriorBuildDelegate(new QueryExpressionDSL<>(this));
+            return setPriorBuildDelegate(selectDSL.newQueryExpression(this));
         }
 
         public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
             this.table = table;
-            return setPriorBuildDelegate(new QueryExpressionDSL<>(this, tableAlias));
+            return setPriorBuildDelegate(selectDSL.newQueryExpression(this, tableAlias));
         }
         
         private QueryExpressionDSL<R> setPriorBuildDelegate(QueryExpressionDSL<R> newQuery) {
