@@ -87,7 +87,11 @@ public class SelectRenderer {
     }
     
     private Optional<FragmentAndParameters> renderPagingModel(PagingModel pagingModel) {
-        return pagingModel.accept(new PagingModelRenderer(renderingStrategy));
+        return new PagingModelRenderer.Builder()
+                .withPagingModel(pagingModel)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
 
     public static Builder withSelectModel(SelectModel selectModel) {

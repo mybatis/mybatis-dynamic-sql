@@ -39,8 +39,10 @@ public class SelectDSL<R> implements Buildable<R> {
     private Function<SelectModel, R> adapterFunction;
     private List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();
     private OrderByModel orderByModel;
-    private PagingModel pagingModel;
     private Supplier<R> buildDelegateMethod;
+    private Long limit;
+    private Long offset;
+    private Long fetchFirstRows;
     
     private SelectDSL(Function<SelectModel, R> adapterFunction) {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
@@ -100,15 +102,18 @@ public class SelectDSL<R> implements Buildable<R> {
     }
     
     public LimitFinisher limit(long limit) {
-        return new LimitFinisher(limit);
+        this.limit = limit;
+        return new LimitFinisher();
     }
 
     public OffsetFirstFinisher offset(long offset) {
-        return new OffsetFirstFinisher(offset);
+        this.offset = offset;
+        return new OffsetFirstFinisher();
     }
 
     public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-        return new FetchFirstFinisher(fetchFirstRows);
+        this.fetchFirstRows = fetchFirstRows;
+        return new FetchFirstFinisher();
     }
 
     @Override
@@ -119,7 +124,7 @@ public class SelectDSL<R> implements Buildable<R> {
     private R internalBuild() {
         SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
                 .withOrderByModel(orderByModel)
-                .withPagingModel(pagingModel)
+                .withPagingModel(buildPagingModel())
                 .build();
         return adapterFunction.apply(selectModel);
     }
@@ -130,16 +135,23 @@ public class SelectDSL<R> implements Buildable<R> {
                 .collect(Collectors.toList());
     }
     
+    private PagingModel buildPagingModel() {
+        return new PagingModel.Builder()
+                .withLimit(limit)
+                .withOffset(offset)
+                .withFetchFirstRows(fetchFirstRows)
+                .build();
+    }
+    
     public class LimitFinisher implements Buildable<R> {
-        private long limit;
         
-        public LimitFinisher(long limit) {
-            this.limit = limit;
+        public LimitFinisher() {
             buildDelegateMethod = this::internalBuild;
         }
         
         public OffsetFinisher offset(long offset) {
-            return new OffsetFinisher(limit, offset);
+            SelectDSL.this.offset = offset;
+            return new OffsetFinisher();
         }
         
         @Override
@@ -148,20 +160,13 @@ public class SelectDSL<R> implements Buildable<R> {
         }
         
         private R internalBuild() {
-            pagingModel = new LimitAndOffsetPagingModel.Builder()
-                    .withLimit(limit)
-                    .build();
             return SelectDSL.this.internalBuild();
         }
     }
 
     public class OffsetFinisher implements Buildable<R> {
-        public OffsetFinisher(long limit, long offset) {
+        public OffsetFinisher() {
             buildDelegateMethod = this::internalBuild;
-            pagingModel = new LimitAndOffsetPagingModel.Builder()
-                    .withLimit(limit)
-                    .withOffset(offset)
-                    .build();
         }
         
         @Override
@@ -175,15 +180,13 @@ public class SelectDSL<R> implements Buildable<R> {
     }
 
     public class OffsetFirstFinisher implements Buildable<R> {
-        private long offset;
-
-        public OffsetFirstFinisher(long offset) {
-            this.offset = offset;
+        public OffsetFirstFinisher() {
             buildDelegateMethod = this::internalBuild;
         }
         
         public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return new FetchFirstFinisher(offset, fetchFirstRows);
+            SelectDSL.this.fetchFirstRows = fetchFirstRows;
+            return new FetchFirstFinisher();
         }
         
         @Override
@@ -192,27 +195,15 @@ public class SelectDSL<R> implements Buildable<R> {
         }
         
         private R internalBuild() {
-            pagingModel = new FetchFirstPagingModel.Builder()
-                    .withOffset(offset)
-                    .build();
             return SelectDSL.this.internalBuild();
         }
     }
     
     public class FetchFirstFinisher {
-        public FetchFirstFinisher(long fetchFirstRows) {
-            pagingModel = new FetchFirstPagingModel.Builder()
-                    .withFetchFirstRows(fetchFirstRows)
-                    .build();
+        public FetchFirstFinisher() {
+            super();
         }
-
-        public FetchFirstFinisher(long offset, long fetchFirstRows) {
-            pagingModel = new FetchFirstPagingModel.Builder()
-                    .withOffset(offset)
-                    .withFetchFirstRows(fetchFirstRows)
-                    .build();
-        }
-
+        
         public RowsOnlyFinisher rowsOnly() {
             return new RowsOnlyFinisher();
         }
