@@ -44,7 +44,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     private Function<UpdateModel, R> adapterFunction;
     private List<UpdateMapping> columnMappings = new ArrayList<>();
     private SqlTable table;
-    private UpdateWhereBuilder whereBuilder;
+    protected UpdateWhereBuilder whereBuilder;
     
     private UpdateDSL(SqlTable table, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);

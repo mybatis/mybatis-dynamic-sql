@@ -37,6 +37,8 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
+import org.mybatis.dynamic.sql.delete.allRows
+import org.mybatis.dynamic.sql.delete.or
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.SelectDSL
 import org.mybatis.dynamic.sql.util.mybatis3.kotlin.allRows
@@ -80,8 +82,8 @@ internal class KotlinTest {
             assertThat(rows[0].id).isEqualTo(1)
             assertThat(rows[0].firstName).isEqualTo("Fred")
             assertThat(rows[0].lastName).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull
-            assertThat(rows[0].employed).isTrue
+            assertThat(rows[0].birthDate).isNotNull()
+            assertThat(rows[0].employed).isTrue()
             assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
             assertThat(rows[0].addressId).isEqualTo(1)
         }
@@ -181,8 +183,11 @@ internal class KotlinTest {
     fun testDelete() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
-            val rows = mapper.delete { where(occupation, isNull()) }
-            assertThat(rows).isEqualTo(2)
+            val rows = mapper.delete {
+                where(occupation, isNull())
+                or(firstName, isEqualTo("Fred"))
+            }
+            assertThat(rows).isEqualTo(3)
         }
     }
 

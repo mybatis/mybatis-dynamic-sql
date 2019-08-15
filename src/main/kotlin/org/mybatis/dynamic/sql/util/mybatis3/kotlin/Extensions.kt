@@ -27,7 +27,6 @@ import org.mybatis.dynamic.sql.select.CompletableQuery
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectDSL
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
@@ -35,21 +34,11 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias CountHelper = CompletableQuery<SelectModelAdapter<Long>>.() -> Buildable<SelectModelAdapter<Long>>
-typealias DeleteHelper = DeleteDSL<DeleteModelAdapter>.() -> Buildable<DeleteModelAdapter>
 typealias SelectListHelper<T> = CompletableQuery<SelectModelAdapter<List<T>>>.() -> Buildable<SelectModelAdapter<List<T>>>
 typealias SelectOneHelper<T> = CompletableQuery<SelectModelAdapter<T?>>.() -> Buildable<SelectModelAdapter<T?>>
-typealias UpdateHelper = UpdateDSL<UpdateModelAdapter>.() -> Buildable<UpdateModelAdapter>
-
-class DeleteModelAdapter(private val deleteModel: DeleteModel, private val mapperMethod: (DeleteStatementProvider) -> Int) {
-    fun execute() = mapperMethod(deleteModel.render(RenderingStrategy.MYBATIS3))
-}
 
 class SelectModelAdapter<R>(private val selectModel: SelectModel, private val mapperMethod: (SelectStatementProvider) -> R) {
     fun execute() = mapperMethod(selectModel.render(RenderingStrategy.MYBATIS3))
-}
-
-class UpdateModelAdapter(private val updateModel: UpdateModel, private val mapperMethod: (UpdateStatementProvider) -> Int) {
-    fun execute() = mapperMethod(updateModel.render(RenderingStrategy.MYBATIS3))
 }
 
 fun <R> selectWithKotlinMapper(mapperMethod: (SelectStatementProvider) -> R, vararg selectList: BasicColumn) =
@@ -58,13 +47,14 @@ fun <R> selectWithKotlinMapper(mapperMethod: (SelectStatementProvider) -> R, var
 fun <R> selectDistinctWithKotlinMapper(mapperMethod: (SelectStatementProvider) -> R, vararg selectList: BasicColumn) =
         SelectDSL.selectDistinct({ SelectModelAdapter(it, mapperMethod) }, selectList) as QueryExpressionDSL.FromGatherer<SelectModelAdapter<R>>
 
-fun deleteWithKotlinMapper(mapperMethod: (DeleteStatementProvider) -> Int, table: SqlTable) =
-        DeleteDSL.deleteFrom({ DeleteModelAdapter(it, mapperMethod) }, table) as DeleteDSL<DeleteModelAdapter>
+fun deleteWithKotlinMapper(mapperMethod: (DeleteStatementProvider) -> Int, table: SqlTable,
+                           complete: DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>) =
+        mapperMethod(deleteFrom(table, complete))
 
-fun updateWithKotlinMapper(mapperMethod: (UpdateStatementProvider) -> Int, table: SqlTable) =
-        UpdateDSL.update({ UpdateModelAdapter(it, mapperMethod) }, table) as UpdateDSL<UpdateModelAdapter>
+fun updateWithKotlinMapper(mapperMethod: (UpdateStatementProvider) -> Int, table: SqlTable,
+                           complete: UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>) =
+        mapperMethod(update(table, complete))
 
-fun DeleteDSL<DeleteModelAdapter>.allRows() = this as Buildable<DeleteModelAdapter>
 fun <T> CompletableQuery<SelectModelAdapter<T>>.allRows() = this as Buildable<SelectModelAdapter<T>>
 fun <T> CompletableQuery<SelectModelAdapter<T>>.allRowsOrderedBy(vararg columns: SortSpecification) =
         orderBy(*columns) as Buildable<SelectModelAdapter<T>>
@@ -72,29 +62,14 @@ fun <T> CompletableQuery<SelectModelAdapter<T>>.allRowsOrderedBy(vararg columns:
 /**
  * Functions for use with raw MyBatis3 Mappers
  */
-fun QueryExpressionDSL<SelectModel>.JoinSpecificationStarter.on(joinColumn: BasicColumn, joinCondition: JoinCondition,
-                                                                builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
-    val fred: CompletableQuery<SelectModel> = this.on(joinColumn, joinCondition)
-    builderAction(fred)
-    return fred.build().render(RenderingStrategy.MYBATIS3)
-}
-
-fun QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher.and(joinColumn: BasicColumn, joinCondition: JoinCondition,
-                                                                  builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
-    val fred: CompletableQuery<SelectModel> = this.and(joinColumn, joinCondition)
-    builderAction(fred)
-    return fred.build().render(RenderingStrategy.MYBATIS3)
-}
-
-fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable,
-                                                      builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
-    val fred: CompletableQuery<SelectModel> = this.from(table)
-    builderAction(fred)
-    return fred.build().render(RenderingStrategy.MYBATIS3)
-}
-
 fun deleteFrom(table: SqlTable, complete: DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>): DeleteStatementProvider {
     val dsl = SqlBuilder.deleteFrom(table)
+    complete(dsl)
+    return dsl.build().render(RenderingStrategy.MYBATIS3)
+}
+
+fun update(table: SqlTable, complete: UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>): UpdateStatementProvider {
+    val dsl = SqlBuilder.update(table)
     complete(dsl)
     return dsl.build().render(RenderingStrategy.MYBATIS3)
 }

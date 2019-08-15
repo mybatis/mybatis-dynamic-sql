@@ -26,8 +26,12 @@ import examples.kotlin.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlBuilder.count
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.delete.DeleteDSL
+import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.update.UpdateDSL
+import org.mybatis.dynamic.sql.update.UpdateModel
+import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.mybatis3.kotlin.*
 
 fun PersonMapper.count(helper: CountHelper) =
@@ -36,10 +40,8 @@ fun PersonMapper.count(helper: CountHelper) =
                 .build()
                 .execute()
 
-fun PersonMapper.delete(helper: DeleteHelper) =
-        helper(deleteWithKotlinMapper(this::delete, Person))
-                .build()
-                .execute()
+fun PersonMapper.delete(complete: DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>) =
+        deleteWithKotlinMapper(this::delete, Person, complete)
 
 fun PersonMapper.deleteByPrimaryKey(id_: Int) =
         delete {
@@ -98,8 +100,8 @@ fun PersonMapper.selectByPrimaryKey(id_: Int) =
             where(id, isEqualTo(id_))
         }
 
-fun PersonMapper.update(helper: UpdateHelper) =
-        helper(updateWithKotlinMapper(this::update, Person)).build().execute()
+fun PersonMapper.update(complete: UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>) =
+        updateWithKotlinMapper(this::update, Person, complete)
 
 fun PersonMapper.updateByPrimaryKey(record: PersonRecord) =
         update {
@@ -123,7 +125,7 @@ fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
             where(id, isEqualTo(record::id))
         }
 
-fun UpdateDSL<UpdateModelAdapter>.setAll(record: PersonRecord) =
+fun UpdateDSL<UpdateModel>.setAll(record: PersonRecord) =
         apply {
             set(id).equalTo(record::id)
             set(firstName).equalTo(record::firstName)
@@ -134,7 +136,7 @@ fun UpdateDSL<UpdateModelAdapter>.setAll(record: PersonRecord) =
             set(addressId).equalTo(record::addressId)
         }
 
-fun UpdateDSL<UpdateModelAdapter>.setSelective(record: PersonRecord) =
+fun UpdateDSL<UpdateModel>.setSelective(record: PersonRecord) =
         apply {
             set(id).equalToWhenPresent(record::id)
             set(firstName).equalToWhenPresent(record::firstName)

@@ -45,7 +45,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     private List<BasicColumn> selectList;
     private SqlTable table;
     private Map<SqlTable, String> tableAliases = new HashMap<>();
-    private QueryExpressionWhereBuilder whereBuilder;
+    protected QueryExpressionWhereBuilder whereBuilder;
     private GroupByModel groupByModel;
     private List<JoinSpecification.Builder> joinSpecifications = new ArrayList<>();
     

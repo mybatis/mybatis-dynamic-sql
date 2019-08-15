@@ -38,10 +38,11 @@ import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.delete.and
 import org.mybatis.dynamic.sql.delete.or
 import org.mybatis.dynamic.sql.delete.where
+import org.mybatis.dynamic.sql.select.from
+import org.mybatis.dynamic.sql.select.on
 import org.mybatis.dynamic.sql.util.mybatis3.kotlin.allRows
 import org.mybatis.dynamic.sql.util.mybatis3.kotlin.deleteFrom
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.from
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.on
+import org.mybatis.dynamic.sql.util.mybatis3.kotlin.update
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
@@ -158,8 +159,8 @@ class GeneralKotlinTest {
             assertThat(rows[0].id).isEqualTo(1)
             assertThat(rows[0].firstName).isEqualTo("Fred")
             assertThat(rows[0].lastName).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull
-            assertThat(rows[0].employed).isTrue
+            assertThat(rows[0].birthDate).isNotNull()
+            assertThat(rows[0].employed).isTrue()
             assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
             assertThat(rows[0].addressId).isEqualTo(1)
         }
@@ -184,8 +185,8 @@ class GeneralKotlinTest {
             assertThat(rows[0].id).isEqualTo(1)
             assertThat(rows[0].firstName).isEqualTo("Fred")
             assertThat(rows[0].lastName).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull
-            assertThat(rows[0].employed).isTrue
+            assertThat(rows[0].birthDate).isNotNull()
+            assertThat(rows[0].employed).isTrue()
             assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
             assertThat(rows[0].addressId).isEqualTo(1)
         }
@@ -207,10 +208,29 @@ class GeneralKotlinTest {
             assertThat(rows[0].id).isEqualTo(3)
             assertThat(rows[0].firstName).isEqualTo("Pebbles")
             assertThat(rows[0].lastName).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull
-            assertThat(rows[0].employed).isFalse
+            assertThat(rows[0].birthDate).isNotNull()
+            assertThat(rows[0].employed).isFalse()
             assertThat(rows[0].occupation).isNull()
             assertThat(rows[0].addressId).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testRawUpdate1() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val updateStatement = update(Person) {
+                set(firstName).equalTo("Sam")
+                where(firstName, isEqualTo("Fred"))
+            }
+
+            assertThat(updateStatement.updateStatement).isEqualTo("update Person set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                    " where first_name = #{parameters.p2,jdbcType=VARCHAR}")
+
+            val rows = mapper.update(updateStatement)
+
+            assertThat(rows).isEqualTo(1)
         }
     }
 }
