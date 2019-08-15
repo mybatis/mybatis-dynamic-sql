@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -39,14 +38,12 @@ public class SelectDSL<R> implements Buildable<R> {
     private Function<SelectModel, R> adapterFunction;
     private List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();
     private OrderByModel orderByModel;
-    private Supplier<R> buildDelegateMethod;
     private Long limit;
     private Long offset;
     private Long fetchFirstRows;
     
     private SelectDSL(Function<SelectModel, R> adapterFunction) {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
-        buildDelegateMethod = this::internalBuild;
     }
 
     public static QueryExpressionDSL.FromGatherer<SelectModel> select(BasicColumn...selectList) {
@@ -118,10 +115,6 @@ public class SelectDSL<R> implements Buildable<R> {
 
     @Override
     public R build() {
-        return buildDelegateMethod.get();
-    }
-    
-    private R internalBuild() {
         SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
                 .withOrderByModel(orderByModel)
                 .withPagingModel(buildPagingModel())
@@ -144,11 +137,6 @@ public class SelectDSL<R> implements Buildable<R> {
     }
     
     public class LimitFinisher implements Buildable<R> {
-        
-        public LimitFinisher() {
-            buildDelegateMethod = this::internalBuild;
-        }
-        
         public OffsetFinisher offset(long offset) {
             SelectDSL.this.offset = offset;
             return new OffsetFinisher();
@@ -156,34 +144,18 @@ public class SelectDSL<R> implements Buildable<R> {
         
         @Override
         public R build() {
-            return buildDelegateMethod.get();
-        }
-        
-        private R internalBuild() {
-            return SelectDSL.this.internalBuild();
+            return SelectDSL.this.build();
         }
     }
 
     public class OffsetFinisher implements Buildable<R> {
-        public OffsetFinisher() {
-            buildDelegateMethod = this::internalBuild;
-        }
-        
         @Override
         public R build() {
-            return buildDelegateMethod.get();
-        }
-        
-        private R internalBuild() {
-            return SelectDSL.this.internalBuild();
+            return SelectDSL.this.build();
         }
     }
 
     public class OffsetFirstFinisher implements Buildable<R> {
-        public OffsetFirstFinisher() {
-            buildDelegateMethod = this::internalBuild;
-        }
-        
         public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
             SelectDSL.this.fetchFirstRows = fetchFirstRows;
             return new FetchFirstFinisher();
@@ -191,36 +163,20 @@ public class SelectDSL<R> implements Buildable<R> {
         
         @Override
         public R build() {
-            return buildDelegateMethod.get();
-        }
-        
-        private R internalBuild() {
-            return SelectDSL.this.internalBuild();
+            return SelectDSL.this.build();
         }
     }
     
     public class FetchFirstFinisher {
-        public FetchFirstFinisher() {
-            super();
-        }
-        
         public RowsOnlyFinisher rowsOnly() {
             return new RowsOnlyFinisher();
         }
     }
     
     public class RowsOnlyFinisher implements Buildable<R> {
-        public RowsOnlyFinisher() {
-            buildDelegateMethod = this::internalBuild;
-        }
-        
         @Override
         public R build() {
-            return buildDelegateMethod.get();
-        }
-        
-        private R internalBuild() {
-            return SelectDSL.this.internalBuild();
+            return SelectDSL.this.build();
         }
     }
 }

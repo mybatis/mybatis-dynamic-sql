@@ -38,7 +38,7 @@ public class QueryExpressionModel {
     private boolean isDistinct;
     private List<BasicColumn> selectList;
     private SqlTable table;
-    private JoinModel joinModel;
+    private Optional<JoinModel> joinModel;
     private TableAliasCalculator tableAliasCalculator;
     private Optional<WhereModel> whereModel;
     private GroupByModel groupByModel;
@@ -48,7 +48,7 @@ public class QueryExpressionModel {
         isDistinct = builder.isDistinct;
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);
-        joinModel = builder.joinModel;
+        joinModel = Objects.requireNonNull(builder.joinModel);
         tableAliasCalculator = joinModel().map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
                 .orElseGet(() -> TableAliasCalculator.of(builder.tableAliases));
         whereModel = Objects.requireNonNull(builder.whereModel);
@@ -80,7 +80,7 @@ public class QueryExpressionModel {
     }
     
     public Optional<JoinModel> joinModel() {
-        return Optional.ofNullable(joinModel);
+        return joinModel;
     }
     
     public Optional<GroupByModel> groupByModel() {
@@ -103,7 +103,7 @@ public class QueryExpressionModel {
         private SqlTable table;
         private Map<SqlTable, String> tableAliases = new HashMap<>();
         private Optional<WhereModel> whereModel = Optional.empty();
-        private JoinModel joinModel;
+        private Optional<JoinModel> joinModel;
         private GroupByModel groupByModel;
         
         public Builder withConnector(String connector) {
@@ -136,7 +136,7 @@ public class QueryExpressionModel {
             return this;
         }
 
-        public Builder withJoinModel(JoinModel joinModel) {
+        public Builder withJoinModel(Optional<JoinModel> joinModel) {
             this.joinModel = joinModel;
             return this;
         }

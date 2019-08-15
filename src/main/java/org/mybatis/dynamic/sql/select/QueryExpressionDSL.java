@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -48,9 +48,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     private Map<SqlTable, String> tableAliases = new HashMap<>();
     private Optional<QueryExpressionWhereBuilder> whereBuilder = Optional.empty();
     private GroupByModel groupByModel;
-    private JoinModel joinModel;
-    private List<JoinSpecification> joinSpecifications = new ArrayList<>();
-    private Supplier<R> buildDelegateMethod;
+    private List<JoinSpecification.Builder> joinSpecifications = new ArrayList<>();
     
     QueryExpressionDSL(FromGatherer<R> fromGatherer) {
         connector = fromGatherer.connector;
@@ -58,7 +56,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         isDistinct = fromGatherer.isDistinct;
         selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
         table = Objects.requireNonNull(fromGatherer.table);
-        buildDelegateMethod = this::internalBuild;
     }
     
     QueryExpressionDSL(FromGatherer<R> fromGatherer, String tableAlias) {
@@ -87,10 +84,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     
     @Override
     public R build() {
-        return buildDelegateMethod.get();
-    }
-
-    private R internalBuild() {
         return selectDSL.build();
     }
 
@@ -138,7 +131,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     
     @Override
     public SelectDSL<R> orderBy(SortSpecification...columns) {
-        buildDelegateMethod = selectDSL::build;
         selectDSL.setOrderByModel(OrderByModel.of(columns));
         return selectDSL;
     }
@@ -158,26 +150,33 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                 .isDistinct(isDistinct)
                 .withTableAliases(tableAliases)
                 .withWhereModel(whereBuilder.map(QueryExpressionWhereBuilder::buildWhereModel))
-                .withJoinModel(joinModel)
+                .withJoinModel(buildJoinModel())
                 .withGroupByModel(groupByModel)
                 .build();
     }
     
+    private Optional<JoinModel> buildJoinModel() {
+        if (joinSpecifications.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(JoinModel.of(joinSpecifications.stream()
+                    .map(JoinSpecification.Builder::build)
+                    .collect(Collectors.toList())));
+        }
+    }
+    
     @Override
     public SelectDSL<R>.LimitFinisher limit(long limit) {
-        buildDelegateMethod = selectDSL::build;
         return selectDSL.limit(limit);
     }
 
     @Override
     public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-        buildDelegateMethod = selectDSL::build;
         return selectDSL.offset(offset);
     }
 
     @Override
     public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-        buildDelegateMethod = selectDSL::build;
         return selectDSL.fetchFirst(fetchFirstRows);
     }
     
@@ -187,29 +186,22 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         private SelectDSL<R> selectDSL;
         private boolean isDistinct;
         private SqlTable table;
-        private Optional<QueryExpressionDSL<R>> priorQuery;
         
         public FromGatherer(Builder<R> builder) {
             this.connector = builder.connector;
             this.selectList = Objects.requireNonNull(builder.selectList);
             this.selectDSL = Objects.requireNonNull(builder.selectDSL);
             this.isDistinct = builder.isDistinct;
-            this.priorQuery = Optional.ofNullable(builder.priorQuery);
         }
         
         public QueryExpressionDSL<R> from(SqlTable table) {
             this.table = table;
-            return setPriorBuildDelegate(selectDSL.newQueryExpression(this));
+            return selectDSL.newQueryExpression(this);
         }
 
         public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
             this.table = table;
-            return setPriorBuildDelegate(selectDSL.newQueryExpression(this, tableAlias));
-        }
-        
-        private QueryExpressionDSL<R> setPriorBuildDelegate(QueryExpressionDSL<R> newQuery) {
-            priorQuery.ifPresent(pq -> pq.buildDelegateMethod = newQuery::build);
-            return newQuery;
+            return selectDSL.newQueryExpression(this, tableAlias);
         }
         
         public static class Builder<R> {
@@ -217,7 +209,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
             private BasicColumn[] selectList;
             private SelectDSL<R> selectDSL;
             private boolean isDistinct;
-            private QueryExpressionDSL<R> priorQuery;
             
             public Builder<R> withConnector(String connector) {
                 this.connector = connector;
@@ -239,11 +230,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                 return this;
             }
             
-            public Builder<R> withPriorQuery(QueryExpressionDSL<R> priorQuery) {
-                this.priorQuery = priorQuery;
-                return this;
-            }
-            
             public FromGatherer<R> build() {
                 return new FromGatherer<>(this);
             }
@@ -253,18 +239,15 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<R> {
         private <T> QueryExpressionWhereBuilder() {
-            buildDelegateMethod = this::internalBuild;
         }
 
         private <T> QueryExpressionWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
             super(column, condition);
-            buildDelegateMethod = this::internalBuild;
         }
         
         private <T> QueryExpressionWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             super(column, condition, subCriteria);
-            buildDelegateMethod = this::internalBuild;
         }
         
         public UnionBuilder union() {
@@ -298,10 +281,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         @Override
         public R build() {
             return QueryExpressionDSL.this.build();
-        }
-        
-        private R internalBuild() {
-            return QueryExpressionDSL.this.internalBuild();
         }
         
         @Override
@@ -330,49 +309,35 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     }
 
     public class JoinSpecificationFinisher implements CompletableQuery<R> {
-        private SqlTable joinTable;
-        private List<JoinCriterion> joinCriteria = new ArrayList<>();
-        private JoinType joinType;
+        private JoinSpecification.Builder joinSpecificationBuilder;
         
         public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
                 JoinCondition joinCondition, JoinType joinType) {
-            this.joinTable = table;
-            this.joinType = joinType;
-
             JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
                     .withConnector("on") //$NON-NLS-1$
                     .build();
-            
-            joinCriteria.add(joinCriterion);
-            buildDelegateMethod = this::internalbuild;
+
+            joinSpecificationBuilder = JoinSpecification.withJoinTable(table)
+                    .withJoinType(joinType)
+                    .withJoinCriterion(joinCriterion);
+
+            joinSpecifications.add(joinSpecificationBuilder);
         }
 
         public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
                 JoinCondition joinCondition, JoinType joinType, JoinCriterion...joinCriteria) {
-            this.joinTable = table;
-            this.joinType = joinType;
-
             JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
                     .withConnector("on") //$NON-NLS-1$
                     .build();
             
-            this.joinCriteria.add(joinCriterion);
-            this.joinCriteria.addAll(Arrays.asList(joinCriteria));
-            buildDelegateMethod = this::internalbuild;
-        }
-        
-        protected JoinSpecification buildJoinSpecification() {
-            return JoinSpecification.withJoinTable(joinTable)
-                    .withJoinCriteria(joinCriteria)
+            joinSpecificationBuilder = JoinSpecification.withJoinTable(table)
                     .withJoinType(joinType)
-                    .build();
-        }
-        
-        protected JoinModel buildJoinModel() {
-            joinSpecifications.add(buildJoinSpecification());
-            return JoinModel.of(joinSpecifications);
+                    .withJoinCriterion(joinCriterion)
+                    .withJoinCriteria(Arrays.asList(joinCriteria));
+
+            joinSpecifications.add(joinSpecificationBuilder);
         }
         
         @Override
@@ -380,27 +345,19 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
             return QueryExpressionDSL.this.build();
         }
         
-        private R internalbuild() {
-            joinModel = buildJoinModel();
-            return QueryExpressionDSL.this.internalBuild();
-        }
-
         @Override
         public QueryExpressionWhereBuilder where() {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.where();
         }
         
         @Override
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.where(column, condition);
         }
 
         @Override
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.where(column, condition, subCriteria);
         }
 
@@ -409,96 +366,77 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                     .withJoinCondition(joinCondition)
                     .withConnector("and") //$NON-NLS-1$
                     .build();
-            this.joinCriteria.add(joinCriterion);
+            joinSpecificationBuilder.withJoinCriterion(joinCriterion);
             return this;
         }
 
         public JoinSpecificationStarter join(SqlTable joinTable) {
-            joinSpecifications.add(buildJoinSpecification());
-            return new JoinSpecificationStarter(joinTable, JoinType.INNER);
+            return QueryExpressionDSL.this.join(joinTable);
         }
         
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
-            tableAliases.put(joinTable, tableAlias);
-            return join(joinTable);
+            return QueryExpressionDSL.this.join(joinTable, tableAlias);
         }
 
         public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
-            joinSpecifications.add(buildJoinSpecification());
-            return new JoinSpecificationStarter(joinTable, JoinType.LEFT);
+            return QueryExpressionDSL.this.leftJoin(joinTable);
         }
         
         public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
-            tableAliases.put(joinTable, tableAlias);
-            return leftJoin(joinTable);
+            return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);
         }
 
         public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
-            joinSpecifications.add(buildJoinSpecification());
-            return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);
+            return QueryExpressionDSL.this.rightJoin(joinTable);
         }
         
         public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
-            tableAliases.put(joinTable, tableAlias);
-            return rightJoin(joinTable);
+            return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);
         }
 
         public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
-            joinSpecifications.add(buildJoinSpecification());
-            return new JoinSpecificationStarter(joinTable, JoinType.FULL);
+            return QueryExpressionDSL.this.fullJoin(joinTable);
         }
         
         public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
-            tableAliases.put(joinTable, tableAlias);
-            return fullJoin(joinTable);
+            return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);
         }
 
         @Override
         public GroupByFinisher groupBy(BasicColumn...columns) {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.groupBy(columns);
         }
         
         public UnionBuilder union() {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.union();
         }
 
         public UnionBuilder unionAll() {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.unionAll();
         }
 
         @Override
         public SelectDSL<R> orderBy(SortSpecification...columns) {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
         @Override
         public SelectDSL<R>.LimitFinisher limit(long limit) {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.limit(limit);
         }
 
         @Override
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.offset(offset);
         }
 
         @Override
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            joinModel = buildJoinModel();
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
     }
     
     public class GroupByFinisher implements Buildable<R> {
-        public GroupByFinisher() {
-            buildDelegateMethod = this::internalBuild;
-        }
-        
         public SelectDSL<R> orderBy(SortSpecification...columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
@@ -508,10 +446,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
             return QueryExpressionDSL.this.build();
         }
         
-        private R internalBuild() {
-            return QueryExpressionDSL.this.internalBuild();
-        }
-
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();
         }
@@ -545,7 +479,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                     .withConnector(connector)
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
-                    .withPriorQuery(QueryExpressionDSL.this)
                     .build();
         }
 
@@ -555,7 +488,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                     .withSelectList(selectList)
                     .withSelectDSL(selectDSL)
                     .isDistinct()
-                    .withPriorQuery(QueryExpressionDSL.this)
                     .build();
         }
     }
