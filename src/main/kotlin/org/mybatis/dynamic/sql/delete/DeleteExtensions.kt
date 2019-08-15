@@ -29,7 +29,7 @@ fun <T> DeleteDSL<DeleteModel>.where(column: BindableColumn<T>, condition: Visit
 
 fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>): DeleteDSL<DeleteModel> {
     if (whereBuilder != null) {
-	whereBuilder.and(column, condition)
+        whereBuilder.and(column, condition)
     }
     return this
 }
@@ -39,7 +39,7 @@ fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: Visitab
     val collector = CriteriaCollector()
     collect(collector)
     if (whereBuilder != null) {
-	whereBuilder.and(column, condition, *collector.criteria())
+        whereBuilder.and(column, condition, *collector.criteria())
     }
     return this
 }

@@ -158,8 +158,8 @@ class GeneralKotlinTest {
             assertThat(rows[0].id).isEqualTo(1)
             assertThat(rows[0].firstName).isEqualTo("Fred")
             assertThat(rows[0].lastName).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull()
-            assertThat(rows[0].employed).isTrue()
+            assertThat(rows[0].birthDate).isNotNull
+            assertThat(rows[0].employed).isTrue
             assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
             assertThat(rows[0].addressId).isEqualTo(1)
         }
@@ -184,8 +184,8 @@ class GeneralKotlinTest {
             assertThat(rows[0].id).isEqualTo(1)
             assertThat(rows[0].firstName).isEqualTo("Fred")
             assertThat(rows[0].lastName).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull()
-            assertThat(rows[0].employed).isTrue()
+            assertThat(rows[0].birthDate).isNotNull
+            assertThat(rows[0].employed).isTrue
             assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
             assertThat(rows[0].addressId).isEqualTo(1)
         }
@@ -207,8 +207,8 @@ class GeneralKotlinTest {
             assertThat(rows[0].id).isEqualTo(3)
             assertThat(rows[0].firstName).isEqualTo("Pebbles")
             assertThat(rows[0].lastName).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull()
-            assertThat(rows[0].employed).isFalse()
+            assertThat(rows[0].birthDate).isNotNull
+            assertThat(rows[0].employed).isFalse
             assertThat(rows[0].occupation).isNull()
             assertThat(rows[0].addressId).isEqualTo(1)
         }
