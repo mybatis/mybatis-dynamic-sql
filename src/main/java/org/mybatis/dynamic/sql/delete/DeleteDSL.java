@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.delete;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -31,7 +30,7 @@ public class DeleteDSL<R> implements Buildable<R> {
 
     private Function<DeleteModel, R> adapterFunction;
     private SqlTable table;
-    protected Optional<DeleteWhereBuilder> whereBuilder = Optional.empty();
+    protected DeleteWhereBuilder whereBuilder;
     
     private DeleteDSL(SqlTable table, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -39,19 +38,19 @@ public class DeleteDSL<R> implements Buildable<R> {
     }
     
     public DeleteWhereBuilder where() {
-        whereBuilder = Optional.of(new DeleteWhereBuilder());
-        return whereBuilder.get();
+        whereBuilder = new DeleteWhereBuilder();
+        return whereBuilder;
     }
     
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder = Optional.of(new DeleteWhereBuilder(column, condition));
-        return whereBuilder.get();
+        whereBuilder = new DeleteWhereBuilder(column, condition);
+        return whereBuilder;
     }
     
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder = Optional.of(new DeleteWhereBuilder(column, condition, subCriteria));
-        return whereBuilder.get();
+        whereBuilder = new DeleteWhereBuilder(column, condition, subCriteria);
+        return whereBuilder;
     }
     
     /**
@@ -63,7 +62,7 @@ public class DeleteDSL<R> implements Buildable<R> {
     @Override
     public R build() {
         DeleteModel deleteModel = DeleteModel.withTable(table)
-                .withWhereModel(whereBuilder.map(DeleteWhereBuilder::buildWhereModel))
+                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
                 .build();
         return adapterFunction.apply(deleteModel);
     }
@@ -83,7 +82,7 @@ public class DeleteDSL<R> implements Buildable<R> {
     
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> implements Buildable<R> {
         
-        private <T> DeleteWhereBuilder() {
+        private DeleteWhereBuilder() {
             super();
         }
         

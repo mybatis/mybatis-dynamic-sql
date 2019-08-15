@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.update;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -45,7 +44,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     private Function<UpdateModel, R> adapterFunction;
     private List<UpdateMapping> columnMappings = new ArrayList<>();
     private SqlTable table;
-    private Optional<UpdateWhereBuilder> whereBuilder = Optional.empty();
+    private UpdateWhereBuilder whereBuilder;
     
     private UpdateDSL(SqlTable table, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -57,19 +56,19 @@ public class UpdateDSL<R> implements Buildable<R> {
     }
     
     public UpdateWhereBuilder where() {
-        whereBuilder = Optional.of(new UpdateWhereBuilder());
-        return whereBuilder.get();
+        whereBuilder = new UpdateWhereBuilder();
+        return whereBuilder;
     }
     
     public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder = Optional.of(new UpdateWhereBuilder(column, condition));
-        return whereBuilder.get();
+        whereBuilder = new UpdateWhereBuilder(column, condition);
+        return whereBuilder;
     }
     
     public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder = Optional.of(new UpdateWhereBuilder(column, condition, subCriteria));
-        return whereBuilder.get();
+        whereBuilder = new UpdateWhereBuilder(column, condition, subCriteria);
+        return whereBuilder;
     }
     
     /**
@@ -82,7 +81,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     public R build() {
         UpdateModel updateModel = UpdateModel.withTable(table)
                 .withColumnMappings(columnMappings)
-                .withWhereModel(whereBuilder.map(UpdateWhereBuilder::buildWhereModel))
+                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
                 .build();
         return adapterFunction.apply(updateModel);
     }

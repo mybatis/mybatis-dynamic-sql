@@ -26,11 +26,11 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteModel {
     private SqlTable table;
-    private Optional<WhereModel> whereModel;
+    private WhereModel whereModel;
     
     private DeleteModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
-        whereModel = Objects.requireNonNull(builder.whereModel);
+        whereModel = builder.whereModel;
     }
     
     public SqlTable table() {
@@ -38,7 +38,7 @@ public class DeleteModel {
     }
     
     public Optional<WhereModel> whereModel() {
-        return whereModel;
+        return Optional.ofNullable(whereModel);
     }
     
     public DeleteStatementProvider render(RenderingStrategy renderingStrategy) {
@@ -54,14 +54,14 @@ public class DeleteModel {
     
     public static class Builder {
         private SqlTable table;
-        private Optional<WhereModel> whereModel;
+        private WhereModel whereModel;
         
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
         
-        public Builder withWhereModel(Optional<WhereModel> whereModel) {
+        public Builder withWhereModel(WhereModel whereModel) {
             this.whereModel = whereModel;
             return this;
         }

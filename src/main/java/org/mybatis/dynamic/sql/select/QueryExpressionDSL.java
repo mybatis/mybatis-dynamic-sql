@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -46,7 +45,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     private List<BasicColumn> selectList;
     private SqlTable table;
     private Map<SqlTable, String> tableAliases = new HashMap<>();
-    private Optional<QueryExpressionWhereBuilder> whereBuilder = Optional.empty();
+    private QueryExpressionWhereBuilder whereBuilder;
     private GroupByModel groupByModel;
     private List<JoinSpecification.Builder> joinSpecifications = new ArrayList<>();
     
@@ -65,21 +64,21 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     
     @Override
     public QueryExpressionWhereBuilder where() {
-        whereBuilder = Optional.of(new QueryExpressionWhereBuilder());
-        return whereBuilder.get();
+        whereBuilder = new QueryExpressionWhereBuilder();
+        return whereBuilder;
     }
 
     @Override
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder = Optional.of(new QueryExpressionWhereBuilder(column, condition));
-        return whereBuilder.get();
+        whereBuilder = new QueryExpressionWhereBuilder(column, condition);
+        return whereBuilder;
     }
 
     @Override
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder = Optional.of(new QueryExpressionWhereBuilder(column, condition, subCriteria));
-        return whereBuilder.get();
+        whereBuilder = new QueryExpressionWhereBuilder(column, condition, subCriteria);
+        return whereBuilder;
     }
     
     @Override
@@ -149,20 +148,16 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                 .withTable(table)
                 .isDistinct(isDistinct)
                 .withTableAliases(tableAliases)
-                .withWhereModel(whereBuilder.map(QueryExpressionWhereBuilder::buildWhereModel))
-                .withJoinModel(buildJoinModel())
+                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .withJoinModel(joinSpecifications.isEmpty() ? null : buildJoinModel())
                 .withGroupByModel(groupByModel)
                 .build();
     }
     
-    private Optional<JoinModel> buildJoinModel() {
-        if (joinSpecifications.isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(JoinModel.of(joinSpecifications.stream()
-                    .map(JoinSpecification.Builder::build)
-                    .collect(Collectors.toList())));
-        }
+    private JoinModel buildJoinModel() {
+        return JoinModel.of(joinSpecifications.stream()
+                .map(JoinSpecification.Builder::build)
+                .collect(Collectors.toList()));
     }
     
     @Override

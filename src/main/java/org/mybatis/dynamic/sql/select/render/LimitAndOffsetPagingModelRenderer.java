@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.select.render;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class LimitAndOffsetPagingModelRenderer {
@@ -25,17 +26,17 @@ public class LimitAndOffsetPagingModelRenderer {
     private static final String OFFSET_PARAMETER = "_offset"; //$NON-NLS-1$
     private RenderingStrategy renderingStrategy;
     private Long limit;
-    private Optional<Long> offset;
+    private PagingModel pagingModel;
 
     public LimitAndOffsetPagingModelRenderer(RenderingStrategy renderingStrategy,
-            Long limit, Optional<Long> offset) {
+            Long limit, PagingModel pagingModel) {
         this.renderingStrategy = renderingStrategy;
         this.limit = limit;
-        this.offset = offset;
+        this.pagingModel = pagingModel;
     }
     
     public Optional<FragmentAndParameters> render() {
-        return offset.map(this::renderLimitAndOffset)
+        return pagingModel.offset().map(this::renderLimitAndOffset)
                 .orElseGet(this::renderLimitOnly);
     }
 

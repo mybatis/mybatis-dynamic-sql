@@ -38,9 +38,9 @@ public class QueryExpressionModel {
     private boolean isDistinct;
     private List<BasicColumn> selectList;
     private SqlTable table;
-    private Optional<JoinModel> joinModel;
+    private JoinModel joinModel;
     private TableAliasCalculator tableAliasCalculator;
-    private Optional<WhereModel> whereModel;
+    private WhereModel whereModel;
     private GroupByModel groupByModel;
 
     private QueryExpressionModel(Builder builder) {
@@ -48,10 +48,10 @@ public class QueryExpressionModel {
         isDistinct = builder.isDistinct;
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);
-        joinModel = Objects.requireNonNull(builder.joinModel);
+        joinModel = builder.joinModel;
         tableAliasCalculator = joinModel().map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
                 .orElseGet(() -> TableAliasCalculator.of(builder.tableAliases));
-        whereModel = Objects.requireNonNull(builder.whereModel);
+        whereModel = builder.whereModel;
         groupByModel = builder.groupByModel;
     }
     
@@ -76,11 +76,11 @@ public class QueryExpressionModel {
     }
 
     public Optional<WhereModel> whereModel() {
-        return whereModel;
+        return Optional.ofNullable(whereModel);
     }
     
     public Optional<JoinModel> joinModel() {
-        return joinModel;
+        return Optional.ofNullable(joinModel);
     }
     
     public Optional<GroupByModel> groupByModel() {
@@ -102,8 +102,8 @@ public class QueryExpressionModel {
         private List<BasicColumn> selectList = new ArrayList<>();
         private SqlTable table;
         private Map<SqlTable, String> tableAliases = new HashMap<>();
-        private Optional<WhereModel> whereModel = Optional.empty();
-        private Optional<JoinModel> joinModel;
+        private WhereModel whereModel;
+        private JoinModel joinModel;
         private GroupByModel groupByModel;
         
         public Builder withConnector(String connector) {
@@ -131,12 +131,12 @@ public class QueryExpressionModel {
             return this;
         }
         
-        public Builder withWhereModel(Optional<WhereModel> whereModel) {
+        public Builder withWhereModel(WhereModel whereModel) {
             this.whereModel = whereModel;
             return this;
         }
 
-        public Builder withJoinModel(Optional<JoinModel> joinModel) {
+        public Builder withJoinModel(JoinModel joinModel) {
             this.joinModel = joinModel;
             return this;
         }

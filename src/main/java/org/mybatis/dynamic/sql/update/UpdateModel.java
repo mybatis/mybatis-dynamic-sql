@@ -31,12 +31,12 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
     private SqlTable table;
-    private Optional<WhereModel> whereModel;
+    private WhereModel whereModel;
     private List<UpdateMapping> columnMappings;
     
     private UpdateModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
-        whereModel = Objects.requireNonNull(builder.whereModel);
+        whereModel = builder.whereModel;
         columnMappings = Objects.requireNonNull(builder.columnMappings);
     }
     
@@ -45,7 +45,7 @@ public class UpdateModel {
     }
     
     public Optional<WhereModel> whereModel() {
-        return whereModel;
+        return Optional.ofNullable(whereModel);
     }
     
     public <R> Stream<R> mapColumnMappings(Function<UpdateMapping, R> mapper) {
@@ -65,7 +65,7 @@ public class UpdateModel {
     
     public static class Builder {
         private SqlTable table;
-        private Optional<WhereModel> whereModel;
+        private WhereModel whereModel;
         private List<UpdateMapping> columnMappings = new ArrayList<>();
         
         public Builder withTable(SqlTable table) {
@@ -78,7 +78,7 @@ public class UpdateModel {
             return this;
         }
         
-        public Builder withWhereModel(Optional<WhereModel> whereModel) {
+        public Builder withWhereModel(WhereModel whereModel) {
             this.whereModel = whereModel;
             return this;
         }

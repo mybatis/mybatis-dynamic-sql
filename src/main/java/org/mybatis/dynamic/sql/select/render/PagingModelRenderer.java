@@ -38,7 +38,7 @@ public class PagingModelRenderer {
     
     private Optional<FragmentAndParameters> limitAndOffsetRender(Long limit) {
         return new LimitAndOffsetPagingModelRenderer(renderingStrategy, limit,
-                pagingModel.offset()).render();
+                pagingModel).render();
     }
     
     private Optional<FragmentAndParameters> fetchFirstRender() {

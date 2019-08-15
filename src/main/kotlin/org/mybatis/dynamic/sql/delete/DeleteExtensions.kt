@@ -28,7 +28,9 @@ fun <T> DeleteDSL<DeleteModel>.where(column: BindableColumn<T>, condition: Visit
 }
 
 fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>): DeleteDSL<DeleteModel> {
-    whereBuilder.ifPresent { it.and(column, condition) }
+    if (whereBuilder != null) {
+	whereBuilder.and(column, condition)
+    }
     return this
 }
 
@@ -36,12 +38,16 @@ fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: Visitab
                                    collect: CriteriaCollector.() -> CriteriaCollector): DeleteDSL<DeleteModel> {
     val collector = CriteriaCollector()
     collect(collector)
-    whereBuilder.ifPresent { it.and(column, condition, *collector.criteria()) }
+    if (whereBuilder != null) {
+	whereBuilder.and(column, condition, *collector.criteria())
+    }
     return this
 }
 
 fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>): DeleteDSL<DeleteModel> {
-    whereBuilder.ifPresent { it.or(column, condition) }
+    if (whereBuilder != null) {
+        whereBuilder.or(column, condition)
+    }
     return this
 }
 
@@ -49,6 +55,8 @@ fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: Visitabl
                                   collect: CriteriaCollector.() -> CriteriaCollector): DeleteDSL<DeleteModel> {
     val collector = CriteriaCollector()
     collect(collector)
-    whereBuilder.ifPresent { it.or(column, condition, *collector.criteria()) }
+    if (whereBuilder != null) {
+        whereBuilder.or(column, condition, *collector.criteria())
+    }
     return this
 }
