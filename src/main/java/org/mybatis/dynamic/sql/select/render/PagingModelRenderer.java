@@ -30,6 +30,7 @@ public class PagingModelRenderer {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         pagingModel = Objects.requireNonNull(builder.pagingModel);
     }
+    
     public Optional<FragmentAndParameters> render() {
         return pagingModel.limit().map(this::limitAndOffsetRender)
                 .orElseGet(this::fetchFirstRender);

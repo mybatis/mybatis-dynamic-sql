@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -31,12 +31,12 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
     private SqlTable table;
-    private WhereModel whereModel;
+    private Optional<WhereModel> whereModel;
     private List<UpdateMapping> columnMappings;
     
     private UpdateModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
-        whereModel = builder.whereModel;
+        whereModel = Objects.requireNonNull(builder.whereModel);
         columnMappings = Objects.requireNonNull(builder.columnMappings);
     }
     
@@ -45,7 +45,7 @@ public class UpdateModel {
     }
     
     public Optional<WhereModel> whereModel() {
-        return Optional.ofNullable(whereModel);
+        return whereModel;
     }
     
     public <R> Stream<R> mapColumnMappings(Function<UpdateMapping, R> mapper) {
@@ -65,7 +65,7 @@ public class UpdateModel {
     
     public static class Builder {
         private SqlTable table;
-        private WhereModel whereModel;
+        private Optional<WhereModel> whereModel;
         private List<UpdateMapping> columnMappings = new ArrayList<>();
         
         public Builder withTable(SqlTable table) {
@@ -78,7 +78,7 @@ public class UpdateModel {
             return this;
         }
         
-        public Builder withWhereModel(WhereModel whereModel) {
+        public Builder withWhereModel(Optional<WhereModel> whereModel) {
             this.whereModel = whereModel;
             return this;
         }
