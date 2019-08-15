@@ -17,20 +17,22 @@ package org.mybatis.dynamic.sql.util.mybatis3.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SortSpecification
+import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.select.CompletableQuery
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectDSL
 import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.Buildable
-import org.mybatis.dynamic.sql.select.CompletableQuery
 
 typealias CountHelper = CompletableQuery<SelectModelAdapter<Long>>.() -> Buildable<SelectModelAdapter<Long>>
 typealias DeleteHelper = DeleteDSL<DeleteModelAdapter>.() -> Buildable<DeleteModelAdapter>
@@ -66,3 +68,33 @@ fun DeleteDSL<DeleteModelAdapter>.allRows() = this as Buildable<DeleteModelAdapt
 fun <T> CompletableQuery<SelectModelAdapter<T>>.allRows() = this as Buildable<SelectModelAdapter<T>>
 fun <T> CompletableQuery<SelectModelAdapter<T>>.allRowsOrderedBy(vararg columns: SortSpecification) =
         orderBy(*columns) as Buildable<SelectModelAdapter<T>>
+
+/**
+ * Functions for use with raw MyBatis3 Mappers
+ */
+fun QueryExpressionDSL<SelectModel>.JoinSpecificationStarter.on(joinColumn: BasicColumn, joinCondition: JoinCondition,
+                                                                builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
+    val fred: CompletableQuery<SelectModel> = this.on(joinColumn, joinCondition)
+    builderAction(fred)
+    return fred.build().render(RenderingStrategy.MYBATIS3)
+}
+
+fun QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher.and(joinColumn: BasicColumn, joinCondition: JoinCondition,
+                                                                  builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
+    val fred: CompletableQuery<SelectModel> = this.and(joinColumn, joinCondition)
+    builderAction(fred)
+    return fred.build().render(RenderingStrategy.MYBATIS3)
+}
+
+fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable,
+                                                      builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
+    val fred: CompletableQuery<SelectModel> = this.from(table)
+    builderAction(fred)
+    return fred.build().render(RenderingStrategy.MYBATIS3)
+}
+
+fun deleteFrom(table: SqlTable, complete: DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>): DeleteStatementProvider {
+    val dsl = SqlBuilder.deleteFrom(table)
+    complete(dsl)
+    return dsl.build().render(RenderingStrategy.MYBATIS3)
+}
