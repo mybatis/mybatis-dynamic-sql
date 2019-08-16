@@ -44,6 +44,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     private Function<UpdateModel, R> adapterFunction;
     private List<UpdateMapping> columnMappings = new ArrayList<>();
     private SqlTable table;
+    protected UpdateWhereBuilder whereBuilder;
     
     private UpdateDSL(SqlTable table, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -55,16 +56,19 @@ public class UpdateDSL<R> implements Buildable<R> {
     }
     
     public UpdateWhereBuilder where() {
-        return new UpdateWhereBuilder();
+        whereBuilder = new UpdateWhereBuilder();
+        return whereBuilder;
     }
     
     public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return new UpdateWhereBuilder(column, condition);
+        whereBuilder = new UpdateWhereBuilder(column, condition);
+        return whereBuilder;
     }
     
     public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        return new UpdateWhereBuilder(column, condition, subCriteria);
+        whereBuilder = new UpdateWhereBuilder(column, condition, subCriteria);
+        return whereBuilder;
     }
     
     /**
@@ -77,6 +81,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     public R build() {
         UpdateModel updateModel = UpdateModel.withTable(table)
                 .withColumnMappings(columnMappings)
+                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
                 .build();
         return adapterFunction.apply(updateModel);
     }
@@ -165,11 +170,7 @@ public class UpdateDSL<R> implements Buildable<R> {
         
         @Override
         public R build() {
-            UpdateModel updateModel = UpdateModel.withTable(table)
-                    .withColumnMappings(columnMappings)
-                    .withWhereModel(buildWhereModel())
-                    .build();
-            return adapterFunction.apply(updateModel);
+            return UpdateDSL.this.build();
         }
         
         @Override

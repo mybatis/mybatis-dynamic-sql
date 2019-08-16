@@ -17,8 +17,6 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,13 +38,33 @@ public class DeleteRenderer {
     }
     
     public DeleteStatementProvider render() {
-        Optional<WhereClauseProvider> whereClause = deleteModel.whereModel().flatMap(this::renderWhereClause);
-        
-        return DefaultDeleteStatementProvider.withDeleteStatement(calculateDeleteStatement(whereClause))
-                .withParameters(calculateParameters(whereClause))
+        return deleteModel.whereModel()
+                .flatMap(this::renderWhereClause)
+                .map(this::renderWithWhereClause)
+                .orElseGet(this::renderWithoutWhereClause);
+    }
+    
+    private DeleteStatementProvider renderWithWhereClause(WhereClauseProvider whereClauseProvider) {
+        return DefaultDeleteStatementProvider.withDeleteStatement(calculateDeleteStatement(whereClauseProvider))
+                .withParameters(whereClauseProvider.getParameters())
                 .build();
     }
+    
+    private String calculateDeleteStatement(WhereClauseProvider whereClause) {
+        return calculateDeleteStatement()
+                + spaceBefore(whereClause.getWhereClause());
+    }
 
+    private String calculateDeleteStatement() {
+        return "delete from" //$NON-NLS-1$
+                + spaceBefore(deleteModel.table().tableNameAtRuntime());
+    }
+    
+    private DeleteStatementProvider renderWithoutWhereClause() {
+        return DefaultDeleteStatementProvider.withDeleteStatement(calculateDeleteStatement())
+                .build();
+    }
+    
     private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
@@ -56,18 +74,6 @@ public class DeleteRenderer {
                 .render();
     }
     
-    private String calculateDeleteStatement(Optional<WhereClauseProvider> whereClause) {
-        return "delete from" //$NON-NLS-1$
-                + spaceBefore(deleteModel.table().tableNameAtRuntime())
-                + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause));
-    }
-    
-    private Map<String, Object> calculateParameters(Optional<WhereClauseProvider> whereClause) {
-        return whereClause
-                .map(WhereClauseProvider::getParameters)
-                .orElse(Collections.emptyMap());
-    }
-
     public static Builder withDeleteModel(DeleteModel deleteModel) {
         return new Builder().withDeleteModel(deleteModel);
     }

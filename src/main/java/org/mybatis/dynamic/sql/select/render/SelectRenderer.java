@@ -45,8 +45,8 @@ public class SelectRenderer {
         FragmentCollector fragmentCollector = selectModel
                 .mapQueryExpressions(this::renderQueryExpression)
                 .collect(FragmentCollector.collect());
-        fragmentCollector.add(renderOrderBy());
-        fragmentCollector.add(renderPagingModel());
+        renderOrderBy(fragmentCollector);
+        renderPagingModel(fragmentCollector);
         
         String selectStatement = fragmentCollector.fragments().collect(Collectors.joining(" ")); //$NON-NLS-1$
         
@@ -63,15 +63,14 @@ public class SelectRenderer {
                 .render();
     }
 
-    private Optional<FragmentAndParameters> renderOrderBy() {
-        return selectModel.orderByModel()
-                .map(this::renderOrderBy);
+    private void renderOrderBy(FragmentCollector fragmentCollector) {
+        selectModel.orderByModel().ifPresent(om -> renderOrderBy(fragmentCollector, om));
     }
     
-    private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
+    private void renderOrderBy(FragmentCollector fragmentCollector, OrderByModel orderByModel) {
         String phrase = orderByModel.mapColumns(this::calculateOrderByPhrase)
                 .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        return FragmentAndParameters.withFragment(phrase).build();
+        fragmentCollector.add(FragmentAndParameters.withFragment(phrase).build());
     }
     
     private String calculateOrderByPhrase(SortSpecification column) {
@@ -82,12 +81,17 @@ public class SelectRenderer {
         return phrase;
     }
     
-    private Optional<FragmentAndParameters> renderPagingModel() {
-        return selectModel.pagingModel().flatMap(this::renderPagingModel);
+    private void renderPagingModel(FragmentCollector fragmentCollector) {
+        selectModel.pagingModel().flatMap(this::renderPagingModel)
+            .ifPresent(fragmentCollector::add);
     }
     
     private Optional<FragmentAndParameters> renderPagingModel(PagingModel pagingModel) {
-        return pagingModel.accept(new PagingModelRenderer(renderingStrategy));
+        return new PagingModelRenderer.Builder()
+                .withPagingModel(pagingModel)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
 
     public static Builder withSelectModel(SelectModel selectModel) {
