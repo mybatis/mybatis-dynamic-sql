@@ -26,16 +26,20 @@ import examples.kotlin.PersonDynamicSqlSupport.Person.employed
 import examples.kotlin.PersonDynamicSqlSupport.Person.firstName
 import examples.kotlin.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.PersonDynamicSqlSupport.Person.occupation
+import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlBuilder.equalTo
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.SelectListHelper
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.selectWithKotlinMapper
+import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.select.CompletableQuery
+import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.util.Buildable
 
-private fun selectList() =
+private fun selectList(): Array<BasicColumn> =
         arrayOf(Person.id, firstName, lastName, birthDate, employed, occupation,
                 Address.id.`as`("address_id"), streetAddress, city, state)
 
-fun PersonWithAddressMapper.select(helper: SelectListHelper<PersonWithAddress>) =
-        helper(selectWithKotlinMapper(this::selectMany, *selectList())
-                .from(Person).join(Address).on(addressId, equalTo(Address.id)))
-                .build()
-                .execute()
+fun PersonWithAddressMapper.select(helper: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): List<PersonWithAddress> {
+    val dsl = SqlBuilder.select(*selectList()).from(Person).join(Address).on(addressId, equalTo(Address.id))
+    helper(dsl)
+    return selectMany(dsl.build().render(RenderingStrategy.MYBATIS3))
+}

@@ -23,22 +23,22 @@ import examples.kotlin.PersonDynamicSqlSupport.Person.firstName
 import examples.kotlin.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.PersonDynamicSqlSupport.Person.occupation
+import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlBuilder.count
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.select.CompletableQuery
+import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.mybatis3.kotlin.*
 
-fun PersonMapper.count(helper: CountHelper) =
-        helper(selectWithKotlinMapper(this::count, count())
-                .from(Person))
-                .build()
-                .execute()
+fun PersonMapper.count(helper: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>) =
+        count(select(arrayOf(count()), Person, helper))
 
 fun PersonMapper.delete(complete: DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>) =
         deleteWithKotlinMapper(this::delete, Person, complete)
@@ -74,26 +74,17 @@ fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
                 .build()
                 .render(RenderingStrategy.MYBATIS3))
 
-private fun selectList() =
+private fun selectList(): Array<BasicColumn> =
         arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
-fun PersonMapper.selectOne(helper: SelectOneHelper<PersonRecord>) =
-        helper(selectWithKotlinMapper(this::selectOne, *selectList())
-                .from(Person))
-                .build()
-                .execute()
+fun PersonMapper.selectOne(helper: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>) =
+    selectOne(select(selectList(), Person, helper))
 
-fun PersonMapper.select(helper: SelectListHelper<PersonRecord>) =
-        helper(selectWithKotlinMapper(this::selectMany, *selectList())
-                .from(Person))
-                .build()
-                .execute()
+fun PersonMapper.select(helper: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>) =
+        selectMany(select(selectList(), Person, helper))
 
-fun PersonMapper.selectDistinct(helper: SelectListHelper<PersonRecord>) =
-        helper(selectDistinctWithKotlinMapper(this::selectMany, *selectList())
-                .from(Person))
-                .build()
-                .execute()
+fun PersonMapper.selectDistinct(helper: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>) =
+        selectMany(selectDistinct(selectList(), Person, helper))
 
 fun PersonMapper.selectByPrimaryKey(id_: Int) =
         selectOne {

@@ -41,8 +41,6 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.SelectDSL
 import org.mybatis.dynamic.sql.util.kotlin.allRows
 import org.mybatis.dynamic.sql.util.kotlin.or
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.allRows
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.allRowsOrderedBy
 import java.io.InputStreamReader
 import java.sql.DriverManager
 import java.util.*
@@ -105,7 +103,10 @@ internal class KotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val rows = mapper.select { allRowsOrderedBy(firstName, lastName) }
+            val rows = mapper.select {
+                allRows()
+                orderBy(firstName, lastName)
+            }
 
             assertThat(rows.size).isEqualTo(6)
             assertThat(rows[0].firstName).isEqualTo("Bamm Bamm")
@@ -117,7 +118,7 @@ internal class KotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val rows = mapper.select { allRowsOrderedBy() }
+            val rows = mapper.select { allRows() }
 
             assertThat(rows.size).isEqualTo(6)
             assertThat(rows[0].firstName).isEqualTo("Fred")

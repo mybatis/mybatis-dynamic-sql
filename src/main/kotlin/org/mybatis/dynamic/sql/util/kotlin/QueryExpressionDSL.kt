@@ -27,9 +27,9 @@ import org.mybatis.dynamic.sql.util.Buildable
 
 fun QueryExpressionDSL<SelectModel>.JoinSpecificationStarter.on(joinColumn: BasicColumn, joinCondition: JoinCondition,
                                                                 builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
-    val fred: CompletableQuery<SelectModel> = this.on(joinColumn, joinCondition)
-    builderAction(fred)
-    return fred.build().render(RenderingStrategy.MYBATIS3)
+    val join: CompletableQuery<SelectModel> = this.on(joinColumn, joinCondition)
+    builderAction(join)
+    return join.build().render(RenderingStrategy.MYBATIS3)
 }
 
 fun QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher.and(joinColumn: BasicColumn, joinCondition: JoinCondition,
@@ -79,3 +79,5 @@ fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition:
     whereBuilder()?.or(column, condition, *collector.criteria())
     return this
 }
+
+fun CompletableQuery<SelectModel>.allRows() = this as Buildable<SelectModel>
