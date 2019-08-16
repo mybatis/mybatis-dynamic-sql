@@ -18,17 +18,17 @@ package org.mybatis.dynamic.sql.select.render;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.FetchFirstPagingModel;
+import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class FetchFirstPagingModelRenderer {
     private static final String FETCH_FIRST_ROWS_PARAMETER = "_fetchFirstRows"; //$NON-NLS-1$
     private static final String OFFSET_PARAMETER = "_offset"; //$NON-NLS-1$
     private RenderingStrategy renderingStrategy;
-    private FetchFirstPagingModel pagingModel;
+    private PagingModel pagingModel;
 
     public FetchFirstPagingModelRenderer(RenderingStrategy renderingStrategy,
-            FetchFirstPagingModel pagingModel) {
+            PagingModel pagingModel) {
         this.renderingStrategy = renderingStrategy;
         this.pagingModel = pagingModel;
     }

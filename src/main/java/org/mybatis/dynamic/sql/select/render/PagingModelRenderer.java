@@ -15,28 +15,52 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.FetchFirstPagingModel;
-import org.mybatis.dynamic.sql.select.LimitAndOffsetPagingModel;
-import org.mybatis.dynamic.sql.select.PagingModelVisitor;
+import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public class PagingModelRenderer implements PagingModelVisitor<Optional<FragmentAndParameters>> {
+public class PagingModelRenderer {
     private RenderingStrategy renderingStrategy;
+    private PagingModel pagingModel;
 
-    public PagingModelRenderer(RenderingStrategy renderingStrategy) {
-        this.renderingStrategy = renderingStrategy;
+    private PagingModelRenderer(Builder builder) {
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        pagingModel = Objects.requireNonNull(builder.pagingModel);
     }
     
-    @Override
-    public Optional<FragmentAndParameters> visit(LimitAndOffsetPagingModel pagingModel) {
-        return new LimitAndOffsetPagingModelRenderer(renderingStrategy, pagingModel).render();
+    public Optional<FragmentAndParameters> render() {
+        return pagingModel.limit().map(this::limitAndOffsetRender)
+                .orElseGet(this::fetchFirstRender);
     }
-
-    @Override
-    public Optional<FragmentAndParameters> visit(FetchFirstPagingModel pagingModel) {
+    
+    private Optional<FragmentAndParameters> limitAndOffsetRender(Long limit) {
+        return new LimitAndOffsetPagingModelRenderer(renderingStrategy, limit,
+                pagingModel).render();
+    }
+    
+    private Optional<FragmentAndParameters> fetchFirstRender() {
         return new FetchFirstPagingModelRenderer(renderingStrategy, pagingModel).render();
+    }
+    
+    public static class Builder {
+        private RenderingStrategy renderingStrategy;
+        private PagingModel pagingModel;
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+
+        public Builder withPagingModel(PagingModel pagingModel) {
+            this.pagingModel = pagingModel;
+            return this;
+        }
+        
+        public PagingModelRenderer build() {
+            return new PagingModelRenderer(this);
+        }
     }
 }

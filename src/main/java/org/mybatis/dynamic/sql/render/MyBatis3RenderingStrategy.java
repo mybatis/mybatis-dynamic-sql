@@ -15,13 +15,20 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import java.util.Optional;
-
 import org.mybatis.dynamic.sql.BindableColumn;
 
 public class MyBatis3RenderingStrategy extends RenderingStrategy {
     @Override
-    public String getFormattedJdbcPlaceholder(Optional<BindableColumn<?>> column, String prefix, String parameterName) {
+    public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
+        return "#{" //$NON-NLS-1$
+                + prefix
+                + "." //$NON-NLS-1$
+                + parameterName
+                + "}"; //$NON-NLS-1$
+    }
+
+    @Override
+    public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
         return "#{" //$NON-NLS-1$
                 + prefix
                 + "." //$NON-NLS-1$
@@ -31,16 +38,14 @@ public class MyBatis3RenderingStrategy extends RenderingStrategy {
                 + "}"; //$NON-NLS-1$
     }
     
-    private String renderTypeHandler(Optional<BindableColumn<?>> column) {
-        return column
-                .flatMap(BindableColumn::typeHandler)
+    private String renderTypeHandler(BindableColumn<?> column) {
+        return column.typeHandler()
                 .map(th -> ",typeHandler=" + th) //$NON-NLS-1$
                 .orElse(""); //$NON-NLS-1$
     }
     
-    private String renderJdbcType(Optional<BindableColumn<?>> column) {
-        return column
-                .flatMap(BindableColumn::jdbcType)
+    private String renderJdbcType(BindableColumn<?> column) {
+        return column.jdbcType()
                 .map(jt -> ",jdbcType=" + jt.getName()) //$NON-NLS-1$
                 .orElse(""); //$NON-NLS-1$
     }

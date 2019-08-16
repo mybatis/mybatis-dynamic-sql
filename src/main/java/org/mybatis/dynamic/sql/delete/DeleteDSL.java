@@ -30,6 +30,7 @@ public class DeleteDSL<R> implements Buildable<R> {
 
     private Function<DeleteModel, R> adapterFunction;
     private SqlTable table;
+    protected DeleteWhereBuilder whereBuilder;
     
     private DeleteDSL(SqlTable table, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -37,16 +38,19 @@ public class DeleteDSL<R> implements Buildable<R> {
     }
     
     public DeleteWhereBuilder where() {
-        return new DeleteWhereBuilder();
+        whereBuilder = new DeleteWhereBuilder();
+        return whereBuilder;
     }
     
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return new DeleteWhereBuilder(column, condition);
+        whereBuilder = new DeleteWhereBuilder(column, condition);
+        return whereBuilder;
     }
     
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        return new DeleteWhereBuilder(column, condition, subCriteria);
+        whereBuilder = new DeleteWhereBuilder(column, condition, subCriteria);
+        return whereBuilder;
     }
     
     /**
@@ -57,7 +61,9 @@ public class DeleteDSL<R> implements Buildable<R> {
      */
     @Override
     public R build() {
-        DeleteModel deleteModel = DeleteModel.withTable(table).build();
+        DeleteModel deleteModel = DeleteModel.withTable(table)
+                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .build();
         return adapterFunction.apply(deleteModel);
     }
     
@@ -76,7 +82,7 @@ public class DeleteDSL<R> implements Buildable<R> {
     
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> implements Buildable<R> {
         
-        private <T> DeleteWhereBuilder() {
+        private DeleteWhereBuilder() {
             super();
         }
         
@@ -91,10 +97,7 @@ public class DeleteDSL<R> implements Buildable<R> {
         
         @Override
         public R build() {
-            DeleteModel deleteModel = DeleteModel.withTable(table)
-                    .withWhereModel(buildWhereModel())
-                    .build();
-            return adapterFunction.apply(deleteModel);
+            return DeleteDSL.this.build();
         }
         
         @Override

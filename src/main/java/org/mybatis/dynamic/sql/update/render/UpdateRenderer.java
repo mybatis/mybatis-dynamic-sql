@@ -17,8 +17,6 @@ package org.mybatis.dynamic.sql.update.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,14 +46,12 @@ public class UpdateRenderer {
     public UpdateStatementProvider render() {
         FragmentCollector fc = calculateColumnMappings();
         
-        Optional<WhereClauseProvider> whereClause = updateModel.whereModel().flatMap(this::renderWhereClause);
-        
-        return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(fc, whereClause))
-                .withParameters(fc.parameters())
-                .withParameters(calculateWhereParameters(whereClause))
-                .build();
+        return updateModel.whereModel()
+                .flatMap(this::renderWhereClause)
+                .map(wc -> renderWithWhereClause(fc, wc))
+                .orElseGet(() -> renderWithoutWhereClause(fc));
     }
-    
+
     private FragmentCollector calculateColumnMappings() {
         SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy);
 
@@ -63,19 +59,31 @@ public class UpdateRenderer {
                 .collect(FragmentCollector.collect());
     }
     
-    private String calculateUpdateStatement(FragmentCollector fc, Optional<WhereClauseProvider> whereClause) {
+    private UpdateStatementProvider renderWithWhereClause(FragmentCollector columnMappings,
+            WhereClauseProvider whereClause) {
+        return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(columnMappings, whereClause))
+                .withParameters(columnMappings.parameters())
+                .withParameters(whereClause.getParameters())
+                .build();
+    }
+
+    private String calculateUpdateStatement(FragmentCollector fc, WhereClauseProvider whereClause) {
+        return calculateUpdateStatement(fc)
+                + spaceBefore(whereClause.getWhereClause());
+    }
+    
+    private String calculateUpdateStatement(FragmentCollector fc) {
         return "update" //$NON-NLS-1$
                 + spaceBefore(updateModel.table().tableNameAtRuntime())
-                + spaceBefore(calculateSetPhrase(fc))
-                + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause));
+                + spaceBefore(calculateSetPhrase(fc));
     }
     
-    private Map<String, Object> calculateWhereParameters(Optional<WhereClauseProvider> whereClause) {
-        return whereClause
-                .map(WhereClauseProvider::getParameters)
-                .orElse(Collections.emptyMap());
+    private UpdateStatementProvider renderWithoutWhereClause(FragmentCollector columnMappings) {
+        return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(columnMappings))
+                .withParameters(columnMappings.parameters())
+                .build();
     }
-    
+
     private String calculateSetPhrase(FragmentCollector collector) {
         return collector.fragments()
                 .collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

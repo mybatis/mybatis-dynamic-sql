@@ -84,7 +84,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         criteria.add(criterion);
     }
     
-    protected WhereModel buildWhereModel() {
+    public WhereModel buildWhereModel() {
         return WhereModel.of(criteria);
     }
     

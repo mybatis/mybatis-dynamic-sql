@@ -18,8 +18,6 @@ package org.mybatis.dynamic.sql.select.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,31 +47,44 @@ public class QueryExpressionRenderer {
     }
     
     public FragmentAndParameters render() {
-        Optional<WhereClauseProvider> whereClause = queryExpression.whereModel().flatMap(this::renderWhereClause);
-        
+        return queryExpression.whereModel()
+                .flatMap(this::renderWhereClause)
+                .map(this::renderWithWhereClause)
+                .orElseGet(this::renderWithoutWhereClause);
+    }
+    
+    private FragmentAndParameters renderWithWhereClause(WhereClauseProvider whereClause) {
         return FragmentAndParameters.withFragment(calculateQueryExpression(whereClause))
-                .withParameters(calculateParameters(whereClause))
+                .withParameters(whereClause.getParameters())
                 .build();
     }
     
-    private String calculateQueryExpression(Optional<WhereClauseProvider> whereClause) {
+    private FragmentAndParameters renderWithoutWhereClause() {
+        return FragmentAndParameters.withFragment(calculateQueryExpression())
+                .build();
+    }
+
+    private String calculateQueryExpression() {
+        return calculateQueryExpressionStart()
+                + spaceBefore(queryExpression.groupByModel().map(this::renderGroupBy));
+    }
+
+    private String calculateQueryExpression(WhereClauseProvider whereClause) {
+        return calculateQueryExpressionStart()
+                + spaceBefore(whereClause.getWhereClause())
+                + spaceBefore(queryExpression.groupByModel().map(this::renderGroupBy));
+    }
+
+    private String calculateQueryExpressionStart() {
         return spaceAfter(queryExpression.connector())
                 + "select " //$NON-NLS-1$
                 + (queryExpression.isDistinct() ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + calculateColumnList()
                 + " from " //$NON-NLS-1$
                 + calculateTableName(queryExpression.table())
-                + spaceBefore(queryExpression.joinModel().map(this::renderJoin))
-                + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause))
-                + spaceBefore(queryExpression.groupByModel().map(this::renderGroupBy));
+                + spaceBefore(queryExpression.joinModel().map(this::renderJoin));
     }
-
-    private Map<String, Object> calculateParameters(Optional<WhereClauseProvider> whereClause) {
-        return whereClause
-                .map(WhereClauseProvider::getParameters)
-                .orElse(Collections.emptyMap());
-    }
-
+    
     private String calculateColumnList() {
         return queryExpression.mapColumns(this::applyTableAndColumnAlias)
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
