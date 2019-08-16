@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -82,20 +83,20 @@ public class SelectDSL<R> implements Buildable<R> {
                 selectList);
     }
     
-    public QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer) {
+    QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer) {
         QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer);
         queryExpressions.add(queryExpression);
         return queryExpression;
     }
     
-    public QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer, String tableAlias) {
+    QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer, String tableAlias) {
         QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer, tableAlias);
         queryExpressions.add(queryExpression);
         return queryExpression;
     }
     
-    void setOrderByModel(OrderByModel orderByModel) {
-        this.orderByModel = orderByModel;
+    void orderBy(SortSpecification...columns) {
+        orderByModel = OrderByModel.of(columns);
     }
     
     public LimitFinisher limit(long limit) {

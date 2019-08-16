@@ -47,7 +47,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     private Map<SqlTable, String> tableAliases = new HashMap<>();
     protected QueryExpressionWhereBuilder whereBuilder;
     private GroupByModel groupByModel;
-    private List<JoinSpecification.Builder> joinSpecifications = new ArrayList<>();
+    private List<JoinSpecification.Builder> joinSpecificationBuilders = new ArrayList<>();
     
     QueryExpressionDSL(FromGatherer<R> fromGatherer) {
         connector = fromGatherer.connector;
@@ -130,7 +130,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     
     @Override
     public SelectDSL<R> orderBy(SortSpecification...columns) {
-        selectDSL.setOrderByModel(OrderByModel.of(columns));
+        selectDSL.orderBy(columns);
         return selectDSL;
     }
 
@@ -149,13 +149,13 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                 .isDistinct(isDistinct)
                 .withTableAliases(tableAliases)
                 .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
-                .withJoinModel(joinSpecifications.isEmpty() ? null : buildJoinModel())
+                .withJoinModel(joinSpecificationBuilders.isEmpty() ? null : buildJoinModel())
                 .withGroupByModel(groupByModel)
                 .build();
     }
     
     private JoinModel buildJoinModel() {
-        return JoinModel.of(joinSpecifications.stream()
+        return JoinModel.of(joinSpecificationBuilders.stream()
                 .map(JoinSpecification.Builder::build)
                 .collect(Collectors.toList()));
     }
@@ -317,7 +317,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                     .withJoinType(joinType)
                     .withJoinCriterion(joinCriterion);
 
-            joinSpecifications.add(joinSpecificationBuilder);
+            joinSpecificationBuilders.add(joinSpecificationBuilder);
         }
 
         public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
@@ -332,7 +332,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                     .withJoinCriterion(joinCriterion)
                     .withJoinCriteria(Arrays.asList(joinCriteria));
 
-            joinSpecifications.add(joinSpecificationBuilder);
+            joinSpecificationBuilders.add(joinSpecificationBuilder);
         }
         
         @Override
