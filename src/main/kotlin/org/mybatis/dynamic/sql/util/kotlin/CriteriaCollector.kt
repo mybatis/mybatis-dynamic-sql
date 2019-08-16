@@ -13,7 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql
+package org.mybatis.dynamic.sql.util.kotlin
+
+import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.SqlCriterion
+import org.mybatis.dynamic.sql.VisitableCondition
 
 class CriteriaCollector {
     private val criteria = mutableListOf<SqlCriterion<*>>()
@@ -30,8 +34,7 @@ class CriteriaCollector {
                 collect: CriteriaCollector.() -> CriteriaCollector): CriteriaCollector {
         val collector = CriteriaCollector()
         collect(collector)
-        val criterion: SqlCriterion<T> = SqlCriterion
-                .withColumn(column)
+        val criterion: SqlCriterion<T> = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(collector.criteria)
                 .withConnector("and")
@@ -52,8 +55,7 @@ class CriteriaCollector {
                collect: CriteriaCollector.() -> CriteriaCollector): CriteriaCollector {
         val collector = CriteriaCollector()
         collect(collector)
-        val criterion: SqlCriterion<T> = SqlCriterion
-                .withColumn(column)
+        val criterion: SqlCriterion<T> = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(collector.criteria)
                 .withConnector("or")

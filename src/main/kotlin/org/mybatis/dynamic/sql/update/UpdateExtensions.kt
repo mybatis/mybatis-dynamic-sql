@@ -15,48 +15,4 @@
  */
 package org.mybatis.dynamic.sql.update
 
-import org.mybatis.dynamic.sql.BindableColumn
-import org.mybatis.dynamic.sql.CriteriaCollector
-import org.mybatis.dynamic.sql.VisitableCondition
-
-fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                     collect: CriteriaCollector.() -> CriteriaCollector): UpdateDSL<UpdateModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    this.where(column, condition, *collector.criteria())
-    return this
-}
-
-fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>): UpdateDSL<UpdateModel> {
-    if (whereBuilder != null) {
-        whereBuilder.and(column, condition)
-    }
-    return this
-}
-
-fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                   collect: CriteriaCollector.() -> CriteriaCollector): UpdateDSL<UpdateModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    if (whereBuilder != null) {
-        whereBuilder.and(column, condition, *collector.criteria())
-    }
-    return this
-}
-
-fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>): UpdateDSL<UpdateModel> {
-    if (whereBuilder != null) {
-        whereBuilder.or(column, condition)
-    }
-    return this
-}
-
-fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                  collect: CriteriaCollector.() -> CriteriaCollector): UpdateDSL<UpdateModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    if (whereBuilder != null) {
-        whereBuilder.or(column, condition, *collector.criteria())
-    }
-    return this
-}
+fun UpdateDSL<UpdateModel>.whereBuilder(): UpdateDSL<UpdateModel>.UpdateWhereBuilder? = whereBuilder

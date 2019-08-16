@@ -37,10 +37,10 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.delete.allRows
-import org.mybatis.dynamic.sql.delete.or
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.SelectDSL
+import org.mybatis.dynamic.sql.util.kotlin.allRows
+import org.mybatis.dynamic.sql.util.kotlin.or
 import org.mybatis.dynamic.sql.util.mybatis3.kotlin.allRows
 import org.mybatis.dynamic.sql.util.mybatis3.kotlin.allRowsOrderedBy
 import java.io.InputStreamReader
