@@ -39,9 +39,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectListHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectHelper;
 
 public class PersonMapperTest {
 
@@ -86,7 +85,7 @@ public class PersonMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             
-            List<PersonRecord> rows = mapper.select(MyBatis3SelectListHelper.allRows());
+            List<PersonRecord> rows = mapper.select(MyBatis3SelectHelper.allRows());
             
             assertThat(rows.size()).isEqualTo(6);
             assertThat(rows.get(0).getId()).isEqualTo(1);
@@ -100,7 +99,7 @@ public class PersonMapperTest {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             
             List<PersonRecord> rows = mapper
-                    .select(MyBatis3SelectListHelper.allRowsOrderedBy(lastName.descending(), firstName.descending()));
+                    .select(MyBatis3SelectHelper.allRowsOrderedBy(lastName.descending(), firstName.descending()));
             
             assertThat(rows.size()).isEqualTo(6);
             assertThat(rows.get(0).getId()).isEqualTo(5);
@@ -449,7 +448,7 @@ public class PersonMapperTest {
     public void testCountAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            long rows = mapper.count(MyBatis3CountHelper.allRows());
+            long rows = mapper.count(MyBatis3SelectHelper.allRows());
             
             assertThat(rows).isEqualTo(6L);
         }
@@ -487,7 +486,9 @@ public class PersonMapperTest {
     public void testJoinAllRows() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
-            List<PersonWithAddress> records = mapper.select(MyBatis3SelectListHelper.allRowsOrderedBy(id));
+            List<PersonWithAddress> records = mapper.select(
+                    MyBatis3SelectHelper.allRowsOrderedBy(id)
+            );
             
             assertThat(records.size()).isEqualTo(6L);
             assertThat(records.get(0).getId()).isEqualTo(1);

@@ -30,22 +30,20 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
+import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectListHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectOneHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectHelper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateModelToIntAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
@@ -88,17 +86,12 @@ public interface PersonMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
     
-    default long count(MyBatis3CountHelper helper) {
-        return helper.apply(SelectDSL.selectWithMapper(this::count, SqlBuilder.count())
-                .from(person))
-                .build()
-                .execute();
+    default long count(MyBatis3SelectHelper helper) {
+        return MyBatis3Utils.count(this::count, person, helper);
     }
 
     default int delete(MyBatis3DeleteHelper helper) {
-        return helper.apply(MyBatis3Utils.deleteFrom(this::delete, person))
-                .build()
-                .execute();
+        return MyBatis3Utils.deleteFrom(this::delete, person, helper);
     }
     
     default int deleteByPrimaryKey(Integer id_) {
@@ -149,25 +142,19 @@ public interface PersonMapper {
                 .render(RenderingStrategy.MYBATIS3));
     }
     
-    default Optional<PersonRecord> selectOne(MyBatis3SelectOneHelper<PersonRecord> helper) {
-        return helper.apply(SelectDSL.selectWithMapper(this::selectOne, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-                .from(person))
-                .build()
-                .execute();
+    static BasicColumn[] selectList =
+        new BasicColumn[] {id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId};
+    
+    default Optional<PersonRecord> selectOne(MyBatis3SelectHelper helper) {
+        return MyBatis3Utils.selectOne(this::selectOne, selectList, person, helper);
     }
     
-    default List<PersonRecord> select(MyBatis3SelectListHelper<PersonRecord> helper) {
-        return helper.apply(SelectDSL.selectWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-                .from(person))
-                .build()
-                .execute();
+    default List<PersonRecord> select(MyBatis3SelectHelper helper) {
+        return MyBatis3Utils.selectList(this::selectMany, selectList, person, helper);
     }
     
-    default List<PersonRecord> selectDistinct(MyBatis3SelectListHelper<PersonRecord> helper) {
-        return helper.apply(SelectDSL.selectDistinctWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-                .from(person))
-                .build()
-                .execute();
+    default List<PersonRecord> selectDistinct(MyBatis3SelectHelper helper) {
+        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, person, helper);
     }
     
     default Optional<PersonRecord> selectByPrimaryKey(Integer id_) {
@@ -177,13 +164,11 @@ public interface PersonMapper {
     }
 
     default int update(MyBatis3UpdateHelper helper) {
-        return helper.apply(MyBatis3Utils.update(this::update, person))
-                .build()
-                .execute();
+        return MyBatis3Utils.update(this::update, person, helper);
     }
     
-    static UpdateDSL<MyBatis3UpdateModelToIntAdapter> setAll(PersonRecord record,
-            UpdateDSL<MyBatis3UpdateModelToIntAdapter> dsl) {
+    static UpdateDSL<UpdateModel> setAll(PersonRecord record,
+            UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalTo(record::getId)
                 .set(firstName).equalTo(record::getFirstName)
                 .set(lastName).equalTo(record::getLastName)
@@ -193,8 +178,8 @@ public interface PersonMapper {
                 .set(addressId).equalTo(record::getAddressId);
     }
     
-    static UpdateDSL<MyBatis3UpdateModelToIntAdapter> setSelective(PersonRecord record,
-            UpdateDSL<MyBatis3UpdateModelToIntAdapter> dsl) {
+    static UpdateDSL<UpdateModel> setSelective(PersonRecord record,
+            UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(firstName).equalToWhenPresent(record::getFirstName)
                 .set(lastName).equalToWhenPresent(record::getLastName)

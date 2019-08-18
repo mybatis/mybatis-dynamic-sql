@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.util.mybatis3;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
+import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 /**
@@ -61,7 +62,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  */
 @FunctionalInterface
 public interface MyBatis3DeleteHelper extends
-        Function<DeleteDSL<MyBatis3DeleteModelToIntAdapter>, Buildable<MyBatis3DeleteModelToIntAdapter>> {
+        Function<DeleteDSL<DeleteModel>, Buildable<DeleteModel>> {
 
     /**
      * Returns a helper that can be used to delete every row in a table.

@@ -21,19 +21,15 @@ import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectListHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectOneHelper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectHelper;
 
 /**
  * This interface describes operations allowed for a select statement after the from and join clauses. This is
- * primarily to support the {@link MyBatis3SelectListHelper} and {@link MyBatis3SelectOneHelper} classes.
+ * primarily to support the {@link MyBatis3SelectHelper} class.
  * 
  * @author Jeff Butler
  *
  * @param <R> the model type created by these operations
- * 
- * @see MyBatis3SelectListHelper
- * @see MyBatis3SelectOneHelper
  * 
  */
 public interface CompletableQuery<R> extends Buildable<R> {

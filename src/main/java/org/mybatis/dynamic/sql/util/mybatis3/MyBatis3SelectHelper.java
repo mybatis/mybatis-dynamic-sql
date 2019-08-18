@@ -17,8 +17,9 @@ package org.mybatis.dynamic.sql.util.mybatis3;
 
 import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.select.MyBatis3SelectModelAdapter;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.select.CompletableQuery;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 /**
@@ -62,15 +63,19 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * @author Jeff Butler
  */
 @FunctionalInterface
-public interface MyBatis3CountHelper extends
-        Function<QueryExpressionDSL<MyBatis3SelectModelAdapter<Long>>, Buildable<MyBatis3SelectModelAdapter<Long>>> {
+public interface MyBatis3SelectHelper extends
+        Function<CompletableQuery<SelectModel>, Buildable<SelectModel>> {
     
     /**
      * Returns a helper that can be used to count every row in a table.
      * 
      * @return the helper that will count every row in a table
      */
-    static MyBatis3CountHelper allRows() {
+    static MyBatis3SelectHelper allRows() {
         return h -> h;
+    }
+
+    static MyBatis3SelectHelper allRowsOrderedBy(SortSpecification...columns) {
+        return h -> h.orderBy(columns);
     }
 }
