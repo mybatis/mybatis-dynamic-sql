@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
 public class InsertStatementTest {
     private static final SqlTable foo = SqlTable.of("foo");
@@ -46,7 +46,7 @@ public class InsertStatementTest {
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toProperty("occupation")
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (id, first_name, last_name, occupation) "
                 + "values (#{record.id,jdbcType=INTEGER}, "
@@ -68,7 +68,7 @@ public class InsertStatementTest {
                 .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
                 .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (last_name, occupation) "
                 + "values (#{record.lastName,jdbcType=VARCHAR}, "

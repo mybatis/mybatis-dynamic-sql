@@ -12,7 +12,7 @@ The simplest WHERE clause is of this form:
                 .from(simpleTable)
                 .where(id, isEqualTo(3))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 ```
 
 The library ships with a wide variety of conditions that can be used in WHERE clauses including
@@ -23,7 +23,7 @@ The library ships with a wide variety of conditions that can be used in WHERE cl
                 .from(simpleTable)
                 .where(id, isBetween(3).and(6))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 ```
 
 ```java
@@ -31,7 +31,7 @@ The library ships with a wide variety of conditions that can be used in WHERE cl
                 .from(simpleTable)
                 .where(id, isIn(3,4,5))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 ```
 
 ```java
@@ -39,7 +39,7 @@ The library ships with a wide variety of conditions that can be used in WHERE cl
                 .from(simpleTable)
                 .where(id, isNotNull())
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 ```
 
 ## Complex WHERE Clauses
@@ -52,7 +52,7 @@ Conditions can be "anded" and "ored" in virtually any combination. For example:
                 .where(id, isGreaterThan(2))
                 .or(occupation, isNull(), and(id, isLessThan(6)))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 ```
 
 ## Subqueries
@@ -65,7 +65,7 @@ Most of the conditions also support a subquery.  For example:
                 .where(column2, isIn(select(column2).from(table).where(column2, isEqualTo(3))))
                 .or(column1, isLessThan(d))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 ```
 
 ## Stand Alone Where Clauses
@@ -86,7 +86,7 @@ You can build a stand alone where clause and call your mapper like this:
 ```java
     WhereClauseProvider whereClause = where(id, isNotBetween(10).and(60))
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 
     List<AnimalData> animals = mapper.selectByExample(whereClause);
 ```
@@ -109,7 +109,7 @@ Then you can specify the alias for the generated WHERE clause on the render meth
 ```java
     WhereClauseProvider whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
             .build()
-            .render(RenderingStrategy.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
+            .render(RenderingStrategies.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
 
     List<AnimalData> animals = mapper.selectByExampleWithAlias(whereClause);
 ```
@@ -136,7 +136,7 @@ In this mapper method there are three parameters.  So in this case it will be ne
 ```java
     WhereClauseProvider whereClause = where(id, isLessThan(60))
             .build()
-            .render(RenderingStrategy.MYBATIS3, "whereClauseProvider");
+            .render(RenderingStrategies.MYBATIS3, "whereClauseProvider");
             
     List<AnimalData> animals = mapper.selectByExampleWithLimitAndOffset(whereClause, 5, 15);
 ```

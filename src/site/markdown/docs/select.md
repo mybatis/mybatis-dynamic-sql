@@ -29,7 +29,7 @@ The user guide page for WHERE Clauses shows examples of many different types of 
             .and(bodyWeight, isBetween(1.0).and(3.0))
             .orderBy(id.descending(), bodyWeight)
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 
     List<AnimalData> animals = mapper.selectMany(selectStatement);
 ```
@@ -44,7 +44,7 @@ The library supports the generation of equijoin statements - joins defined by co
             .from(orderMaster, "om")
             .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 ```
 
 Notice that you can give an alias to a table if desired. If you don't specify an alias, the full table name will be used in the generated SQL.
@@ -58,7 +58,7 @@ Multiple tables can be joined in a single statement. For example:
             .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
             .where(orderMaster.orderId, isEqualTo(2))
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 ```
 Join queries will likely require you to define a MyBatis result mapping in XML. This is the only instance where XML is required.  This is due to the limitations of the MyBatis annotations when mapping collections.
 
@@ -80,7 +80,7 @@ The library supports the generation of UNION and UNION ALL queries. For example:
             .from(animalData)
             .orderBy(id)
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 ```
 
 Any number of SELECT statements can be added to a UNION query. Only one ORDER BY phrase is allowed.
@@ -190,7 +190,7 @@ When using a column function (lower, upper, etc.), then is is customary to give 
             .groupBy(substring(gender, 1, 1))
             .orderBy(sortColumn("ShortGender").descending())
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 ```
 
 In this example the `substring` function is used in both the select list and the GROUP BY expression.  In the ORDER BY expression, we use the `sortColumn` function to duplicate the alias given to the column in the select list.
@@ -213,7 +213,7 @@ An example follows:
             .limit(3)
             .offset(22)
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 ```
 
 ## Fetch First Support
@@ -234,5 +234,5 @@ An example follows:
             .offset(22)
             .fetchFirst(3).rowsOnly()
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 ```

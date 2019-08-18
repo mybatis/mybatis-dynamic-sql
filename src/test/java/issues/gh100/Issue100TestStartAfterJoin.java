@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -37,7 +37,7 @@ public class Issue100TestStartAfterJoin {
         builder.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
                 
         SelectStatementProvider selectStatement = builder.build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student join student_reg on student.id = student_reg.studentId"
@@ -55,14 +55,14 @@ public class Issue100TestStartAfterJoin {
         SelectDSL<SelectModel> selectModel = builder.orderBy(StudentDynamicSqlSupport.id);
                 
         SelectStatementProvider selectStatement = builder.build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " order by id";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         
-        selectStatement = selectModel.build().render(RenderingStrategy.MYBATIS3);
+        selectStatement = selectModel.build().render(RenderingStrategies.MYBATIS3);
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -76,7 +76,7 @@ public class Issue100TestStartAfterJoin {
         builder.limit(3);
 
         SelectStatementProvider selectStatement = builder.build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student join student_reg on student.id = student_reg.studentId"
@@ -97,7 +97,7 @@ public class Issue100TestStartAfterJoin {
         .offset(2);
 
         SelectStatementProvider selectStatement = builder.build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student join student_reg on student.id = student_reg.studentId"
@@ -120,7 +120,7 @@ public class Issue100TestStartAfterJoin {
         .offset(2);
 
         SelectStatementProvider selectStatement = builder.build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student join student_reg on student.id = student_reg.studentId"
@@ -143,7 +143,7 @@ public class Issue100TestStartAfterJoin {
         .fetchFirst(3).rowsOnly();
 
         SelectStatementProvider selectStatement = builder.build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student join student_reg on student.id = student_reg.studentId"
@@ -166,7 +166,7 @@ public class Issue100TestStartAfterJoin {
         .fetchFirst(3).rowsOnly();
 
         SelectStatementProvider selectStatement = builder.build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student join student_reg on student.id = student_reg.studentId"

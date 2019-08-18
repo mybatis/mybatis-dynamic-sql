@@ -10,7 +10,7 @@ Update statements are composed by specifying the table and columns to update, an
             .or(id, isGreaterThan(60))
             .and(bodyWeight, isBetween(1.0).and(3.0))
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 
     int rows = mapper.update(updateStatement);
 ```
@@ -35,7 +35,7 @@ For example:
             .set(bodyWeight).equalTo(record.getBodyWeight())
             .set(animalName).equalToNull()
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 ```
 
 ## Annotated Mapper for Update Statements

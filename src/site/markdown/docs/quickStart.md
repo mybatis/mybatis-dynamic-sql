@@ -146,7 +146,7 @@ an example from `examples.simple.SimpleTableAnnotatedMapperTest`:
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
 
             List<SimpleTableRecord> rows = mapper.selectMany(selectStatement);
 

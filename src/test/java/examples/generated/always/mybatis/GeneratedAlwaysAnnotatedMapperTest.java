@@ -40,7 +40,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
@@ -78,7 +78,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             SelectStatementProvider selectStatement = selectByExample()
                     .where(id, isEqualTo(1))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectStatement);
             
@@ -94,7 +94,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             SelectStatementProvider selectStatement = selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectStatement);
             
@@ -132,7 +132,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                     .map(firstName).toProperty("firstName")
                     .map(lastName).toProperty("lastName")
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             batchInsert.insertStatements().stream().forEach(mapper::insert);
             
@@ -168,7 +168,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                     .map(firstName).toProperty("firstName")
                     .map(lastName).toProperty("lastName")
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             batchInsert.insertStatements().stream().forEach(mapper::insert);
             
@@ -218,7 +218,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                     .map(firstName).toProperty("firstName")
                     .map(lastName).toProperty("lastName")
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String statement = "insert into GeneratedAlways (id, first_name, last_name)" +
                     " values" +
@@ -262,7 +262,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                     .map(firstName).toProperty("firstName")
                     .map(lastName).toProperty("lastName")
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String statement = "insert into GeneratedAlways (id, first_name, last_name)" +
                     " values" +
@@ -293,7 +293,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                     .map(lastName).toProperty("lastName")
                     .map(age).toNull()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String statement = "insert into GeneratedAlways (id, first_name, last_name, age)" +
                     " values (1000, 'George', #{records[0].lastName,jdbcType=VARCHAR}, null)";
@@ -388,7 +388,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             UpdateStatementProvider updateStatement = updateByExampleSelective(record)
                     .where(lastName, isEqualTo("Flintstone"))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             int rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(3);
@@ -397,7 +397,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
                     .where(lastName, isEqualTo("Jones"))
                     .orderBy(firstName)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             List<GeneratedAlwaysRecord> records = mapper.selectMany(selectStatement);
             assertAll(

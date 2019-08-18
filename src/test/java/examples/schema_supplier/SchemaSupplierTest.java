@@ -35,6 +35,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectCompleter;
 
 public class SchemaSupplierTest {
 
@@ -88,9 +89,7 @@ public class SchemaSupplierTest {
 
             insertFlintstones(mapper);
             
-            List<User> records = mapper.selectByExample()
-                    .build()
-                    .execute();
+            List<User> records = mapper.select(MyBatis3SelectCompleter.allRows());
             assertThat(records.size()).isEqualTo(2);
         }
     }
@@ -103,18 +102,14 @@ public class SchemaSupplierTest {
             System.setProperty(SchemaSupplier.schema_property, "schema1");
             insertFlintstones(mapper);
             
-            List<User> records = mapper.selectByExample()
-                    .build()
-                    .execute();
+            List<User> records = mapper.select(MyBatis3SelectCompleter.allRows());
             assertThat(records.size()).isEqualTo(2);
 
             
             System.setProperty(SchemaSupplier.schema_property, "schema2");
             insertRubbles(mapper);
             
-            records = mapper.selectByExample()
-                    .build()
-                    .execute();
+            records = mapper.select(MyBatis3SelectCompleter.allRows());
             assertThat(records.size()).isEqualTo(3);
         }
     }

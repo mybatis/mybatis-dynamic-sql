@@ -41,7 +41,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class JoinMapperTest {
@@ -77,7 +77,7 @@ public class JoinMapperTest {
                     .from(orderMaster, "om")
                     .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
                     + " from OrderMaster om join OrderDetail od on om.order_id = od.order_id";
@@ -109,7 +109,7 @@ public class JoinMapperTest {
                 .from(orderMaster, "om")
                 .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
                 + " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
@@ -124,7 +124,7 @@ public class JoinMapperTest {
                 .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
                 .and(orderMaster.orderId, equalTo(orderDetail.orderId))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
                 + " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
@@ -142,7 +142,7 @@ public class JoinMapperTest {
                     .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .where(orderMaster.orderId, isEqualTo(2))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
@@ -173,7 +173,7 @@ public class JoinMapperTest {
                     .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .where(orderMaster.orderId, isEqualTo(2), and(orderLine.lineNumber, isEqualTo(2)))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
@@ -202,7 +202,7 @@ public class JoinMapperTest {
                     .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(orderMaster.orderId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
@@ -240,7 +240,7 @@ public class JoinMapperTest {
                     .where(orderMaster.orderId, isEqualTo(2))
                     .orderBy(orderMaster.orderId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select OrderMaster.order_id, OrderMaster.order_date, OrderLine.line_number, ItemMaster.description, OrderLine.quantity"
                     + " from OrderMaster join OrderLine on OrderMaster.order_id = OrderLine.order_id join ItemMaster on OrderLine.item_id = ItemMaster.item_id"
@@ -271,7 +271,7 @@ public class JoinMapperTest {
                     .rightJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(itemMaster.itemId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from OrderLine ol right join ItemMaster im on ol.item_id = im.item_id"
@@ -306,7 +306,7 @@ public class JoinMapperTest {
                     .rightJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
@@ -342,7 +342,7 @@ public class JoinMapperTest {
                     .rightJoin(itemMaster).on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select OrderLine.order_id, OrderLine.quantity, ItemMaster.item_id, ItemMaster.description"
                     + " from OrderMaster join OrderLine on OrderMaster.order_id = OrderLine.order_id"
@@ -377,7 +377,7 @@ public class JoinMapperTest {
                     .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(itemMaster.itemId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
@@ -412,7 +412,7 @@ public class JoinMapperTest {
                     .leftJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
@@ -448,7 +448,7 @@ public class JoinMapperTest {
                     .leftJoin(itemMaster).on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select OrderLine.order_id, OrderLine.quantity, ItemMaster.item_id, ItemMaster.description"
                     + " from OrderMaster join OrderLine on OrderMaster.order_id = OrderLine.order_id"
@@ -483,7 +483,7 @@ public class JoinMapperTest {
                     .fullJoin(orderLine, "ol").on(itemMaster.itemId, equalTo(orderLine.itemId))
                     .orderBy(sortColumn("im_itemid"))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, ol.item_id as ol_itemid, im.item_id as im_itemid, im.description"
                     + " from ItemMaster im full join OrderLine ol on im.item_id = ol.item_id"
@@ -525,7 +525,7 @@ public class JoinMapperTest {
                     .fullJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
@@ -567,7 +567,7 @@ public class JoinMapperTest {
                     .fullJoin(itemMaster).on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select OrderLine.order_id, OrderLine.quantity, ItemMaster.item_id, ItemMaster.description"
                     + " from OrderMaster join OrderLine on OrderMaster.order_id = OrderLine.order_id"
@@ -609,7 +609,7 @@ public class JoinMapperTest {
                     .join(user2, "u2").on(user1.userId, equalTo(user2.parentId))
                     .where(user2.userId, isEqualTo(4))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select u1.user_id, u1.user_name, u1.parent_id"
                     + " from User u1 join User u2 on u1.user_id = u2.parent_id"
@@ -637,7 +637,7 @@ public class JoinMapperTest {
                     .limit(2)
                     .offset(1)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
@@ -671,7 +671,7 @@ public class JoinMapperTest {
                     .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .limit(2)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
@@ -705,7 +705,7 @@ public class JoinMapperTest {
                     .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .offset(2)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
@@ -740,7 +740,7 @@ public class JoinMapperTest {
                     .offset(1)
                     .fetchFirst(2).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
@@ -774,7 +774,7 @@ public class JoinMapperTest {
                     .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
                     .fetchFirst(2).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"

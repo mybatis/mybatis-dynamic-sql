@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.delete;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -24,6 +25,8 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteCompleter;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
 public class DeleteDSL<R> implements Buildable<R> {
@@ -75,6 +78,17 @@ public class DeleteDSL<R> implements Buildable<R> {
         return deleteFrom(Function.identity(), table);
     }
     
+    /**
+     * Delete record(s) by executing a MyBatis3 mapper method.
+     * 
+     * @deprecated in favor of {@link MyBatis3Utils#deleteFrom(ToIntFunction, SqlTable, MyBatis3DeleteCompleter)}.
+     *     This method will be removed without direct replacement in a future version
+     * @param <T> return value from a delete method - typically Integer
+     * @param mapperMethod MyBatis3 mapper method that performs the delete
+     * @param table table to delete from
+     * @return number of records deleted - typically as Integer
+     */
+    @Deprecated
     public static <T> DeleteDSL<MyBatis3DeleteModelAdapter<T>> deleteFromWithMapper(
             Function<DeleteStatementProvider, T> mapperMethod, SqlTable table) {
         return deleteFrom(deleteModel -> MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);

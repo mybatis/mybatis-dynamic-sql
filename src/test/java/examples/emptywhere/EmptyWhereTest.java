@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -49,7 +49,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "delete from person"
                 + " where id = #{parameters.p1}"
@@ -70,7 +70,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.or(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "delete from person"
                 + " where first_name = #{parameters.p1}"
@@ -90,7 +90,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "delete from person"
                 + " where last_name = #{parameters.p1}";
@@ -109,7 +109,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "delete from person"
                 + " where first_name = #{parameters.p1}";
@@ -128,7 +128,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "delete from person";
         
@@ -147,7 +147,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select id, first_name, last_name"
                 + " from person"
@@ -170,7 +170,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select *"
                 + " from person"
@@ -192,7 +192,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select id, first_name, last_name"
                 + " from person"
@@ -213,7 +213,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select id, first_name, last_name"
                 + " from person"
@@ -234,7 +234,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select id, first_name, last_name"
                 + " from person";
@@ -254,7 +254,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
@@ -278,7 +278,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
@@ -301,7 +301,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
@@ -323,7 +323,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
@@ -345,7 +345,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
@@ -366,7 +366,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "update person"
                 + " set id = #{parameters.p1}"
@@ -389,7 +389,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "update person"
                 + " set id = #{parameters.p1}"
@@ -410,7 +410,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "delete from person"
                 + " where last_name = #{parameters.p1}";
@@ -430,7 +430,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "update person"
                 + " set id = #{parameters.p1}"
@@ -451,7 +451,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+        UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "update person"
                 + " set id = #{parameters.p1}";
@@ -469,7 +469,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+        WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "where id = #{parameters.p1}"
                 + " and first_name = #{parameters.p2}"
@@ -488,7 +488,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+        WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "where first_name = #{parameters.p1}"
                 + " and last_name = #{parameters.p2}";
@@ -506,7 +506,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+        WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "where last_name = #{parameters.p1}";
         
@@ -523,7 +523,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+        WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
         
         String expected = "where first_name = #{parameters.p1}";
         
@@ -540,7 +540,7 @@ public class EmptyWhereTest {
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
         
-        WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+        WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(whereClause.getWhereClause()).isEmpty();
     }

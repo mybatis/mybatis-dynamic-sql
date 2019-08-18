@@ -18,10 +18,24 @@ package org.mybatis.dynamic.sql.render;
 import org.mybatis.dynamic.sql.BindableColumn;
 
 public abstract class RenderingStrategy {
+    /**
+     * Rendering strategy for MyBatis3.
+     * 
+     * @deprecated use {@link RenderingStrategies#MYBATIS3} instead
+     */
+    @Deprecated
     @SuppressWarnings("squid:S2390")
     public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();
+
+    /**
+     * Rendering strategy for Spring JDBC Template Named Parameters.
+     * 
+     * @deprecated use {@link RenderingStrategies#SPRING_NAMED_PARAMETER} instead
+     */
+    @Deprecated
     @SuppressWarnings("squid:S2390")
     public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();
+
     public static final String DEFAULT_PARAMETER_PREFIX = "parameters"; //$NON-NLS-1$
     
     public abstract String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName);

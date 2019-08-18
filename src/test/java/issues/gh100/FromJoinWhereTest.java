@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -41,7 +41,7 @@ public class FromJoinWhereTest {
                 .limit(3)
                 .offset(2)
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student"
@@ -65,7 +65,7 @@ public class FromJoinWhereTest {
         String expected = "select id, name, idcard" 
                 + " from student";
         
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -82,7 +82,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId";
         
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -99,7 +99,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId";
         
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -119,7 +119,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -139,7 +139,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -159,7 +159,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -186,7 +186,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -213,7 +213,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -240,7 +240,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -267,7 +267,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -305,7 +305,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " where id is null";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -343,7 +343,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " where id is null";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -381,7 +381,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " where id is null";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -419,7 +419,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " where id is null";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -457,7 +457,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " where id is null";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -487,7 +487,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " order by id";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -517,7 +517,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " order by id";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -547,7 +547,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " order by id";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -577,7 +577,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " order by id";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -607,7 +607,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " order by id";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -640,7 +640,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -673,7 +673,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -706,7 +706,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -739,7 +739,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -772,7 +772,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -805,7 +805,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -841,7 +841,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -877,7 +877,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -913,7 +913,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -949,7 +949,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -985,7 +985,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1021,7 +1021,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1057,7 +1057,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1090,7 +1090,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         
@@ -1124,7 +1124,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         
@@ -1158,7 +1158,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         
@@ -1192,7 +1192,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         
@@ -1226,7 +1226,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         
@@ -1260,7 +1260,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         
@@ -1297,7 +1297,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1333,7 +1333,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1369,7 +1369,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1405,7 +1405,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1441,7 +1441,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1477,7 +1477,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1513,7 +1513,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1546,7 +1546,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1579,7 +1579,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1612,7 +1612,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1645,7 +1645,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1678,7 +1678,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1711,7 +1711,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1741,7 +1741,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1771,7 +1771,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1801,7 +1801,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1831,7 +1831,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1861,7 +1861,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1894,7 +1894,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1927,7 +1927,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1960,7 +1960,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -1993,7 +1993,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2026,7 +2026,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2059,7 +2059,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2089,7 +2089,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2119,7 +2119,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2149,7 +2149,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2179,7 +2179,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2209,7 +2209,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2242,7 +2242,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2275,7 +2275,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2308,7 +2308,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2341,7 +2341,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2374,7 +2374,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2407,7 +2407,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2437,7 +2437,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2467,7 +2467,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2497,7 +2497,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2527,7 +2527,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2557,7 +2557,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2580,7 +2580,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2603,7 +2603,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2626,7 +2626,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2649,7 +2649,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2675,7 +2675,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2701,7 +2701,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2727,7 +2727,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2753,7 +2753,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2779,7 +2779,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2808,7 +2808,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2837,7 +2837,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2866,7 +2866,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2895,7 +2895,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2924,7 +2924,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2953,7 +2953,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -2979,7 +2979,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3005,7 +3005,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3031,7 +3031,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3057,7 +3057,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3083,7 +3083,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3112,7 +3112,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3141,7 +3141,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3170,7 +3170,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3199,7 +3199,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3228,7 +3228,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3257,7 +3257,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3283,7 +3283,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3309,7 +3309,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3335,7 +3335,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3361,7 +3361,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3387,7 +3387,7 @@ public class FromJoinWhereTest {
                 + " order by id"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3410,7 +3410,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3433,7 +3433,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3456,7 +3456,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3479,7 +3479,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " limit #{parameters._limit}";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3505,7 +3505,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3531,7 +3531,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3557,7 +3557,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3583,7 +3583,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3609,7 +3609,7 @@ public class FromJoinWhereTest {
                 + " limit #{parameters._limit}"
                 + " offset #{parameters._offset}";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3632,7 +3632,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3655,7 +3655,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3678,7 +3678,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3701,7 +3701,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " offset #{parameters._offset} rows";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3727,7 +3727,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3753,7 +3753,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3779,7 +3779,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3805,7 +3805,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3831,7 +3831,7 @@ public class FromJoinWhereTest {
                 + " offset #{parameters._offset} rows"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3854,7 +3854,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3877,7 +3877,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3900,7 +3900,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -3923,7 +3923,7 @@ public class FromJoinWhereTest {
                 + " where student.idcard = #{parameters.p1}"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
 
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }

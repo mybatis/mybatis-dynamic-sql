@@ -7,7 +7,7 @@ statement is a DeleteStatementProvider object.  For example
     DeleteStatementProvider deleteStatement = deleteFrom(simpleTable)
             .where(occupation, isNull())
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 ```
 You can also build a delete statement without a where clause.  This will delete every row in a table.
 For example:
@@ -15,7 +15,7 @@ For example:
 ```java
     DeleteStatementProvider deleteStatement = deleteFrom(foo)
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 ``` 
 
 ## Annotated Mapper for Delete Statements

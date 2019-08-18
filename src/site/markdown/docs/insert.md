@@ -28,7 +28,7 @@ A single record insert is a statement that inserts a single record into a table.
             .map(employed).toProperty("employed")
             .map(occupation).toProperty("occupation")
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 
     int rows = mapper.insert(insertStatement);
 ...
@@ -115,7 +115,7 @@ A multiple row insert statement looks like this:
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
             
         int rows = mapper.insertMultiple(multiRowInsert);
     }
@@ -200,7 +200,7 @@ A batch insert is a collection of statements that can be used to execute a JDBC 
                 .map(employed).toProperty("employed")
                 .map(occupation).toProperty("occupation")
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 
         batchInsert.insertStatements().stream().forEach(mapper::insert);
 
@@ -224,7 +224,7 @@ An insert select is an SQL insert statement the inserts the results of a select.
                 .from(animalData)
                 .where(id, isLessThan(22)))
             .build()
-            .render(RenderingStrategy.MYBATIS3);
+            .render(RenderingStrategies.MYBATIS3);
 
     int rows = mapper.insertSelect(insertSelectStatement);
 ```

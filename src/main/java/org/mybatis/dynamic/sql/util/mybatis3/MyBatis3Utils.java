@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.util.mybatis3;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -32,7 +31,7 @@ import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.CompletableQuery;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
@@ -57,7 +56,7 @@ public class MyBatis3Utils {
 
     public static long count(ToLongFunction<SelectStatementProvider> mapper,
             QueryExpressionDSL<SelectModel> start, MyBatis3SelectCompleter completer) {
-        return mapper.applyAsLong(completer.apply(start).build().render(RenderingStrategy.MYBATIS3));
+        return mapper.applyAsLong(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 
     public static int deleteFrom(ToIntFunction<DeleteStatementProvider> mapper,
@@ -65,19 +64,19 @@ public class MyBatis3Utils {
         return mapper.applyAsInt(
                 completer.apply(DeleteDSL.deleteFrom(table))
                 .build()
-                .render(RenderingStrategy.MYBATIS3));
+                .render(RenderingStrategies.MYBATIS3));
     }
     
     public static <R> int insert(ToIntFunction<InsertStatementProvider<R>> mapper, R record, 
             SqlTable table, UnaryOperator<InsertDSL<R>> completer) {
         return mapper.applyAsInt(completer.apply(
-                InsertDSL.insert(record).into(table)).build().render(RenderingStrategy.MYBATIS3));
+                InsertDSL.insert(record).into(table)).build().render(RenderingStrategies.MYBATIS3));
     }
     
     public static <R> int insertMultiple(ToIntFunction<MultiRowInsertStatementProvider<R>> mapper,
             Collection<R> records, SqlTable table, UnaryOperator<MultiRowInsertDSL<R>> completer) {
         return mapper.applyAsInt(completer.apply(
-                MultiRowInsertDSL.insert(records).into(table)).build().render(RenderingStrategy.MYBATIS3));
+                MultiRowInsertDSL.insert(records).into(table)).build().render(RenderingStrategies.MYBATIS3));
     }
     
     public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
@@ -87,7 +86,7 @@ public class MyBatis3Utils {
 
     public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
             CompletableQuery<SelectModel> start, MyBatis3SelectCompleter completer) {
-        return mapper.apply(completer.apply(start).build().render(RenderingStrategy.MYBATIS3));
+        return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 
     public static <R> List<R> selectList(Function<SelectStatementProvider, List<R>> mapper,
@@ -97,18 +96,18 @@ public class MyBatis3Utils {
 
     public static <R> List<R> selectList(Function<SelectStatementProvider, List<R>> mapper,
             CompletableQuery<SelectModel> start, MyBatis3SelectCompleter completer) {
-        return mapper.apply(completer.apply(start).build().render(RenderingStrategy.MYBATIS3));
+        return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 
-    public static <R> Optional<R> selectOne(Function<SelectStatementProvider, Optional<R>> mapper,
+    public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
             BasicColumn[] selectList, SqlTable table, MyBatis3SelectCompleter completer) {
         return selectOne(mapper, SelectDSL.select(selectList).from(table), completer);
     }
 
-    public static <R> Optional<R> selectOne(Function<SelectStatementProvider, Optional<R>> mapper,
+    public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
             CompletableQuery<SelectModel> start,
             MyBatis3SelectCompleter completer) {
-        return mapper.apply(completer.apply(start).build().render(RenderingStrategy.MYBATIS3));
+        return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 
     public static int update(ToIntFunction<UpdateStatementProvider> mapper,
@@ -116,6 +115,6 @@ public class MyBatis3Utils {
         return mapper.applyAsInt(
                 completer.apply(UpdateDSL.update(table))
                 .build()
-                .render(RenderingStrategy.MYBATIS3));
+                .render(RenderingStrategies.MYBATIS3));
     }
 }
