@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class OptionalConditionsAnimalDataTest {
@@ -73,7 +73,7 @@ public class OptionalConditionsAnimalDataTest {
                     .where(id, isGreaterThanWhenPresent(NULL_INTEGER))  // the where clause should not render
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData order by id"),
@@ -95,7 +95,7 @@ public class OptionalConditionsAnimalDataTest {
                     .or(id, isEqualToWhenPresent(4))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -117,7 +117,7 @@ public class OptionalConditionsAnimalDataTest {
                     .or(id, isEqualToWhenPresent(4))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -140,7 +140,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isNotEqualToWhenPresent(NULL_INTEGER))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -161,7 +161,7 @@ public class OptionalConditionsAnimalDataTest {
                     .or(id, isEqualToWhenPresent(4))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -181,7 +181,7 @@ public class OptionalConditionsAnimalDataTest {
                     .where(id, isEqualToWhenPresent(4))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -201,7 +201,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -221,7 +221,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <> #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -241,7 +241,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -261,7 +261,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id > #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -281,7 +281,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -301,7 +301,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id >= #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -321,7 +321,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -340,7 +340,7 @@ public class OptionalConditionsAnimalDataTest {
                     .where(id, isLessThanWhenPresent(4))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -360,7 +360,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -379,7 +379,7 @@ public class OptionalConditionsAnimalDataTest {
                     .where(id, isLessThanOrEqualToWhenPresent(4))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -399,7 +399,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -418,7 +418,7 @@ public class OptionalConditionsAnimalDataTest {
                     .where(id, isInWhenPresent(4, 5, 6))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) order by id"),
@@ -437,7 +437,7 @@ public class OptionalConditionsAnimalDataTest {
                     .where(id, isInWhenPresent(3, NULL_INTEGER, 5))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) order by id"),
@@ -457,7 +457,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -476,7 +476,7 @@ public class OptionalConditionsAnimalDataTest {
                     .where(animalName, isInCaseInsensitiveWhenPresent("mouse", "musk shrew"))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
@@ -495,7 +495,7 @@ public class OptionalConditionsAnimalDataTest {
                     .where(animalName, isInCaseInsensitiveWhenPresent("mouse", null, "musk shrew"))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
@@ -515,7 +515,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -535,7 +535,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) and id <= #{parameters.p4,jdbcType=INTEGER} order by id"),
@@ -555,7 +555,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
@@ -575,7 +575,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -595,7 +595,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
@@ -615,7 +615,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
@@ -635,7 +635,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -654,7 +654,7 @@ public class OptionalConditionsAnimalDataTest {
                     .where(id, isBetweenWhenPresent(3).and(6))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -674,7 +674,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -694,7 +694,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -714,7 +714,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -734,7 +734,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
@@ -754,7 +754,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -774,7 +774,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -794,7 +794,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -814,7 +814,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -834,7 +834,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -854,7 +854,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -874,7 +874,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -894,7 +894,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name not like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -914,7 +914,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
@@ -934,7 +934,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
@@ -954,7 +954,7 @@ public class OptionalConditionsAnimalDataTest {
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),

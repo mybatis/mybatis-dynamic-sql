@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * Implements a standard SQL dialect for building model classes.
@@ -72,11 +73,33 @@ public class SelectDSL<R> implements Buildable<R> {
                 .build();
     }
     
+    /**
+     * Select records by executing a MyBatis3 Mapper.
+     * 
+     * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
+     *     This method will be removed without direct replacement in a future version
+     * @param <T> the return type from a MyBatis mapper - typically a List or a single record
+     * @param mapperMethod MyBatis3 Mapper Method to perfomr the select
+     * @param selectList the column list to select
+     * @return the partially created query
+     */
+    @Deprecated
     public static <T> QueryExpressionDSL.FromGatherer<MyBatis3SelectModelAdapter<T>> selectWithMapper(
             Function<SelectStatementProvider, T> mapperMethod, BasicColumn...selectList) {
         return select(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);
     }
     
+    /**
+     * Select records by executing a MyBatis3 Mapper.
+     * 
+     * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
+     *     This method will be removed without direct replacement in a future version
+     * @param <T> the return type from a MyBatis mapper - typically a List or a single record
+     * @param mapperMethod MyBatis3 Mapper Method to perfomr the select
+     * @param selectList the column list to select
+     * @return the partially created query
+     */
+    @Deprecated
     public static <T> QueryExpressionDSL.FromGatherer<MyBatis3SelectModelAdapter<T>> selectDistinctWithMapper(
             Function<SelectStatementProvider, T> mapperMethod, BasicColumn...selectList) {
         return selectDistinct(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),

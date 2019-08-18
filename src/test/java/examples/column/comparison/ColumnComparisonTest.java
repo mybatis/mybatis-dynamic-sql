@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class ColumnComparisonTest {
@@ -73,7 +73,7 @@ public class ColumnComparisonTest {
                     .where(number1, isLessThan(number2))
                     .orderBy(number1, number2)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select number1, number2 "
                     + "from ColumnComparison "
@@ -101,7 +101,7 @@ public class ColumnComparisonTest {
                     .where(number1, isLessThanOrEqualTo(number2))
                     .orderBy(number1, number2)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select number1, number2 "
                     + "from ColumnComparison "
@@ -129,7 +129,7 @@ public class ColumnComparisonTest {
                     .where(number1, isGreaterThan(number2))
                     .orderBy(number1, number2)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select number1, number2 "
                     + "from ColumnComparison "
@@ -157,7 +157,7 @@ public class ColumnComparisonTest {
                     .where(number1, isGreaterThanOrEqualTo(number2))
                     .orderBy(number1, number2)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select number1, number2 "
                     + "from ColumnComparison "
@@ -185,7 +185,7 @@ public class ColumnComparisonTest {
                     .where(number1, isEqualTo(number2))
                     .orderBy(number1, number2)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select number1, number2 "
                     + "from ColumnComparison "
@@ -212,7 +212,7 @@ public class ColumnComparisonTest {
                     .where(number1, isNotEqualTo(number2))
                     .orderBy(number1, number2)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select number1, number2 "
                     + "from ColumnComparison "

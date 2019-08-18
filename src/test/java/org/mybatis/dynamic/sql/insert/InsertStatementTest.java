@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValue;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValueCollector;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
 public class InsertStatementTest {
 
@@ -54,7 +54,7 @@ public class InsertStatementTest {
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toProperty("occupation")
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedStatement = "insert into foo "
                 + "(id, first_name, last_name, occupation) "
@@ -75,7 +75,7 @@ public class InsertStatementTest {
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toNull()
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (id, first_name, last_name, occupation) "
                 + "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, null)";
@@ -94,7 +94,7 @@ public class InsertStatementTest {
                 .map(lastName).toProperty("lastName")
                 .map(occupation).toStringConstant("Y")
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (id, first_name, last_name, occupation) "
                 + "values (3, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, 'Y')";
@@ -114,7 +114,7 @@ public class InsertStatementTest {
                 .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
                 .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (last_name, occupation) "
                 + "values (#{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";

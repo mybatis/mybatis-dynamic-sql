@@ -129,6 +129,11 @@ public class PlainJDBCRenderingStrategy extends RenderingStrategy {
     public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
         return "?";
     }
+
+    @Override
+    public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
+        return "?";
+    }
 }
 
 ```

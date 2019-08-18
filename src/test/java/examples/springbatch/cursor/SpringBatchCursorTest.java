@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.batch.core.ExitStatus;
@@ -78,7 +78,7 @@ public class SpringBatchCursorTest {
                     .from(person)
                     .where(lastName, isEqualTo("FLINTSTONE"))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
 
             return personMapper.count(selectStatement);
         }

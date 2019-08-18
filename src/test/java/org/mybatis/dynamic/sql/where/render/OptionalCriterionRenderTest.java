@@ -24,7 +24,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
 public class OptionalCriterionRenderTest {
     private static SqlTable person = SqlTable.of("person");
@@ -38,7 +38,7 @@ public class OptionalCriterionRenderTest {
         
         WhereClauseProvider whereClause = where(id, isEqualToWhenPresent(nullId))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
                 () -> assertThat(whereClause.getWhereClause()).isEqualTo(""),
@@ -52,7 +52,7 @@ public class OptionalCriterionRenderTest {
         
         WhereClauseProvider whereClause = where(id, isEqualTo(nullId).when(Objects::nonNull))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
                 () -> assertThat(whereClause.getWhereClause()).isEqualTo(""),
@@ -64,7 +64,7 @@ public class OptionalCriterionRenderTest {
     public void testDisabledIsNull() {
         WhereClauseProvider whereClause = where(id, isNull().when(() -> false))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
                 () -> assertThat(whereClause.getWhereClause()).isEqualTo(""),
@@ -76,7 +76,7 @@ public class OptionalCriterionRenderTest {
     public void testEnabledIsNull() {
         WhereClauseProvider whereClause = where(id, isNull().when(() -> true))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
                 () -> assertThat(whereClause.getWhereClause()).isEqualTo("where id is null"),
@@ -88,7 +88,7 @@ public class OptionalCriterionRenderTest {
     public void testDisabledIsNotNull() {
         WhereClauseProvider whereClause = where(id, isNotNull().when(() -> false))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
                 () -> assertThat(whereClause.getWhereClause()).isEqualTo(""),
@@ -100,7 +100,7 @@ public class OptionalCriterionRenderTest {
     public void testEnabledIsNotNull() {
         WhereClauseProvider whereClause = where(id, isNotNull().when(() -> true))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
                 () -> assertThat(whereClause.getWhereClause()).isEqualTo("where id is not null"),
@@ -115,7 +115,7 @@ public class OptionalCriterionRenderTest {
         WhereClauseProvider whereClause = where(id, isEqualToWhenPresent(22))
                 .and(firstName, isEqualToWhenPresent(nullFirstName))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
             () -> assertThat(whereClause.getParameters().size()).isEqualTo(1),
@@ -130,7 +130,7 @@ public class OptionalCriterionRenderTest {
         
         WhereClauseProvider whereClause = where(id, isEqualToWhenPresent(22), and(firstName, isEqualToWhenPresent(nullFirstName)))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
             () -> assertThat(whereClause.getParameters().size()).isEqualTo(1),
@@ -146,7 +146,7 @@ public class OptionalCriterionRenderTest {
         WhereClauseProvider whereClause = where(id, isEqualToWhenPresent(nullId))
                 .and(firstName, isEqualToWhenPresent("fred"))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
             () -> assertThat(whereClause.getParameters().size()).isEqualTo(1),
@@ -161,7 +161,7 @@ public class OptionalCriterionRenderTest {
         
         WhereClauseProvider whereClause = where(id, isEqualToWhenPresent(nullId), and(firstName, isEqualToWhenPresent("fred")))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
             () -> assertThat(whereClause.getParameters().size()).isEqualTo(1),
@@ -176,7 +176,7 @@ public class OptionalCriterionRenderTest {
         
         WhereClauseProvider whereClause = where(id, isEqualToWhenPresent(nullId), and(firstName, isEqualToWhenPresent("fred")), or(lastName, isEqualTo("flintstone")))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
  
         assertAll(
             () -> assertThat(whereClause.getParameters().size()).isEqualTo(2),

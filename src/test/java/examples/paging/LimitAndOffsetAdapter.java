@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
@@ -56,7 +56,7 @@ public class LimitAndOffsetAdapter<R> {
     
     private SelectStatementProvider selectStatement() {
         return new LimitAndOffsetDecorator(
-                selectModel.render(RenderingStrategy.MYBATIS3));
+                selectModel.render(RenderingStrategies.MYBATIS3));
     }
     
     public static <R> LimitAndOffsetAdapter<R> of(SelectModel selectModel,

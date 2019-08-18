@@ -77,7 +77,7 @@ For example, you could code a search like this:
                 .and(bodyWeight, isEqualToWhen(bodyWeight_).when(Objects::nonNull))
                 .and(brainWeight, isEqualToWhen(brainWeight_).when(Objects::nonNull))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         ...
     }
 ```
@@ -154,7 +154,7 @@ The extension point for modifying the value list is the method `then(UnaryOperat
                                     .filter(st -> !st.isEmpty())))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
 ```
 
 This code is a bit cumbersome, so if this is a common use case you could write a specialization of the `IsIn` condition as follows:
@@ -181,7 +181,7 @@ Then the condition could be used in a query as follows:
                     .where(animalName, MyInCondition.isIn("  Mouse", "  ", null, "", "Musk shrew  "))
                     .orderBy(id)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
 ```
 
 You can apply value stream operations to the conditions `IsIn`, `IsInCaseInsensitive`, `IsNotIn`, and `IsNotInCaseInsensitive`. With the case insensitive conditions, the library will automatically convert non-null strings to upper case after any value stream operation you specify.

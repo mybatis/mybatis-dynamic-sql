@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.sql.JDBCType;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 public class UpdateStatementTest {
@@ -42,7 +42,7 @@ public class UpdateStatementTest {
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3), or(id, isEqualTo(4)), or(id, isEqualTo(5)))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
                 + "where (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER})";
@@ -66,7 +66,7 @@ public class UpdateStatementTest {
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3), or(id, isEqualTo(4), or(id, isEqualTo(5))))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
                 + "where (id = #{parameters.p3,jdbcType=INTEGER} or (id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER}))";
@@ -91,7 +91,7 @@ public class UpdateStatementTest {
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "update foo set occupation = null, firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR} "
                 + "where id = #{parameters.p3,jdbcType=INTEGER} and firstName = #{parameters.p4,jdbcType=VARCHAR}";
@@ -116,7 +116,7 @@ public class UpdateStatementTest {
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "update foo set occupation = 'Y', firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, id = 4 "
                 + "where id = #{parameters.p3,jdbcType=INTEGER} and firstName = #{parameters.p4,jdbcType=VARCHAR}";
@@ -139,7 +139,7 @@ public class UpdateStatementTest {
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedStatement = "update foo " 
                 + "set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
@@ -161,7 +161,7 @@ public class UpdateStatementTest {
                 .set(lastName).equalTo("jones")
                 .set(occupation).equalToNull()
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedStatement = "update foo " 
                 + "set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null";
@@ -182,7 +182,7 @@ public class UpdateStatementTest {
                 .set(id).equalTo(multiply(id, constant("3")))
                 .set(id).equalTo(divide(id, constant("4")))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedStatement = "update foo " 
                 + "set id = (id + 1), "
@@ -203,7 +203,7 @@ public class UpdateStatementTest {
                 .set(firstName).equalTo(select(firstName).from(foo).where(id, isEqualTo(4)))
                 .where(id, isEqualTo(3))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedStatement = "update foo " 
                 + "set lastName = #{parameters.p1,jdbcType=VARCHAR}, firstName = (select firstName from foo where id = #{parameters.p2,jdbcType=INTEGER}) "

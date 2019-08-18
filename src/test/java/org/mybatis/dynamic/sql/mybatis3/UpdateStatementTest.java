@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.sql.JDBCType;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 public class UpdateStatementTest {
@@ -42,7 +42,7 @@ public class UpdateStatementTest {
                 .set(occupation).equalToNull()
                 .where(id, isEqualTo(3))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.p2,jdbcType=VARCHAR}, "
@@ -65,7 +65,7 @@ public class UpdateStatementTest {
                 .where(id, isEqualTo(3))
                 .and(firstName, isEqualTo("barney"))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedSetClause = "update foo set occupation = null, "
                 + "firstName = #{parameters.p1,jdbcType=VARCHAR}, "
