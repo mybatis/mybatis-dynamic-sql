@@ -16,7 +16,9 @@
 package org.mybatis.dynamic.sql.util.mybatis3;
 
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -24,7 +26,10 @@ import org.mybatis.dynamic.sql.util.Buildable;
 /**
  * Represents a function that can be used to create a general update method in the style
  * of MyBatis Generator. When using this function, you can create a method that does not require a user to
- * call the build().execute() methods - making client code look a bit cleaner.
+ * call the build() and render() methods - making client code look a bit cleaner.
+ * 
+ * <p>This function is intended to be used in conjunction with the utility function
+ *  {@link MyBatis3Utils#update(ToIntFunction, SqlTable, MyBatis3UpdateCompleter)}
  * 
  * <p>For example, you can create mapper interface methods like this:
  * 
@@ -32,18 +37,16 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * &#64;UpdateProvider(type=SqlProviderAdapter.class, method="update")
  * int update(UpdateStatementProvider updateStatement);
  *   
- * default int update(MyBatis3UpdateHelper helper) {
- *     return helper.apply(UpdateDSL.updateWithMapper(this::update, simpleTable))
- *             .build()
- *             .execute();
+ * default int update(MyBatis3UpdateCompleter completer) {
+        return MyBatis3Utils.update(this::update, person, completer);
  * }
  * </pre>
  * 
  * <p>And then call the simplified default method like this:
  * 
  * <pre>
- * int rows = mapper.update(q -&gt;
- *                q.set(firstName).equalTo("Fred")
+ * int rows = mapper.update(c -&gt;
+ *                c.set(firstName).equalTo("Fred")
  *                .where(id, isEqualTo(100))
  *            );
  * </pre>
@@ -51,8 +54,8 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>You can implement an "update all" simply by omitting a where clause:
  * 
  * <pre>
- * int rows = mapper.update(q -&gt;
- *                q.set(firstName).equalTo("Fred")
+ * int rows = mapper.update(c -&gt;
+ *                c.set(firstName).equalTo("Fred")
  *            );
  * </pre>
  * 
@@ -60,8 +63,8 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * the following method would set all fields of a record based on whether or not the values are null:
  * 
  * <pre>
- * static UpdateDSL&lt;MyBatis3UpdateModelAdapter&lt;Integer&gt;&gt; setSelective(SimpleTableRecord record,
- *         UpdateDSL&lt;MyBatis3UpdateModelAdapter&lt;Integer&gt;&gt; dsl) {
+ * static UpdateDSL&lt;UpdateModel&gt; setSelective(PersonRecord record,
+ *         UpdateDSL&lt;UpdateModel&gt; dsl) {
  *     return dsl.set(id).equalToWhenPresent(record::getId)
  *             .set(firstName).equalToWhenPresent(record::getFirstName)
  *             .set(lastName).equalToWhenPresent(record::getLastName)
@@ -74,8 +77,8 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>The helper method could be used like this:
  * 
  * <pre>
- * rows = mapper.update(dsl -&gt;
- *        SimpleTableAnnotatedMapperNewStyle.setSelective(record, dsl)
+ * rows = mapper.update(c -&gt;
+ *        PersonMapper.setSelective(record, c)
  *        .where(id, isLessThan(100)));
  * </pre>
  * 
@@ -85,6 +88,6 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * @author Jeff Butler
  */
 @FunctionalInterface
-public interface MyBatis3UpdateHelper extends
+public interface MyBatis3UpdateCompleter extends
         Function<UpdateDSL<UpdateModel>, Buildable<UpdateModel>> {
 }

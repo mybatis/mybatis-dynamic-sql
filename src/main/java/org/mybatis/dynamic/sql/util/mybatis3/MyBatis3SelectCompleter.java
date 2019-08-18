@@ -25,7 +25,10 @@ import org.mybatis.dynamic.sql.util.Buildable;
 /**
  * Represents a function that can be used to create a general count method in the style
  * of MyBatis Generator. When using this function, you can create a method that does not require a user to
- * call the build().execute() methods - making client code look a bit cleaner.
+ * call the build() and render() methods - making client code look a bit cleaner.
+ * 
+ * <p>This function is intended to by used in conjunction with several utility methods in
+ * {@link MyBatis3Utils} 
  * 
  * <p>For example, you can create mapper interface methods like this:
  * 
@@ -33,25 +36,22 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * &#64;SelectProvider(type=SqlProviderAdapter.class, method="select")
  * long count(SelectStatementProvider selectStatement);
  *   
- * default long count(MyBatis3CountHelper helper) {
- *     return helper.apply(SelectDSL.selectWithMapper(this::count, SqlBuilder.count())
- *             .from(simpleTable))
- *             .build()
- *             .execute();
+ * default long count(MyBatis3SelectCompleter completer) {
+        return MyBatis3Utils.count(this::count, person, completer);
  * }
  * </pre>
  * 
  * <p>And then call the simplified default method like this:
  * 
  * <pre>
- * long rows = mapper.count(q -&gt;
- *         q.where(occupation, isNull()));
+ * long rows = mapper.count(c -&gt;
+ *         c.where(occupation, isNull()));
  * </pre>
  * 
  * <p>You can implement a "count all" with the following code:
  * 
  * <pre>
- * long rows = mapper.count(q -&gt; q);
+ * long rows = mapper.count(c -&gt; c);
  * </pre>
  * 
  * <p>Or
@@ -63,7 +63,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * @author Jeff Butler
  */
 @FunctionalInterface
-public interface MyBatis3SelectHelper extends
+public interface MyBatis3SelectCompleter extends
         Function<CompletableQuery<SelectModel>, Buildable<SelectModel>> {
     
     /**
@@ -71,11 +71,11 @@ public interface MyBatis3SelectHelper extends
      * 
      * @return the helper that will count every row in a table
      */
-    static MyBatis3SelectHelper allRows() {
+    static MyBatis3SelectCompleter allRows() {
         return h -> h;
     }
 
-    static MyBatis3SelectHelper allRowsOrderedBy(SortSpecification...columns) {
+    static MyBatis3SelectCompleter allRowsOrderedBy(SortSpecification...columns) {
         return h -> h.orderBy(columns);
     }
 }
