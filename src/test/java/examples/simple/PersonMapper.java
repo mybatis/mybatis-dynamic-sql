@@ -18,6 +18,8 @@ package examples.simple;
 import static examples.simple.PersonDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +33,9 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
@@ -101,45 +101,43 @@ public interface PersonMapper {
     }
 
     default int insert(PersonRecord record) {
-        return insert(SqlBuilder.insert(record)
-                .into(person)
-                .map(id).toProperty("id")
-                .map(firstName).toProperty("firstName")
-                .map(lastName).toProperty("lastName")
-                .map(birthDate).toProperty("birthDate")
-                .map(employed).toProperty("employed")
-                .map(occupation).toProperty("occupation")
-                .map(addressId).toProperty("addressId")
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
+        return MyBatis3Utils.insert(this::insert, record, person, h -> 
+            h.map(id).toProperty("id")
+            .map(firstName).toProperty("firstName")
+            .map(lastName).toProperty("lastName")
+            .map(birthDate).toProperty("birthDate")
+            .map(employed).toProperty("employed")
+            .map(occupation).toProperty("occupation")
+            .map(addressId).toProperty("addressId")
+        );
     }
 
-    default int insertMultiple(List<PersonRecord> records) {
-        return insertMultiple(SqlBuilder.insertMultiple(records)
-                .into(person)
-                .map(id).toProperty("id")
-                .map(firstName).toProperty("firstName")
-                .map(lastName).toProperty("lastName")
-                .map(birthDate).toProperty("birthDate")
-                .map(employed).toProperty("employed")
-                .map(occupation).toProperty("occupation")
-                .map(addressId).toProperty("addressId")
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
+    default int insertMultiple(PersonRecord...records) {
+        return insertMultiple(Arrays.asList(records));
+    }
+
+    default int insertMultiple(Collection<PersonRecord> records) {
+        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, person, h ->
+            h.map(id).toProperty("id")
+            .map(firstName).toProperty("firstName")
+            .map(lastName).toProperty("lastName")
+            .map(birthDate).toProperty("birthDate")
+            .map(employed).toProperty("employed")
+            .map(occupation).toProperty("occupation")
+            .map(addressId).toProperty("addressId")
+        );
     }
 
     default int insertSelective(PersonRecord record) {
-        return insert(SqlBuilder.insert(record)
-                .into(person)
-                .map(id).toPropertyWhenPresent("id", record::getId)
-                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
-                .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
-                .map(birthDate).toPropertyWhenPresent("birthDate", record::getBirthDate)
-                .map(employed).toPropertyWhenPresent("employed", record::getEmployed)
-                .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
-                .map(addressId).toPropertyWhenPresent("addressId", record::getAddressId)
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
+        return MyBatis3Utils.insert(this::insert, record, person, h -> 
+            h.map(id).toPropertyWhenPresent("id", record::getId)
+            .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
+            .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
+            .map(birthDate).toPropertyWhenPresent("birthDate", record::getBirthDate)
+            .map(employed).toPropertyWhenPresent("employed", record::getEmployed)
+            .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
+            .map(addressId).toPropertyWhenPresent("addressId", record::getAddressId)
+        );
     }
     
     static BasicColumn[] selectList =

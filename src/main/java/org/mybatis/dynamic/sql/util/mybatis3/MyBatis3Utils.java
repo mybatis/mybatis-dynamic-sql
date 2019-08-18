@@ -15,19 +15,26 @@
  */
 package org.mybatis.dynamic.sql.util.mybatis3;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.InsertDSL;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.CompletableQuery;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -45,10 +52,12 @@ public class MyBatis3Utils {
 
     public static long count(ToLongFunction<SelectStatementProvider> mapper,
             SqlTable table, MyBatis3SelectHelper helper) {
-        return mapper.applyAsLong(
-                helper.apply(SelectDSL.select(SqlBuilder.count()).from(table))
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
+        return count(mapper, SelectDSL.select(SqlBuilder.count()).from(table), helper);
+    }
+
+    public static long count(ToLongFunction<SelectStatementProvider> mapper,
+            QueryExpressionDSL<SelectModel> start, MyBatis3SelectHelper helper) {
+        return mapper.applyAsLong(helper.apply(start).build().render(RenderingStrategy.MYBATIS3));
     }
 
     public static int deleteFrom(ToIntFunction<DeleteStatementProvider> mapper,
@@ -57,6 +66,18 @@ public class MyBatis3Utils {
                 helper.apply(DeleteDSL.deleteFrom(table))
                 .build()
                 .render(RenderingStrategy.MYBATIS3));
+    }
+    
+    public static <R> int insert(ToIntFunction<InsertStatementProvider<R>> mapper, R record, 
+            SqlTable table, UnaryOperator<InsertDSL<R>> helper) {
+        return mapper.applyAsInt(helper.apply(
+                InsertDSL.insert(record).into(table)).build().render(RenderingStrategy.MYBATIS3));
+    }
+    
+    public static <R> int insertMultiple(ToIntFunction<MultiRowInsertStatementProvider<R>> mapper,
+            Collection<R> records, SqlTable table, UnaryOperator<MultiRowInsertDSL<R>> helper) {
+        return mapper.applyAsInt(helper.apply(
+                MultiRowInsertDSL.insert(records).into(table)).build().render(RenderingStrategy.MYBATIS3));
     }
     
     public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
