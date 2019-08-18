@@ -68,7 +68,7 @@ public interface PersonMapper {
     int insertMultiple(MultiRowInsertStatementProvider<PersonRecord> insertStatement);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results(id="SimpleTableResult", value= {
+    @Results(id="PersonResult", value= {
             @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
             @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR, typeHandler=LastNameTypeHandler.class),
@@ -80,9 +80,12 @@ public interface PersonMapper {
     List<PersonRecord> selectMany(SelectStatementProvider selectStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @ResultMap("SimpleTableResult")
+    @ResultMap("PersonResult")
     Optional<PersonRecord> selectOne(SelectStatementProvider selectStatement);
     
+    static BasicColumn[] selectList =
+            new BasicColumn[] {id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId};
+        
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
     
@@ -139,9 +142,6 @@ public interface PersonMapper {
             .map(addressId).toPropertyWhenPresent("addressId", record::getAddressId)
         );
     }
-    
-    static BasicColumn[] selectList =
-        new BasicColumn[] {id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId};
     
     default Optional<PersonRecord> selectOne(MyBatis3SelectCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, person, completer);
