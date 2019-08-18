@@ -15,11 +15,29 @@
  */
 package org.mybatis.dynamic.sql.util.mybatis3;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
+import java.util.function.UnaryOperator;
 
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.InsertDSL;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.CompletableQuery;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.SelectDSL;
+import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
@@ -32,27 +50,72 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 public class MyBatis3Utils {
     private MyBatis3Utils() {}
 
-    /**
-     * Initiates a delete statement using the non-boxing adapter.
-     * 
-     * @param mapper a MyBatis3 mapper delete method
-     * @param table the table to delete from
-     * @return a partially completed DeleteDSL
-     */
-    public static DeleteDSL<MyBatis3DeleteModelToIntAdapter> deleteFrom(ToIntFunction<DeleteStatementProvider> mapper,
-            SqlTable table) {
-        return DeleteDSL.deleteFrom(dm -> MyBatis3DeleteModelToIntAdapter.of(dm, mapper), table);
+    public static long count(ToLongFunction<SelectStatementProvider> mapper,
+            SqlTable table, MyBatis3SelectCompleter completer) {
+        return count(mapper, SelectDSL.select(SqlBuilder.count()).from(table), completer);
     }
 
-    /**
-     * Initiates an update statement using the non-boxing adapter.
-     * 
-     * @param mapper a MyBatis3 mapper update method
-     * @param table the table to update
-     * @return a partially completed UpdateDSL
-     */
-    public static UpdateDSL<MyBatis3UpdateModelToIntAdapter> update(ToIntFunction<UpdateStatementProvider> mapper,
-            SqlTable table) {
-        return UpdateDSL.update(um -> MyBatis3UpdateModelToIntAdapter.of(um, mapper), table);
+    public static long count(ToLongFunction<SelectStatementProvider> mapper,
+            QueryExpressionDSL<SelectModel> start, MyBatis3SelectCompleter completer) {
+        return mapper.applyAsLong(completer.apply(start).build().render(RenderingStrategy.MYBATIS3));
+    }
+
+    public static int deleteFrom(ToIntFunction<DeleteStatementProvider> mapper,
+            SqlTable table, MyBatis3DeleteCompleter completer) {
+        return mapper.applyAsInt(
+                completer.apply(DeleteDSL.deleteFrom(table))
+                .build()
+                .render(RenderingStrategy.MYBATIS3));
+    }
+    
+    public static <R> int insert(ToIntFunction<InsertStatementProvider<R>> mapper, R record, 
+            SqlTable table, UnaryOperator<InsertDSL<R>> completer) {
+        return mapper.applyAsInt(completer.apply(
+                InsertDSL.insert(record).into(table)).build().render(RenderingStrategy.MYBATIS3));
+    }
+    
+    public static <R> int insertMultiple(ToIntFunction<MultiRowInsertStatementProvider<R>> mapper,
+            Collection<R> records, SqlTable table, UnaryOperator<MultiRowInsertDSL<R>> completer) {
+        return mapper.applyAsInt(completer.apply(
+                MultiRowInsertDSL.insert(records).into(table)).build().render(RenderingStrategy.MYBATIS3));
+    }
+    
+    public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
+            BasicColumn[] selectList, SqlTable table, MyBatis3SelectCompleter completer) {
+        return selectDistinct(mapper, SelectDSL.selectDistinct(selectList).from(table), completer);
+    }
+
+    public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
+            CompletableQuery<SelectModel> start, MyBatis3SelectCompleter completer) {
+        return mapper.apply(completer.apply(start).build().render(RenderingStrategy.MYBATIS3));
+    }
+
+    public static <R> List<R> selectList(Function<SelectStatementProvider, List<R>> mapper,
+            BasicColumn[] selectList, SqlTable table, MyBatis3SelectCompleter completer) {
+        return selectList(mapper, SelectDSL.select(selectList).from(table), completer);
+    }
+
+    public static <R> List<R> selectList(Function<SelectStatementProvider, List<R>> mapper,
+            CompletableQuery<SelectModel> start, MyBatis3SelectCompleter completer) {
+        return mapper.apply(completer.apply(start).build().render(RenderingStrategy.MYBATIS3));
+    }
+
+    public static <R> Optional<R> selectOne(Function<SelectStatementProvider, Optional<R>> mapper,
+            BasicColumn[] selectList, SqlTable table, MyBatis3SelectCompleter completer) {
+        return selectOne(mapper, SelectDSL.select(selectList).from(table), completer);
+    }
+
+    public static <R> Optional<R> selectOne(Function<SelectStatementProvider, Optional<R>> mapper,
+            CompletableQuery<SelectModel> start,
+            MyBatis3SelectCompleter completer) {
+        return mapper.apply(completer.apply(start).build().render(RenderingStrategy.MYBATIS3));
+    }
+
+    public static int update(ToIntFunction<UpdateStatementProvider> mapper,
+            SqlTable table, MyBatis3UpdateCompleter completer) {
+        return mapper.applyAsInt(
+                completer.apply(UpdateDSL.update(table))
+                .build()
+                .render(RenderingStrategy.MYBATIS3));
     }
 }

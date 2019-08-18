@@ -16,14 +16,20 @@
 package org.mybatis.dynamic.sql.util.mybatis3;
 
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
+import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 /**
  * Represents a function that can be used to create a general delete method in the style
  * of MyBatis Generator. When using this function, you can create a method that does not require a user to
- * call the build().execute() methods - making client code look a bit cleaner.
+ * call the build() and render() methods - making client code look a bit cleaner.
+ * 
+ * <p>This function is intended to be used in conjunction with the utility function
+ *  {@link MyBatis3Utils#deleteFrom(ToIntFunction, SqlTable, MyBatis3DeleteCompleter)}
  * 
  * <p>For example, you can create mapper interface methods like this:
  * 
@@ -31,18 +37,16 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * &#64;DeleteProvider(type=SqlProviderAdapter.class, method="delete")
  * int delete(DeleteStatementProvider deleteStatement);
  *   
- * default int delete(MyBatis3DeleteHelper helper) {
- *     return helper.apply(DeleteDSL.deleteFromWithMapper(this::delete, simpleTable))
- *           .build()
- *           .execute();
+ * default int delete(MyBatis3DeleteCompleter completer) {
+ *     return MyBatis3Utils.deleteFrom(this::delete, person, completer);
  * }
  * </pre>
  * 
  * <p>And then call the simplified default method like this:
  * 
  * <pre>
- * int rows = mapper.delete(q -&gt;
- *           q.where(occupation, isNull()));
+ * int rows = mapper.delete(c -&gt;
+ *           c.where(occupation, isNull()));
  * </pre>
  *  
  * <p>You can implement a "delete all" with the following code:
@@ -54,21 +58,21 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * <p>Or
  * 
  * <pre>
- * long rows = mapper.delete(MyBatis3DeleteHelper.allRows());
+ * long rows = mapper.delete(MyBatis3DeleteCompleter.allRows());
  * </pre>
 
  * @author Jeff Butler
  */
 @FunctionalInterface
-public interface MyBatis3DeleteHelper extends
-        Function<DeleteDSL<MyBatis3DeleteModelToIntAdapter>, Buildable<MyBatis3DeleteModelToIntAdapter>> {
+public interface MyBatis3DeleteCompleter extends
+        Function<DeleteDSL<DeleteModel>, Buildable<DeleteModel>> {
 
     /**
      * Returns a helper that can be used to delete every row in a table.
      * 
      * @return the helper that will delete every row in a table
      */
-    static MyBatis3DeleteHelper allRows() {
+    static MyBatis3DeleteCompleter allRows() {
         return h -> h;
     }
 }
