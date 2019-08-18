@@ -15,4 +15,4 @@
  */
 package org.mybatis.dynamic.sql.delete
 
-fun DeleteDSL<DeleteModel>.whereBuilder(): DeleteDSL<DeleteModel>.DeleteWhereBuilder? = whereBuilder
+fun DeleteDSL<*>.whereBuilder(): DeleteDSL<*>.DeleteWhereBuilder? = whereBuilder

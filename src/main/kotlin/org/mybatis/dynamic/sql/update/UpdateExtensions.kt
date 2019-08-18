@@ -15,4 +15,4 @@
  */
 package org.mybatis.dynamic.sql.update
 
-fun UpdateDSL<UpdateModel>.whereBuilder(): UpdateDSL<UpdateModel>.UpdateWhereBuilder? = whereBuilder
+fun UpdateDSL<*>.whereBuilder(): UpdateDSL<*>.UpdateWhereBuilder? = whereBuilder

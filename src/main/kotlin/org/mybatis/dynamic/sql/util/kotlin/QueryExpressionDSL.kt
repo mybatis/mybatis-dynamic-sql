@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.*
-import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CompletableQuery
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
@@ -29,21 +29,21 @@ fun QueryExpressionDSL<SelectModel>.JoinSpecificationStarter.on(joinColumn: Basi
                                                                 builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
     val join: CompletableQuery<SelectModel> = this.on(joinColumn, joinCondition)
     builderAction(join)
-    return join.build().render(RenderingStrategy.MYBATIS3)
+    return join.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher.and(joinColumn: BasicColumn, joinCondition: JoinCondition,
                                                                   builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
     val fred: CompletableQuery<SelectModel> = this.and(joinColumn, joinCondition)
     builderAction(fred)
-    return fred.build().render(RenderingStrategy.MYBATIS3)
+    return fred.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable,
                                                       builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
     val fred: CompletableQuery<SelectModel> = this.from(table)
     builderAction(fred)
-    return fred.build().render(RenderingStrategy.MYBATIS3)
+    return fred.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun <T> QueryExpressionDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,

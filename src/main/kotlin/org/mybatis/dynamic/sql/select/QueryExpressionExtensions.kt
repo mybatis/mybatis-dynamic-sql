@@ -15,4 +15,4 @@
  */
 package org.mybatis.dynamic.sql.select
 
-fun QueryExpressionDSL<SelectModel>.whereBuilder(): QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder? = whereBuilder
+fun QueryExpressionDSL<*>.whereBuilder(): QueryExpressionDSL<*>.QueryExpressionWhereBuilder? = whereBuilder

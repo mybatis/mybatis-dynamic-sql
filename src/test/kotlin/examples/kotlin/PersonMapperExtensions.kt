@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.SqlBuilder.count
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CompletableQuery
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.update.UpdateDSL
@@ -59,7 +59,7 @@ fun PersonMapper.insert(record: PersonRecord) =
                 .map(occupation).toProperty("occupation")
                 .map(addressId).toProperty("addressId")
                 .build()
-                .render(RenderingStrategy.MYBATIS3))
+                .render(RenderingStrategies.MYBATIS3))
 
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
         insertMultiple(SqlBuilder.insertMultiple(*records)
@@ -72,7 +72,7 @@ fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
                 .map(occupation).toProperty("occupation")
                 .map(addressId).toProperty("addressId")
                 .build()
-                .render(RenderingStrategy.MYBATIS3))
+                .render(RenderingStrategies.MYBATIS3))
 
 private fun selectList(): Array<BasicColumn> =
         arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)

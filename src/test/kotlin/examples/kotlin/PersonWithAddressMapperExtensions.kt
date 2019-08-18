@@ -29,7 +29,7 @@ import examples.kotlin.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlBuilder.equalTo
-import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CompletableQuery
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
@@ -41,5 +41,5 @@ private fun selectList(): Array<BasicColumn> =
 fun PersonWithAddressMapper.select(helper: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): List<PersonWithAddress> {
     val dsl = SqlBuilder.select(*selectList()).from(Person).join(Address).on(addressId, equalTo(Address.id))
     helper(dsl)
-    return selectMany(dsl.build().render(RenderingStrategy.MYBATIS3))
+    return selectMany(dsl.build().render(RenderingStrategies.MYBATIS3))
 }

@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
-import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CompletableQuery
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
@@ -44,23 +44,23 @@ fun updateWithKotlinMapper(mapperMethod: (UpdateStatementProvider) -> Int, table
 fun deleteFrom(table: SqlTable, complete: DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>): DeleteStatementProvider {
     val dsl = SqlBuilder.deleteFrom(table)
     complete(dsl)
-    return dsl.build().render(RenderingStrategy.MYBATIS3)
+    return dsl.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun update(table: SqlTable, complete: UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>): UpdateStatementProvider {
     val dsl = SqlBuilder.update(table)
     complete(dsl)
-    return dsl.build().render(RenderingStrategy.MYBATIS3)
+    return dsl.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun select(columns: Array<BasicColumn>, table: SqlTable, complete: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
     val dsl = SqlBuilder.select(*columns).from(table)
     complete(dsl)
-    return dsl.build().render(RenderingStrategy.MYBATIS3)
+    return dsl.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun selectDistinct(columns: Array<BasicColumn>, table: SqlTable, complete: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
     val dsl = SqlBuilder.selectDistinct(*columns).from(table)
     complete(dsl)
-    return dsl.build().render(RenderingStrategy.MYBATIS3)
+    return dsl.build().render(RenderingStrategies.MYBATIS3)
 }

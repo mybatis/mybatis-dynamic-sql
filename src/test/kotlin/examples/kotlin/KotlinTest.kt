@@ -37,7 +37,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.SelectDSL
 import org.mybatis.dynamic.sql.util.kotlin.allRows
 import org.mybatis.dynamic.sql.util.kotlin.or
@@ -316,7 +316,7 @@ internal class KotlinTest {
                     .set(employed).equalTo(false)
                     .where(id, isEqualTo(100))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3)
+                    .render(RenderingStrategies.MYBATIS3)
 
             rows = mapper.update(updateStatement)
             assertThat(rows).isEqualTo(1)
@@ -403,7 +403,7 @@ internal class KotlinTest {
                     .from(Person, "p").leftJoin(Address, "a").on(addressId, equalTo(Address.id))
                     .where(id, isEqualTo(1))
                     .build()
-                    .render(RenderingStrategy.MYBATIS3)
+                    .render(RenderingStrategies.MYBATIS3)
 
             val expected = "select p.id, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation," +
                     " a.id as address_id, a.street_address, a.city, a.state" +
