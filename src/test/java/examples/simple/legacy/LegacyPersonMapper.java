@@ -67,7 +67,7 @@ public interface LegacyPersonMapper {
     int update(UpdateStatementProvider updateStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results(id="SimpleTableResult", value= {
+    @Results(id="PersonResult", value= {
             @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
             @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR, typeHandler=LastNameTypeHandler.class),
@@ -79,11 +79,11 @@ public interface LegacyPersonMapper {
     List<PersonRecord> selectMany(SelectStatementProvider selectStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @ResultMap("SimpleTableResult")
+    @ResultMap("PersonResult")
     List<PersonRecord> selectManyWithRowbounds(SelectStatementProvider selectStatement, RowBounds rowBounds);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @ResultMap("SimpleTableResult")
+    @ResultMap("PersonResult")
     PersonRecord selectOne(SelectStatementProvider selectStatement);
     
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")

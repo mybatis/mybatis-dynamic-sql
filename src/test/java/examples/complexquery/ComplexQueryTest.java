@@ -25,7 +25,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -125,7 +125,7 @@ public class ComplexQueryTest {
             .orderBy(lastName, firstName)
             .fetchFirst(50).rowsOnly();
         
-        return builder.build().render(RenderingStrategy.MYBATIS3);
+        return builder.build().render(RenderingStrategies.MYBATIS3);
     }
     
     public String addWildcards(String s) {

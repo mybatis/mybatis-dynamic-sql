@@ -9,7 +9,7 @@ The SQL statement objects are created in exactly the same way as for MyBatis - o
             .where(id, isGreaterThan(3))
             .orderBy(id.descending())
             .build()
-            .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 ```
 
 ## Executing Select Statements
@@ -23,7 +23,7 @@ The Spring Named Parameter JDBC template expects an SQL statement with parameter
             .where(id, isGreaterThan(3))
             .orderBy(id.descending())
             .build()
-            .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
     SqlParameterSource namedParameters = new MapSqlParameterSource(selectStatement.getParameters());
     List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), namedParameters,
@@ -57,7 +57,7 @@ Insert statements are a bit different - MyBatis Dynamic SQL generates a properly
             .map(firstName).toProperty("firstName")
             .map(lastName).toProperty("lastName")
             .build()
-            .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
     SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement.getRecord());
     KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -93,7 +93,7 @@ Batch insert support in Spring is a bit different than batch support in MyBatis3
             .map(firstName).toProperty("firstName")
             .map(lastName).toProperty("lastName")
             .build()
-            .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
     int[] updateCounts = template.batchUpdate(batchInsert.getInsertStatementSQL(), batch);
 ```
@@ -108,7 +108,7 @@ Updates and deletes use the `MapSqlParameterSource` as with select statements, b
             .set(firstName).equalToStringConstant("Rob")
             .where(id,  isIn(1, 5, 22))
             .build()
-            .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
     SqlParameterSource parameterSource = new MapSqlParameterSource(updateStatement.getParameters());
         

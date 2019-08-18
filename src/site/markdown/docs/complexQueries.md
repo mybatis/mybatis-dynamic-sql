@@ -27,7 +27,7 @@ public SelectStatementProvider search(Integer targetId, String fName, String lNa
         .orderBy(lastName, firstName)
         .fetchFirst(50).rowsOnly();    // (6)
         
-    return builder.build().render(RenderingStrategy.MYBATIS3);    // (7)
+    return builder.build().render(RenderingStrategies.MYBATIS3);    // (7)
 }
     
 public String addWildcards(String s) {

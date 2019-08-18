@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.Date;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class SubSelectTest {
@@ -43,7 +43,7 @@ public class SubSelectTest {
                 .where(column2, isIn(select(column2).from(table).where(column2, isEqualTo(3))))
                 .and(column1, isLessThan(d))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                 + "from foo a "
@@ -66,7 +66,7 @@ public class SubSelectTest {
                 .where(column2, isNotIn(select(column2).from(table).where(column2, isEqualTo(3))))
                 .and(column1, isLessThan(d))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
         
         String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                 + "from foo a "

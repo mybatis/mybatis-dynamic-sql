@@ -18,6 +18,8 @@ package examples.simple;
 import static examples.simple.PersonDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,22 +32,18 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
-import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
+import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3CountHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectListHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectOneHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateHelper;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateModelToIntAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteCompleter;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectCompleter;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateCompleter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
@@ -57,17 +55,20 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface PersonMapper {
     
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    long count(SelectStatementProvider selectStatement);
+    
+    @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
+    int delete(DeleteStatementProvider deleteStatement);
+
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<PersonRecord> insertStatement);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<PersonRecord> insertStatement);
 
-    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
-    int update(UpdateStatementProvider updateStatement);
-    
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results(id="SimpleTableResult", value= {
+    @Results(id="PersonResult", value= {
             @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
             @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
             @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR, typeHandler=LastNameTypeHandler.class),
@@ -79,111 +80,93 @@ public interface PersonMapper {
     List<PersonRecord> selectMany(SelectStatementProvider selectStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @ResultMap("SimpleTableResult")
+    @ResultMap("PersonResult")
     Optional<PersonRecord> selectOne(SelectStatementProvider selectStatement);
     
-    @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
-    int delete(DeleteStatementProvider deleteStatement);
-
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    long count(SelectStatementProvider selectStatement);
+    static BasicColumn[] selectList =
+            new BasicColumn[] {id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId};
+        
+    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
+    int update(UpdateStatementProvider updateStatement);
     
-    default long count(MyBatis3CountHelper helper) {
-        return helper.apply(SelectDSL.selectWithMapper(this::count, SqlBuilder.count())
-                .from(person))
-                .build()
-                .execute();
+    default long count(MyBatis3SelectCompleter completer) {
+        return MyBatis3Utils.count(this::count, person, completer);
     }
 
-    default int delete(MyBatis3DeleteHelper helper) {
-        return helper.apply(MyBatis3Utils.deleteFrom(this::delete, person))
-                .build()
-                .execute();
+    default int delete(MyBatis3DeleteCompleter completer) {
+        return MyBatis3Utils.deleteFrom(this::delete, person, completer);
     }
     
     default int deleteByPrimaryKey(Integer id_) {
-        return delete(h ->
-            h.where(id, isEqualTo(id_))
+        return delete(c ->
+            c.where(id, isEqualTo(id_))
         );
     }
 
     default int insert(PersonRecord record) {
-        return insert(SqlBuilder.insert(record)
-                .into(person)
-                .map(id).toProperty("id")
-                .map(firstName).toProperty("firstName")
-                .map(lastName).toProperty("lastName")
-                .map(birthDate).toProperty("birthDate")
-                .map(employed).toProperty("employed")
-                .map(occupation).toProperty("occupation")
-                .map(addressId).toProperty("addressId")
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
-    }
-
-    default int insertMultiple(List<PersonRecord> records) {
-        return insertMultiple(SqlBuilder.insertMultiple(records)
-                .into(person)
-                .map(id).toProperty("id")
-                .map(firstName).toProperty("firstName")
-                .map(lastName).toProperty("lastName")
-                .map(birthDate).toProperty("birthDate")
-                .map(employed).toProperty("employed")
-                .map(occupation).toProperty("occupation")
-                .map(addressId).toProperty("addressId")
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
-    }
-
-    default int insertSelective(PersonRecord record) {
-        return insert(SqlBuilder.insert(record)
-                .into(person)
-                .map(id).toPropertyWhenPresent("id", record::getId)
-                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
-                .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
-                .map(birthDate).toPropertyWhenPresent("birthDate", record::getBirthDate)
-                .map(employed).toPropertyWhenPresent("employed", record::getEmployed)
-                .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
-                .map(addressId).toPropertyWhenPresent("addressId", record::getAddressId)
-                .build()
-                .render(RenderingStrategy.MYBATIS3));
-    }
-    
-    default Optional<PersonRecord> selectOne(MyBatis3SelectOneHelper<PersonRecord> helper) {
-        return helper.apply(SelectDSL.selectWithMapper(this::selectOne, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-                .from(person))
-                .build()
-                .execute();
-    }
-    
-    default List<PersonRecord> select(MyBatis3SelectListHelper<PersonRecord> helper) {
-        return helper.apply(SelectDSL.selectWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-                .from(person))
-                .build()
-                .execute();
-    }
-    
-    default List<PersonRecord> selectDistinct(MyBatis3SelectListHelper<PersonRecord> helper) {
-        return helper.apply(SelectDSL.selectDistinctWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-                .from(person))
-                .build()
-                .execute();
-    }
-    
-    default Optional<PersonRecord> selectByPrimaryKey(Integer id_) {
-        return selectOne(h -> 
-            h.where(id, isEqualTo(id_))
+        return MyBatis3Utils.insert(this::insert, record, person, c -> 
+            c.map(id).toProperty("id")
+            .map(firstName).toProperty("firstName")
+            .map(lastName).toProperty("lastName")
+            .map(birthDate).toProperty("birthDate")
+            .map(employed).toProperty("employed")
+            .map(occupation).toProperty("occupation")
+            .map(addressId).toProperty("addressId")
         );
     }
 
-    default int update(MyBatis3UpdateHelper helper) {
-        return helper.apply(MyBatis3Utils.update(this::update, person))
-                .build()
-                .execute();
+    default int insertMultiple(PersonRecord...records) {
+        return insertMultiple(Arrays.asList(records));
+    }
+
+    default int insertMultiple(Collection<PersonRecord> records) {
+        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, person, c ->
+            c.map(id).toProperty("id")
+            .map(firstName).toProperty("firstName")
+            .map(lastName).toProperty("lastName")
+            .map(birthDate).toProperty("birthDate")
+            .map(employed).toProperty("employed")
+            .map(occupation).toProperty("occupation")
+            .map(addressId).toProperty("addressId")
+        );
+    }
+
+    default int insertSelective(PersonRecord record) {
+        return MyBatis3Utils.insert(this::insert, record, person, c -> 
+            c.map(id).toPropertyWhenPresent("id", record::getId)
+            .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
+            .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
+            .map(birthDate).toPropertyWhenPresent("birthDate", record::getBirthDate)
+            .map(employed).toPropertyWhenPresent("employed", record::getEmployed)
+            .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
+            .map(addressId).toPropertyWhenPresent("addressId", record::getAddressId)
+        );
     }
     
-    static UpdateDSL<MyBatis3UpdateModelToIntAdapter> setAll(PersonRecord record,
-            UpdateDSL<MyBatis3UpdateModelToIntAdapter> dsl) {
+    default Optional<PersonRecord> selectOne(MyBatis3SelectCompleter completer) {
+        return MyBatis3Utils.selectOne(this::selectOne, selectList, person, completer);
+    }
+    
+    default List<PersonRecord> select(MyBatis3SelectCompleter completer) {
+        return MyBatis3Utils.selectList(this::selectMany, selectList, person, completer);
+    }
+    
+    default List<PersonRecord> selectDistinct(MyBatis3SelectCompleter completer) {
+        return MyBatis3Utils.selectDistinct(this::selectMany, selectList, person, completer);
+    }
+    
+    default Optional<PersonRecord> selectByPrimaryKey(Integer id_) {
+        return selectOne(c -> 
+            c.where(id, isEqualTo(id_))
+        );
+    }
+
+    default int update(MyBatis3UpdateCompleter completer) {
+        return MyBatis3Utils.update(this::update, person, completer);
+    }
+    
+    static UpdateDSL<UpdateModel> setAll(PersonRecord record,
+            UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalTo(record::getId)
                 .set(firstName).equalTo(record::getFirstName)
                 .set(lastName).equalTo(record::getLastName)
@@ -193,8 +176,8 @@ public interface PersonMapper {
                 .set(addressId).equalTo(record::getAddressId);
     }
     
-    static UpdateDSL<MyBatis3UpdateModelToIntAdapter> setSelective(PersonRecord record,
-            UpdateDSL<MyBatis3UpdateModelToIntAdapter> dsl) {
+    static UpdateDSL<UpdateModel> setSelective(PersonRecord record,
+            UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(firstName).equalToWhenPresent(record::getFirstName)
                 .set(lastName).equalToWhenPresent(record::getLastName)
@@ -205,8 +188,8 @@ public interface PersonMapper {
     }
     
     default int updateByPrimaryKey(PersonRecord record) {
-        return update(h ->
-            h.set(firstName).equalTo(record::getFirstName)
+        return update(c ->
+            c.set(firstName).equalTo(record::getFirstName)
             .set(lastName).equalTo(record::getLastName)
             .set(birthDate).equalTo(record::getBirthDate)
             .set(employed).equalTo(record::getEmployed)
@@ -217,8 +200,8 @@ public interface PersonMapper {
     }
 
     default int updateByPrimaryKeySelective(PersonRecord record) {
-        return update(h ->
-            h.set(firstName).equalToWhenPresent(record::getFirstName)
+        return update(c ->
+            c.set(firstName).equalToWhenPresent(record::getFirstName)
             .set(lastName).equalToWhenPresent(record::getLastName)
             .set(birthDate).equalToWhenPresent(record::getBirthDate)
             .set(employed).equalToWhenPresent(record::getEmployed)

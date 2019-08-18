@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.jdbc.core.RowMapper;
@@ -68,7 +68,7 @@ public class SpringTest {
                 .where(id, isGreaterThan(3))
                 .orderBy(id.descending())
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
         String expected = "select a.id as A_ID, a.first_name, a.last_name, a.full_name "
                 + "from GeneratedAlways a "
@@ -85,7 +85,7 @@ public class SpringTest {
                 .where(id, isGreaterThan(3))
                 .orderBy(id.descending())
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
         SqlParameterSource namedParameters = new MapSqlParameterSource(selectStatement.getParameters());
         
@@ -118,7 +118,7 @@ public class SpringTest {
         DeleteStatementProvider deleteStatement = deleteFrom(generatedAlways)
                 .where(id,  isLessThan(3))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
         SqlParameterSource parameterSource = new MapSqlParameterSource(deleteStatement.getParameters());
         
@@ -140,7 +140,7 @@ public class SpringTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement.getRecord());
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -176,7 +176,7 @@ public class SpringTest {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
         int[] updateCounts = template.batchUpdate(batchInsert.getInsertStatementSQL(), batch);
         
@@ -191,7 +191,7 @@ public class SpringTest {
                 .set(firstName).equalToStringConstant("Rob")
                 .where(id,  isIn(1, 5, 22))
                 .build()
-                .render(RenderingStrategy.SPRING_NAMED_PARAMETER);
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
         SqlParameterSource parameterSource = new MapSqlParameterSource(updateStatement.getParameters());
         

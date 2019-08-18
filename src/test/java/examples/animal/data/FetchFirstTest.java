@@ -36,7 +36,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class FetchFirstTest {
@@ -71,7 +71,7 @@ public class FetchFirstTest {
                     .offset(22)
                     .fetchFirst(3).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -93,7 +93,7 @@ public class FetchFirstTest {
                     .from(animalData)
                     .fetchFirst(3).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -117,7 +117,7 @@ public class FetchFirstTest {
                     .offset(22)
                     .fetchFirst(3).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -140,7 +140,7 @@ public class FetchFirstTest {
                     .where(id, isLessThan(50))
                     .fetchFirst(3).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -163,7 +163,7 @@ public class FetchFirstTest {
                     .offset(22)
                     .fetchFirst(3).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -186,7 +186,7 @@ public class FetchFirstTest {
                     .orderBy(id)
                     .fetchFirst(3).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
         
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);

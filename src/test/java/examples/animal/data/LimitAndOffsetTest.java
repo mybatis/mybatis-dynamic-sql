@@ -36,7 +36,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class LimitAndOffsetTest {
@@ -71,7 +71,7 @@ public class LimitAndOffsetTest {
                     .limit(3)
                     .offset(22)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -93,7 +93,7 @@ public class LimitAndOffsetTest {
                     .from(animalData)
                     .limit(3)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -114,7 +114,7 @@ public class LimitAndOffsetTest {
                     .from(animalData)
                     .offset(22)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -138,7 +138,7 @@ public class LimitAndOffsetTest {
                     .limit(3)
                     .offset(22)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -161,7 +161,7 @@ public class LimitAndOffsetTest {
                     .where(id, isLessThan(50))
                     .limit(3)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -183,7 +183,7 @@ public class LimitAndOffsetTest {
                     .where(id, isLessThan(50))
                     .offset(22)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -206,7 +206,7 @@ public class LimitAndOffsetTest {
                     .limit(3)
                     .offset(22)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -229,7 +229,7 @@ public class LimitAndOffsetTest {
                     .orderBy(id)
                     .limit(3)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
         
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
@@ -251,7 +251,7 @@ public class LimitAndOffsetTest {
                     .orderBy(id)
                     .offset(22)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
         
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);

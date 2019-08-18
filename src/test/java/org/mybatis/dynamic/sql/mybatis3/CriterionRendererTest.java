@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
@@ -47,7 +47,7 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
-                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
                 .render()
@@ -73,7 +73,7 @@ public class CriterionRendererTest {
         tableAliases.put(table, "a");
         FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
-                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
                 .build()
                 .render()
@@ -101,7 +101,7 @@ public class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
-                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
                 .render()
@@ -128,7 +128,7 @@ public class CriterionRendererTest {
         
         FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
-                .withRenderingStrategy(RenderingStrategy.MYBATIS3)
+                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
                 .build()
                 .render()

@@ -22,7 +22,7 @@ import java.sql.JDBCType;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -59,7 +59,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
     }
 
     public static InsertStatementProvider<GeneratedAlwaysRecord> buildInsertSelectiveStatement(GeneratedAlwaysRecord record) {
@@ -69,7 +69,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
                 .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
     }
     
     public static UpdateStatementProvider buildUpdateByPrimaryKeyStatement(GeneratedAlwaysRecord record) {
@@ -78,7 +78,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .set(lastName).equalTo(record.getLastName())
                 .where(id, isEqualTo(record.getId()))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
     }
 
     public static UpdateStatementProvider buildUpdateByPrimaryKeySelectiveStatement(GeneratedAlwaysRecord record) {
@@ -87,7 +87,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .set(lastName).equalToWhenPresent(record::getLastName)
                 .where(id, isEqualTo(record::getId))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
     }
 
     public static UpdateDSL<UpdateModel> updateByExample(GeneratedAlwaysRecord record) {
@@ -114,6 +114,6 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .from(generatedAlways)
                 .where(id, isEqualTo(id_))
                 .build()
-                .render(RenderingStrategy.MYBATIS3);
+                .render(RenderingStrategies.MYBATIS3);
     }
 }

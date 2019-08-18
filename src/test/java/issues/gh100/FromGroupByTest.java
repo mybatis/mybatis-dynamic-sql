@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -38,7 +38,7 @@ public class FromGroupByTest {
                 + " from student"
                 + " group by name";
         
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -54,7 +54,7 @@ public class FromGroupByTest {
                 + " from student"
                 + " group by name";
         
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -73,7 +73,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " limit #{parameters._limit}";
         
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -92,7 +92,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " limit #{parameters._limit}";
         
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -111,7 +111,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " limit #{parameters._limit}";
         
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -130,7 +130,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " offset #{parameters._offset} rows";
         
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -149,7 +149,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " offset #{parameters._offset} rows";
         
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -168,7 +168,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " offset #{parameters._offset} rows";
         
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -187,7 +187,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
         
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -206,7 +206,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
         
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -225,7 +225,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " fetch first #{parameters._fetchFirstRows} rows only";
         
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -244,7 +244,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " order by name";
         
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -263,7 +263,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " order by name";
         
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -282,7 +282,7 @@ public class FromGroupByTest {
                 + " group by name"
                 + " order by name";
         
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -304,7 +304,7 @@ public class FromGroupByTest {
                 + " order by name"
                 + " offset #{parameters._offset} rows";
         
-        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -326,7 +326,7 @@ public class FromGroupByTest {
                 + " order by name"
                 + " offset #{parameters._offset} rows";
         
-        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -348,7 +348,7 @@ public class FromGroupByTest {
                 + " order by name"
                 + " offset #{parameters._offset} rows";
         
-        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -370,7 +370,7 @@ public class FromGroupByTest {
                 + " order by name"
                 + " offset #{parameters._offset} rows";
         
-        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+        SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }

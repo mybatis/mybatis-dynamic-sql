@@ -24,14 +24,14 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.MyBatis3SelectModelAdapter;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectDSL;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectCompleter;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 public interface UserMapper {
 
@@ -45,17 +45,16 @@ public interface UserMapper {
     })
     List<User> selectMany(SelectStatementProvider selectStatement);
 
-    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<User>>> selectByExample() {
-        return SelectDSL.selectWithMapper(this::selectMany, id, name)
-            .from(user);
+    default List<User> select(MyBatis3SelectCompleter completer) {
+        return MyBatis3Utils.selectList(this::selectMany, new BasicColumn[] {id, name}, user, completer);
     }
-
+    
     default int insert(User record) {
         return insert(SqlBuilder.insert(record)
                 .into(user)
                 .map(id).toProperty("id")
                 .map(name).toProperty("name")
                 .build()
-                .render(RenderingStrategy.MYBATIS3));
+                .render(RenderingStrategies.MYBATIS3));
     }
 }

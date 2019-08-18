@@ -38,7 +38,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class GroupByTest {
@@ -74,7 +74,7 @@ public class GroupByTest {
                     .from(person)
                     .groupBy(gender)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select gender, count(*) from Person group by gender";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -100,7 +100,7 @@ public class GroupByTest {
                     .from(person)
                     .groupBy(gender)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select gender, count(*) as count from Person group by gender";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -126,7 +126,7 @@ public class GroupByTest {
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
                     .groupBy(lastName, streetAddress)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select p.last_name, a.street_address, count(*) as count" +
                     " from Person p join Address a on p.address_id = a.address_id" +
@@ -159,7 +159,7 @@ public class GroupByTest {
                     .from(person2, "p").join(address, "a").on(person2.addressId, equalTo(address.id))
                     .orderBy(lastName, firstName)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select p.last_name, p.first_name, a.street_address" +
                     " from Person p join Address a on p.address_id = a.address_id" +
@@ -195,7 +195,7 @@ public class GroupByTest {
                     .from(person2, "p").join(address, "a").on(person2.addressId, equalTo(address.id))
                     .orderBy(lastName, firstName)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select p.last_name, p.first_name, a.street_address" +
                     " from Person p join Address a on p.address_id = a.address_id" +
@@ -232,7 +232,7 @@ public class GroupByTest {
                     .from(person)
                     .groupBy(lastName)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select 'Gender', gender as value, count(*) as count from Person group by gender" +
                     " union" +
@@ -276,7 +276,7 @@ public class GroupByTest {
                     .from(person)
                     .groupBy(lastName)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select 'Gender', gender as value, count(*) as count from Person group by gender" +
                     " union all" +
@@ -317,7 +317,7 @@ public class GroupByTest {
                     .groupBy(gender)
                     .orderBy(gender)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select gender, count(*) as count from Person group by gender order by gender";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -344,7 +344,7 @@ public class GroupByTest {
                     .groupBy(substring(gender, 1, 1))
                     .orderBy(sortColumn("ShortGender").descending())
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select substring(a.gender, 1, 1) as ShortGender, avg(a.age) as AverageAge from Person a group by substring(a.gender, 1, 1) order by ShortGender DESC";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -371,7 +371,7 @@ public class GroupByTest {
                     .where(gender, isEqualTo("Male"))
                     .groupBy(lastName)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select a.last_name, count(*) as count from Person a where a.gender = #{parameters.p1,jdbcType=VARCHAR} group by a.last_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -399,7 +399,7 @@ public class GroupByTest {
                     .limit(1)
                     .offset(1)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters._limit} offset #{parameters._offset}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -422,7 +422,7 @@ public class GroupByTest {
                     .groupBy(lastName)
                     .limit(1)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters._limit}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -445,7 +445,7 @@ public class GroupByTest {
                     .groupBy(lastName)
                     .offset(1)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset} rows";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -469,7 +469,7 @@ public class GroupByTest {
                     .offset(1)
                     .fetchFirst(1).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -492,7 +492,7 @@ public class GroupByTest {
                     .groupBy(lastName)
                     .fetchFirst(1).rowsOnly()
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select last_name, count(*) as count from Person group by last_name fetch first #{parameters._fetchFirstRows} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -513,7 +513,7 @@ public class GroupByTest {
             SelectStatementProvider selectStatement = select(countDistinct(lastName).as("count"))
                     .from(person)
                     .build()
-                    .render(RenderingStrategy.MYBATIS3);
+                    .render(RenderingStrategies.MYBATIS3);
             
             String expected = "select count(distinct last_name) as count from Person";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
