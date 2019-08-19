@@ -17,11 +17,14 @@ package org.mybatis.dynamic.sql.util.mybatis3;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -81,7 +84,7 @@ public class MyBatis3Utils {
         return mapper.applyAsInt(completer.apply(
                 MultiRowInsertDSL.insert(records).into(table)).build().render(RenderingStrategies.MYBATIS3));
     }
-    
+
     public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
             BasicColumn[] selectList, SqlTable table, SelectDSLCompleter completer) {
         return selectDistinct(mapper, SelectDSL.selectDistinct(selectList).from(table), completer);
@@ -102,14 +105,29 @@ public class MyBatis3Utils {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 
+    @Nullable
     public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
             BasicColumn[] selectList, SqlTable table, SelectDSLCompleter completer) {
         return selectOne(mapper, SelectDSL.select(selectList).from(table), completer);
     }
 
+    @Nullable
     public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
             CompletableQuery<SelectModel> start,
             SelectDSLCompleter completer) {
+        return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
+    }
+
+    @NotNull
+    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper,
+                                            BasicColumn[] selectList, SqlTable table, SelectDSLCompleter completer) {
+        return selectOptional(mapper, SelectDSL.select(selectList).from(table), completer);
+    }
+
+    @NotNull
+    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper,
+                                  CompletableQuery<SelectModel> start,
+                                  SelectDSLCompleter completer) {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 

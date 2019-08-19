@@ -84,11 +84,12 @@ fun PersonMapper.insertSelective(record: PersonRecord) =
 
 private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
-fun PersonMapper.selectOne(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): PersonRecord? =
+fun PersonMapper.selectOne(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>) =
         MyBatis3Utils.selectOne(this::selectOne, selectList, Person, completer)
 
 fun PersonMapper.select(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): List<PersonRecord> =
-        MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
+    MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
+
 
 fun PersonMapper.selectDistinct(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): List<PersonRecord> =
         MyBatis3Utils.selectDistinct(this::selectMany, selectList, Person, completer)

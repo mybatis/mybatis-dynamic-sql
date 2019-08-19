@@ -77,7 +77,7 @@ public interface PersonWithAddressMapper {
     default Optional<PersonWithAddress> selectOne(SelectDSLCompleter completer) {
         CompletableQuery<SelectModel> start = SqlBuilder.select(selectList).from(person)
                 .fullJoin(address).on(person.addressId, equalTo(address.id));
-        return MyBatis3Utils.selectOne(this::selectOne, start, completer);
+        return MyBatis3Utils.selectOptional(this::selectOne, start, completer);
     }
     
     default List<PersonWithAddress> select(SelectDSLCompleter completer) {
