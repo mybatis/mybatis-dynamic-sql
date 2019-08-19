@@ -20,12 +20,11 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteCompleter;
 
 /**
  * This adapter will render the underlying delete model for MyBatis3, and then call a MyBatis mapper method.
  *
- * @deprecated in favor of {@link MyBatis3DeleteCompleter}. This class will be removed without replacement in a
+ * @deprecated in favor of {@link DeleteDSLCompleter}. This class will be removed without replacement in a
  *     future version
  * 
  * @author Jeff Butler

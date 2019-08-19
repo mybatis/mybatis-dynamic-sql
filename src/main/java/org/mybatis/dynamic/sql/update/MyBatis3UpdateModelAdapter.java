@@ -20,12 +20,11 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateCompleter;
 
 /**
  * This adapter will render the underlying update model for MyBatis3, and then call a MyBatis mapper method.
  * 
- * @deprecated in favor of {@link MyBatis3UpdateCompleter}. This class will be removed without direct
+ * @deprecated in favor of {@link UpdateDSLCompleter}. This class will be removed without direct
  *     replacement in a future version.
  * @author Jeff Butler
  *
