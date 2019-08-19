@@ -19,41 +19,30 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.delete.whereBuilder
 import org.mybatis.dynamic.sql.util.Buildable
 
 fun <T> DeleteDSL<DeleteModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                     collect: CriteriaCollector.() -> CriteriaCollector): DeleteDSL<DeleteModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    this.where(column, condition, *collector.criteria())
-    return this
-}
-
-fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>): DeleteDSL<DeleteModel> {
-    whereBuilder()?.and(column, condition)
-    return this
-}
+                                     collect: CriteriaCollector.() -> CriteriaCollector) =
+        apply {
+            val collector = CriteriaCollector()
+            collect(collector)
+            where(column, condition, *collector.criteria())
+        }
 
 fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                   collect: CriteriaCollector.() -> CriteriaCollector): DeleteDSL<DeleteModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    whereBuilder()?.and(column, condition, *collector.criteria())
-    return this
-}
-
-fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>): DeleteDSL<DeleteModel> {
-    whereBuilder()?.or(column, condition)
-    return this
-}
+                                   collect: CriteriaCollector.() -> CriteriaCollector) =
+        apply {
+            val collector = CriteriaCollector()
+            collect(collector)
+            and(column, condition, *collector.criteria())
+        }
 
 fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                  collect: CriteriaCollector.() -> CriteriaCollector): DeleteDSL<DeleteModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    whereBuilder()?.or(column, condition, *collector.criteria())
-    return this
-}
+                                  collect: CriteriaCollector.() -> CriteriaCollector) =
+        apply {
+            val collector = CriteriaCollector()
+            collect(collector)
+            or(column, condition, *collector.criteria())
+        }
 
 fun DeleteDSL<DeleteModel>.allRows() = this as Buildable<DeleteModel>

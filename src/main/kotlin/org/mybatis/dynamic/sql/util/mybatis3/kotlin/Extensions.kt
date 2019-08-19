@@ -21,6 +21,10 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
+import org.mybatis.dynamic.sql.insert.InsertDSL
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CompletableQuery
 import org.mybatis.dynamic.sql.select.SelectModel
@@ -29,14 +33,15 @@ import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
 
-fun deleteWithKotlinMapper(mapperMethod: (DeleteStatementProvider) -> Int, table: SqlTable,
-                           complete: DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>) =
-        mapperMethod(deleteFrom(table, complete))
+fun <T> insert(mapper: (InsertStatementProvider<T>) -> Int, record: T, table: SqlTable,
+               completer: InsertDSL<T>.() -> InsertDSL<T>) =
+        MyBatis3Utils.insert(mapper, record, table, completer)
 
-fun updateWithKotlinMapper(mapperMethod: (UpdateStatementProvider) -> Int, table: SqlTable,
-                           complete: UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>) =
-        mapperMethod(update(table, complete))
+fun <T> insertMultiple(mapper: (MultiRowInsertStatementProvider<T>) -> Int, records: Collection<T>, table: SqlTable,
+                       completer: MultiRowInsertDSL<T>.() -> MultiRowInsertDSL<T>) =
+        MyBatis3Utils.insertMultiple(mapper, records, table, completer)
 
 /**
  * Functions for use with raw MyBatis3 Mappers

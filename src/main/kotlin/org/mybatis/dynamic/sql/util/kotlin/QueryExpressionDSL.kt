@@ -15,69 +15,61 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.*
+import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CompletableQuery
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
-import org.mybatis.dynamic.sql.select.whereBuilder
 import org.mybatis.dynamic.sql.util.Buildable
 
 fun QueryExpressionDSL<SelectModel>.JoinSpecificationStarter.on(joinColumn: BasicColumn, joinCondition: JoinCondition,
-                                                                builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
-    val join: CompletableQuery<SelectModel> = this.on(joinColumn, joinCondition)
-    builderAction(join)
-    return join.build().render(RenderingStrategies.MYBATIS3)
+                                                                complete: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
+    val next: CompletableQuery<SelectModel> = this.on(joinColumn, joinCondition)
+    complete(next)
+    return next.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher.and(joinColumn: BasicColumn, joinCondition: JoinCondition,
-                                                                  builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
-    val fred: CompletableQuery<SelectModel> = this.and(joinColumn, joinCondition)
-    builderAction(fred)
-    return fred.build().render(RenderingStrategies.MYBATIS3)
+                                                                  complete: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
+    val next: CompletableQuery<SelectModel> = this.and(joinColumn, joinCondition)
+    complete(next)
+    return next.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable,
-                                                      builderAction: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
-    val fred: CompletableQuery<SelectModel> = this.from(table)
-    builderAction(fred)
-    return fred.build().render(RenderingStrategies.MYBATIS3)
+                                                      complete: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): SelectStatementProvider {
+    val next: CompletableQuery<SelectModel> = this.from(table)
+    complete(next)
+    return next.build().render(RenderingStrategies.MYBATIS3)
 }
 
-fun <T> QueryExpressionDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                              collect: CriteriaCollector.() -> CriteriaCollector): QueryExpressionDSL<SelectModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    this.where(column, condition, *collector.criteria())
-    return this
-}
+fun <T> CompletableQuery<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
+                                            collect: CriteriaCollector.() -> CriteriaCollector) =
+        apply {
+            val collector = CriteriaCollector()
+            collect(collector)
+            where(column, condition, *collector.criteria())
+        }
 
-fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>): QueryExpressionDSL<SelectModel> {
-    whereBuilder()?.and(column, condition)
-    return this
-}
+fun <T> CompletableQuery<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
+                                          collect: CriteriaCollector.() -> CriteriaCollector) =
+        apply {
+            val collector = CriteriaCollector()
+            collect(collector)
+            and(column, condition, *collector.criteria())
+        }
 
-fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                            collect: CriteriaCollector.() -> CriteriaCollector): QueryExpressionDSL<SelectModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    whereBuilder()?.and(column, condition, *collector.criteria())
-    return this
-}
-
-fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>): QueryExpressionDSL<SelectModel> {
-    whereBuilder()?.or(column, condition)
-    return this
-}
-
-fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                           collect: CriteriaCollector.() -> CriteriaCollector): QueryExpressionDSL<SelectModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    whereBuilder()?.or(column, condition, *collector.criteria())
-    return this
-}
+fun <T> CompletableQuery<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
+                                         collect: CriteriaCollector.() -> CriteriaCollector) =
+        apply {
+            val collector = CriteriaCollector()
+            collect(collector)
+            or(column, condition, *collector.criteria())
+        }
 
 fun CompletableQuery<SelectModel>.allRows() = this as Buildable<SelectModel>

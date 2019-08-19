@@ -147,7 +147,7 @@ These two methods are standard methods for MyBatis Dynamic SQL. They execute a s
 We also envision creating a static field for a reusable list of columns for a select statement:
 
 ```java
-static BasicColumn[] selectList =
+BasicColumn[] selectList =
     BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId);
 ```
 

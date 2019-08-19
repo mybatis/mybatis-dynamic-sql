@@ -32,7 +32,7 @@ public class DeleteDSL<R> implements Buildable<R> {
 
     private Function<DeleteModel, R> adapterFunction;
     private SqlTable table;
-    protected DeleteWhereBuilder whereBuilder;
+    private DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();
     
     private DeleteDSL(SqlTable table, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -40,21 +40,54 @@ public class DeleteDSL<R> implements Buildable<R> {
     }
     
     public DeleteWhereBuilder where() {
-        whereBuilder = new DeleteWhereBuilder();
         return whereBuilder;
     }
     
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder = new DeleteWhereBuilder(column, condition);
+        whereBuilder.and(column, condition);
         return whereBuilder;
     }
     
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder = new DeleteWhereBuilder(column, condition, subCriteria);
+        whereBuilder.and(column, condition, subCriteria);
         return whereBuilder;
     }
-    
+
+    /*
+     * Added for Kotlin.
+     */
+    public <T> DeleteDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition) {
+        whereBuilder.and(column, condition);
+        return this;
+    }
+
+    /*
+     * Added for Kotlin.
+     */
+    public <T> DeleteDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion<?>...subCriteria) {
+        whereBuilder.and(column, condition, subCriteria);
+        return this;
+    }
+
+    /*
+     * Added for Kotlin.
+     */
+    public <T> DeleteDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition) {
+        whereBuilder.or(column, condition);
+        return this;
+    }
+
+    /*
+     * Added for Kotlin.
+     */
+    public <T> DeleteDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion<?>...subCriteria) {
+        whereBuilder.or(column, condition, subCriteria);
+        return this;
+    }
+
     /**
      * WARNING! Calling this method could result in an delete statement that deletes
      * all rows in a table.
@@ -64,7 +97,7 @@ public class DeleteDSL<R> implements Buildable<R> {
     @Override
     public R build() {
         DeleteModel deleteModel = DeleteModel.withTable(table)
-                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .withWhereModel(whereBuilder.buildWhereModel())
                 .build();
         return adapterFunction.apply(deleteModel);
     }
@@ -97,15 +130,6 @@ public class DeleteDSL<R> implements Buildable<R> {
         
         private DeleteWhereBuilder() {
             super();
-        }
-        
-        private <T> DeleteWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
-            super(column, condition);
-        }
-        
-        private <T> DeleteWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition,
-                SqlCriterion<?>...subCriteria) {
-            super(column, condition, subCriteria);
         }
         
         @Override

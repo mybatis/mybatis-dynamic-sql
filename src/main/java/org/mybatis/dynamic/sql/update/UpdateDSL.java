@@ -46,7 +46,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     private Function<UpdateModel, R> adapterFunction;
     private List<UpdateMapping> columnMappings = new ArrayList<>();
     private SqlTable table;
-    protected UpdateWhereBuilder whereBuilder;
+    private UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();
     
     private UpdateDSL(SqlTable table, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -58,21 +58,52 @@ public class UpdateDSL<R> implements Buildable<R> {
     }
     
     public UpdateWhereBuilder where() {
-        whereBuilder = new UpdateWhereBuilder();
         return whereBuilder;
     }
     
     public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder = new UpdateWhereBuilder(column, condition);
+        whereBuilder.and(column, condition);
         return whereBuilder;
     }
     
     public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder = new UpdateWhereBuilder(column, condition, subCriteria);
+        whereBuilder.and(column, condition, subCriteria);
         return whereBuilder;
     }
-    
+
+    /*
+     * Added for Kotlin.
+     */
+    public <T> UpdateDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition) {
+        whereBuilder.and(column, condition);
+        return this;
+    }
+
+    /*
+     * Added for Kotlin.
+     */
+    public <T> UpdateDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
+        whereBuilder.and(column, condition, subCriteria);
+        return this;
+    }
+
+    /*
+     * Added for Kotlin.
+     */
+    public <T> UpdateDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition) {
+        whereBuilder.or(column, condition);
+        return this;
+    }
+
+    /*
+     * Added for Kotlin.
+     */
+    public <T> UpdateDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
+        whereBuilder.or(column, condition, subCriteria);
+        return this;
+    }
+
     /**
      * WARNING! Calling this method could result in an update statement that updates
      * all rows in a table.
@@ -83,7 +114,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     public R build() {
         UpdateModel updateModel = UpdateModel.withTable(table)
                 .withColumnMappings(columnMappings)
-                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .withWhereModel(whereBuilder.buildWhereModel())
                 .build();
         return adapterFunction.apply(updateModel);
     }
@@ -170,15 +201,6 @@ public class UpdateDSL<R> implements Buildable<R> {
         
         public <T> UpdateWhereBuilder() {
             super();
-        }
-        
-        public <T> UpdateWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
-            super(column, condition);
-        }
-        
-        public <T> UpdateWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition,
-                SqlCriterion<?>...subCriteria) {
-            super(column, condition, subCriteria);
         }
         
         @Override

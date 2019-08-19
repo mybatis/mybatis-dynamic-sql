@@ -15,16 +15,16 @@
  */
 package examples.kotlin.general
 
-import examples.kotlin.*
-import examples.kotlin.AddressDynamicSqlSupport.Address
-import examples.kotlin.PersonDynamicSqlSupport.Person
-import examples.kotlin.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.canonical.*
+import examples.kotlin.canonical.AddressDynamicSqlSupport.Address
+import examples.kotlin.canonical.PersonDynamicSqlSupport.Person
+import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.addressId
+import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.birthDate
+import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.employed
+import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.firstName
+import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.id
+import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.lastName
+import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -43,15 +43,15 @@ import java.sql.DriverManager
 
 class GeneralKotlinTest {
     private fun newSession(): SqlSession {
-        Class.forName(KotlinTest.JDBC_DRIVER)
+        Class.forName(PersonMapperTest.JDBC_DRIVER)
         val script = javaClass.getResourceAsStream("/examples/kotlin/CreateSimpleDB.sql")
-        DriverManager.getConnection(KotlinTest.JDBC_URL, "sa", "").use { connection ->
+        DriverManager.getConnection(PersonMapperTest.JDBC_URL, "sa", "").use { connection ->
             val sr = ScriptRunner(connection)
             sr.setLogWriter(null)
             sr.runScript(InputStreamReader(script))
         }
 
-        val ds = UnpooledDataSource(KotlinTest.JDBC_DRIVER, KotlinTest.JDBC_URL, "sa", "")
+        val ds = UnpooledDataSource(PersonMapperTest.JDBC_DRIVER, PersonMapperTest.JDBC_URL, "sa", "")
         val environment = Environment("test", JdbcTransactionFactory(), ds)
         val config = Configuration(environment)
         config.typeHandlerRegistry.register(YesNoTypeHandler::class.java)
@@ -126,7 +126,7 @@ class GeneralKotlinTest {
             }
 
             val expected = "delete from Person where (id < #{parameters.p1,jdbcType=INTEGER} or occupation is not null)" +
-                    " and employed = #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.YesNoTypeHandler}"
+                    " and employed = #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.canonical.YesNoTypeHandler}"
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
@@ -143,7 +143,10 @@ class GeneralKotlinTest {
 
             val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
                     .from(Person) {
-                        where(id, isLessThan(4), and(occupation, isNotNull())).and(occupation, isNotNull())
+                        where(id, isLessThan(4)) {
+                            and(occupation, isNotNull())
+                        }
+                        and(occupation, isNotNull())
                         orderBy(id)
                         limit(3)
                     }
@@ -153,7 +156,7 @@ class GeneralKotlinTest {
             assertThat(rows.size).isEqualTo(2)
             assertThat(rows[0].id).isEqualTo(1)
             assertThat(rows[0].firstName).isEqualTo("Fred")
-            assertThat(rows[0].lastName).isEqualTo("Flintstone")
+            assertThat(rows[0].lastName?.name).isEqualTo("Flintstone")
             assertThat(rows[0].birthDate).isNotNull()
             assertThat(rows[0].employed).isTrue()
             assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
@@ -179,7 +182,7 @@ class GeneralKotlinTest {
             assertThat(rows.size).isEqualTo(3)
             assertThat(rows[0].id).isEqualTo(1)
             assertThat(rows[0].firstName).isEqualTo("Fred")
-            assertThat(rows[0].lastName).isEqualTo("Flintstone")
+            assertThat(rows[0].lastName?.name).isEqualTo("Flintstone")
             assertThat(rows[0].birthDate).isNotNull()
             assertThat(rows[0].employed).isTrue()
             assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
@@ -202,7 +205,7 @@ class GeneralKotlinTest {
             assertThat(rows.size).isEqualTo(3)
             assertThat(rows[0].id).isEqualTo(3)
             assertThat(rows[0].firstName).isEqualTo("Pebbles")
-            assertThat(rows[0].lastName).isEqualTo("Flintstone")
+            assertThat(rows[0].lastName?.name).isEqualTo("Flintstone")
             assertThat(rows[0].birthDate).isNotNull()
             assertThat(rows[0].employed).isFalse()
             assertThat(rows[0].occupation).isNull()

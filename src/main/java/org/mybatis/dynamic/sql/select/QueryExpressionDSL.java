@@ -45,7 +45,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     private List<BasicColumn> selectList;
     private SqlTable table;
     private Map<SqlTable, String> tableAliases = new HashMap<>();
-    protected QueryExpressionWhereBuilder whereBuilder;
+    private QueryExpressionWhereBuilder whereBuilder = new QueryExpressionWhereBuilder();
     private GroupByModel groupByModel;
     private List<JoinSpecification.Builder> joinSpecificationBuilders = new ArrayList<>();
     
@@ -64,23 +64,48 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     
     @Override
     public QueryExpressionWhereBuilder where() {
-        whereBuilder = new QueryExpressionWhereBuilder();
         return whereBuilder;
     }
 
     @Override
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder = new QueryExpressionWhereBuilder(column, condition);
+        whereBuilder.and(column, condition);
         return whereBuilder;
     }
 
     @Override
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder = new QueryExpressionWhereBuilder(column, condition, subCriteria);
+        whereBuilder.and(column, condition, subCriteria);
         return whereBuilder;
     }
-    
+
+    @Override
+    public <T> QueryExpressionDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition) {
+        whereBuilder.and(column, condition);
+        return this;
+    }
+
+    @Override
+    public <T> QueryExpressionDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion<?>... subCriteria) {
+        whereBuilder.and(column, condition, subCriteria);
+        return this;
+    }
+
+    @Override
+    public <T> QueryExpressionDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition) {
+        whereBuilder.or(column, condition);
+        return this;
+    }
+
+    @Override
+    public <T> QueryExpressionDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition,
+                                         SqlCriterion<?>... subCriteria) {
+        whereBuilder.or(column, condition, subCriteria);
+        return this;
+    }
+
     @Override
     public R build() {
         return selectDSL.build();
@@ -148,7 +173,7 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                 .withTable(table)
                 .isDistinct(isDistinct)
                 .withTableAliases(tableAliases)
-                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .withWhereModel(whereBuilder.buildWhereModel())
                 .withJoinModel(joinSpecificationBuilders.isEmpty() ? null : buildJoinModel())
                 .withGroupByModel(groupByModel)
                 .build();
@@ -236,15 +261,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         private <T> QueryExpressionWhereBuilder() {
         }
 
-        private <T> QueryExpressionWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition) {
-            super(column, condition);
-        }
-        
-        private <T> QueryExpressionWhereBuilder(BindableColumn<T> column, VisitableCondition<T> condition,
-                SqlCriterion<?>...subCriteria) {
-            super(column, condition, subCriteria);
-        }
-        
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();
         }
@@ -354,6 +370,28 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             return QueryExpressionDSL.this.where(column, condition, subCriteria);
+        }
+
+        @Override
+        public <T> QueryExpressionDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition) {
+            return QueryExpressionDSL.this.and(column, condition);
+        }
+
+        @Override
+        public <T> QueryExpressionDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition,
+                                             SqlCriterion<?>... subCriteria) {
+            return QueryExpressionDSL.this.and(column, condition, subCriteria);
+        }
+
+        @Override
+        public <T> QueryExpressionDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition) {
+            return QueryExpressionDSL.this.or(column, condition);
+        }
+
+        @Override
+        public <T> QueryExpressionDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition,
+                                            SqlCriterion<?>... subCriteria) {
+            return QueryExpressionDSL.this.or(column, condition, subCriteria);
         }
 
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {

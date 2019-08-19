@@ -19,38 +19,27 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
-import org.mybatis.dynamic.sql.update.whereBuilder
 
 fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                     collect: CriteriaCollector.() -> CriteriaCollector): UpdateDSL<UpdateModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    this.where(column, condition, *collector.criteria())
-    return this
-}
-
-fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>): UpdateDSL<UpdateModel> {
-    whereBuilder()?.and(column, condition)
-    return this
-}
+                                     collect: CriteriaCollector.() -> CriteriaCollector) =
+        apply {
+            val collector = CriteriaCollector()
+            collect(collector)
+            where(column, condition, *collector.criteria())
+        }
 
 fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                   collect: CriteriaCollector.() -> CriteriaCollector): UpdateDSL<UpdateModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    whereBuilder()?.and(column, condition, *collector.criteria())
-    return this
-}
-
-fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>): UpdateDSL<UpdateModel> {
-    whereBuilder()?.or(column, condition)
-    return this
-}
+                                   collect: CriteriaCollector.() -> CriteriaCollector) =
+        apply {
+            val collector = CriteriaCollector()
+            collect(collector)
+            and(column, condition, *collector.criteria())
+        }
 
 fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                  collect: CriteriaCollector.() -> CriteriaCollector): UpdateDSL<UpdateModel> {
-    val collector = CriteriaCollector()
-    collect(collector)
-    whereBuilder()?.or(column, condition, *collector.criteria())
-    return this
-}
+                                  collect: CriteriaCollector.() -> CriteriaCollector) =
+        apply {
+            val collector = CriteriaCollector()
+            collect(collector)
+            or(column, condition, *collector.criteria())
+        }

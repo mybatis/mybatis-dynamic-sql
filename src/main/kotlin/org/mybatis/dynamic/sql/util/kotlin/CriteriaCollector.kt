@@ -22,47 +22,47 @@ import org.mybatis.dynamic.sql.VisitableCondition
 class CriteriaCollector {
     private val criteria = mutableListOf<SqlCriterion<*>>()
 
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector {
-        criteria.add(SqlCriterion.withColumn(column)
-                .withCondition(condition)
-                .withConnector("and")
-                .build())
-        return this
-    }
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                criteria.add(SqlCriterion.withColumn(column)
+                        .withCondition(condition)
+                        .withConnector("and")
+                        .build())
+            }
 
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                collect: CriteriaCollector.() -> CriteriaCollector): CriteriaCollector {
-        val collector = CriteriaCollector()
-        collect(collector)
-        val criterion: SqlCriterion<T> = SqlCriterion.withColumn(column)
-                .withCondition(condition)
-                .withSubCriteria(collector.criteria)
-                .withConnector("and")
-                .build()
-        criteria.add(criterion)
-        return this
-    }
+                collect: CriteriaCollector.() -> CriteriaCollector) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                val criterion: SqlCriterion<T> = SqlCriterion.withColumn(column)
+                        .withCondition(condition)
+                        .withSubCriteria(collector.criteria)
+                        .withConnector("and")
+                        .build()
+                criteria.add(criterion)
+            }
 
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector {
-        criteria.add(SqlCriterion.withColumn(column)
-                .withCondition(condition)
-                .withConnector("or")
-                .build())
-        return this
-    }
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                criteria.add(SqlCriterion.withColumn(column)
+                        .withCondition(condition)
+                        .withConnector("or")
+                        .build())
+            }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-               collect: CriteriaCollector.() -> CriteriaCollector): CriteriaCollector {
-        val collector = CriteriaCollector()
-        collect(collector)
-        val criterion: SqlCriterion<T> = SqlCriterion.withColumn(column)
-                .withCondition(condition)
-                .withSubCriteria(collector.criteria)
-                .withConnector("or")
-                .build()
-        criteria.add(criterion)
-        return this
-    }
+               collect: CriteriaCollector.() -> CriteriaCollector) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                val criterion: SqlCriterion<T> = SqlCriterion.withColumn(column)
+                        .withCondition(condition)
+                        .withSubCriteria(collector.criteria)
+                        .withConnector("or")
+                        .build()
+                criteria.add(criterion)
+            }
 
     fun criteria() = criteria.toTypedArray()
 }
