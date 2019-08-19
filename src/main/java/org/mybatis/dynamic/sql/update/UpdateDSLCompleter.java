@@ -13,23 +13,22 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.mybatis3;
+package org.mybatis.dynamic.sql.update;
 
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * Represents a function that can be used to create a general update method in the style
  * of MyBatis Generator. When using this function, you can create a method that does not require a user to
  * call the build() and render() methods - making client code look a bit cleaner.
  * 
- * <p>This function is intended to be used in conjunction with the utility function
- *  {@link MyBatis3Utils#update(ToIntFunction, SqlTable, MyBatis3UpdateCompleter)}
+ * <p>This function is intended to be used in conjunction in the utility method like
+ *  {@link MyBatis3Utils#update(ToIntFunction, SqlTable, UpdateDSLCompleter)}
  * 
  * <p>For example, you can create mapper interface methods like this:
  * 
@@ -37,7 +36,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * &#64;UpdateProvider(type=SqlProviderAdapter.class, method="update")
  * int update(UpdateStatementProvider updateStatement);
  *   
- * default int update(MyBatis3UpdateCompleter completer) {
+ * default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, person, completer);
  * }
  * </pre>
@@ -88,6 +87,6 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * @author Jeff Butler
  */
 @FunctionalInterface
-public interface MyBatis3UpdateCompleter extends
+public interface UpdateDSLCompleter extends
         Function<UpdateDSL<UpdateModel>, Buildable<UpdateModel>> {
 }

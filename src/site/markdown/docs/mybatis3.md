@@ -19,12 +19,12 @@ long count(SelectStatementProvider selectStatement);
 This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `long`. The second method will reuse this method and supply everything needed to build the select statement except the where clause:
 
 ```java
-default long count(MyBatis3SelectCompleter completer) {
+default long count(SelectDSLCompleter completer) {
     return MyBatis3Utils.count(this::count, person, completer);
 }
 ```
 
-This method shows the use of `MyBatis3SelectCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
+This method shows the use of `SelectDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
 
 ```java
 long rows = mapper.count(c ->
@@ -34,7 +34,7 @@ long rows = mapper.count(c ->
 There is a utility method that can be used to count all rows in a table:
 
 ```java
-long rows = mapper.count(MyBatis3SelectCompleter.allRows());
+long rows = mapper.count(SelectDSLCompleter.allRows());
 ```
 
 ## Delete Method Support
@@ -51,12 +51,12 @@ int delete(DeleteStatementProvider deleteStatement);
 This is a standard method for MyBatis Dynamic SQL that executes a delete and returns an `int` - the number of rows deleted. The second method will reuse this method and supply everything needed to build the delete statement except the where clause:
 
 ```java
-default int delete(MyBatis3DeleteCompleter completer) {
+default int delete(DeleteDSLCompleter completer) {
     return MyBatis3Utils.deleteFrom(this::delete, person, completer);
 }
 ```
 
-This method shows the use of `MyBatis3DeleteCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
+This method shows the use of `DeleteDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
 
 ```java
 int rows = mapper.delete(c ->
@@ -66,7 +66,7 @@ int rows = mapper.delete(c ->
 There is a utility method that can be used to delete all rows in a table:
 
 ```java
-int rows = mapper.delete(MyBatis3DeleteCompleter.allRows());
+int rows = mapper.delete(DeleteDSLCompleter.allRows());
 ```
 
 ## Insert Method Support
@@ -148,18 +148,18 @@ We also envision creating a static field for a reusable list of columns for a se
 
 ```java
 static BasicColumn[] selectList =
-        new BasicColumn[] {id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId};
+    BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId);
 ```
 
 The `selectOne` method can be used to implement a generalized select one method:
 
 ```java
-default Optional<PersonRecord> selectOne(MyBatis3SelectCompleter completer) {
+default Optional<PersonRecord> selectOne(SelectDSLCompleter completer) {
     return MyBatis3Utils.selectOne(this::selectOne, selectList, person, completer);
 }
 ```
 
-This method shows the use of `MyBatis3SelectCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause.
+This method shows the use of `SelectDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause.
 
 The general `selectOne` method can be used to implement a `selectByPrimaryKey` method:
 
@@ -174,11 +174,11 @@ default Optional<PersonRecord> selectByPrimaryKey(Integer id_) {
 The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause and/or an order by clause. Typically we recommend two of these methods - for select, and select distinct: 
 
 ```java
-default List<PersonRecord> select(MyBatis3SelectCompleter completer) {
+default List<PersonRecord> select(SelectDSLCompleter completer) {
     return MyBatis3Utils.selectList(this::selectMany, selectList, person, completer);
 }
     
-default List<PersonRecord> selectDistinct(MyBatis3SelectCompleter completer) {
+default List<PersonRecord> selectDistinct(SelectDSLCompleter completer) {
     return MyBatis3Utils.selectDistinct(this::selectMany, selectList, person, completer);
 }
 ```
@@ -197,14 +197,14 @@ There are utility methods that will select all rows in a table:
 
 ```java
 List<PersonRecord> rows =
-    mapper.selectByExample(MyBatis3SelectCompleter.allRows());
+    mapper.selectByExample(SelectDSLCompleter.allRows());
 ```
 
 The following query will select all rows in a specified order:
 
 ```java
 List<PersonRecord> rows =
-    mapper.selectByExample(MyBatis3SelectCompleter.allRowsOrderedBy(lastName, firstName));
+    mapper.selectByExample(SelectDSLCompleter.allRowsOrderedBy(lastName, firstName));
 ```
 
 ## Update Method Support
@@ -221,12 +221,12 @@ int update(UpdateStatementProvider updateStatement);
 This is a standard method for MyBatis Dynamic SQL that executes a query and returns an `int` - the number of rows updated. The second method will reuse this method and supply everything needed to build the update statement except the values and the where clause:
 
 ```java
-default int update(MyBatis3UpdateCompleter completer) {
+default int update(UpdateDSLCompleter completer) {
     return MyBatis3Utils.update(this::update, person, completer);
 }
 ```
 
-This method shows the use of `MyBatis3UpdateCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply values and a where clause. Clients can use the method as follows:
+This method shows the use of `UpdateDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply values and a where clause. Clients can use the method as follows:
 
 ```java
 int rows = mapper.update(c ->

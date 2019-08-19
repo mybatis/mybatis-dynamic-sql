@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -65,5 +65,16 @@ public interface BasicColumn {
         
         return alias().map(a -> nameAndTableAlias + " as " + a) //$NON-NLS-1$
                 .orElse(nameAndTableAlias);
+    }
+    
+    /**
+     * Utility method to make it easier to build column lists for methods that require an
+     * array rather than the varargs method.
+     * 
+     * @param columns list of BasicColumn
+     * @return an array of BasicColumn
+     */
+    static BasicColumn[] columnList(BasicColumn...columns) {
+        return columns;
     }
 }

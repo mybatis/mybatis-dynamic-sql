@@ -20,12 +20,11 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectCompleter;
 
 /**
  * This adapter will render the underlying select model for MyBatis3, and then call a MyBatis mapper method.
  *
- * @deprecated in favor is {@link MyBatis3SelectCompleter}. This class will be removed without direct replacement
+ * @deprecated in favor is {@link SelectDSLCompleter}. This class will be removed without direct replacement
  *     in a future version
  *     
  * @author Jeff Butler

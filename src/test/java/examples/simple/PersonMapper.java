@@ -33,17 +33,17 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
+import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3DeleteCompleter;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectCompleter;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateCompleter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
@@ -84,16 +84,16 @@ public interface PersonMapper {
     Optional<PersonRecord> selectOne(SelectStatementProvider selectStatement);
     
     static BasicColumn[] selectList =
-            new BasicColumn[] {id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId};
+            BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId);
         
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
     
-    default long count(MyBatis3SelectCompleter completer) {
+    default long count(SelectDSLCompleter completer) {
         return MyBatis3Utils.count(this::count, person, completer);
     }
 
-    default int delete(MyBatis3DeleteCompleter completer) {
+    default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, person, completer);
     }
     
@@ -143,15 +143,15 @@ public interface PersonMapper {
         );
     }
     
-    default Optional<PersonRecord> selectOne(MyBatis3SelectCompleter completer) {
+    default Optional<PersonRecord> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, person, completer);
     }
     
-    default List<PersonRecord> select(MyBatis3SelectCompleter completer) {
+    default List<PersonRecord> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, person, completer);
     }
     
-    default List<PersonRecord> selectDistinct(MyBatis3SelectCompleter completer) {
+    default List<PersonRecord> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, person, completer);
     }
     
@@ -161,7 +161,7 @@ public interface PersonMapper {
         );
     }
 
-    default int update(MyBatis3UpdateCompleter completer) {
+    default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, person, completer);
     }
     

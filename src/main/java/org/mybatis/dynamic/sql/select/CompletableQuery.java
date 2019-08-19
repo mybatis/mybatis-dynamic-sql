@@ -21,11 +21,10 @@ import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3SelectCompleter;
 
 /**
  * This interface describes operations allowed for a select statement after the from and join clauses. This is
- * primarily to support {@link MyBatis3SelectCompleter}.
+ * primarily to support {@link SelectDSLCompleter}.
  * 
  * @author Jeff Butler
  *
