@@ -38,7 +38,6 @@ import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3UpdateCompleter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
@@ -100,7 +99,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     /**
      * Executes an update using a MyBatis3 mapper method.
      * 
-     * @deprecated in favor of {@link MyBatis3Utils#update(ToIntFunction, SqlTable, MyBatis3UpdateCompleter)}. This
+     * @deprecated in favor of {@link MyBatis3Utils#update(ToIntFunction, SqlTable, UpdateDSLCompleter)}. This
      *     method will be removed without direct replacement in a future version.
      * @param <T> return value from an update method - typically Integer
      * @param mapperMethod MyBatis3 mapper method that performs the update
