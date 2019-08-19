@@ -31,9 +31,9 @@ import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.kotlin.insert
+import org.mybatis.dynamic.sql.util.kotlin.insertMultiple
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.insert
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.insertMultiple
 
 fun PersonMapper.count(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>) =
         MyBatis3Utils.count(this::count, Person, completer)
@@ -88,7 +88,7 @@ fun PersonMapper.selectOne(completer: CompletableQuery<SelectModel>.() -> Builda
         MyBatis3Utils.selectOne(this::selectOne, selectList, Person, completer)
 
 fun PersonMapper.select(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): List<PersonRecord> =
-    MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
+        MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
 
 
 fun PersonMapper.selectDistinct(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): List<PersonRecord> =

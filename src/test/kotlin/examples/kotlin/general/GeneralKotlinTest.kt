@@ -36,8 +36,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.*
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.deleteFrom
-import org.mybatis.dynamic.sql.util.mybatis3.kotlin.update
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
@@ -154,13 +152,15 @@ class GeneralKotlinTest {
             val rows = mapper.selectMany(selectStatement)
 
             assertThat(rows.size).isEqualTo(2)
-            assertThat(rows[0].id).isEqualTo(1)
-            assertThat(rows[0].firstName).isEqualTo("Fred")
-            assertThat(rows[0].lastName?.name).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull()
-            assertThat(rows[0].employed).isTrue()
-            assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
-            assertThat(rows[0].addressId).isEqualTo(1)
+            with(rows[0]) {
+                assertThat(id).isEqualTo(1)
+                assertThat(firstName).isEqualTo("Fred")
+                assertThat(lastName?.name).isEqualTo("Flintstone")
+                assertThat(birthDate).isNotNull()
+                assertThat(employed).isTrue()
+                assertThat(occupation).isEqualTo("Brontosaurus Operator")
+                assertThat(addressId).isEqualTo(1)
+            }
         }
     }
 
@@ -168,7 +168,6 @@ class GeneralKotlinTest {
     fun testRawSelectWithJoin() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
-
 
             val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
                     .from(Person).join(Address).on(addressId, equalTo(Address.id)) {
@@ -180,13 +179,42 @@ class GeneralKotlinTest {
             val rows = mapper.selectMany(selectStatement)
 
             assertThat(rows.size).isEqualTo(3)
-            assertThat(rows[0].id).isEqualTo(1)
-            assertThat(rows[0].firstName).isEqualTo("Fred")
-            assertThat(rows[0].lastName?.name).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull()
-            assertThat(rows[0].employed).isTrue()
-            assertThat(rows[0].occupation).isEqualTo("Brontosaurus Operator")
-            assertThat(rows[0].addressId).isEqualTo(1)
+            with(rows[0]) {
+                assertThat(id).isEqualTo(1)
+                assertThat(firstName).isEqualTo("Fred")
+                assertThat(lastName?.name).isEqualTo("Flintstone")
+                assertThat(birthDate).isNotNull()
+                assertThat(employed).isTrue()
+                assertThat(occupation).isEqualTo("Brontosaurus Operator")
+                assertThat(addressId).isEqualTo(1)
+            }
+        }
+    }
+
+    @Test
+    fun testRawSelectWithComplexWhere1() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+                    .from(Person) {
+                        where(id, isLessThan(4))
+                        orderBy(id)
+                        limit(3)
+                    }
+
+            val rows = mapper.selectMany(selectStatement)
+
+            assertThat(rows.size).isEqualTo(3)
+            with(rows[0]) {
+                assertThat(id).isEqualTo(1)
+                assertThat(firstName).isEqualTo("Fred")
+                assertThat(lastName?.name).isEqualTo("Flintstone")
+                assertThat(birthDate).isNotNull()
+                assertThat(employed).isTrue()
+                assertThat(occupation).isEqualTo("Brontosaurus Operator")
+                assertThat(addressId).isEqualTo(1)
+            }
         }
     }
 
@@ -203,13 +231,15 @@ class GeneralKotlinTest {
             }
 
             assertThat(rows.size).isEqualTo(3)
-            assertThat(rows[0].id).isEqualTo(3)
-            assertThat(rows[0].firstName).isEqualTo("Pebbles")
-            assertThat(rows[0].lastName?.name).isEqualTo("Flintstone")
-            assertThat(rows[0].birthDate).isNotNull()
-            assertThat(rows[0].employed).isFalse()
-            assertThat(rows[0].occupation).isNull()
-            assertThat(rows[0].addressId).isEqualTo(1)
+            with(rows[0]) {
+                assertThat(id).isEqualTo(3)
+                assertThat(firstName).isEqualTo("Pebbles")
+                assertThat(lastName?.name).isEqualTo("Flintstone")
+                assertThat(birthDate).isNotNull()
+                assertThat(employed).isFalse()
+                assertThat(occupation).isNull()
+                assertThat(addressId).isEqualTo(1)
+            }
         }
     }
 
