@@ -71,8 +71,8 @@ public interface PersonWithAddressMapper {
     Optional<PersonWithAddress> selectOne(SelectStatementProvider selectStatement);
 
     static BasicColumn[] selectList =
-            new BasicColumn[] {id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, address.id,
-                    address.streetAddress, address.city, address.state};
+            BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, address.id,
+                    address.streetAddress, address.city, address.state);
     
     default Optional<PersonWithAddress> selectOne(MyBatis3SelectCompleter completer) {
         CompletableQuery<SelectModel> start = SqlBuilder.select(selectList).from(person)

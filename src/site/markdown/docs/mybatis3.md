@@ -148,7 +148,7 @@ We also envision creating a static field for a reusable list of columns for a se
 
 ```java
 static BasicColumn[] selectList =
-        new BasicColumn[] {id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId};
+    BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId);
 ```
 
 The `selectOne` method can be used to implement a generalized select one method:

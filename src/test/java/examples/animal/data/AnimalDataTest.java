@@ -1786,7 +1786,7 @@ public class AnimalDataTest {
             assertThat(rows).isEqualTo(1);
             
             AnimalData record = MyBatis3Utils.selectOne(mapper::selectOne,
-                    new BasicColumn[] {id, bodyWeight, brainWeight},
+                    BasicColumn.columnList(id, bodyWeight, brainWeight),
                     animalData,
                     c -> c.where(id, isEqualTo(1))
             );
@@ -1819,7 +1819,7 @@ public class AnimalDataTest {
             assertThat(rows).isEqualTo(1);
             
             AnimalData record = MyBatis3Utils.selectOne(mapper::selectOne,
-                    new BasicColumn[] {id, bodyWeight, brainWeight},
+                    BasicColumn.columnList(id, bodyWeight, brainWeight),
                     animalData,
                     c -> c.where(id, isEqualTo(1))
             );

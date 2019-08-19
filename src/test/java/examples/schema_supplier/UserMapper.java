@@ -46,7 +46,7 @@ public interface UserMapper {
     List<User> selectMany(SelectStatementProvider selectStatement);
 
     default List<User> select(MyBatis3SelectCompleter completer) {
-        return MyBatis3Utils.selectList(this::selectMany, new BasicColumn[] {id, name}, user, completer);
+        return MyBatis3Utils.selectList(this::selectMany, BasicColumn.columnList(id, name), user, completer);
     }
     
     default int insert(User record) {
