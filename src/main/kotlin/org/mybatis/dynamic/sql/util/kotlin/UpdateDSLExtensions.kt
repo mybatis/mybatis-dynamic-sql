@@ -28,12 +28,22 @@ fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: Visit
             where(column, condition, *collector.criteria())
         }
 
+fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+        apply {
+            where().and(column, condition)
+        }
+
 fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
                                    collect: CriteriaCollector.() -> CriteriaCollector) =
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            and(column, condition, *collector.criteria())
+            where().and(column, condition, *collector.criteria())
+        }
+
+fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+        apply {
+            where().or(column, condition)
         }
 
 fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
@@ -41,5 +51,5 @@ fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: Visitabl
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            or(column, condition, *collector.criteria())
+            where().or(column, condition, *collector.criteria())
         }

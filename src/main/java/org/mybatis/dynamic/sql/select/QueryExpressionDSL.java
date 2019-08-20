@@ -82,32 +82,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     }
 
     @Override
-    public <T> QueryExpressionDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder.and(column, condition);
-        return this;
-    }
-
-    @Override
-    public <T> QueryExpressionDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>... subCriteria) {
-        whereBuilder.and(column, condition, subCriteria);
-        return this;
-    }
-
-    @Override
-    public <T> QueryExpressionDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder.or(column, condition);
-        return this;
-    }
-
-    @Override
-    public <T> QueryExpressionDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition,
-                                         SqlCriterion<?>... subCriteria) {
-        whereBuilder.or(column, condition, subCriteria);
-        return this;
-    }
-
-    @Override
     public R build() {
         return selectDSL.build();
     }
@@ -388,28 +362,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                     .build();
             joinSpecificationBuilder.withJoinCriterion(joinCriterion);
             return this;
-        }
-
-        @Override
-        public <T> QueryExpressionDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition) {
-            return QueryExpressionDSL.this.and(column, condition);
-        }
-
-        @Override
-        public <T> QueryExpressionDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition,
-                                             SqlCriterion<?>... subCriteria) {
-            return QueryExpressionDSL.this.and(column, condition, subCriteria);
-        }
-
-        @Override
-        public <T> QueryExpressionDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition) {
-            return QueryExpressionDSL.this.or(column, condition);
-        }
-
-        @Override
-        public <T> QueryExpressionDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition,
-                                            SqlCriterion<?>... subCriteria) {
-            return QueryExpressionDSL.this.or(column, condition, subCriteria);
         }
 
         @NotNull

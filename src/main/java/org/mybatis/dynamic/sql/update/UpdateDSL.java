@@ -72,40 +72,6 @@ public class UpdateDSL<R> implements Buildable<R> {
         return whereBuilder;
     }
 
-    /*
-     * Added for Kotlin.
-     */
-    public <T> UpdateDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder.and(column, condition);
-        return this;
-    }
-
-    /*
-     * Added for Kotlin.
-     */
-    public <T> UpdateDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
-        whereBuilder.and(column, condition, subCriteria);
-        return this;
-    }
-
-    /*
-     * Added for Kotlin.
-     */
-    public <T> UpdateDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder.or(column, condition);
-        return this;
-    }
-
-    /*
-     * Added for Kotlin.
-     */
-    public <T> UpdateDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
-        whereBuilder.or(column, condition, subCriteria);
-        return this;
-    }
-
     /**
      * WARNING! Calling this method could result in an update statement that updates
      * all rows in a table.

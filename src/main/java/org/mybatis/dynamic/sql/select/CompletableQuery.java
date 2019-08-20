@@ -40,30 +40,6 @@ public interface CompletableQuery<R> extends Buildable<R> {
     <T> QueryExpressionDSL<R>.QueryExpressionWhereBuilder where(BindableColumn<T> column,
             VisitableCondition<T> condition, SqlCriterion<?>... subCriteria);
 
-    /*
-     * Added for Kotlin.
-     */
-    <T> CompletableQuery<R> and(BindableColumn<T> column,
-                               VisitableCondition<T> condition);
-
-    /*
-     * Added for Kotlin.
-     */
-    <T> CompletableQuery<R> and(BindableColumn<T> column,
-                               VisitableCondition<T> condition, SqlCriterion<?>... subCriteria);
-
-    /*
-     * Added for Kotlin.
-     */
-    <T> CompletableQuery<R> or(BindableColumn<T> column,
-                               VisitableCondition<T> condition);
-
-    /*
-     * Added for Kotlin.
-     */
-    <T> CompletableQuery<R> or(BindableColumn<T> column,
-                               VisitableCondition<T> condition, SqlCriterion<?>... subCriteria);
-
     QueryExpressionDSL<R>.GroupByFinisher groupBy(BasicColumn...columns);
     
     SelectDSL<R> orderBy(SortSpecification...columns);

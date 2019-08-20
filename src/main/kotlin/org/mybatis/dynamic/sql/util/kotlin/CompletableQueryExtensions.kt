@@ -29,12 +29,22 @@ fun <T> CompletableQuery<SelectModel>.where(column: BindableColumn<T>, condition
             where(column, condition, *collector.criteria())
         }
 
+fun <T> CompletableQuery<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+        apply {
+            where().and(column, condition)
+        }
+
 fun <T> CompletableQuery<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
                                           collect: CriteriaCollector.() -> CriteriaCollector) =
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            and(column, condition, *collector.criteria())
+            where().and(column, condition, *collector.criteria())
+        }
+
+fun <T> CompletableQuery<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+        apply {
+            where().or(column, condition)
         }
 
 fun <T> CompletableQuery<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
@@ -42,7 +52,7 @@ fun <T> CompletableQuery<SelectModel>.or(column: BindableColumn<T>, condition: V
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            or(column, condition, *collector.criteria())
+            where().or(column, condition, *collector.criteria())
         }
 
 fun CompletableQuery<SelectModel>.allRows() = this as Buildable<SelectModel>

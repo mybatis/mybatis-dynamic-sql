@@ -54,40 +54,6 @@ public class DeleteDSL<R> implements Buildable<R> {
         return whereBuilder;
     }
 
-    /*
-     * Added for Kotlin.
-     */
-    public <T> DeleteDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder.and(column, condition);
-        return this;
-    }
-
-    /*
-     * Added for Kotlin.
-     */
-    public <T> DeleteDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
-        whereBuilder.and(column, condition, subCriteria);
-        return this;
-    }
-
-    /*
-     * Added for Kotlin.
-     */
-    public <T> DeleteDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder.or(column, condition);
-        return this;
-    }
-
-    /*
-     * Added for Kotlin.
-     */
-    public <T> DeleteDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
-        whereBuilder.or(column, condition, subCriteria);
-        return this;
-    }
-
     /**
      * WARNING! Calling this method could result in an delete statement that deletes
      * all rows in a table.
