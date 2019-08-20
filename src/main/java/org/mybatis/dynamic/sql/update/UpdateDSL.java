@@ -83,7 +83,8 @@ public class UpdateDSL<R> implements Buildable<R> {
     /*
      * Added for Kotlin.
      */
-    public <T> UpdateDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
+    public <T> UpdateDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion<?>...subCriteria) {
         whereBuilder.and(column, condition, subCriteria);
         return this;
     }
@@ -99,7 +100,8 @@ public class UpdateDSL<R> implements Buildable<R> {
     /*
      * Added for Kotlin.
      */
-    public <T> UpdateDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
+    public <T> UpdateDSL<R> or(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion<?>...subCriteria) {
         whereBuilder.or(column, condition, subCriteria);
         return this;
     }

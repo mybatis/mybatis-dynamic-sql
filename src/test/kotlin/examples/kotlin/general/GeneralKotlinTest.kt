@@ -135,6 +135,52 @@ class GeneralKotlinTest {
     }
 
     @Test
+    fun testRawDelete5() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val deleteStatement = deleteFrom(Person) {
+                where(id, isLessThan(4))
+                or (occupation, isNotNull()){
+                    and(employed, isEqualTo(true))
+                }
+            }
+
+            val expected = "delete from Person where id < #{parameters.p1,jdbcType=INTEGER} or (occupation is not null" +
+                    " and employed = #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.canonical.YesNoTypeHandler})"
+
+            assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
+
+            val rows = mapper.delete(deleteStatement)
+
+            assertThat(rows).isEqualTo(5)
+        }
+    }
+
+    @Test
+    fun testRawDelete6() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val deleteStatement = deleteFrom(Person) {
+                where(id, isLessThan(4))
+                and (occupation, isNotNull()){
+                    and(employed, isEqualTo(true))
+                }
+            }
+
+            val expected = "delete from Person where id < #{parameters.p1,jdbcType=INTEGER} and (occupation is not null" +
+                    " and employed = #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.canonical.YesNoTypeHandler})"
+
+            assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
+
+            val rows = mapper.delete(deleteStatement)
+
+            assertThat(rows).isEqualTo(2)
+        }
+    }
+
+    @Test
     fun testRawSelect() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
@@ -388,6 +434,94 @@ class GeneralKotlinTest {
             val rows = mapper.update(updateStatement)
 
             assertThat(rows).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testRawUpdate2() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val updateStatement = update(Person) {
+                set(firstName).equalTo("Sam")
+                where(firstName, isEqualTo("Fred")) {
+                    or(id, isGreaterThan(3))
+                }
+            }
+
+            assertThat(updateStatement.updateStatement).isEqualTo("update Person set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                    " where (first_name = #{parameters.p2,jdbcType=VARCHAR} or id > #{parameters.p3,jdbcType=INTEGER})")
+
+            val rows = mapper.update(updateStatement)
+
+            assertThat(rows).isEqualTo(4)
+        }
+    }
+
+    @Test
+    fun testRawUpdate3() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val updateStatement = update(Person) {
+                set(firstName).equalTo("Sam")
+                where(firstName, isEqualTo("Fred"))
+                or(id, isEqualTo(5)) {
+                    or(id, isEqualTo(6))
+                }
+            }
+
+            assertThat(updateStatement.updateStatement).isEqualTo("update Person set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                    " where first_name = #{parameters.p2,jdbcType=VARCHAR}" +
+                    " or (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER})")
+
+            val rows = mapper.update(updateStatement)
+
+            assertThat(rows).isEqualTo(3)
+        }
+    }
+
+    @Test
+    fun testRawUpdate4() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val updateStatement = update(Person) {
+                set(firstName).equalTo("Sam")
+                where(firstName, isEqualTo("Fred"))
+                and(id, isEqualTo(1)) {
+                    or(id, isEqualTo(6))
+                }
+            }
+
+            assertThat(updateStatement.updateStatement).isEqualTo("update Person set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                    " where first_name = #{parameters.p2,jdbcType=VARCHAR}" +
+                    " and (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER})")
+
+            val rows = mapper.update(updateStatement)
+
+            assertThat(rows).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testRawUpdate5() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val updateStatement = update(Person) {
+                set(firstName).equalTo("Sam")
+                where(firstName, isEqualTo("Fred"))
+                or(id, isEqualTo(3))
+            }
+
+            assertThat(updateStatement.updateStatement).isEqualTo("update Person set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                    " where first_name = #{parameters.p2,jdbcType=VARCHAR}" +
+                    " or id = #{parameters.p3,jdbcType=INTEGER}")
+
+            val rows = mapper.update(updateStatement)
+
+            assertThat(rows).isEqualTo(2)
         }
     }
 }

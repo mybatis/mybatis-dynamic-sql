@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -111,37 +112,45 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         return selectDSL.build();
     }
 
+    @NotNull
     public JoinSpecificationStarter join(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.INNER);
     }
     
+    @NotNull
     public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return join(joinTable);
     }
 
+    @NotNull
     public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.LEFT);
     }
     
+    @NotNull
     public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return leftJoin(joinTable);
     }
 
+    @NotNull
     public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);
     }
     
+    @NotNull
     public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return rightJoin(joinTable);
     }
 
+    @NotNull
     public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.FULL);
     }
     
+    @NotNull
     public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return fullJoin(joinTable);
@@ -372,6 +381,15 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
             return QueryExpressionDSL.this.where(column, condition, subCriteria);
         }
 
+        public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
+            JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
+                    .withJoinCondition(joinCondition)
+                    .withConnector("and") //$NON-NLS-1$
+                    .build();
+            joinSpecificationBuilder.withJoinCriterion(joinCriterion);
+            return this;
+        }
+
         @Override
         public <T> QueryExpressionDSL<R> and(BindableColumn<T> column, VisitableCondition<T> condition) {
             return QueryExpressionDSL.this.and(column, condition);
@@ -394,43 +412,42 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
             return QueryExpressionDSL.this.or(column, condition, subCriteria);
         }
 
-        public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
-            JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
-                    .withJoinCondition(joinCondition)
-                    .withConnector("and") //$NON-NLS-1$
-                    .build();
-            joinSpecificationBuilder.withJoinCriterion(joinCriterion);
-            return this;
-        }
-
+        @NotNull
         public JoinSpecificationStarter join(SqlTable joinTable) {
             return QueryExpressionDSL.this.join(joinTable);
         }
         
+        @NotNull
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.join(joinTable, tableAlias);
         }
 
+        @NotNull
         public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
             return QueryExpressionDSL.this.leftJoin(joinTable);
         }
         
+        @NotNull
         public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);
         }
 
+        @NotNull
         public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
             return QueryExpressionDSL.this.rightJoin(joinTable);
         }
         
+        @NotNull
         public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);
         }
 
+        @NotNull
         public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
             return QueryExpressionDSL.this.fullJoin(joinTable);
         }
         
+        @NotNull
         public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);
         }
