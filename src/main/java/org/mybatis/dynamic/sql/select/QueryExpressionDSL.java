@@ -30,15 +30,17 @@ import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.select.join.AndJoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
+import org.mybatis.dynamic.sql.select.join.OnJoinCriterion;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
-public class QueryExpressionDSL<R> implements CompletableQuery<R> {
+public class QueryExpressionDSL<R> implements Buildable<R> {
 
     private String connector;
     private SelectDSL<R> selectDSL;
@@ -63,18 +65,15 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         tableAliases.put(table, tableAlias);
     }
     
-    @Override
     public QueryExpressionWhereBuilder where() {
         return whereBuilder;
     }
 
-    @Override
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
         whereBuilder.and(column, condition);
         return whereBuilder;
     }
 
-    @Override
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
         whereBuilder.and(column, condition, subCriteria);
@@ -98,6 +97,18 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     }
 
     @NotNull
+    public QueryExpressionDSL<R> join(SqlTable joinTable, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
+        addJoinSpecificationBuilder(joinTable, joinCriterion, JoinType.INNER, joinCriteria);
+        return this;
+    }
+    
+    public QueryExpressionDSL<R> join(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
+        tableAliases.put(joinTable, tableAlias);
+        return join(joinTable, joinCriterion, joinCriteria);
+    }
+    
     public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.LEFT);
     }
@@ -109,6 +120,18 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     }
 
     @NotNull
+    public QueryExpressionDSL<R> leftJoin(SqlTable joinTable, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
+        addJoinSpecificationBuilder(joinTable, joinCriterion, JoinType.LEFT, joinCriteria);
+        return this;
+    }
+    
+    public QueryExpressionDSL<R> leftJoin(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
+        tableAliases.put(joinTable, tableAlias);
+        return leftJoin(joinTable, joinCriterion, joinCriteria);
+    }
+    
     public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);
     }
@@ -120,6 +143,18 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
     }
 
     @NotNull
+    public QueryExpressionDSL<R> rightJoin(SqlTable joinTable, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
+        addJoinSpecificationBuilder(joinTable, joinCriterion, JoinType.RIGHT, joinCriteria);
+        return this;
+    }
+    
+    public QueryExpressionDSL<R> rightJoin(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
+        tableAliases.put(joinTable, tableAlias);
+        return rightJoin(joinTable, joinCriterion, joinCriteria);
+    }
+
     public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.FULL);
     }
@@ -130,13 +165,32 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         return fullJoin(joinTable);
     }
 
-    @Override
+    public QueryExpressionDSL<R> fullJoin(SqlTable joinTable, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
+        addJoinSpecificationBuilder(joinTable, joinCriterion, JoinType.FULL, joinCriteria);
+        return this;
+    }
+    
+    public QueryExpressionDSL<R> fullJoin(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
+        tableAliases.put(joinTable, tableAlias);
+        return fullJoin(joinTable, joinCriterion, joinCriteria);
+    }
+
+    private void addJoinSpecificationBuilder(SqlTable joinTable, OnJoinCriterion joinCriterion, JoinType joinType,
+            AndJoinCriterion...joinCriteria) {
+        joinSpecificationBuilders.add(new JoinSpecification.Builder()
+                .withJoinTable(joinTable)
+                .withJoinType(joinType)
+                .withJoinCriterion(joinCriterion)
+                .withJoinCriteria(Arrays.asList(joinCriteria)));
+    }
+    
     public GroupByFinisher groupBy(BasicColumn...columns) {
         groupByModel = GroupByModel.of(columns);
         return new GroupByFinisher();
     }
     
-    @Override
     public SelectDSL<R> orderBy(SortSpecification...columns) {
         selectDSL.orderBy(columns);
         return selectDSL;
@@ -168,17 +222,14 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
                 .collect(Collectors.toList()));
     }
     
-    @Override
     public SelectDSL<R>.LimitFinisher limit(long limit) {
         return selectDSL.limit(limit);
     }
 
-    @Override
     public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
         return selectDSL.offset(offset);
     }
 
-    @Override
     public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
         return selectDSL.fetchFirst(fetchFirstRows);
     }
@@ -297,19 +348,19 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         }
 
         public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition joinCondition,
-                JoinCriterion...joinCriteria) {
+                AndJoinCriterion...joinCriteria) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType, joinCriteria);
         }
     }
 
-    public class JoinSpecificationFinisher implements CompletableQuery<R> {
+    public class JoinSpecificationFinisher implements Buildable<R> {
         private JoinSpecification.Builder joinSpecificationBuilder;
         
         public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
                 JoinCondition joinCondition, JoinType joinType) {
-            JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
+            JoinCriterion joinCriterion = new OnJoinCriterion.Builder()
+                    .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
-                    .withConnector("on") //$NON-NLS-1$
                     .build();
 
             joinSpecificationBuilder = JoinSpecification.withJoinTable(table)
@@ -320,10 +371,10 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
         }
 
         public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
-                JoinCondition joinCondition, JoinType joinType, JoinCriterion...joinCriteria) {
-            JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
+                JoinCondition joinCondition, JoinType joinType, AndJoinCriterion...joinCriteria) {
+            JoinCriterion joinCriterion = new OnJoinCriterion.Builder()
+                    .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
-                    .withConnector("on") //$NON-NLS-1$
                     .build();
             
             joinSpecificationBuilder = JoinSpecification.withJoinTable(table)
@@ -339,26 +390,23 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
             return QueryExpressionDSL.this.build();
         }
         
-        @Override
         public QueryExpressionWhereBuilder where() {
             return QueryExpressionDSL.this.where();
         }
         
-        @Override
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
             return QueryExpressionDSL.this.where(column, condition);
         }
 
-        @Override
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             return QueryExpressionDSL.this.where(column, condition, subCriteria);
         }
 
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
-            JoinCriterion joinCriterion = JoinCriterion.withJoinColumn(joinColumn)
+            JoinCriterion joinCriterion = new AndJoinCriterion.Builder()
+                    .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
-                    .withConnector("and") //$NON-NLS-1$
                     .build();
             joinSpecificationBuilder.withJoinCriterion(joinCriterion);
             return this;
@@ -404,7 +452,6 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
             return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);
         }
 
-        @Override
         public GroupByFinisher groupBy(BasicColumn...columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
@@ -417,22 +464,18 @@ public class QueryExpressionDSL<R> implements CompletableQuery<R> {
             return QueryExpressionDSL.this.unionAll();
         }
 
-        @Override
         public SelectDSL<R> orderBy(SortSpecification...columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
-        @Override
         public SelectDSL<R>.LimitFinisher limit(long limit) {
             return QueryExpressionDSL.this.limit(limit);
         }
 
-        @Override
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
             return QueryExpressionDSL.this.offset(offset);
         }
 
-        @Override
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }

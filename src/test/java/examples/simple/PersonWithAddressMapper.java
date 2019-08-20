@@ -36,7 +36,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.select.CompletableQuery;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -75,14 +75,14 @@ public interface PersonWithAddressMapper {
                     address.streetAddress, address.city, address.state);
     
     default Optional<PersonWithAddress> selectOne(SelectDSLCompleter completer) {
-        CompletableQuery<SelectModel> start = SqlBuilder.select(selectList).from(person)
-                .fullJoin(address).on(person.addressId, equalTo(address.id));
-        return MyBatis3Utils.selectOptional(this::selectOne, start, completer);
+        QueryExpressionDSL<SelectModel> start = SqlBuilder.select(selectList).from(person)
+                .join(address, on(person.addressId, equalTo(address.id)));
+        return MyBatis3Utils.selectOne(this::selectOne, start, completer);
     }
     
     default List<PersonWithAddress> select(SelectDSLCompleter completer) {
-        CompletableQuery<SelectModel> start = SqlBuilder.select(selectList).from(person)
-                .fullJoin(address).on(person.addressId, equalTo(address.id));
+        QueryExpressionDSL<SelectModel> start = SqlBuilder.select(selectList).from(person)
+                .join(address, on(person.addressId, equalTo(address.id)));
         return MyBatis3Utils.selectList(this::selectMany, start, completer);
     }
     

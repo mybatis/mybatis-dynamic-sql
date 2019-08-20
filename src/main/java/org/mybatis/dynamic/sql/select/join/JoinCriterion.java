@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,21 +19,17 @@ import java.util.Objects;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 
-public class JoinCriterion {
+public abstract class JoinCriterion {
 
-    private String connector;
     private BasicColumn leftColumn;
     private JoinCondition joinCondition;
     
-    private JoinCriterion(Builder builder) {
-        connector = Objects.requireNonNull(builder.connector);
+    protected JoinCriterion(AbstractBuilder<?> builder) {
         leftColumn = Objects.requireNonNull(builder.joinColumn);
         joinCondition = Objects.requireNonNull(builder.joinCondition);
     }
 
-    public String connector() {
-        return connector;
-    }
+    public abstract String connector();
     
     public BasicColumn leftColumn() {
         return leftColumn;
@@ -47,32 +43,20 @@ public class JoinCriterion {
         return joinCondition.operator();
     }
     
-    public static Builder withJoinColumn(BasicColumn joinColumn) {
-        return new Builder().withJoinColumn(joinColumn);
-    }
-    
-    public static class Builder {
+    public abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
         private BasicColumn joinColumn;
         private JoinCondition joinCondition;
-        private String connector;
         
-        public Builder withJoinColumn(BasicColumn joinColumn) {
+        public T withJoinColumn(BasicColumn joinColumn) {
             this.joinColumn = joinColumn;
-            return this;
+            return getThis();
         }
         
-        public Builder withJoinCondition(JoinCondition joinCondition) {
+        public T withJoinCondition(JoinCondition joinCondition) {
             this.joinCondition = joinCondition;
-            return this;
+            return getThis();
         }
         
-        public Builder withConnector(String connector) {
-            this.connector = connector;
-            return this;
-        }
-        
-        public JoinCriterion build() {
-            return new JoinCriterion(this);
-        }
+        protected abstract T getThis();
     }
 }

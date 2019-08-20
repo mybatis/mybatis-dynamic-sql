@@ -36,7 +36,6 @@ import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.CompletableQuery;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
@@ -91,7 +90,7 @@ public class MyBatis3Utils {
     }
 
     public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
-            CompletableQuery<SelectModel> start, SelectDSLCompleter completer) {
+            QueryExpressionDSL<SelectModel> start, SelectDSLCompleter completer) {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 
@@ -101,7 +100,7 @@ public class MyBatis3Utils {
     }
 
     public static <R> List<R> selectList(Function<SelectStatementProvider, List<R>> mapper,
-            CompletableQuery<SelectModel> start, SelectDSLCompleter completer) {
+            QueryExpressionDSL<SelectModel> start, SelectDSLCompleter completer) {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 
@@ -113,7 +112,7 @@ public class MyBatis3Utils {
 
     @Nullable
     public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
-            CompletableQuery<SelectModel> start,
+            QueryExpressionDSL<SelectModel> start,
             SelectDSLCompleter completer) {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
@@ -126,7 +125,7 @@ public class MyBatis3Utils {
 
     @NotNull
     public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper,
-                                  CompletableQuery<SelectModel> start,
+                                  QueryExpressionDSL<SelectModel> start,
                                   SelectDSLCompleter completer) {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
