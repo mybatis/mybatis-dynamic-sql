@@ -33,9 +33,9 @@ import org.mybatis.dynamic.sql.select.join.AndJoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
-import org.mybatis.dynamic.sql.select.join.OnJoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
+import org.mybatis.dynamic.sql.select.join.OnJoinCriterion;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
@@ -94,12 +94,14 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         return join(joinTable);
     }
 
-    public QueryExpressionDSL<R> join(SqlTable joinTable, OnJoinCriterion joinCriterion, AndJoinCriterion...joinCriteria) {
+    public QueryExpressionDSL<R> join(SqlTable joinTable, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
         addJoinSpecificationBuilder(joinTable, joinCriterion, JoinType.INNER, joinCriteria);
         return this;
     }
     
-    public QueryExpressionDSL<R> join(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion, AndJoinCriterion...joinCriteria) {
+    public QueryExpressionDSL<R> join(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
         tableAliases.put(joinTable, tableAlias);
         return join(joinTable, joinCriterion, joinCriteria);
     }
@@ -113,12 +115,14 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         return leftJoin(joinTable);
     }
 
-    public QueryExpressionDSL<R> leftJoin(SqlTable joinTable, OnJoinCriterion joinCriterion, AndJoinCriterion...joinCriteria) {
+    public QueryExpressionDSL<R> leftJoin(SqlTable joinTable, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
         addJoinSpecificationBuilder(joinTable, joinCriterion, JoinType.LEFT, joinCriteria);
         return this;
     }
     
-    public QueryExpressionDSL<R> leftJoin(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion, AndJoinCriterion...joinCriteria) {
+    public QueryExpressionDSL<R> leftJoin(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
         tableAliases.put(joinTable, tableAlias);
         return leftJoin(joinTable, joinCriterion, joinCriteria);
     }
@@ -132,12 +136,14 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         return rightJoin(joinTable);
     }
 
-    public QueryExpressionDSL<R> rightJoin(SqlTable joinTable, OnJoinCriterion joinCriterion, AndJoinCriterion...joinCriteria) {
+    public QueryExpressionDSL<R> rightJoin(SqlTable joinTable, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
         addJoinSpecificationBuilder(joinTable, joinCriterion, JoinType.RIGHT, joinCriteria);
         return this;
     }
     
-    public QueryExpressionDSL<R> rightJoin(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion, AndJoinCriterion...joinCriteria) {
+    public QueryExpressionDSL<R> rightJoin(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
         tableAliases.put(joinTable, tableAlias);
         return rightJoin(joinTable, joinCriterion, joinCriteria);
     }
@@ -151,12 +157,14 @@ public class QueryExpressionDSL<R> implements Buildable<R> {
         return fullJoin(joinTable);
     }
 
-    public QueryExpressionDSL<R> fullJoin(SqlTable joinTable, OnJoinCriterion joinCriterion, AndJoinCriterion...joinCriteria) {
+    public QueryExpressionDSL<R> fullJoin(SqlTable joinTable, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
         addJoinSpecificationBuilder(joinTable, joinCriterion, JoinType.FULL, joinCriteria);
         return this;
     }
     
-    public QueryExpressionDSL<R> fullJoin(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion, AndJoinCriterion...joinCriteria) {
+    public QueryExpressionDSL<R> fullJoin(SqlTable joinTable, String tableAlias, OnJoinCriterion joinCriterion,
+            AndJoinCriterion...joinCriteria) {
         tableAliases.put(joinTable, tableAlias);
         return fullJoin(joinTable, joinCriterion, joinCriteria);
     }
