@@ -167,9 +167,10 @@ class GeneralKotlinTest {
     @Test
     fun testRawSelectWithJoin() {
         newSession().use { session ->
-            val mapper = session.getMapper(PersonMapper::class.java)
+            val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
-            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
+                    Address.streetAddress, Address.city, Address.state)
                     .from(Person).join(Address).on(addressId, equalTo(Address.id)) {
                         where(id, isLessThan(4))
                         orderBy(id)
@@ -186,7 +187,80 @@ class GeneralKotlinTest {
                 assertThat(birthDate).isNotNull()
                 assertThat(employed).isTrue()
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
-                assertThat(addressId).isEqualTo(1)
+                assertThat(address?.id).isEqualTo(1)
+                assertThat(address?.streetAddress).isEqualTo("123 Main Street")
+                assertThat(address?.city).isEqualTo("Bedrock")
+                assertThat(address?.state).isEqualTo("IN")
+            }
+        }
+    }
+
+    @Test
+    fun testRawSelectWithJoinAndComplexWhere1() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonWithAddressMapper::class.java)
+
+            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
+                    Address.streetAddress, Address.city, Address.state)
+                    .from(Person).join(Address).on(addressId, equalTo(Address.id)) {
+                        where(id, isLessThan(5))
+                        and(id, isLessThan(4)) {
+                            and(id, isLessThan(3)) {
+                                and(id, isLessThan(2))
+                            }
+                        }
+                    }
+
+            val rows = mapper.selectMany(selectStatement)
+
+            assertThat(rows.size).isEqualTo(1)
+            with(rows[0]) {
+                assertThat(id).isEqualTo(1)
+                assertThat(firstName).isEqualTo("Fred")
+                assertThat(lastName?.name).isEqualTo("Flintstone")
+                assertThat(birthDate).isNotNull()
+                assertThat(employed).isTrue()
+                assertThat(occupation).isEqualTo("Brontosaurus Operator")
+                assertThat(address?.id).isEqualTo(1)
+                assertThat(address?.streetAddress).isEqualTo("123 Main Street")
+                assertThat(address?.city).isEqualTo("Bedrock")
+                assertThat(address?.state).isEqualTo("IN")
+            }
+        }
+    }
+
+    @Test
+    fun testRawSelectWithJoinAndComplexWhere2() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonWithAddressMapper::class.java)
+
+            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
+                    Address.streetAddress, Address.city, Address.state)
+                    .from(Person).join(Address).on(addressId, equalTo(Address.id)) {
+                        where(id, isEqualTo(5))
+                        or(id, isEqualTo(4)) {
+                            or(id, isEqualTo(3)) {
+                                or(id, isEqualTo(2))
+                            }
+                        }
+                        orderBy(id)
+                        limit(3)
+                    }
+
+            val rows = mapper.selectMany(selectStatement)
+
+            assertThat(rows.size).isEqualTo(3)
+            with(rows[2]) {
+                assertThat(id).isEqualTo(4)
+                assertThat(firstName).isEqualTo("Barney")
+                assertThat(lastName?.name).isEqualTo("Rubble")
+                assertThat(birthDate).isNotNull()
+                assertThat(employed).isTrue()
+                assertThat(occupation).isEqualTo("Brontosaurus Operator")
+                assertThat(address?.id).isEqualTo(2)
+                assertThat(address?.streetAddress).isEqualTo("456 Main Street")
+                assertThat(address?.city).isEqualTo("Bedrock")
+                assertThat(address?.state).isEqualTo("IN")
             }
         }
     }
@@ -198,14 +272,28 @@ class GeneralKotlinTest {
 
             val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
                     .from(Person) {
-                        where(id, isLessThan(4))
+                        where(id, isLessThan(5))
+                        and(id, isLessThan(4)) {
+                            and(id, isLessThan(3)) {
+                                and(id, isLessThan(2))
+                            }
+                        }
                         orderBy(id)
                         limit(3)
                     }
 
+            val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id" +
+                    " from Person" +
+                    " where id < #{parameters.p1,jdbcType=INTEGER}" +
+                    " and (id < #{parameters.p2,jdbcType=INTEGER}" +
+                    " and (id < #{parameters.p3,jdbcType=INTEGER} and id < #{parameters.p4,jdbcType=INTEGER}))" +
+                    " order by id limit #{parameters._limit}"
+
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
             val rows = mapper.selectMany(selectStatement)
 
-            assertThat(rows.size).isEqualTo(3)
+            assertThat(rows.size).isEqualTo(1)
             with(rows[0]) {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
@@ -214,6 +302,47 @@ class GeneralKotlinTest {
                 assertThat(employed).isTrue()
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
                 assertThat(addressId).isEqualTo(1)
+            }
+        }
+    }
+
+    @Test
+    fun testRawSelectWithComplexWhere2() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+                    .from(Person) {
+                        where(id, isEqualTo(5))
+                        or(id, isEqualTo(4)) {
+                            or(id, isEqualTo(3)) {
+                                or(id, isEqualTo(2))
+                            }
+                        }
+                        orderBy(id)
+                        limit(3)
+                    }
+
+            val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id" +
+                    " from Person" +
+                    " where id = #{parameters.p1,jdbcType=INTEGER}" +
+                    " or (id = #{parameters.p2,jdbcType=INTEGER}" +
+                    " or (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER}))" +
+                    " order by id limit #{parameters._limit}"
+
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
+            val rows = mapper.selectMany(selectStatement)
+
+            assertThat(rows.size).isEqualTo(3)
+            with(rows[2]) {
+                assertThat(id).isEqualTo(4)
+                assertThat(firstName).isEqualTo("Barney")
+                assertThat(lastName?.name).isEqualTo("Rubble")
+                assertThat(birthDate).isNotNull()
+                assertThat(employed).isTrue()
+                assertThat(occupation).isEqualTo("Brontosaurus Operator")
+                assertThat(addressId).isEqualTo(2)
             }
         }
     }
