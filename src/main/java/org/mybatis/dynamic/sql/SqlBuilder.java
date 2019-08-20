@@ -44,8 +44,9 @@ import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Subtract;
 import org.mybatis.dynamic.sql.select.function.Upper;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
+import org.mybatis.dynamic.sql.select.join.AndJoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
-import org.mybatis.dynamic.sql.select.join.JoinCriterion;
+import org.mybatis.dynamic.sql.select.join.OnJoinCriterion;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -191,10 +192,17 @@ public interface SqlBuilder {
     }
 
     // join support
-    static JoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
-        return JoinCriterion.withJoinColumn(joinColumn)
+    static OnJoinCriterion on(BasicColumn joinColumn, JoinCondition joinCondition) {
+        return new OnJoinCriterion.Builder()
+                .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
-                .withConnector("and") //$NON-NLS-1$
+                .build();
+    }
+    
+    static AndJoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
+        return new AndJoinCriterion.Builder()
+                .withJoinColumn(joinColumn)
+                .withJoinCondition(joinCondition)
                 .build();
     }
     

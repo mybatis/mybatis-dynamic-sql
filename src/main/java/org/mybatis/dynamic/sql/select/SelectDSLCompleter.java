@@ -63,7 +63,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
  */
 @FunctionalInterface
 public interface SelectDSLCompleter extends
-        Function<CompletableQuery<SelectModel>, Buildable<SelectModel>> {
+        Function<QueryExpressionDSL<SelectModel>, Buildable<SelectModel>> {
     
     /**
      * Returns a completer that can be used to select every row in a table.

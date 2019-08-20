@@ -69,13 +69,47 @@ public class JoinMapperTest {
     }
     
     @Test
-    public void testSingleTableJoin() {
+    public void testSingleTableJoin1() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                     .from(orderMaster, "om")
                     .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            
+            String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
+                    + " from OrderMaster om join OrderDetail od on om.order_id = od.order_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<OrderMaster> rows = mapper.selectMany(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(2);
+            OrderMaster orderMaster = rows.get(0);
+            assertThat(orderMaster.getId()).isEqualTo(1);
+            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            OrderDetail orderDetail = orderMaster.getDetails().get(0);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+            orderDetail = orderMaster.getDetails().get(1);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(2);
+
+            orderMaster = rows.get(1);
+            assertThat(orderMaster.getId()).isEqualTo(2);
+            assertThat(orderMaster.getDetails().size()).isEqualTo(1);
+            orderDetail = orderMaster.getDetails().get(0);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+        }
+    }
+    
+    @Test
+    public void testSingleTableJoin2() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+                    .from(orderMaster, "om")
+                    .join(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             
@@ -131,6 +165,62 @@ public class JoinMapperTest {
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
     }
     
+    @Test
+    public void testCompoundJoin3() {
+        // this is a nonsensical join, but it does test the "and" capability
+        SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+                .from(orderMaster, "om")
+                .join(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        
+        String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
+                + " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+    }
+
+    @Test
+    public void testCompoundJoin4() {
+        // this is a nonsensical join, but it does test the "and" capability
+        SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+                .from(orderMaster, "om")
+                .leftJoin(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        
+        String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
+                + " from OrderMaster om left join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+    }
+
+    @Test
+    public void testCompoundJoin5() {
+        // this is a nonsensical join, but it does test the "and" capability
+        SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+                .from(orderMaster, "om")
+                .rightJoin(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        
+        String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
+                + " from OrderMaster om right join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+    }
+
+    @Test
+    public void testCompoundJoin6() {
+        // this is a nonsensical join, but it does test the "and" capability
+        SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+                .from(orderMaster, "om")
+                .fullJoin(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        
+        String expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
+                + " from OrderMaster om full join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+    }
+
     @Test
     public void testMultipleTableJoinWithWhereClause() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
@@ -332,6 +422,42 @@ public class JoinMapperTest {
     }
 
     @Test
+    public void testRightJoin3() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
+                    .rightJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
+                    .orderBy(orderLine.orderId, itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            
+            String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
+                    + " right join ItemMaster im on ol.item_id = im.item_id"
+                    + " order by order_id, item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(5);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("ORDER_ID")).isNull();
+            assertThat(row.get("QUANTITY")).isNull();
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
+            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+
+            row = rows.get(4);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
+            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+        }
+    }
+
+    @Test
     public void testRightJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
@@ -410,6 +536,42 @@ public class JoinMapperTest {
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .leftJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .orderBy(orderLine.orderId, itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            
+            String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
+                    + " left join ItemMaster im on ol.item_id = im.item_id"
+                    + " order by order_id, item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(5);
+            Map<String, Object> row = rows.get(2);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(6);
+            assertThat(row.get("DESCRIPTION")).isNull();
+            assertThat(row.get("ITEM_ID")).isNull();
+
+            row = rows.get(4);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
+            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+        }
+    }
+
+    @Test
+    public void testLeftJoin3() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
+                    .leftJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -523,6 +685,48 @@ public class JoinMapperTest {
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .fullJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .orderBy(orderLine.orderId, itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            
+            String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
+                    + " full join ItemMaster im on ol.item_id = im.item_id"
+                    + " order by order_id, item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(6);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row.get("ORDER_ID")).isNull();
+            assertThat(row.get("QUANTITY")).isNull();
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
+            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+
+            row = rows.get(3);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(6);
+            assertThat(row.get("DESCRIPTION")).isNull();
+            assertThat(row.get("ITEM_ID")).isNull();
+
+            row = rows.get(5);
+            assertThat(row.get("ORDER_ID")).isEqualTo(2);
+            assertThat(row.get("QUANTITY")).isEqualTo(1);
+            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
+            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+        }
+    }
+
+    @Test
+    public void testFullJoin3() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
+                    .fullJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
