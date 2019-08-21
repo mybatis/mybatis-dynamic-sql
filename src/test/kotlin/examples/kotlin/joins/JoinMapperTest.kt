@@ -61,8 +61,8 @@ class JoinMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
-            val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderDetail.lineNumber, OrderDetail.description,
-                    OrderDetail.quantity).from(OrderMaster, "om") {
+            val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderDetail.lineNumber,
+                    OrderDetail.description, OrderDetail.quantity).from(OrderMaster, "om") {
                 join(OrderDetail, "od") {
                     on(OrderMaster.orderId, equalTo(OrderDetail.orderId))
                 }
@@ -143,7 +143,8 @@ class JoinMapperTest {
             }
 
             val expectedStatement = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity" +
-                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id" +
+                    " from OrderMaster om join OrderLine ol" +
+                    " on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id" +
                     " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
@@ -164,8 +165,8 @@ class JoinMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
-            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description)
-                    .from(OrderMaster, "om") {
+            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
+                    ItemMaster.description).from(OrderMaster, "om") {
                         join(OrderLine, "ol") {
                             on(OrderMaster.orderId, equalTo(OrderLine.orderId))
                         }
@@ -214,8 +215,8 @@ class JoinMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
-            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description)
-                    .from(OrderMaster, "om") {
+            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
+                    ItemMaster.description).from(OrderMaster, "om") {
                         join(OrderLine, "ol") {
                             on(OrderMaster.orderId, equalTo(OrderLine.orderId))
                         }
@@ -264,8 +265,8 @@ class JoinMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
-            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description)
-                    .from(OrderMaster, "om") {
+            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
+                    ItemMaster.description).from(OrderMaster, "om") {
                         join(OrderLine, "ol") {
                             on(OrderMaster.orderId, equalTo(OrderLine.orderId))
                         }
@@ -307,8 +308,8 @@ class JoinMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
-            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description)
-                    .from(OrderMaster, "om") {
+            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
+                    ItemMaster.description).from(OrderMaster, "om") {
                         join(OrderLine, "ol") {
                             on(OrderMaster.orderId, equalTo(OrderLine.orderId))
                         }
@@ -350,8 +351,8 @@ class JoinMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
-            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description)
-                    .from(OrderMaster, "om") {
+            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
+                    ItemMaster.description).from(OrderMaster, "om") {
                         join(OrderLine, "ol") {
                             on(OrderMaster.orderId, equalTo(OrderLine.orderId))
                         }
@@ -392,8 +393,8 @@ class JoinMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
-            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description)
-                    .from(OrderMaster, "om") {
+            val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
+                    ItemMaster.description).from(OrderMaster, "om") {
                         join(OrderLine, "ol") {
                             on(OrderMaster.orderId, equalTo(OrderLine.orderId))
                         }

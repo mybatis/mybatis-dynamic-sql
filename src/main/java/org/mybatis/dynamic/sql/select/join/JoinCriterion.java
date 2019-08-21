@@ -19,17 +19,21 @@ import java.util.Objects;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 
-public abstract class JoinCriterion {
+public class JoinCriterion {
 
+    private String connector;
     private BasicColumn leftColumn;
     private JoinCondition joinCondition;
     
-    protected JoinCriterion(AbstractBuilder<?> builder) {
+    private JoinCriterion(Builder builder) {
+        connector = Objects.requireNonNull(builder.connector);
         leftColumn = Objects.requireNonNull(builder.joinColumn);
         joinCondition = Objects.requireNonNull(builder.joinCondition);
     }
 
-    public abstract String connector();
+    public String connector() {
+        return connector;
+    }
     
     public BasicColumn leftColumn() {
         return leftColumn;
@@ -43,20 +47,28 @@ public abstract class JoinCriterion {
         return joinCondition.operator();
     }
     
-    public abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
+    public static class Builder {
+        private String connector;
         private BasicColumn joinColumn;
         private JoinCondition joinCondition;
         
-        public T withJoinColumn(BasicColumn joinColumn) {
+        public Builder withConnector(String connector) {
+            this.connector = connector;
+            return this;
+        }
+        
+        public Builder withJoinColumn(BasicColumn joinColumn) {
             this.joinColumn = joinColumn;
-            return getThis();
+            return this;
         }
         
-        public T withJoinCondition(JoinCondition joinCondition) {
+        public Builder withJoinCondition(JoinCondition joinCondition) {
             this.joinCondition = joinCondition;
-            return getThis();
+            return this;
         }
         
-        protected abstract T getThis();
+        public JoinCriterion build() {
+            return new JoinCriterion(this);
+        }
     }
 }

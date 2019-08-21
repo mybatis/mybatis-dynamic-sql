@@ -26,7 +26,7 @@ fun <T> DeleteDSL<DeleteModel>.where(column: BindableColumn<T>, condition: Visit
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            where(column, condition, *collector.criteria())
+            where(column, condition, collector.criteria)
         }
 
 fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -39,7 +39,7 @@ fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: Visitab
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            where().and(column, condition, *collector.criteria())
+            where().and(column, condition, collector.criteria)
         }
 
 fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -52,7 +52,7 @@ fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: Visitabl
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            where().or(column, condition, *collector.criteria())
+            where().or(column, condition, collector.criteria)
         }
 
 fun DeleteDSL<DeleteModel>.allRows() = this as Buildable<DeleteModel>

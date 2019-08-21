@@ -34,7 +34,8 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
 private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
         Address.streetAddress, Address.city, Address.state)
 
-fun PersonWithAddressMapper.selectOne(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>): PersonWithAddress? {
+fun PersonWithAddressMapper.selectOne(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>):
+        PersonWithAddress? {
     val start: QueryExpressionDSL<SelectModel> = select(*selectList).fromJoining(Person) {
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))
@@ -42,10 +43,10 @@ fun PersonWithAddressMapper.selectOne(completer: QueryExpressionDSL<SelectModel>
     }
 
     return MyBatis3Utils.selectOne(this::selectOne, start, completer)
-
 }
 
-fun PersonWithAddressMapper.select(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>): List<PersonWithAddress> {
+fun PersonWithAddressMapper.select(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>):
+        List<PersonWithAddress> {
     val start: QueryExpressionDSL<SelectModel> = select(*selectList).fromJoining(Person, "p") {
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))

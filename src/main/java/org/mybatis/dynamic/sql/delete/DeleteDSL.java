@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -43,13 +44,14 @@ public class DeleteDSL<R> implements Buildable<R> {
         return whereBuilder;
     }
     
-    public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        whereBuilder.and(column, condition);
-        return whereBuilder;
-    }
-    
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
+        whereBuilder.and(column, condition, subCriteria);
+        return whereBuilder;
+    }
+
+    public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
+            List<SqlCriterion<?>> subCriteria) {
         whereBuilder.and(column, condition, subCriteria);
         return whereBuilder;
     }

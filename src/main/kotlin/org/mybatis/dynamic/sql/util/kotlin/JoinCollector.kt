@@ -16,17 +16,17 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.select.join.AndJoinCriterion
 import org.mybatis.dynamic.sql.select.join.JoinCondition
-import org.mybatis.dynamic.sql.select.join.OnJoinCriterion
+import org.mybatis.dynamic.sql.select.join.JoinCriterion
 
 class JoinCollector {
-    lateinit var onJoinCriterion: OnJoinCriterion
-    var andJoinCriteria = mutableListOf<AndJoinCriterion>()
+    lateinit var onJoinCriterion: JoinCriterion
+    val andJoinCriteria = mutableListOf<JoinCriterion>()
 
     fun on(column: BasicColumn, condition: JoinCondition) =
             apply {
-                onJoinCriterion = OnJoinCriterion.Builder()
+                onJoinCriterion = JoinCriterion.Builder()
+                        .withConnector("on")
                         .withJoinColumn(column)
                         .withJoinCondition(condition)
                         .build()
@@ -34,12 +34,11 @@ class JoinCollector {
 
     fun and(column: BasicColumn, condition: JoinCondition) =
             apply {
-                andJoinCriteria.add(AndJoinCriterion.Builder()
+                andJoinCriteria.add(JoinCriterion.Builder()
+                        .withConnector("and")
                         .withJoinColumn(column)
                         .withJoinCondition(condition)
                         .build())
 
             }
-
-    fun andJoinCriteria() = andJoinCriteria.toTypedArray()
 }

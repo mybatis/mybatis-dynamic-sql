@@ -31,6 +31,8 @@ import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
 
+typealias QueryExpressionCompleter = QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>
+
 fun deleteFrom(table: SqlTable, complete: DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>) =
         complete(SqlBuilder.deleteFrom(table)).build().render(RenderingStrategies.MYBATIS3)
 
@@ -43,11 +45,11 @@ fun <T> insertMultiple(mapper: (MultiRowInsertStatementProvider<T>) -> Int, reco
         MyBatis3Utils.insertMultiple(mapper, records, table, completer)
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable,
-                                                      complete: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>) =
+                                                      complete: QueryExpressionCompleter) =
         complete(from(table)).build().render(RenderingStrategies.MYBATIS3)
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: String,
-                                                      complete: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>) =
+                                                      complete: QueryExpressionCompleter) =
         complete(from(table, alias)).build().render(RenderingStrategies.MYBATIS3)
 
 fun update(table: SqlTable, complete: UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>) =

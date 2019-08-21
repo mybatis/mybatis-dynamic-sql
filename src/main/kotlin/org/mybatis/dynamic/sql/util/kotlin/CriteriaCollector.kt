@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
 class CriteriaCollector {
-    private val criteria = mutableListOf<SqlCriterion<*>>()
+    val criteria = mutableListOf<SqlCriterion<*>>()
 
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
             apply {
@@ -63,6 +63,4 @@ class CriteriaCollector {
                         .build()
                 criteria.add(criterion)
             }
-
-    fun criteria() = criteria.toTypedArray()
 }

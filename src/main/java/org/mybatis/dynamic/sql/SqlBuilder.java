@@ -43,10 +43,9 @@ import org.mybatis.dynamic.sql.select.function.Multiply;
 import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Subtract;
 import org.mybatis.dynamic.sql.select.function.Upper;
-import org.mybatis.dynamic.sql.select.join.AndJoinCriterion;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
-import org.mybatis.dynamic.sql.select.join.OnJoinCriterion;
+import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -192,15 +191,17 @@ public interface SqlBuilder {
     }
 
     // join support
-    static AndJoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
-        return new AndJoinCriterion.Builder()
+    static JoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
+        return new JoinCriterion.Builder()
+                .withConnector("and") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .build();
     }
     
-    static OnJoinCriterion on(BasicColumn joinColumn, JoinCondition joinCondition) {
-        return new OnJoinCriterion.Builder()
+    static JoinCriterion on(BasicColumn joinColumn, JoinCondition joinCondition) {
+        return new JoinCriterion.Builder()
+                .withConnector("on") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .build();

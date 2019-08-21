@@ -91,7 +91,8 @@ fun PersonMapper.select(completer: QueryExpressionDSL<SelectModel>.() -> Buildab
         MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
 
 
-fun PersonMapper.selectDistinct(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>): List<PersonRecord> =
+fun PersonMapper.selectDistinct(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>):
+        List<PersonRecord> =
         MyBatis3Utils.selectDistinct(this::selectMany, selectList, Person, completer)
 
 fun PersonMapper.selectByPrimaryKey(id_: Int) =

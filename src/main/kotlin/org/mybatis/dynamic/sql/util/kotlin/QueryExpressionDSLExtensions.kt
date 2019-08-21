@@ -22,68 +22,71 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
-fun QueryExpressionDSL<SelectModel>.join(table: SqlTable, collect: JoinCollector.() -> JoinCollector) =
+typealias JoinReceiver = JoinCollector.() -> JoinCollector
+typealias CriteriaReceiver = CriteriaCollector.() -> CriteriaCollector
+
+fun QueryExpressionDSL<SelectModel>.join(table: SqlTable, collect: JoinReceiver) =
         apply {
             val collector = JoinCollector()
             collect(collector)
-            join(table, collector.onJoinCriterion, *collector.andJoinCriteria())
+            join(table, collector.onJoinCriterion, collector.andJoinCriteria)
         }
 
-fun QueryExpressionDSL<SelectModel>.join(table: SqlTable, alias: String, collect: JoinCollector.() -> JoinCollector) =
+fun QueryExpressionDSL<SelectModel>.join(table: SqlTable, alias: String, collect: JoinReceiver) =
         apply {
             val collector = JoinCollector()
             collect(collector)
-            join(table, alias, collector.onJoinCriterion, *collector.andJoinCriteria())
+            join(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
         }
 
-fun QueryExpressionDSL<SelectModel>.fullJoin(table: SqlTable, collect: JoinCollector.() -> JoinCollector) =
+fun QueryExpressionDSL<SelectModel>.fullJoin(table: SqlTable, collect: JoinReceiver) =
         apply {
             val collector = JoinCollector()
             collect(collector)
-            fullJoin(table, collector.onJoinCriterion, *collector.andJoinCriteria())
+            fullJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
         }
 
-fun QueryExpressionDSL<SelectModel>.fullJoin(table: SqlTable, alias: String, collect: JoinCollector.() -> JoinCollector) =
+fun QueryExpressionDSL<SelectModel>.fullJoin(table: SqlTable, alias: String, collect: JoinReceiver) =
         apply {
             val collector = JoinCollector()
             collect(collector)
-            fullJoin(table, alias, collector.onJoinCriterion, *collector.andJoinCriteria())
+            fullJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
         }
 
-fun QueryExpressionDSL<SelectModel>.leftJoin(table: SqlTable, collect: JoinCollector.() -> JoinCollector) =
+fun QueryExpressionDSL<SelectModel>.leftJoin(table: SqlTable, collect: JoinReceiver) =
         apply {
             val collector = JoinCollector()
             collect(collector)
-            leftJoin(table, collector.onJoinCriterion, *collector.andJoinCriteria())
+            leftJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
         }
 
-fun QueryExpressionDSL<SelectModel>.leftJoin(table: SqlTable, alias: String, collect: JoinCollector.() -> JoinCollector) =
+fun QueryExpressionDSL<SelectModel>.leftJoin(table: SqlTable, alias: String, collect: JoinReceiver) =
         apply {
             val collector = JoinCollector()
             collect(collector)
-            leftJoin(table, alias, collector.onJoinCriterion, *collector.andJoinCriteria())
+            leftJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
         }
 
-fun QueryExpressionDSL<SelectModel>.rightJoin(table: SqlTable, collect: JoinCollector.() -> JoinCollector) =
+fun QueryExpressionDSL<SelectModel>.rightJoin(table: SqlTable, collect: JoinReceiver) =
         apply {
             val collector = JoinCollector()
             collect(collector)
-            rightJoin(table, collector.onJoinCriterion, *collector.andJoinCriteria())
+            rightJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
         }
 
-fun QueryExpressionDSL<SelectModel>.rightJoin(table: SqlTable, alias: String, collect: JoinCollector.() -> JoinCollector) =
+fun QueryExpressionDSL<SelectModel>.rightJoin(table: SqlTable, alias: String, collect: JoinReceiver) =
         apply {
             val collector = JoinCollector()
             collect(collector)
-            rightJoin(table, alias, collector.onJoinCriterion, *collector.andJoinCriteria())
+            rightJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
         }
 
 fun <T> QueryExpressionDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                              collect: CriteriaCollector.() -> CriteriaCollector) =
+                                              collect: CriteriaReceiver) =
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            where(column, condition, *collector.criteria())
+            where(column, condition, collector.criteria)
         }
 
 fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -92,11 +95,11 @@ fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition
         }
 
 fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                            collect: CriteriaCollector.() -> CriteriaCollector) =
+                                            collect: CriteriaReceiver) =
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            where().and(column, condition, *collector.criteria())
+            where().and(column, condition, collector.criteria)
         }
 
 fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -105,11 +108,11 @@ fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition:
         }
 
 fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                           collect: CriteriaCollector.() -> CriteriaCollector) =
+                                           collect: CriteriaReceiver) =
         apply {
             val collector = CriteriaCollector()
             collect(collector)
-            where().or(column, condition, *collector.criteria())
+            where().or(column, condition, collector.criteria)
         }
 
 fun QueryExpressionDSL<SelectModel>.allRows() = this as Buildable<SelectModel>
