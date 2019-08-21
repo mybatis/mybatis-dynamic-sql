@@ -45,7 +45,7 @@ fun PersonWithAddressMapper.selectOne(completer: QueryExpressionDSL<SelectModel>
 }
 
 fun PersonWithAddressMapper.select(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>): List<PersonWithAddress> {
-    val start: QueryExpressionDSL<SelectModel> = select(*selectList).fromJoining(Person) {
+    val start: QueryExpressionDSL<SelectModel> = select(*selectList).fromJoining(Person, "p") {
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))
         }
