@@ -16,70 +16,12 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
-import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
-typealias JoinReceiver = JoinCollector.() -> JoinCollector
 typealias CriteriaReceiver = CriteriaCollector.() -> CriteriaCollector
-
-fun QueryExpressionDSL<SelectModel>.join(table: SqlTable, collect: JoinReceiver) =
-        apply {
-            val collector = JoinCollector()
-            collect(collector)
-            join(table, collector.onJoinCriterion, collector.andJoinCriteria)
-        }
-
-fun QueryExpressionDSL<SelectModel>.join(table: SqlTable, alias: String, collect: JoinReceiver) =
-        apply {
-            val collector = JoinCollector()
-            collect(collector)
-            join(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
-        }
-
-fun QueryExpressionDSL<SelectModel>.fullJoin(table: SqlTable, collect: JoinReceiver) =
-        apply {
-            val collector = JoinCollector()
-            collect(collector)
-            fullJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
-        }
-
-fun QueryExpressionDSL<SelectModel>.fullJoin(table: SqlTable, alias: String, collect: JoinReceiver) =
-        apply {
-            val collector = JoinCollector()
-            collect(collector)
-            fullJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
-        }
-
-fun QueryExpressionDSL<SelectModel>.leftJoin(table: SqlTable, collect: JoinReceiver) =
-        apply {
-            val collector = JoinCollector()
-            collect(collector)
-            leftJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
-        }
-
-fun QueryExpressionDSL<SelectModel>.leftJoin(table: SqlTable, alias: String, collect: JoinReceiver) =
-        apply {
-            val collector = JoinCollector()
-            collect(collector)
-            leftJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
-        }
-
-fun QueryExpressionDSL<SelectModel>.rightJoin(table: SqlTable, collect: JoinReceiver) =
-        apply {
-            val collector = JoinCollector()
-            collect(collector)
-            rightJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
-        }
-
-fun QueryExpressionDSL<SelectModel>.rightJoin(table: SqlTable, alias: String, collect: JoinReceiver) =
-        apply {
-            val collector = JoinCollector()
-            collect(collector)
-            rightJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
-        }
 
 fun <T> QueryExpressionDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
                                               collect: CriteriaReceiver) =
