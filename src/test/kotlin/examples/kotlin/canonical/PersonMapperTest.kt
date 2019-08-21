@@ -30,7 +30,9 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.*
+import org.mybatis.dynamic.sql.util.kotlin.allRows
+import org.mybatis.dynamic.sql.util.kotlin.and
+import org.mybatis.dynamic.sql.util.kotlin.or
 import java.io.InputStreamReader
 import java.sql.DriverManager
 import java.util.*
@@ -469,7 +471,7 @@ class PersonMapperTest {
             val record = mapper.selectByPrimaryKey(1)
 
             assertThat(record).isNotNull()
-            with (record!!) {
+            with(record!!) {
                 assertThat(id).isEqualTo(1)
                 assertThat(employed).isTrue()
                 assertThat(firstName).isEqualTo("Fred")

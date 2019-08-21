@@ -36,7 +36,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.*
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.from
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
@@ -142,7 +144,7 @@ class GeneralKotlinTest {
 
             val deleteStatement = deleteFrom(Person) {
                 where(id, isLessThan(4))
-                or (occupation, isNotNull()){
+                or(occupation, isNotNull()) {
                     and(employed, isEqualTo(true))
                 }
             }
@@ -165,7 +167,7 @@ class GeneralKotlinTest {
 
             val deleteStatement = deleteFrom(Person) {
                 where(id, isLessThan(4))
-                and (occupation, isNotNull()){
+                and(occupation, isNotNull()) {
                     and(employed, isEqualTo(true))
                 }
             }
@@ -218,7 +220,7 @@ class GeneralKotlinTest {
 
             val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
                     Address.streetAddress, Address.city, Address.state)
-                    .from(Person){
+                    .from(Person) {
                         join(Address) {
                             on(addressId, equalTo(Address.id))
                         }

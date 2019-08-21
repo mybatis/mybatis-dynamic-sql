@@ -15,4 +15,4 @@
  */
 package examples.kotlin.canonical
 
-data class LastName (var name: String)
+data class LastName(var name: String)

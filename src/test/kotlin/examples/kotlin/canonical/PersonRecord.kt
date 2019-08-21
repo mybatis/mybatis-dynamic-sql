@@ -15,7 +15,7 @@
  */
 package examples.kotlin.canonical
 
-import java.util.Date
+import java.util.*
 
 data class PersonRecord(var id: Int? = null, var firstName: String? = null, var lastName: LastName? = null,
                         var birthDate: Date? = null, var employed: Boolean? = null, var occupation: String? = null,

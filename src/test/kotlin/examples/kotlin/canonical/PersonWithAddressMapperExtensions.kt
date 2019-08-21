@@ -27,8 +27,9 @@ import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.kotlin.fromJoining
+import org.mybatis.dynamic.sql.util.kotlin.fullJoin
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
-import org.mybatis.dynamic.sql.util.kotlin.*
 
 private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
         Address.streetAddress, Address.city, Address.state)
