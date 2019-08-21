@@ -15,9 +15,7 @@
  */
 package examples.kotlin.joins
 
-import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
-import org.apache.ibatis.annotations.Results
 import org.apache.ibatis.annotations.SelectProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
@@ -29,12 +27,4 @@ interface JoinMapper {
 
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
     fun generalSelect(selectStatement: SelectStatementProvider): List<Map<String, Any>>
-
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    @Results(value = [
-        Result(column = "user_id", property = "userId"),
-        Result(column = "user_name", property = "userName"),
-        Result(column = "parent_id", property = "parentId")
-    ])
-    fun selectUsers(selectStatement: SelectStatementProvider): List<User>
 }
