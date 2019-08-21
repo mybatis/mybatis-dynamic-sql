@@ -24,21 +24,32 @@ import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.select.CompletableQuery
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
+import org.mybatis.dynamic.sql.util.kotlin.*
 
 private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
         Address.streetAddress, Address.city, Address.state)
 
-fun PersonWithAddressMapper.selectOne(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): PersonWithAddress? {
-    val start = select(*selectList).from(Person).fullJoin(Address).on(Person.addressId, equalTo(Address.id))
+fun PersonWithAddressMapper.selectOne(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>): PersonWithAddress? {
+    val start: QueryExpressionDSL<SelectModel> = select(*selectList).fromJoining(Person) {
+        fullJoin(Address) {
+            on(Person.addressId, equalTo(Address.id))
+        }
+    }
+
     return MyBatis3Utils.selectOne(this::selectOne, start, completer)
+
 }
 
-fun PersonWithAddressMapper.select(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): List<PersonWithAddress> {
-    val start = select(*selectList).from(Person).fullJoin(Address).on(Person.addressId, equalTo(Address.id))
+fun PersonWithAddressMapper.select(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>): List<PersonWithAddress> {
+    val start: QueryExpressionDSL<SelectModel> = select(*selectList).fromJoining(Person) {
+        fullJoin(Address) {
+            on(Person.addressId, equalTo(Address.id))
+        }
+    }
     return MyBatis3Utils.selectList(this::selectMany, start, completer)
 }
 

@@ -26,16 +26,16 @@ import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.select.CompletableQuery
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
-import org.mybatis.dynamic.sql.util.kotlin.insert
-import org.mybatis.dynamic.sql.util.kotlin.insertMultiple
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultiple
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
 
-fun PersonMapper.count(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>) =
+fun PersonMapper.count(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>) =
         MyBatis3Utils.count(this::count, Person, completer)
 
 fun PersonMapper.delete(completer: DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>) =
@@ -84,14 +84,14 @@ fun PersonMapper.insertSelective(record: PersonRecord) =
 
 private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
-fun PersonMapper.selectOne(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>) =
+fun PersonMapper.selectOne(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>) =
         MyBatis3Utils.selectOne(this::selectOne, selectList, Person, completer)
 
-fun PersonMapper.select(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): List<PersonRecord> =
+fun PersonMapper.select(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>): List<PersonRecord> =
         MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
 
 
-fun PersonMapper.selectDistinct(completer: CompletableQuery<SelectModel>.() -> Buildable<SelectModel>): List<PersonRecord> =
+fun PersonMapper.selectDistinct(completer: QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>): List<PersonRecord> =
         MyBatis3Utils.selectDistinct(this::selectMany, selectList, Person, completer)
 
 fun PersonMapper.selectByPrimaryKey(id_: Int) =

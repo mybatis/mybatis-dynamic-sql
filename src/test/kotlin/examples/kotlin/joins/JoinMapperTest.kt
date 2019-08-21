@@ -33,6 +33,7 @@ import examples.kotlin.joins.ItemMasterDynamicSQLSupport.ItemMaster
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.assertj.core.api.Assertions.assertThat
 import org.mybatis.dynamic.sql.util.kotlin.*
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
 
 class JoinMapperTest {
 
@@ -102,21 +103,23 @@ class JoinMapperTest {
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatment)
         }
 
-        @Test
-        fun testCompoundJoin2() {
-            // this is a nonsensical join, but it does test the "and" capability
-            val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderDetail.lineNumber, OrderDetail.description, OrderDetail.quantity)
-                    .from(OrderMaster, "om")
-                    .join(OrderDetail, "od").on(OrderMaster.orderId, equalTo(OrderDetail.orderId))
-                    .and(OrderMaster.orderId, equalTo(OrderDetail.orderId)) {
-                        where(OrderMaster.orderId, isEqualTo(1))
-                    }
-
-            val expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
-                    " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id" +
-                    " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
-            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatment)
+    @Test
+    fun testCompoundJoin2() {
+        // this is a nonsensical join, but it does test the "and" capability
+        val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderDetail.lineNumber,
+                OrderDetail.description, OrderDetail.quantity).from(OrderMaster, "om") {
+            join(OrderDetail, "od") {
+                on(OrderMaster.orderId, equalTo(OrderDetail.orderId))
+                and(OrderMaster.orderId, equalTo(OrderDetail.orderId))
+            }
+            where(OrderMaster.orderId, isEqualTo(1))
         }
+
+        val expectedStatment = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
+                " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id" +
+                " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
+        assertThat(selectStatement.selectStatement).isEqualTo(expectedStatment)
+    }
 
 
     @Test
@@ -124,31 +127,35 @@ class JoinMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
-            val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderLine.lineNumber, ItemMaster.description, OrderLine.quantity)
-                        .from(OrderMaster, "om")
-                        .join(OrderLine, "ol").on(OrderMaster.orderId, equalTo(OrderLine.orderId))
-                        .join(ItemMaster, "im").on(OrderLine.itemId, equalTo(ItemMaster.itemId)) {
-                        where(OrderMaster.orderId, isEqualTo(2))
-                    }
-
-                val expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity" +
-                        " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id" +
-                        " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
-                assertThat(selectStatement.selectStatement).isEqualTo(expectedStatment)
-
-                val rows = mapper.selectMany(selectStatement)
-
-                assertThat(rows.size).isEqualTo(1)
-                val orderMaster = rows[0]
-                assertThat(orderMaster.id).isEqualTo(2)
-                assertThat(orderMaster.details?.size).isEqualTo(2)
-
-                var orderDetail = orderMaster.details?.get(0)
-                assertThat(orderDetail?.lineNumber).isEqualTo(1)
-                orderDetail = orderMaster.details?.get(1)
-                assertThat(orderDetail?.lineNumber).isEqualTo(2)
+            val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderLine.lineNumber,
+                    ItemMaster.description, OrderLine.quantity).from(OrderMaster, "om") {
+                join(OrderLine, "ol") {
+                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                }
+                join(ItemMaster, "im") {
+                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                }
+                where(OrderMaster.orderId, isEqualTo(2))
             }
+
+            val expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity" +
+                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id" +
+                    " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatment)
+
+            val rows = mapper.selectMany(selectStatement)
+
+            assertThat(rows.size).isEqualTo(1)
+            val orderMaster = rows[0]
+            assertThat(orderMaster.id).isEqualTo(2)
+            assertThat(orderMaster.details?.size).isEqualTo(2)
+
+            var orderDetail = orderMaster.details?.get(0)
+            assertThat(orderDetail?.lineNumber).isEqualTo(1)
+            orderDetail = orderMaster.details?.get(1)
+            assertThat(orderDetail?.lineNumber).isEqualTo(2)
         }
+    }
 
     //    @Test
     //    public void testMultipleTableJoinWithComplexWhereClause() {

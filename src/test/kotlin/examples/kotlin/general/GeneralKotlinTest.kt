@@ -36,6 +36,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.*
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
@@ -217,7 +218,10 @@ class GeneralKotlinTest {
 
             val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
                     Address.streetAddress, Address.city, Address.state)
-                    .from(Person).join(Address).on(addressId, equalTo(Address.id)) {
+                    .from(Person){
+                        join(Address) {
+                            on(addressId, equalTo(Address.id))
+                        }
                         where(id, isLessThan(4))
                         orderBy(id)
                         limit(3)
@@ -248,7 +252,10 @@ class GeneralKotlinTest {
 
             val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
                     Address.streetAddress, Address.city, Address.state)
-                    .from(Person).join(Address).on(addressId, equalTo(Address.id)) {
+                    .from(Person) {
+                        join(Address) {
+                            on(addressId, equalTo(Address.id))
+                        }
                         where(id, isLessThan(5))
                         and(id, isLessThan(4)) {
                             and(id, isLessThan(3)) {
@@ -281,17 +288,19 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
-                    Address.streetAddress, Address.city, Address.state)
-                    .from(Person).join(Address).on(addressId, equalTo(Address.id)) {
-                        where(id, isEqualTo(5))
-                        or(id, isEqualTo(4)) {
-                            or(id, isEqualTo(3)) {
-                                or(id, isEqualTo(2))
-                            }
-                        }
-                        orderBy(id)
-                        limit(3)
+                    Address.streetAddress, Address.city, Address.state).from(Person) {
+                join(Address) {
+                    on(addressId, equalTo(Address.id))
+                }
+                where(id, isEqualTo(5))
+                or(id, isEqualTo(4)) {
+                    or(id, isEqualTo(3)) {
+                        or(id, isEqualTo(2))
                     }
+                }
+                orderBy(id)
+                limit(3)
+            }
 
             val rows = mapper.selectMany(selectStatement)
 
