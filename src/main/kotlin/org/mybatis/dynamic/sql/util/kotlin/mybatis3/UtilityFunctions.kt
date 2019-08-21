@@ -51,4 +51,4 @@ fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: St
         complete(from(table, alias)).build().render(RenderingStrategies.MYBATIS3)
 
 fun update(table: SqlTable, complete: UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>) =
-    complete(SqlBuilder.update(table)).build().render(RenderingStrategies.MYBATIS3)
+        complete(SqlBuilder.update(table)).build().render(RenderingStrategies.MYBATIS3)
