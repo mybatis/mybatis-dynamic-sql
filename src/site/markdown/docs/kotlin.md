@@ -9,19 +9,18 @@ Because Kotlin does not support static class members, we recommend a simpler pat
 ```kotlin
 object PersonDynamicSqlSupport {
     object Person : SqlTable("Person") {
-        // the 'as' casts are to avoid a warning related to platform types
-        val id = column<Int>("id", JDBCType.INTEGER) as SqlColumn<Int>
-        val firstName = column<String>("first_name", JDBCType.VARCHAR) as SqlColumn<String>
-        val lastName = column<String>("last_name", JDBCType.VARCHAR) as SqlColumn<String>
-        val birthDate = column<Date>("birth_date", JDBCType.DATE) as SqlColumn<Date>
-        val employed = column<Boolean>("employed", JDBCType.VARCHAR, "examples.kotlin.YesNoTypeHandler") as SqlColumn<Boolean>
-        val occupation = column<String>("occupation", JDBCType.VARCHAR) as SqlColumn<String>
-        val addressId = column<Int>("address_id", JDBCType.INTEGER) as SqlColumn<Int>
+        val id = column<Int>("id", JDBCType.INTEGER)
+        val firstName = column<String>("first_name", JDBCType.VARCHAR)
+        val lastName = column<String>("last_name", JDBCType.VARCHAR)
+        val birthDate = column<Date>("birth_date", JDBCType.DATE)
+        val employed = column<Boolean>("employed", JDBCType.VARCHAR, "examples.kotlin.YesNoTypeHandler")
+        val occupation = column<String>("occupation", JDBCType.VARCHAR)
+        val addressId = column<Int>("address_id", JDBCType.INTEGER)
     }
 }
 ```
 
-This object is a singleton containing the `SqlTable` and `SqlColumn` objects that map to the database table. Note that the columns are cast to the proper type. This tells Kotlin that the objects are null safe. Without the cast, you may see warnings related to nullable platform types.
+This object is a singleton containing the `SqlTable` and `SqlColumn` objects that map to the database table. Note that the columns are cast to the proper type.
 
 ## Kotlin Mappers
 Kotlin does not distinguish between Java's default methods and regular methods in an interface, if you create a single mapper that includes both abstract and non-abstract methods, MyBatis will be confused and throw errors. For this reason, Kotlin mapper interfaces should only contain the actual MyBatis mapper interface methods. What would normally be coded as default or static methods added to a mapper interface should be coded as an extension method in Kotlin. For example, a simple MyBatis mapper could be coded like this:
@@ -45,14 +44,11 @@ interface PersonMapper {
 And then an extension method could be added to make a shortcut method as follows:
 
 ```kotlin
-fun PersonMapper.select(helper: SelectListHelper<PersonRecord>) =
-        helper(selectWithKotlinMapper(this::selectMany, id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-                .from(Person))
-                .build()
-                .execute()
+fun PersonMapper.select(completer: QueryExpressionCompleter): List<PersonRecord> =
+        MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
 ```
 
-This extension method shows the use of the `SelectListHelper` class and the `selectWithKotlinMapper` method - these are Kotlin extensions supplied with the library. We will detail their use below. For now, you can see that the above extension method can be used in client code as follows:
+This extension method shows the use of the `QueryExpressionCompleter` type alias - this is an extension supplied with the library . We will detail its use below. For now, you can see that the above extension method can be used in client code as follows:
 
 ```kotlin
 val rows = mapper.select {
@@ -280,58 +276,4 @@ This method will selectively set values if corresponding fields in a record are 
 rows = mapper.update(h ->
     setSelective(updateRecord, h)
     .where(id, isEqualTo(100)));
-```
-
-# Prior Support
-Prior to version 1.1.3, it was also possible to write reusable methods, but they were a bit inconsistent with other helper methods.  
-
-For example, it is possible to write a mapper interface like this:
-
-```java
-import static examples.simple.SimpleTableDynamicSqlSupport.*;
-
-import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.type.JdbcType;
-import org.mybatis.dynamic.sql.select.MyBatis3SelectModelAdapter;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectDSL;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-
-@Mapper
-public interface SimpleTableMapper {
-    
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results(id="SimpleTableResult", value= {
-            @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
-            @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
-            @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR),
-            @Result(column="birth_date", property="birthDate", jdbcType=JdbcType.DATE),
-            @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR, typeHandler=YesNoTypeHandler.class),
-            @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
-    })
-    List<SimpleTableRecord> selectMany(SelectStatementProvider selectStatement);
-    
-    default QueryExpressionDSL<MyBatis3SelectModelAdapter<List<SimpleTableRecord>>> selectByExample() {
-        return SelectDSL.selectWithMapper(this::selectMany, id.as("A_ID"), firstName, lastName, birthDate, employed, occupation)
-            .from(simpleTable);
-    }
-}
-```
-
-Notice the `selectByExample` method - it specifies the column list and table name and returns the intermediate builder that can be used to finish the WHERE clause.  It also reuses the `selectMany` mapper method.  Mapper methods built using this added support all finish with an `execute` method that builds the statement and executes the mapper method.
-
-The code is used like this:
-
-```java
-    List<SimpleTableRecord> rows = mapper.selectByExample()
-            .where(id, isEqualTo(1))
-            .or(occupation, isNull())
-            .build()
-            .execute();
 ```
