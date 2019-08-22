@@ -84,7 +84,7 @@ public interface PersonMapper {
     @ResultMap("PersonResult")
     Optional<PersonRecord> selectOne(SelectStatementProvider selectStatement);
     
-    static BasicColumn[] selectList =
+    BasicColumn[] selectList =
             BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId);
         
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")

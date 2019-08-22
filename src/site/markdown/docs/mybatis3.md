@@ -19,12 +19,12 @@ long count(SelectStatementProvider selectStatement);
 This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `long`. The second method will reuse this method and supply everything needed to build the select statement except the where clause:
 
 ```java
-default long count(SelectDSLCompleter completer) {
+default long count(CountDSLCompleter completer) {
     return MyBatis3Utils.count(this::count, person, completer);
 }
 ```
 
-This method shows the use of `SelectDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
+This method shows the use of `CountDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
 
 ```java
 long rows = mapper.count(c ->
@@ -34,7 +34,7 @@ long rows = mapper.count(c ->
 There is a utility method that can be used to count all rows in a table:
 
 ```java
-long rows = mapper.count(SelectDSLCompleter.allRows());
+long rows = mapper.count(CountDSLCompleter.allRows());
 ```
 
 ## Delete Method Support

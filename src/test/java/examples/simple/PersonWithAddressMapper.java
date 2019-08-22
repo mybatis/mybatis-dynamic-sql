@@ -75,7 +75,7 @@ public interface PersonWithAddressMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
     
-    static BasicColumn[] selectList =
+    BasicColumn[] selectList =
             BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, address.id,
                     address.streetAddress, address.city, address.state);
     
