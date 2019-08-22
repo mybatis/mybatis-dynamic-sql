@@ -19,6 +19,8 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.join.JoinCriterion
 
+typealias JoinReceiver = JoinCollector.() -> JoinCollector
+
 class JoinCollector {
     lateinit var onJoinCriterion: JoinCriterion
     val andJoinCriteria = mutableListOf<JoinCriterion>()

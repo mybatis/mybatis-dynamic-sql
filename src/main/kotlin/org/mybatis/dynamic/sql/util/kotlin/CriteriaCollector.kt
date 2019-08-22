@@ -19,6 +19,8 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
+typealias CriteriaReceiver = CriteriaCollector.() -> CriteriaCollector
+
 class CriteriaCollector {
     val criteria = mutableListOf<SqlCriterion<*>>()
 

@@ -40,6 +40,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 
 public class PersonMapperTest {
@@ -448,7 +449,7 @@ public class PersonMapperTest {
     public void testCountAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            long rows = mapper.count(SelectDSLCompleter.allRows());
+            long rows = mapper.count(CountDSLCompleter.allRows());
             
             assertThat(rows).isEqualTo(6L);
         }
@@ -552,6 +553,26 @@ public class PersonMapperTest {
             Optional<PersonWithAddress> record = mapper.selectByPrimaryKey(55);
             
             assertThat(record).isEmpty();
+        }
+    }
+
+    @Test
+    public void testJoinCount() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
+            long count = mapper.count(c -> c.where(person.id, isEqualTo(55)));
+            
+            assertThat(count).isEqualTo(0);
+        }
+    }
+
+    @Test
+    public void testJoinCountWithSubcriteria() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
+            long count = mapper.count(c -> c.where(person.id, isEqualTo(55), or(person.id, isEqualTo(1))));
+            
+            assertThat(count).isEqualTo(1);
         }
     }
 }

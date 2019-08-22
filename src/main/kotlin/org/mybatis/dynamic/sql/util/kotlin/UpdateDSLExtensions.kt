@@ -21,11 +21,9 @@ import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 
 fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                     collect: CriteriaCollector.() -> CriteriaCollector) =
+                                     collect: CriteriaReceiver) =
         apply {
-            val collector = CriteriaCollector()
-            collect(collector)
-            where(column, condition, collector.criteria)
+            where().and(column, condition, collect)
         }
 
 fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -34,11 +32,9 @@ fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: Visitab
         }
 
 fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                   collect: CriteriaCollector.() -> CriteriaCollector) =
+                                   collect: CriteriaReceiver) =
         apply {
-            val collector = CriteriaCollector()
-            collect(collector)
-            where().and(column, condition, collector.criteria)
+            where().and(column, condition, collect)
         }
 
 fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -47,9 +43,7 @@ fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: Visitabl
         }
 
 fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                  collect: CriteriaCollector.() -> CriteriaCollector) =
+                                  collect: CriteriaReceiver) =
         apply {
-            val collector = CriteriaCollector()
-            collect(collector)
-            where().or(column, condition, collector.criteria)
+            where().or(column, condition, collect)
         }

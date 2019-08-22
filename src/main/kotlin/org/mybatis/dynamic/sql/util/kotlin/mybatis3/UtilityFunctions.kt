@@ -30,7 +30,9 @@ import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
+import org.mybatis.dynamic.sql.select.CountDSL
 
+typealias CountCompleter = CountDSL<SelectModel>.() -> Buildable<SelectModel>
 typealias DeleteCompleter = DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>
 typealias QueryExpressionCompleter = QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>
 typealias UpdateCompleter = UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>

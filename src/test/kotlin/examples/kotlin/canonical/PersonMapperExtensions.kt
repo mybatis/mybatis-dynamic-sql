@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
 
-fun PersonMapper.count(completer: QueryExpressionCompleter) =
+fun PersonMapper.count(completer: CountCompleter) =
         MyBatis3Utils.count(this::count, Person, completer)
 
 fun PersonMapper.delete(completer: DeleteCompleter) =

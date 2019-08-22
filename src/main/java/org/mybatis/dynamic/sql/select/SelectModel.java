@@ -67,6 +67,11 @@ public class SelectModel {
         private OrderByModel orderByModel;
         private PagingModel pagingModel;
         
+        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
+            this.queryExpressions.add(queryExpression);
+            return this;
+        }
+        
         public Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
             this.queryExpressions.addAll(queryExpressions);
             return this;

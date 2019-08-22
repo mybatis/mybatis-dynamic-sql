@@ -22,11 +22,9 @@ import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.util.Buildable
 
 fun <T> DeleteDSL<DeleteModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                     collect: CriteriaCollector.() -> CriteriaCollector) =
+                                     collect: CriteriaReceiver) =
         apply {
-            val collector = CriteriaCollector()
-            collect(collector)
-            where(column, condition, collector.criteria)
+            where().and(column, condition, collect)
         }
 
 fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -35,11 +33,9 @@ fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: Visitab
         }
 
 fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                   collect: CriteriaCollector.() -> CriteriaCollector) =
+                                   collect: CriteriaReceiver) =
         apply {
-            val collector = CriteriaCollector()
-            collect(collector)
-            where().and(column, condition, collector.criteria)
+            where().and(column, condition, collect)
         }
 
 fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -48,11 +44,9 @@ fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: Visitabl
         }
 
 fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                  collect: CriteriaCollector.() -> CriteriaCollector) =
+                                  collect: CriteriaReceiver) =
         apply {
-            val collector = CriteriaCollector()
-            collect(collector)
-            where().or(column, condition, collector.criteria)
+            where().or(column, condition, collect)
         }
 
 fun DeleteDSL<DeleteModel>.allRows() = this as Buildable<DeleteModel>

@@ -30,9 +30,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.allRows
-import org.mybatis.dynamic.sql.util.kotlin.and
-import org.mybatis.dynamic.sql.util.kotlin.or
+import org.mybatis.dynamic.sql.util.kotlin.*
 import java.io.InputStreamReader
 import java.sql.DriverManager
 import java.util.*
@@ -364,7 +362,9 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                where(occupation, isNull())
+                where(occupation, isNull()) {
+                    and(employed, isEqualTo(false))
+                }
             }
 
             assertThat(rows).isEqualTo(2L)

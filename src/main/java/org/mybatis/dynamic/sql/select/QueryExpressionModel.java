@@ -121,6 +121,11 @@ public class QueryExpressionModel {
             return this;
         }
 
+        public Builder withSelectColumn(BasicColumn selectColumn) {
+            this.selectList.add(selectColumn);
+            return this;
+        }
+
         public Builder withSelectList(List<BasicColumn> selectList) {
             this.selectList.addAll(selectList);
             return this;
