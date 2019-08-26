@@ -553,7 +553,16 @@ public interface SqlBuilder {
     static <T> IsNotLikeWhenPresent<T> isNotLikeWhenPresent(Supplier<T> valueSupplier) {
         return IsNotLikeWhenPresent.of(valueSupplier);
     }
-    
+
+    // shortcuts for booleans
+    static IsEqualTo<Boolean> isTrue() {
+        return isEqualTo(Boolean.TRUE);
+    }
+
+    static IsEqualTo<Boolean> isFalse() {
+        return isEqualTo(Boolean.FALSE);
+    }
+
     // conditions for strings only
     static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
         return isLikeCaseInsensitive(() -> value);

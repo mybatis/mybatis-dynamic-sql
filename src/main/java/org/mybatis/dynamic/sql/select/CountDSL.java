@@ -26,6 +26,15 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
+/**
+ * DSL for building count queries. Count queries are specializations of select queries. They have joins and where
+ * clauses, but not the other parts of a select (group by, order by, etc.) Count queries always return
+ * a long. If these restrictions are not acceptable, then use the Select DSL for an unrestricted select statement.
+ *
+ * @param <R> the type of model built by this Builder. Typically SelectModel.
+ *
+ * @author Jeff Butler
+ */
 public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> implements Buildable<R> {
 
     private Function<SelectModel, R> adapterFunction;

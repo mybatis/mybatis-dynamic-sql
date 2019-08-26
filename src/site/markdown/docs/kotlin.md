@@ -1,10 +1,17 @@
 # Kotlin Support for MyBatis3
-MyBatis Dynamic SQL includes Kotlin extension methods that enable an SQL DSL for Kotlin. This is the preferred method of using the library in Kotlin.
+MyBatis Dynamic SQL includes Kotlin extension methods that enable an SQL DSL for Kotlin. This is the recommended method of using the library in Kotlin.
 
-We will also note that the standard usage patterns for MyBatis Dynamic SQL and MyBatis3 in Java must be modified for Kotlin. Kotlin interfaces can contain non abstract methods (somewhat similar to Java's default methods in an interface). But using these methods in Kotlin based mapper interfaces will cause a failure with MyBatis.
+The standard usage patterns for MyBatis Dynamic SQL and MyBatis3 in Java must be modified somewhat for Kotlin. Kotlin interfaces can contain both abstract and non-abstract methods (somewhat similar to Java's default methods in an interface). But using these methods in Kotlin based mapper interfaces will cause a failure with MyBatis because of the underlying Kotlin implementation.
 
-This page will show our recommended pattern for using the library with Kotlin. The code shown on this page is from the `src/test/kotlin/examples/kotlin/canonical` directory in this repository. That directory contains a complete example of using the library with Kotlin.
- 
+This page will show our recommended pattern for using the MyBatis Dynamic SQL with Kotlin. The code shown on this page is from the `src/test/kotlin/examples/kotlin/canonical` directory in this repository. That directory contains a complete example of using this library with Kotlin.
+
+All Kotlin support is available in two packages:
+
+* `org.mybatis.dynamic.sql.util.kotlin` - contains extension methods and utilities to enable an idiomatic Kotlin DSL for MyBatis Dynamic SQL. These objects can be used for clients using any execution target (i.e. MyBatis3 or Spring JDBC Templates)
+* `org.mybatis.dynamic.sql.util.kotlin.mybatis3` - contains utlities specifically to simplify MyBatis3 based clients
+
+Using the support in these packages, it is possible to create reusable Kotlin classes, interfaces, and extension methods that mimic the code created by MyBatis Generator for Java - but code that is more idiomatic for Kotlin.
+
 ## Kotlin Dynamic SQL Support Objects
 Because Kotlin does not support static class members, we recommend a simpler pattern for creating the class containing the support objects. For example:
 
@@ -22,12 +29,13 @@ object PersonDynamicSqlSupport {
 }
 ```
 
-This object is a singleton containing the `SqlTable` and `SqlColumn` objects that map to the database table. Note that the columns are cast to the proper type.
+This object is a singleton containing the `SqlTable` and `SqlColumn` objects that map to the database table.
 
-## Kotlin Mappers
-Kotlin does not distinguish between Java's default methods and regular methods in an interface. If you create a Kotlin mapper interface that includes both abstract and non-abstract methods, MyBatis will be confused and throw errors. For this reason, Kotlin mapper interfaces should only contain the actual MyBatis mapper abstract interface methods. What would normally be coded as default or static methods in a mapper interface should be coded as extension methods in Kotlin. For example, a simple MyBatis mapper could be coded like this:
+## Kotlin Mappers for MyBatis3
+If you create a Kotlin mapper interface that includes both abstract and non-abstract methods, MyBatis will be confused and throw errors. By default Kotlin does not create Java default methods in an interface. For this reason, Kotlin mapper interfaces should only contain the actual MyBatis mapper abstract interface methods. What would normally be coded as default or static methods in a mapper interface should be coded as extension methods in Kotlin. For example, a simple MyBatis mapper could be coded like this:
 
 ```kotlin
+@Mapper
 interface PersonMapper {
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
     @Results(id = "PersonRecordResult", value = [
@@ -43,277 +51,312 @@ interface PersonMapper {
 }
 ```
 
-And then an extension method could be added to make a shortcut method as follows:
+And then extensions could be added to make a shortcut method as follows:
 
 ```kotlin
-fun PersonMapper.select(completer: QueryExpressionCompleter): List<PersonRecord> =
+private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+
+fun PersonMapper.select(completer: SelectCompleter): List<PersonRecord> =
         MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
 ```
 
-This extension method shows the use of the `QueryExpressionCompleter` type alias. This is a DSL extension supplied with the library. We will detail its use below. For now you can see that the extension method can be used in client code as follows:
+The extension method shows the use of the `SelectCompleter` type alias. This is a DSL extension supplied with the library. We will detail its use below. For now see that the extension method can be used in client code as follows:
 
 ```kotlin
 val rows = mapper.select {
-    where(id, isEqualTo(1))
+    where(id, isLessThan(100))
+    or (employed, isTrue()) {
+        and (occupation, isEqualTo("Developer"))
+    }
+    orderBy(id)
 }
 ```
 
-This shows that the Kotlin support enables a more Kotlin-like DSL experience.
+This shows that the Kotlin support enables a more idiomatic Kotlin DSL.
  
 ## Count Method Support
 
-The goal of count method support is to enable the creation of methods that execute a count query allowing a user to specify a where clause at runtime, but abstracting away all other details.
+A count query is a specialized select - it returns a single column - typically a long - and supports joins and a where clause.
 
-To use this support, we envision creating two methods on a MyBatis mapper interface. The first method is the standard MyBatis Dynamic SQL method that will execute a select:
+Count method support enables the creation of methods that execute a count query allowing a user to specify a where clause at runtime, but abstracting away all other details.
 
-```java
-@SelectProvider(type=SqlProviderAdapter.class, method="select")
-long count(SelectStatementProvider selectStatement);
-```
+To use this support, we envision creating two methods - one standard mapper method, and one extension method. The first method is the standard MyBatis Dynamic SQL method that will execute a select:
 
-This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `long`. The second method will reuse this method and supply everything needed to build the select statement except the where clause:
-
-```java
-default long count(SelectDSLCompleter completer) {
-    return MyBatis3Utils.count(this::count, person, completer);
+```kotlin
+@Mapper
+interface PersonMapper {
+    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    fun count(selectStatement: SelectStatementProvider): Long
 }
 ```
 
-This method shows the use of `SelectDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
+This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `Long`. The second method should be an extension maethod. It will reuse the abstract method and supply everything needed to build the select statement except the where clause:
 
-```java
-long rows = mapper.count(c ->
-        c.where(occupation, isNull()));
+```kotlin
+fun PersonMapper.count(completer: CountCompleter) =
+        MyBatis3Utils.count(this::count, Person, completer)
 ```
 
-There is a utility method that can be used to count all rows in a table:
+This method shows the use of `CountCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. Clients can use the method as follows:
 
-```java
-long rows = mapper.count(SelectDSLCompleter.allRows());
+```kotlin
+val rows = mapper.count {
+    where(occupation, isNull()) {
+        and(employed, isFalse())
+    }
+}
+```
+
+There is also an extention method that can be used to count all rows in a table:
+
+```kotlin
+val rows = mapper.count { allRows() }
 ```
 
 ## Delete Method Support
 
-The goal of delete method support is to enable the creation of methods that execute a delete statement allowing a user to specify a where clause at runtime, but abstracting away all other details.
+Delete method support enables the creation of methods that execute a delete statement allowing a user to specify a where clause at runtime, but abstracting away all other details.
 
-To use this support, we envision creating two methods on a MyBatis mapper interface. The first method is the standard MyBatis Dynamic SQL method that will execute a delete:
+To use this support, we envision creating two methods - one standard mapper method, and one extension method. The first method is the standard MyBatis Dynamic SQL method that will execute a delete:
 
-```java
-@DeleteProvider(type=SqlProviderAdapter.class, method="delete")
-int delete(DeleteStatementProvider deleteStatement);
-```
-
-This is a standard method for MyBatis Dynamic SQL that executes a delete and returns an `int` - the number of rows deleted. The second method will reuse this method and supply everything needed to build the delete statement except the where clause:
-
-```java
-default int delete(DeleteDSLCompleter completer) {
-    return MyBatis3Utils.deleteFrom(this::delete, person, completer);
+```kotlin
+@Mapper
+interface PersonMapper {
+    @DeleteProvider(type = SqlProviderAdapter::class, method = "delete")
+    fun delete(deleteStatement: DeleteStatementProvider): Int
 }
 ```
 
-This method shows the use of `DeleteDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
+This is a standard method for MyBatis Dynamic SQL that executes a delete and returns an `Int` - the number of rows deleted. The second method should be an extension method. It will reuse the abstract method and supply everything needed to build the delete statement except the where clause:
 
-```java
-int rows = mapper.delete(c ->
-        c.where(occupation, isNull()));
+```kotlin
+fun PersonMapper.delete(completer: DeleteCompleter) =
+        MyBatis3Utils.deleteFrom(this::delete, Person, completer)
 ```
 
-There is a utility method that can be used to delete all rows in a table:
+This method shows the use of `DeleteCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. Clients can use the method as follows:
 
-```java
-int rows = mapper.delete(DeleteDSLCompleter.allRows());
+```kotlin
+val rows = mapper.delete {
+    where(occupation, isNull())
+}
+```
+
+There is an extension method that can be used to delete all rows in a table:
+
+```kotlin
+val rows = mapper.delete { allRows() }
 ```
 
 ## Insert Method Support
 
-The goal of insert method support is to remove some of the boilerplate code from insert methods in a mapper interfaces.
+Insert method support enables the removal of some of the boilerplate code from insert methods in a mapper interfaces.
 
-To use this support, we envision creating several methods on a MyBatis mapper interface. The first two methods are the standard MyBatis Dynamic SQL method that will execute an insert:
+To use this support, we envision creating several methods - two standard mapper methods, and other extension methods. The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute a delete:
 
-```java
-@InsertProvider(type=SqlProviderAdapter.class, method="insert")
-int insert(InsertStatementProvider<PersonRecord> insertStatement);
+```kotlin
+@Mapper
+interface PersonMapper {
+    @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
+    fun insert(insertStatement: InsertStatementProvider<PersonRecord>): Int
 
-@InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
-int insertMultiple(MultiRowInsertStatementProvider<PersonRecord> insertStatement);
-```
-
-These two methods are standard methods for MyBatis Dynamic SQL. They execute a single row insert and a multiple row insert.
-
-These methods can be used to implement simplified insert methods:
-
-```java
-default int insert(PersonRecord record) {
-    return MyBatis3Utils.insert(this::insert, record, person, c -> 
-        c.map(id).toProperty("id")
-        .map(firstName).toProperty("firstName")
-        .map(lastName).toProperty("lastName")
-        .map(birthDate).toProperty("birthDate")
-        .map(employed).toProperty("employed")
-        .map(occupation).toProperty("occupation")
-        .map(addressId).toProperty("addressId")
-    );
-}
-
-default int insertMultiple(PersonRecord...records) {
-    return insertMultiple(Arrays.asList(records));
-}
-
-default int insertMultiple(Collection<PersonRecord> records) {
-    return MyBatis3Utils.insertMultiple(this::insertMultiple, records, person, c ->
-        c.map(id).toProperty("id")
-        .map(firstName).toProperty("firstName")
-        .map(lastName).toProperty("lastName")
-        .map(birthDate).toProperty("birthDate")
-        .map(employed).toProperty("employed")
-        .map(occupation).toProperty("occupation")
-        .map(addressId).toProperty("addressId")
-    );
+    @InsertProvider(type = SqlProviderAdapter::class, method = "insertMultiple")
+    fun insertMultiple(insertStatement: MultiRowInsertStatementProvider<PersonRecord>): Int
 }
 ```
 
-In the mapper, only the column mappings need to be specified and no other boilerplate code is needed.
+These methods can be used to implement simplified insert methods with Kotlin extension methods:
+
+```kotlin
+fun PersonMapper.insert(record: PersonRecord) =
+        insert(this::insert, record, Person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastName")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employed")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
+        insertMultiple(records.toList())
+
+fun PersonMapper.insertMultiple(records: Collection<PersonRecord>) =
+        insertMultiple(this::insertMultiple, records, Person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastName")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employed")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+fun PersonMapper.insertSelective(record: PersonRecord) =
+        insert(this::insert, record, Person) {
+            map(id).toPropertyWhenPresent("id", record::id)
+            map(firstName).toPropertyWhenPresent("firstName", record::firstName)
+            map(lastName).toPropertyWhenPresent("lastName", record::lastName)
+            map(birthDate).toPropertyWhenPresent("birthDate", record::birthDate)
+            map(employed).toPropertyWhenPresent("employed", record::employed)
+            map(occupation).toPropertyWhenPresent("occupation", record::occupation)
+            map(addressId).toPropertyWhenPresent("addressId", record::addressId)
+        }
+```
+
+Note these methods use Kotlin utility methods named `insert` and `insertMultiple`. Both methods accept a function with a receiver that will allow column mappings.
+
+Clients use these methods as follows:
+
+```kotlin
+// single insert...
+val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+val rows = mapper.insert(record)
+
+// multiple insert...
+val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+val rows = mapper.insertMultiple(record1, record2)
+```
 
 ## Select Method Support
 
-The goal of select method support is to enable the creation of methods that execute a select statement allowing a user to specify a where clause and/or order by clause at runtime, but abstracting away all other details.
+Select method support enables the creation of methods that execute a query allowing a user to specify a where clause and/or an order by clause and/or pagination clauses at runtime, but abstracting away all other details.
 
-To use this support, we envision creating several methods on a MyBatis mapper interface. The first two methods are the standard MyBatis Dynamic SQL method that will execute a select:
+To use this support, we envision creating several methods - two standard mapper methods, and other extension methods. The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute a select:
 
-```java
-@SelectProvider(type=SqlProviderAdapter.class, method="select")
-@Results(id="PersonResult", value= {
-        @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
-        @Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
-        @Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR),
-        @Result(column="birth_date", property="birthDate", jdbcType=JdbcType.DATE),
-        @Result(column="employed", property="employed", jdbcType=JdbcType.VARCHAR),
-        @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
-})
-List<PersonRecord> selectMany(SelectStatementProvider selectStatement);
-    
-@SelectProvider(type=SqlProviderAdapter.class, method="select")
-@ResultMap("PersonResult")
-Optional<PersonRecord> selectOne(SelectStatementProvider selectStatement);
-```
+```kotlin
+@Mapper
+interface PersonMapper {
+    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    @Results(id = "PersonResult", value = [
+        Result(column = "A_ID", property = "id", jdbcType = JdbcType.INTEGER, id = true),
+        Result(column = "first_name", property = "firstName", jdbcType = JdbcType.VARCHAR),
+        Result(column = "last_name", property = "lastName", jdbcType = JdbcType.VARCHAR,
+                typeHandler = LastNameTypeHandler::class),
+        Result(column = "birth_date", property = "birthDate", jdbcType = JdbcType.DATE),
+        Result(column = "employed", property = "employed", jdbcType = JdbcType.VARCHAR,
+                typeHandler = YesNoTypeHandler::class),
+        Result(column = "occupation", property = "occupation", jdbcType = JdbcType.VARCHAR),
+        Result(column = "address_id", property = "addressId", jdbcType = JdbcType.INTEGER)])
+    fun selectMany(selectStatement: SelectStatementProvider): List<PersonRecord>
 
-These two methods are standard methods for MyBatis Dynamic SQL. They execute a select and return either a list of records, or a single record.
-
-We also envision creating a static field for a reusable list of columns for a select statement:
-
-```java
-BasicColumn[] selectList =
-    BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId);
-```
-
-The `selectOne` method can be used to implement a generalized select one method:
-
-```java
-default Optional<PersonRecord> selectOne(SelectDSLCompleter completer) {
-    return MyBatis3Utils.selectOne(this::selectOne, selectList, person, completer);
+    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    @ResultMap("PersonResult")
+    fun selectOne(selectStatement: SelectStatementProvider): PersonRecord?
 }
 ```
 
-This method shows the use of `SelectDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause.
+These methods can be used to create simplified select methods with Kotlin extension methods:
 
-The general `selectOne` method can be used to implement a `selectByPrimaryKey` method:
+```kotlin
+private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
-```java
-default Optional<PersonRecord> selectByPrimaryKey(Integer id_) {
-    return selectOne(c ->
-        c.where(id, isEqualTo(id_))
-    );
-}
+fun PersonMapper.selectOne(completer: SelectCompleter) =
+        MyBatis3Utils.selectOne(this::selectOne, selectList, Person, completer)
+
+fun PersonMapper.select(completer: SelectCompleter): List<PersonRecord> =
+        MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
+
+fun PersonMapper.selectDistinct(completer: SelectCompleter): List<PersonRecord> =
+        MyBatis3Utils.selectDistinct(this::selectMany, selectList, Person, completer)
 ```
 
-The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause and/or an order by clause. Typically we recommend two of these methods - for select, and select distinct: 
+These methods show the use of `SelectCompleter` which is a which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause and/or an order by clause. Typically we recommend two of these methods - for select, and select distinct. The `selectOne` method is used to create a generalized select method where a user can specify a where clause. 
 
-```java
-default List<PersonRecord> select(SelectDSLCompleter completer) {
-    return MyBatis3Utils.selectList(this::selectMany, selectList, person, completer);
-}
-    
-default List<PersonRecord> selectDistinct(SelectDSLCompleter completer) {
-    return MyBatis3Utils.selectDistinct(this::selectMany, selectList, person, completer);
-}
+The general `selectOne` method can also be used to implement a `selectByPrimaryKey` method:
+
+```kotlin
+fun PersonMapper.selectByPrimaryKey(id_: Int) =
+        selectOne {
+            where(id, isEqualTo(id_))
+        }
 ```
-
-These methods show the use of `MyBatis3SelectListHelper` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause and/or an order by clause.
 
 Clients can use the methods as follows:
 
-```java
-List<PersonRecord> rows = mapper.select(c ->
-        c.where(id, isEqualTo(1))
-        .or(occupation, isNull()));
+```kotlin
+val rows = mapper.select {
+    where(firstName, isIn("Fred", "Barney"))
+    orderBy(id)
+    limit(3)
+}
 ```
 
-There are utility methods that will select all rows in a table:
+There is a utility methods that will select all rows in a table:
 
-```java
-List<PersonRecord> rows =
-    mapper.selectByExample(SelectDSLCompleter.allRows());
+```kotlin
+val rows = mapper.select { allRows() }
 ```
 
 The following query will select all rows in a specified order:
 
-```java
-List<PersonRecord> rows =
-    mapper.selectByExample(SelectDSLCompleter.allRowsOrderedBy(lastName, firstName));
+```kotlin
+val rows = mapper.select {
+    allRows()
+    orderBy(lastName, firstName)
+}
 ```
 
 ## Update Method Support
 
-The goal of update method support is to enable the creation of methods that execute an update statement allowing a user to specify values to set and a where clause at runtime, but abstracting away all other details.
+Update method support enables the creation of methods that execute an update allowing a user to specify SET clauses and/or a WHERE clause, but abstracting away all other details.
 
-To use this support, we envision creating several methods on a MyBatis mapper interface. The first method is a standard MyBatis Dynamic SQL method that will execute a update:
+To use this support, we envision creating several methods - one standard mapper method, and other extension methods. The standard mapper method is a standard MyBatis Dynamic SQL methods that will execute an update:
 
-```java
-@UpdateProvider(type=SqlProviderAdapter.class, method="update")
-int update(UpdateStatementProvider updateStatement);
-```
-
-This is a standard method for MyBatis Dynamic SQL that executes a query and returns an `int` - the number of rows updated. The second method will reuse this method and supply everything needed to build the update statement except the values and the where clause:
-
-```java
-default int update(UpdateDSLCompleter completer) {
-    return MyBatis3Utils.update(this::update, person, completer);
+```kotlin
+@Mapper
+interface PersonMapper {
+    @UpdateProvider(type = SqlProviderAdapter::class, method = "update")
+    fun update(updateStatement: UpdateStatementProvider): Int
 }
 ```
 
-This method shows the use of `UpdateDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply values and a where clause. Clients can use the method as follows:
+This is a standard method for MyBatis Dynamic SQL that executes an update and returns an `int` - the number of rows updated. The extension methods will reuse this method and supply everything needed to build the update statement except the values and the where clause:
 
-```java
-int rows = mapper.update(c ->
-    c.set(occupation).equalTo("Programmer")
-    .where(id, isEqualTo(100)));
+```kotlin
+fun PersonMapper.update(completer: UpdateCompleter) =
+        MyBatis3Utils.update(this::update, Person, completer)
+```
+
+This extension method shows the use of `UpdateCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply values and a where clause. Clients can use the method as follows:
+
+```kotlin
+val rows = mapper.update {
+    set(occupation).equalTo("Programmer")
+    where(id, isEqualTo(100))
+}
 ```
 
 All rows in a table can be updated by simply omitting the where clause:
 
-```java
-int rows = mapper.update(c ->
-    c.set(occupation).equalTo("Programmer"));
+```kotlin
+val rows = mapper.update {
+    set(occupation).equalTo("Programmer")
+}
 ```
 
 It is also possible to write a utility method that will set values. For example:
 
-```java
-static UpdateDSL<UpdateModel> setSelective(PersonRecord record,
-        UpdateDSL<UpdateModel> dsl) {
-    return dsl.set(id).equalToWhenPresent(record::getId)
-            .set(firstName).equalToWhenPresent(record::getFirstName)
-            .set(lastName).equalToWhenPresent(record::getLastName)
-            .set(birthDate).equalToWhenPresent(record::getBirthDate)
-            .set(employed).equalToWhenPresent(record::getEmployed)
-            .set(occupation).equalToWhenPresent(record::getOccupation);
-}
+```kotlin
+fun UpdateDSL<UpdateModel>.setSelective(record: PersonRecord) =
+        apply {
+            set(id).equalToWhenPresent(record::id)
+            set(firstName).equalToWhenPresent(record::firstName)
+            set(lastName).equalToWhenPresent(record::lastName)
+            set(birthDate).equalToWhenPresent(record::birthDate)
+            set(employed).equalToWhenPresent(record::employed)
+            set(occupation).equalToWhenPresent(record::occupation)
+            set(addressId).equalToWhenPresent(record::addressId)
+        }
 ```
 
 This method will selectively set values if corresponding fields in a record are non null. This method can be used as follows:
 
-```java
-rows = mapper.update(h ->
-    setSelective(updateRecord, h)
-    .where(id, isEqualTo(100)));
+```kotlin
+val rows = mapper.update {
+    setSelective(updateRecord)
+    where(id, isEqualTo(100))
+}
 ```

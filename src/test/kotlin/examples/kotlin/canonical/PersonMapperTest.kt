@@ -363,7 +363,7 @@ class PersonMapperTest {
 
             val rows = mapper.count {
                 where(occupation, isNull()) {
-                    and(employed, isEqualTo(false))
+                    and(employed, isFalse())
                 }
             }
 

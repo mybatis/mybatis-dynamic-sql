@@ -26,7 +26,9 @@ import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
+import org.mybatis.dynamic.sql.util.kotlin.*
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultiple
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
 
 fun PersonMapper.count(completer: CountCompleter) =
@@ -78,13 +80,13 @@ fun PersonMapper.insertSelective(record: PersonRecord) =
 
 private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
-fun PersonMapper.selectOne(completer: QueryExpressionCompleter) =
+fun PersonMapper.selectOne(completer: SelectCompleter) =
         MyBatis3Utils.selectOne(this::selectOne, selectList, Person, completer)
 
-fun PersonMapper.select(completer: QueryExpressionCompleter): List<PersonRecord> =
+fun PersonMapper.select(completer: SelectCompleter): List<PersonRecord> =
         MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
 
-fun PersonMapper.selectDistinct(completer: QueryExpressionCompleter): List<PersonRecord> =
+fun PersonMapper.selectDistinct(completer: SelectCompleter): List<PersonRecord> =
         MyBatis3Utils.selectDistinct(this::selectMany, selectList, Person, completer)
 
 fun PersonMapper.selectByPrimaryKey(id_: Int) =

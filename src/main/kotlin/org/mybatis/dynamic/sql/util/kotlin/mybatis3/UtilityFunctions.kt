@@ -17,8 +17,6 @@ package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.delete.DeleteDSL
-import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
@@ -26,16 +24,10 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.update.UpdateDSL
-import org.mybatis.dynamic.sql.update.UpdateModel
-import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
-import org.mybatis.dynamic.sql.select.CountDSL
-
-typealias CountCompleter = CountDSL<SelectModel>.() -> Buildable<SelectModel>
-typealias DeleteCompleter = DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>
-typealias QueryExpressionCompleter = QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>
-typealias UpdateCompleter = UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>
 
 fun deleteFrom(table: SqlTable, complete: DeleteCompleter) =
         complete(SqlBuilder.deleteFrom(table)).build().render(RenderingStrategies.MYBATIS3)
@@ -49,11 +41,11 @@ fun <T> insertMultiple(mapper: (MultiRowInsertStatementProvider<T>) -> Int, reco
         MyBatis3Utils.insertMultiple(mapper, records, table, completer)
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable,
-                                                      complete: QueryExpressionCompleter) =
+                                                      complete: SelectCompleter) =
         complete(from(table)).build().render(RenderingStrategies.MYBATIS3)
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: String,
-                                                      complete: QueryExpressionCompleter) =
+                                                      complete: SelectCompleter) =
         complete(from(table, alias)).build().render(RenderingStrategies.MYBATIS3)
 
 fun update(table: SqlTable, complete: UpdateCompleter) =
