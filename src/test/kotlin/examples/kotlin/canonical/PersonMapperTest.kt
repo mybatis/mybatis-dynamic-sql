@@ -357,7 +357,7 @@ class PersonMapperTest {
     }
 
     @Test
-    fun testCount() {
+    fun testCount1() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
@@ -368,6 +368,66 @@ class PersonMapperTest {
             }
 
             assertThat(rows).isEqualTo(2L)
+        }
+    }
+
+    @Test
+    fun testCount2() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.count {
+                where(employed, isTrue())
+                and(occupation, isEqualTo("Brontosaurus Operator"))
+            }
+
+            assertThat(rows).isEqualTo(2L)
+        }
+    }
+
+    @Test
+    fun testCount3() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.count {
+                where(id, isEqualTo(1))
+                or(id, isEqualTo(2))
+            }
+
+            assertThat(rows).isEqualTo(2L)
+        }
+    }
+
+    @Test
+    fun testCount4() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.count {
+                where(id, isEqualTo(1))
+                or(id, isEqualTo(2)) {
+                    or(id, isEqualTo(3))
+                }
+            }
+
+            assertThat(rows).isEqualTo(3L)
+        }
+    }
+
+    @Test
+    fun testCount5() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.count {
+                where(id, isLessThan(5))
+                and(id, isLessThan(3)) {
+                    and(id, isEqualTo(1))
+                }
+            }
+
+            assertThat(rows).isEqualTo(1L)
         }
     }
 

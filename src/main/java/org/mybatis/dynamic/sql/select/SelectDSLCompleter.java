@@ -53,7 +53,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
  * <p>You can implement a "select all" with the following code:
  * 
  * <pre>
- * List&lt;PersonRecord&gt; rows = mapper.select(c -&gt c);
+ * List&lt;PersonRecord&gt; rows = mapper.select(c -&gt; c);
  * </pre>
  * 
  * <p>Or

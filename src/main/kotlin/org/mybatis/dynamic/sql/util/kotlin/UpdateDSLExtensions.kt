@@ -19,6 +19,9 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
+import org.mybatis.dynamic.sql.util.Buildable
+
+typealias UpdateCompleter = UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>
 
 fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
                                      collect: CriteriaReceiver) =

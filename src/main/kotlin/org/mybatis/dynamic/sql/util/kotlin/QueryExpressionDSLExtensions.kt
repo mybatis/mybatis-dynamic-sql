@@ -21,6 +21,8 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
+typealias SelectCompleter = QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>
+
 fun <T> QueryExpressionDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
                                               collect: CriteriaReceiver) =
         apply {

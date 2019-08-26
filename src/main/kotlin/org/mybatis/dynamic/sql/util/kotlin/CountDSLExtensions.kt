@@ -23,6 +23,8 @@ import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
+typealias CountCompleter = CountDSL<SelectModel>.() -> Buildable<SelectModel>
+
 fun <T> CountDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
                                      collect: CriteriaReceiver) =
         apply {

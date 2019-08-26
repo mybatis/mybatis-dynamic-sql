@@ -21,6 +21,8 @@ import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.util.Buildable
 
+typealias DeleteCompleter = DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>
+
 fun <T> DeleteDSL<DeleteModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
                                      collect: CriteriaReceiver) =
         apply {
