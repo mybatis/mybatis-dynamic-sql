@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
+import org.mybatis.dynamic.sql.select.CountDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -43,10 +44,9 @@ import org.mybatis.dynamic.sql.select.function.Multiply;
 import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Subtract;
 import org.mybatis.dynamic.sql.select.function.Upper;
-import org.mybatis.dynamic.sql.select.join.AndJoinCriterion;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
-import org.mybatis.dynamic.sql.select.join.OnJoinCriterion;
+import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -103,6 +103,10 @@ import org.mybatis.dynamic.sql.where.condition.IsNull;
 public interface SqlBuilder {
 
     // statements
+    static CountDSL<SelectModel> countFrom(SqlTable table) {
+        return CountDSL.countFrom(table);
+    }
+    
     static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
         return DeleteDSL.deleteFrom(table);
     }
@@ -192,15 +196,17 @@ public interface SqlBuilder {
     }
 
     // join support
-    static AndJoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
-        return new AndJoinCriterion.Builder()
+    static JoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
+        return new JoinCriterion.Builder()
+                .withConnector("and") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .build();
     }
     
-    static OnJoinCriterion on(BasicColumn joinColumn, JoinCondition joinCondition) {
-        return new OnJoinCriterion.Builder()
+    static JoinCriterion on(BasicColumn joinColumn, JoinCondition joinCondition) {
+        return new JoinCriterion.Builder()
+                .withConnector("on") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .build();
@@ -547,7 +553,16 @@ public interface SqlBuilder {
     static <T> IsNotLikeWhenPresent<T> isNotLikeWhenPresent(Supplier<T> valueSupplier) {
         return IsNotLikeWhenPresent.of(valueSupplier);
     }
-    
+
+    // shortcuts for booleans
+    static IsEqualTo<Boolean> isTrue() {
+        return isEqualTo(Boolean.TRUE);
+    }
+
+    static IsEqualTo<Boolean> isFalse() {
+        return isEqualTo(Boolean.FALSE);
+    }
+
     // conditions for strings only
     static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
         return isLikeCaseInsensitive(() -> value);

@@ -13,27 +13,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.join;
+package examples.kotlin.canonical
 
-public class OnJoinCriterion extends JoinCriterion {
-    
-    private OnJoinCriterion(Builder builder) {
-        super(builder);
-    }
-
-    @Override
-    public String connector() {
-        return "on"; //$NON-NLS-1$
-    }
-
-    public static class Builder extends AbstractBuilder<Builder> {
-        @Override
-        protected Builder getThis() {
-            return this;
-        }
-        
-        public OnJoinCriterion build() {
-            return new OnJoinCriterion(this);
-        }
-    }
-}
+data class LastName(var name: String)

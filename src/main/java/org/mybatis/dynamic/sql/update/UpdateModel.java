@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
@@ -51,7 +52,8 @@ public class UpdateModel {
     public <R> Stream<R> mapColumnMappings(Function<UpdateMapping, R> mapper) {
         return columnMappings.stream().map(mapper);
     }
-    
+
+    @NotNull
     public UpdateStatementProvider render(RenderingStrategy renderingStrategy) {
         return UpdateRenderer.withUpdateModel(this)
                 .withRenderingStrategy(renderingStrategy)

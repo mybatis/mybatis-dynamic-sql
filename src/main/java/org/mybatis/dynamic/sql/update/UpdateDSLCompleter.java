@@ -23,9 +23,9 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
- * Represents a function that can be used to create a general update method in the style
- * of MyBatis Generator. When using this function, you can create a method that does not require a user to
- * call the build() and render() methods - making client code look a bit cleaner.
+ * Represents a function that can be used to create a general update method. When using this function,
+ * you can create a method that does not require a user to call the build() and render() methods - making
+ *  client code look a bit cleaner.
  * 
  * <p>This function is intended to be used in conjunction in the utility method like
  *  {@link MyBatis3Utils#update(ToIntFunction, SqlTable, UpdateDSLCompleter)}

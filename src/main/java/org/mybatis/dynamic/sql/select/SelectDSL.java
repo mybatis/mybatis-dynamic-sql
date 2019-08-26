@@ -29,11 +29,11 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
- * Implements a standard SQL dialect for building model classes.
+ * Implements a SQL DSL for building select statements.
  * 
  * @author Jeff Butler
  *
- * @param <R> the type of model produced by this builder
+ * @param <R> the type of model produced by this builder, typically SelectModel
  */
 public class SelectDSL<R> implements Buildable<R> {
 
@@ -79,7 +79,7 @@ public class SelectDSL<R> implements Buildable<R> {
      * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
      *     This method will be removed without direct replacement in a future version
      * @param <T> the return type from a MyBatis mapper - typically a List or a single record
-     * @param mapperMethod MyBatis3 Mapper Method to perfomr the select
+     * @param mapperMethod MyBatis3 mapper method that performs the select
      * @param selectList the column list to select
      * @return the partially created query
      */
@@ -95,7 +95,7 @@ public class SelectDSL<R> implements Buildable<R> {
      * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
      *     This method will be removed without direct replacement in a future version
      * @param <T> the return type from a MyBatis mapper - typically a List or a single record
-     * @param mapperMethod MyBatis3 Mapper Method to perfomr the select
+     * @param mapperMethod MyBatis3 mapper method that performs the select
      * @param selectList the column list to select
      * @return the partially created query
      */

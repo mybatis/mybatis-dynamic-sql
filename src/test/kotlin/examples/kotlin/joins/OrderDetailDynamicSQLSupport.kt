@@ -13,27 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.join;
+package examples.kotlin.joins
 
-public class AndJoinCriterion extends JoinCriterion {
-    
-    private AndJoinCriterion(Builder builder) {
-        super(builder);
-    }
+import org.mybatis.dynamic.sql.SqlTable
 
-    @Override
-    public String connector() {
-        return "and"; //$NON-NLS-1$
-    }
+import java.sql.JDBCType
 
-    public static class Builder extends AbstractBuilder<Builder> {
-        @Override
-        protected Builder getThis() {
-            return this;
-        }
-
-        public AndJoinCriterion build() {
-            return new AndJoinCriterion(this);
-        }
+object OrderDetailDynamicSQLSupport {
+    object OrderDetail : SqlTable("OrderDetail") {
+        val orderId = column<Int>("order_id", JDBCType.INTEGER)
+        val lineNumber = column<Int>("line_number", JDBCType.INTEGER)
+        val description = column<String>("description", JDBCType.VARCHAR)
+        val quantity = column<Int>("quantity", JDBCType.INTEGER)
     }
 }

@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -48,7 +49,8 @@ public class SelectModel {
     public Optional<PagingModel> pagingModel() {
         return Optional.ofNullable(pagingModel);
     }
-    
+
+    @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
         return SelectRenderer.withSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)
@@ -64,6 +66,11 @@ public class SelectModel {
         private List<QueryExpressionModel> queryExpressions = new ArrayList<>();
         private OrderByModel orderByModel;
         private PagingModel pagingModel;
+        
+        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
+            this.queryExpressions.add(queryExpression);
+            return this;
+        }
         
         public Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
             this.queryExpressions.addAll(queryExpressions);

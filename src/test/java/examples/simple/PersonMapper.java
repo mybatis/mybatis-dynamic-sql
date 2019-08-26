@@ -37,6 +37,7 @@ import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
+import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
@@ -83,13 +84,13 @@ public interface PersonMapper {
     @ResultMap("PersonResult")
     Optional<PersonRecord> selectOne(SelectStatementProvider selectStatement);
     
-    static BasicColumn[] selectList =
+    BasicColumn[] selectList =
             BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId);
         
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
     
-    default long count(SelectDSLCompleter completer) {
+    default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.count(this::count, person, completer);
     }
 
@@ -144,7 +145,7 @@ public interface PersonMapper {
     }
     
     default Optional<PersonRecord> selectOne(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectOne(this::selectOne, selectList, person, completer);
+        return MyBatis3Utils.selectOptional(this::selectOne, selectList, person, completer);
     }
     
     default List<PersonRecord> select(SelectDSLCompleter completer) {

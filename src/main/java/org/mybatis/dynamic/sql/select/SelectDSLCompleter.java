@@ -22,43 +22,52 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
- * Represents a function that can be used to create a general count method in the style
- * of MyBatis Generator. When using this function, you can create a method that does not require a user to
- * call the build() and render() methods - making client code look a bit cleaner.
+ * Represents a function that can be used to create a general select method. When using this function,
+ * you can create a method that does not require a user to call the build() and render() methods - making
+ * client code look a bit cleaner.
  * 
- * <p>This function is intended to by used in conjunction with utility methods like the select and count
- * methods in {@link MyBatis3Utils} 
+ * <p>This function is intended to by used in conjunction with utility methods like the select methods in
+ * {@link MyBatis3Utils}.
  * 
  * <p>For example, you can create mapper interface methods like this:
  * 
  * <pre>
  * &#64;SelectProvider(type=SqlProviderAdapter.class, method="select")
- * long count(SelectStatementProvider selectStatement);
+ * List&lt;PersonRecord&gt; selectMany(SelectStatementProvider selectStatement);
  *   
- * default long count(SelectDSLCompleter completer) {
-        return MyBatis3Utils.count(this::count, person, completer);
+ * BasicColumn[] selectList =
+ *     BasicColumn.columnList(id, firstName, lastName, birthDate, employed, occupation, addressId);
+ * 
+ * default List&lt;PersonRecord&gt; select(SelectDSLCompleter completer) {
+ *      return MyBatis3Utils.select(this::selectMany, selectList, person, completer);
  * }
  * </pre>
  * 
  * <p>And then call the simplified default method like this:
  * 
  * <pre>
- * long rows = mapper.count(c -&gt;
+ * List&lt;PersonRecord&gt; rows = mapper.select(c -&gt;
  *         c.where(occupation, isNull()));
  * </pre>
  * 
- * <p>You can implement a "count all" with the following code:
+ * <p>You can implement a "select all" with the following code:
  * 
  * <pre>
- * long rows = mapper.count(c -&gt; c);
+ * List&lt;PersonRecord&gt; rows = mapper.select(c -&gt; c);
  * </pre>
  * 
  * <p>Or
  * 
  * <pre>
- * long rows = mapper.count(SelectDSLCompleter.allRows());
+ * List&lt;PersonRecord&gt; rows = mapper.select(SelectDSLCompleter.allRows());
  * </pre>
- *  
+ *
+ * <p>There is also a utility method to support selecting all rows in a specified order:
+ * 
+ * <pre>
+ * List&lt;PersonRecord&gt; rows = mapper.select(SelectDSLCompleter.allRowsOrderedBy(lastName, firstName));
+ * </pre>
+ * 
  * @author Jeff Butler
  */
 @FunctionalInterface

@@ -36,6 +36,8 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.select.CountDSL;
+import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -70,7 +72,10 @@ public interface PersonWithAddressMapper {
     @ResultMap("PersonWithAddressResult")
     Optional<PersonWithAddress> selectOne(SelectStatementProvider selectStatement);
 
-    static BasicColumn[] selectList =
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    long count(SelectStatementProvider selectStatement);
+    
+    BasicColumn[] selectList =
             BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, address.id,
                     address.streetAddress, address.city, address.state);
     
@@ -90,5 +95,11 @@ public interface PersonWithAddressMapper {
         return selectOne(c -> 
             c.where(id, isEqualTo(id_))
         );
+    }
+    
+    default long count(CountDSLCompleter completer) {
+        CountDSL<SelectModel> start = countFrom(person)
+                .join(address, on(person.addressId, equalTo(address.id)));
+        return MyBatis3Utils.count(this::count, start, completer);
     }
 }

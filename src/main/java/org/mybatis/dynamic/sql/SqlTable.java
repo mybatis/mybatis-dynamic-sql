@@ -19,6 +19,7 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
 
 public class SqlTable {
     
@@ -84,15 +85,18 @@ public class SqlTable {
     public <T> SqlColumn<T> allColumns() {
         return SqlColumn.of("*", this); //$NON-NLS-1$
     }
-    
+
+    @NotNull
     public <T> SqlColumn<T> column(String name) {
         return SqlColumn.of(name, this);
     }
 
+    @NotNull
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType) {
         return SqlColumn.of(name, this, jdbcType);
     }
 
+    @NotNull
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType, String typeHandler) {
         return SqlColumn.of(name, this, jdbcType).withTypeHandler(typeHandler);
     }
