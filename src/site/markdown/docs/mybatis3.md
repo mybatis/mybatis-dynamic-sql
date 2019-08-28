@@ -244,7 +244,7 @@ int rows = mapper.update(c ->
 It is also possible to write a utility method that will set values. For example:
 
 ```java
-static UpdateDSL<UpdateModel> setSelective(PersonRecord record,
+static UpdateDSL<UpdateModel> updateSelective(PersonRecord record,
         UpdateDSL<UpdateModel> dsl) {
     return dsl.set(id).equalToWhenPresent(record::getId)
             .set(firstName).equalToWhenPresent(record::getFirstName)
@@ -259,7 +259,7 @@ This method will selectively set values if corresponding fields in a record are 
 
 ```java
 rows = mapper.update(h ->
-    setSelective(updateRecord, h)
+    updateSelective(updateRecord, h)
     .where(id, isEqualTo(100)));
 ```
 
