@@ -275,7 +275,7 @@ class PersonMapperTest {
             record.occupation = "Programmer"
 
             rows = mapper.update {
-                updateAll(record)
+                updateAllColumns(record)
                 where(id, isEqualTo(100))
                 and(firstName, isEqualTo("Joe"))
             }
@@ -322,7 +322,7 @@ class PersonMapperTest {
             val updateRecord = PersonRecord(occupation = "Programmer")
 
             rows = mapper.update {
-                updateSelective(updateRecord)
+                updateSelectiveColumns(updateRecord)
             }
 
             assertThat(rows).isEqualTo(7)
@@ -345,7 +345,7 @@ class PersonMapperTest {
             val updateRecord = PersonRecord(occupation = "Programmer")
 
             rows = mapper.update {
-                updateSelective(updateRecord)
+                updateSelectiveColumns(updateRecord)
                 where(id, isEqualTo(100))
             }
 

@@ -166,7 +166,7 @@ public interface PersonMapper {
         return MyBatis3Utils.update(this::update, person, completer);
     }
     
-    static UpdateDSL<UpdateModel> updateAll(PersonRecord record,
+    static UpdateDSL<UpdateModel> updateAllColumns(PersonRecord record,
             UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalTo(record::getId)
                 .set(firstName).equalTo(record::getFirstName)
@@ -177,7 +177,7 @@ public interface PersonMapper {
                 .set(addressId).equalTo(record::getAddressId);
     }
     
-    static UpdateDSL<UpdateModel> updateSelective(PersonRecord record,
+    static UpdateDSL<UpdateModel> updateSelectiveColumns(PersonRecord record,
             UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(firstName).equalToWhenPresent(record::getFirstName)
