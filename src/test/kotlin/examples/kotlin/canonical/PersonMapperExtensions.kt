@@ -97,7 +97,7 @@ fun PersonMapper.selectByPrimaryKey(id_: Int) =
 fun PersonMapper.update(completer: UpdateCompleter) =
         MyBatis3Utils.update(this::update, Person, completer)
 
-fun UpdateDSL<UpdateModel>.updateAll(record: PersonRecord) =
+fun UpdateDSL<UpdateModel>.updateAllColumns(record: PersonRecord) =
         apply {
             set(id).equalTo(record::id)
             set(firstName).equalTo(record::firstName)
@@ -108,7 +108,7 @@ fun UpdateDSL<UpdateModel>.updateAll(record: PersonRecord) =
             set(addressId).equalTo(record::addressId)
         }
 
-fun UpdateDSL<UpdateModel>.updateSelective(record: PersonRecord) =
+fun UpdateDSL<UpdateModel>.updateSelectiveColumns(record: PersonRecord) =
         apply {
             set(id).equalToWhenPresent(record::id)
             set(firstName).equalToWhenPresent(record::firstName)

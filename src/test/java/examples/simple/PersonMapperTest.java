@@ -335,7 +335,7 @@ public class PersonMapperTest {
             record.setOccupation("Programmer");
             
             rows = mapper.update(c ->
-                PersonMapper.updateAll(record, c)
+                PersonMapper.updateAllColumns(record, c)
                 .where(id, isEqualTo(100))
                 .and(firstName, isEqualTo("Joe")));
 
@@ -394,7 +394,7 @@ public class PersonMapperTest {
             PersonRecord updateRecord = new PersonRecord();
             updateRecord.setOccupation("Programmer");
             rows = mapper.update(c ->
-                PersonMapper.updateSelective(updateRecord, c));
+                PersonMapper.updateSelectiveColumns(updateRecord, c));
 
             assertThat(rows).isEqualTo(7);
 
@@ -423,7 +423,7 @@ public class PersonMapperTest {
             PersonRecord updateRecord = new PersonRecord();
             updateRecord.setOccupation("Programmer");
             rows = mapper.update(c ->
-                PersonMapper.updateSelective(updateRecord, c)
+                PersonMapper.updateSelectiveColumns(updateRecord, c)
                 .where(id, isEqualTo(100)));
 
             assertThat(rows).isEqualTo(1);
