@@ -62,7 +62,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
  * the following method would set all fields of a record based on whether or not the values are null:
  * 
  * <pre>
- * static UpdateDSL&lt;UpdateModel&gt; setSelective(PersonRecord record,
+ * static UpdateDSL&lt;UpdateModel&gt; updateSelective(PersonRecord record,
  *         UpdateDSL&lt;UpdateModel&gt; dsl) {
  *     return dsl.set(id).equalToWhenPresent(record::getId)
  *             .set(firstName).equalToWhenPresent(record::getFirstName)
@@ -77,7 +77,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
  * 
  * <pre>
  * rows = mapper.update(c -&gt;
- *        PersonMapper.setSelective(record, c)
+ *        PersonMapper.updateSelective(record, c)
  *        .where(id, isLessThan(100)));
  * </pre>
  * 
