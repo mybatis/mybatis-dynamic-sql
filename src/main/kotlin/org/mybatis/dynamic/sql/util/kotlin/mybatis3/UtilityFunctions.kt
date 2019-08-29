@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
+import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.InsertDSL
@@ -24,6 +25,7 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
@@ -50,3 +52,19 @@ fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: St
 
 fun update(table: SqlTable, complete: UpdateCompleter) =
         complete(SqlBuilder.update(table)).build().render(RenderingStrategies.MYBATIS3)
+
+/**
+ * Function to handle platform type issues. Use this function, instead of calling MyBatis3Utils directly, to
+ * avoid having to specify a return type explicitly.
+ */
+fun <T> selectDistinct(mapper: (SelectStatementProvider) -> List<T>, selectList: Array<out BasicColumn>, table: SqlTable,
+                       completer: SelectCompleter): List<T> =
+        MyBatis3Utils.selectDistinct(mapper, selectList, table, completer)
+
+/**
+ * Function to handle platform type issues. Use this function, instead of calling MyBatis3Utils directly, to
+ * avoid having to specify a return type explicitly.
+ */
+fun <T> selectList(mapper: (SelectStatementProvider) -> List<T>, selectList: Array<out BasicColumn>, table: SqlTable,
+                   completer: SelectCompleter): List<T> =
+        MyBatis3Utils.selectList(mapper, selectList, table, completer)

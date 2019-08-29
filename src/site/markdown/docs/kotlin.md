@@ -54,10 +54,10 @@ interface PersonMapper {
 And then extensions could be added to make a shortcut method as follows:
 
 ```kotlin
-private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+private val columnList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.select(completer: SelectCompleter): List<PersonRecord> =
-        MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
+        selectList(this::selectMany, columnList, Person, completer)
 ```
 
 The extension method shows the use of the `SelectCompleter` type alias. This is a DSL extension supplied with the library. We will detail its use below. For now see that the extension method can be used in client code as follows:
@@ -251,19 +251,19 @@ interface PersonMapper {
 These methods can be used to create simplified select methods with Kotlin extension methods:
 
 ```kotlin
-private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+private val columnList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.selectOne(completer: SelectCompleter) =
-        MyBatis3Utils.selectOne(this::selectOne, selectList, Person, completer)
+        MyBatis3Utils.selectOne(this::selectOne, columnList, Person, completer)
 
-fun PersonMapper.select(completer: SelectCompleter): List<PersonRecord> =
-        MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
+fun PersonMapper.select(completer: SelectCompleter) =
+        selectList(this::selectMany, columnList, Person, completer)
 
-fun PersonMapper.selectDistinct(completer: SelectCompleter): List<PersonRecord> =
-        MyBatis3Utils.selectDistinct(this::selectMany, selectList, Person, completer)
+fun PersonMapper.selectDistinct(completer: SelectCompleter) =
+        selectDistinct(this::selectMany, columnList, Person, completer)
 ```
 
-These methods show the use of `SelectCompleter` which is a which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause and/or an order by clause. Typically we recommend two of these methods - for select, and select distinct. The `selectOne` method is used to create a generalized select method where a user can specify a where clause. 
+These methods show the use of `SelectCompleter` which is a which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause and/or an order by clause. Typically we recommend two of these methods - for select, and select distinct. The `selectOne` method is used to create a generalized select method where a user can specify a where clause. These methods also show the use of the built in Kotlin functions `selectDistinct` and `selectList`. These functions help to avoid platform type issues in Kotlin and enable the Kotlin compiler to correctly infer the result type (`List<PersonRecord>` in this case). 
 
 The general `selectOne` method can also be used to implement a `selectByPrimaryKey` method:
 

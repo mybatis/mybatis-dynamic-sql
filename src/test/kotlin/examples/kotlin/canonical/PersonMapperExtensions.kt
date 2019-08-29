@@ -26,9 +26,14 @@ import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
-import org.mybatis.dynamic.sql.util.kotlin.*
+import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
+import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultiple
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
 
 fun PersonMapper.count(completer: CountCompleter) =
@@ -78,16 +83,16 @@ fun PersonMapper.insertSelective(record: PersonRecord) =
             map(addressId).toPropertyWhenPresent("addressId", record::addressId)
         }
 
-private val selectList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+private val columnList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.selectOne(completer: SelectCompleter) =
-        MyBatis3Utils.selectOne(this::selectOne, selectList, Person, completer)
+        MyBatis3Utils.selectOne(this::selectOne, columnList, Person, completer)
 
-fun PersonMapper.select(completer: SelectCompleter): List<PersonRecord> =
-        MyBatis3Utils.selectList(this::selectMany, selectList, Person, completer)
+fun PersonMapper.select(completer: SelectCompleter) =
+        selectList(this::selectMany, columnList, Person, completer)
 
-fun PersonMapper.selectDistinct(completer: SelectCompleter): List<PersonRecord> =
-        MyBatis3Utils.selectDistinct(this::selectMany, selectList, Person, completer)
+fun PersonMapper.selectDistinct(completer: SelectCompleter) =
+        selectDistinct(this::selectMany, columnList, Person, completer)
 
 fun PersonMapper.selectByPrimaryKey(id_: Int) =
         selectOne {
