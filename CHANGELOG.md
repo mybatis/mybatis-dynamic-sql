@@ -11,7 +11,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 - Added support for `count(distinct ...)` ([#112](https://github.com/mybatis/mybatis-dynamic-sql/issues/112))
 - Added support for multiple row inserts ([#116](https://github.com/mybatis/mybatis-dynamic-sql/issues/116))
 - Added utility functions to support supplying WHERE clauses via lambdas ([#118](https://github.com/mybatis/mybatis-dynamic-sql/issues/118))
-- Utility classes and a new canonical pattern for MyBatis Generator (CRUD) mappers ([#125](https://github.com/mybatis/mybatis-dynamic-sql/pull/125))
+- Utility classes and a new canonical pattern for MyBatis Generator (CRUD) mappers ([#125](https://github.com/mybatis/mybatis-dynamic-sql/pull/125)) and ([#128](https://github.com/mybatis/mybatis-dynamic-sql/pull/128))
 - Kotlin Extensions and Kotlin DSL ([#133](https://github.com/mybatis/mybatis-dynamic-sql/pull/133))
 
 
