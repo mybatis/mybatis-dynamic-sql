@@ -29,11 +29,11 @@ import org.mybatis.dynamic.sql.util.kotlin.fromJoining
 import org.mybatis.dynamic.sql.util.kotlin.fullJoin
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
 
-private val columnList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
+private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
         Address.streetAddress, Address.city, Address.state)
 
 fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? {
-    val start = select(*columnList).fromJoining(Person) {
+    val start = select(columnList).fromJoining(Person) {
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))
         }
@@ -43,7 +43,7 @@ fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAdd
 }
 
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
-    val start = select(*columnList).fromJoining(Person, "p") {
+    val start = select(columnList).fromJoining(Person, "p") {
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))
         }

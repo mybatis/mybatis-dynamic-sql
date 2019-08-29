@@ -54,9 +54,9 @@ interface PersonMapper {
 And then extensions could be added to make a shortcut method as follows:
 
 ```kotlin
-private val columnList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
-fun PersonMapper.select(completer: SelectCompleter): List<PersonRecord> =
+fun PersonMapper.select(completer: SelectCompleter) =
         selectList(this::selectMany, columnList, Person, completer)
 ```
 
@@ -251,7 +251,7 @@ interface PersonMapper {
 These methods can be used to create simplified select methods with Kotlin extension methods:
 
 ```kotlin
-private val columnList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.selectOne(completer: SelectCompleter) =
         MyBatis3Utils.selectOne(this::selectOne, columnList, Person, completer)

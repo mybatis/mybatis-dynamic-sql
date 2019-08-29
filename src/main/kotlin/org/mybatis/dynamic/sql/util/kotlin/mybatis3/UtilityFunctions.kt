@@ -57,7 +57,7 @@ fun update(table: SqlTable, complete: UpdateCompleter) =
  * Function to handle platform type issues. Use this function, instead of calling MyBatis3Utils directly, to
  * avoid having to specify a return type explicitly.
  */
-fun <T> selectDistinct(mapper: (SelectStatementProvider) -> List<T>, selectList: Array<out BasicColumn>, table: SqlTable,
+fun <T> selectDistinct(mapper: (SelectStatementProvider) -> List<T>, selectList: List<BasicColumn>, table: SqlTable,
                        completer: SelectCompleter): List<T> =
         MyBatis3Utils.selectDistinct(mapper, selectList, table, completer)
 
@@ -65,6 +65,6 @@ fun <T> selectDistinct(mapper: (SelectStatementProvider) -> List<T>, selectList:
  * Function to handle platform type issues. Use this function, instead of calling MyBatis3Utils directly, to
  * avoid having to specify a return type explicitly.
  */
-fun <T> selectList(mapper: (SelectStatementProvider) -> List<T>, selectList: Array<out BasicColumn>, table: SqlTable,
+fun <T> selectList(mapper: (SelectStatementProvider) -> List<T>, selectList: List<BasicColumn>, table: SqlTable,
                    completer: SelectCompleter): List<T> =
         MyBatis3Utils.selectList(mapper, selectList, table, completer)

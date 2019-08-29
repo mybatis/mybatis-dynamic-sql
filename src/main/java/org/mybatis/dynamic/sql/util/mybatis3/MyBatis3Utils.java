@@ -89,12 +89,22 @@ public class MyBatis3Utils {
     }
 
     public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
+            Collection<BasicColumn> selectList, SqlTable table, SelectDSLCompleter completer) {
+        return selectDistinct(mapper, SqlBuilder.selectDistinct(selectList).from(table), completer);
+    }
+
+    public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
             QueryExpressionDSL<SelectModel> start, SelectDSLCompleter completer) {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 
     public static <R> List<R> selectList(Function<SelectStatementProvider, List<R>> mapper,
             BasicColumn[] selectList, SqlTable table, SelectDSLCompleter completer) {
+        return selectList(mapper, SqlBuilder.select(selectList).from(table), completer);
+    }
+
+    public static <R> List<R> selectList(Function<SelectStatementProvider, List<R>> mapper,
+            Collection<BasicColumn> selectList, SqlTable table, SelectDSLCompleter completer) {
         return selectList(mapper, SqlBuilder.select(selectList).from(table), completer);
     }
 
@@ -111,21 +121,26 @@ public class MyBatis3Utils {
 
     @Nullable
     public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
+            Collection<BasicColumn> selectList, SqlTable table, SelectDSLCompleter completer) {
+        return selectOne(mapper, SqlBuilder.select(selectList).from(table), completer);
+    }
+
+    @Nullable
+    public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
             QueryExpressionDSL<SelectModel> start,
             SelectDSLCompleter completer) {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 
     @NotNull
-    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper,
-                                            BasicColumn[] selectList, SqlTable table, SelectDSLCompleter completer) {
+    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper, 
+            BasicColumn[] selectList, SqlTable table, SelectDSLCompleter completer) {
         return selectOptional(mapper, SqlBuilder.select(selectList).from(table), completer);
     }
 
     @NotNull
-    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper,
-                                  QueryExpressionDSL<SelectModel> start,
-                                  SelectDSLCompleter completer) {
+    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper, 
+            QueryExpressionDSL<SelectModel> start, SelectDSLCompleter completer) {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 

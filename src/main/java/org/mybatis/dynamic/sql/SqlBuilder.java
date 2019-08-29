@@ -141,7 +141,15 @@ public interface SqlBuilder {
         return SelectDSL.select(selectList);
     }
     
+    static FromGatherer<SelectModel> select(Collection<BasicColumn> selectList) {
+        return SelectDSL.select(selectList);
+    }
+    
     static FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
+        return SelectDSL.selectDistinct(selectList);
+    }
+    
+    static FromGatherer<SelectModel> selectDistinct(Collection<BasicColumn> selectList) {
         return SelectDSL.selectDistinct(selectList);
     }
     

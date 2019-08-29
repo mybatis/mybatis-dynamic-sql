@@ -16,6 +16,8 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -49,11 +51,20 @@ public class SelectDSL<R> implements Buildable<R> {
     }
 
     public static QueryExpressionDSL.FromGatherer<SelectModel> select(BasicColumn...selectList) {
+        return select(Arrays.asList(selectList));
+    }
+    
+    public static QueryExpressionDSL.FromGatherer<SelectModel> select(Collection<BasicColumn> selectList) {
         return select(Function.identity(), selectList);
     }
     
     public static <R> QueryExpressionDSL.FromGatherer<R> select(Function<SelectModel, R> adapterFunction,
             BasicColumn...selectList) {
+        return select(adapterFunction, Arrays.asList(selectList));
+    }
+    
+    public static <R> QueryExpressionDSL.FromGatherer<R> select(Function<SelectModel, R> adapterFunction,
+            Collection<BasicColumn> selectList) {
         return new FromGatherer.Builder<R>()
                 .withSelectList(selectList)
                 .withSelectDSL(new SelectDSL<>(adapterFunction))
@@ -61,11 +72,20 @@ public class SelectDSL<R> implements Buildable<R> {
     }
     
     public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
+        return selectDistinct(Arrays.asList(selectList));
+    }
+    
+    public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(Collection<BasicColumn> selectList) {
         return selectDistinct(Function.identity(), selectList);
     }
     
     public static <R> QueryExpressionDSL.FromGatherer<R> selectDistinct(Function<SelectModel, R> adapterFunction,
             BasicColumn...selectList) {
+        return selectDistinct(adapterFunction, Arrays.asList(selectList));
+    }
+    
+    public static <R> QueryExpressionDSL.FromGatherer<R> selectDistinct(Function<SelectModel, R> adapterFunction,
+            Collection<BasicColumn> selectList) {
         return new FromGatherer.Builder<R>()
                 .withSelectList(selectList)
                 .withSelectDSL(new SelectDSL<>(adapterFunction))

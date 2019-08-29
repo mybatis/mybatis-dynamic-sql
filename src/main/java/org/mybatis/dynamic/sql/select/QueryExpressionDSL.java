@@ -15,7 +15,9 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,7 +47,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     QueryExpressionDSL(FromGatherer<R> fromGatherer) {
         super(fromGatherer.table);
         connector = fromGatherer.connector;
-        selectList = Arrays.asList(fromGatherer.selectList);
+        selectList = fromGatherer.selectList;
         isDistinct = fromGatherer.isDistinct;
         selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
     }
@@ -155,7 +157,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     
     public static class FromGatherer<R> {
         private String connector;
-        private BasicColumn[] selectList;
+        private List<BasicColumn> selectList;
         private SelectDSL<R> selectDSL;
         private boolean isDistinct;
         private SqlTable table;
@@ -179,7 +181,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         
         public static class Builder<R> {
             private String connector;
-            private BasicColumn[] selectList;
+            private List<BasicColumn> selectList = new ArrayList<>();
             private SelectDSL<R> selectDSL;
             private boolean isDistinct;
             
@@ -188,8 +190,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
                 return this;
             }
 
-            public Builder<R> withSelectList(BasicColumn[] selectList) {
-                this.selectList = selectList;
+            public Builder<R> withSelectList(Collection<BasicColumn> selectList) {
+                this.selectList.addAll(selectList);
                 return this;
             }
 
@@ -430,6 +432,10 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         }
         
         public FromGatherer<R> select(BasicColumn...selectList) {
+            return select(Arrays.asList(selectList));
+        }
+
+        public FromGatherer<R> select(List<BasicColumn> selectList) {
             return new FromGatherer.Builder<R>()
                     .withConnector(connector)
                     .withSelectList(selectList)
@@ -438,6 +444,10 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         }
 
         public FromGatherer<R> selectDistinct(BasicColumn...selectList) {
+            return selectDistinct(Arrays.asList(selectList));
+        }
+
+        public FromGatherer<R> selectDistinct(List<BasicColumn> selectList) {
             return new FromGatherer.Builder<R>()
                     .withConnector(connector)
                     .withSelectList(selectList)

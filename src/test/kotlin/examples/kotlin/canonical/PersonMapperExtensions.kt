@@ -83,7 +83,7 @@ fun PersonMapper.insertSelective(record: PersonRecord) =
             map(addressId).toPropertyWhenPresent("addressId", record::addressId)
         }
 
-private val columnList = arrayOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.selectOne(completer: SelectCompleter) =
         MyBatis3Utils.selectOne(this::selectOne, columnList, Person, completer)
