@@ -10,7 +10,8 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 
 - Added support for `count(distinct ...)` ([#112](https://github.com/mybatis/mybatis-dynamic-sql/issues/112))
 - Added support for multiple row inserts ([#116](https://github.com/mybatis/mybatis-dynamic-sql/issues/116))
-- Added utility functions to support better *ByExample methods ([#118](https://github.com/mybatis/mybatis-dynamic-sql/issues/118))
+- Added utility functions to support supplying WHERE clauses via lambdas ([#118](https://github.com/mybatis/mybatis-dynamic-sql/issues/118))
+- Kotlin Extensions and Kotlin DSL ([#133](https://github.com/mybatis/mybatis-dynamic-sql/pull/133))
 
 
 ## Release 1.1.2 - July 5, 2019
