@@ -57,7 +57,7 @@ And then extensions could be added to make a shortcut method as follows:
 private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.select(completer: SelectCompleter) =
-        selectList(this::selectMany, columnList, Person, completer)
+    selectList(this::selectMany, columnList, Person, completer)
 ```
 
 The extension method shows the use of the `SelectCompleter` type alias. This is a DSL extension supplied with the library. We will detail its use below. For now see that the extension method can be used in client code as follows:
@@ -94,10 +94,10 @@ This is a standard method for MyBatis Dynamic SQL that executes a query and retu
 
 ```kotlin
 fun PersonMapper.count(completer: CountCompleter) =
-        MyBatis3Utils.count(this::count, Person, completer)
+    count(this::count, Person, completer)
 ```
 
-This method shows the use of `CountCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. Clients can use the method as follows:
+This method shows the use of `CountCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. This also shows use of the Kotlin `count` method which is supplied by the library. That method will build and execute the select count statement with the supplied where clause. Clients can use the method as follows:
 
 ```kotlin
 val rows = mapper.count {
@@ -131,10 +131,10 @@ This is a standard method for MyBatis Dynamic SQL that executes a delete and ret
 
 ```kotlin
 fun PersonMapper.delete(completer: DeleteCompleter) =
-        MyBatis3Utils.deleteFrom(this::delete, Person, completer)
+    deleteFrom(this::delete, Person, completer)
 ```
 
-This method shows the use of `DeleteCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. Clients can use the method as follows:
+This method shows the use of `DeleteCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. This also shows use of the Kotlin `deleteFrom` method which is supplied by the library. That method will build and execute the delete statement with the supplied where clause. Clients can use the method as follows:
 
 ```kotlin
 val rows = mapper.delete {
@@ -169,43 +169,43 @@ These methods can be used to implement simplified insert methods with Kotlin ext
 
 ```kotlin
 fun PersonMapper.insert(record: PersonRecord) =
-        insert(this::insert, record, Person) {
-            map(id).toProperty("id")
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastName")
-            map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employed")
-            map(occupation).toProperty("occupation")
-            map(addressId).toProperty("addressId")
-        }
+    insert(this::insert, record, Person) {
+        map(id).toProperty("id")
+        map(firstName).toProperty("firstName")
+        map(lastName).toProperty("lastName")
+        map(birthDate).toProperty("birthDate")
+        map(employed).toProperty("employed")
+        map(occupation).toProperty("occupation")
+        map(addressId).toProperty("addressId")
+    }
 
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
-        insertMultiple(records.toList())
+    insertMultiple(records.toList())
 
 fun PersonMapper.insertMultiple(records: Collection<PersonRecord>) =
-        insertMultiple(this::insertMultiple, records, Person) {
-            map(id).toProperty("id")
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastName")
-            map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employed")
-            map(occupation).toProperty("occupation")
-            map(addressId).toProperty("addressId")
-        }
+    insertMultiple(this::insertMultiple, records, Person) {
+        map(id).toProperty("id")
+        map(firstName).toProperty("firstName")
+        map(lastName).toProperty("lastName")
+        map(birthDate).toProperty("birthDate")
+        map(employed).toProperty("employed")
+        map(occupation).toProperty("occupation")
+        map(addressId).toProperty("addressId")
+    }
 
 fun PersonMapper.insertSelective(record: PersonRecord) =
-        insert(this::insert, record, Person) {
-            map(id).toPropertyWhenPresent("id", record::id)
-            map(firstName).toPropertyWhenPresent("firstName", record::firstName)
-            map(lastName).toPropertyWhenPresent("lastName", record::lastName)
-            map(birthDate).toPropertyWhenPresent("birthDate", record::birthDate)
-            map(employed).toPropertyWhenPresent("employed", record::employed)
-            map(occupation).toPropertyWhenPresent("occupation", record::occupation)
-            map(addressId).toPropertyWhenPresent("addressId", record::addressId)
-        }
+    insert(this::insert, record, Person) {
+        map(id).toPropertyWhenPresent("id", record::id)
+        map(firstName).toPropertyWhenPresent("firstName", record::firstName)
+        map(lastName).toPropertyWhenPresent("lastName", record::lastName)
+        map(birthDate).toPropertyWhenPresent("birthDate", record::birthDate)
+        map(employed).toPropertyWhenPresent("employed", record::employed)
+        map(occupation).toPropertyWhenPresent("occupation", record::occupation)
+        map(addressId).toPropertyWhenPresent("addressId", record::addressId)
+    }
 ```
 
-Note these methods use Kotlin utility methods named `insert` and `insertMultiple`. Both methods accept a function with a receiver that will allow column mappings.
+Note these methods use Kotlin utility methods named `insert` and `insertMultiple`. Both methods accept a function with a receiver that will allow column mappings. The methods will build and execute insert statements.= with the supplied column mappings.
 
 Clients use these methods as follows:
 
@@ -254,24 +254,24 @@ These methods can be used to create simplified select methods with Kotlin extens
 private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.selectOne(completer: SelectCompleter) =
-        MyBatis3Utils.selectOne(this::selectOne, columnList, Person, completer)
+    selectOne(this::selectOne, columnList, Person, completer)
 
 fun PersonMapper.select(completer: SelectCompleter) =
-        selectList(this::selectMany, columnList, Person, completer)
+    selectList(this::selectMany, columnList, Person, completer)
 
 fun PersonMapper.selectDistinct(completer: SelectCompleter) =
-        selectDistinct(this::selectMany, columnList, Person, completer)
+    selectDistinct(this::selectMany, columnList, Person, completer)
 ```
 
-These methods show the use of `SelectCompleter` which is a which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause and/or an order by clause. Typically we recommend two of these methods - for select, and select distinct. The `selectOne` method is used to create a generalized select method where a user can specify a where clause. These methods also show the use of the built in Kotlin functions `selectDistinct` and `selectList`. These functions help to avoid platform type issues in Kotlin and enable the Kotlin compiler to correctly infer the result type (`List<PersonRecord>` in this case). 
+These methods show the use of `SelectCompleter` which is a which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause and/or an order by clause. Typically we recommend two of these methods - for select, and select distinct. The `selectOne` method is used to create a generalized select method where a user can specify a where clause. These methods also show the use of the built in Kotlin functions `selectDistinct`, `selectList`, and `selectOne`. These functions build and execute select statements, and help to avoid platform type issues in Kotlin. They enable the Kotlin compiler to correctly infer the result type (either `PersonRecord?` or `List<PersonRecord>` in this case). 
 
 The general `selectOne` method can also be used to implement a `selectByPrimaryKey` method:
 
 ```kotlin
 fun PersonMapper.selectByPrimaryKey(id_: Int) =
-        selectOne {
-            where(id, isEqualTo(id_))
-        }
+    selectOne {
+        where(id, isEqualTo(id_))
+    }
 ```
 
 Clients can use the methods as follows:
@@ -317,10 +317,10 @@ This is a standard method for MyBatis Dynamic SQL that executes an update and re
 
 ```kotlin
 fun PersonMapper.update(completer: UpdateCompleter) =
-        MyBatis3Utils.update(this::update, Person, completer)
+    update(this::update, Person, completer)
 ```
 
-This extension method shows the use of `UpdateCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply values and a where clause. Clients can use the method as follows:
+This extension method shows the use of `UpdateCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply values and a where clause. This also shows use of the Kotlin `update` method which is supplied by the library. That method will build and execute the update statement with the supplied values and where clause. Clients can use the method as follows:
 
 ```kotlin
 val rows = mapper.update {
@@ -341,15 +341,15 @@ It is also possible to write a utility method that will set values. For example:
 
 ```kotlin
 fun UpdateDSL<UpdateModel>.updateSelectiveColumns(record: PersonRecord) =
-        apply {
-            set(id).equalToWhenPresent(record::id)
-            set(firstName).equalToWhenPresent(record::firstName)
-            set(lastName).equalToWhenPresent(record::lastName)
-            set(birthDate).equalToWhenPresent(record::birthDate)
-            set(employed).equalToWhenPresent(record::employed)
-            set(occupation).equalToWhenPresent(record::occupation)
-            set(addressId).equalToWhenPresent(record::addressId)
-        }
+    apply {
+        set(id).equalToWhenPresent(record::id)
+        set(firstName).equalToWhenPresent(record::firstName)
+        set(lastName).equalToWhenPresent(record::lastName)
+        set(birthDate).equalToWhenPresent(record::birthDate)
+        set(employed).equalToWhenPresent(record::employed)
+        set(occupation).equalToWhenPresent(record::occupation)
+        set(addressId).equalToWhenPresent(record::addressId)
+    }
 ```
 
 This method will selectively set values if corresponding fields in a record are non null. This method can be used as follows:
@@ -358,5 +358,28 @@ This method will selectively set values if corresponding fields in a record are 
 val rows = mapper.update {
     updateSelectiveColumns(updateRecord)
     where(id, isEqualTo(100))
+}
+```
+## Join Support
+
+There are extension functions that support building a reusable select method based on a join. In this way, you can create the start of the select statement (the column list and join specifications) and allow the user to supply where clauses and other parts of a select statement. For example, you could code a mapper extension method like this:
+
+```kotlin
+fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
+    val start = select(columnList).from(Person, "p") {
+        join(Address, "a") {
+            on(Person.addressId, equalTo(Address.id))
+        }
+    }
+    return selectList(this::selectMany, start, completer)
+}
+```
+
+This method creates the start of a select statement with a join, and accepts user input to complete the statement. This shows use of and overloaded `selectList` method that accepts the start of a select statement and a completer. Like other select methods, this method can be used as follows:
+
+```kotlin
+val records = mapper.select {
+    where(id, isLessThan(100))
+    limit(5)
 }
 ```
