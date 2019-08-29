@@ -25,33 +25,34 @@ import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.fromJoining
+import org.mybatis.dynamic.sql.util.kotlin.from
 import org.mybatis.dynamic.sql.util.kotlin.fullJoin
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
 
 private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
-        Address.streetAddress, Address.city, Address.state)
+    Address.streetAddress, Address.city, Address.state)
 
 fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? {
-    val start = select(columnList).fromJoining(Person) {
+    val start = select(columnList).from(Person) {
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))
         }
     }
 
-    return MyBatis3Utils.selectOne(this::selectOne, start, completer)
+    return selectOne(this::selectOne, start, completer)
 }
 
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
-    val start = select(columnList).fromJoining(Person, "p") {
+    val start = select(columnList).from(Person, "p") {
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))
         }
     }
-    return MyBatis3Utils.selectList(this::selectMany, start, completer)
+    return selectList(this::selectMany, start, completer)
 }
 
 fun PersonWithAddressMapper.selectByPrimaryKey(id_: Int) =
-        selectOne {
-            where(id, isEqualTo(id_))
-        }
+    selectOne {
+        where(id, isEqualTo(id_))
+    }

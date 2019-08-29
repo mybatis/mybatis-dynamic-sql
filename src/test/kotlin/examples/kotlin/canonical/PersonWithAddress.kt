@@ -17,6 +17,12 @@ package examples.kotlin.canonical
 
 import java.util.*
 
-data class PersonWithAddress(var id: Int? = null, var firstName: String? = null, var lastName: LastName? = null,
-                             var birthDate: Date? = null, var employed: Boolean? = null, var occupation: String? = null,
-                             var address: AddressRecord? = null)
+data class PersonWithAddress(
+    var id: Int? = null,
+    var firstName: String? = null,
+    var lastName: LastName? = null,
+    var birthDate: Date? = null,
+    var employed: Boolean? = null,
+    var occupation: String? = null,
+    var address: AddressRecord? = null
+)

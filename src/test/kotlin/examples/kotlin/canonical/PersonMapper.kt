@@ -49,11 +49,9 @@ interface PersonMapper {
     @Results(id = "PersonResult", value = [
         Result(column = "A_ID", property = "id", jdbcType = JdbcType.INTEGER, id = true),
         Result(column = "first_name", property = "firstName", jdbcType = JdbcType.VARCHAR),
-        Result(column = "last_name", property = "lastName", jdbcType = JdbcType.VARCHAR,
-                typeHandler = LastNameTypeHandler::class),
+        Result(column = "last_name", property = "lastName", jdbcType = JdbcType.VARCHAR, typeHandler = LastNameTypeHandler::class),
         Result(column = "birth_date", property = "birthDate", jdbcType = JdbcType.DATE),
-        Result(column = "employed", property = "employed", jdbcType = JdbcType.VARCHAR,
-                typeHandler = YesNoTypeHandler::class),
+        Result(column = "employed", property = "employed", jdbcType = JdbcType.VARCHAR, typeHandler = YesNoTypeHandler::class),
         Result(column = "occupation", property = "occupation", jdbcType = JdbcType.VARCHAR),
         Result(column = "address_id", property = "addressId", jdbcType = JdbcType.INTEGER)])
     fun selectMany(selectStatement: SelectStatementProvider): List<PersonRecord>

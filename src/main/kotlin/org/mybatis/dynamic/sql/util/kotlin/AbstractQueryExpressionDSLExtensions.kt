@@ -74,4 +74,3 @@ fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<
     collect(collector)
     return rightJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
 }
-

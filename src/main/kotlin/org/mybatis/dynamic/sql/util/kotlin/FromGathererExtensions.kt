@@ -19,15 +19,12 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 
-// These functions are intended for use in a Join mapper where a join is setup before the remainder
-// of the query is completed
-
 typealias QueryExpressionEnhancer = QueryExpressionDSL<SelectModel>.() -> QueryExpressionDSL<SelectModel>
 
-fun QueryExpressionDSL.FromGatherer<SelectModel>.fromJoining(table: SqlTable,
-                                                             enhance: QueryExpressionEnhancer) =
-        enhance(from(table))
+// These functions are intended for use in a Join mapper where a join is setup before the remainder
+// of the query is completed
+fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, enhancer: QueryExpressionEnhancer) =
+    enhancer(from(table))
 
-fun QueryExpressionDSL.FromGatherer<SelectModel>.fromJoining(table: SqlTable, alias: String,
-                                                             enhance: QueryExpressionEnhancer) =
-        enhance(from(table, alias))
+fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: String, enhancer: QueryExpressionEnhancer) =
+    enhancer(from(table, alias))
