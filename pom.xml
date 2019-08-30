@@ -145,17 +145,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>com.github.ozsie</groupId>
-        <artifactId>detekt-maven-plugin</artifactId>
-        <version>1.0.0</version>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals><goal>check</goal></goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
         <configuration>
