@@ -117,15 +117,14 @@ public class MyBatis3Utils {
     }
 
     @NotNull
-    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper,
-                                            BasicColumn[] selectList, SqlTable table, SelectDSLCompleter completer) {
+    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper, 
+            BasicColumn[] selectList, SqlTable table, SelectDSLCompleter completer) {
         return selectOptional(mapper, SqlBuilder.select(selectList).from(table), completer);
     }
 
     @NotNull
-    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper,
-                                  QueryExpressionDSL<SelectModel> start,
-                                  SelectDSLCompleter completer) {
+    public static <R> Optional<R> selectOptional(Function<SelectStatementProvider, Optional<R>> mapper, 
+            QueryExpressionDSL<SelectModel> start, SelectDSLCompleter completer) {
         return mapper.apply(completer.apply(start).build().render(RenderingStrategies.MYBATIS3));
     }
 

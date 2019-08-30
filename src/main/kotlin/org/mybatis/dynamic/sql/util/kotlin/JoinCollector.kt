@@ -26,21 +26,20 @@ class JoinCollector {
     val andJoinCriteria = mutableListOf<JoinCriterion>()
 
     fun on(column: BasicColumn, condition: JoinCondition) =
-            apply {
-                onJoinCriterion = JoinCriterion.Builder()
-                        .withConnector("on")
-                        .withJoinColumn(column)
-                        .withJoinCondition(condition)
-                        .build()
-            }
+        apply {
+            onJoinCriterion = JoinCriterion.Builder()
+                .withConnector("on")
+                .withJoinColumn(column)
+                .withJoinCondition(condition)
+                .build()
+        }
 
     fun and(column: BasicColumn, condition: JoinCondition) =
-            apply {
-                andJoinCriteria.add(JoinCriterion.Builder()
-                        .withConnector("and")
-                        .withJoinColumn(column)
-                        .withJoinCondition(condition)
-                        .build())
-
-            }
+        apply {
+            andJoinCriteria.add(JoinCriterion.Builder()
+                .withConnector("and")
+                .withJoinColumn(column)
+                .withJoinCondition(condition)
+                .build())
+        }
 }

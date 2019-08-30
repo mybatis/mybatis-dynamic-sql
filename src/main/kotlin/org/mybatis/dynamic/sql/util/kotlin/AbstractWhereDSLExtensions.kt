@@ -19,15 +19,13 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 
-fun <T,M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                                         collect: CriteriaReceiver): M {
+fun <T, M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver): M {
     val collector = CriteriaCollector()
     collect(collector)
     return and(column, condition, collector.criteria)
 }
 
-fun <T,M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                                         collect: CriteriaReceiver): M {
+fun <T, M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver): M {
     val collector = CriteriaCollector()
     collect(collector)
     return or(column, condition, collector.criteria)

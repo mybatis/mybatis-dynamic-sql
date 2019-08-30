@@ -62,14 +62,14 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderDetail.lineNumber,
-                    OrderDetail.description, OrderDetail.quantity).from(OrderMaster, "om") {
+                OrderDetail.description, OrderDetail.quantity).from(OrderMaster, "om") {
                 join(OrderDetail, "od") {
                     on(OrderMaster.orderId, equalTo(OrderDetail.orderId))
                 }
             }
 
             val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
-                    " from OrderMaster om join OrderDetail od on om.order_id = od.order_id"
+                " from OrderMaster om join OrderDetail od on om.order_id = od.order_id"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectMany(selectStatement)
@@ -95,7 +95,7 @@ class JoinMapperTest {
     fun testCompoundJoin1() {
         // this is a nonsensical join, but it does test the "and" capability
         val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderDetail.lineNumber,
-                OrderDetail.description, OrderDetail.quantity).from(OrderMaster, "om") {
+            OrderDetail.description, OrderDetail.quantity).from(OrderMaster, "om") {
             join(OrderDetail, "od") {
                 on(OrderMaster.orderId, equalTo(OrderDetail.orderId))
                 and(OrderMaster.orderId, equalTo(OrderDetail.orderId))
@@ -103,7 +103,7 @@ class JoinMapperTest {
         }
 
         val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
-                " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id"
+            " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id"
         assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
     }
 
@@ -111,7 +111,7 @@ class JoinMapperTest {
     fun testCompoundJoin2() {
         // this is a nonsensical join, but it does test the "and" capability
         val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderDetail.lineNumber,
-                OrderDetail.description, OrderDetail.quantity).from(OrderMaster, "om") {
+            OrderDetail.description, OrderDetail.quantity).from(OrderMaster, "om") {
             join(OrderDetail, "od") {
                 on(OrderMaster.orderId, equalTo(OrderDetail.orderId))
                 and(OrderMaster.orderId, equalTo(OrderDetail.orderId))
@@ -120,11 +120,10 @@ class JoinMapperTest {
         }
 
         val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
-                " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id" +
-                " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
+            " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id" +
+            " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
         assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
     }
-
 
     @Test
     fun testMultipleTableJoinWithWhereClause() {
@@ -132,7 +131,7 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(OrderMaster.orderId, OrderMaster.orderDate, OrderLine.lineNumber,
-                    ItemMaster.description, OrderLine.quantity).from(OrderMaster, "om") {
+                ItemMaster.description, OrderLine.quantity).from(OrderMaster, "om") {
                 join(OrderLine, "ol") {
                     on(OrderMaster.orderId, equalTo(OrderLine.orderId))
                 }
@@ -143,9 +142,9 @@ class JoinMapperTest {
             }
 
             val expectedStatement = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity" +
-                    " from OrderMaster om join OrderLine ol" +
-                    " on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id" +
-                    " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
+                " from OrderMaster om join OrderLine ol" +
+                " on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id" +
+                " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectMany(selectStatement)
@@ -166,20 +165,20 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
-                    ItemMaster.description).from(OrderMaster, "om") {
-                        join(OrderLine, "ol") {
-                            on(OrderMaster.orderId, equalTo(OrderLine.orderId))
-                        }
-                        fullJoin(ItemMaster, "im") {
-                            on(OrderLine.itemId, equalTo(ItemMaster.itemId))
-                        }
-                        orderBy(OrderLine.orderId, ItemMaster.itemId)
-                    }
+                ItemMaster.description).from(OrderMaster, "om") {
+                join(OrderLine, "ol") {
+                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                }
+                fullJoin(ItemMaster, "im") {
+                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                }
+                orderBy(OrderLine.orderId, ItemMaster.itemId)
+            }
 
             val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description" +
-                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
-                    " full join ItemMaster im on ol.item_id = im.item_id" +
-                    " order by order_id, item_id"
+                " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
+                " full join ItemMaster im on ol.item_id = im.item_id" +
+                " order by order_id, item_id"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
@@ -216,20 +215,20 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
-                    ItemMaster.description).from(OrderMaster, "om") {
-                        join(OrderLine, "ol") {
-                            on(OrderMaster.orderId, equalTo(OrderLine.orderId))
-                        }
-                        fullJoin(ItemMaster) {
-                            on(OrderLine.itemId, equalTo(ItemMaster.itemId))
-                        }
-                        orderBy(OrderLine.orderId, ItemMaster.itemId)
-                    }
+                ItemMaster.description).from(OrderMaster, "om") {
+                join(OrderLine, "ol") {
+                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                }
+                fullJoin(ItemMaster) {
+                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                }
+                orderBy(OrderLine.orderId, ItemMaster.itemId)
+            }
 
             val expectedStatement = "select ol.order_id, ol.quantity, ItemMaster.item_id, ItemMaster.description" +
-                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
-                    " full join ItemMaster on ol.item_id = ItemMaster.item_id" +
-                    " order by order_id, item_id"
+                " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
+                " full join ItemMaster on ol.item_id = ItemMaster.item_id" +
+                " order by order_id, item_id"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
@@ -266,20 +265,20 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
-                    ItemMaster.description).from(OrderMaster, "om") {
-                        join(OrderLine, "ol") {
-                            on(OrderMaster.orderId, equalTo(OrderLine.orderId))
-                        }
-                        leftJoin(ItemMaster, "im") {
-                            on(OrderLine.itemId, equalTo(ItemMaster.itemId))
-                        }
-                        orderBy(OrderLine.orderId, ItemMaster.itemId)
-                    }
+                ItemMaster.description).from(OrderMaster, "om") {
+                join(OrderLine, "ol") {
+                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                }
+                leftJoin(ItemMaster, "im") {
+                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                }
+                orderBy(OrderLine.orderId, ItemMaster.itemId)
+            }
 
             val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description" +
-                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
-                    " left join ItemMaster im on ol.item_id = im.item_id" +
-                    " order by order_id, item_id"
+                " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
+                " left join ItemMaster im on ol.item_id = im.item_id" +
+                " order by order_id, item_id"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
@@ -309,20 +308,20 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
-                    ItemMaster.description).from(OrderMaster, "om") {
-                        join(OrderLine, "ol") {
-                            on(OrderMaster.orderId, equalTo(OrderLine.orderId))
-                        }
-                        leftJoin(ItemMaster) {
-                            on(OrderLine.itemId, equalTo(ItemMaster.itemId))
-                        }
-                        orderBy(OrderLine.orderId, ItemMaster.itemId)
-                    }
+                ItemMaster.description).from(OrderMaster, "om") {
+                join(OrderLine, "ol") {
+                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                }
+                leftJoin(ItemMaster) {
+                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                }
+                orderBy(OrderLine.orderId, ItemMaster.itemId)
+            }
 
             val expectedStatement = "select ol.order_id, ol.quantity, ItemMaster.item_id, ItemMaster.description" +
-                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
-                    " left join ItemMaster on ol.item_id = ItemMaster.item_id" +
-                    " order by order_id, item_id"
+                " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
+                " left join ItemMaster on ol.item_id = ItemMaster.item_id" +
+                " order by order_id, item_id"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
@@ -352,20 +351,20 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
-                    ItemMaster.description).from(OrderMaster, "om") {
-                        join(OrderLine, "ol") {
-                            on(OrderMaster.orderId, equalTo(OrderLine.orderId))
-                        }
-                        rightJoin(ItemMaster, "im") {
-                            on(OrderLine.itemId, equalTo(ItemMaster.itemId))
-                        }
-                        orderBy(OrderLine.orderId, ItemMaster.itemId)
-                    }
+                ItemMaster.description).from(OrderMaster, "om") {
+                join(OrderLine, "ol") {
+                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                }
+                rightJoin(ItemMaster, "im") {
+                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                }
+                orderBy(OrderLine.orderId, ItemMaster.itemId)
+            }
 
             val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description" +
-                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
-                    " right join ItemMaster im on ol.item_id = im.item_id" +
-                    " order by order_id, item_id"
+                " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
+                " right join ItemMaster im on ol.item_id = im.item_id" +
+                " order by order_id, item_id"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
@@ -394,20 +393,20 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
-                    ItemMaster.description).from(OrderMaster, "om") {
-                        join(OrderLine, "ol") {
-                            on(OrderMaster.orderId, equalTo(OrderLine.orderId))
-                        }
-                        rightJoin(ItemMaster) {
-                            on(OrderLine.itemId, equalTo(ItemMaster.itemId))
-                        }
-                        orderBy(OrderLine.orderId, ItemMaster.itemId)
-                    }
+                ItemMaster.description).from(OrderMaster, "om") {
+                join(OrderLine, "ol") {
+                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                }
+                rightJoin(ItemMaster) {
+                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                }
+                orderBy(OrderLine.orderId, ItemMaster.itemId)
+            }
 
             val expectedStatement = "select ol.order_id, ol.quantity, ItemMaster.item_id, ItemMaster.description" +
-                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
-                    " right join ItemMaster on ol.item_id = ItemMaster.item_id" +
-                    " order by order_id, item_id"
+                " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
+                " right join ItemMaster on ol.item_id = ItemMaster.item_id" +
+                " order by order_id, item_id"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 

@@ -23,32 +23,29 @@ import org.mybatis.dynamic.sql.util.Buildable
 
 typealias SelectCompleter = QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>
 
-fun <T> QueryExpressionDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                              collect: CriteriaReceiver) =
-        apply {
-            where().and(column, condition, collect)
-        }
+fun <T> QueryExpressionDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+    apply {
+        where().and(column, condition, collect)
+    }
 
 fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-        apply {
-            where().and(column, condition)
-        }
+    apply {
+        where().and(column, condition)
+    }
 
-fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                            collect: CriteriaReceiver) =
-        apply {
-            where().and(column, condition, collect)
-        }
+fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+    apply {
+        where().and(column, condition, collect)
+    }
 
 fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-        apply {
-            where().or(column, condition)
-        }
+    apply {
+        where().or(column, condition)
+    }
 
-fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                           collect: CriteriaReceiver) =
-        apply {
-            where().or(column, condition, collect)
-        }
+fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+    apply {
+        where().or(column, condition, collect)
+    }
 
 fun QueryExpressionDSL<SelectModel>.allRows() = this as Buildable<SelectModel>

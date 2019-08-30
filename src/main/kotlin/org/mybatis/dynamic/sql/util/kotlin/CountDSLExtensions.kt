@@ -17,40 +17,35 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.VisitableCondition
-import org.mybatis.dynamic.sql.delete.DeleteDSL
-import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias CountCompleter = CountDSL<SelectModel>.() -> Buildable<SelectModel>
 
-fun <T> CountDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                     collect: CriteriaReceiver) =
-        apply {
-            where().and(column, condition, collect)
-        }
+fun <T> CountDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+    apply {
+        where().and(column, condition, collect)
+    }
 
 fun <T> CountDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-        apply {
-            where().and(column, condition)
-        }
+    apply {
+        where().and(column, condition)
+    }
 
-fun <T> CountDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                   collect: CriteriaReceiver) =
-        apply {
-            where().and(column, condition, collect)
-        }
+fun <T> CountDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+    apply {
+        where().and(column, condition, collect)
+    }
 
 fun <T> CountDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-        apply {
-            where().or(column, condition)
-        }
+    apply {
+        where().or(column, condition)
+    }
 
-fun <T> CountDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                  collect: CriteriaReceiver) =
-        apply {
-            where().or(column, condition, collect)
-        }
+fun <T> CountDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+    apply {
+        where().or(column, condition, collect)
+    }
 
 fun CountDSL<SelectModel>.allRows() = this as Buildable<SelectModel>

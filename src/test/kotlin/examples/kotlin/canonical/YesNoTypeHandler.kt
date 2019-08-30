@@ -24,14 +24,14 @@ import java.sql.ResultSet
 class YesNoTypeHandler : TypeHandler<Boolean> {
 
     override fun setParameter(ps: PreparedStatement, i: Int, parameter: Boolean, jdbcType: JdbcType) =
-            ps.setString(i, if (parameter) "Yes" else "No")
+        ps.setString(i, if (parameter) "Yes" else "No")
 
     override fun getResult(rs: ResultSet, columnName: String) =
-            "Yes" == rs.getString(columnName)
+        "Yes" == rs.getString(columnName)
 
     override fun getResult(rs: ResultSet, columnIndex: Int) =
-            "Yes" == rs.getString(columnIndex)
+        "Yes" == rs.getString(columnIndex)
 
     override fun getResult(cs: CallableStatement, columnIndex: Int) =
-            "Yes" == cs.getString(columnIndex)
+        "Yes" == cs.getString(columnIndex)
 }

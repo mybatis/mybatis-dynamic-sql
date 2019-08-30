@@ -17,7 +17,6 @@ package examples.kotlin.canonical
 
 import org.apache.ibatis.type.JdbcType
 import org.apache.ibatis.type.TypeHandler
-
 import java.sql.CallableStatement
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -25,17 +24,17 @@ import java.sql.ResultSet
 class LastNameTypeHandler : TypeHandler<LastName> {
 
     override fun setParameter(ps: PreparedStatement, i: Int, parameter: LastName, jdbcType: JdbcType) =
-            ps.setString(i, parameter.name)
+        ps.setString(i, parameter.name)
 
     override fun getResult(rs: ResultSet, columnName: String) =
-            toLastName(rs.getString(columnName))
+        toLastName(rs.getString(columnName))
 
     override fun getResult(rs: ResultSet, columnIndex: Int) =
-            toLastName(rs.getString(columnIndex))
+        toLastName(rs.getString(columnIndex))
 
     override fun getResult(cs: CallableStatement, columnIndex: Int) =
-            toLastName(cs.getString(columnIndex))
+        toLastName(cs.getString(columnIndex))
 
     private fun toLastName(s: String?) =
-            if (s == null) null else LastName(s)
+        if (s == null) null else LastName(s)
 }

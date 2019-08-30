@@ -16,7 +16,6 @@
 package examples.kotlin.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
-
 import java.sql.JDBCType
 
 object AddressDynamicSqlSupport {

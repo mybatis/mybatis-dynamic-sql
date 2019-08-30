@@ -23,30 +23,27 @@ import org.mybatis.dynamic.sql.util.Buildable
 
 typealias UpdateCompleter = UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>
 
-fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                     collect: CriteriaReceiver) =
-        apply {
-            where().and(column, condition, collect)
-        }
+fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+    apply {
+        where().and(column, condition, collect)
+    }
 
 fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-        apply {
-            where().and(column, condition)
-        }
+    apply {
+        where().and(column, condition)
+    }
 
-fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                   collect: CriteriaReceiver) =
-        apply {
-            where().and(column, condition, collect)
-        }
+fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+    apply {
+        where().and(column, condition, collect)
+    }
 
 fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-        apply {
-            where().or(column, condition)
-        }
+    apply {
+        where().or(column, condition)
+    }
 
-fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>,
-                                  collect: CriteriaReceiver) =
-        apply {
-            where().or(column, condition, collect)
-        }
+fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+    apply {
+        where().or(column, condition, collect)
+    }
