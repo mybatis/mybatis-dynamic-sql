@@ -13,53 +13,37 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.canonical
+package examples.kotlin.mybatis3.canonical
 
 import org.apache.ibatis.annotations.*
 import org.apache.ibatis.type.JdbcType
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
-import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 
 /**
  *
- * Note: this is the canonical mapper with the new style methods
- * and represents the desired output for MyBatis Generator
+ * This is a mapper that shows coding a join
  *
  */
 @Mapper
-interface PersonMapper {
+interface PersonWithAddressMapper {
 
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    fun count(selectStatement: SelectStatementProvider): Long
-
-    @DeleteProvider(type = SqlProviderAdapter::class, method = "delete")
-    fun delete(deleteStatement: DeleteStatementProvider): Int
-
-    @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
-    fun insert(insertStatement: InsertStatementProvider<PersonRecord>): Int
-
-    @InsertProvider(type = SqlProviderAdapter::class, method = "insertMultiple")
-    fun insertMultiple(insertStatement: MultiRowInsertStatementProvider<PersonRecord>): Int
-
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    @Results(id = "PersonResult", value = [
+    @Results(id = "PersonWithAddressResult", value = [
         Result(column = "A_ID", property = "id", jdbcType = JdbcType.INTEGER, id = true),
         Result(column = "first_name", property = "firstName", jdbcType = JdbcType.VARCHAR),
         Result(column = "last_name", property = "lastName", jdbcType = JdbcType.VARCHAR, typeHandler = LastNameTypeHandler::class),
         Result(column = "birth_date", property = "birthDate", jdbcType = JdbcType.DATE),
         Result(column = "employed", property = "employed", jdbcType = JdbcType.VARCHAR, typeHandler = YesNoTypeHandler::class),
         Result(column = "occupation", property = "occupation", jdbcType = JdbcType.VARCHAR),
-        Result(column = "address_id", property = "addressId", jdbcType = JdbcType.INTEGER)])
-    fun selectMany(selectStatement: SelectStatementProvider): List<PersonRecord>
+        Result(column = "address_id", property = "address.id", jdbcType = JdbcType.INTEGER),
+        Result(column = "street_address", property = "address.streetAddress", jdbcType = JdbcType.VARCHAR),
+        Result(column = "city", property = "address.city", jdbcType = JdbcType.VARCHAR),
+        Result(column = "state", property = "address.state", jdbcType = JdbcType.CHAR)
+    ])
+    fun selectMany(selectStatement: SelectStatementProvider): List<PersonWithAddress>
 
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    @ResultMap("PersonResult")
-    fun selectOne(selectStatement: SelectStatementProvider): PersonRecord?
-
-    @UpdateProvider(type = SqlProviderAdapter::class, method = "update")
-    fun update(updateStatement: UpdateStatementProvider): Int
+    @ResultMap("PersonWithAddressResult")
+    fun selectOne(selectStatement: SelectStatementProvider): PersonWithAddress?
 }

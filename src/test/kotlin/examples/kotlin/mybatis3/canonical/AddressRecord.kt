@@ -13,6 +13,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.canonical
+package examples.kotlin.mybatis3.canonical
 
 data class AddressRecord(var id: Int? = null, var streetAddress: String? = null, var city: String? = null, var state: String? = null)

@@ -13,16 +13,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.canonical
+package examples.kotlin.mybatis3.joins
 
 import java.util.*
 
-data class PersonWithAddress(
-    var id: Int? = null,
-    var firstName: String? = null,
-    var lastName: LastName? = null,
-    var birthDate: Date? = null,
-    var employed: Boolean? = null,
-    var occupation: String? = null,
-    var address: AddressRecord? = null
-)
+data class OrderDetail(var orderId: Int? = null, var lineNumber: Int? = null, var description: String? = null, var quantity: Int? = null)
+
+data class User(var userId: Int? = null, var userName: String? = null, var parentId: Int? = null)
+
+data class OrderMaster(var id: Int? = null, var orderDate: Date? = null, var details: List<OrderDetail>? = null)

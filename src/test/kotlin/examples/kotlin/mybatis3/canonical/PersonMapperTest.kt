@@ -13,13 +13,13 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.canonical
+package examples.kotlin.mybatis3.canonical
 
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -41,7 +41,7 @@ import java.util.*
 class PersonMapperTest {
     private fun newSession(): SqlSession {
         Class.forName(JDBC_DRIVER)
-        val script = javaClass.getResourceAsStream("/examples/kotlin/CreateSimpleDB.sql")
+        val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
         DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
             val sr = ScriptRunner(connection)
             sr.setLogWriter(null)

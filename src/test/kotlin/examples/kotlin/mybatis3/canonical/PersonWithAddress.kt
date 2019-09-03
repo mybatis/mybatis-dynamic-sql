@@ -13,17 +13,16 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.joins
+package examples.kotlin.mybatis3.canonical
 
-import org.mybatis.dynamic.sql.SqlTable
+import java.util.*
 
-import java.sql.JDBCType
-
-object OrderDetailDynamicSQLSupport {
-    object OrderDetail : SqlTable("OrderDetail") {
-        val orderId = column<Int>("order_id", JDBCType.INTEGER)
-        val lineNumber = column<Int>("line_number", JDBCType.INTEGER)
-        val description = column<String>("description", JDBCType.VARCHAR)
-        val quantity = column<Int>("quantity", JDBCType.INTEGER)
-    }
-}
+data class PersonWithAddress(
+    var id: Int? = null,
+    var firstName: String? = null,
+    var lastName: LastName? = null,
+    var birthDate: Date? = null,
+    var employed: Boolean? = null,
+    var occupation: String? = null,
+    var address: AddressRecord? = null
+)

@@ -13,22 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.joins
+package examples.kotlin.mybatis3.joins
 
 import org.mybatis.dynamic.sql.SqlTable
 
 import java.sql.JDBCType
 
-object UserDynamicSQLSupport {
-    object User1 : SqlTable("User") {
-        val userId = column<Int>("user_id", JDBCType.INTEGER)
-        val userName = column<String>("user_name", JDBCType.VARCHAR)
-        val parentId = column<Int>("parent_id", JDBCType.INTEGER)
-    }
-
-    object User2 : SqlTable("User") {
-        val userId = column<Int>("user_id", JDBCType.INTEGER)
-        val userName = column<String>("user_name", JDBCType.VARCHAR)
-        val parentId = column<Int>("parent_id", JDBCType.INTEGER)
+object OrderLineDynamicSQLSupport {
+    object OrderLine : SqlTable("OrderLine") {
+        val orderId = column<Int>("order_id", JDBCType.INTEGER)
+        val itemId = column<Int>("item_id", JDBCType.INTEGER)
+        val lineNumber = column<Int>("line_number", JDBCType.INTEGER)
+        val quantity = column<Int>("quantity", JDBCType.INTEGER)
     }
 }

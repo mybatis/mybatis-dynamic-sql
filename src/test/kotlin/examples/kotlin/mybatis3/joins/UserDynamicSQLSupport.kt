@@ -13,18 +13,22 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.joins
+package examples.kotlin.mybatis3.joins
 
-import org.apache.ibatis.annotations.ResultMap
-import org.apache.ibatis.annotations.SelectProvider
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
-import org.mybatis.dynamic.sql.util.SqlProviderAdapter
+import org.mybatis.dynamic.sql.SqlTable
 
-interface JoinMapper {
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    @ResultMap("SimpleJoinResult")
-    fun selectMany(selectStatement: SelectStatementProvider): List<OrderMaster>
+import java.sql.JDBCType
 
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    fun generalSelect(selectStatement: SelectStatementProvider): List<Map<String, Any>>
+object UserDynamicSQLSupport {
+    object User1 : SqlTable("User") {
+        val userId = column<Int>("user_id", JDBCType.INTEGER)
+        val userName = column<String>("user_name", JDBCType.VARCHAR)
+        val parentId = column<Int>("parent_id", JDBCType.INTEGER)
+    }
+
+    object User2 : SqlTable("User") {
+        val userId = column<Int>("user_id", JDBCType.INTEGER)
+        val userName = column<String>("user_name", JDBCType.VARCHAR)
+        val parentId = column<Int>("parent_id", JDBCType.INTEGER)
+    }
 }

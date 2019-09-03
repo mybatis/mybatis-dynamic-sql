@@ -24,10 +24,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
-import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
-import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
-import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.*
 
 fun count(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter) =
     mapper(count(table, completer))

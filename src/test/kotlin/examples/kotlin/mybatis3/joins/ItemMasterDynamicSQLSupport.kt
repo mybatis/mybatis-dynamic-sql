@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.joins
+package examples.kotlin.mybatis3.joins
 
 import org.mybatis.dynamic.sql.SqlTable
 import java.sql.JDBCType

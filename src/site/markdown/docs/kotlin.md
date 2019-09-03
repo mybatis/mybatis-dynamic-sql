@@ -3,7 +3,7 @@ MyBatis Dynamic SQL includes Kotlin extension methods that enable an SQL DSL for
 
 The standard usage patterns for MyBatis Dynamic SQL and MyBatis3 in Java must be modified somewhat for Kotlin. Kotlin interfaces can contain both abstract and non-abstract methods (somewhat similar to Java's default methods in an interface). But using these methods in Kotlin based mapper interfaces will cause a failure with MyBatis because of the underlying Kotlin implementation.
 
-This page will show our recommended pattern for using the MyBatis Dynamic SQL with Kotlin. The code shown on this page is from the `src/test/kotlin/examples/kotlin/canonical` directory in this repository. That directory contains a complete example of using this library with Kotlin.
+This page will show our recommended pattern for using the MyBatis Dynamic SQL with Kotlin. The code shown on this page is from the `src/test/kotlin/examples/kotlin/mybatis3/canonical` directory in this repository. That directory contains a complete example of using this library with Kotlin.
 
 All Kotlin support is available in two packages:
 

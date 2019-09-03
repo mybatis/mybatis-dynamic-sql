@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.canonical
+package examples.kotlin.mybatis3.canonical
 
 import org.apache.ibatis.type.JdbcType
 import org.apache.ibatis.type.TypeHandler

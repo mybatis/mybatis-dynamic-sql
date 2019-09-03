@@ -13,6 +13,18 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.canonical
+package examples.kotlin.mybatis3.joins
 
-data class LastName(var name: String)
+import org.apache.ibatis.annotations.ResultMap
+import org.apache.ibatis.annotations.SelectProvider
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter
+
+interface JoinMapper {
+    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    @ResultMap("SimpleJoinResult")
+    fun selectMany(selectStatement: SelectStatementProvider): List<OrderMaster>
+
+    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    fun generalSelect(selectStatement: SelectStatementProvider): List<Map<String, Any>>
+}

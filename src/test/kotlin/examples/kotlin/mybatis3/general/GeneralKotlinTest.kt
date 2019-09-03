@@ -13,18 +13,18 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.general
+package examples.kotlin.mybatis3.general
 
-import examples.kotlin.canonical.*
-import examples.kotlin.canonical.AddressDynamicSqlSupport.Address
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.mybatis3.canonical.*
+import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.Address
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -45,7 +45,7 @@ import java.sql.DriverManager
 class GeneralKotlinTest {
     private fun newSession(): SqlSession {
         Class.forName(PersonMapperTest.JDBC_DRIVER)
-        val script = javaClass.getResourceAsStream("/examples/kotlin/CreateSimpleDB.sql")
+        val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
         DriverManager.getConnection(PersonMapperTest.JDBC_URL, "sa", "").use { connection ->
             val sr = ScriptRunner(connection)
             sr.setLogWriter(null)
@@ -132,7 +132,7 @@ class GeneralKotlinTest {
             val expected = "delete from Person" +
                 " where (id < #{parameters.p1,jdbcType=INTEGER} or occupation is not null)" +
                 " and employed =" +
-                " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.canonical.YesNoTypeHandler}"
+                " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}"
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
@@ -157,7 +157,7 @@ class GeneralKotlinTest {
             val expected = "delete from Person" +
                 " where id < #{parameters.p1,jdbcType=INTEGER} or (occupation is not null" +
                 " and employed =" +
-                " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.canonical.YesNoTypeHandler})"
+                " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler})"
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
@@ -182,7 +182,7 @@ class GeneralKotlinTest {
             val expected = "delete from Person where id < #{parameters.p1,jdbcType=INTEGER}" +
                 " and (occupation is not null and" +
                 " employed =" +
-                " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.canonical.YesNoTypeHandler})"
+                " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler})"
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 

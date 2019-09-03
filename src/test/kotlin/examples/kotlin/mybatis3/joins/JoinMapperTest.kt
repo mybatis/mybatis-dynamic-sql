@@ -13,12 +13,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.joins
+package examples.kotlin.mybatis3.joins
 
-import examples.kotlin.joins.ItemMasterDynamicSQLSupport.ItemMaster
-import examples.kotlin.joins.OrderDetailDynamicSQLSupport.OrderDetail
-import examples.kotlin.joins.OrderLineDynamicSQLSupport.OrderLine
-import examples.kotlin.joins.OrderMasterDynamicSQLSupport.OrderMaster
+import examples.kotlin.mybatis3.joins.ItemMasterDynamicSQLSupport.ItemMaster
+import examples.kotlin.mybatis3.joins.OrderDetailDynamicSQLSupport.OrderDetail
+import examples.kotlin.mybatis3.joins.OrderLineDynamicSQLSupport.OrderLine
+import examples.kotlin.mybatis3.joins.OrderMasterDynamicSQLSupport.OrderMaster
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -41,7 +41,7 @@ class JoinMapperTest {
 
     private fun newSession(): SqlSession {
         Class.forName(JDBC_DRIVER)
-        val script = javaClass.getResourceAsStream("/examples/kotlin/joins/CreateJoinDB.sql")
+        val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/joins/CreateJoinDB.sql")
 
         DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
             val sr = ScriptRunner(connection)

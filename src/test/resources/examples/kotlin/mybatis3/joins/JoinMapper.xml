@@ -17,11 +17,11 @@
 
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="examples.kotlin.joins.JoinMapper">
-  <resultMap id="SimpleJoinResult" type="examples.kotlin.joins.OrderMaster">
+<mapper namespace="examples.kotlin.mybatis3.joins.JoinMapper">
+  <resultMap id="SimpleJoinResult" type="examples.kotlin.mybatis3.joins.OrderMaster">
     <id column="order_id" jdbcType="INTEGER" property="id" />
     <result column="order_date" jdbcType="DATE" property="orderDate" />
-    <collection property="details" ofType="examples.kotlin.joins.OrderDetail">
+    <collection property="details" ofType="examples.kotlin.mybatis3.joins.OrderDetail">
       <id column="order_id" jdbcType="INTEGER" property="orderId"/>
       <id column="line_number" jdbcType="INTEGER" property="lineNumber"/>
       <result column="description" jdbcType="VARCHAR" property="description"/>
