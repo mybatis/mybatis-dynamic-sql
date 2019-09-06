@@ -13,10 +13,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.kotlin
+package examples.kotlin.spring.canonical
 
-import org.mybatis.dynamic.sql.insert.InsertDSL
-import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
-
-typealias InsertCompleter<T> = InsertDSL<T>.() -> InsertDSL<T>
-typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> MultiRowInsertDSL<T>
+data class AddressRecord(var id: Int? = null, var streetAddress: String? = null, var city: String? = null, var state: String? = null)
