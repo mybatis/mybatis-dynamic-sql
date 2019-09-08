@@ -117,7 +117,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
         return FragmentAndParameters.withFragment(fragment).buildOptional();
     }
     
-    private FragmentAndParameters toFragmentAndParameters(Object value) {
+    private FragmentAndParameters toFragmentAndParameters(T value) {
         String mapKey = formatParameterMapKey(sequence.getAndIncrement());
         
         return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))

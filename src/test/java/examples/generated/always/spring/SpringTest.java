@@ -22,7 +22,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -45,12 +44,11 @@ import org.springframework.jdbc.support.KeyHolder;
 import examples.generated.always.GeneratedAlwaysRecord;
 
 public class SpringTest {
-    private EmbeddedDatabase db;
     private NamedParameterJdbcTemplate template;
     
     @BeforeEach
     public void setup() {
-        db = new EmbeddedDatabaseBuilder()
+        EmbeddedDatabase db = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.HSQL)
                 .generateUniqueName(true)
                 .addScript("classpath:/examples/generated/always/CreateGeneratedAlwaysDB.sql")
@@ -193,10 +191,5 @@ public class SpringTest {
         
         assertThat(rows).isEqualTo(2);
         
-    }
-    
-    @AfterEach
-    public void teardown() {
-        db.shutdown();
     }
 }
