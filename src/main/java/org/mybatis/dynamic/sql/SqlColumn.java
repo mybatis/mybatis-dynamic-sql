@@ -96,8 +96,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .orElseGet(this::name);
     }
     
-    public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
-        SqlColumn<S> column = new SqlColumn<>(this);
+    public SqlColumn<T> withTypeHandler(String typeHandler) {
+        SqlColumn<T> column = new SqlColumn<>(this);
         column.typeHandler = typeHandler;
         return column;
     }
