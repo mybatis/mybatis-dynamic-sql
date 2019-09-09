@@ -25,56 +25,23 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.from
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
-import java.sql.ResultSet
 import java.util.*
 
-fun NamedParameterJdbcTemplate.count(selectStatement: SelectStatementProvider) =
-    queryForObject(selectStatement.selectStatement, selectStatement.parameters, Long::class.java)
-        ?: 0
-
-fun NamedParameterJdbcTemplate.delete(deleteStatement: DeleteStatementProvider) =
-    update(deleteStatement.deleteStatement, deleteStatement.parameters)
-
-fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>) =
-    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.record))
-
-fun <T> NamedParameterJdbcTemplate.selectMany(selectStatement: SelectStatementProvider, rowMapper: (rs: ResultSet, rowNum: Int) -> T): List<T> =
-    query(selectStatement.selectStatement, selectStatement.parameters, rowMapper)
-
-fun <T> NamedParameterJdbcTemplate.selectOne(selectStatement: SelectStatementProvider, rowMapper: (rs: ResultSet, rowNum: Int) -> T): T =
-    queryForObject(selectStatement.selectStatement, selectStatement.parameters, rowMapper)!!
-
-fun NamedParameterJdbcTemplate.update(updateStatement: UpdateStatementProvider) =
-    update(updateStatement.updateStatement, updateStatement.parameters)
-
 class CanonicalSpringKotlinTest {
-    private lateinit var db: EmbeddedDatabase
     private lateinit var template: NamedParameterJdbcTemplate
-
-    @AfterEach
-    fun teardown() {
-        db.shutdown()
-    }
 
     @BeforeEach
     fun setup() {
-        db = EmbeddedDatabaseBuilder()
+        val db = EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.HSQL)
             .generateUniqueName(true)
             .addScript("classpath:/examples/kotlin/spring/CreateSimpleDB.sql")
@@ -245,48 +212,6 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
     }
 
-//    @Test
-//    fun testInsertMultiple() {
-//        val record1 = PersonRecord(100, "Joe", "Jones", Date(), "Yes", "Developer", 1)
-//        val record2 = PersonRecord(101, "Sarah", "Smith", Date(), "Yes", "Architect", 2)
-//
-//        val insertStatement = insertMultiple(listOf(record1, record2), Person) {
-//            map(id).toProperty("id")
-//            map(firstName).toProperty("firstName")
-//            map(lastName).toProperty("lastName")
-//            map(birthDate).toProperty("birthDate")
-//            map(employed).toProperty("employed")
-//            map(occupation).toProperty("occupation")
-//            map(addressId).toProperty("addressId")
-//        }
-//
-//        val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
-//            " values" +
-//            " (#{records[0].id,jdbcType=INTEGER}," +
-//            " #{records[0].firstName,jdbcType=VARCHAR}," +
-//            " #{records[0].lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
-//            " #{records[0].birthDate,jdbcType=DATE}," +
-//            " #{records[0].employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
-//            " #{records[0].occupation,jdbcType=VARCHAR}," +
-//            " #{records[0].addressId,jdbcType=INTEGER})" +
-//            ", (#{records[1].id,jdbcType=INTEGER}," +
-//            " #{records[1].firstName,jdbcType=VARCHAR}," +
-//            " #{records[1].lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
-//            " #{records[1].birthDate,jdbcType=DATE}," +
-//            " #{records[1].employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
-//            " #{records[1].occupation,jdbcType=VARCHAR}," +
-//            " #{records[1].addressId,jdbcType=INTEGER})"
-//
-//        assertThat(insertStatement.insertStatement).isEqualTo(expected)
-//
-//        val b = BeanPropertySqlParameterSource(insertStatement.records)
-//        val names = b.parameterNames
-//
-//        val rows = template.update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.records))
-//
-//        assertThat(rows).isEqualTo(2)
-//    }
-
     @Test
     fun testRawSelect() {
         val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
@@ -342,7 +267,7 @@ class CanonicalSpringKotlinTest {
             record
         }
 
-        with(record) {
+        with(record!!) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName).isEqualTo("Flintstone")

@@ -33,9 +33,6 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
 fun <T> insert(record: T, table: SqlTable, completer: InsertCompleter<T>): InsertStatementProvider<T> =
     completer(SqlBuilder.insert(record).into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-//fun <T> insertMultiple(records: Collection<T>, table: SqlTable, completer: MultiRowInsertCompleter<T>): MultiRowInsertStatementProvider<T> =
-//    completer(SqlBuilder.insertMultiple(records).into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
-
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: SelectCompleter) =
     completer(from(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
