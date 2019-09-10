@@ -224,7 +224,7 @@ class CanonicalSpringKotlinTest {
             limit(3)
         }
 
-        val rows = template.selectMany(selectStatement) { rs, _ ->
+        val rows = template.selectList(selectStatement) { rs, _ ->
             val record = PersonRecord()
             record.id = rs.getInt(1)
             record.firstName = rs.getString(2)
@@ -298,7 +298,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val rows = template.selectMany(selectStatement) { rs, _ ->
+        val rows = template.selectList(selectStatement) { rs, _ ->
             val record = PersonWithAddress()
             record.id = rs.getInt(1)
             record.firstName = rs.getString(2)
@@ -356,7 +356,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val rows = template.selectMany(selectStatement) { rs, _ ->
+        val rows = template.selectList(selectStatement) { rs, _ ->
             val record = PersonRecord()
             record.id = rs.getInt(1)
             record.firstName = rs.getString(2)
@@ -403,7 +403,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val rows = template.selectMany(selectStatement) { rs, _ ->
+        val rows = template.selectList(selectStatement) { rs, _ ->
             val record = PersonRecord()
             record.id = rs.getInt(1)
             record.firstName = rs.getString(2)

@@ -15,10 +15,14 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin.spring
 
+import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
+import org.mybatis.dynamic.sql.util.kotlin.*
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.ResultSet
@@ -26,13 +30,28 @@ import java.sql.ResultSet
 fun NamedParameterJdbcTemplate.count(selectStatement: SelectStatementProvider) =
     queryForObject(selectStatement.selectStatement, selectStatement.parameters, Long::class.java)!!
 
+fun NamedParameterJdbcTemplate.count(table: SqlTable, completer: CountCompleter) =
+    count(org.mybatis.dynamic.sql.util.kotlin.spring.count(table, completer))
+
 fun NamedParameterJdbcTemplate.delete(deleteStatement: DeleteStatementProvider) =
     update(deleteStatement.deleteStatement, deleteStatement.parameters)
+
+fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteCompleter) =
+    delete(org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom(table, completer))
 
 fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>) =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.record))
 
-fun <T> NamedParameterJdbcTemplate.selectMany(selectStatement: SelectStatementProvider, rowMapper: (rs: ResultSet, rowNum: Int) -> T): List<T> =
+fun <T> NamedParameterJdbcTemplate.insert(record: T, table: SqlTable, completer: InsertCompleter<T>) =
+    insert(org.mybatis.dynamic.sql.util.kotlin.spring.insert(record, table, completer))
+
+fun NamedParameterJdbcTemplate.select(vararg selectList: BasicColumn) =
+    FromGatherer(selectList.toList(), this)
+
+fun NamedParameterJdbcTemplate.selectDistinct(vararg selectList: BasicColumn) =
+    DistinctFromGatherer(selectList.toList(), this)
+
+fun <T> NamedParameterJdbcTemplate.selectList(selectStatement: SelectStatementProvider, rowMapper: (rs: ResultSet, rowNum: Int) -> T): List<T> =
     query(selectStatement.selectStatement, selectStatement.parameters, rowMapper)
 
 fun <T> NamedParameterJdbcTemplate.selectOne(selectStatement: SelectStatementProvider, rowMapper: (rs: ResultSet, rowNum: Int) -> T): T? =
@@ -40,3 +59,28 @@ fun <T> NamedParameterJdbcTemplate.selectOne(selectStatement: SelectStatementPro
 
 fun NamedParameterJdbcTemplate.update(updateStatement: UpdateStatementProvider) =
     update(updateStatement.updateStatement, updateStatement.parameters)
+
+fun NamedParameterJdbcTemplate.update(table: SqlTable, completer: UpdateCompleter) =
+    update(org.mybatis.dynamic.sql.util.kotlin.spring.update(table, completer))
+
+// support classes for select DSL
+class FromGatherer(private val selectList: List<BasicColumn>, private val template: NamedParameterJdbcTemplate) {
+    fun from(table: SqlTable, completer: SelectCompleter) =
+        MapperGatherer(SqlBuilder.select(selectList).from(table, completer), template)
+
+    fun from(table: SqlTable, alias: String, completer: SelectCompleter) =
+        MapperGatherer(SqlBuilder.select(selectList).from(table, alias, completer), template)
+}
+
+class DistinctFromGatherer(private val selectList: List<BasicColumn>, private val template: NamedParameterJdbcTemplate) {
+    fun from(table: SqlTable, completer: SelectCompleter) =
+        MapperGatherer(SqlBuilder.selectDistinct(selectList).from(table, completer), template)
+
+    fun from(table: SqlTable, alias: String, completer: SelectCompleter) =
+        MapperGatherer(SqlBuilder.selectDistinct(selectList).from(table, alias, completer), template)
+}
+
+class MapperGatherer(private val selectStatement: SelectStatementProvider, private val template: NamedParameterJdbcTemplate) {
+    fun <T> withRowMapper(rowMapper: (rs: ResultSet, rowNum: Int) -> T) =
+        template.selectList(selectStatement, rowMapper)
+}
