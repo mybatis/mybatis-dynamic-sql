@@ -17,20 +17,21 @@ package org.mybatis.dynamic.sql.util.kotlin.spring
 
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.kotlin.*
 
-fun count(table: SqlTable, completer: CountCompleter) =
+fun countFrom(table: SqlTable, completer: CountCompleter) =
     completer(SqlBuilder.countFrom(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
     completer(SqlBuilder.deleteFrom(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun <T> insert(record: T, table: SqlTable, completer: InsertCompleter<T>): InsertStatementProvider<T> =
-    completer(SqlBuilder.insert(record).into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>): InsertStatementProvider<T> =
+    completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: SelectCompleter) =
     completer(from(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)

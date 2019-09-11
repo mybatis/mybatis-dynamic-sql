@@ -50,7 +50,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testCount() {
-        val rows = template.count(Person) {
+        val rows = template.countFrom(Person) {
             where(id, isLessThan(4))
         }
 
@@ -59,7 +59,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testCountAllRows() {
-        val rows = template.count(Person) {
+        val rows = template.countFrom(Person) {
             allRows()
         }
 
@@ -180,6 +180,46 @@ class CanonicalSpringKotlinTemplateDirectTest {
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
+    }
+
+    @Test
+    fun testSelectByPrimaryKey() {
+        val record = template.selectOne(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+            .from(Person) {
+                where(id, isEqualTo(1))
+            }.withRowMapper { rs, _ ->
+                val record = PersonRecord()
+                record.id = rs.getInt(1)
+                record.firstName = rs.getString(2)
+                record.lastName = rs.getString(3)
+                record.birthDate = rs.getTimestamp(4)
+                record.employed = rs.getString(5)
+                record.occupation = rs.getString(6)
+                record.addressId = rs.getInt(7)
+                record
+            }
+
+        with(record!!) {
+            assertThat(id).isEqualTo(1)
+            assertThat(firstName).isEqualTo("Fred")
+            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("Yes")
+            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(addressId).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testSelectDistinct() {
+        val rows = template.selectDistinct(lastName)
+            .from(Person) {
+                orderBy(lastName)
+            }.withRowMapper { rs, _ ->
+                rs.getString(1)
+            }
+
+        assertThat(rows.size).isEqualTo(2)
     }
 
     @Test

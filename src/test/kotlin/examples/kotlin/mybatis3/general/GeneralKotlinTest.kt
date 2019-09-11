@@ -66,7 +66,7 @@ class GeneralKotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val countStatement = count(Person) {
+            val countStatement = countFrom(Person) {
                 where(id, isLessThan(4))
             }
 
@@ -84,7 +84,7 @@ class GeneralKotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val countStatement = count(Person) {
+            val countStatement = countFrom(Person) {
                 allRows()
             }
 
@@ -234,7 +234,7 @@ class GeneralKotlinTest {
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-            val insertStatement = insert(record, Person) {
+            val insertStatement = insert(record).into(Person) {
                 map(id).toProperty("id")
                 map(firstName).toProperty("firstName")
                 map(lastName).toProperty("lastName")
@@ -266,7 +266,7 @@ class GeneralKotlinTest {
             val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
             val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-            val insertStatement = insertMultiple(listOf(record1, record2), Person) {
+            val insertStatement = insertMultiple(listOf(record1, record2)).into(Person) {
                 map(id).toProperty("id")
                 map(firstName).toProperty("firstName")
                 map(lastName).toProperty("lastName")

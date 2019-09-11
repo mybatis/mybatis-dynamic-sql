@@ -51,7 +51,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCount() {
-        val countStatement = count(Person) {
+        val countStatement = countFrom(Person) {
             where(id, isLessThan(4))
         }
 
@@ -65,7 +65,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCountAllRows() {
-        val countStatement = count(Person) {
+        val countStatement = countFrom(Person) {
             allRows()
         }
 
@@ -188,7 +188,7 @@ class CanonicalSpringKotlinTest {
 
         val record = PersonRecord(100, "Joe", "Jones", Date(), "Yes", "Developer", 1)
 
-        val insertStatement = insert(record, Person) {
+        val insertStatement = insert(record).into(Person) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastName")

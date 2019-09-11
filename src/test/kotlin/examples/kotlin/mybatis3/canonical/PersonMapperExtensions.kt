@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
 
 fun PersonMapper.count(completer: CountCompleter) =
-    count(this::count, Person, completer)
+    countFrom(this::count, Person, completer)
 
 fun PersonMapper.delete(completer: DeleteCompleter) =
     deleteFrom(this::delete, Person, completer)
