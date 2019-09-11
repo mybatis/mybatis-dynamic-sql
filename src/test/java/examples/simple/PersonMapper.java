@@ -91,7 +91,7 @@ public interface PersonMapper {
     int update(UpdateStatementProvider updateStatement);
     
     default long count(CountDSLCompleter completer) {
-        return MyBatis3Utils.count(this::count, person, completer);
+        return MyBatis3Utils.countFrom(this::count, person, completer);
     }
 
     default int delete(DeleteDSLCompleter completer) {

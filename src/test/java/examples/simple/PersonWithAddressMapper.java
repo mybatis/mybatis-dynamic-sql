@@ -100,6 +100,6 @@ public interface PersonWithAddressMapper {
     default long count(CountDSLCompleter completer) {
         CountDSL<SelectModel> start = countFrom(person)
                 .join(address, on(person.addressId, equalTo(address.id)));
-        return MyBatis3Utils.count(this::count, start, completer);
+        return MyBatis3Utils.countFrom(this::count, start, completer);
     }
 }
