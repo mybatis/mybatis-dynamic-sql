@@ -211,9 +211,33 @@ class CanonicalSpringKotlinTemplateDirectTest {
     }
 
     @Test
+    fun testSelectOneWithAlias() {
+        val name = template.selectOne(firstName)
+            .from(Person, "p") {
+                where(id, isEqualTo(1))
+            }.withRowMapper { rs, _ ->
+                rs.getString(1)
+            }
+
+        assertThat(name).isEqualTo("Fred")
+    }
+
+    @Test
     fun testSelectDistinct() {
         val rows = template.selectDistinct(lastName)
             .from(Person) {
+                orderBy(lastName)
+            }.withRowMapper { rs, _ ->
+                rs.getString(1)
+            }
+
+        assertThat(rows.size).isEqualTo(2)
+    }
+
+    @Test
+    fun testSelectDistinctWithAlias() {
+        val rows = template.selectDistinct(lastName)
+            .from(Person, "p") {
                 orderBy(lastName)
             }.withRowMapper { rs, _ ->
                 rs.getString(1)
