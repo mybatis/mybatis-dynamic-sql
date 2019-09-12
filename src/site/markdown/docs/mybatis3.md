@@ -20,7 +20,7 @@ This is a standard method for MyBatis Dynamic SQL that executes a query and retu
 
 ```java
 default long count(CountDSLCompleter completer) {
-    return MyBatis3Utils.count(this::count, person, completer);
+    return MyBatis3Utils.countFrom(this::count, person, completer);
 }
 ```
 

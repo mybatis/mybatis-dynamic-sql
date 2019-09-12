@@ -1,5 +1,5 @@
 # Kotlin Support for MyBatis3
-MyBatis Dynamic SQL includes Kotlin extension methods that enable an SQL DSL for Kotlin. This is the recommended method of using the library in Kotlin.
+MyBatis Dynamic SQL includes Kotlin extension methods that enable an SQL DSL for Kotlin. This is the recommended method of using the library in Kotlin with MyBatis3.
 
 The standard usage patterns for MyBatis Dynamic SQL and MyBatis3 in Java must be modified somewhat for Kotlin. Kotlin interfaces can contain both abstract and non-abstract methods (somewhat similar to Java's default methods in an interface). But using these methods in Kotlin based mapper interfaces will cause a failure with MyBatis because of the underlying Kotlin implementation.
 
@@ -94,10 +94,10 @@ This is a standard method for MyBatis Dynamic SQL that executes a query and retu
 
 ```kotlin
 fun PersonMapper.count(completer: CountCompleter) =
-    count(this::count, Person, completer)
+    countFrom(this::count, Person, completer)
 ```
 
-This method shows the use of `CountCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. This also shows use of the Kotlin `count` method which is supplied by the library. That method will build and execute the select count statement with the supplied where clause. Clients can use the method as follows:
+This method shows the use of `CountCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. This also shows use of the Kotlin `countFrom` method which is supplied by the library. That method will build and execute the select count statement with the supplied where clause. Clients can use the method as follows:
 
 ```kotlin
 val rows = mapper.count {

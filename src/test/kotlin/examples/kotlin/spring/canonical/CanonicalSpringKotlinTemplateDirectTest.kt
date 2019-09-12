@@ -67,6 +67,15 @@ class CanonicalSpringKotlinTemplateDirectTest {
     }
 
     @Test
+    fun testAllRows() {
+        val rows = template.deleteFrom(Person) {
+            allRows()
+        }
+
+        assertThat(rows).isEqualTo(6)
+    }
+
+    @Test
     fun testDelete1() {
         val rows = template.deleteFrom(Person) {
             where(id, isLessThan(4))
@@ -141,11 +150,32 @@ class CanonicalSpringKotlinTemplateDirectTest {
             map(lastName).toProperty("lastName")
             map(birthDate).toProperty("birthDate")
             map(employed).toProperty("employed")
-            map(occupation).toProperty("occupation")
+            map(occupation).toPropertyWhenPresent("occupation", record::occupation)
             map(addressId).toProperty("addressId")
         }
 
         assertThat(rows).isEqualTo(1)
+    }
+
+    @Test
+    fun testSelectAll() {
+        val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+            .from(Person) {
+                allRows()
+                orderBy(id)
+            }.withRowMapper { rs, _ ->
+                val record = PersonRecord()
+                record.id = rs.getInt(1)
+                record.firstName = rs.getString(2)
+                record.lastName = rs.getString(3)
+                record.birthDate = rs.getTimestamp(4)
+                record.employed = rs.getString(5)
+                record.occupation = rs.getString(6)
+                record.addressId = rs.getInt(7)
+                record
+            }
+
+        assertThat(rows.size).isEqualTo(6)
     }
 
     @Test
