@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
@@ -24,34 +25,31 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
-import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
-import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
-import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.*
 
-fun count(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter) =
-    mapper(count(table, completer))
+fun countFrom(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter) =
+    mapper(countFrom(table, completer))
 
 fun deleteFrom(mapper: (DeleteStatementProvider) -> Int, table: SqlTable, completer: DeleteCompleter) =
     mapper(deleteFrom(table, completer))
 
 fun <T> insert(mapper: (InsertStatementProvider<T>) -> Int, record: T, table: SqlTable, completer: InsertCompleter<T>) =
-    mapper(insert(record, table, completer))
+    mapper(SqlBuilder.insert(record).into(table, completer))
 
 fun <T> insertMultiple(mapper: (MultiRowInsertStatementProvider<T>) -> Int, records: Collection<T>, table: SqlTable, completer: MultiRowInsertCompleter<T>) =
-    mapper(insertMultiple(records, table, completer))
+    mapper(SqlBuilder.insertMultiple(records).into(table, completer))
 
 fun <T> selectDistinct(mapper: (SelectStatementProvider) -> List<T>, selectList: List<BasicColumn>, table: SqlTable, completer: SelectCompleter) =
-    mapper(selectDistinct(selectList, table, completer))
+    mapper(SqlBuilder.selectDistinct(selectList).from(table, completer))
 
 fun <T> selectList(mapper: (SelectStatementProvider) -> List<T>, selectList: List<BasicColumn>, table: SqlTable, completer: SelectCompleter) =
-    mapper(select(selectList, table, completer))
+    mapper(SqlBuilder.select(selectList).from(table, completer))
 
 fun <T> selectList(mapper: (SelectStatementProvider) -> List<T>, start: QueryExpressionDSL<SelectModel>, completer: SelectCompleter) =
     mapper(select(start, completer))
 
 fun <T> selectOne(mapper: (SelectStatementProvider) -> T?, selectList: List<BasicColumn>, table: SqlTable, completer: SelectCompleter) =
-    mapper(select(selectList, table, completer))
+    mapper(SqlBuilder.select(selectList).from(table, completer))
 
 fun <T> selectOne(mapper: (SelectStatementProvider) -> T?, start: QueryExpressionDSL<SelectModel>, completer: SelectCompleter) =
     mapper(select(start, completer))

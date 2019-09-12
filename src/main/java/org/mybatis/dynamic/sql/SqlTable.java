@@ -98,7 +98,8 @@ public class SqlTable {
 
     @NotNull
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType, String typeHandler) {
-        return SqlColumn.of(name, this, jdbcType).withTypeHandler(typeHandler);
+        SqlColumn<T> column = SqlColumn.of(name, this, jdbcType);
+        return column.withTypeHandler(typeHandler);
     }
     
     public static SqlTable of(String name) {

@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
  * client code look a bit cleaner.
  *
  * <p>This function is intended to by used in conjunction with a utility method like
- * {@link MyBatis3Utils#count(ToLongFunction, CountDSL, CountDSLCompleter)}
+ * {@link MyBatis3Utils#countFrom(ToLongFunction, CountDSL, CountDSLCompleter)}
  *
  * <p>For example, you can create mapper interface methods like this:
  *

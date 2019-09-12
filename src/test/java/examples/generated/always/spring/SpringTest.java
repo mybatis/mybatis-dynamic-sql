@@ -19,12 +19,9 @@ import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -33,7 +30,6 @@ import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -48,12 +44,11 @@ import org.springframework.jdbc.support.KeyHolder;
 import examples.generated.always.GeneratedAlwaysRecord;
 
 public class SpringTest {
-    private EmbeddedDatabase db;
     private NamedParameterJdbcTemplate template;
     
     @BeforeEach
     public void setup() {
-        db = new EmbeddedDatabaseBuilder()
+        EmbeddedDatabase db = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.HSQL)
                 .generateUniqueName(true)
                 .addScript("classpath:/examples/generated/always/CreateGeneratedAlwaysDB.sql")
@@ -90,16 +85,13 @@ public class SpringTest {
         SqlParameterSource namedParameters = new MapSqlParameterSource(selectStatement.getParameters());
         
         List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), namedParameters,
-                new RowMapper<GeneratedAlwaysRecord>(){
-                    @Override
-                    public GeneratedAlwaysRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-                        record.setId(rs.getInt(1));
-                        record.setFirstName(rs.getString(2));
-                        record.setLastName(rs.getString(3));
-                        record.setFullName(rs.getString(4));
-                        return record;
-                    }
+                (rs, rowNum) -> {
+                    GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+                    record.setId(rs.getInt(1));
+                    record.setFirstName(rs.getString(2));
+                    record.setLastName(rs.getString(3));
+                    record.setFullName(rs.getString(4));
+                    return record;
                 });
         
         assertThat(records.size()).isEqualTo(3);
@@ -199,10 +191,5 @@ public class SpringTest {
         
         assertThat(rows).isEqualTo(2);
         
-    }
-    
-    @AfterEach
-    public void teardown() {
-        db.shutdown();
     }
 }
