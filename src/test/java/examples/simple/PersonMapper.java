@@ -145,7 +145,7 @@ public interface PersonMapper {
     }
     
     default Optional<PersonRecord> selectOne(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectOptional(this::selectOne, selectList, person, completer);
+        return MyBatis3Utils.selectOne(this::selectOne, selectList, person, completer);
     }
     
     default List<PersonRecord> select(SelectDSLCompleter completer) {
