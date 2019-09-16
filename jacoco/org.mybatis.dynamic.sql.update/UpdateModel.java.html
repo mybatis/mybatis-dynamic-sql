@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update</a> &gt; <span class="el_source">UpdateModel.java</span></div><h1>UpdateModel.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
@@ -34,58 +35,59 @@ public class UpdateModel {
     private WhereModel whereModel;
     private List&lt;UpdateMapping&gt; columnMappings;
     
-<span class="fc" id="L37">    private UpdateModel(Builder builder) {</span>
-<span class="fc" id="L38">        table = Objects.requireNonNull(builder.table);</span>
-<span class="fc" id="L39">        whereModel = builder.whereModel;</span>
-<span class="fc" id="L40">        columnMappings = Objects.requireNonNull(builder.columnMappings);</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L38">    private UpdateModel(Builder builder) {</span>
+<span class="fc" id="L39">        table = Objects.requireNonNull(builder.table);</span>
+<span class="fc" id="L40">        whereModel = builder.whereModel;</span>
+<span class="fc" id="L41">        columnMappings = Objects.requireNonNull(builder.columnMappings);</span>
+<span class="fc" id="L42">    }</span>
     
     public SqlTable table() {
-<span class="fc" id="L44">        return table;</span>
+<span class="fc" id="L45">        return table;</span>
     }
     
     public Optional&lt;WhereModel&gt; whereModel() {
-<span class="fc" id="L48">        return Optional.ofNullable(whereModel);</span>
+<span class="fc" id="L49">        return Optional.ofNullable(whereModel);</span>
     }
     
     public &lt;R&gt; Stream&lt;R&gt; mapColumnMappings(Function&lt;UpdateMapping, R&gt; mapper) {
-<span class="fc" id="L52">        return columnMappings.stream().map(mapper);</span>
+<span class="fc" id="L53">        return columnMappings.stream().map(mapper);</span>
     }
-    
+
+    @NotNull
     public UpdateStatementProvider render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L56">        return UpdateRenderer.withUpdateModel(this)</span>
-<span class="fc" id="L57">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L58">                .build()</span>
-<span class="fc" id="L59">                .render();</span>
+<span class="fc" id="L58">        return UpdateRenderer.withUpdateModel(this)</span>
+<span class="fc" id="L59">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L60">                .build()</span>
+<span class="fc" id="L61">                .render();</span>
     }
     
     public static Builder withTable(SqlTable table) {
-<span class="fc" id="L63">        return new Builder().withTable(table);</span>
+<span class="fc" id="L65">        return new Builder().withTable(table);</span>
     }
     
-<span class="fc" id="L66">    public static class Builder {</span>
+<span class="fc" id="L68">    public static class Builder {</span>
         private SqlTable table;
         private WhereModel whereModel;
-<span class="fc" id="L69">        private List&lt;UpdateMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L71">        private List&lt;UpdateMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
         
         public Builder withTable(SqlTable table) {
-<span class="fc" id="L72">            this.table = table;</span>
-<span class="fc" id="L73">            return this;</span>
+<span class="fc" id="L74">            this.table = table;</span>
+<span class="fc" id="L75">            return this;</span>
         }
         
         public Builder withColumnMappings(List&lt;UpdateMapping&gt; columnMappings) {
-<span class="fc" id="L77">            this.columnMappings.addAll(columnMappings);</span>
-<span class="fc" id="L78">            return this;</span>
+<span class="fc" id="L79">            this.columnMappings.addAll(columnMappings);</span>
+<span class="fc" id="L80">            return this;</span>
         }
         
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L82">            this.whereModel = whereModel;</span>
-<span class="fc" id="L83">            return this;</span>
+<span class="fc" id="L84">            this.whereModel = whereModel;</span>
+<span class="fc" id="L85">            return this;</span>
         }
         
         public UpdateModel build() {
-<span class="fc" id="L87">            return new UpdateModel(this);</span>
+<span class="fc" id="L89">            return new UpdateModel(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

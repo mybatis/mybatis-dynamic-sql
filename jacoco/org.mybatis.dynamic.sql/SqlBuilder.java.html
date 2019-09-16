@@ -24,6 +24,8 @@ import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
+import org.mybatis.dynamic.sql.select.CountDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -31,6 +33,7 @@ import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
+import org.mybatis.dynamic.sql.select.aggregate.CountDistinct;
 import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
@@ -100,499 +103,542 @@ import org.mybatis.dynamic.sql.where.condition.IsNull;
 public interface SqlBuilder {
 
     // statements
+    static CountDSL&lt;SelectModel&gt; countFrom(SqlTable table) {
+<span class="fc" id="L107">        return CountDSL.countFrom(table);</span>
+    }
+    
     static DeleteDSL&lt;DeleteModel&gt; deleteFrom(SqlTable table) {
-<span class="fc" id="L104">        return DeleteDSL.deleteFrom(table);</span>
+<span class="fc" id="L111">        return DeleteDSL.deleteFrom(table);</span>
     }
 
     static &lt;T&gt; InsertDSL.IntoGatherer&lt;T&gt; insert(T record) {
-<span class="fc" id="L108">        return InsertDSL.insert(record);</span>
+<span class="fc" id="L115">        return InsertDSL.insert(record);</span>
     }
     
     @SafeVarargs
     static &lt;T&gt; BatchInsertDSL.IntoGatherer&lt;T&gt; insert(T...records) {
-<span class="fc" id="L113">        return BatchInsertDSL.insert(records);</span>
+<span class="fc" id="L120">        return BatchInsertDSL.insert(records);</span>
     }
     
     static &lt;T&gt; BatchInsertDSL.IntoGatherer&lt;T&gt; insert(Collection&lt;T&gt; records) {
-<span class="fc" id="L117">        return BatchInsertDSL.insert(records);</span>
+<span class="fc" id="L124">        return BatchInsertDSL.insert(records);</span>
+    }
+    
+    @SafeVarargs
+    static &lt;T&gt; MultiRowInsertDSL.IntoGatherer&lt;T&gt; insertMultiple(T...records) {
+<span class="fc" id="L129">        return MultiRowInsertDSL.insert(records);</span>
+    }
+    
+    static &lt;T&gt; MultiRowInsertDSL.IntoGatherer&lt;T&gt; insertMultiple(Collection&lt;T&gt; records) {
+<span class="fc" id="L133">        return MultiRowInsertDSL.insert(records);</span>
     }
     
     static InsertSelectDSL.InsertColumnGatherer insertInto(SqlTable table) {
-<span class="fc" id="L121">        return InsertSelectDSL.insertInto(table);</span>
+<span class="fc" id="L137">        return InsertSelectDSL.insertInto(table);</span>
     }
     
     static FromGatherer&lt;SelectModel&gt; select(BasicColumn...selectList) {
-<span class="fc" id="L125">        return SelectDSL.select(selectList);</span>
+<span class="fc" id="L141">        return SelectDSL.select(selectList);</span>
+    }
+    
+    static FromGatherer&lt;SelectModel&gt; select(Collection&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L145">        return SelectDSL.select(selectList);</span>
     }
     
     static FromGatherer&lt;SelectModel&gt; selectDistinct(BasicColumn...selectList) {
-<span class="fc" id="L129">        return SelectDSL.selectDistinct(selectList);</span>
+<span class="fc" id="L149">        return SelectDSL.selectDistinct(selectList);</span>
+    }
+    
+    static FromGatherer&lt;SelectModel&gt; selectDistinct(Collection&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L153">        return SelectDSL.selectDistinct(selectList);</span>
     }
     
     static UpdateDSL&lt;UpdateModel&gt; update(SqlTable table) {
-<span class="fc" id="L133">        return UpdateDSL.update(table);</span>
+<span class="fc" id="L157">        return UpdateDSL.update(table);</span>
     }
 
     static WhereDSL where() {
-<span class="fc" id="L137">        return WhereDSL.where();</span>
+<span class="fc" id="L161">        return WhereDSL.where();</span>
     }
     
     static &lt;T&gt; WhereDSL where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L141">        return WhereDSL.where(column, condition);</span>
+<span class="fc" id="L165">        return WhereDSL.where(column, condition);</span>
     }
     
     static &lt;T&gt; WhereDSL where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;... subCriteria) {
-<span class="fc" id="L146">        return WhereDSL.where(column, condition, subCriteria);</span>
+<span class="fc" id="L170">        return WhereDSL.where(column, condition, subCriteria);</span>
     }
     
     // where condition connectors
     static &lt;T&gt; SqlCriterion&lt;T&gt; or(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L151">        return SqlCriterion.withColumn(column)</span>
-<span class="fc" id="L152">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L153">                .withCondition(condition)</span>
-<span class="fc" id="L154">                .build();</span>
+<span class="fc" id="L175">        return SqlCriterion.withColumn(column)</span>
+<span class="fc" id="L176">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L177">                .withCondition(condition)</span>
+<span class="fc" id="L178">                .build();</span>
     }
 
     static &lt;T&gt; SqlCriterion&lt;T&gt; or(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;...subCriteria) {
-<span class="fc" id="L159">        return SqlCriterion.withColumn(column)</span>
-<span class="fc" id="L160">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L161">                .withCondition(condition)</span>
-<span class="fc" id="L162">                .withSubCriteria(Arrays.asList(subCriteria))</span>
-<span class="fc" id="L163">                .build();</span>
+<span class="fc" id="L183">        return SqlCriterion.withColumn(column)</span>
+<span class="fc" id="L184">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L185">                .withCondition(condition)</span>
+<span class="fc" id="L186">                .withSubCriteria(Arrays.asList(subCriteria))</span>
+<span class="fc" id="L187">                .build();</span>
     }
 
     static &lt;T&gt; SqlCriterion&lt;T&gt; and(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L167">        return SqlCriterion.withColumn(column)</span>
-<span class="fc" id="L168">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L169">                .withCondition(condition)</span>
-<span class="fc" id="L170">                .build();</span>
+<span class="fc" id="L191">        return SqlCriterion.withColumn(column)</span>
+<span class="fc" id="L192">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L193">                .withCondition(condition)</span>
+<span class="fc" id="L194">                .build();</span>
     }
 
     static &lt;T&gt; SqlCriterion&lt;T&gt; and(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;...subCriteria) {
-<span class="fc" id="L175">        return SqlCriterion.withColumn(column)</span>
-<span class="fc" id="L176">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L177">                .withCondition(condition)</span>
-<span class="fc" id="L178">                .withSubCriteria(Arrays.asList(subCriteria))</span>
-<span class="fc" id="L179">                .build();</span>
+<span class="fc" id="L199">        return SqlCriterion.withColumn(column)</span>
+<span class="fc" id="L200">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L201">                .withCondition(condition)</span>
+<span class="fc" id="L202">                .withSubCriteria(Arrays.asList(subCriteria))</span>
+<span class="fc" id="L203">                .build();</span>
     }
 
     // join support
     static JoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
-<span class="fc" id="L184">        return JoinCriterion.withJoinColumn(joinColumn)</span>
-<span class="fc" id="L185">                .withJoinCondition(joinCondition)</span>
-<span class="fc" id="L186">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L187">                .build();</span>
+<span class="fc" id="L208">        return new JoinCriterion.Builder()</span>
+<span class="fc" id="L209">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L210">                .withJoinColumn(joinColumn)</span>
+<span class="fc" id="L211">                .withJoinCondition(joinCondition)</span>
+<span class="fc" id="L212">                .build();</span>
+    }
+    
+    static JoinCriterion on(BasicColumn joinColumn, JoinCondition joinCondition) {
+<span class="fc" id="L216">        return new JoinCriterion.Builder()</span>
+<span class="fc" id="L217">                .withConnector(&quot;on&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L218">                .withJoinColumn(joinColumn)</span>
+<span class="fc" id="L219">                .withJoinCondition(joinCondition)</span>
+<span class="fc" id="L220">                .build();</span>
     }
     
     static EqualTo equalTo(BasicColumn column) {
-<span class="fc" id="L191">        return new EqualTo(column);</span>
+<span class="fc" id="L224">        return new EqualTo(column);</span>
     }
 
     // aggregate support
     static CountAll count() {
-<span class="fc" id="L196">        return new CountAll();</span>
+<span class="fc" id="L229">        return new CountAll();</span>
     }
     
     static Count count(BasicColumn column) {
-<span class="fc" id="L200">        return Count.of(column);</span>
+<span class="fc" id="L233">        return Count.of(column);</span>
+    }
+    
+    static CountDistinct countDistinct(BasicColumn column) {
+<span class="fc" id="L237">        return CountDistinct.of(column);</span>
     }
     
     static Max max(BasicColumn column) {
-<span class="fc" id="L204">        return Max.of(column);</span>
+<span class="fc" id="L241">        return Max.of(column);</span>
     }
     
     static Min min(BasicColumn column) {
-<span class="fc" id="L208">        return Min.of(column);</span>
+<span class="fc" id="L245">        return Min.of(column);</span>
     }
 
     static Avg avg(BasicColumn column) {
-<span class="fc" id="L212">        return Avg.of(column);</span>
+<span class="fc" id="L249">        return Avg.of(column);</span>
     }
 
     static Sum sum(BasicColumn column) {
-<span class="fc" id="L216">        return Sum.of(column);</span>
+<span class="fc" id="L253">        return Sum.of(column);</span>
     }
 
     // constants
     static Constant constant(String constant) {
-<span class="fc" id="L221">        return Constant.of(constant);</span>
+<span class="fc" id="L258">        return Constant.of(constant);</span>
     }
     
     static StringConstant stringConstant(String constant) {
-<span class="fc" id="L225">        return StringConstant.of(constant);</span>
+<span class="fc" id="L262">        return StringConstant.of(constant);</span>
     }
     
     // functions
     @SafeVarargs
     static &lt;T extends Number&gt; Add&lt;T&gt; add(BindableColumn&lt;T&gt; firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
-<span class="fc" id="L232">        return Add.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));</span>
+<span class="fc" id="L269">        return Add.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));</span>
     }
     
     @SafeVarargs
     static &lt;T extends Number&gt; Divide&lt;T&gt; divide(BindableColumn&lt;T&gt; firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
-<span class="fc" id="L238">        return Divide.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));</span>
+<span class="fc" id="L275">        return Divide.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));</span>
     }
     
     @SafeVarargs
     static &lt;T extends Number&gt; Multiply&lt;T&gt; multiply(BindableColumn&lt;T&gt; firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
-<span class="fc" id="L244">        return Multiply.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));</span>
+<span class="fc" id="L281">        return Multiply.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));</span>
     }
     
     @SafeVarargs
     static &lt;T extends Number&gt; Subtract&lt;T&gt; subtract(BindableColumn&lt;T&gt; firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
-<span class="fc" id="L250">        return Subtract.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));</span>
+<span class="fc" id="L287">        return Subtract.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));</span>
     }
     
     static Lower lower(BindableColumn&lt;String&gt; column) {
-<span class="fc" id="L254">        return Lower.of(column);</span>
+<span class="fc" id="L291">        return Lower.of(column);</span>
     }
     
     static Substring substring(BindableColumn&lt;String&gt; column, int offset, int length) {
-<span class="fc" id="L258">        return Substring.of(column, offset, length);</span>
+<span class="fc" id="L295">        return Substring.of(column, offset, length);</span>
     }
     
     static Upper upper(BindableColumn&lt;String&gt; column) {
-<span class="fc" id="L262">        return Upper.of(column);</span>
+<span class="fc" id="L299">        return Upper.of(column);</span>
     }
     
     // conditions for all data types
     static &lt;T&gt; IsNull&lt;T&gt; isNull() {
-<span class="fc" id="L267">        return new IsNull&lt;&gt;();</span>
+<span class="fc" id="L304">        return new IsNull&lt;&gt;();</span>
     }
 
     static &lt;T&gt; IsNotNull&lt;T&gt; isNotNull() {
-<span class="fc" id="L271">        return new IsNotNull&lt;&gt;();</span>
+<span class="fc" id="L308">        return new IsNotNull&lt;&gt;();</span>
     }
 
     static &lt;T&gt; IsEqualTo&lt;T&gt; isEqualTo(T value) {
-<span class="fc" id="L275">        return isEqualTo(() -&gt; value);</span>
+<span class="fc" id="L312">        return isEqualTo(() -&gt; value);</span>
     }
 
     static &lt;T&gt; IsEqualTo&lt;T&gt; isEqualTo(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L279">        return IsEqualTo.of(valueSupplier);</span>
+<span class="fc" id="L316">        return IsEqualTo.of(valueSupplier);</span>
     }
 
     static &lt;T&gt; IsEqualToWithSubselect&lt;T&gt; isEqualTo(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L283">        return IsEqualToWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L320">        return IsEqualToWithSubselect.of(selectModelBuilder);</span>
     }
     
     static &lt;T&gt; IsEqualToColumn&lt;T&gt; isEqualTo(BasicColumn column) {
-<span class="fc" id="L287">        return IsEqualToColumn.of(column);</span>
+<span class="fc" id="L324">        return IsEqualToColumn.of(column);</span>
     }
 
     static &lt;T&gt; IsEqualToWhenPresent&lt;T&gt; isEqualToWhenPresent(T value) {
-<span class="fc" id="L291">        return isEqualToWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L328">        return isEqualToWhenPresent(() -&gt; value);</span>
     }
 
     static &lt;T&gt; IsEqualToWhenPresent&lt;T&gt; isEqualToWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L295">        return IsEqualToWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L332">        return IsEqualToWhenPresent.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsNotEqualTo&lt;T&gt; isNotEqualTo(T value) {
-<span class="fc" id="L299">        return isNotEqualTo(() -&gt; value);</span>
+<span class="fc" id="L336">        return isNotEqualTo(() -&gt; value);</span>
     }
 
     static &lt;T&gt; IsNotEqualTo&lt;T&gt; isNotEqualTo(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L303">        return IsNotEqualTo.of(valueSupplier);</span>
+<span class="fc" id="L340">        return IsNotEqualTo.of(valueSupplier);</span>
     }
 
     static &lt;T&gt; IsNotEqualToWithSubselect&lt;T&gt; isNotEqualTo(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L307">        return IsNotEqualToWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L344">        return IsNotEqualToWithSubselect.of(selectModelBuilder);</span>
     }
 
     static &lt;T&gt; IsNotEqualToColumn&lt;T&gt; isNotEqualTo(BasicColumn column) {
-<span class="fc" id="L311">        return IsNotEqualToColumn.of(column);</span>
+<span class="fc" id="L348">        return IsNotEqualToColumn.of(column);</span>
     }
 
     static &lt;T&gt; IsNotEqualToWhenPresent&lt;T&gt; isNotEqualToWhenPresent(T value) {
-<span class="fc" id="L315">        return isNotEqualToWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L352">        return isNotEqualToWhenPresent(() -&gt; value);</span>
     }
 
     static &lt;T&gt; IsNotEqualToWhenPresent&lt;T&gt; isNotEqualToWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L319">        return IsNotEqualToWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L356">        return IsNotEqualToWhenPresent.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsGreaterThan&lt;T&gt; isGreaterThan(T value) {
-<span class="fc" id="L323">        return isGreaterThan(() -&gt; value);</span>
+<span class="fc" id="L360">        return isGreaterThan(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsGreaterThan&lt;T&gt; isGreaterThan(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L327">        return IsGreaterThan.of(valueSupplier);</span>
+<span class="fc" id="L364">        return IsGreaterThan.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsGreaterThanWithSubselect&lt;T&gt; isGreaterThan(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L331">        return IsGreaterThanWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L368">        return IsGreaterThanWithSubselect.of(selectModelBuilder);</span>
     }
     
     static &lt;T&gt; IsGreaterThanColumn&lt;T&gt; isGreaterThan(BasicColumn column) {
-<span class="fc" id="L335">        return IsGreaterThanColumn.of(column);</span>
+<span class="fc" id="L372">        return IsGreaterThanColumn.of(column);</span>
     }
 
     static &lt;T&gt; IsGreaterThanWhenPresent&lt;T&gt; isGreaterThanWhenPresent(T value) {
-<span class="fc" id="L339">        return isGreaterThanWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L376">        return isGreaterThanWhenPresent(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsGreaterThanWhenPresent&lt;T&gt; isGreaterThanWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L343">        return IsGreaterThanWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L380">        return IsGreaterThanWhenPresent.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsGreaterThanOrEqualTo&lt;T&gt; isGreaterThanOrEqualTo(T value) {
-<span class="fc" id="L347">        return isGreaterThanOrEqualTo(() -&gt; value);</span>
+<span class="fc" id="L384">        return isGreaterThanOrEqualTo(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsGreaterThanOrEqualTo&lt;T&gt; isGreaterThanOrEqualTo(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L351">        return IsGreaterThanOrEqualTo.of(valueSupplier);</span>
+<span class="fc" id="L388">        return IsGreaterThanOrEqualTo.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsGreaterThanOrEqualToWithSubselect&lt;T&gt; isGreaterThanOrEqualTo(
             Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L356">        return IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L393">        return IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);</span>
     }
     
     static &lt;T&gt; IsGreaterThanOrEqualToColumn&lt;T&gt; isGreaterThanOrEqualTo(BasicColumn column) {
-<span class="fc" id="L360">        return IsGreaterThanOrEqualToColumn.of(column);</span>
+<span class="fc" id="L397">        return IsGreaterThanOrEqualToColumn.of(column);</span>
     }
 
     static &lt;T&gt; IsGreaterThanOrEqualToWhenPresent&lt;T&gt; isGreaterThanOrEqualToWhenPresent(T value) {
-<span class="fc" id="L364">        return isGreaterThanOrEqualToWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L401">        return isGreaterThanOrEqualToWhenPresent(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsGreaterThanOrEqualToWhenPresent&lt;T&gt; isGreaterThanOrEqualToWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L368">        return IsGreaterThanOrEqualToWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L405">        return IsGreaterThanOrEqualToWhenPresent.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsLessThan&lt;T&gt; isLessThan(T value) {
-<span class="fc" id="L372">        return isLessThan(() -&gt; value);</span>
+<span class="fc" id="L409">        return isLessThan(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsLessThan&lt;T&gt; isLessThan(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L376">        return IsLessThan.of(valueSupplier);</span>
+<span class="fc" id="L413">        return IsLessThan.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsLessThanWithSubselect&lt;T&gt; isLessThan(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L380">        return IsLessThanWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L417">        return IsLessThanWithSubselect.of(selectModelBuilder);</span>
     }
     
     static &lt;T&gt; IsLessThanColumn&lt;T&gt; isLessThan(BasicColumn column) {
-<span class="fc" id="L384">        return IsLessThanColumn.of(column);</span>
+<span class="fc" id="L421">        return IsLessThanColumn.of(column);</span>
     }
 
     static &lt;T&gt; IsLessThanWhenPresent&lt;T&gt; isLessThanWhenPresent(T value) {
-<span class="fc" id="L388">        return isLessThanWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L425">        return isLessThanWhenPresent(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsLessThanWhenPresent&lt;T&gt; isLessThanWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L392">        return IsLessThanWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L429">        return IsLessThanWhenPresent.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsLessThanOrEqualTo&lt;T&gt; isLessThanOrEqualTo(T value) {
-<span class="fc" id="L396">        return isLessThanOrEqualTo(() -&gt; value);</span>
+<span class="fc" id="L433">        return isLessThanOrEqualTo(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsLessThanOrEqualTo&lt;T&gt; isLessThanOrEqualTo(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L400">        return IsLessThanOrEqualTo.of(valueSupplier);</span>
+<span class="fc" id="L437">        return IsLessThanOrEqualTo.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsLessThanOrEqualToWithSubselect&lt;T&gt; isLessThanOrEqualTo(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L404">        return IsLessThanOrEqualToWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L441">        return IsLessThanOrEqualToWithSubselect.of(selectModelBuilder);</span>
     }
     
     static &lt;T&gt; IsLessThanOrEqualToColumn&lt;T&gt; isLessThanOrEqualTo(BasicColumn column) {
-<span class="fc" id="L408">        return IsLessThanOrEqualToColumn.of(column);</span>
+<span class="fc" id="L445">        return IsLessThanOrEqualToColumn.of(column);</span>
     }
 
     static &lt;T&gt; IsLessThanOrEqualToWhenPresent&lt;T&gt; isLessThanOrEqualToWhenPresent(T value) {
-<span class="fc" id="L412">        return isLessThanOrEqualToWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L449">        return isLessThanOrEqualToWhenPresent(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsLessThanOrEqualToWhenPresent&lt;T&gt; isLessThanOrEqualToWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L416">        return IsLessThanOrEqualToWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L453">        return IsLessThanOrEqualToWhenPresent.of(valueSupplier);</span>
     }
     
     @SafeVarargs
     static &lt;T&gt; IsIn&lt;T&gt; isIn(T...values) {
-<span class="fc" id="L421">        return isIn(Arrays.asList(values));</span>
+<span class="fc" id="L458">        return isIn(Arrays.asList(values));</span>
     }
 
     static &lt;T&gt; IsIn&lt;T&gt; isIn(Collection&lt;T&gt; values) {
-<span class="fc" id="L425">        return IsIn.of(values);</span>
+<span class="fc" id="L462">        return IsIn.of(values);</span>
     }
     
     static &lt;T&gt; IsInWithSubselect&lt;T&gt; isIn(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L429">        return IsInWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L466">        return IsInWithSubselect.of(selectModelBuilder);</span>
     }
 
     @SafeVarargs
     static &lt;T&gt; IsInWhenPresent&lt;T&gt; isInWhenPresent(T...values) {
-<span class="fc" id="L434">        return isInWhenPresent(Arrays.asList(values));</span>
+<span class="fc" id="L471">        return isInWhenPresent(Arrays.asList(values));</span>
     }
 
     static &lt;T&gt; IsInWhenPresent&lt;T&gt; isInWhenPresent(Collection&lt;T&gt; values) {
-<span class="fc" id="L438">        return IsInWhenPresent.of(values);</span>
+<span class="fc" id="L475">        return IsInWhenPresent.of(values);</span>
     }
     
     @SafeVarargs
     static &lt;T&gt; IsNotIn&lt;T&gt; isNotIn(T...values) {
-<span class="fc" id="L443">        return isNotIn(Arrays.asList(values));</span>
+<span class="fc" id="L480">        return isNotIn(Arrays.asList(values));</span>
     }
     
     static &lt;T&gt; IsNotIn&lt;T&gt; isNotIn(Collection&lt;T&gt; values) {
-<span class="fc" id="L447">        return IsNotIn.of(values);</span>
+<span class="fc" id="L484">        return IsNotIn.of(values);</span>
     }
     
     static &lt;T&gt; IsNotInWithSubselect&lt;T&gt; isNotIn(Buildable&lt;SelectModel&gt; selectModelBuilder) {
-<span class="fc" id="L451">        return IsNotInWithSubselect.of(selectModelBuilder);</span>
+<span class="fc" id="L488">        return IsNotInWithSubselect.of(selectModelBuilder);</span>
     }
 
     @SafeVarargs
     static &lt;T&gt; IsNotInWhenPresent&lt;T&gt; isNotInWhenPresent(T...values) {
-<span class="fc" id="L456">        return isNotInWhenPresent(Arrays.asList(values));</span>
+<span class="fc" id="L493">        return isNotInWhenPresent(Arrays.asList(values));</span>
     }
 
     static &lt;T&gt; IsNotInWhenPresent&lt;T&gt; isNotInWhenPresent(Collection&lt;T&gt; values) {
-<span class="fc" id="L460">        return IsNotInWhenPresent.of(values);</span>
+<span class="fc" id="L497">        return IsNotInWhenPresent.of(values);</span>
     }
     
     static &lt;T&gt; IsBetween.Builder&lt;T&gt; isBetween(T value1) {
-<span class="fc" id="L464">        return isBetween(() -&gt; value1);</span>
+<span class="fc" id="L501">        return isBetween(() -&gt; value1);</span>
     }
     
     static &lt;T&gt; IsBetween.Builder&lt;T&gt; isBetween(Supplier&lt;T&gt; valueSupplier1) {
-<span class="fc" id="L468">        return IsBetween.isBetween(valueSupplier1);</span>
+<span class="fc" id="L505">        return IsBetween.isBetween(valueSupplier1);</span>
     }
     
     static &lt;T&gt; IsBetweenWhenPresent.Builder&lt;T&gt; isBetweenWhenPresent(T value1) {
-<span class="fc" id="L472">        return isBetweenWhenPresent(() -&gt; value1);</span>
+<span class="fc" id="L509">        return isBetweenWhenPresent(() -&gt; value1);</span>
     }
     
     static &lt;T&gt; IsBetweenWhenPresent.Builder&lt;T&gt; isBetweenWhenPresent(Supplier&lt;T&gt; valueSupplier1) {
-<span class="fc" id="L476">        return IsBetweenWhenPresent.isBetweenWhenPresent(valueSupplier1);</span>
+<span class="fc" id="L513">        return IsBetweenWhenPresent.isBetweenWhenPresent(valueSupplier1);</span>
     }
     
     static &lt;T&gt; IsNotBetween.Builder&lt;T&gt; isNotBetween(T value1) {
-<span class="fc" id="L480">        return isNotBetween(() -&gt; value1);</span>
+<span class="fc" id="L517">        return isNotBetween(() -&gt; value1);</span>
     }
     
     static &lt;T&gt; IsNotBetween.Builder&lt;T&gt; isNotBetween(Supplier&lt;T&gt; valueSupplier1) {
-<span class="fc" id="L484">        return IsNotBetween.isNotBetween(valueSupplier1);</span>
+<span class="fc" id="L521">        return IsNotBetween.isNotBetween(valueSupplier1);</span>
     }
 
     static &lt;T&gt; IsNotBetweenWhenPresent.Builder&lt;T&gt; isNotBetweenWhenPresent(T value1) {
-<span class="fc" id="L488">        return isNotBetweenWhenPresent(() -&gt; value1);</span>
+<span class="fc" id="L525">        return isNotBetweenWhenPresent(() -&gt; value1);</span>
     }
     
     static &lt;T&gt; IsNotBetweenWhenPresent.Builder&lt;T&gt; isNotBetweenWhenPresent(Supplier&lt;T&gt; valueSupplier1) {
-<span class="fc" id="L492">        return IsNotBetweenWhenPresent.isNotBetweenWhenPresent(valueSupplier1);</span>
+<span class="fc" id="L529">        return IsNotBetweenWhenPresent.isNotBetweenWhenPresent(valueSupplier1);</span>
     }
     
     // for string columns, but generic for columns with type handlers
     static &lt;T&gt; IsLike&lt;T&gt; isLike(T value) {
-<span class="fc" id="L497">        return isLike(() -&gt; value);</span>
+<span class="fc" id="L534">        return isLike(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsLike&lt;T&gt; isLike(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L501">        return IsLike.of(valueSupplier);</span>
+<span class="fc" id="L538">        return IsLike.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsLikeWhenPresent&lt;T&gt; isLikeWhenPresent(T value) {
-<span class="fc" id="L505">        return isLikeWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L542">        return isLikeWhenPresent(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsLikeWhenPresent&lt;T&gt; isLikeWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L509">        return IsLikeWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L546">        return IsLikeWhenPresent.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsNotLike&lt;T&gt; isNotLike(T value) {
-<span class="fc" id="L513">        return isNotLike(() -&gt; value);</span>
+<span class="fc" id="L550">        return isNotLike(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsNotLike&lt;T&gt; isNotLike(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L517">        return IsNotLike.of(valueSupplier);</span>
+<span class="fc" id="L554">        return IsNotLike.of(valueSupplier);</span>
     }
     
     static &lt;T&gt; IsNotLikeWhenPresent&lt;T&gt; isNotLikeWhenPresent(T value) {
-<span class="fc" id="L521">        return isNotLikeWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L558">        return isNotLikeWhenPresent(() -&gt; value);</span>
     }
     
     static &lt;T&gt; IsNotLikeWhenPresent&lt;T&gt; isNotLikeWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L525">        return IsNotLikeWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L562">        return IsNotLikeWhenPresent.of(valueSupplier);</span>
     }
-    
+
+    // shortcuts for booleans
+    static IsEqualTo&lt;Boolean&gt; isTrue() {
+<span class="fc" id="L567">        return isEqualTo(Boolean.TRUE);</span>
+    }
+
+    static IsEqualTo&lt;Boolean&gt; isFalse() {
+<span class="fc" id="L571">        return isEqualTo(Boolean.FALSE);</span>
+    }
+
     // conditions for strings only
     static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
-<span class="fc" id="L530">        return isLikeCaseInsensitive(() -&gt; value);</span>
+<span class="fc" id="L576">        return isLikeCaseInsensitive(() -&gt; value);</span>
     }
     
     static IsLikeCaseInsensitive isLikeCaseInsensitive(Supplier&lt;String&gt; valueSupplier) {
-<span class="fc" id="L534">        return IsLikeCaseInsensitive.of(valueSupplier);</span>
+<span class="fc" id="L580">        return IsLikeCaseInsensitive.of(valueSupplier);</span>
     }
     
     static IsLikeCaseInsensitiveWhenPresent isLikeCaseInsensitiveWhenPresent(String value) {
-<span class="fc" id="L538">        return isLikeCaseInsensitiveWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L584">        return isLikeCaseInsensitiveWhenPresent(() -&gt; value);</span>
     }
     
     static IsLikeCaseInsensitiveWhenPresent isLikeCaseInsensitiveWhenPresent(Supplier&lt;String&gt; valueSupplier) {
-<span class="fc" id="L542">        return IsLikeCaseInsensitiveWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L588">        return IsLikeCaseInsensitiveWhenPresent.of(valueSupplier);</span>
     }
     
     static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
-<span class="fc" id="L546">        return isNotLikeCaseInsensitive(() -&gt; value);</span>
+<span class="fc" id="L592">        return isNotLikeCaseInsensitive(() -&gt; value);</span>
     }
 
     static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(Supplier&lt;String&gt; valueSupplier) {
-<span class="fc" id="L550">        return IsNotLikeCaseInsensitive.of(valueSupplier);</span>
+<span class="fc" id="L596">        return IsNotLikeCaseInsensitive.of(valueSupplier);</span>
     }
 
     static IsNotLikeCaseInsensitiveWhenPresent isNotLikeCaseInsensitiveWhenPresent(String value) {
-<span class="fc" id="L554">        return isNotLikeCaseInsensitiveWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L600">        return isNotLikeCaseInsensitiveWhenPresent(() -&gt; value);</span>
     }
     
     static IsNotLikeCaseInsensitiveWhenPresent isNotLikeCaseInsensitiveWhenPresent(Supplier&lt;String&gt; valueSupplier) {
-<span class="fc" id="L558">        return IsNotLikeCaseInsensitiveWhenPresent.of(valueSupplier);</span>
+<span class="fc" id="L604">        return IsNotLikeCaseInsensitiveWhenPresent.of(valueSupplier);</span>
     }
     
     static IsInCaseInsensitive isInCaseInsensitive(String...values) {
-<span class="fc" id="L562">        return isInCaseInsensitive(Arrays.asList(values));</span>
+<span class="fc" id="L608">        return isInCaseInsensitive(Arrays.asList(values));</span>
     }
 
     static IsInCaseInsensitive isInCaseInsensitive(Collection&lt;String&gt; values) {
-<span class="fc" id="L566">        return IsInCaseInsensitive.of(values);</span>
+<span class="fc" id="L612">        return IsInCaseInsensitive.of(values);</span>
     }
 
     static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(String...values) {
-<span class="fc" id="L570">        return isInCaseInsensitiveWhenPresent(Arrays.asList(values));</span>
+<span class="fc" id="L616">        return isInCaseInsensitiveWhenPresent(Arrays.asList(values));</span>
     }
 
     static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(Collection&lt;String&gt; values) {
-<span class="fc" id="L574">        return IsInCaseInsensitiveWhenPresent.of(values);</span>
+<span class="fc" id="L620">        return IsInCaseInsensitiveWhenPresent.of(values);</span>
     }
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
-<span class="fc" id="L578">        return isNotInCaseInsensitive(Arrays.asList(values));</span>
+<span class="fc" id="L624">        return isNotInCaseInsensitive(Arrays.asList(values));</span>
     }
     
     static IsNotInCaseInsensitive isNotInCaseInsensitive(Collection&lt;String&gt; values) {
-<span class="fc" id="L582">        return IsNotInCaseInsensitive.of(values);</span>
+<span class="fc" id="L628">        return IsNotInCaseInsensitive.of(values);</span>
     }
     
     static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(String...values) {
-<span class="fc" id="L586">        return isNotInCaseInsensitiveWhenPresent(Arrays.asList(values));</span>
+<span class="fc" id="L632">        return isNotInCaseInsensitiveWhenPresent(Arrays.asList(values));</span>
     }
 
     static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(Collection&lt;String&gt; values) {
-<span class="fc" id="L590">        return IsNotInCaseInsensitiveWhenPresent.of(values);</span>
+<span class="fc" id="L636">        return IsNotInCaseInsensitiveWhenPresent.of(values);</span>
     }
 
     // order by support
     static SortSpecification sortColumn(String name) {
-<span class="fc" id="L595">        return SimpleSortSpecification.of(name);</span>
+<span class="fc" id="L641">        return SimpleSortSpecification.of(name);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

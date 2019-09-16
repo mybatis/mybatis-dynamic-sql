@@ -36,7 +36,7 @@ public class InsertRenderer&lt;T&gt; {
     
     public InsertStatementProvider&lt;T&gt; render() {
 <span class="fc" id="L38">        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);</span>
-<span class="fc" id="L39">        FieldAndValueCollector&lt;T&gt; collector = model.mapColumnMappings(toFieldAndValue(visitor))</span>
+<span class="fc" id="L39">        FieldAndValueCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))</span>
 <span class="fc" id="L40">                .collect(FieldAndValueCollector.collect());</span>
         
 <span class="fc" id="L42">        return DefaultInsertStatementProvider.withRecord(model.record())</span>
@@ -44,7 +44,7 @@ public class InsertRenderer&lt;T&gt; {
 <span class="fc" id="L44">                .build();</span>
     }
 
-    private String calculateInsertStatement(FieldAndValueCollector&lt;T&gt; collector) {
+    private String calculateInsertStatement(FieldAndValueCollector collector) {
 <span class="fc" id="L48">        return &quot;insert into&quot; //$NON-NLS-1$</span>
 <span class="fc" id="L49">                + spaceBefore(model.table().tableNameAtRuntime())</span>
 <span class="fc" id="L50">                + spaceBefore(collector.columnsPhrase())</span>
@@ -82,4 +82,4 @@ public class InsertRenderer&lt;T&gt; {
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -15,24 +15,31 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import java.util.Optional;
-
 import org.mybatis.dynamic.sql.BindableColumn;
 
-<span class="fc" id="L22">public abstract class RenderingStrategy {</span>
-<span class="fc" id="L23">    public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();</span>
-<span class="fc" id="L24">    public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();</span>
+<span class="fc" id="L20">public abstract class RenderingStrategy {</span>
+    /**
+     * Rendering strategy for MyBatis3.
+     * 
+     * @deprecated use {@link RenderingStrategies#MYBATIS3} instead
+     */
+    @Deprecated
+    @SuppressWarnings(&quot;squid:S2390&quot;)
+<span class="fc" id="L28">    public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();</span>
+
+    /**
+     * Rendering strategy for Spring JDBC Template Named Parameters.
+     * 
+     * @deprecated use {@link RenderingStrategies#SPRING_NAMED_PARAMETER} instead
+     */
+    @Deprecated
+    @SuppressWarnings(&quot;squid:S2390&quot;)
+<span class="fc" id="L37">    public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();</span>
+
     public static final String DEFAULT_PARAMETER_PREFIX = &quot;parameters&quot;; //$NON-NLS-1$
     
-    public String getFormattedJdbcPlaceholder(BindableColumn&lt;?&gt; column, String prefix, String parameterName) {
-<span class="fc" id="L28">        return getFormattedJdbcPlaceholder(Optional.of(column), prefix, parameterName);</span>
-    }
+    public abstract String getFormattedJdbcPlaceholder(BindableColumn&lt;?&gt; column, String prefix, String parameterName);
 
-    public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
-<span class="fc" id="L32">        return getFormattedJdbcPlaceholder(Optional.empty(), prefix, parameterName);</span>
-    }
-
-    public abstract String getFormattedJdbcPlaceholder(Optional&lt;BindableColumn&lt;?&gt;&gt; column, String prefix,
-            String parameterName);
+    public abstract String getFormattedJdbcPlaceholder(String prefix, String parameterName);
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

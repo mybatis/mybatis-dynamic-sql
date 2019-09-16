@@ -16,200 +16,212 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
- * Implements a standard SQL dialect for building model classes.
+ * Implements a SQL DSL for building select statements.
  * 
  * @author Jeff Butler
  *
- * @param &lt;R&gt; the type of model produced by this builder
+ * @param &lt;R&gt; the type of model produced by this builder, typically SelectModel
  */
 public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 
     private Function&lt;SelectModel, R&gt; adapterFunction;
-<span class="fc" id="L38">    private List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();    </span>
+<span class="fc" id="L43">    private List&lt;QueryExpressionDSL&lt;R&gt;&gt; queryExpressions = new ArrayList&lt;&gt;();</span>
     private OrderByModel orderByModel;
-    private PagingModel pagingModel;
-    private Supplier&lt;R&gt; buildDelegateMethod;
+    private Long limit;
+    private Long offset;
+    private Long fetchFirstRows;
     
-<span class="fc" id="L43">    private SelectDSL(Function&lt;SelectModel, R&gt; adapterFunction) {</span>
-<span class="fc" id="L44">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
-<span class="fc" id="L45">        buildDelegateMethod = this::internalBuild;</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L49">    private SelectDSL(Function&lt;SelectModel, R&gt; adapterFunction) {</span>
+<span class="fc" id="L50">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
+<span class="fc" id="L51">    }</span>
 
     public static QueryExpressionDSL.FromGatherer&lt;SelectModel&gt; select(BasicColumn...selectList) {
-<span class="fc" id="L49">        return select(Function.identity(), selectList);</span>
+<span class="fc" id="L54">        return select(Arrays.asList(selectList));</span>
+    }
+    
+    public static QueryExpressionDSL.FromGatherer&lt;SelectModel&gt; select(Collection&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L58">        return select(Function.identity(), selectList);</span>
     }
     
     public static &lt;R&gt; QueryExpressionDSL.FromGatherer&lt;R&gt; select(Function&lt;SelectModel, R&gt; adapterFunction,
             BasicColumn...selectList) {
-<span class="fc" id="L54">        SelectDSL&lt;R&gt; selectDSL = new SelectDSL&lt;&gt;(adapterFunction);</span>
-<span class="fc" id="L55">        return QueryExpressionDSL.select(selectDSL, selectList);</span>
+<span class="fc" id="L63">        return select(adapterFunction, Arrays.asList(selectList));</span>
+    }
+    
+    public static &lt;R&gt; QueryExpressionDSL.FromGatherer&lt;R&gt; select(Function&lt;SelectModel, R&gt; adapterFunction,
+            Collection&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L68">        return new FromGatherer.Builder&lt;R&gt;()</span>
+<span class="fc" id="L69">                .withSelectList(selectList)</span>
+<span class="fc" id="L70">                .withSelectDSL(new SelectDSL&lt;&gt;(adapterFunction))</span>
+<span class="fc" id="L71">                .build();</span>
     }
     
     public static QueryExpressionDSL.FromGatherer&lt;SelectModel&gt; selectDistinct(BasicColumn...selectList) {
-<span class="fc" id="L59">        return selectDistinct(Function.identity(), selectList);</span>
+<span class="fc" id="L75">        return selectDistinct(Arrays.asList(selectList));</span>
+    }
+    
+    public static QueryExpressionDSL.FromGatherer&lt;SelectModel&gt; selectDistinct(Collection&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L79">        return selectDistinct(Function.identity(), selectList);</span>
     }
     
     public static &lt;R&gt; QueryExpressionDSL.FromGatherer&lt;R&gt; selectDistinct(Function&lt;SelectModel, R&gt; adapterFunction,
             BasicColumn...selectList) {
-<span class="fc" id="L64">        SelectDSL&lt;R&gt; selectDSL = new SelectDSL&lt;&gt;(adapterFunction);</span>
-<span class="fc" id="L65">        return QueryExpressionDSL.selectDistinct(selectDSL, selectList);</span>
+<span class="fc" id="L84">        return selectDistinct(adapterFunction, Arrays.asList(selectList));</span>
     }
     
+    public static &lt;R&gt; QueryExpressionDSL.FromGatherer&lt;R&gt; selectDistinct(Function&lt;SelectModel, R&gt; adapterFunction,
+            Collection&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L89">        return new FromGatherer.Builder&lt;R&gt;()</span>
+<span class="fc" id="L90">                .withSelectList(selectList)</span>
+<span class="fc" id="L91">                .withSelectDSL(new SelectDSL&lt;&gt;(adapterFunction))</span>
+<span class="fc" id="L92">                .isDistinct()</span>
+<span class="fc" id="L93">                .build();</span>
+    }
+    
+    /**
+     * Select records by executing a MyBatis3 Mapper.
+     * 
+     * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
+     *     This method will be removed without direct replacement in a future version
+     * @param &lt;T&gt; the return type from a MyBatis mapper - typically a List or a single record
+     * @param mapperMethod MyBatis3 mapper method that performs the select
+     * @param selectList the column list to select
+     * @return the partially created query
+     */
+    @Deprecated
     public static &lt;T&gt; QueryExpressionDSL.FromGatherer&lt;MyBatis3SelectModelAdapter&lt;T&gt;&gt; selectWithMapper(
             Function&lt;SelectStatementProvider, T&gt; mapperMethod, BasicColumn...selectList) {
-<span class="fc" id="L70">        return select(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);</span>
+<span class="fc" id="L109">        return select(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);</span>
     }
     
+    /**
+     * Select records by executing a MyBatis3 Mapper.
+     * 
+     * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
+     *     This method will be removed without direct replacement in a future version
+     * @param &lt;T&gt; the return type from a MyBatis mapper - typically a List or a single record
+     * @param mapperMethod MyBatis3 mapper method that performs the select
+     * @param selectList the column list to select
+     * @return the partially created query
+     */
+    @Deprecated
     public static &lt;T&gt; QueryExpressionDSL.FromGatherer&lt;MyBatis3SelectModelAdapter&lt;T&gt;&gt; selectDistinctWithMapper(
             Function&lt;SelectStatementProvider, T&gt; mapperMethod, BasicColumn...selectList) {
-<span class="fc" id="L75">        return selectDistinct(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),</span>
+<span class="fc" id="L125">        return selectDistinct(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),</span>
                 selectList);
     }
     
-    void addQueryExpression(QueryExpressionModel queryExpression) {
-<span class="fc" id="L80">        queryExpressions.add(queryExpression);</span>
-<span class="fc" id="L81">    }</span>
+    QueryExpressionDSL&lt;R&gt; newQueryExpression(FromGatherer&lt;R&gt; fromGatherer) {
+<span class="fc" id="L130">        QueryExpressionDSL&lt;R&gt; queryExpression = new QueryExpressionDSL&lt;&gt;(fromGatherer);</span>
+<span class="fc" id="L131">        queryExpressions.add(queryExpression);</span>
+<span class="fc" id="L132">        return queryExpression;</span>
+    }
     
-    void setOrderByModel(OrderByModel orderByModel) {
-<span class="fc" id="L84">        this.orderByModel = orderByModel;</span>
-<span class="fc" id="L85">    }</span>
+    QueryExpressionDSL&lt;R&gt; newQueryExpression(FromGatherer&lt;R&gt; fromGatherer, String tableAlias) {
+<span class="fc" id="L136">        QueryExpressionDSL&lt;R&gt; queryExpression = new QueryExpressionDSL&lt;&gt;(fromGatherer, tableAlias);</span>
+<span class="fc" id="L137">        queryExpressions.add(queryExpression);</span>
+<span class="fc" id="L138">        return queryExpression;</span>
+    }
+    
+    void orderBy(SortSpecification...columns) {
+<span class="fc" id="L142">        orderByModel = OrderByModel.of(columns);</span>
+<span class="fc" id="L143">    }</span>
     
     public LimitFinisher limit(long limit) {
-<span class="fc" id="L88">        return new LimitFinisher(limit);</span>
+<span class="fc" id="L146">        this.limit = limit;</span>
+<span class="fc" id="L147">        return new LimitFinisher();</span>
     }
 
     public OffsetFirstFinisher offset(long offset) {
-<span class="fc" id="L92">        return new OffsetFirstFinisher(offset);</span>
+<span class="fc" id="L151">        this.offset = offset;</span>
+<span class="fc" id="L152">        return new OffsetFirstFinisher();</span>
     }
 
     public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-<span class="fc" id="L96">        return new FetchFirstFinisher(fetchFirstRows);</span>
+<span class="fc" id="L156">        this.fetchFirstRows = fetchFirstRows;</span>
+<span class="fc" id="L157">        return new FetchFirstFinisher();</span>
     }
 
     @Override
     public R build() {
-<span class="fc" id="L101">        return buildDelegateMethod.get();</span>
+<span class="fc" id="L162">        SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())</span>
+<span class="fc" id="L163">                .withOrderByModel(orderByModel)</span>
+<span class="fc" id="L164">                .withPagingModel(buildPagingModel())</span>
+<span class="fc" id="L165">                .build();</span>
+<span class="fc" id="L166">        return adapterFunction.apply(selectModel);</span>
     }
     
-    private R internalBuild() {
-<span class="fc" id="L105">        SelectModel selectModel = SelectModel.withQueryExpressions(queryExpressions)</span>
-<span class="fc" id="L106">                .withOrderByModel(orderByModel)</span>
-<span class="fc" id="L107">                .withPagingModel(pagingModel)</span>
-<span class="fc" id="L108">                .build();</span>
-<span class="fc" id="L109">        return adapterFunction.apply(selectModel);</span>
+    private List&lt;QueryExpressionModel&gt; buildModels() {
+<span class="fc" id="L170">        return queryExpressions.stream()</span>
+<span class="fc" id="L171">                .map(QueryExpressionDSL::buildModel)</span>
+<span class="fc" id="L172">                .collect(Collectors.toList());</span>
     }
     
-    public class LimitFinisher implements Buildable&lt;R&gt; {
-        private long limit;
-        
-<span class="fc" id="L115">        public LimitFinisher(long limit) {</span>
-<span class="fc" id="L116">            this.limit = limit;</span>
-<span class="fc" id="L117">            buildDelegateMethod = this::internalBuild;</span>
-<span class="fc" id="L118">        }</span>
-        
+    private PagingModel buildPagingModel() {
+<span class="fc" id="L176">        return new PagingModel.Builder()</span>
+<span class="fc" id="L177">                .withLimit(limit)</span>
+<span class="fc" id="L178">                .withOffset(offset)</span>
+<span class="fc" id="L179">                .withFetchFirstRows(fetchFirstRows)</span>
+<span class="fc" id="L180">                .build();</span>
+    }
+    
+<span class="fc" id="L183">    public class LimitFinisher implements Buildable&lt;R&gt; {</span>
         public OffsetFinisher offset(long offset) {
-<span class="fc" id="L121">            return new OffsetFinisher(limit, offset);</span>
+<span class="fc" id="L185">            SelectDSL.this.offset = offset;</span>
+<span class="fc" id="L186">            return new OffsetFinisher();</span>
         }
         
         @Override
         public R build() {
-<span class="fc" id="L126">            return buildDelegateMethod.get();</span>
-        }
-        
-        private R internalBuild() {
-<span class="fc" id="L130">            pagingModel = new LimitAndOffsetPagingModel.Builder()</span>
-<span class="fc" id="L131">                    .withLimit(limit)</span>
-<span class="fc" id="L132">                    .build();</span>
-<span class="fc" id="L133">            return SelectDSL.this.internalBuild();</span>
+<span class="fc" id="L191">            return SelectDSL.this.build();</span>
         }
     }
 
-    public class OffsetFinisher implements Buildable&lt;R&gt; {
-<span class="fc" id="L138">        public OffsetFinisher(long limit, long offset) {</span>
-<span class="fc" id="L139">            buildDelegateMethod = this::internalBuild;</span>
-<span class="fc" id="L140">            pagingModel = new LimitAndOffsetPagingModel.Builder()</span>
-<span class="fc" id="L141">                    .withLimit(limit)</span>
-<span class="fc" id="L142">                    .withOffset(offset)</span>
-<span class="fc" id="L143">                    .build();</span>
-<span class="fc" id="L144">        }</span>
-        
+<span class="fc" id="L195">    public class OffsetFinisher implements Buildable&lt;R&gt; {</span>
         @Override
         public R build() {
-<span class="fc" id="L148">            return buildDelegateMethod.get();</span>
-        }
-        
-        private R internalBuild() {
-<span class="fc" id="L152">            return SelectDSL.this.internalBuild();</span>
+<span class="fc" id="L198">            return SelectDSL.this.build();</span>
         }
     }
 
-    public class OffsetFirstFinisher implements Buildable&lt;R&gt; {
-        private long offset;
-
-<span class="fc" id="L159">        public OffsetFirstFinisher(long offset) {</span>
-<span class="fc" id="L160">            this.offset = offset;</span>
-<span class="fc" id="L161">            buildDelegateMethod = this::internalBuild;</span>
-<span class="fc" id="L162">        }</span>
-        
+<span class="fc" id="L202">    public class OffsetFirstFinisher implements Buildable&lt;R&gt; {</span>
         public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-<span class="fc" id="L165">            return new FetchFirstFinisher(offset, fetchFirstRows);</span>
+<span class="fc" id="L204">            SelectDSL.this.fetchFirstRows = fetchFirstRows;</span>
+<span class="fc" id="L205">            return new FetchFirstFinisher();</span>
         }
         
         @Override
         public R build() {
-<span class="fc" id="L170">            return buildDelegateMethod.get();</span>
-        }
-        
-        private R internalBuild() {
-<span class="fc" id="L174">            pagingModel = new FetchFirstPagingModel.Builder()</span>
-<span class="fc" id="L175">                    .withOffset(offset)</span>
-<span class="fc" id="L176">                    .build();</span>
-<span class="fc" id="L177">            return SelectDSL.this.internalBuild();</span>
+<span class="fc" id="L210">            return SelectDSL.this.build();</span>
         }
     }
     
-    public class FetchFirstFinisher {
-<span class="fc" id="L182">        public FetchFirstFinisher(long fetchFirstRows) {</span>
-<span class="fc" id="L183">            pagingModel = new FetchFirstPagingModel.Builder()</span>
-<span class="fc" id="L184">                    .withFetchFirstRows(fetchFirstRows)</span>
-<span class="fc" id="L185">                    .build();</span>
-<span class="fc" id="L186">        }</span>
-
-<span class="fc" id="L188">        public FetchFirstFinisher(long offset, long fetchFirstRows) {</span>
-<span class="fc" id="L189">            pagingModel = new FetchFirstPagingModel.Builder()</span>
-<span class="fc" id="L190">                    .withOffset(offset)</span>
-<span class="fc" id="L191">                    .withFetchFirstRows(fetchFirstRows)</span>
-<span class="fc" id="L192">                    .build();</span>
-<span class="fc" id="L193">        }</span>
-
+<span class="fc" id="L214">    public class FetchFirstFinisher {</span>
         public RowsOnlyFinisher rowsOnly() {
-<span class="fc" id="L196">            return new RowsOnlyFinisher();</span>
+<span class="fc" id="L216">            return new RowsOnlyFinisher();</span>
         }
     }
     
-    public class RowsOnlyFinisher implements Buildable&lt;R&gt; {
-<span class="fc" id="L201">        public RowsOnlyFinisher() {</span>
-<span class="fc" id="L202">            buildDelegateMethod = this::internalBuild;</span>
-<span class="fc" id="L203">        }</span>
-        
+<span class="fc" id="L220">    public class RowsOnlyFinisher implements Buildable&lt;R&gt; {</span>
         @Override
         public R build() {
-<span class="fc" id="L207">            return buildDelegateMethod.get();</span>
-        }
-        
-        private R internalBuild() {
-<span class="fc" id="L211">            return SelectDSL.this.internalBuild();</span>
+<span class="fc" id="L223">            return SelectDSL.this.build();</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -18,17 +18,17 @@ package org.mybatis.dynamic.sql.select.render;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.FetchFirstPagingModel;
+import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class FetchFirstPagingModelRenderer {
     private static final String FETCH_FIRST_ROWS_PARAMETER = &quot;_fetchFirstRows&quot;; //$NON-NLS-1$
     private static final String OFFSET_PARAMETER = &quot;_offset&quot;; //$NON-NLS-1$
     private RenderingStrategy renderingStrategy;
-    private FetchFirstPagingModel pagingModel;
+    private PagingModel pagingModel;
 
     public FetchFirstPagingModelRenderer(RenderingStrategy renderingStrategy,
-<span class="fc" id="L31">            FetchFirstPagingModel pagingModel) {</span>
+<span class="fc" id="L31">            PagingModel pagingModel) {</span>
 <span class="fc" id="L32">        this.renderingStrategy = renderingStrategy;</span>
 <span class="fc" id="L33">        this.pagingModel = pagingModel;</span>
 <span class="fc" id="L34">    }</span>
@@ -78,4 +78,4 @@ public class FetchFirstPagingModelRenderer {
                 parameterName); 
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

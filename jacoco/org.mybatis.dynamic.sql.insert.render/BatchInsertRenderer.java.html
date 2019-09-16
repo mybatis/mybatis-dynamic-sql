@@ -18,68 +18,58 @@ package org.mybatis.dynamic.sql.insert.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
-import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.InsertMapping;
 
 public class BatchInsertRenderer&lt;T&gt; {
 
     private BatchInsertModel&lt;T&gt; model;
     private RenderingStrategy renderingStrategy;
     
-<span class="fc" id="L32">    private BatchInsertRenderer(Builder&lt;T&gt; builder) {</span>
-<span class="fc" id="L33">        model = Objects.requireNonNull(builder.model);</span>
-<span class="fc" id="L34">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L30">    private BatchInsertRenderer(Builder&lt;T&gt; builder) {</span>
+<span class="fc" id="L31">        model = Objects.requireNonNull(builder.model);</span>
+<span class="fc" id="L32">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L33">    }</span>
     
     public BatchInsert&lt;T&gt; render() {
-<span class="fc" id="L38">        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);</span>
-<span class="fc" id="L39">        FieldAndValueCollector&lt;T&gt; collector = model.mapColumnMappings(toFieldAndValue(visitor))</span>
-<span class="fc" id="L40">                .collect(FieldAndValueCollector.collect());</span>
+<span class="fc" id="L36">        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);</span>
+<span class="fc" id="L37">        FieldAndValueCollector collector = model.mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))</span>
+<span class="fc" id="L38">                .collect(FieldAndValueCollector.collect());</span>
         
-<span class="fc" id="L42">        return BatchInsert.withRecords(model.records())</span>
-<span class="fc" id="L43">                .withInsertStatement(calculateInsertStatement(collector))</span>
-<span class="fc" id="L44">                .build();</span>
+<span class="fc" id="L40">        return BatchInsert.withRecords(model.records())</span>
+<span class="fc" id="L41">                .withInsertStatement(calculateInsertStatement(collector))</span>
+<span class="fc" id="L42">                .build();</span>
     }
     
-    private Function&lt;InsertMapping, FieldAndValue&gt; toFieldAndValue(ValuePhraseVisitor visitor) {
-<span class="fc" id="L48">        return insertMapping -&gt; toFieldAndValue(visitor, insertMapping);</span>
-    }
-    
-    private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, InsertMapping insertMapping) {
-<span class="fc" id="L52">        return insertMapping.accept(visitor);</span>
-    }
-
-    private String calculateInsertStatement(FieldAndValueCollector&lt;T&gt; collector) {
-<span class="fc" id="L56">        return &quot;insert into&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L57">                + spaceBefore(model.table().tableNameAtRuntime())</span>
-<span class="fc" id="L58">                + spaceBefore(collector.columnsPhrase())</span>
-<span class="fc" id="L59">                + spaceBefore(collector.valuesPhrase());</span>
+    private String calculateInsertStatement(FieldAndValueCollector collector) {
+<span class="fc" id="L46">        return &quot;insert into&quot; //$NON-NLS-1$</span>
+<span class="fc" id="L47">                + spaceBefore(model.table().tableNameAtRuntime())</span>
+<span class="fc" id="L48">                + spaceBefore(collector.columnsPhrase())</span>
+<span class="fc" id="L49">                + spaceBefore(collector.valuesPhrase());</span>
     }
     
     public static &lt;T&gt; Builder&lt;T&gt; withBatchInsertModel(BatchInsertModel&lt;T&gt; model) {
-<span class="fc" id="L63">        return new Builder&lt;T&gt;().withBatchInsertModel(model);</span>
+<span class="fc" id="L53">        return new Builder&lt;T&gt;().withBatchInsertModel(model);</span>
     }
     
-<span class="fc" id="L66">    public static class Builder&lt;T&gt; {</span>
+<span class="fc" id="L56">    public static class Builder&lt;T&gt; {</span>
         private BatchInsertModel&lt;T&gt; model;
         private RenderingStrategy renderingStrategy;
         
         public Builder&lt;T&gt; withBatchInsertModel(BatchInsertModel&lt;T&gt; model) {
-<span class="fc" id="L71">            this.model = model;</span>
-<span class="fc" id="L72">            return this;</span>
+<span class="fc" id="L61">            this.model = model;</span>
+<span class="fc" id="L62">            return this;</span>
         }
         
         public Builder&lt;T&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L76">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L77">            return this;</span>
+<span class="fc" id="L66">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L67">            return this;</span>
         }
         
         public BatchInsertRenderer&lt;T&gt; build() {
-<span class="fc" id="L81">            return new BatchInsertRenderer&lt;&gt;(this);</span>
+<span class="fc" id="L71">            return new BatchInsertRenderer&lt;&gt;(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

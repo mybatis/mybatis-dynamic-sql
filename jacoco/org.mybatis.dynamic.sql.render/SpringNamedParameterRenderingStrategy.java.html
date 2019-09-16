@@ -15,15 +15,18 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import java.util.Optional;
-
 import org.mybatis.dynamic.sql.BindableColumn;
 
-<span class="fc" id="L22">public class SpringNamedParameterRenderingStrategy extends RenderingStrategy {</span>
+<span class="fc" id="L20">public class SpringNamedParameterRenderingStrategy extends RenderingStrategy {</span>
     
     @Override
-    public String getFormattedJdbcPlaceholder(Optional&lt;BindableColumn&lt;?&gt;&gt; column, String prefix, String parameterName) {
-<span class="fc" id="L26">        return &quot;:&quot; + parameterName; //$NON-NLS-1$</span>
+    public String getFormattedJdbcPlaceholder(BindableColumn&lt;?&gt; column, String prefix, String parameterName) {
+<span class="fc" id="L24">        return getFormattedJdbcPlaceholder(prefix, parameterName);</span>
+    }
+
+    @Override
+    public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
+<span class="fc" id="L29">        return &quot;:&quot; + parameterName; //$NON-NLS-1$</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

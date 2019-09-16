@@ -15,34 +15,39 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import java.util.Optional;
-
 import org.mybatis.dynamic.sql.BindableColumn;
 
-<span class="fc" id="L22">public class MyBatis3RenderingStrategy extends RenderingStrategy {</span>
+<span class="fc" id="L20">public class MyBatis3RenderingStrategy extends RenderingStrategy {</span>
     @Override
-    public String getFormattedJdbcPlaceholder(Optional&lt;BindableColumn&lt;?&gt;&gt; column, String prefix, String parameterName) {
-<span class="fc" id="L25">        return &quot;#{&quot; //$NON-NLS-1$</span>
+    public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
+<span class="fc" id="L23">        return &quot;#{&quot; //$NON-NLS-1$</span>
                 + prefix
                 + &quot;.&quot; //$NON-NLS-1$
                 + parameterName
-<span class="fc" id="L29">                + renderJdbcType(column)</span>
-<span class="fc" id="L30">                + renderTypeHandler(column)</span>
+                + &quot;}&quot;; //$NON-NLS-1$
+    }
+
+    @Override
+    public String getFormattedJdbcPlaceholder(BindableColumn&lt;?&gt; column, String prefix, String parameterName) {
+<span class="fc" id="L32">        return &quot;#{&quot; //$NON-NLS-1$</span>
+                + prefix
+                + &quot;.&quot; //$NON-NLS-1$
+                + parameterName
+<span class="fc" id="L36">                + renderJdbcType(column)</span>
+<span class="fc" id="L37">                + renderTypeHandler(column)</span>
                 + &quot;}&quot;; //$NON-NLS-1$
     }
     
-    private String renderTypeHandler(Optional&lt;BindableColumn&lt;?&gt;&gt; column) {
-<span class="fc" id="L35">        return column</span>
-<span class="fc" id="L36">                .flatMap(BindableColumn::typeHandler)</span>
-<span class="fc" id="L37">                .map(th -&gt; &quot;,typeHandler=&quot; + th) //$NON-NLS-1$</span>
-<span class="fc" id="L38">                .orElse(&quot;&quot;); //$NON-NLS-1$</span>
+    private String renderTypeHandler(BindableColumn&lt;?&gt; column) {
+<span class="fc" id="L42">        return column.typeHandler()</span>
+<span class="fc" id="L43">                .map(th -&gt; &quot;,typeHandler=&quot; + th) //$NON-NLS-1$</span>
+<span class="fc" id="L44">                .orElse(&quot;&quot;); //$NON-NLS-1$</span>
     }
     
-    private String renderJdbcType(Optional&lt;BindableColumn&lt;?&gt;&gt; column) {
-<span class="fc" id="L42">        return column</span>
-<span class="fc" id="L43">                .flatMap(BindableColumn::jdbcType)</span>
-<span class="fc" id="L44">                .map(jt -&gt; &quot;,jdbcType=&quot; + jt.getName()) //$NON-NLS-1$</span>
-<span class="fc" id="L45">                .orElse(&quot;&quot;); //$NON-NLS-1$</span>
+    private String renderJdbcType(BindableColumn&lt;?&gt; column) {
+<span class="fc" id="L48">        return column.jdbcType()</span>
+<span class="fc" id="L49">                .map(jt -&gt; &quot;,jdbcType=&quot; + jt.getName()) //$NON-NLS-1$</span>
+<span class="fc" id="L50">                .orElse(&quot;&quot;); //$NON-NLS-1$</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

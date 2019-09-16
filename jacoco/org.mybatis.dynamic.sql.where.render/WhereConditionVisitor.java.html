@@ -117,7 +117,7 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Op
 <span class="fc" id="L117">        return FragmentAndParameters.withFragment(fragment).buildOptional();</span>
     }
     
-    private FragmentAndParameters toFragmentAndParameters(Object value) {
+    private FragmentAndParameters toFragmentAndParameters(T value) {
 <span class="fc" id="L121">        String mapKey = formatParameterMapKey(sequence.getAndIncrement());</span>
         
 <span class="fc" id="L123">        return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))</span>
@@ -180,4 +180,4 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Op
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

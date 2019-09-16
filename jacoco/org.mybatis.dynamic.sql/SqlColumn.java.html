@@ -96,8 +96,8 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
 <span class="fc" id="L96">                .orElseGet(this::name);</span>
     }
     
-    public &lt;S&gt; SqlColumn&lt;S&gt; withTypeHandler(String typeHandler) {
-<span class="fc" id="L100">        SqlColumn&lt;S&gt; column = new SqlColumn&lt;&gt;(this);</span>
+    public SqlColumn&lt;T&gt; withTypeHandler(String typeHandler) {
+<span class="fc" id="L100">        SqlColumn&lt;T&gt; column = new SqlColumn&lt;&gt;(this);</span>
 <span class="fc" id="L101">        column.typeHandler = typeHandler;</span>
 <span class="fc" id="L102">        return column;</span>
     }
@@ -154,4 +154,4 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

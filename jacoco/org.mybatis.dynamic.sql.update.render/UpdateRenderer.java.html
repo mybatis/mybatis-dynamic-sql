@@ -17,8 +17,6 @@ package org.mybatis.dynamic.sql.update.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,87 +36,97 @@ import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 public class UpdateRenderer {
     private UpdateModel updateModel;
     private RenderingStrategy renderingStrategy;
-<span class="fc" id="L41">    private AtomicInteger sequence = new AtomicInteger(1);</span>
+<span class="fc" id="L39">    private AtomicInteger sequence = new AtomicInteger(1);</span>
     
-<span class="fc" id="L43">    private UpdateRenderer(Builder builder) {</span>
-<span class="fc" id="L44">        updateModel = Objects.requireNonNull(builder.updateModel);</span>
-<span class="fc" id="L45">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L41">    private UpdateRenderer(Builder builder) {</span>
+<span class="fc" id="L42">        updateModel = Objects.requireNonNull(builder.updateModel);</span>
+<span class="fc" id="L43">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L44">    }</span>
     
     public UpdateStatementProvider render() {
-<span class="fc" id="L49">        FragmentCollector fc = calculateColumnMappings();</span>
+<span class="fc" id="L47">        FragmentCollector fc = calculateColumnMappings();</span>
         
-<span class="fc" id="L51">        Optional&lt;WhereClauseProvider&gt; whereClause = updateModel.whereModel().flatMap(this::renderWhereClause);</span>
-        
-<span class="fc" id="L53">        return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(fc, whereClause))</span>
-<span class="fc" id="L54">                .withParameters(fc.parameters())</span>
-<span class="fc" id="L55">                .withParameters(calculateWhereParameters(whereClause))</span>
-<span class="fc" id="L56">                .build();</span>
+<span class="fc" id="L49">        return updateModel.whereModel()</span>
+<span class="fc" id="L50">                .flatMap(this::renderWhereClause)</span>
+<span class="fc" id="L51">                .map(wc -&gt; renderWithWhereClause(fc, wc))</span>
+<span class="fc" id="L52">                .orElseGet(() -&gt; renderWithoutWhereClause(fc));</span>
     }
-    
-    private FragmentCollector calculateColumnMappings() {
-<span class="fc" id="L60">        SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy);</span>
 
-<span class="fc" id="L62">        return updateModel.mapColumnMappings(toFragmentAndParameters(visitor))</span>
-<span class="fc" id="L63">                .collect(FragmentCollector.collect());</span>
+    private FragmentCollector calculateColumnMappings() {
+<span class="fc" id="L56">        SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy);</span>
+
+<span class="fc" id="L58">        return updateModel.mapColumnMappings(toFragmentAndParameters(visitor))</span>
+<span class="fc" id="L59">                .collect(FragmentCollector.collect());</span>
     }
     
-    private String calculateUpdateStatement(FragmentCollector fc, Optional&lt;WhereClauseProvider&gt; whereClause) {
-<span class="fc" id="L67">        return &quot;update&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L68">                + spaceBefore(updateModel.table().tableNameAtRuntime())</span>
-<span class="fc" id="L69">                + spaceBefore(calculateSetPhrase(fc))</span>
-<span class="fc" id="L70">                + spaceBefore(whereClause.map(WhereClauseProvider::getWhereClause));</span>
+    private UpdateStatementProvider renderWithWhereClause(FragmentCollector columnMappings,
+            WhereClauseProvider whereClause) {
+<span class="fc" id="L64">        return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(columnMappings, whereClause))</span>
+<span class="fc" id="L65">                .withParameters(columnMappings.parameters())</span>
+<span class="fc" id="L66">                .withParameters(whereClause.getParameters())</span>
+<span class="fc" id="L67">                .build();</span>
+    }
+
+    private String calculateUpdateStatement(FragmentCollector fc, WhereClauseProvider whereClause) {
+<span class="fc" id="L71">        return calculateUpdateStatement(fc)</span>
+<span class="fc" id="L72">                + spaceBefore(whereClause.getWhereClause());</span>
     }
     
-    private Map&lt;String, Object&gt; calculateWhereParameters(Optional&lt;WhereClauseProvider&gt; whereClause) {
-<span class="fc" id="L74">        return whereClause</span>
-<span class="fc" id="L75">                .map(WhereClauseProvider::getParameters)</span>
-<span class="fc" id="L76">                .orElse(Collections.emptyMap());</span>
+    private String calculateUpdateStatement(FragmentCollector fc) {
+<span class="fc" id="L76">        return &quot;update&quot; //$NON-NLS-1$</span>
+<span class="fc" id="L77">                + spaceBefore(updateModel.table().tableNameAtRuntime())</span>
+<span class="fc" id="L78">                + spaceBefore(calculateSetPhrase(fc));</span>
     }
     
+    private UpdateStatementProvider renderWithoutWhereClause(FragmentCollector columnMappings) {
+<span class="fc" id="L82">        return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(columnMappings))</span>
+<span class="fc" id="L83">                .withParameters(columnMappings.parameters())</span>
+<span class="fc" id="L84">                .build();</span>
+    }
+
     private String calculateSetPhrase(FragmentCollector collector) {
-<span class="fc" id="L80">        return collector.fragments()</span>
-<span class="fc" id="L81">                .collect(Collectors.joining(&quot;, &quot;, &quot;set &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L88">        return collector.fragments()</span>
+<span class="fc" id="L89">                .collect(Collectors.joining(&quot;, &quot;, &quot;set &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
     
     private Optional&lt;WhereClauseProvider&gt; renderWhereClause(WhereModel whereModel) {
-<span class="fc" id="L85">        return WhereRenderer.withWhereModel(whereModel)</span>
-<span class="fc" id="L86">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L87">                .withSequence(sequence)</span>
-<span class="fc" id="L88">                .withTableAliasCalculator(TableAliasCalculator.empty())</span>
-<span class="fc" id="L89">                .build()</span>
-<span class="fc" id="L90">                .render();</span>
+<span class="fc" id="L93">        return WhereRenderer.withWhereModel(whereModel)</span>
+<span class="fc" id="L94">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L95">                .withSequence(sequence)</span>
+<span class="fc" id="L96">                .withTableAliasCalculator(TableAliasCalculator.empty())</span>
+<span class="fc" id="L97">                .build()</span>
+<span class="fc" id="L98">                .render();</span>
     }
 
     private Function&lt;UpdateMapping, FragmentAndParameters&gt; toFragmentAndParameters(SetPhraseVisitor visitor) {
-<span class="fc" id="L94">        return updateMapping -&gt; toFragmentAndParameters(visitor, updateMapping);</span>
+<span class="fc" id="L102">        return updateMapping -&gt; toFragmentAndParameters(visitor, updateMapping);</span>
     }
     
     private FragmentAndParameters toFragmentAndParameters(SetPhraseVisitor visitor, UpdateMapping updateMapping) {
-<span class="fc" id="L98">        return updateMapping.accept(visitor);</span>
+<span class="fc" id="L106">        return updateMapping.accept(visitor);</span>
     }
     
     public static Builder withUpdateModel(UpdateModel updateModel) {
-<span class="fc" id="L102">        return new Builder().withUpdateModel(updateModel);</span>
+<span class="fc" id="L110">        return new Builder().withUpdateModel(updateModel);</span>
     }
     
-<span class="fc" id="L105">    public static class Builder {</span>
+<span class="fc" id="L113">    public static class Builder {</span>
         private UpdateModel updateModel;
         private RenderingStrategy renderingStrategy;
 
         public Builder withUpdateModel(UpdateModel updateModel) {
-<span class="fc" id="L110">            this.updateModel = updateModel;</span>
-<span class="fc" id="L111">            return this;</span>
+<span class="fc" id="L118">            this.updateModel = updateModel;</span>
+<span class="fc" id="L119">            return this;</span>
         }
         
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L115">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L116">            return this;</span>
+<span class="fc" id="L123">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L124">            return this;</span>
         }
         
         public UpdateRenderer build() {
-<span class="fc" id="L120">            return new UpdateRenderer(this);</span>
+<span class="fc" id="L128">            return new UpdateRenderer(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

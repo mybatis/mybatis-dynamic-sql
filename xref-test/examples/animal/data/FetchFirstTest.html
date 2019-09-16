@@ -44,7 +44,7 @@
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.BeforeEach;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategies;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="FetchFirstTest" href="../../../examples/animal/data/FetchFirstTest.html#FetchFirstTest">FetchFirstTest</a> {
@@ -79,7 +79,7 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>                      .offset(22)
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                      .fetchFirst(3).rowsOnly()
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>                      .build()
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>                      .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>                      .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>              
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>              <a name="AnimalDataMapper" href="../../../examples/animal/data/AnimalDataMapper.html#AnimalDataMapper">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>              List&lt;AnimalData&gt; records = mapper.selectMany(selectStatement);
@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                      .from(animalData)
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>                      .fetchFirst(3).rowsOnly()
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>                      .build()
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>                      .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>                      .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>              
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>              <a name="AnimalDataMapper" href="../../../examples/animal/data/AnimalDataMapper.html#AnimalDataMapper">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>              List&lt;AnimalData&gt; records = mapper.selectMany(selectStatement);
@@ -125,7 +125,7 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>                     .offset(22)
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>                     .fetchFirst(3).rowsOnly()
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                     .build()
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>             
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>             <a name="AnimalDataMapper" href="../../../examples/animal/data/AnimalDataMapper.html#AnimalDataMapper">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>             List&lt;AnimalData&gt; records = mapper.selectMany(selectStatement);
@@ -148,7 +148,7 @@
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                     .where(id, isLessThan(50))
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                     .fetchFirst(3).rowsOnly()
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                     .build()
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>             <a name="AnimalDataMapper" href="../../../examples/animal/data/AnimalDataMapper.html#AnimalDataMapper">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>             List&lt;AnimalData&gt; records = mapper.selectMany(selectStatement);
@@ -171,7 +171,7 @@
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>                     .offset(22)
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>                     .fetchFirst(3).rowsOnly()
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>                     .build()
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>             
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>             <a name="AnimalDataMapper" href="../../../examples/animal/data/AnimalDataMapper.html#AnimalDataMapper">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>             List&lt;AnimalData&gt; records = mapper.selectMany(selectStatement);
@@ -194,7 +194,7 @@
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>                     .fetchFirst(3).rowsOnly()
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>                     .build()
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>             <a name="AnimalDataMapper" href="../../../examples/animal/data/AnimalDataMapper.html#AnimalDataMapper">AnimalDataMapper</a> mapper = sqlSession.getMapper(AnimalDataMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>             List&lt;AnimalData&gt; records = mapper.selectMany(selectStatement);

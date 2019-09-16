@@ -15,29 +15,53 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.FetchFirstPagingModel;
-import org.mybatis.dynamic.sql.select.LimitAndOffsetPagingModel;
-import org.mybatis.dynamic.sql.select.PagingModelVisitor;
+import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public class PagingModelRenderer implements PagingModelVisitor&lt;Optional&lt;FragmentAndParameters&gt;&gt; {
+public class PagingModelRenderer {
     private RenderingStrategy renderingStrategy;
+    private PagingModel pagingModel;
 
-<span class="fc" id="L29">    public PagingModelRenderer(RenderingStrategy renderingStrategy) {</span>
-<span class="fc" id="L30">        this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L29">    private PagingModelRenderer(Builder builder) {</span>
+<span class="fc" id="L30">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L31">        pagingModel = Objects.requireNonNull(builder.pagingModel);</span>
+<span class="fc" id="L32">    }</span>
     
-    @Override
-    public Optional&lt;FragmentAndParameters&gt; visit(LimitAndOffsetPagingModel pagingModel) {
-<span class="fc" id="L35">        return new LimitAndOffsetPagingModelRenderer(renderingStrategy, pagingModel).render();</span>
+    public Optional&lt;FragmentAndParameters&gt; render() {
+<span class="fc" id="L35">        return pagingModel.limit().map(this::limitAndOffsetRender)</span>
+<span class="fc" id="L36">                .orElseGet(this::fetchFirstRender);</span>
     }
+    
+    private Optional&lt;FragmentAndParameters&gt; limitAndOffsetRender(Long limit) {
+<span class="fc" id="L40">        return new LimitAndOffsetPagingModelRenderer(renderingStrategy, limit,</span>
+<span class="fc" id="L41">                pagingModel).render();</span>
+    }
+    
+    private Optional&lt;FragmentAndParameters&gt; fetchFirstRender() {
+<span class="fc" id="L45">        return new FetchFirstPagingModelRenderer(renderingStrategy, pagingModel).render();</span>
+    }
+    
+<span class="fc" id="L48">    public static class Builder {</span>
+        private RenderingStrategy renderingStrategy;
+        private PagingModel pagingModel;
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L53">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L54">            return this;</span>
+        }
 
-    @Override
-    public Optional&lt;FragmentAndParameters&gt; visit(FetchFirstPagingModel pagingModel) {
-<span class="fc" id="L40">        return new FetchFirstPagingModelRenderer(renderingStrategy, pagingModel).render();</span>
+        public Builder withPagingModel(PagingModel pagingModel) {
+<span class="fc" id="L58">            this.pagingModel = pagingModel;</span>
+<span class="fc" id="L59">            return this;</span>
+        }
+        
+        public PagingModelRenderer build() {
+<span class="fc" id="L63">            return new PagingModelRenderer(this);</span>
+        }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

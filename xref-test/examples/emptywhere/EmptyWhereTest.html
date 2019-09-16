@@ -34,7 +34,7 @@
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.DeleteDSL;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.DeleteModel;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategies;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.SelectModel;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -57,7 +57,7 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          String expected = <span class="jxr_string">"delete from person"</span>
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>                  + <span class="jxr_string">" where id = #{parameters.p1}"</span>
@@ -78,7 +78,7 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          builder.or(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          String expected = <span class="jxr_string">"delete from person"</span>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>                  + <span class="jxr_string">" where first_name = #{parameters.p1}"</span>
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>          DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          String expected = <span class="jxr_string">"delete from person"</span>
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                  + <span class="jxr_string">" where last_name = #{parameters.p1}"</span>;
@@ -117,7 +117,7 @@
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>         String expected = <span class="jxr_string">"delete from person"</span>
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>                 + <span class="jxr_string">" where first_name = #{parameters.p1}"</span>;
@@ -136,7 +136,7 @@
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         String expected = <span class="jxr_string">"delete from person"</span>;
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         
@@ -155,7 +155,7 @@
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>         
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>         String expected = <span class="jxr_string">"select id, first_name, last_name"</span>
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>                 + <span class="jxr_string">" from person"</span>
@@ -178,7 +178,7 @@
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>         
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>         
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         String expected = <span class="jxr_string">"select *"</span>
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>                 + <span class="jxr_string">" from person"</span>
@@ -200,7 +200,7 @@
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>         
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>         String expected = <span class="jxr_string">"select id, first_name, last_name"</span>
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>                 + <span class="jxr_string">" from person"</span>
@@ -221,7 +221,7 @@
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L215" href="#L215">215</a>         
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>         String expected = <span class="jxr_string">"select id, first_name, last_name"</span>
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>                 + <span class="jxr_string">" from person"</span>
@@ -242,7 +242,7 @@
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>         
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>         
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>         String expected = <span class="jxr_string">"select id, first_name, last_name"</span>
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>                 + <span class="jxr_string">" from person"</span>;
@@ -262,7 +262,7 @@
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>         
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>         
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>         String expected = <span class="jxr_string">"select person.id, person.first_name, person.last_name, order.order_date"</span>
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>                 + <span class="jxr_string">" from person"</span>
@@ -286,7 +286,7 @@
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>         
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>         
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>         String expected = <span class="jxr_string">"select person.id, person.first_name, person.last_name, order.order_date"</span>
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>                 + <span class="jxr_string">" from person"</span>
@@ -309,7 +309,7 @@
 <a class="jxr_linenumber" name="L301" href="#L301">301</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L302" href="#L302">302</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>         
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>         
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>         String expected = <span class="jxr_string">"select person.id, person.first_name, person.last_name, order.order_date"</span>
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>                 + <span class="jxr_string">" from person"</span>
@@ -331,7 +331,7 @@
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L325" href="#L325">325</a>         
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>         
 <a class="jxr_linenumber" name="L328" href="#L328">328</a>         String expected = <span class="jxr_string">"select person.id, person.first_name, person.last_name, order.order_date"</span>
 <a class="jxr_linenumber" name="L329" href="#L329">329</a>                 + <span class="jxr_string">" from person"</span>
@@ -353,7 +353,7 @@
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L347" href="#L347">347</a>         
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>         
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>         String expected = <span class="jxr_string">"select person.id, person.first_name, person.last_name, order.order_date"</span>
 <a class="jxr_linenumber" name="L351" href="#L351">351</a>                 + <span class="jxr_string">" from person"</span>
@@ -374,7 +374,7 @@
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L367" href="#L367">367</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L368" href="#L368">368</a>         
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L370" href="#L370">370</a>         
 <a class="jxr_linenumber" name="L371" href="#L371">371</a>         String expected = <span class="jxr_string">"update person"</span>
 <a class="jxr_linenumber" name="L372" href="#L372">372</a>                 + <span class="jxr_string">" set id = #{parameters.p1}"</span>
@@ -397,7 +397,7 @@
 <a class="jxr_linenumber" name="L389" href="#L389">389</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L390" href="#L390">390</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L391" href="#L391">391</a>         
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L393" href="#L393">393</a>         
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>         String expected = <span class="jxr_string">"update person"</span>
 <a class="jxr_linenumber" name="L395" href="#L395">395</a>                 + <span class="jxr_string">" set id = #{parameters.p1}"</span>
@@ -418,7 +418,7 @@
 <a class="jxr_linenumber" name="L410" href="#L410">410</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L411" href="#L411">411</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>         
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L414" href="#L414">414</a>         
 <a class="jxr_linenumber" name="L415" href="#L415">415</a>         String expected = <span class="jxr_string">"delete from person"</span>
 <a class="jxr_linenumber" name="L416" href="#L416">416</a>                 + <span class="jxr_string">" where last_name = #{parameters.p1}"</span>;
@@ -438,7 +438,7 @@
 <a class="jxr_linenumber" name="L430" href="#L430">430</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L431" href="#L431">431</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L432" href="#L432">432</a>         
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L434" href="#L434">434</a>         
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>         String expected = <span class="jxr_string">"update person"</span>
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>                 + <span class="jxr_string">" set id = #{parameters.p1}"</span>
@@ -459,7 +459,7 @@
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L452" href="#L452">452</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L453" href="#L453">453</a>         
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L455" href="#L455">455</a>         
 <a class="jxr_linenumber" name="L456" href="#L456">456</a>         String expected = <span class="jxr_string">"update person"</span>
 <a class="jxr_linenumber" name="L457" href="#L457">457</a>                 + <span class="jxr_string">" set id = #{parameters.p1}"</span>;
@@ -477,7 +477,7 @@
 <a class="jxr_linenumber" name="L469" href="#L469">469</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L470" href="#L470">470</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L471" href="#L471">471</a>         
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>         
 <a class="jxr_linenumber" name="L474" href="#L474">474</a>         String expected = <span class="jxr_string">"where id = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L475" href="#L475">475</a>                 + <span class="jxr_string">" and first_name = #{parameters.p2}"</span>
@@ -496,7 +496,7 @@
 <a class="jxr_linenumber" name="L488" href="#L488">488</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L489" href="#L489">489</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L490" href="#L490">490</a>         
-<a class="jxr_linenumber" name="L491" href="#L491">491</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L492" href="#L492">492</a>         
 <a class="jxr_linenumber" name="L493" href="#L493">493</a>         String expected = <span class="jxr_string">"where first_name = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>                 + <span class="jxr_string">" and last_name = #{parameters.p2}"</span>;
@@ -514,7 +514,7 @@
 <a class="jxr_linenumber" name="L506" href="#L506">506</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L507" href="#L507">507</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L508" href="#L508">508</a>         
-<a class="jxr_linenumber" name="L509" href="#L509">509</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L510" href="#L510">510</a>         
 <a class="jxr_linenumber" name="L511" href="#L511">511</a>         String expected = <span class="jxr_string">"where last_name = #{parameters.p1}"</span>;
 <a class="jxr_linenumber" name="L512" href="#L512">512</a>         
@@ -531,7 +531,7 @@
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L525" href="#L525">525</a>         
-<a class="jxr_linenumber" name="L526" href="#L526">526</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L527" href="#L527">527</a>         
 <a class="jxr_linenumber" name="L528" href="#L528">528</a>         String expected = <span class="jxr_string">"where first_name = #{parameters.p1}"</span>;
 <a class="jxr_linenumber" name="L529" href="#L529">529</a>         
@@ -548,7 +548,7 @@
 <a class="jxr_linenumber" name="L540" href="#L540">540</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L541" href="#L541">541</a>         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
 <a class="jxr_linenumber" name="L542" href="#L542">542</a>         
-<a class="jxr_linenumber" name="L543" href="#L543">543</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L544" href="#L544">544</a>         
 <a class="jxr_linenumber" name="L545" href="#L545">545</a>         assertThat(whereClause.getWhereClause()).isEmpty();
 <a class="jxr_linenumber" name="L546" href="#L546">546</a>     }

@@ -35,7 +35,7 @@ public class SpringBatchPagingReaderSelectModel {
 <span class="fc" id="L35">        return new LimitAndOffsetDecorator(selectStatement);</span>
     }
 
-    public class LimitAndOffsetDecorator implements SelectStatementProvider {
+    public static class LimitAndOffsetDecorator implements SelectStatementProvider {
 <span class="fc" id="L39">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
         private String selectStatement;
         
@@ -57,4 +57,4 @@ public class SpringBatchPagingReaderSelectModel {
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -121,34 +121,39 @@ public class QueryExpressionModel {
 <span class="fc" id="L121">            return this;</span>
         }
 
-        public Builder withSelectList(List&lt;BasicColumn&gt; selectList) {
-<span class="fc" id="L125">            this.selectList.addAll(selectList);</span>
+        public Builder withSelectColumn(BasicColumn selectColumn) {
+<span class="fc" id="L125">            this.selectList.add(selectColumn);</span>
 <span class="fc" id="L126">            return this;</span>
         }
 
-        public Builder withTableAliases(Map&lt;SqlTable, String&gt; tableAliases) {
-<span class="fc" id="L130">            this.tableAliases.putAll(tableAliases);</span>
+        public Builder withSelectList(List&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L130">            this.selectList.addAll(selectList);</span>
 <span class="fc" id="L131">            return this;</span>
+        }
+
+        public Builder withTableAliases(Map&lt;SqlTable, String&gt; tableAliases) {
+<span class="fc" id="L135">            this.tableAliases.putAll(tableAliases);</span>
+<span class="fc" id="L136">            return this;</span>
         }
         
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L135">            this.whereModel = whereModel;</span>
-<span class="fc" id="L136">            return this;</span>
+<span class="fc" id="L140">            this.whereModel = whereModel;</span>
+<span class="fc" id="L141">            return this;</span>
         }
 
         public Builder withJoinModel(JoinModel joinModel) {
-<span class="fc" id="L140">            this.joinModel = joinModel;</span>
-<span class="fc" id="L141">            return this;</span>
-        }
-        
-        public Builder withGroupByModel(GroupByModel groupByModel) {
-<span class="fc" id="L145">            this.groupByModel = groupByModel;</span>
+<span class="fc" id="L145">            this.joinModel = joinModel;</span>
 <span class="fc" id="L146">            return this;</span>
         }
         
+        public Builder withGroupByModel(GroupByModel groupByModel) {
+<span class="fc" id="L150">            this.groupByModel = groupByModel;</span>
+<span class="fc" id="L151">            return this;</span>
+        }
+        
         public QueryExpressionModel build() {
-<span class="fc" id="L150">            return new QueryExpressionModel(this);</span>
+<span class="fc" id="L155">            return new QueryExpressionModel(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

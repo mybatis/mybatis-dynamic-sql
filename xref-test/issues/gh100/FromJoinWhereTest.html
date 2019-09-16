@@ -27,7 +27,7 @@
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.mybatis.dynamic.sql.SqlBuilder.*;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategies;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.SelectDSL;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.SelectModel;
@@ -49,7 +49,7 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>                  .limit(3)
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>                  .offset(2)
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>                  .build()
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>                  .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>                  .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span> 
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>                  + <span class="jxr_string">" from student"</span>
@@ -73,7 +73,7 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          String expected = <span class="jxr_string">"select id, name, idcard"</span> 
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>                  + <span class="jxr_string">" from student"</span>;
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      }
@@ -90,7 +90,7 @@
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>                  + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>                  + <span class="jxr_string">" join student_reg on student.id = student_reg.studentId"</span>;
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>          SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
@@ -107,7 +107,7 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>                  + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>                 + <span class="jxr_string">" join student_reg on student.id = student_reg.studentId"</span>;
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>         
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> 
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     }
@@ -127,7 +127,7 @@
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                 + <span class="jxr_string">" join student_reg on student.id = student_reg.studentId"</span>
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>;
 <a class="jxr_linenumber" name="L121" href="#L121">121</a> 
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> 
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>     }
@@ -147,7 +147,7 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>                 + <span class="jxr_string">" join student_reg on student.id = student_reg.studentId"</span>
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>;
 <a class="jxr_linenumber" name="L141" href="#L141">141</a> 
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> 
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>     }
@@ -167,7 +167,7 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>                 + <span class="jxr_string">" join student_reg on student.id = student_reg.studentId"</span>
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>;
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> 
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> 
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>     }
@@ -194,7 +194,7 @@
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>                 + <span class="jxr_string">" select id, name, idcard"</span>
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>                 + <span class="jxr_string">" from student"</span>;
 <a class="jxr_linenumber" name="L188" href="#L188">188</a> 
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>     }
@@ -221,7 +221,7 @@
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>                 + <span class="jxr_string">" select id, name, idcard"</span>
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>                 + <span class="jxr_string">" from student"</span>;
 <a class="jxr_linenumber" name="L215" href="#L215">215</a> 
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>     }
@@ -248,7 +248,7 @@
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>                 + <span class="jxr_string">" select id, name, idcard"</span>
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>                 + <span class="jxr_string">" from student"</span>;
 <a class="jxr_linenumber" name="L242" href="#L242">242</a> 
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>         
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>     }
@@ -275,7 +275,7 @@
 <a class="jxr_linenumber" name="L267" href="#L267">267</a>                 + <span class="jxr_string">" select id, name, idcard"</span>
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>                 + <span class="jxr_string">" from student"</span>;
 <a class="jxr_linenumber" name="L269" href="#L269">269</a> 
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>         
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L273" href="#L273">273</a>     }
@@ -313,7 +313,7 @@
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>                 + <span class="jxr_string">" where id is null"</span>;
 <a class="jxr_linenumber" name="L307" href="#L307">307</a> 
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>         
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>     }
@@ -351,7 +351,7 @@
 <a class="jxr_linenumber" name="L343" href="#L343">343</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>                 + <span class="jxr_string">" where id is null"</span>;
 <a class="jxr_linenumber" name="L345" href="#L345">345</a> 
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L347" href="#L347">347</a>         
 <a class="jxr_linenumber" name="L348" href="#L348">348</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>     }
@@ -389,7 +389,7 @@
 <a class="jxr_linenumber" name="L381" href="#L381">381</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L382" href="#L382">382</a>                 + <span class="jxr_string">" where id is null"</span>;
 <a class="jxr_linenumber" name="L383" href="#L383">383</a> 
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L385" href="#L385">385</a>         
 <a class="jxr_linenumber" name="L386" href="#L386">386</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L387" href="#L387">387</a>     }
@@ -427,7 +427,7 @@
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L420" href="#L420">420</a>                 + <span class="jxr_string">" where id is null"</span>;
 <a class="jxr_linenumber" name="L421" href="#L421">421</a> 
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>         
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>     }
@@ -465,7 +465,7 @@
 <a class="jxr_linenumber" name="L457" href="#L457">457</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>                 + <span class="jxr_string">" where id is null"</span>;
 <a class="jxr_linenumber" name="L459" href="#L459">459</a> 
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L461" href="#L461">461</a>         
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>     }
@@ -495,7 +495,7 @@
 <a class="jxr_linenumber" name="L487" href="#L487">487</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L488" href="#L488">488</a>                 + <span class="jxr_string">" order by id"</span>;
 <a class="jxr_linenumber" name="L489" href="#L489">489</a> 
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>         
 <a class="jxr_linenumber" name="L492" href="#L492">492</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L493" href="#L493">493</a>     }
@@ -525,7 +525,7 @@
 <a class="jxr_linenumber" name="L517" href="#L517">517</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L518" href="#L518">518</a>                 + <span class="jxr_string">" order by id"</span>;
 <a class="jxr_linenumber" name="L519" href="#L519">519</a> 
-<a class="jxr_linenumber" name="L520" href="#L520">520</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>         
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>     }
@@ -555,7 +555,7 @@
 <a class="jxr_linenumber" name="L547" href="#L547">547</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L548" href="#L548">548</a>                 + <span class="jxr_string">" order by id"</span>;
 <a class="jxr_linenumber" name="L549" href="#L549">549</a> 
-<a class="jxr_linenumber" name="L550" href="#L550">550</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L551" href="#L551">551</a>         
 <a class="jxr_linenumber" name="L552" href="#L552">552</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L553" href="#L553">553</a>     }
@@ -585,7 +585,7 @@
 <a class="jxr_linenumber" name="L577" href="#L577">577</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L578" href="#L578">578</a>                 + <span class="jxr_string">" order by id"</span>;
 <a class="jxr_linenumber" name="L579" href="#L579">579</a> 
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L581" href="#L581">581</a>         
 <a class="jxr_linenumber" name="L582" href="#L582">582</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L583" href="#L583">583</a>     }
@@ -615,7 +615,7 @@
 <a class="jxr_linenumber" name="L607" href="#L607">607</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L608" href="#L608">608</a>                 + <span class="jxr_string">" order by id"</span>;
 <a class="jxr_linenumber" name="L609" href="#L609">609</a> 
-<a class="jxr_linenumber" name="L610" href="#L610">610</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L610" href="#L610">610</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L611" href="#L611">611</a>         
 <a class="jxr_linenumber" name="L612" href="#L612">612</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L613" href="#L613">613</a>     }
@@ -648,7 +648,7 @@
 <a class="jxr_linenumber" name="L640" href="#L640">640</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L641" href="#L641">641</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L642" href="#L642">642</a> 
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L644" href="#L644">644</a>         
 <a class="jxr_linenumber" name="L645" href="#L645">645</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L646" href="#L646">646</a>     }
@@ -681,7 +681,7 @@
 <a class="jxr_linenumber" name="L673" href="#L673">673</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L674" href="#L674">674</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L675" href="#L675">675</a> 
-<a class="jxr_linenumber" name="L676" href="#L676">676</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L676" href="#L676">676</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L677" href="#L677">677</a>         
 <a class="jxr_linenumber" name="L678" href="#L678">678</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L679" href="#L679">679</a>     }
@@ -714,7 +714,7 @@
 <a class="jxr_linenumber" name="L706" href="#L706">706</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L707" href="#L707">707</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L708" href="#L708">708</a> 
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L710" href="#L710">710</a>         
 <a class="jxr_linenumber" name="L711" href="#L711">711</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L712" href="#L712">712</a>     }
@@ -747,7 +747,7 @@
 <a class="jxr_linenumber" name="L739" href="#L739">739</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L740" href="#L740">740</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L741" href="#L741">741</a> 
-<a class="jxr_linenumber" name="L742" href="#L742">742</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L742" href="#L742">742</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L743" href="#L743">743</a>         
 <a class="jxr_linenumber" name="L744" href="#L744">744</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L745" href="#L745">745</a>     }
@@ -780,7 +780,7 @@
 <a class="jxr_linenumber" name="L772" href="#L772">772</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L773" href="#L773">773</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L774" href="#L774">774</a> 
-<a class="jxr_linenumber" name="L775" href="#L775">775</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L775" href="#L775">775</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L776" href="#L776">776</a>         
 <a class="jxr_linenumber" name="L777" href="#L777">777</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L778" href="#L778">778</a>     }
@@ -813,7 +813,7 @@
 <a class="jxr_linenumber" name="L805" href="#L805">805</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L806" href="#L806">806</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L807" href="#L807">807</a> 
-<a class="jxr_linenumber" name="L808" href="#L808">808</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L808" href="#L808">808</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L809" href="#L809">809</a>         
 <a class="jxr_linenumber" name="L810" href="#L810">810</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L811" href="#L811">811</a>     }
@@ -849,7 +849,7 @@
 <a class="jxr_linenumber" name="L841" href="#L841">841</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L842" href="#L842">842</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L843" href="#L843">843</a> 
-<a class="jxr_linenumber" name="L844" href="#L844">844</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L844" href="#L844">844</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L845" href="#L845">845</a>         
 <a class="jxr_linenumber" name="L846" href="#L846">846</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L847" href="#L847">847</a>     }
@@ -885,7 +885,7 @@
 <a class="jxr_linenumber" name="L877" href="#L877">877</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L878" href="#L878">878</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L879" href="#L879">879</a> 
-<a class="jxr_linenumber" name="L880" href="#L880">880</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L880" href="#L880">880</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L881" href="#L881">881</a>         
 <a class="jxr_linenumber" name="L882" href="#L882">882</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L883" href="#L883">883</a>     }
@@ -921,7 +921,7 @@
 <a class="jxr_linenumber" name="L913" href="#L913">913</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L914" href="#L914">914</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L915" href="#L915">915</a> 
-<a class="jxr_linenumber" name="L916" href="#L916">916</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L916" href="#L916">916</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L917" href="#L917">917</a>         
 <a class="jxr_linenumber" name="L918" href="#L918">918</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L919" href="#L919">919</a>     }
@@ -957,7 +957,7 @@
 <a class="jxr_linenumber" name="L949" href="#L949">949</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L950" href="#L950">950</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L951" href="#L951">951</a> 
-<a class="jxr_linenumber" name="L952" href="#L952">952</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L952" href="#L952">952</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L953" href="#L953">953</a>         
 <a class="jxr_linenumber" name="L954" href="#L954">954</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L955" href="#L955">955</a>     }
@@ -993,7 +993,7 @@
 <a class="jxr_linenumber" name="L985" href="#L985">985</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L986" href="#L986">986</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L987" href="#L987">987</a> 
-<a class="jxr_linenumber" name="L988" href="#L988">988</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L988" href="#L988">988</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L989" href="#L989">989</a>         
 <a class="jxr_linenumber" name="L990" href="#L990">990</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L991" href="#L991">991</a>     }
@@ -1029,7 +1029,7 @@
 <a class="jxr_linenumber" name="L1021" href="#L1021">1021</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L1022" href="#L1022">1022</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L1023" href="#L1023">1023</a> 
-<a class="jxr_linenumber" name="L1024" href="#L1024">1024</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1024" href="#L1024">1024</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1025" href="#L1025">1025</a>         
 <a class="jxr_linenumber" name="L1026" href="#L1026">1026</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1027" href="#L1027">1027</a>     }
@@ -1065,7 +1065,7 @@
 <a class="jxr_linenumber" name="L1057" href="#L1057">1057</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L1058" href="#L1058">1058</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L1059" href="#L1059">1059</a> 
-<a class="jxr_linenumber" name="L1060" href="#L1060">1060</a>         SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1060" href="#L1060">1060</a>         SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1061" href="#L1061">1061</a>         
 <a class="jxr_linenumber" name="L1062" href="#L1062">1062</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1063" href="#L1063">1063</a>     }
@@ -1098,7 +1098,7 @@
 <a class="jxr_linenumber" name="L1090" href="#L1090">1090</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1091" href="#L1091">1091</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L1092" href="#L1092">1092</a> 
-<a class="jxr_linenumber" name="L1093" href="#L1093">1093</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1093" href="#L1093">1093</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1094" href="#L1094">1094</a>         
 <a class="jxr_linenumber" name="L1095" href="#L1095">1095</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1096" href="#L1096">1096</a>         
@@ -1132,7 +1132,7 @@
 <a class="jxr_linenumber" name="L1124" href="#L1124">1124</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1125" href="#L1125">1125</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L1126" href="#L1126">1126</a> 
-<a class="jxr_linenumber" name="L1127" href="#L1127">1127</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1127" href="#L1127">1127</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1128" href="#L1128">1128</a>         
 <a class="jxr_linenumber" name="L1129" href="#L1129">1129</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1130" href="#L1130">1130</a>         
@@ -1166,7 +1166,7 @@
 <a class="jxr_linenumber" name="L1158" href="#L1158">1158</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1159" href="#L1159">1159</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L1160" href="#L1160">1160</a> 
-<a class="jxr_linenumber" name="L1161" href="#L1161">1161</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1161" href="#L1161">1161</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1162" href="#L1162">1162</a>         
 <a class="jxr_linenumber" name="L1163" href="#L1163">1163</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1164" href="#L1164">1164</a>         
@@ -1200,7 +1200,7 @@
 <a class="jxr_linenumber" name="L1192" href="#L1192">1192</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1193" href="#L1193">1193</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L1194" href="#L1194">1194</a> 
-<a class="jxr_linenumber" name="L1195" href="#L1195">1195</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1195" href="#L1195">1195</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1196" href="#L1196">1196</a>         
 <a class="jxr_linenumber" name="L1197" href="#L1197">1197</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1198" href="#L1198">1198</a>         
@@ -1234,7 +1234,7 @@
 <a class="jxr_linenumber" name="L1226" href="#L1226">1226</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1227" href="#L1227">1227</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L1228" href="#L1228">1228</a> 
-<a class="jxr_linenumber" name="L1229" href="#L1229">1229</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1229" href="#L1229">1229</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1230" href="#L1230">1230</a>         
 <a class="jxr_linenumber" name="L1231" href="#L1231">1231</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1232" href="#L1232">1232</a>         
@@ -1268,7 +1268,7 @@
 <a class="jxr_linenumber" name="L1260" href="#L1260">1260</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1261" href="#L1261">1261</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L1262" href="#L1262">1262</a> 
-<a class="jxr_linenumber" name="L1263" href="#L1263">1263</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1263" href="#L1263">1263</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1264" href="#L1264">1264</a>         
 <a class="jxr_linenumber" name="L1265" href="#L1265">1265</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1266" href="#L1266">1266</a>         
@@ -1305,7 +1305,7 @@
 <a class="jxr_linenumber" name="L1297" href="#L1297">1297</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L1298" href="#L1298">1298</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1299" href="#L1299">1299</a> 
-<a class="jxr_linenumber" name="L1300" href="#L1300">1300</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1300" href="#L1300">1300</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1301" href="#L1301">1301</a>         
 <a class="jxr_linenumber" name="L1302" href="#L1302">1302</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1303" href="#L1303">1303</a>     }
@@ -1341,7 +1341,7 @@
 <a class="jxr_linenumber" name="L1333" href="#L1333">1333</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L1334" href="#L1334">1334</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1335" href="#L1335">1335</a> 
-<a class="jxr_linenumber" name="L1336" href="#L1336">1336</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1336" href="#L1336">1336</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1337" href="#L1337">1337</a>         
 <a class="jxr_linenumber" name="L1338" href="#L1338">1338</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1339" href="#L1339">1339</a>     }
@@ -1377,7 +1377,7 @@
 <a class="jxr_linenumber" name="L1369" href="#L1369">1369</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L1370" href="#L1370">1370</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1371" href="#L1371">1371</a> 
-<a class="jxr_linenumber" name="L1372" href="#L1372">1372</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1372" href="#L1372">1372</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1373" href="#L1373">1373</a>         
 <a class="jxr_linenumber" name="L1374" href="#L1374">1374</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1375" href="#L1375">1375</a>     }
@@ -1413,7 +1413,7 @@
 <a class="jxr_linenumber" name="L1405" href="#L1405">1405</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L1406" href="#L1406">1406</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1407" href="#L1407">1407</a> 
-<a class="jxr_linenumber" name="L1408" href="#L1408">1408</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1408" href="#L1408">1408</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1409" href="#L1409">1409</a>         
 <a class="jxr_linenumber" name="L1410" href="#L1410">1410</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1411" href="#L1411">1411</a>     }
@@ -1449,7 +1449,7 @@
 <a class="jxr_linenumber" name="L1441" href="#L1441">1441</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L1442" href="#L1442">1442</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1443" href="#L1443">1443</a> 
-<a class="jxr_linenumber" name="L1444" href="#L1444">1444</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1444" href="#L1444">1444</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1445" href="#L1445">1445</a>         
 <a class="jxr_linenumber" name="L1446" href="#L1446">1446</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1447" href="#L1447">1447</a>     }
@@ -1485,7 +1485,7 @@
 <a class="jxr_linenumber" name="L1477" href="#L1477">1477</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L1478" href="#L1478">1478</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1479" href="#L1479">1479</a> 
-<a class="jxr_linenumber" name="L1480" href="#L1480">1480</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1480" href="#L1480">1480</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1481" href="#L1481">1481</a>         
 <a class="jxr_linenumber" name="L1482" href="#L1482">1482</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1483" href="#L1483">1483</a>     }
@@ -1521,7 +1521,7 @@
 <a class="jxr_linenumber" name="L1513" href="#L1513">1513</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L1514" href="#L1514">1514</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1515" href="#L1515">1515</a> 
-<a class="jxr_linenumber" name="L1516" href="#L1516">1516</a>         SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1516" href="#L1516">1516</a>         SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1517" href="#L1517">1517</a>         
 <a class="jxr_linenumber" name="L1518" href="#L1518">1518</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1519" href="#L1519">1519</a>     }
@@ -1554,7 +1554,7 @@
 <a class="jxr_linenumber" name="L1546" href="#L1546">1546</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1547" href="#L1547">1547</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1548" href="#L1548">1548</a> 
-<a class="jxr_linenumber" name="L1549" href="#L1549">1549</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1549" href="#L1549">1549</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1550" href="#L1550">1550</a>         
 <a class="jxr_linenumber" name="L1551" href="#L1551">1551</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1552" href="#L1552">1552</a>     }
@@ -1587,7 +1587,7 @@
 <a class="jxr_linenumber" name="L1579" href="#L1579">1579</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1580" href="#L1580">1580</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1581" href="#L1581">1581</a> 
-<a class="jxr_linenumber" name="L1582" href="#L1582">1582</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1582" href="#L1582">1582</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1583" href="#L1583">1583</a>         
 <a class="jxr_linenumber" name="L1584" href="#L1584">1584</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1585" href="#L1585">1585</a>     }
@@ -1620,7 +1620,7 @@
 <a class="jxr_linenumber" name="L1612" href="#L1612">1612</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1613" href="#L1613">1613</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1614" href="#L1614">1614</a> 
-<a class="jxr_linenumber" name="L1615" href="#L1615">1615</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1615" href="#L1615">1615</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1616" href="#L1616">1616</a>         
 <a class="jxr_linenumber" name="L1617" href="#L1617">1617</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1618" href="#L1618">1618</a>     }
@@ -1653,7 +1653,7 @@
 <a class="jxr_linenumber" name="L1645" href="#L1645">1645</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1646" href="#L1646">1646</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1647" href="#L1647">1647</a> 
-<a class="jxr_linenumber" name="L1648" href="#L1648">1648</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1648" href="#L1648">1648</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1649" href="#L1649">1649</a>         
 <a class="jxr_linenumber" name="L1650" href="#L1650">1650</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1651" href="#L1651">1651</a>     }
@@ -1686,7 +1686,7 @@
 <a class="jxr_linenumber" name="L1678" href="#L1678">1678</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1679" href="#L1679">1679</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1680" href="#L1680">1680</a> 
-<a class="jxr_linenumber" name="L1681" href="#L1681">1681</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1681" href="#L1681">1681</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1682" href="#L1682">1682</a>         
 <a class="jxr_linenumber" name="L1683" href="#L1683">1683</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1684" href="#L1684">1684</a>     }
@@ -1719,7 +1719,7 @@
 <a class="jxr_linenumber" name="L1711" href="#L1711">1711</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L1712" href="#L1712">1712</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L1713" href="#L1713">1713</a> 
-<a class="jxr_linenumber" name="L1714" href="#L1714">1714</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1714" href="#L1714">1714</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1715" href="#L1715">1715</a>         
 <a class="jxr_linenumber" name="L1716" href="#L1716">1716</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1717" href="#L1717">1717</a>     }
@@ -1749,7 +1749,7 @@
 <a class="jxr_linenumber" name="L1741" href="#L1741">1741</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L1742" href="#L1742">1742</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L1743" href="#L1743">1743</a> 
-<a class="jxr_linenumber" name="L1744" href="#L1744">1744</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1744" href="#L1744">1744</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1745" href="#L1745">1745</a>         
 <a class="jxr_linenumber" name="L1746" href="#L1746">1746</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1747" href="#L1747">1747</a>     }
@@ -1779,7 +1779,7 @@
 <a class="jxr_linenumber" name="L1771" href="#L1771">1771</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L1772" href="#L1772">1772</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L1773" href="#L1773">1773</a> 
-<a class="jxr_linenumber" name="L1774" href="#L1774">1774</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1774" href="#L1774">1774</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1775" href="#L1775">1775</a>         
 <a class="jxr_linenumber" name="L1776" href="#L1776">1776</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1777" href="#L1777">1777</a>     }
@@ -1809,7 +1809,7 @@
 <a class="jxr_linenumber" name="L1801" href="#L1801">1801</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L1802" href="#L1802">1802</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L1803" href="#L1803">1803</a> 
-<a class="jxr_linenumber" name="L1804" href="#L1804">1804</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1804" href="#L1804">1804</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1805" href="#L1805">1805</a>         
 <a class="jxr_linenumber" name="L1806" href="#L1806">1806</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1807" href="#L1807">1807</a>     }
@@ -1839,7 +1839,7 @@
 <a class="jxr_linenumber" name="L1831" href="#L1831">1831</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L1832" href="#L1832">1832</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L1833" href="#L1833">1833</a> 
-<a class="jxr_linenumber" name="L1834" href="#L1834">1834</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1834" href="#L1834">1834</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1835" href="#L1835">1835</a>         
 <a class="jxr_linenumber" name="L1836" href="#L1836">1836</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1837" href="#L1837">1837</a>     }
@@ -1869,7 +1869,7 @@
 <a class="jxr_linenumber" name="L1861" href="#L1861">1861</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L1862" href="#L1862">1862</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L1863" href="#L1863">1863</a> 
-<a class="jxr_linenumber" name="L1864" href="#L1864">1864</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1864" href="#L1864">1864</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1865" href="#L1865">1865</a>         
 <a class="jxr_linenumber" name="L1866" href="#L1866">1866</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1867" href="#L1867">1867</a>     }
@@ -1902,7 +1902,7 @@
 <a class="jxr_linenumber" name="L1894" href="#L1894">1894</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L1895" href="#L1895">1895</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L1896" href="#L1896">1896</a> 
-<a class="jxr_linenumber" name="L1897" href="#L1897">1897</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1897" href="#L1897">1897</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1898" href="#L1898">1898</a>         
 <a class="jxr_linenumber" name="L1899" href="#L1899">1899</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1900" href="#L1900">1900</a>     }
@@ -1935,7 +1935,7 @@
 <a class="jxr_linenumber" name="L1927" href="#L1927">1927</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L1928" href="#L1928">1928</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L1929" href="#L1929">1929</a> 
-<a class="jxr_linenumber" name="L1930" href="#L1930">1930</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1930" href="#L1930">1930</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1931" href="#L1931">1931</a>         
 <a class="jxr_linenumber" name="L1932" href="#L1932">1932</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1933" href="#L1933">1933</a>     }
@@ -1968,7 +1968,7 @@
 <a class="jxr_linenumber" name="L1960" href="#L1960">1960</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L1961" href="#L1961">1961</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L1962" href="#L1962">1962</a> 
-<a class="jxr_linenumber" name="L1963" href="#L1963">1963</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1963" href="#L1963">1963</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1964" href="#L1964">1964</a>         
 <a class="jxr_linenumber" name="L1965" href="#L1965">1965</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1966" href="#L1966">1966</a>     }
@@ -2001,7 +2001,7 @@
 <a class="jxr_linenumber" name="L1993" href="#L1993">1993</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L1994" href="#L1994">1994</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L1995" href="#L1995">1995</a> 
-<a class="jxr_linenumber" name="L1996" href="#L1996">1996</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L1996" href="#L1996">1996</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L1997" href="#L1997">1997</a>         
 <a class="jxr_linenumber" name="L1998" href="#L1998">1998</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L1999" href="#L1999">1999</a>     }
@@ -2034,7 +2034,7 @@
 <a class="jxr_linenumber" name="L2026" href="#L2026">2026</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L2027" href="#L2027">2027</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L2028" href="#L2028">2028</a> 
-<a class="jxr_linenumber" name="L2029" href="#L2029">2029</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2029" href="#L2029">2029</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2030" href="#L2030">2030</a>         
 <a class="jxr_linenumber" name="L2031" href="#L2031">2031</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2032" href="#L2032">2032</a>     }
@@ -2067,7 +2067,7 @@
 <a class="jxr_linenumber" name="L2059" href="#L2059">2059</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L2060" href="#L2060">2060</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L2061" href="#L2061">2061</a> 
-<a class="jxr_linenumber" name="L2062" href="#L2062">2062</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2062" href="#L2062">2062</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2063" href="#L2063">2063</a>         
 <a class="jxr_linenumber" name="L2064" href="#L2064">2064</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2065" href="#L2065">2065</a>     }
@@ -2097,7 +2097,7 @@
 <a class="jxr_linenumber" name="L2089" href="#L2089">2089</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2090" href="#L2090">2090</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L2091" href="#L2091">2091</a> 
-<a class="jxr_linenumber" name="L2092" href="#L2092">2092</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2092" href="#L2092">2092</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2093" href="#L2093">2093</a>         
 <a class="jxr_linenumber" name="L2094" href="#L2094">2094</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2095" href="#L2095">2095</a>     }
@@ -2127,7 +2127,7 @@
 <a class="jxr_linenumber" name="L2119" href="#L2119">2119</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2120" href="#L2120">2120</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L2121" href="#L2121">2121</a> 
-<a class="jxr_linenumber" name="L2122" href="#L2122">2122</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2122" href="#L2122">2122</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2123" href="#L2123">2123</a>         
 <a class="jxr_linenumber" name="L2124" href="#L2124">2124</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2125" href="#L2125">2125</a>     }
@@ -2157,7 +2157,7 @@
 <a class="jxr_linenumber" name="L2149" href="#L2149">2149</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2150" href="#L2150">2150</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L2151" href="#L2151">2151</a> 
-<a class="jxr_linenumber" name="L2152" href="#L2152">2152</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2152" href="#L2152">2152</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2153" href="#L2153">2153</a>         
 <a class="jxr_linenumber" name="L2154" href="#L2154">2154</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2155" href="#L2155">2155</a>     }
@@ -2187,7 +2187,7 @@
 <a class="jxr_linenumber" name="L2179" href="#L2179">2179</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2180" href="#L2180">2180</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L2181" href="#L2181">2181</a> 
-<a class="jxr_linenumber" name="L2182" href="#L2182">2182</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2182" href="#L2182">2182</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2183" href="#L2183">2183</a>         
 <a class="jxr_linenumber" name="L2184" href="#L2184">2184</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2185" href="#L2185">2185</a>     }
@@ -2217,7 +2217,7 @@
 <a class="jxr_linenumber" name="L2209" href="#L2209">2209</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2210" href="#L2210">2210</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L2211" href="#L2211">2211</a> 
-<a class="jxr_linenumber" name="L2212" href="#L2212">2212</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2212" href="#L2212">2212</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2213" href="#L2213">2213</a>         
 <a class="jxr_linenumber" name="L2214" href="#L2214">2214</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2215" href="#L2215">2215</a>     }
@@ -2250,7 +2250,7 @@
 <a class="jxr_linenumber" name="L2242" href="#L2242">2242</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L2243" href="#L2243">2243</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2244" href="#L2244">2244</a> 
-<a class="jxr_linenumber" name="L2245" href="#L2245">2245</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2245" href="#L2245">2245</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2246" href="#L2246">2246</a>         
 <a class="jxr_linenumber" name="L2247" href="#L2247">2247</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2248" href="#L2248">2248</a>     }
@@ -2283,7 +2283,7 @@
 <a class="jxr_linenumber" name="L2275" href="#L2275">2275</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L2276" href="#L2276">2276</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2277" href="#L2277">2277</a> 
-<a class="jxr_linenumber" name="L2278" href="#L2278">2278</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2278" href="#L2278">2278</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2279" href="#L2279">2279</a>         
 <a class="jxr_linenumber" name="L2280" href="#L2280">2280</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2281" href="#L2281">2281</a>     }
@@ -2316,7 +2316,7 @@
 <a class="jxr_linenumber" name="L2308" href="#L2308">2308</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L2309" href="#L2309">2309</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2310" href="#L2310">2310</a> 
-<a class="jxr_linenumber" name="L2311" href="#L2311">2311</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2311" href="#L2311">2311</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2312" href="#L2312">2312</a>         
 <a class="jxr_linenumber" name="L2313" href="#L2313">2313</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2314" href="#L2314">2314</a>     }
@@ -2349,7 +2349,7 @@
 <a class="jxr_linenumber" name="L2341" href="#L2341">2341</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L2342" href="#L2342">2342</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2343" href="#L2343">2343</a> 
-<a class="jxr_linenumber" name="L2344" href="#L2344">2344</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2344" href="#L2344">2344</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2345" href="#L2345">2345</a>         
 <a class="jxr_linenumber" name="L2346" href="#L2346">2346</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2347" href="#L2347">2347</a>     }
@@ -2382,7 +2382,7 @@
 <a class="jxr_linenumber" name="L2374" href="#L2374">2374</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L2375" href="#L2375">2375</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2376" href="#L2376">2376</a> 
-<a class="jxr_linenumber" name="L2377" href="#L2377">2377</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2377" href="#L2377">2377</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2378" href="#L2378">2378</a>         
 <a class="jxr_linenumber" name="L2379" href="#L2379">2379</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2380" href="#L2380">2380</a>     }
@@ -2415,7 +2415,7 @@
 <a class="jxr_linenumber" name="L2407" href="#L2407">2407</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L2408" href="#L2408">2408</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2409" href="#L2409">2409</a> 
-<a class="jxr_linenumber" name="L2410" href="#L2410">2410</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2410" href="#L2410">2410</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2411" href="#L2411">2411</a>         
 <a class="jxr_linenumber" name="L2412" href="#L2412">2412</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2413" href="#L2413">2413</a>     }
@@ -2445,7 +2445,7 @@
 <a class="jxr_linenumber" name="L2437" href="#L2437">2437</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2438" href="#L2438">2438</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2439" href="#L2439">2439</a> 
-<a class="jxr_linenumber" name="L2440" href="#L2440">2440</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2440" href="#L2440">2440</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2441" href="#L2441">2441</a>         
 <a class="jxr_linenumber" name="L2442" href="#L2442">2442</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2443" href="#L2443">2443</a>     }
@@ -2475,7 +2475,7 @@
 <a class="jxr_linenumber" name="L2467" href="#L2467">2467</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2468" href="#L2468">2468</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2469" href="#L2469">2469</a> 
-<a class="jxr_linenumber" name="L2470" href="#L2470">2470</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2470" href="#L2470">2470</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2471" href="#L2471">2471</a>         
 <a class="jxr_linenumber" name="L2472" href="#L2472">2472</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2473" href="#L2473">2473</a>     }
@@ -2505,7 +2505,7 @@
 <a class="jxr_linenumber" name="L2497" href="#L2497">2497</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2498" href="#L2498">2498</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2499" href="#L2499">2499</a> 
-<a class="jxr_linenumber" name="L2500" href="#L2500">2500</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2500" href="#L2500">2500</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2501" href="#L2501">2501</a>         
 <a class="jxr_linenumber" name="L2502" href="#L2502">2502</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2503" href="#L2503">2503</a>     }
@@ -2535,7 +2535,7 @@
 <a class="jxr_linenumber" name="L2527" href="#L2527">2527</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2528" href="#L2528">2528</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2529" href="#L2529">2529</a> 
-<a class="jxr_linenumber" name="L2530" href="#L2530">2530</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2530" href="#L2530">2530</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2531" href="#L2531">2531</a>         
 <a class="jxr_linenumber" name="L2532" href="#L2532">2532</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2533" href="#L2533">2533</a>     }
@@ -2565,7 +2565,7 @@
 <a class="jxr_linenumber" name="L2557" href="#L2557">2557</a>                 + <span class="jxr_string">" from student"</span>
 <a class="jxr_linenumber" name="L2558" href="#L2558">2558</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L2559" href="#L2559">2559</a> 
-<a class="jxr_linenumber" name="L2560" href="#L2560">2560</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2560" href="#L2560">2560</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2561" href="#L2561">2561</a>         
 <a class="jxr_linenumber" name="L2562" href="#L2562">2562</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2563" href="#L2563">2563</a>     }
@@ -2588,7 +2588,7 @@
 <a class="jxr_linenumber" name="L2580" href="#L2580">2580</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L2581" href="#L2581">2581</a>                 + <span class="jxr_string">" order by id"</span>;
 <a class="jxr_linenumber" name="L2582" href="#L2582">2582</a> 
-<a class="jxr_linenumber" name="L2583" href="#L2583">2583</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2583" href="#L2583">2583</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2584" href="#L2584">2584</a>         
 <a class="jxr_linenumber" name="L2585" href="#L2585">2585</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2586" href="#L2586">2586</a>     }
@@ -2611,7 +2611,7 @@
 <a class="jxr_linenumber" name="L2603" href="#L2603">2603</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L2604" href="#L2604">2604</a>                 + <span class="jxr_string">" order by id"</span>;
 <a class="jxr_linenumber" name="L2605" href="#L2605">2605</a> 
-<a class="jxr_linenumber" name="L2606" href="#L2606">2606</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2606" href="#L2606">2606</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2607" href="#L2607">2607</a>         
 <a class="jxr_linenumber" name="L2608" href="#L2608">2608</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2609" href="#L2609">2609</a>     }
@@ -2634,7 +2634,7 @@
 <a class="jxr_linenumber" name="L2626" href="#L2626">2626</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L2627" href="#L2627">2627</a>                 + <span class="jxr_string">" order by id"</span>;
 <a class="jxr_linenumber" name="L2628" href="#L2628">2628</a> 
-<a class="jxr_linenumber" name="L2629" href="#L2629">2629</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2629" href="#L2629">2629</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2630" href="#L2630">2630</a>         
 <a class="jxr_linenumber" name="L2631" href="#L2631">2631</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2632" href="#L2632">2632</a>     }
@@ -2657,7 +2657,7 @@
 <a class="jxr_linenumber" name="L2649" href="#L2649">2649</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L2650" href="#L2650">2650</a>                 + <span class="jxr_string">" order by id"</span>;
 <a class="jxr_linenumber" name="L2651" href="#L2651">2651</a> 
-<a class="jxr_linenumber" name="L2652" href="#L2652">2652</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2652" href="#L2652">2652</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2653" href="#L2653">2653</a>         
 <a class="jxr_linenumber" name="L2654" href="#L2654">2654</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2655" href="#L2655">2655</a>     }
@@ -2683,7 +2683,7 @@
 <a class="jxr_linenumber" name="L2675" href="#L2675">2675</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L2676" href="#L2676">2676</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L2677" href="#L2677">2677</a> 
-<a class="jxr_linenumber" name="L2678" href="#L2678">2678</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2678" href="#L2678">2678</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2679" href="#L2679">2679</a>         
 <a class="jxr_linenumber" name="L2680" href="#L2680">2680</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2681" href="#L2681">2681</a>     }
@@ -2709,7 +2709,7 @@
 <a class="jxr_linenumber" name="L2701" href="#L2701">2701</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L2702" href="#L2702">2702</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L2703" href="#L2703">2703</a> 
-<a class="jxr_linenumber" name="L2704" href="#L2704">2704</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2704" href="#L2704">2704</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2705" href="#L2705">2705</a>         
 <a class="jxr_linenumber" name="L2706" href="#L2706">2706</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2707" href="#L2707">2707</a>     }
@@ -2735,7 +2735,7 @@
 <a class="jxr_linenumber" name="L2727" href="#L2727">2727</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L2728" href="#L2728">2728</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L2729" href="#L2729">2729</a> 
-<a class="jxr_linenumber" name="L2730" href="#L2730">2730</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2730" href="#L2730">2730</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2731" href="#L2731">2731</a>         
 <a class="jxr_linenumber" name="L2732" href="#L2732">2732</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2733" href="#L2733">2733</a>     }
@@ -2761,7 +2761,7 @@
 <a class="jxr_linenumber" name="L2753" href="#L2753">2753</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L2754" href="#L2754">2754</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L2755" href="#L2755">2755</a> 
-<a class="jxr_linenumber" name="L2756" href="#L2756">2756</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2756" href="#L2756">2756</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2757" href="#L2757">2757</a>         
 <a class="jxr_linenumber" name="L2758" href="#L2758">2758</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2759" href="#L2759">2759</a>     }
@@ -2787,7 +2787,7 @@
 <a class="jxr_linenumber" name="L2779" href="#L2779">2779</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L2780" href="#L2780">2780</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L2781" href="#L2781">2781</a> 
-<a class="jxr_linenumber" name="L2782" href="#L2782">2782</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2782" href="#L2782">2782</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2783" href="#L2783">2783</a>         
 <a class="jxr_linenumber" name="L2784" href="#L2784">2784</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2785" href="#L2785">2785</a>     }
@@ -2816,7 +2816,7 @@
 <a class="jxr_linenumber" name="L2808" href="#L2808">2808</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L2809" href="#L2809">2809</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L2810" href="#L2810">2810</a> 
-<a class="jxr_linenumber" name="L2811" href="#L2811">2811</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2811" href="#L2811">2811</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2812" href="#L2812">2812</a>         
 <a class="jxr_linenumber" name="L2813" href="#L2813">2813</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2814" href="#L2814">2814</a>     }
@@ -2845,7 +2845,7 @@
 <a class="jxr_linenumber" name="L2837" href="#L2837">2837</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L2838" href="#L2838">2838</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L2839" href="#L2839">2839</a> 
-<a class="jxr_linenumber" name="L2840" href="#L2840">2840</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2840" href="#L2840">2840</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2841" href="#L2841">2841</a>         
 <a class="jxr_linenumber" name="L2842" href="#L2842">2842</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2843" href="#L2843">2843</a>     }
@@ -2874,7 +2874,7 @@
 <a class="jxr_linenumber" name="L2866" href="#L2866">2866</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L2867" href="#L2867">2867</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L2868" href="#L2868">2868</a> 
-<a class="jxr_linenumber" name="L2869" href="#L2869">2869</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2869" href="#L2869">2869</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2870" href="#L2870">2870</a>         
 <a class="jxr_linenumber" name="L2871" href="#L2871">2871</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2872" href="#L2872">2872</a>     }
@@ -2903,7 +2903,7 @@
 <a class="jxr_linenumber" name="L2895" href="#L2895">2895</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L2896" href="#L2896">2896</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L2897" href="#L2897">2897</a> 
-<a class="jxr_linenumber" name="L2898" href="#L2898">2898</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2898" href="#L2898">2898</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2899" href="#L2899">2899</a>         
 <a class="jxr_linenumber" name="L2900" href="#L2900">2900</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2901" href="#L2901">2901</a>     }
@@ -2932,7 +2932,7 @@
 <a class="jxr_linenumber" name="L2924" href="#L2924">2924</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L2925" href="#L2925">2925</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L2926" href="#L2926">2926</a> 
-<a class="jxr_linenumber" name="L2927" href="#L2927">2927</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2927" href="#L2927">2927</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2928" href="#L2928">2928</a>         
 <a class="jxr_linenumber" name="L2929" href="#L2929">2929</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2930" href="#L2930">2930</a>     }
@@ -2961,7 +2961,7 @@
 <a class="jxr_linenumber" name="L2953" href="#L2953">2953</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L2954" href="#L2954">2954</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L2955" href="#L2955">2955</a> 
-<a class="jxr_linenumber" name="L2956" href="#L2956">2956</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2956" href="#L2956">2956</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2957" href="#L2957">2957</a>         
 <a class="jxr_linenumber" name="L2958" href="#L2958">2958</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2959" href="#L2959">2959</a>     }
@@ -2987,7 +2987,7 @@
 <a class="jxr_linenumber" name="L2979" href="#L2979">2979</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L2980" href="#L2980">2980</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L2981" href="#L2981">2981</a> 
-<a class="jxr_linenumber" name="L2982" href="#L2982">2982</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L2982" href="#L2982">2982</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L2983" href="#L2983">2983</a>         
 <a class="jxr_linenumber" name="L2984" href="#L2984">2984</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L2985" href="#L2985">2985</a>     }
@@ -3013,7 +3013,7 @@
 <a class="jxr_linenumber" name="L3005" href="#L3005">3005</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L3006" href="#L3006">3006</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L3007" href="#L3007">3007</a> 
-<a class="jxr_linenumber" name="L3008" href="#L3008">3008</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3008" href="#L3008">3008</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3009" href="#L3009">3009</a>         
 <a class="jxr_linenumber" name="L3010" href="#L3010">3010</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3011" href="#L3011">3011</a>     }
@@ -3039,7 +3039,7 @@
 <a class="jxr_linenumber" name="L3031" href="#L3031">3031</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L3032" href="#L3032">3032</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L3033" href="#L3033">3033</a> 
-<a class="jxr_linenumber" name="L3034" href="#L3034">3034</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3034" href="#L3034">3034</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3035" href="#L3035">3035</a>         
 <a class="jxr_linenumber" name="L3036" href="#L3036">3036</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3037" href="#L3037">3037</a>     }
@@ -3065,7 +3065,7 @@
 <a class="jxr_linenumber" name="L3057" href="#L3057">3057</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L3058" href="#L3058">3058</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L3059" href="#L3059">3059</a> 
-<a class="jxr_linenumber" name="L3060" href="#L3060">3060</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3060" href="#L3060">3060</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3061" href="#L3061">3061</a>         
 <a class="jxr_linenumber" name="L3062" href="#L3062">3062</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3063" href="#L3063">3063</a>     }
@@ -3091,7 +3091,7 @@
 <a class="jxr_linenumber" name="L3083" href="#L3083">3083</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L3084" href="#L3084">3084</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L3085" href="#L3085">3085</a> 
-<a class="jxr_linenumber" name="L3086" href="#L3086">3086</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3086" href="#L3086">3086</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3087" href="#L3087">3087</a>         
 <a class="jxr_linenumber" name="L3088" href="#L3088">3088</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3089" href="#L3089">3089</a>     }
@@ -3120,7 +3120,7 @@
 <a class="jxr_linenumber" name="L3112" href="#L3112">3112</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3113" href="#L3113">3113</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3114" href="#L3114">3114</a> 
-<a class="jxr_linenumber" name="L3115" href="#L3115">3115</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3115" href="#L3115">3115</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3116" href="#L3116">3116</a>         
 <a class="jxr_linenumber" name="L3117" href="#L3117">3117</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3118" href="#L3118">3118</a>     }
@@ -3149,7 +3149,7 @@
 <a class="jxr_linenumber" name="L3141" href="#L3141">3141</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3142" href="#L3142">3142</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3143" href="#L3143">3143</a> 
-<a class="jxr_linenumber" name="L3144" href="#L3144">3144</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3144" href="#L3144">3144</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3145" href="#L3145">3145</a>         
 <a class="jxr_linenumber" name="L3146" href="#L3146">3146</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3147" href="#L3147">3147</a>     }
@@ -3178,7 +3178,7 @@
 <a class="jxr_linenumber" name="L3170" href="#L3170">3170</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3171" href="#L3171">3171</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3172" href="#L3172">3172</a> 
-<a class="jxr_linenumber" name="L3173" href="#L3173">3173</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3173" href="#L3173">3173</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3174" href="#L3174">3174</a>         
 <a class="jxr_linenumber" name="L3175" href="#L3175">3175</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3176" href="#L3176">3176</a>     }
@@ -3207,7 +3207,7 @@
 <a class="jxr_linenumber" name="L3199" href="#L3199">3199</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3200" href="#L3200">3200</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3201" href="#L3201">3201</a> 
-<a class="jxr_linenumber" name="L3202" href="#L3202">3202</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3202" href="#L3202">3202</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3203" href="#L3203">3203</a>         
 <a class="jxr_linenumber" name="L3204" href="#L3204">3204</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3205" href="#L3205">3205</a>     }
@@ -3236,7 +3236,7 @@
 <a class="jxr_linenumber" name="L3228" href="#L3228">3228</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3229" href="#L3229">3229</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3230" href="#L3230">3230</a> 
-<a class="jxr_linenumber" name="L3231" href="#L3231">3231</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3231" href="#L3231">3231</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3232" href="#L3232">3232</a>         
 <a class="jxr_linenumber" name="L3233" href="#L3233">3233</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3234" href="#L3234">3234</a>     }
@@ -3265,7 +3265,7 @@
 <a class="jxr_linenumber" name="L3257" href="#L3257">3257</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3258" href="#L3258">3258</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3259" href="#L3259">3259</a> 
-<a class="jxr_linenumber" name="L3260" href="#L3260">3260</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3260" href="#L3260">3260</a>         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3261" href="#L3261">3261</a>         
 <a class="jxr_linenumber" name="L3262" href="#L3262">3262</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3263" href="#L3263">3263</a>     }
@@ -3291,7 +3291,7 @@
 <a class="jxr_linenumber" name="L3283" href="#L3283">3283</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L3284" href="#L3284">3284</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3285" href="#L3285">3285</a> 
-<a class="jxr_linenumber" name="L3286" href="#L3286">3286</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3286" href="#L3286">3286</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3287" href="#L3287">3287</a>         
 <a class="jxr_linenumber" name="L3288" href="#L3288">3288</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3289" href="#L3289">3289</a>     }
@@ -3317,7 +3317,7 @@
 <a class="jxr_linenumber" name="L3309" href="#L3309">3309</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L3310" href="#L3310">3310</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3311" href="#L3311">3311</a> 
-<a class="jxr_linenumber" name="L3312" href="#L3312">3312</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3312" href="#L3312">3312</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3313" href="#L3313">3313</a>         
 <a class="jxr_linenumber" name="L3314" href="#L3314">3314</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3315" href="#L3315">3315</a>     }
@@ -3343,7 +3343,7 @@
 <a class="jxr_linenumber" name="L3335" href="#L3335">3335</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L3336" href="#L3336">3336</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3337" href="#L3337">3337</a> 
-<a class="jxr_linenumber" name="L3338" href="#L3338">3338</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3338" href="#L3338">3338</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3339" href="#L3339">3339</a>         
 <a class="jxr_linenumber" name="L3340" href="#L3340">3340</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3341" href="#L3341">3341</a>     }
@@ -3369,7 +3369,7 @@
 <a class="jxr_linenumber" name="L3361" href="#L3361">3361</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L3362" href="#L3362">3362</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3363" href="#L3363">3363</a> 
-<a class="jxr_linenumber" name="L3364" href="#L3364">3364</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3364" href="#L3364">3364</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3365" href="#L3365">3365</a>         
 <a class="jxr_linenumber" name="L3366" href="#L3366">3366</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3367" href="#L3367">3367</a>     }
@@ -3395,7 +3395,7 @@
 <a class="jxr_linenumber" name="L3387" href="#L3387">3387</a>                 + <span class="jxr_string">" order by id"</span>
 <a class="jxr_linenumber" name="L3388" href="#L3388">3388</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3389" href="#L3389">3389</a> 
-<a class="jxr_linenumber" name="L3390" href="#L3390">3390</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3390" href="#L3390">3390</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3391" href="#L3391">3391</a>         
 <a class="jxr_linenumber" name="L3392" href="#L3392">3392</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3393" href="#L3393">3393</a>     }
@@ -3418,7 +3418,7 @@
 <a class="jxr_linenumber" name="L3410" href="#L3410">3410</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3411" href="#L3411">3411</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L3412" href="#L3412">3412</a> 
-<a class="jxr_linenumber" name="L3413" href="#L3413">3413</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3413" href="#L3413">3413</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3414" href="#L3414">3414</a>         
 <a class="jxr_linenumber" name="L3415" href="#L3415">3415</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3416" href="#L3416">3416</a>     }
@@ -3441,7 +3441,7 @@
 <a class="jxr_linenumber" name="L3433" href="#L3433">3433</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3434" href="#L3434">3434</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L3435" href="#L3435">3435</a> 
-<a class="jxr_linenumber" name="L3436" href="#L3436">3436</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3436" href="#L3436">3436</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3437" href="#L3437">3437</a>         
 <a class="jxr_linenumber" name="L3438" href="#L3438">3438</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3439" href="#L3439">3439</a>     }
@@ -3464,7 +3464,7 @@
 <a class="jxr_linenumber" name="L3456" href="#L3456">3456</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3457" href="#L3457">3457</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L3458" href="#L3458">3458</a> 
-<a class="jxr_linenumber" name="L3459" href="#L3459">3459</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3459" href="#L3459">3459</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3460" href="#L3460">3460</a>         
 <a class="jxr_linenumber" name="L3461" href="#L3461">3461</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3462" href="#L3462">3462</a>     }
@@ -3487,7 +3487,7 @@
 <a class="jxr_linenumber" name="L3479" href="#L3479">3479</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3480" href="#L3480">3480</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>;
 <a class="jxr_linenumber" name="L3481" href="#L3481">3481</a> 
-<a class="jxr_linenumber" name="L3482" href="#L3482">3482</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3482" href="#L3482">3482</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3483" href="#L3483">3483</a>         
 <a class="jxr_linenumber" name="L3484" href="#L3484">3484</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3485" href="#L3485">3485</a>     }
@@ -3513,7 +3513,7 @@
 <a class="jxr_linenumber" name="L3505" href="#L3505">3505</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L3506" href="#L3506">3506</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L3507" href="#L3507">3507</a> 
-<a class="jxr_linenumber" name="L3508" href="#L3508">3508</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3508" href="#L3508">3508</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3509" href="#L3509">3509</a>         
 <a class="jxr_linenumber" name="L3510" href="#L3510">3510</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3511" href="#L3511">3511</a>     }
@@ -3539,7 +3539,7 @@
 <a class="jxr_linenumber" name="L3531" href="#L3531">3531</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L3532" href="#L3532">3532</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L3533" href="#L3533">3533</a> 
-<a class="jxr_linenumber" name="L3534" href="#L3534">3534</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3534" href="#L3534">3534</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3535" href="#L3535">3535</a>         
 <a class="jxr_linenumber" name="L3536" href="#L3536">3536</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3537" href="#L3537">3537</a>     }
@@ -3565,7 +3565,7 @@
 <a class="jxr_linenumber" name="L3557" href="#L3557">3557</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L3558" href="#L3558">3558</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L3559" href="#L3559">3559</a> 
-<a class="jxr_linenumber" name="L3560" href="#L3560">3560</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3560" href="#L3560">3560</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3561" href="#L3561">3561</a>         
 <a class="jxr_linenumber" name="L3562" href="#L3562">3562</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3563" href="#L3563">3563</a>     }
@@ -3591,7 +3591,7 @@
 <a class="jxr_linenumber" name="L3583" href="#L3583">3583</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L3584" href="#L3584">3584</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L3585" href="#L3585">3585</a> 
-<a class="jxr_linenumber" name="L3586" href="#L3586">3586</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3586" href="#L3586">3586</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3587" href="#L3587">3587</a>         
 <a class="jxr_linenumber" name="L3588" href="#L3588">3588</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3589" href="#L3589">3589</a>     }
@@ -3617,7 +3617,7 @@
 <a class="jxr_linenumber" name="L3609" href="#L3609">3609</a>                 + <span class="jxr_string">" limit #{parameters._limit}"</span>
 <a class="jxr_linenumber" name="L3610" href="#L3610">3610</a>                 + <span class="jxr_string">" offset #{parameters._offset}"</span>;
 <a class="jxr_linenumber" name="L3611" href="#L3611">3611</a> 
-<a class="jxr_linenumber" name="L3612" href="#L3612">3612</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3612" href="#L3612">3612</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3613" href="#L3613">3613</a>         
 <a class="jxr_linenumber" name="L3614" href="#L3614">3614</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3615" href="#L3615">3615</a>     }
@@ -3640,7 +3640,7 @@
 <a class="jxr_linenumber" name="L3632" href="#L3632">3632</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3633" href="#L3633">3633</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L3634" href="#L3634">3634</a> 
-<a class="jxr_linenumber" name="L3635" href="#L3635">3635</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3635" href="#L3635">3635</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3636" href="#L3636">3636</a>         
 <a class="jxr_linenumber" name="L3637" href="#L3637">3637</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3638" href="#L3638">3638</a>     }
@@ -3663,7 +3663,7 @@
 <a class="jxr_linenumber" name="L3655" href="#L3655">3655</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3656" href="#L3656">3656</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L3657" href="#L3657">3657</a> 
-<a class="jxr_linenumber" name="L3658" href="#L3658">3658</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3658" href="#L3658">3658</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3659" href="#L3659">3659</a>         
 <a class="jxr_linenumber" name="L3660" href="#L3660">3660</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3661" href="#L3661">3661</a>     }
@@ -3686,7 +3686,7 @@
 <a class="jxr_linenumber" name="L3678" href="#L3678">3678</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3679" href="#L3679">3679</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L3680" href="#L3680">3680</a> 
-<a class="jxr_linenumber" name="L3681" href="#L3681">3681</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3681" href="#L3681">3681</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3682" href="#L3682">3682</a>         
 <a class="jxr_linenumber" name="L3683" href="#L3683">3683</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3684" href="#L3684">3684</a>     }
@@ -3709,7 +3709,7 @@
 <a class="jxr_linenumber" name="L3701" href="#L3701">3701</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3702" href="#L3702">3702</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>;
 <a class="jxr_linenumber" name="L3703" href="#L3703">3703</a> 
-<a class="jxr_linenumber" name="L3704" href="#L3704">3704</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3704" href="#L3704">3704</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3705" href="#L3705">3705</a>         
 <a class="jxr_linenumber" name="L3706" href="#L3706">3706</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3707" href="#L3707">3707</a>     }
@@ -3735,7 +3735,7 @@
 <a class="jxr_linenumber" name="L3727" href="#L3727">3727</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3728" href="#L3728">3728</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3729" href="#L3729">3729</a> 
-<a class="jxr_linenumber" name="L3730" href="#L3730">3730</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3730" href="#L3730">3730</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3731" href="#L3731">3731</a>         
 <a class="jxr_linenumber" name="L3732" href="#L3732">3732</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3733" href="#L3733">3733</a>     }
@@ -3761,7 +3761,7 @@
 <a class="jxr_linenumber" name="L3753" href="#L3753">3753</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3754" href="#L3754">3754</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3755" href="#L3755">3755</a> 
-<a class="jxr_linenumber" name="L3756" href="#L3756">3756</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3756" href="#L3756">3756</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3757" href="#L3757">3757</a>         
 <a class="jxr_linenumber" name="L3758" href="#L3758">3758</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3759" href="#L3759">3759</a>     }
@@ -3787,7 +3787,7 @@
 <a class="jxr_linenumber" name="L3779" href="#L3779">3779</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3780" href="#L3780">3780</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3781" href="#L3781">3781</a> 
-<a class="jxr_linenumber" name="L3782" href="#L3782">3782</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3782" href="#L3782">3782</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3783" href="#L3783">3783</a>         
 <a class="jxr_linenumber" name="L3784" href="#L3784">3784</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3785" href="#L3785">3785</a>     }
@@ -3813,7 +3813,7 @@
 <a class="jxr_linenumber" name="L3805" href="#L3805">3805</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3806" href="#L3806">3806</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3807" href="#L3807">3807</a> 
-<a class="jxr_linenumber" name="L3808" href="#L3808">3808</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3808" href="#L3808">3808</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3809" href="#L3809">3809</a>         
 <a class="jxr_linenumber" name="L3810" href="#L3810">3810</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3811" href="#L3811">3811</a>     }
@@ -3839,7 +3839,7 @@
 <a class="jxr_linenumber" name="L3831" href="#L3831">3831</a>                 + <span class="jxr_string">" offset #{parameters._offset} rows"</span>
 <a class="jxr_linenumber" name="L3832" href="#L3832">3832</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3833" href="#L3833">3833</a> 
-<a class="jxr_linenumber" name="L3834" href="#L3834">3834</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3834" href="#L3834">3834</a>         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3835" href="#L3835">3835</a>         
 <a class="jxr_linenumber" name="L3836" href="#L3836">3836</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3837" href="#L3837">3837</a>     }
@@ -3862,7 +3862,7 @@
 <a class="jxr_linenumber" name="L3854" href="#L3854">3854</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3855" href="#L3855">3855</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3856" href="#L3856">3856</a> 
-<a class="jxr_linenumber" name="L3857" href="#L3857">3857</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3857" href="#L3857">3857</a>         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3858" href="#L3858">3858</a>         
 <a class="jxr_linenumber" name="L3859" href="#L3859">3859</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3860" href="#L3860">3860</a>     }
@@ -3885,7 +3885,7 @@
 <a class="jxr_linenumber" name="L3877" href="#L3877">3877</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3878" href="#L3878">3878</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3879" href="#L3879">3879</a> 
-<a class="jxr_linenumber" name="L3880" href="#L3880">3880</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3880" href="#L3880">3880</a>         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3881" href="#L3881">3881</a>         
 <a class="jxr_linenumber" name="L3882" href="#L3882">3882</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3883" href="#L3883">3883</a>     }
@@ -3908,7 +3908,7 @@
 <a class="jxr_linenumber" name="L3900" href="#L3900">3900</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3901" href="#L3901">3901</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3902" href="#L3902">3902</a> 
-<a class="jxr_linenumber" name="L3903" href="#L3903">3903</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3903" href="#L3903">3903</a>         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3904" href="#L3904">3904</a>         
 <a class="jxr_linenumber" name="L3905" href="#L3905">3905</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3906" href="#L3906">3906</a>     }
@@ -3931,7 +3931,7 @@
 <a class="jxr_linenumber" name="L3923" href="#L3923">3923</a>                 + <span class="jxr_string">" where student.idcard = #{parameters.p1}"</span>
 <a class="jxr_linenumber" name="L3924" href="#L3924">3924</a>                 + <span class="jxr_string">" fetch first #{parameters._fetchFirstRows} rows only"</span>;
 <a class="jxr_linenumber" name="L3925" href="#L3925">3925</a> 
-<a class="jxr_linenumber" name="L3926" href="#L3926">3926</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L3926" href="#L3926">3926</a>         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L3927" href="#L3927">3927</a>         
 <a class="jxr_linenumber" name="L3928" href="#L3928">3928</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L3929" href="#L3929">3929</a>     }

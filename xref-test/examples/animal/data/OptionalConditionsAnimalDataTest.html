@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../testapidocs/examples/animal/data/OptionalConditionsAnimalDataTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2018 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2019 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
@@ -44,7 +44,7 @@
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.BeforeEach;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategies;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="OptionalConditionsAnimalDataTest" href="../../../examples/animal/data/OptionalConditionsAnimalDataTest.html#OptionalConditionsAnimalDataTest">OptionalConditionsAnimalDataTest</a> {
@@ -81,7 +81,7 @@
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>                      .where(id, isGreaterThanWhenPresent(NULL_INTEGER))  <em class="jxr_comment">// the where clause should not render</em>
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>                      .orderBy(id)
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>                      .build()
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>                      .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>                      .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>              List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>              assertAll(
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>                      () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData order by id"</span>),
@@ -103,7 +103,7 @@
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>                      .or(id, isEqualToWhenPresent(4))
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                      .orderBy(id)
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>                      .build()
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>                      .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                      .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>              List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>             assertAll(
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -125,7 +125,7 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>                     .or(id, isEqualToWhenPresent(4))
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                     .build()
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>             assertAll(
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -148,7 +148,7 @@
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                     .and(id, isNotEqualToWhenPresent(NULL_INTEGER))
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                     .build()
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>             assertAll(
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -169,7 +169,7 @@
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>                     .or(id, isEqualToWhenPresent(4))
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>                     .build()
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>             assertAll(
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -189,7 +189,7 @@
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>                     .where(id, isEqualToWhenPresent(4))
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>                     .build()
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>             assertAll(
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -209,7 +209,7 @@
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>                     .build()
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>             assertAll(
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -229,7 +229,7 @@
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>                     .build()
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>             assertAll(
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;&gt; #{parameters.p1,jdbcType=INTEGER} and id &lt;= #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -249,7 +249,7 @@
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>                     .build()
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>             assertAll(
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -269,7 +269,7 @@
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L262" href="#L262">262</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>                     .build()
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L265" href="#L265">265</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L266" href="#L266">266</a>             assertAll(
 <a class="jxr_linenumber" name="L267" href="#L267">267</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &gt; #{parameters.p1,jdbcType=INTEGER} and id &lt;= #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -289,7 +289,7 @@
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>                     .build()
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>             assertAll(
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -309,7 +309,7 @@
 <a class="jxr_linenumber" name="L301" href="#L301">301</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L302" href="#L302">302</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>                     .build()
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>             assertAll(
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &gt;= #{parameters.p1,jdbcType=INTEGER} and id &lt;= #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -329,7 +329,7 @@
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>                     .build()
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L325" href="#L325">325</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>             assertAll(
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -348,7 +348,7 @@
 <a class="jxr_linenumber" name="L340" href="#L340">340</a>                     .where(id, isLessThanWhenPresent(4))
 <a class="jxr_linenumber" name="L341" href="#L341">341</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L342" href="#L342">342</a>                     .build()
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>             assertAll(
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt; #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -368,7 +368,7 @@
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L362" href="#L362">362</a>                     .build()
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L365" href="#L365">365</a>             assertAll(
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -387,7 +387,7 @@
 <a class="jxr_linenumber" name="L379" href="#L379">379</a>                     .where(id, isLessThanOrEqualToWhenPresent(4))
 <a class="jxr_linenumber" name="L380" href="#L380">380</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L381" href="#L381">381</a>                     .build()
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L383" href="#L383">383</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L384" href="#L384">384</a>             assertAll(
 <a class="jxr_linenumber" name="L385" href="#L385">385</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -407,7 +407,7 @@
 <a class="jxr_linenumber" name="L399" href="#L399">399</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L401" href="#L401">401</a>                     .build()
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>             assertAll(
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -426,7 +426,7 @@
 <a class="jxr_linenumber" name="L418" href="#L418">418</a>                     .where(id, isInWhenPresent(4, 5, 6))
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L420" href="#L420">420</a>                     .build()
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L422" href="#L422">422</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>             assertAll(
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) order by id"</span>),
@@ -445,7 +445,7 @@
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>                     .where(id, isInWhenPresent(3, NULL_INTEGER, 5))
 <a class="jxr_linenumber" name="L438" href="#L438">438</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L439" href="#L439">439</a>                     .build()
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L442" href="#L442">442</a>             assertAll(
 <a class="jxr_linenumber" name="L443" href="#L443">443</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) order by id"</span>),
@@ -465,7 +465,7 @@
 <a class="jxr_linenumber" name="L457" href="#L457">457</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L459" href="#L459">459</a>                     .build()
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L461" href="#L461">461</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>             assertAll(
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -484,7 +484,7 @@
 <a class="jxr_linenumber" name="L476" href="#L476">476</a>                     .where(animalName, isInCaseInsensitiveWhenPresent(<span class="jxr_string">"mouse"</span>, <span class="jxr_string">"musk shrew"</span>))
 <a class="jxr_linenumber" name="L477" href="#L477">477</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L478" href="#L478">478</a>                     .build()
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L480" href="#L480">480</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L481" href="#L481">481</a>             assertAll(
 <a class="jxr_linenumber" name="L482" href="#L482">482</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"</span>),
@@ -503,7 +503,7 @@
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>                     .where(animalName, isInCaseInsensitiveWhenPresent(<span class="jxr_string">"mouse"</span>, <strong class="jxr_keyword">null</strong>, <span class="jxr_string">"musk shrew"</span>))
 <a class="jxr_linenumber" name="L496" href="#L496">496</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L497" href="#L497">497</a>                     .build()
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L499" href="#L499">499</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>             assertAll(
 <a class="jxr_linenumber" name="L501" href="#L501">501</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"</span>),
@@ -523,7 +523,7 @@
 <a class="jxr_linenumber" name="L515" href="#L515">515</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L516" href="#L516">516</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L517" href="#L517">517</a>                     .build()
-<a class="jxr_linenumber" name="L518" href="#L518">518</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L518" href="#L518">518</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L519" href="#L519">519</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>             assertAll(
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -543,7 +543,7 @@
 <a class="jxr_linenumber" name="L535" href="#L535">535</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L537" href="#L537">537</a>                     .build()
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L539" href="#L539">539</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L540" href="#L540">540</a>             assertAll(
 <a class="jxr_linenumber" name="L541" href="#L541">541</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) and id &lt;= #{parameters.p4,jdbcType=INTEGER} order by id"</span>),
@@ -563,7 +563,7 @@
 <a class="jxr_linenumber" name="L555" href="#L555">555</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L556" href="#L556">556</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L557" href="#L557">557</a>                     .build()
-<a class="jxr_linenumber" name="L558" href="#L558">558</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L559" href="#L559">559</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L560" href="#L560">560</a>             assertAll(
 <a class="jxr_linenumber" name="L561" href="#L561">561</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) and id &lt;= #{parameters.p3,jdbcType=INTEGER} order by id"</span>),
@@ -583,7 +583,7 @@
 <a class="jxr_linenumber" name="L575" href="#L575">575</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L577" href="#L577">577</a>                     .build()
-<a class="jxr_linenumber" name="L578" href="#L578">578</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L579" href="#L579">579</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L580" href="#L580">580</a>             assertAll(
 <a class="jxr_linenumber" name="L581" href="#L581">581</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -603,7 +603,7 @@
 <a class="jxr_linenumber" name="L595" href="#L595">595</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L596" href="#L596">596</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L597" href="#L597">597</a>                     .build()
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L599" href="#L599">599</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L600" href="#L600">600</a>             assertAll(
 <a class="jxr_linenumber" name="L601" href="#L601">601</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) and id &lt;= #{parameters.p3,jdbcType=INTEGER} order by id"</span>),
@@ -623,7 +623,7 @@
 <a class="jxr_linenumber" name="L615" href="#L615">615</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L616" href="#L616">616</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L617" href="#L617">617</a>                     .build()
-<a class="jxr_linenumber" name="L618" href="#L618">618</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L619" href="#L619">619</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L620" href="#L620">620</a>             assertAll(
 <a class="jxr_linenumber" name="L621" href="#L621">621</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) and id &lt;= #{parameters.p3,jdbcType=INTEGER} order by id"</span>),
@@ -643,7 +643,7 @@
 <a class="jxr_linenumber" name="L635" href="#L635">635</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L636" href="#L636">636</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L637" href="#L637">637</a>                     .build()
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L639" href="#L639">639</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L640" href="#L640">640</a>             assertAll(
 <a class="jxr_linenumber" name="L641" href="#L641">641</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -662,7 +662,7 @@
 <a class="jxr_linenumber" name="L654" href="#L654">654</a>                     .where(id, isBetweenWhenPresent(3).and(6))
 <a class="jxr_linenumber" name="L655" href="#L655">655</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L656" href="#L656">656</a>                     .build()
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L658" href="#L658">658</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L659" href="#L659">659</a>             assertAll(
 <a class="jxr_linenumber" name="L660" href="#L660">660</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -682,7 +682,7 @@
 <a class="jxr_linenumber" name="L674" href="#L674">674</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L675" href="#L675">675</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L676" href="#L676">676</a>                     .build()
-<a class="jxr_linenumber" name="L677" href="#L677">677</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L678" href="#L678">678</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L679" href="#L679">679</a>             assertAll(
 <a class="jxr_linenumber" name="L680" href="#L680">680</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -702,7 +702,7 @@
 <a class="jxr_linenumber" name="L694" href="#L694">694</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L695" href="#L695">695</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L696" href="#L696">696</a>                     .build()
-<a class="jxr_linenumber" name="L697" href="#L697">697</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L698" href="#L698">698</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L699" href="#L699">699</a>             assertAll(
 <a class="jxr_linenumber" name="L700" href="#L700">700</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -722,7 +722,7 @@
 <a class="jxr_linenumber" name="L714" href="#L714">714</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L715" href="#L715">715</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L716" href="#L716">716</a>                     .build()
-<a class="jxr_linenumber" name="L717" href="#L717">717</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L717" href="#L717">717</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L718" href="#L718">718</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L719" href="#L719">719</a>             assertAll(
 <a class="jxr_linenumber" name="L720" href="#L720">720</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -742,7 +742,7 @@
 <a class="jxr_linenumber" name="L734" href="#L734">734</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L735" href="#L735">735</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L736" href="#L736">736</a>                     .build()
-<a class="jxr_linenumber" name="L737" href="#L737">737</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L737" href="#L737">737</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L738" href="#L738">738</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L739" href="#L739">739</a>             assertAll(
 <a class="jxr_linenumber" name="L740" href="#L740">740</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id not between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} and id &lt;= #{parameters.p3,jdbcType=INTEGER} order by id"</span>),
@@ -762,7 +762,7 @@
 <a class="jxr_linenumber" name="L754" href="#L754">754</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L755" href="#L755">755</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L756" href="#L756">756</a>                     .build()
-<a class="jxr_linenumber" name="L757" href="#L757">757</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L757" href="#L757">757</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L758" href="#L758">758</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L759" href="#L759">759</a>             assertAll(
 <a class="jxr_linenumber" name="L760" href="#L760">760</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -782,7 +782,7 @@
 <a class="jxr_linenumber" name="L774" href="#L774">774</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L775" href="#L775">775</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L776" href="#L776">776</a>                     .build()
-<a class="jxr_linenumber" name="L777" href="#L777">777</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L777" href="#L777">777</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L778" href="#L778">778</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L779" href="#L779">779</a>             assertAll(
 <a class="jxr_linenumber" name="L780" href="#L780">780</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -802,7 +802,7 @@
 <a class="jxr_linenumber" name="L794" href="#L794">794</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L795" href="#L795">795</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L796" href="#L796">796</a>                     .build()
-<a class="jxr_linenumber" name="L797" href="#L797">797</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L797" href="#L797">797</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L798" href="#L798">798</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L799" href="#L799">799</a>             assertAll(
 <a class="jxr_linenumber" name="L800" href="#L800">800</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -822,7 +822,7 @@
 <a class="jxr_linenumber" name="L814" href="#L814">814</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L815" href="#L815">815</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L816" href="#L816">816</a>                     .build()
-<a class="jxr_linenumber" name="L817" href="#L817">817</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L817" href="#L817">817</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L818" href="#L818">818</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L819" href="#L819">819</a>             assertAll(
 <a class="jxr_linenumber" name="L820" href="#L820">820</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where animal_name like #{parameters.p1,jdbcType=VARCHAR} and id &lt;= #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -842,7 +842,7 @@
 <a class="jxr_linenumber" name="L834" href="#L834">834</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L835" href="#L835">835</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L836" href="#L836">836</a>                     .build()
-<a class="jxr_linenumber" name="L837" href="#L837">837</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L837" href="#L837">837</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L838" href="#L838">838</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L839" href="#L839">839</a>             assertAll(
 <a class="jxr_linenumber" name="L840" href="#L840">840</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -862,7 +862,7 @@
 <a class="jxr_linenumber" name="L854" href="#L854">854</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L855" href="#L855">855</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L856" href="#L856">856</a>                     .build()
-<a class="jxr_linenumber" name="L857" href="#L857">857</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L857" href="#L857">857</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L858" href="#L858">858</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L859" href="#L859">859</a>             assertAll(
 <a class="jxr_linenumber" name="L860" href="#L860">860</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) like #{parameters.p1,jdbcType=VARCHAR} and id &lt;= #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -882,7 +882,7 @@
 <a class="jxr_linenumber" name="L874" href="#L874">874</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L875" href="#L875">875</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L876" href="#L876">876</a>                     .build()
-<a class="jxr_linenumber" name="L877" href="#L877">877</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L877" href="#L877">877</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L878" href="#L878">878</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L879" href="#L879">879</a>             assertAll(
 <a class="jxr_linenumber" name="L880" href="#L880">880</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -902,7 +902,7 @@
 <a class="jxr_linenumber" name="L894" href="#L894">894</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L895" href="#L895">895</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L896" href="#L896">896</a>                     .build()
-<a class="jxr_linenumber" name="L897" href="#L897">897</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L897" href="#L897">897</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L898" href="#L898">898</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L899" href="#L899">899</a>             assertAll(
 <a class="jxr_linenumber" name="L900" href="#L900">900</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where animal_name not like #{parameters.p1,jdbcType=VARCHAR} and id &lt;= #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -922,7 +922,7 @@
 <a class="jxr_linenumber" name="L914" href="#L914">914</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L915" href="#L915">915</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L916" href="#L916">916</a>                     .build()
-<a class="jxr_linenumber" name="L917" href="#L917">917</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L917" href="#L917">917</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L918" href="#L918">918</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L919" href="#L919">919</a>             assertAll(
 <a class="jxr_linenumber" name="L920" href="#L920">920</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),
@@ -942,7 +942,7 @@
 <a class="jxr_linenumber" name="L934" href="#L934">934</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L935" href="#L935">935</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L936" href="#L936">936</a>                     .build()
-<a class="jxr_linenumber" name="L937" href="#L937">937</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L937" href="#L937">937</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L938" href="#L938">938</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L939" href="#L939">939</a>             assertAll(
 <a class="jxr_linenumber" name="L940" href="#L940">940</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not like #{parameters.p1,jdbcType=VARCHAR} and id &lt;= #{parameters.p2,jdbcType=INTEGER} order by id"</span>),
@@ -962,7 +962,7 @@
 <a class="jxr_linenumber" name="L954" href="#L954">954</a>                     .and(id, isLessThanOrEqualTo(10))
 <a class="jxr_linenumber" name="L955" href="#L955">955</a>                     .orderBy(id)
 <a class="jxr_linenumber" name="L956" href="#L956">956</a>                     .build()
-<a class="jxr_linenumber" name="L957" href="#L957">957</a>                     .render(RenderingStrategy.MYBATIS3);
+<a class="jxr_linenumber" name="L957" href="#L957">957</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L958" href="#L958">958</a>             List&lt;AnimalData&gt; animals = mapper.selectMany(selectStatement);
 <a class="jxr_linenumber" name="L959" href="#L959">959</a>             assertAll(
 <a class="jxr_linenumber" name="L960" href="#L960">960</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select id, animal_name, body_weight, brain_weight from AnimalData where id &lt;= #{parameters.p1,jdbcType=INTEGER} order by id"</span>),

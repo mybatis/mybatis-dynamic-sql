@@ -19,64 +19,59 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public class FragmentCollector {
-<span class="fc" id="L27">    List&lt;String&gt; fragments = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L28">    Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L26">    List&lt;String&gt; fragments = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L27">    Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
     
     FragmentCollector() {
-<span class="fc" id="L31">        super();</span>
-<span class="fc" id="L32">    }</span>
+<span class="fc" id="L30">        super();</span>
+<span class="fc" id="L31">    }</span>
     
-<span class="fc" id="L34">    private FragmentCollector(FragmentAndParameters initialFragment) {</span>
-<span class="fc" id="L35">        add(initialFragment);</span>
-<span class="fc" id="L36">    }</span>
+<span class="fc" id="L33">    private FragmentCollector(FragmentAndParameters initialFragment) {</span>
+<span class="fc" id="L34">        add(initialFragment);</span>
+<span class="fc" id="L35">    }</span>
     
     public void add(FragmentAndParameters fragmentAndParameters) {
-<span class="fc" id="L39">        fragments.add(fragmentAndParameters.fragment());</span>
-<span class="fc" id="L40">        parameters.putAll(fragmentAndParameters.parameters());</span>
-<span class="fc" id="L41">    }</span>
-    
-    public void add(Optional&lt;FragmentAndParameters&gt; fragmentAndParameters) {
-<span class="fc" id="L44">        fragmentAndParameters.ifPresent(this::add);</span>
-<span class="fc" id="L45">    }</span>
+<span class="fc" id="L38">        fragments.add(fragmentAndParameters.fragment());</span>
+<span class="fc" id="L39">        parameters.putAll(fragmentAndParameters.parameters());</span>
+<span class="fc" id="L40">    }</span>
     
     public FragmentCollector merge(FragmentCollector other) {
-<span class="fc" id="L48">        fragments.addAll(other.fragments);</span>
-<span class="fc" id="L49">        parameters.putAll(other.parameters);</span>
-<span class="fc" id="L50">        return this;</span>
+<span class="fc" id="L43">        fragments.addAll(other.fragments);</span>
+<span class="fc" id="L44">        parameters.putAll(other.parameters);</span>
+<span class="fc" id="L45">        return this;</span>
     }
     
     public Stream&lt;String&gt; fragments() {
-<span class="fc" id="L54">        return fragments.stream();</span>
+<span class="fc" id="L49">        return fragments.stream();</span>
     }
     
     public Map&lt;String, Object&gt; parameters() {
-<span class="fc" id="L58">        return parameters;</span>
+<span class="fc" id="L53">        return parameters;</span>
     }
     
     public boolean hasMultipleFragments() {
-<span class="fc bfc" id="L62" title="All 2 branches covered.">        return fragments.size() &gt; 1;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        return fragments.size() &gt; 1;</span>
     }
     
     public boolean isEmpty() {
-<span class="fc" id="L66">        return fragments.isEmpty();</span>
+<span class="fc" id="L61">        return fragments.isEmpty();</span>
     }
     
     public static Collector&lt;FragmentAndParameters, FragmentCollector, FragmentCollector&gt; collect() {
-<span class="fc" id="L70">        return Collector.of(FragmentCollector::new,</span>
+<span class="fc" id="L65">        return Collector.of(FragmentCollector::new,</span>
                 FragmentCollector::add,
                 FragmentCollector::merge);
     }
 
     public static Collector&lt;FragmentAndParameters, FragmentCollector, FragmentCollector&gt; collect(
             FragmentAndParameters initialFragment) {
-<span class="fc" id="L77">        return Collector.of(() -&gt; new FragmentCollector(initialFragment),</span>
+<span class="fc" id="L72">        return Collector.of(() -&gt; new FragmentCollector(initialFragment),</span>
                 FragmentCollector::add,
                 FragmentCollector::merge);
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

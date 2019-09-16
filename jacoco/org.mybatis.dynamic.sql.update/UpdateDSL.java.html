@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -37,143 +38,143 @@ import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 
-public class UpdateDSL&lt;R&gt; {
+public class UpdateDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 
     private Function&lt;UpdateModel, R&gt; adapterFunction;
-<span class="fc" id="L45">    private List&lt;UpdateMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L47">    private List&lt;UpdateMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
     private SqlTable table;
+<span class="fc" id="L49">    private UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();</span>
     
-<span class="fc" id="L48">    private UpdateDSL(SqlTable table, Function&lt;UpdateModel, R&gt; adapterFunction) {</span>
-<span class="fc" id="L49">        this.table = Objects.requireNonNull(table);</span>
-<span class="fc" id="L50">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
-<span class="fc" id="L51">    }</span>
+<span class="fc" id="L51">    private UpdateDSL(SqlTable table, Function&lt;UpdateModel, R&gt; adapterFunction) {</span>
+<span class="fc" id="L52">        this.table = Objects.requireNonNull(table);</span>
+<span class="fc" id="L53">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
+<span class="fc" id="L54">    }</span>
     
     public &lt;T&gt; SetClauseFinisher&lt;T&gt; set(SqlColumn&lt;T&gt; column) {
-<span class="fc" id="L54">        return new SetClauseFinisher&lt;&gt;(column);</span>
+<span class="fc" id="L57">        return new SetClauseFinisher&lt;&gt;(column);</span>
     }
     
     public UpdateWhereBuilder where() {
-<span class="fc" id="L58">        return new UpdateWhereBuilder();</span>
-    }
-    
-    public &lt;T&gt; UpdateWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L62">        return new UpdateWhereBuilder(column, condition);</span>
+<span class="fc" id="L61">        return whereBuilder;</span>
     }
     
     public &lt;T&gt; UpdateWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;...subCriteria) {
-<span class="fc" id="L67">        return new UpdateWhereBuilder(column, condition, subCriteria);</span>
+<span class="fc" id="L66">        whereBuilder.and(column, condition, subCriteria);</span>
+<span class="fc" id="L67">        return whereBuilder;</span>
     }
-    
+
     /**
      * WARNING! Calling this method could result in an update statement that updates
      * all rows in a table.
      * 
      * @return the update model
      */
+    @Override
     public R build() {
-<span class="fc" id="L77">        UpdateModel updateModel = UpdateModel.withTable(table)</span>
-<span class="fc" id="L78">                .withColumnMappings(columnMappings)</span>
-<span class="fc" id="L79">                .build();</span>
-<span class="fc" id="L80">        return adapterFunction.apply(updateModel);</span>
+<span class="fc" id="L78">        UpdateModel updateModel = UpdateModel.withTable(table)</span>
+<span class="fc" id="L79">                .withColumnMappings(columnMappings)</span>
+<span class="fc" id="L80">                .withWhereModel(whereBuilder.buildWhereModel())</span>
+<span class="fc" id="L81">                .build();</span>
+<span class="fc" id="L82">        return adapterFunction.apply(updateModel);</span>
     }
     
     public static &lt;R&gt; UpdateDSL&lt;R&gt; update(Function&lt;UpdateModel, R&gt; adapterFunction, SqlTable table) {
-<span class="fc" id="L84">        return new UpdateDSL&lt;&gt;(table, adapterFunction);</span>
+<span class="fc" id="L86">        return new UpdateDSL&lt;&gt;(table, adapterFunction);</span>
     }
     
     public static UpdateDSL&lt;UpdateModel&gt; update(SqlTable table) {
-<span class="fc" id="L88">        return update(Function.identity(), table);</span>
+<span class="fc" id="L90">        return update(Function.identity(), table);</span>
     }
     
+    /**
+     * Executes an update using a MyBatis3 mapper method.
+     * 
+     * @deprecated in favor of {@link MyBatis3Utils#update(ToIntFunction, SqlTable, UpdateDSLCompleter)}. This
+     *     method will be removed without direct replacement in a future version.
+     * @param &lt;T&gt; return value from an update method - typically Integer
+     * @param mapperMethod MyBatis3 mapper method that performs the update
+     * @param table table to update
+     * @return number of records updated - typically as Integer
+     */
+    @Deprecated
     public static &lt;T&gt; UpdateDSL&lt;MyBatis3UpdateModelAdapter&lt;T&gt;&gt; updateWithMapper(
             Function&lt;UpdateStatementProvider, T&gt; mapperMethod, SqlTable table) {
-<span class="fc" id="L93">        return update(updateModel -&gt; MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);</span>
+<span class="fc" id="L106">        return update(updateModel -&gt; MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);</span>
     }
     
     public class SetClauseFinisher&lt;T&gt; {
         
         private SqlColumn&lt;T&gt; column;
         
-<span class="fc" id="L100">        public SetClauseFinisher(SqlColumn&lt;T&gt; column) {</span>
-<span class="fc" id="L101">            this.column = column;</span>
-<span class="fc" id="L102">        }</span>
+<span class="fc" id="L113">        public SetClauseFinisher(SqlColumn&lt;T&gt; column) {</span>
+<span class="fc" id="L114">            this.column = column;</span>
+<span class="fc" id="L115">        }</span>
         
         public UpdateDSL&lt;R&gt; equalToNull() {
-<span class="fc" id="L105">            columnMappings.add(NullMapping.of(column));</span>
-<span class="fc" id="L106">            return UpdateDSL.this;</span>
+<span class="fc" id="L118">            columnMappings.add(NullMapping.of(column));</span>
+<span class="fc" id="L119">            return UpdateDSL.this;</span>
         }
 
         public UpdateDSL&lt;R&gt; equalToConstant(String constant) {
-<span class="fc" id="L110">            columnMappings.add(ConstantMapping.of(column, constant));</span>
-<span class="fc" id="L111">            return UpdateDSL.this;</span>
+<span class="fc" id="L123">            columnMappings.add(ConstantMapping.of(column, constant));</span>
+<span class="fc" id="L124">            return UpdateDSL.this;</span>
         }
         
         public UpdateDSL&lt;R&gt; equalToStringConstant(String constant) {
-<span class="fc" id="L115">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
-<span class="fc" id="L116">            return UpdateDSL.this;</span>
+<span class="fc" id="L128">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
+<span class="fc" id="L129">            return UpdateDSL.this;</span>
         }
         
         public UpdateDSL&lt;R&gt; equalTo(T value) {
-<span class="fc" id="L120">            return equalTo(() -&gt; value);</span>
+<span class="fc" id="L133">            return equalTo(() -&gt; value);</span>
         }
 
         public UpdateDSL&lt;R&gt; equalTo(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L124">            columnMappings.add(ValueMapping.of(column, valueSupplier));</span>
-<span class="fc" id="L125">            return UpdateDSL.this;</span>
+<span class="fc" id="L137">            columnMappings.add(ValueMapping.of(column, valueSupplier));</span>
+<span class="fc" id="L138">            return UpdateDSL.this;</span>
         }
 
         public UpdateDSL&lt;R&gt; equalTo(Buildable&lt;SelectModel&gt; buildable) {
-<span class="fc" id="L129">            columnMappings.add(SelectMapping.of(column, buildable));</span>
-<span class="fc" id="L130">            return UpdateDSL.this;</span>
+<span class="fc" id="L142">            columnMappings.add(SelectMapping.of(column, buildable));</span>
+<span class="fc" id="L143">            return UpdateDSL.this;</span>
         }
 
         public UpdateDSL&lt;R&gt; equalTo(BasicColumn rightColumn) {
-<span class="fc" id="L134">            columnMappings.add(ColumnMapping.of(column, rightColumn));</span>
-<span class="fc" id="L135">            return UpdateDSL.this;</span>
+<span class="fc" id="L147">            columnMappings.add(ColumnMapping.of(column, rightColumn));</span>
+<span class="fc" id="L148">            return UpdateDSL.this;</span>
         }
 
         public UpdateDSL&lt;R&gt; equalToWhenPresent(T value) {
-<span class="fc" id="L139">            return equalToWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L152">            return equalToWhenPresent(() -&gt; value);</span>
         }
 
         public UpdateDSL&lt;R&gt; equalToWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc bfc" id="L143" title="All 2 branches covered.">            if (valueSupplier.get() != null) {</span>
-<span class="fc" id="L144">                columnMappings.add(ValueMapping.of(column, valueSupplier));</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            if (valueSupplier.get() != null) {</span>
+<span class="fc" id="L157">                columnMappings.add(ValueMapping.of(column, valueSupplier));</span>
             }
-<span class="fc" id="L146">            return UpdateDSL.this;</span>
+<span class="fc" id="L159">            return UpdateDSL.this;</span>
         }
     }
 
-    public class UpdateWhereBuilder extends AbstractWhereDSL&lt;UpdateWhereBuilder&gt; {
+    public class UpdateWhereBuilder extends AbstractWhereDSL&lt;UpdateWhereBuilder&gt; implements Buildable&lt;R&gt; {
         
-<span class="fc" id="L152">        public &lt;T&gt; UpdateWhereBuilder() {</span>
-<span class="fc" id="L153">            super();</span>
-<span class="fc" id="L154">        }</span>
+<span class="fc" id="L165">        public &lt;T&gt; UpdateWhereBuilder() {</span>
+<span class="fc" id="L166">            super();</span>
+<span class="fc" id="L167">        }</span>
         
-<span class="fc" id="L156">        public &lt;T&gt; UpdateWhereBuilder(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {</span>
-<span class="fc" id="L157">            super(column, condition);</span>
-<span class="fc" id="L158">        }</span>
-        
-        public &lt;T&gt; UpdateWhereBuilder(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
-<span class="fc" id="L161">                SqlCriterion&lt;?&gt;...subCriteria) {</span>
-<span class="fc" id="L162">            super(column, condition, subCriteria);</span>
-<span class="fc" id="L163">        }</span>
-        
+        @Override
         public R build() {
-<span class="fc" id="L166">            UpdateModel updateModel = UpdateModel.withTable(table)</span>
-<span class="fc" id="L167">                    .withColumnMappings(columnMappings)</span>
-<span class="fc" id="L168">                    .withWhereModel(buildWhereModel())</span>
-<span class="fc" id="L169">                    .build();</span>
-<span class="fc" id="L170">            return adapterFunction.apply(updateModel);</span>
+<span class="fc" id="L171">            return UpdateDSL.this.build();</span>
         }
         
         @Override
         protected UpdateWhereBuilder getThis() {
-<span class="fc" id="L175">            return this;</span>
+<span class="fc" id="L176">            return this;</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

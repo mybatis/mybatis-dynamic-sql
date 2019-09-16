@@ -39,8 +39,8 @@ public class BatchInsertDSL&lt;T&gt; {
 <span class="fc" id="L39">        this.table = table;</span>
 <span class="fc" id="L40">    }</span>
     
-    public &lt;F&gt; BatchColumnMappingFinisher&lt;F&gt; map(SqlColumn&lt;F&gt; column) {
-<span class="fc" id="L43">        return new BatchColumnMappingFinisher&lt;&gt;(column);</span>
+    public &lt;F&gt; ColumnMappingFinisher&lt;F&gt; map(SqlColumn&lt;F&gt; column) {
+<span class="fc" id="L43">        return new ColumnMappingFinisher&lt;&gt;(column);</span>
     }
     
     public BatchInsertModel&lt;T&gt; build() {
@@ -52,7 +52,7 @@ public class BatchInsertDSL&lt;T&gt; {
 
     @SafeVarargs
     public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(T...records) {
-<span class="fc" id="L55">        return new IntoGatherer&lt;&gt;(Arrays.asList(records));</span>
+<span class="fc" id="L55">        return BatchInsertDSL.insert(Arrays.asList(records));</span>
     }
     
     public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(Collection&lt;T&gt; records) {
@@ -71,10 +71,10 @@ public class BatchInsertDSL&lt;T&gt; {
         }
     }
     
-    public class BatchColumnMappingFinisher&lt;F&gt; {
+    public class ColumnMappingFinisher&lt;F&gt; {
         private SqlColumn&lt;F&gt; column;
             
-<span class="fc" id="L77">        public BatchColumnMappingFinisher(SqlColumn&lt;F&gt; column) {</span>
+<span class="fc" id="L77">        public ColumnMappingFinisher(SqlColumn&lt;F&gt; column) {</span>
 <span class="fc" id="L78">            this.column = column;</span>
 <span class="fc" id="L79">        }</span>
             
@@ -99,4 +99,4 @@ public class BatchInsertDSL&lt;T&gt; {
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

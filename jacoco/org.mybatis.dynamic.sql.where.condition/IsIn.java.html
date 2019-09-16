@@ -54,25 +54,8 @@ public class IsIn&lt;T&gt; extends AbstractListValueCondition&lt;T&gt; {
 <span class="fc" id="L54">        return new IsIn&lt;&gt;(values, valueStreamTransformer);</span>
     }
 
-    /**
-     * This method allows you to modify the condition's values before they are placed into the parameter map.
-     * For example, you could filter nulls, or trim strings, etc. This process will run before final rendering of SQL.
-     * If you filter values out of the stream, then final condition will not reference those values. If you filter all
-     * values out of the stream, then the condition will not render.
-     *   
-     * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
-     *     the values are placed in the parameter map
-     * @return new condition with the specified transformer
-     * 
-     * @deprecated See {@link IsIn#then(UnaryOperator)}
-     */
-    @Deprecated
-    public IsIn&lt;T&gt; withValueStreamOperations(UnaryOperator&lt;Stream&lt;T&gt;&gt; valueStreamTransformer) {
-<span class="fc" id="L71">        return then(valueStreamTransformer);</span>
-    }
-
     public static &lt;T&gt; IsIn&lt;T&gt; of(Collection&lt;T&gt; values) {
-<span class="fc" id="L75">        return new IsIn&lt;&gt;(values);</span>
+<span class="fc" id="L58">        return new IsIn&lt;&gt;(values);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
