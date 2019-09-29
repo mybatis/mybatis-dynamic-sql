@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.PagingModel;
@@ -26,11 +27,13 @@ public class FetchFirstPagingModelRenderer {
     private static final String OFFSET_PARAMETER = "_offset"; //$NON-NLS-1$
     private RenderingStrategy renderingStrategy;
     private PagingModel pagingModel;
+    private AtomicInteger sequence;
 
     public FetchFirstPagingModelRenderer(RenderingStrategy renderingStrategy,
-            PagingModel pagingModel) {
+            PagingModel pagingModel,AtomicInteger sequence) {
         this.renderingStrategy = renderingStrategy;
         this.pagingModel = pagingModel;
+        this.sequence = sequence;
     }
     
     public Optional<FragmentAndParameters> render() {
@@ -50,27 +53,35 @@ public class FetchFirstPagingModelRenderer {
     }
     
     private Optional<FragmentAndParameters> renderFetchFirstRowsOnly(Long fetchFirstRows) {
+        String mapKey = formatParameterMapKey(FETCH_FIRST_ROWS_PARAMETER);
         return FragmentAndParameters
-                .withFragment("fetch first " + renderPlaceholder(FETCH_FIRST_ROWS_PARAMETER) //$NON-NLS-1$
+                .withFragment("fetch first " + renderPlaceholder(mapKey) //$NON-NLS-1$
                 + " rows only") //$NON-NLS-1$
-                .withParameter(FETCH_FIRST_ROWS_PARAMETER, fetchFirstRows)
+                .withParameter(mapKey, fetchFirstRows)
                 .buildOptional();
     }
     
     private Optional<FragmentAndParameters> renderOffsetOnly(Long offset) {
-        return FragmentAndParameters.withFragment("offset " + renderPlaceholder(OFFSET_PARAMETER) //$NON-NLS-1$
+        String mapKey = formatParameterMapKey(OFFSET_PARAMETER);
+        return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey) //$NON-NLS-1$
                     + " rows") //$NON-NLS-1$
-                .withParameter(OFFSET_PARAMETER, offset)
+                .withParameter(mapKey, offset)
                 .buildOptional();
     }
     
     private Optional<FragmentAndParameters> renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
-        return FragmentAndParameters.withFragment("offset " + renderPlaceholder(OFFSET_PARAMETER) //$NON-NLS-1$
-                    + " rows fetch first " + renderPlaceholder(FETCH_FIRST_ROWS_PARAMETER) //$NON-NLS-1$
+        String mapKey1 = formatParameterMapKey(OFFSET_PARAMETER);
+        String mapKey2 = formatParameterMapKey(FETCH_FIRST_ROWS_PARAMETER);
+        return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey1) //$NON-NLS-1$
+                    + " rows fetch first " + renderPlaceholder(mapKey2) //$NON-NLS-1$
                     + " rows only") //$NON-NLS-1$
-                .withParameter(OFFSET_PARAMETER, offset)
-                .withParameter(FETCH_FIRST_ROWS_PARAMETER, fetchFirstRows)
+                .withParameter(mapKey1, offset)
+                .withParameter(mapKey2, fetchFirstRows)
                 .buildOptional();
+    }
+
+    private String formatParameterMapKey(String parameterMapKey) {
+        return parameterMapKey + sequence.getAndIncrement(); //$NON-NLS-1$
     }
     
     private String renderPlaceholder(String parameterName) {

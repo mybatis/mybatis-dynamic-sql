@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.PagingModel;
@@ -25,10 +26,12 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 public class PagingModelRenderer {
     private RenderingStrategy renderingStrategy;
     private PagingModel pagingModel;
+    private AtomicInteger sequence;
 
     private PagingModelRenderer(Builder builder) {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         pagingModel = Objects.requireNonNull(builder.pagingModel);
+        sequence = builder.sequence().orElseGet(() -> new AtomicInteger(1));
     }
     
     public Optional<FragmentAndParameters> render() {
@@ -38,16 +41,17 @@ public class PagingModelRenderer {
     
     private Optional<FragmentAndParameters> limitAndOffsetRender(Long limit) {
         return new LimitAndOffsetPagingModelRenderer(renderingStrategy, limit,
-                pagingModel).render();
+                pagingModel,sequence).render();
     }
     
     private Optional<FragmentAndParameters> fetchFirstRender() {
-        return new FetchFirstPagingModelRenderer(renderingStrategy, pagingModel).render();
+        return new FetchFirstPagingModelRenderer(renderingStrategy, pagingModel,sequence).render();
     }
     
     public static class Builder {
         private RenderingStrategy renderingStrategy;
         private PagingModel pagingModel;
+        private AtomicInteger sequence;
         
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
@@ -57,6 +61,15 @@ public class PagingModelRenderer {
         public Builder withPagingModel(PagingModel pagingModel) {
             this.pagingModel = pagingModel;
             return this;
+        }
+
+        public Builder withSequence(AtomicInteger sequence) {
+            this.sequence = sequence;
+            return this;
+        }
+
+        private Optional<AtomicInteger> sequence() {
+            return Optional.ofNullable(sequence);
         }
         
         public PagingModelRenderer build() {

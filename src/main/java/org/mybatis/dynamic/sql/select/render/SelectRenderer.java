@@ -90,6 +90,7 @@ public class SelectRenderer {
         return new PagingModelRenderer.Builder()
                 .withPagingModel(pagingModel)
                 .withRenderingStrategy(renderingStrategy)
+                .withSequence(sequence)
                 .build()
                 .render();
     }
