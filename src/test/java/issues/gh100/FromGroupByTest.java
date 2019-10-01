@@ -71,7 +71,7 @@ public class FromGroupByTest {
         String expected = "select name, count(*)" 
                 + " from student"
                 + " group by name"
-                + " limit #{parameters._limit}";
+                + " limit #{parameters._limit1}";
         
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
@@ -90,7 +90,7 @@ public class FromGroupByTest {
         String expected = "select name, count(*)" 
                 + " from student"
                 + " group by name"
-                + " limit #{parameters._limit}";
+                + " limit #{parameters._limit1}";
         
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
@@ -109,7 +109,7 @@ public class FromGroupByTest {
         String expected = "select name, count(*)" 
                 + " from student"
                 + " group by name"
-                + " limit #{parameters._limit}";
+                + " limit #{parameters._limit1}";
         
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
@@ -128,7 +128,7 @@ public class FromGroupByTest {
         String expected = "select name, count(*)" 
                 + " from student"
                 + " group by name"
-                + " offset #{parameters._offset} rows";
+                + " offset #{parameters._offset1} rows";
         
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
@@ -147,7 +147,7 @@ public class FromGroupByTest {
         String expected = "select name, count(*)" 
                 + " from student"
                 + " group by name"
-                + " offset #{parameters._offset} rows";
+                + " offset #{parameters._offset1} rows";
         
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
@@ -166,7 +166,7 @@ public class FromGroupByTest {
         String expected = "select name, count(*)" 
                 + " from student"
                 + " group by name"
-                + " offset #{parameters._offset} rows";
+                + " offset #{parameters._offset1} rows";
         
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
@@ -185,7 +185,7 @@ public class FromGroupByTest {
         String expected = "select name, count(*)" 
                 + " from student"
                 + " group by name"
-                + " fetch first #{parameters._fetchFirstRows} rows only";
+                + " fetch first #{parameters._fetchFirstRows1} rows only";
         
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
@@ -204,7 +204,7 @@ public class FromGroupByTest {
         String expected = "select name, count(*)" 
                 + " from student"
                 + " group by name"
-                + " fetch first #{parameters._fetchFirstRows} rows only";
+                + " fetch first #{parameters._fetchFirstRows1} rows only";
         
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
@@ -223,7 +223,7 @@ public class FromGroupByTest {
         String expected = "select name, count(*)" 
                 + " from student"
                 + " group by name"
-                + " fetch first #{parameters._fetchFirstRows} rows only";
+                + " fetch first #{parameters._fetchFirstRows1} rows only";
         
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
@@ -302,7 +302,7 @@ public class FromGroupByTest {
                 + " from student"
                 + " group by name"
                 + " order by name"
-                + " offset #{parameters._offset} rows";
+                + " offset #{parameters._offset1} rows";
         
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
 
@@ -324,7 +324,7 @@ public class FromGroupByTest {
                 + " from student"
                 + " group by name"
                 + " order by name"
-                + " offset #{parameters._offset} rows";
+                + " offset #{parameters._offset1} rows";
         
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
 
@@ -346,7 +346,7 @@ public class FromGroupByTest {
                 + " from student"
                 + " group by name"
                 + " order by name"
-                + " offset #{parameters._offset} rows";
+                + " offset #{parameters._offset1} rows";
         
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
 
@@ -368,7 +368,7 @@ public class FromGroupByTest {
                 + " from student"
                 + " group by name"
                 + " order by name"
-                + " offset #{parameters._offset} rows";
+                + " offset #{parameters._offset1} rows";
         
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
 
