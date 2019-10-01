@@ -1,4 +1,4 @@
-package lhg142;
+package issues.lhg142;
 
 public class Page {
     private Long offset;

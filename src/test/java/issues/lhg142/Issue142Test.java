@@ -1,14 +1,10 @@
-package lhg142;
+package issues.lhg142;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-import java.util.Objects;
-
-import static issues.gh105.PersonDynamicSqlSupport.lastName;
-import static lhg142.MyMarkDynamicSqlSupport.*;
+import static issues.lhg142.MyMarkDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
