@@ -81,7 +81,8 @@ public class MyBatis3Utils {
         return mapper.applyAsInt(deleteFrom(table, completer));
     }
     
-    public static <R> InsertStatementProvider<R> insert(R record, SqlTable table, UnaryOperator<InsertDSL<R>> completer) {
+    public static <R> InsertStatementProvider<R> insert(R record, SqlTable table,
+            UnaryOperator<InsertDSL<R>> completer) {
         return completer.apply(SqlBuilder.insert(record).into(table))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
