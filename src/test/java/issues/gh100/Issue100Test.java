@@ -49,8 +49,8 @@ public class Issue100Test {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit}"
-                + " offset #{parameters._offset}";
+                + " limit #{parameters._limit2}"
+                + " offset #{parameters._offset3}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -126,7 +126,7 @@ public class Issue100Test {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit}";
+                + " limit #{parameters._limit2}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -149,8 +149,8 @@ public class Issue100Test {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit}"
-                + " offset #{parameters._offset}";
+                + " limit #{parameters._limit2}"
+                + " offset #{parameters._offset3}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -172,7 +172,7 @@ public class Issue100Test {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset} rows";
+                + " offset #{parameters._offset2} rows";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -195,8 +195,8 @@ public class Issue100Test {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset} rows"
-                + " fetch first #{parameters._fetchFirstRows} rows only";
+                + " offset #{parameters._offset2} rows"
+                + " fetch first #{parameters._fetchFirstRows3} rows only";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -218,7 +218,7 @@ public class Issue100Test {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows} rows only";
+                + " fetch first #{parameters._fetchFirstRows2} rows only";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 

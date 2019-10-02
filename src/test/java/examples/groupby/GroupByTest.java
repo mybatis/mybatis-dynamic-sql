@@ -401,7 +401,7 @@ public class GroupByTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             
-            String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters._limit} offset #{parameters._offset}";
+            String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters._limit1} offset #{parameters._offset2}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -424,7 +424,7 @@ public class GroupByTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             
-            String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters._limit}";
+            String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters._limit1}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -447,7 +447,7 @@ public class GroupByTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             
-            String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset} rows";
+            String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset1} rows";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -471,7 +471,7 @@ public class GroupByTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             
-            String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only";
+            String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters._offset1} rows fetch first #{parameters._fetchFirstRows2} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -494,7 +494,7 @@ public class GroupByTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             
-            String expected = "select last_name, count(*) as count from Person group by last_name fetch first #{parameters._fetchFirstRows} rows only";
+            String expected = "select last_name, count(*) as count from Person group by last_name fetch first #{parameters._fetchFirstRows1} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);

@@ -79,9 +79,9 @@ public class FetchFirstTest {
             assertAll(
                     () -> assertThat(records.size()).isEqualTo(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(23),
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows")).isEqualTo(3L),
-                    () -> assertThat(selectStatement.getParameters().get("_offset")).isEqualTo(22L)
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData offset #{parameters._offset1} rows fetch first #{parameters._fetchFirstRows2} rows only"),
+                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows2")).isEqualTo(3L),
+                    () -> assertThat(selectStatement.getParameters().get("_offset1")).isEqualTo(22L)
             );
         }
     }
@@ -101,8 +101,8 @@ public class FetchFirstTest {
             assertAll(
                     () -> assertThat(records.size()).isEqualTo(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(1),
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData fetch first #{parameters._fetchFirstRows} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows")).isEqualTo(3L)
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData fetch first #{parameters._fetchFirstRows1} rows only"),
+                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows1")).isEqualTo(3L)
             );
         }
     }
@@ -125,9 +125,9 @@ public class FetchFirstTest {
             assertAll(
                     () -> assertThat(records.size()).isEqualTo(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(45),
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} and id > #{parameters.p2,jdbcType=INTEGER} offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows")).isEqualTo(3L),
-                    () -> assertThat(selectStatement.getParameters().get("_offset")).isEqualTo(22L)
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} and id > #{parameters.p2,jdbcType=INTEGER} offset #{parameters._offset3} rows fetch first #{parameters._fetchFirstRows4} rows only"),
+                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows4")).isEqualTo(3L),
+                    () -> assertThat(selectStatement.getParameters().get("_offset3")).isEqualTo(22L)
             );
         }
     }
@@ -148,8 +148,8 @@ public class FetchFirstTest {
             assertAll(
                     () -> assertThat(records.size()).isEqualTo(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(1),
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} fetch first #{parameters._fetchFirstRows} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows")).isEqualTo(3L)
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} fetch first #{parameters._fetchFirstRows2} rows only"),
+                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows2")).isEqualTo(3L)
             );
         }
     }
@@ -171,9 +171,9 @@ public class FetchFirstTest {
             assertAll(
                     () -> assertThat(records.size()).isEqualTo(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(23),
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows")).isEqualTo(3L),
-                    () -> assertThat(selectStatement.getParameters().get("_offset")).isEqualTo(22L)
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id offset #{parameters._offset1} rows fetch first #{parameters._fetchFirstRows2} rows only"),
+                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows2")).isEqualTo(3L),
+                    () -> assertThat(selectStatement.getParameters().get("_offset1")).isEqualTo(22L)
             );
         }
     }
@@ -194,8 +194,8 @@ public class FetchFirstTest {
             assertAll(
                     () -> assertThat(records.size()).isEqualTo(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(1),
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id fetch first #{parameters._fetchFirstRows} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows")).isEqualTo(3L)
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id fetch first #{parameters._fetchFirstRows1} rows only"),
+                    () -> assertThat(selectStatement.getParameters().get("_fetchFirstRows1")).isEqualTo(3L)
             );
         }
     }
