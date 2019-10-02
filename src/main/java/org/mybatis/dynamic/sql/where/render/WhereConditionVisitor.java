@@ -72,7 +72,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
 
     @Override
     public Optional<FragmentAndParameters> visit(AbstractSingleValueCondition<T> condition) {
-        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
+        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
         String fragment = condition.renderCondition(columnName(),
                 getFormattedJdbcPlaceholder(mapKey));
 
@@ -83,8 +83,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
 
     @Override
     public Optional<FragmentAndParameters> visit(AbstractTwoValueCondition<T> condition) {
-        String mapKey1 = formatParameterMapKey(sequence.getAndIncrement());
-        String mapKey2 = formatParameterMapKey(sequence.getAndIncrement());
+        String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);
         String fragment = condition.renderCondition(columnName(),
                 getFormattedJdbcPlaceholder(mapKey1),
                 getFormattedJdbcPlaceholder(mapKey2));
@@ -118,17 +118,13 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
     }
     
     private FragmentAndParameters toFragmentAndParameters(T value) {
-        String mapKey = formatParameterMapKey(sequence.getAndIncrement());
-        
+        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+
         return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))
                 .withParameter(mapKey, value)
                 .build();
     }
 
-    private String formatParameterMapKey(int number) {
-        return "p" + number; //$NON-NLS-1$
-    }
-    
     private String getFormattedJdbcPlaceholder(String mapKey) {
         return renderingStrategy.getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        
     }

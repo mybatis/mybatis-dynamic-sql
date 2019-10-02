@@ -294,7 +294,7 @@ class CanonicalSpringKotlinTest {
         val expected = "select p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed," +
             " p.occupation, a.address_id, a.street_address, a.city, a.state" +
             " from Person p join Address a on p.address_id = a.address_id" +
-            " where p.id < :p1 order by id limit :_limit2"
+            " where p.id < :p1 order by id limit :p2"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -352,7 +352,7 @@ class CanonicalSpringKotlinTest {
             " where id < :p1" +
             " and (id < :p2" +
             " and (id < :p3 and id < :p4))" +
-            " order by id limit :_limit5"
+            " order by id limit :p5"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -399,7 +399,7 @@ class CanonicalSpringKotlinTest {
             " where id = :p1" +
             " or (id = :p2" +
             " or (id = :p3 or id = :p4))" +
-            " order by id limit :_limit5"
+            " order by id limit :p5"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 

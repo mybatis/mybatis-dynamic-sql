@@ -462,7 +462,7 @@ class GeneralKotlinTest {
                 " where id < #{parameters.p1,jdbcType=INTEGER}" +
                 " and (id < #{parameters.p2,jdbcType=INTEGER}" +
                 " and (id < #{parameters.p3,jdbcType=INTEGER} and id < #{parameters.p4,jdbcType=INTEGER}))" +
-                " order by id limit #{parameters._limit5}"
+                " order by id limit #{parameters.p5}"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -503,7 +503,7 @@ class GeneralKotlinTest {
                 " where id = #{parameters.p1,jdbcType=INTEGER}" +
                 " or (id = #{parameters.p2,jdbcType=INTEGER}" +
                 " or (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER}))" +
-                " order by id limit #{parameters._limit5}"
+                " order by id limit #{parameters.p5}"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expected)
 

@@ -80,7 +80,7 @@ public class Issue100StartAfterJoinTest {
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student join student_reg on student.id = student_reg.studentId"
-                + " limit #{parameters._limit1}";
+                + " limit #{parameters.p1}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -103,8 +103,8 @@ public class Issue100StartAfterJoinTest {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -126,7 +126,7 @@ public class Issue100StartAfterJoinTest {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -149,8 +149,8 @@ public class Issue100StartAfterJoinTest {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -172,7 +172,7 @@ public class Issue100StartAfterJoinTest {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 }

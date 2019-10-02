@@ -51,8 +51,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
         
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -638,7 +638,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -671,7 +671,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -704,7 +704,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -737,7 +737,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -770,7 +770,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -803,7 +803,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
@@ -838,8 +838,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -874,8 +874,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -910,8 +910,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -946,8 +946,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -982,8 +982,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1018,8 +1018,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1054,8 +1054,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1088,7 +1088,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1122,7 +1122,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1156,7 +1156,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1190,7 +1190,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1224,7 +1224,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1258,7 +1258,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1294,8 +1294,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1330,8 +1330,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1366,8 +1366,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1402,8 +1402,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1438,8 +1438,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1474,8 +1474,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1510,8 +1510,8 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder7.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1544,7 +1544,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1577,7 +1577,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1610,7 +1610,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1643,7 +1643,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1676,7 +1676,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1709,7 +1709,7 @@ public class FromJoinWhereTest {
                 + " select id, name, idcard"
                 + " from student"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1739,7 +1739,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1769,7 +1769,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1799,7 +1799,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1829,7 +1829,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1859,7 +1859,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1891,8 +1891,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1924,8 +1924,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1957,8 +1957,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -1990,8 +1990,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2023,8 +2023,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2056,8 +2056,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2087,7 +2087,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2117,7 +2117,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2147,7 +2147,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2177,7 +2177,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2207,7 +2207,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2239,8 +2239,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2272,8 +2272,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2305,8 +2305,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2338,8 +2338,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2371,8 +2371,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2404,8 +2404,8 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2435,7 +2435,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2465,7 +2465,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2495,7 +2495,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2525,7 +2525,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2555,7 +2555,7 @@ public class FromJoinWhereTest {
                 + " union"
                 + " select id, name, idcard"
                 + " from student"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2673,7 +2673,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2699,7 +2699,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2725,7 +2725,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2751,7 +2751,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2777,7 +2777,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2805,8 +2805,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2834,8 +2834,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2863,8 +2863,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2892,8 +2892,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2921,8 +2921,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2950,8 +2950,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
@@ -2977,7 +2977,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3003,7 +3003,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3029,7 +3029,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3055,7 +3055,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3081,7 +3081,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3109,8 +3109,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3138,8 +3138,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3167,8 +3167,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3196,8 +3196,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3225,8 +3225,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3254,8 +3254,8 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder6.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3281,7 +3281,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3307,7 +3307,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3333,7 +3333,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3359,7 +3359,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3385,7 +3385,7 @@ public class FromJoinWhereTest {
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3408,7 +3408,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3431,7 +3431,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3454,7 +3454,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3477,7 +3477,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " limit #{parameters._limit2}";
+                + " limit #{parameters.p2}";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3502,8 +3502,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3528,8 +3528,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3554,8 +3554,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3580,8 +3580,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3606,8 +3606,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " limit #{parameters._limit2}"
-                + " offset #{parameters._offset3}";
+                + " limit #{parameters.p2}"
+                + " offset #{parameters.p3}";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3630,7 +3630,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3653,7 +3653,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3676,7 +3676,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3699,7 +3699,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " offset #{parameters._offset2} rows";
+                + " offset #{parameters.p2} rows";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3724,8 +3724,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3750,8 +3750,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3776,8 +3776,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3802,8 +3802,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3828,8 +3828,8 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " offset #{parameters._offset2} rows"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " offset #{parameters.p2} rows"
+                + " fetch first #{parameters.p3} rows only";
 
         SelectStatementProvider selectStatement = builder5.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3852,7 +3852,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder1.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3875,7 +3875,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder2.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3898,7 +3898,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder3.build().render(RenderingStrategies.MYBATIS3);
         
@@ -3921,7 +3921,7 @@ public class FromJoinWhereTest {
                 + " from student"
                 + " join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
 
         SelectStatementProvider selectStatement = builder4.build().render(RenderingStrategies.MYBATIS3);
         

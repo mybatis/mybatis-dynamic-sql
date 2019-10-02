@@ -845,7 +845,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
-                    + " limit #{parameters._limit1} offset #{parameters._offset2}";
+                    + " limit #{parameters.p1} offset #{parameters.p2}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -879,7 +879,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
-                    + " limit #{parameters._limit1}";
+                    + " limit #{parameters.p1}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
 
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -913,7 +913,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
-                    + " offset #{parameters._offset1} rows";
+                    + " offset #{parameters.p1} rows";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -948,7 +948,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
-                    + " offset #{parameters._offset1} rows fetch first #{parameters._fetchFirstRows2} rows only";
+                    + " offset #{parameters.p1} rows fetch first #{parameters.p2} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
@@ -982,7 +982,7 @@ public class JoinMapperTest {
             
             String expectedStatment = "select ol.order_id, ol.quantity, im.item_id, im.description"
                     + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
-                    + " fetch first #{parameters._fetchFirstRows1} rows only";
+                    + " fetch first #{parameters.p1} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);

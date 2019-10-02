@@ -23,8 +23,6 @@ import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class FetchFirstPagingModelRenderer {
-    private static final String FETCH_FIRST_ROWS_PARAMETER = "_fetchFirstRows"; //$NON-NLS-1$
-    private static final String OFFSET_PARAMETER = "_offset"; //$NON-NLS-1$
     private RenderingStrategy renderingStrategy;
     private PagingModel pagingModel;
     private AtomicInteger sequence;
@@ -53,7 +51,7 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private Optional<FragmentAndParameters> renderFetchFirstRowsOnly(Long fetchFirstRows) {
-        String mapKey = formatParameterMapKey(FETCH_FIRST_ROWS_PARAMETER);
+        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters
                 .withFragment("fetch first " + renderPlaceholder(mapKey) //$NON-NLS-1$
                     + " rows only") //$NON-NLS-1$
@@ -62,7 +60,7 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private Optional<FragmentAndParameters> renderOffsetOnly(Long offset) {
-        String mapKey = formatParameterMapKey(OFFSET_PARAMETER);
+        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey) //$NON-NLS-1$
                 + " rows") //$NON-NLS-1$
                 .withParameter(mapKey, offset)
@@ -70,18 +68,14 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private Optional<FragmentAndParameters> renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
-        String mapKey1 = formatParameterMapKey(OFFSET_PARAMETER);
-        String mapKey2 = formatParameterMapKey(FETCH_FIRST_ROWS_PARAMETER);
+        String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey1) //$NON-NLS-1$
                 + " rows fetch first " + renderPlaceholder(mapKey2) //$NON-NLS-1$
                 + " rows only") //$NON-NLS-1$
                 .withParameter(mapKey1, offset)
                 .withParameter(mapKey2, fetchFirstRows)
                 .buildOptional();
-    }
-
-    private String formatParameterMapKey(String parameterMapKey) {
-        return parameterMapKey + sequence.getAndIncrement(); //$NON-NLS-1$
     }
 
     private String renderPlaceholder(String parameterName) {

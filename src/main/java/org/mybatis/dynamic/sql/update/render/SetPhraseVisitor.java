@@ -69,7 +69,7 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
     
     @Override
     public <T> FragmentAndParameters visit(ValueMapping<T> mapping) {
-        String mapKey = "p" + sequence.getAndIncrement(); //$NON-NLS-1$
+        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
         String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
         String setPhrase = mapping.mapColumn(SqlColumn::name)
