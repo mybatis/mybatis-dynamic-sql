@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.render;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.mybatis.dynamic.sql.BindableColumn;
 
 public abstract class RenderingStrategy {
@@ -37,6 +39,10 @@ public abstract class RenderingStrategy {
     public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();
 
     public static final String DEFAULT_PARAMETER_PREFIX = "parameters"; //$NON-NLS-1$
+    
+    public static String formatParameterMapKey(AtomicInteger sequence) {
+        return "p" + sequence.getAndIncrement(); //$NON-NLS-1$
+    }
     
     public abstract String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName);
 

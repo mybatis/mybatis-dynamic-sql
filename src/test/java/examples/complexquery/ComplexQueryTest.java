@@ -40,11 +40,11 @@ public class ComplexQueryTest {
                 + " from Person"
                 + " where person_id = #{parameters.p1}"
                 + " order by last_name, first_name"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
-        assertThat(selectStatement.getParameters().get("_fetchFirstRows2")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(50L);
     }
     
     @Test
@@ -55,11 +55,11 @@ public class ComplexQueryTest {
                 + " from Person"
                 + " where first_name like #{parameters.p1}"
                 + " order by last_name, first_name"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%fred%");
-        assertThat(selectStatement.getParameters().get("_fetchFirstRows2")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(50L);
     }
     
     @Test
@@ -70,11 +70,11 @@ public class ComplexQueryTest {
                 + " from Person"
                 + " where last_name like #{parameters.p1}"
                 + " order by last_name, first_name"
-                + " fetch first #{parameters._fetchFirstRows2} rows only";
+                + " fetch first #{parameters.p2} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%flintstone%");
-        assertThat(selectStatement.getParameters().get("_fetchFirstRows2")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(50L);
     }
     
     @Test
@@ -86,12 +86,12 @@ public class ComplexQueryTest {
                 + " where first_name like #{parameters.p1}"
                 + " and last_name like #{parameters.p2}"
                 + " order by last_name, first_name"
-                + " fetch first #{parameters._fetchFirstRows3} rows only";
+                + " fetch first #{parameters.p3} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%fred%");
         assertThat(selectStatement.getParameters().get("p2")).isEqualTo("%flintstone%");
-        assertThat(selectStatement.getParameters().get("_fetchFirstRows3")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters().get("p3")).isEqualTo(50L);
     }
     
     @Test
@@ -101,10 +101,10 @@ public class ComplexQueryTest {
         String expected = "select person_id, first_name, last_name"
                 + " from Person"
                 + " order by last_name, first_name"
-                + " fetch first #{parameters._fetchFirstRows1} rows only";
+                + " fetch first #{parameters.p1} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("_fetchFirstRows1")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(50L);
     }
     
     public SelectStatementProvider search(Integer targetId, String fName, String lName) {
