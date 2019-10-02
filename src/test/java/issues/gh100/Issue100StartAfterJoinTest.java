@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class Issue100TestStartAfterJoin {
+public class Issue100StartAfterJoinTest {
 
     @Test
     public void testSuccessiveBuild02() {
@@ -80,7 +80,7 @@ public class Issue100TestStartAfterJoin {
         
         String expected = "select student.id, student.name, student.idcard" 
                 + " from student join student_reg on student.id = student_reg.studentId"
-                + " limit #{parameters._limit}";
+                + " limit #{parameters._limit1}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -103,8 +103,8 @@ public class Issue100TestStartAfterJoin {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " limit #{parameters._limit}"
-                + " offset #{parameters._offset}";
+                + " limit #{parameters._limit2}"
+                + " offset #{parameters._offset3}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -126,7 +126,7 @@ public class Issue100TestStartAfterJoin {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset} rows";
+                + " offset #{parameters._offset2} rows";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -149,8 +149,8 @@ public class Issue100TestStartAfterJoin {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " offset #{parameters._offset} rows"
-                + " fetch first #{parameters._fetchFirstRows} rows only";
+                + " offset #{parameters._offset2} rows"
+                + " fetch first #{parameters._fetchFirstRows3} rows only";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -172,7 +172,7 @@ public class Issue100TestStartAfterJoin {
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
-                + " fetch first #{parameters._fetchFirstRows} rows only";
+                + " fetch first #{parameters._fetchFirstRows2} rows only";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 }
