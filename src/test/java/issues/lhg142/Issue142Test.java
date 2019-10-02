@@ -13,13 +13,13 @@ public class Issue142Test {
     @Test
     public void LimitWithSubqueries() {
         Page page = new Page(100L, 10L);
-        SelectStatementProvider selectStatement = select(id,updateTime.as("mutime"),createTime.as("mctime")).from(myMark)
+        SelectStatementProvider selectStatement = select(id, updateTime.as("mutime"), createTime.as("mctime")).from(myMark)
                 .where(id, isLessThanOrEqualTo(
                         select(id).from(myMark)
-                        .orderBy(updateTime.descending(), createTime.descending())
-                        .limit(1L)
-                        .offset(page.getOffset())
-        )).orderBy(sortColumn("mutime").descending(), sortColumn("mctime").descending())
+                                .orderBy(updateTime.descending(), createTime.descending())
+                                .limit(1L)
+                                .offset(page.getOffset())
+                )).orderBy(sortColumn("mutime").descending(), sortColumn("mctime").descending())
                 .limit(page.getSize()).offset(0L).build()
                 .render(RenderingStrategies.MYBATIS3);
         String expected = "select id, update_time as mutime, create_time as mctime from my_mark " +
