@@ -15,11 +15,20 @@
  */
 package examples.springbatch.common;
 
-public class Person {
+public class PersonRecord {
     private Integer id;
     private String firstName;
     private String lastName;
 
+    public PersonRecord() {
+        super();
+    }
+    
+    public PersonRecord(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    
     public Integer getId() {
         return id;
     }

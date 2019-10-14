@@ -47,7 +47,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import examples.springbatch.common.Person;
+import examples.springbatch.common.PersonRecord;
 import examples.springbatch.mapper.PersonMapper;
 
 @EnableBatchProcessing
@@ -86,7 +86,7 @@ public class PagingReaderBatchConfiguration {
     }
 
     @Bean
-    public MyBatisPagingItemReader<Person> reader(SqlSessionFactory sqlSessionFactory) {
+    public MyBatisPagingItemReader<PersonRecord> reader(SqlSessionFactory sqlSessionFactory) {
         SelectStatementProvider selectStatement =  SpringBatchUtility.selectForPaging(person.allColumns())
                 .from(person)
                 .where(forPagingTest, isEqualTo(true))
@@ -94,7 +94,7 @@ public class PagingReaderBatchConfiguration {
                 .build()
                 .render();
         
-        MyBatisPagingItemReader<Person> reader = new MyBatisPagingItemReader<>();
+        MyBatisPagingItemReader<PersonRecord> reader = new MyBatisPagingItemReader<>();
         reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
         reader.setSqlSessionFactory(sqlSessionFactory);
         reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement));
@@ -103,9 +103,9 @@ public class PagingReaderBatchConfiguration {
     }
     
     @Bean
-    public MyBatisBatchItemWriter<Person> writer(SqlSessionFactory sqlSessionFactory,
-            Converter<Person, UpdateStatementProvider> convertor) {
-        MyBatisBatchItemWriter<Person> writer = new MyBatisBatchItemWriter<>();
+    public MyBatisBatchItemWriter<PersonRecord> writer(SqlSessionFactory sqlSessionFactory,
+            Converter<PersonRecord, UpdateStatementProvider> convertor) {
+        MyBatisBatchItemWriter<PersonRecord> writer = new MyBatisBatchItemWriter<>();
         writer.setSqlSessionFactory(sqlSessionFactory);
         writer.setItemToParameterConverter(convertor);
         writer.setStatementId(PersonMapper.class.getName() + ".update");
@@ -113,9 +113,9 @@ public class PagingReaderBatchConfiguration {
     }
     
     @Bean
-    public Step step1(ItemReader<Person> reader, ItemProcessor<Person, Person> processor, ItemWriter<Person> writer) {
+    public Step step1(ItemReader<PersonRecord> reader, ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
         return stepBuilderFactory.get("step1")
-                .<Person, Person>chunk(7)
+                .<PersonRecord, PersonRecord>chunk(7)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
