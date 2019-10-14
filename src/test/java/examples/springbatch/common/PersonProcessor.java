@@ -24,15 +24,15 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PersonProcessor implements ItemProcessor<Person, Person> {
+public class PersonProcessor implements ItemProcessor<PersonRecord, PersonRecord> {
     
     private ExecutionContext executionContext;
 
     @Override
-    public Person process(Person person) throws Exception {
+    public PersonRecord process(PersonRecord person) throws Exception {
         incrementRowCount();
         
-        Person transformed = new Person();
+        PersonRecord transformed = new PersonRecord();
         transformed.setId(person.getId());
         transformed.setFirstName(person.getFirstName().toUpperCase());
         transformed.setLastName(person.getLastName().toUpperCase());

@@ -13,22 +13,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.springbatch.cursor;
+package examples.springbatch.bulkinsert;
 
+import static examples.springbatch.mapper.PersonDynamicSqlSupport.firstName;
+import static examples.springbatch.mapper.PersonDynamicSqlSupport.forPagingTest;
 import static examples.springbatch.mapper.PersonDynamicSqlSupport.lastName;
-import static examples.springbatch.mapper.PersonDynamicSqlSupport.person;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.mybatis.dynamic.sql.util.springbatch.SpringBatchUtility;
+import org.mybatis.dynamic.sql.insert.InsertDSL;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
-import org.mybatis.spring.batch.MyBatisCursorItemReader;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -36,26 +34,26 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import examples.springbatch.common.PersonRecord;
+import examples.springbatch.mapper.PersonDynamicSqlSupport;
 import examples.springbatch.mapper.PersonMapper;
 
 @EnableBatchProcessing
 @Configuration
+@ComponentScan("examples.springbatch.bulkinsert")
 @ComponentScan("examples.springbatch.common")
 @MapperScan("examples.springbatch.mapper")
-public class CursorReaderBatchConfiguration {
+public class BulkInsertConfiguration {
     
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -70,7 +68,6 @@ public class CursorReaderBatchConfiguration {
                 .addScript("classpath:/org/springframework/batch/core/schema-drop-hsqldb.sql")
                 .addScript("classpath:/org/springframework/batch/core/schema-hsqldb.sql")
                 .addScript("classpath:/examples/springbatch/schema.sql")
-                .addScript("classpath:/examples/springbatch/data.sql")
                 .build();
     }
     
@@ -87,43 +84,35 @@ public class CursorReaderBatchConfiguration {
     }
 
     @Bean
-    public MyBatisCursorItemReader<PersonRecord> reader(SqlSessionFactory sqlSessionFactory) {
-        SelectStatementProvider selectStatement =  SpringBatchUtility.selectForCursor(person.allColumns())
-                .from(person)
-                .where(lastName, isEqualTo("flintstone"))
-                .build()
-                .render();
-        
-        MyBatisCursorItemReader<PersonRecord> reader = new MyBatisCursorItemReader<>();
-        reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
-        reader.setSqlSessionFactory(sqlSessionFactory);
-        reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement));
-        return reader;
-    }
-    
-    @Bean
-    public MyBatisBatchItemWriter<PersonRecord> writer(SqlSessionFactory sqlSessionFactory,
-            Converter<PersonRecord, UpdateStatementProvider> convertor) {
+    public MyBatisBatchItemWriter<PersonRecord> writer(SqlSessionFactory sqlSessionFactory) {
         MyBatisBatchItemWriter<PersonRecord> writer = new MyBatisBatchItemWriter<>();
         writer.setSqlSessionFactory(sqlSessionFactory);
-        writer.setItemToParameterConverter(convertor);
-        writer.setStatementId(PersonMapper.class.getName() + ".update");
+        
+        writer.setItemToParameterConverter(record -> InsertDSL.insert(record)
+                    .into(PersonDynamicSqlSupport.person)
+                    .map(firstName).toProperty("firstName")
+                    .map(lastName).toProperty("lastName")
+                    .map(forPagingTest).toStringConstant("false")
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3));
+        
+        writer.setStatementId(PersonMapper.class.getName() + ".insert");
         return writer;
     }
     
     @Bean
-    public Step step1(ItemReader<PersonRecord> reader, ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
+    public Step step1(ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
         return stepBuilderFactory.get("step1")
                 .<PersonRecord, PersonRecord>chunk(10)
-                .reader(reader)
+                .reader(new TestRecordGenerator())
                 .processor(processor)
                 .writer(writer)
                 .build();
     }
 
     @Bean
-    public Job upperCaseLastName(Step step1) {
-        return jobBuilderFactory.get("upperCaseLastName")
+    public Job insertRecords(Step step1) {
+        return jobBuilderFactory.get("insertRecords")
                 .incrementer(new RunIdIncrementer())
                 .flow(step1)
                 .end()

@@ -25,10 +25,10 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UpdateStatementConvertor implements Converter<Person, UpdateStatementProvider> {
+public class UpdateStatementConvertor implements Converter<PersonRecord, UpdateStatementProvider> {
 
     @Override
-    public UpdateStatementProvider convert(Person source) {
+    public UpdateStatementProvider convert(PersonRecord source) {
         return UpdateDSL.update(person)
                 .set(firstName).equalTo(source::getFirstName)
                 .set(lastName).equalTo(source::getLastName)
