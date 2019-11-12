@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
@@ -25,6 +26,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 /**
  * DSL for building count queries. Count queries are specializations of select queries. They have joins and where
@@ -51,8 +53,13 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
 
     public <T> CountWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder.and(column, condition, subCriteria);
+        whereBuilder.where(column, condition, subCriteria);
         return whereBuilder;
+    }
+
+    @SuppressWarnings("unchecked")
+    public CountWhereBuilder applyWhere(UnaryOperator<AbstractWhereDSL<?>> whereApplyer) {
+        return (CountWhereBuilder) whereApplyer.apply(whereBuilder);
     }
 
     @Override
@@ -99,6 +106,11 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
         @Override
         protected CountWhereBuilder getThis() {
             return this;
+        }
+
+        @Override
+        protected WhereModel buildWhereModel() {
+            return super.internalBuild();
         }
     }
 }

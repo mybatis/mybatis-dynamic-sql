@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -33,6 +34,7 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>, R>
         implements Buildable<R> {
@@ -63,8 +65,13 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
 
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder.and(column, condition, subCriteria);
+        whereBuilder.where(column, condition, subCriteria);
         return whereBuilder;
+    }
+
+    @SuppressWarnings("unchecked")
+    public QueryExpressionWhereBuilder applyWhere(UnaryOperator<AbstractWhereDSL<?>> whereApplyer) {
+        return (QueryExpressionWhereBuilder) whereApplyer.apply(whereBuilder);
     }
 
     @Override
@@ -253,6 +260,11 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         protected QueryExpressionWhereBuilder getThis() {
             return this;
         }
+
+        @Override
+        protected WhereModel buildWhereModel() {
+            return super.internalBuild();
+        }
     }
     
     public class JoinSpecificationStarter {
@@ -322,6 +334,10 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.where(column, condition, subCriteria);
         }
 
+        public QueryExpressionWhereBuilder applyWhere(UnaryOperator<AbstractWhereDSL<?>> whereApplyer) {
+            return QueryExpressionDSL.this.applyWhere(whereApplyer);
+        }
+        
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
             JoinCriterion joinCriterion = new JoinCriterion.Builder()
                     .withConnector("and") //$NON-NLS-1$

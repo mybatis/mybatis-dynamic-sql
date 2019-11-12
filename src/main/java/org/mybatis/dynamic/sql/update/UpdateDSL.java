@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
+import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -40,6 +41,7 @@ import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateDSL<R> implements Buildable<R> {
 
@@ -63,8 +65,13 @@ public class UpdateDSL<R> implements Buildable<R> {
     
     public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder.and(column, condition, subCriteria);
+        whereBuilder.where(column, condition, subCriteria);
         return whereBuilder;
+    }
+
+    @SuppressWarnings("unchecked")
+    public UpdateWhereBuilder applyWhere(UnaryOperator<AbstractWhereDSL<?>> whereApplyer) {
+        return (UpdateWhereBuilder) whereApplyer.apply(whereBuilder);
     }
 
     /**
@@ -174,6 +181,11 @@ public class UpdateDSL<R> implements Buildable<R> {
         @Override
         protected UpdateWhereBuilder getThis() {
             return this;
+        }
+
+        @Override
+        protected WhereModel buildWhereModel() {
+            return super.internalBuild();
         }
     }
 }

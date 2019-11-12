@@ -30,20 +30,19 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         super();
     }
     
-    protected <S> AbstractWhereDSL(BindableColumn<S> column, VisitableCondition<S> condition) {
-        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
-                .withCondition(condition)
-                .build();
-        criteria.add(criterion);
+    public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition) {
+        addCriterion(column, condition);
+        return getThis();
     }
     
-    protected <S> AbstractWhereDSL(BindableColumn<S> column, VisitableCondition<S> condition,
-            SqlCriterion<?>...subCriteria) {
-        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
-                .withCondition(condition)
-                .withSubCriteria(Arrays.asList(subCriteria))
-                .build();
-        criteria.add(criterion);
+    public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
+        addCriterion(column, condition, Arrays.asList(subCriteria));
+        return getThis();
+    }
+    
+    public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
+        addCriterion(column, condition, subCriteria);
+        return getThis();
     }
     
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition) {
@@ -76,10 +75,26 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         return getThis();
     }
     
+    private <S> void addCriterion(BindableColumn<S> column, VisitableCondition<S> condition) {
+        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
+                .withCondition(condition)
+                .build();
+        criteria.add(criterion);
+    }
+    
     private <S> void addCriterion(String connector, BindableColumn<S> column, VisitableCondition<S> condition) {
         SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
                 .withConnector(connector)
                 .withCondition(condition)
+                .build();
+        criteria.add(criterion);
+    }
+    
+    private <S> void addCriterion(BindableColumn<S> column, VisitableCondition<S> condition,
+            List<SqlCriterion<?>> subCriteria) {
+        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(subCriteria)
                 .build();
         criteria.add(criterion);
     }
@@ -94,9 +109,11 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         criteria.add(criterion);
     }
     
-    public WhereModel buildWhereModel() {
+    protected WhereModel internalBuild() {
         return WhereModel.of(criteria);
     }
+    
+    protected abstract WhereModel buildWhereModel();
     
     protected abstract T getThis();
 }

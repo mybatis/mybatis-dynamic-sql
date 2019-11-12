@@ -253,6 +253,37 @@ public class JoinMapperTest {
     }
 
     @Test
+    public void testMultipleTableJoinWithApplyWhere() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            
+            SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .applyWhere(d -> d.where(orderMaster.orderId, isEqualTo(2)))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            
+            String expectedStatment = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
+                    + " where om.order_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
+            
+            List<OrderMaster> rows = mapper.selectMany(selectStatement);
+
+            assertThat(rows.size()).isEqualTo(1);
+            OrderMaster orderMaster = rows.get(0);
+            assertThat(orderMaster.getId()).isEqualTo(2);
+            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            OrderDetail orderDetail = orderMaster.getDetails().get(0);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+            orderDetail = orderMaster.getDetails().get(1);
+            assertThat(orderDetail.getLineNumber()).isEqualTo(2);
+        }
+    }
+
+    @Test
     public void testMultipleTableJoinWithComplexWhereClause() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
