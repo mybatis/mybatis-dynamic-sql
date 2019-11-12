@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.delete;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
-import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -28,6 +27,7 @@ import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteDSL<R> implements Buildable<R> {
@@ -52,8 +52,8 @@ public class DeleteDSL<R> implements Buildable<R> {
     }
 
     @SuppressWarnings("unchecked")
-    public DeleteWhereBuilder applyWhere(UnaryOperator<AbstractWhereDSL<?>> whereApplyer) {
-        return (DeleteWhereBuilder) whereApplyer.apply(whereBuilder);
+    public DeleteWhereBuilder applyWhere(WhereApplier whereApplier) {
+        return (DeleteWhereBuilder) whereApplier.apply(whereBuilder);
     }
 
     /**

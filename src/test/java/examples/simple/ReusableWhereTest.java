@@ -37,7 +37,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 
 public class ReusableWhereTest {
 
@@ -69,7 +69,7 @@ public class ReusableWhereTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
-            long rows = mapper.count(c -> c.applyWhere(this::commonWhere));
+            long rows = mapper.count(c -> c.applyWhere(commonWhere));
 
             assertThat(rows).isEqualTo(3);
         }
@@ -80,7 +80,7 @@ public class ReusableWhereTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
-            int rows = mapper.delete(c -> c.applyWhere(this::commonWhere));
+            int rows = mapper.delete(c -> c.applyWhere(commonWhere));
 
             assertThat(rows).isEqualTo(3);
         }
@@ -92,7 +92,7 @@ public class ReusableWhereTest {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
             List<PersonRecord> rows = mapper.select(c ->
-                c.applyWhere(this::commonWhere)
+                c.applyWhere(commonWhere)
                 .orderBy(id));
 
             assertThat(rows.size()).isEqualTo(3);
@@ -106,13 +106,11 @@ public class ReusableWhereTest {
 
             int rows = mapper.update(c ->
                 c.set(occupation).equalToStringConstant("worker")
-                .applyWhere(this::commonWhere));
+                .applyWhere(commonWhere));
 
             assertThat(rows).isEqualTo(3);
         }
     }
 
-    private AbstractWhereDSL<?> commonWhere(AbstractWhereDSL<?> dsl) {
-        return dsl.where(id, isEqualTo(1)).or(occupation, isNull());
-    }
+    private WhereApplier commonWhere =  d -> d.where(id, isEqualTo(1)).or(occupation, isNull());
 }

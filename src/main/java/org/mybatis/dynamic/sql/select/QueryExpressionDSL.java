@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -34,6 +33,7 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>, R>
@@ -70,8 +70,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     }
 
     @SuppressWarnings("unchecked")
-    public QueryExpressionWhereBuilder applyWhere(UnaryOperator<AbstractWhereDSL<?>> whereApplyer) {
-        return (QueryExpressionWhereBuilder) whereApplyer.apply(whereBuilder);
+    public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
+        return (QueryExpressionWhereBuilder) whereApplier.apply(whereBuilder);
     }
 
     @Override
@@ -334,8 +334,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.where(column, condition, subCriteria);
         }
 
-        public QueryExpressionWhereBuilder applyWhere(UnaryOperator<AbstractWhereDSL<?>> whereApplyer) {
-            return QueryExpressionDSL.this.applyWhere(whereApplyer);
+        public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
+            return QueryExpressionDSL.this.applyWhere(whereApplier);
         }
         
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {

@@ -28,7 +28,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 import org.mybatis.dynamic.sql.SqlBuilder.isNull
-import org.mybatis.dynamic.sql.where.AbstractWhereDSL
+import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
@@ -57,7 +57,7 @@ class ReusableWhereTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                applyWhere (::commonWhere)
+                applyWhere (commonWhere)
             }
 
             assertThat(rows).isEqualTo(3)
@@ -70,7 +70,7 @@ class ReusableWhereTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.delete {
-                applyWhere (::commonWhere)
+                applyWhere (commonWhere)
             }
 
             assertThat(rows).isEqualTo(3)
@@ -83,7 +83,7 @@ class ReusableWhereTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                applyWhere (::commonWhere)
+                applyWhere (commonWhere)
                 orderBy(id)
             }
 
@@ -98,15 +98,16 @@ class ReusableWhereTest {
 
             val rows = mapper.update {
                 set(occupation).equalToStringConstant("worker")
-                applyWhere (::commonWhere)
+                applyWhere (commonWhere)
             }
 
             assertThat(rows).isEqualTo(3)
         }
     }
 
-    private fun commonWhere(dsl: AbstractWhereDSL<*>): AbstractWhereDSL<*> =
-            dsl.where(id, isEqualTo(1)).or(occupation, isNull());
+    private val commonWhere: WhereApplier = {
+        where(id, isEqualTo(1)).or(occupation, isNull<String>())
+    }
 
     companion object {
         const val JDBC_URL = "jdbc:hsqldb:mem:aname"

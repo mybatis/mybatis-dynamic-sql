@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
@@ -26,6 +25,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 /**
@@ -58,8 +58,8 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
     }
 
     @SuppressWarnings("unchecked")
-    public CountWhereBuilder applyWhere(UnaryOperator<AbstractWhereDSL<?>> whereApplyer) {
-        return (CountWhereBuilder) whereApplyer.apply(whereBuilder);
+    public CountWhereBuilder applyWhere(WhereApplier whereApplier) {
+        return (CountWhereBuilder) whereApplier.apply(whereBuilder);
     }
 
     @Override
