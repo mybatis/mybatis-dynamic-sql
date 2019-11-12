@@ -91,7 +91,9 @@ public class ReusableWhereTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
-            List<PersonRecord> rows = mapper.select(c -> c.applyWhere(this::commonWhere).orderBy(id));
+            List<PersonRecord> rows = mapper.select(c ->
+                c.applyWhere(this::commonWhere)
+                .orderBy(id));
 
             assertThat(rows.size()).isEqualTo(3);
         }
@@ -102,8 +104,9 @@ public class ReusableWhereTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
-            int rows = mapper
-                    .update(c -> c.set(occupation).equalToStringConstant("worker").applyWhere(this::commonWhere));
+            int rows = mapper.update(c ->
+                c.set(occupation).equalToStringConstant("worker")
+                .applyWhere(this::commonWhere));
 
             assertThat(rows).isEqualTo(3);
         }
