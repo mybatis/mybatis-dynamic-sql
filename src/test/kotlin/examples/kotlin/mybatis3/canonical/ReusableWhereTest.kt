@@ -84,6 +84,7 @@ class ReusableWhereTest {
 
             val rows = mapper.select {
                 applyWhere (::commonWhere)
+                orderBy(id)
             }
 
             assertThat(rows.size).isEqualTo(3)

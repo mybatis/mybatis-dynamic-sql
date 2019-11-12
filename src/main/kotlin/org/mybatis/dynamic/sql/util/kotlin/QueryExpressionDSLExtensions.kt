@@ -25,7 +25,7 @@ typealias SelectCompleter = QueryExpressionDSL<SelectModel>.() -> Buildable<Sele
 
 fun <T> QueryExpressionDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
     apply {
-        where().and(column, condition, collect)
+        where().where(column, condition, collect)
     }
 
 fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =

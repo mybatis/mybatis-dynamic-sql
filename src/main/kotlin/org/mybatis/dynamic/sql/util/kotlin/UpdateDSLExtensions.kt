@@ -31,7 +31,7 @@ typealias UpdateCompleter = UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>
 
 fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
     apply {
-        where().and(column, condition, collect)
+        where().where(column, condition, collect)
     }
 
 fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
