@@ -15,27 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-public class WhereDSL extends AbstractWhereDSL<WhereDSL> {
+import java.util.function.UnaryOperator;
 
-    private WhereDSL() {
-        super();
-    }
-
-    @Override
-    protected WhereDSL getThis() {
-        return this;
-    }
-
-    public static WhereDSL where() {
-        return new WhereDSL();
-    }
-
-    @Override
-    protected WhereModel buildWhereModel() {
-        return super.internalBuild();
-    }
-
-    public WhereModel build() {
-        return buildWhereModel();
-    }
-}
+@FunctionalInterface
+public interface WhereApplier extends UnaryOperator<AbstractWhereDSL<?>> {}

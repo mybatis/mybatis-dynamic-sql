@@ -27,6 +27,8 @@ import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteDSL<R> implements Buildable<R> {
 
@@ -45,8 +47,13 @@ public class DeleteDSL<R> implements Buildable<R> {
     
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder.and(column, condition, subCriteria);
+        whereBuilder.where(column, condition, subCriteria);
         return whereBuilder;
+    }
+
+    @SuppressWarnings("unchecked")
+    public DeleteWhereBuilder applyWhere(WhereApplier whereApplier) {
+        return (DeleteWhereBuilder) whereApplier.apply(whereBuilder);
     }
 
     /**
@@ -101,6 +108,11 @@ public class DeleteDSL<R> implements Buildable<R> {
         @Override
         protected DeleteWhereBuilder getThis() {
             return this;
+        }
+
+        @Override
+        protected WhereModel buildWhereModel() {
+            return super.internalBuild();
         }
     }
 }

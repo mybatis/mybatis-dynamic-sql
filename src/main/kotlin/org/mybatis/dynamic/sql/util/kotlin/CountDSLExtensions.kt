@@ -25,7 +25,7 @@ typealias CountCompleter = CountDSL<SelectModel>.() -> Buildable<SelectModel>
 
 fun <T> CountDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
     apply {
-        where().and(column, condition, collect)
+        where().where(column, condition, collect)
     }
 
 fun <T> CountDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
