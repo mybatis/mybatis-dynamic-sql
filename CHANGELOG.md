@@ -2,6 +2,19 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
+## Release 1.1.4 - Unreleased
+
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.4+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.4+)
+
+### Added
+
+- Added support for reusing WHERE clauses among count, delete, select, and update statements ([#152](https://github.com/mybatis/mybatis-dynamic-sql/pull/152))
+
+
+### Bugs Fixed
+
+- Fixed issue where limit and offset in sub-queries could cause a parameter name collision ([#142](https://github.com/mybatis/mybatis-dynamic-sql/pull/142))
+
 ## Release 1.1.3 - September 16, 2019
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.3+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.3+)
