@@ -5,6 +5,8 @@
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/org.mybatis.dynamic-sql/mybatis-dynamic-sql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mybatis.dynamic-sql/mybatis-dynamic-sql)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/org.mybatis.dynamic-sql/mybatis-dynamic-sql.svg)](https://oss.sonatype.org/content/repositories/snapshots/org/mybatis/dynamic-sql/mybatis-dynamic-sql/)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mybatis_mybatis-dynamic-sql&metric=alert_status)](https://sonarcloud.io/dashboard?id=mybatis_mybatis-dynamic-sql)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mybatis_mybatis-dynamic-sql&metric=security_rating)](https://sonarcloud.io/dashboard?id=mybatis_mybatis-dynamic-sql)
 
 ## What Is This?
 This library is a framework for generating dynamic SQL statements.  Think of it as a typesafe SQL templating library,
