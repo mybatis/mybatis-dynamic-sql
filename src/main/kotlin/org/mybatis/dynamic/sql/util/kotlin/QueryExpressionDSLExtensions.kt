@@ -15,37 +15,137 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.BindableColumn
-import org.mybatis.dynamic.sql.VisitableCondition
+import org.mybatis.dynamic.sql.*
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.util.Buildable
 
-typealias SelectCompleter = QueryExpressionDSL<SelectModel>.() -> Buildable<SelectModel>
+typealias SelectCompleter = KotlinQueryBuilder.() -> KotlinQueryBuilder
 
-fun <T> QueryExpressionDSL<SelectModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().where(column, condition, collect)
-    }
+class KotlinQueryBuilder(val dsl: QueryExpressionDSL<SelectModel>) {
+    fun join(table: SqlTable, receiver: JoinReceiver) =
+            apply {
+                val collector = JoinCollector()
+                receiver(collector)
+                dsl.join(table, collector.onJoinCriterion, collector.andJoinCriteria)
+            }
 
-fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-    apply {
-        where().and(column, condition)
-    }
+    fun join(table: SqlTable, alias: String, receiver: JoinReceiver) =
+            apply {
+                val collector = JoinCollector()
+                receiver(collector)
+                dsl.join(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
+            }
 
-fun <T> QueryExpressionDSL<SelectModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().and(column, condition, collect)
-    }
+    fun fullJoin(table: SqlTable, receiver: JoinReceiver) =
+            apply {
+                val collector = JoinCollector()
+                receiver(collector)
+                dsl.fullJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
+            }
 
-fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-    apply {
-        where().or(column, condition)
-    }
+    fun fullJoin(table: SqlTable, alias: String, receiver: JoinReceiver) =
+            apply {
+                val collector = JoinCollector()
+                receiver(collector)
+                dsl.fullJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
+            }
 
-fun <T> QueryExpressionDSL<SelectModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().or(column, condition, collect)
-    }
+    fun leftJoin(table: SqlTable, receiver: JoinReceiver) =
+            apply {
+                val collector = JoinCollector()
+                receiver(collector)
+                dsl.leftJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
+            }
 
-fun QueryExpressionDSL<SelectModel>.allRows() = this as Buildable<SelectModel>
+    fun leftJoin(table: SqlTable, alias: String, receiver: JoinReceiver) =
+            apply {
+                val collector = JoinCollector()
+                receiver(collector)
+                dsl.leftJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
+            }
+
+    fun rightJoin(table: SqlTable, receiver: JoinReceiver) =
+            apply {
+                val collector = JoinCollector()
+                receiver(collector)
+                dsl.rightJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
+            }
+
+    fun rightJoin(table: SqlTable, alias: String, receiver: JoinReceiver) =
+            apply {
+                val collector = JoinCollector()
+                receiver(collector)
+                dsl.rightJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
+            }
+
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                dsl.where(column, condition)
+            }
+
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                // TODO...awkward
+                dsl.where(column, condition, *collector.criteria.toTypedArray())
+            }
+
+    fun applyWhere(whereApplier: WhereApplier) =
+            apply {
+                dsl.applyWhere(whereApplier)
+            }
+
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                dsl.where().and(column, condition)
+            }
+
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                // TODO...awkward
+                dsl.where().and(column, condition, *collector.criteria.toTypedArray())
+            }
+
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                dsl.where().or(column, condition)
+            }
+
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                // TODO...awkward
+                dsl.where().or(column, condition, *collector.criteria.toTypedArray())
+            }
+
+    fun groupBy(vararg columns: BasicColumn) =
+            apply {
+                dsl.groupBy(*columns)
+            }
+
+    fun orderBy(vararg columns: SortSpecification) =
+            apply {
+                dsl.orderBy(*columns)
+            }
+
+    fun limit(limit: Long) =
+            apply {
+                dsl.limit(limit)
+            }
+
+    fun offset(offset: Long) =
+            apply {
+                dsl.offset(offset)
+            }
+
+    fun fetchFirst(fetchFirstRows: Long) =
+            apply {
+                dsl.fetchFirst(fetchFirstRows)
+            }
+
+    fun allRows() = this
+}

@@ -16,40 +16,66 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
-import org.mybatis.dynamic.sql.util.Buildable
 
 // insert completers are here because sonar doesn't see them as covered if they are in a file by themselves
 typealias InsertCompleter<T> = InsertDSL<T>.() -> InsertDSL<T>
+
 typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> MultiRowInsertDSL<T>
 
-typealias UpdateCompleter = UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>
+typealias UpdateCompleter = KotlinUpdateBuilder.() -> KotlinUpdateBuilder
 
-fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().where(column, condition, collect)
-    }
+class KotlinUpdateBuilder(val dsl: UpdateDSL<UpdateModel>) {
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                dsl.where(column, condition)
+            }
 
-fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-    apply {
-        where().and(column, condition)
-    }
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                // TODO...awkward
+                dsl.where(column, condition, *collector.criteria.toTypedArray())
+            }
 
-fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().and(column, condition, collect)
-    }
+    fun applyWhere(whereApplier: WhereApplier) =
+            apply {
+                dsl.applyWhere(whereApplier)
+            }
 
-fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-    apply {
-        where().or(column, condition)
-    }
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                dsl.where().and(column, condition)
+            }
 
-fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().or(column, condition, collect)
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                // TODO...awkward
+                dsl.where().and(column, condition, *collector.criteria.toTypedArray())
+            }
+
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                dsl.where().or(column, condition)
+            }
+
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                // TODO...awkward
+                dsl.where().or(column, condition, *collector.criteria.toTypedArray())
+            }
+
+    fun <T> set(column: SqlColumn<T>): UpdateDSL<UpdateModel>.SetClauseFinisher<T> {
+        return dsl.set(column)
     }
+}

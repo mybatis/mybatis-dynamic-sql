@@ -19,33 +19,53 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.util.Buildable
 
-typealias DeleteCompleter = DeleteDSL<DeleteModel>.() -> Buildable<DeleteModel>
+typealias DeleteCompleter = KotlinDeleteBuilder.() -> KotlinDeleteBuilder
 
-fun <T> DeleteDSL<DeleteModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().where(column, condition, collect)
-    }
+class KotlinDeleteBuilder(val dsl: DeleteDSL<DeleteModel>) {
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                dsl.where(column, condition)
+            }
 
-fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-    apply {
-        where().and(column, condition)
-    }
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                // TODO...awkward
+                dsl.where(column, condition, *collector.criteria.toTypedArray())
+            }
 
-fun <T> DeleteDSL<DeleteModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().and(column, condition, collect)
-    }
+    fun applyWhere(whereApplier: WhereApplier) =
+            apply {
+                dsl.applyWhere(whereApplier)
+            }
 
-fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-    apply {
-        where().or(column, condition)
-    }
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                dsl.where().and(column, condition)
+            }
 
-fun <T> DeleteDSL<DeleteModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().or(column, condition, collect)
-    }
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                // TODO...awkward
+                dsl.where().and(column, condition, *collector.criteria.toTypedArray())
+            }
 
-fun DeleteDSL<DeleteModel>.allRows() = this as Buildable<DeleteModel>
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+            apply {
+                dsl.where().or(column, condition)
+            }
+
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
+            apply {
+                val collector = CriteriaCollector()
+                collect(collector)
+                // TODO...awkward
+                dsl.where().or(column, condition, *collector.criteria.toTypedArray())
+            }
+
+    fun allRows() = this
+}

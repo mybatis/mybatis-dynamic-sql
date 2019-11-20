@@ -17,27 +17,51 @@ package org.mybatis.dynamic.sql.util.kotlin.spring
 
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.*
 
-fun countFrom(table: SqlTable, completer: CountCompleter) =
-    completer(SqlBuilder.countFrom(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun countFrom(table: SqlTable, completer: CountCompleter): SelectStatementProvider {
+    val builder = KotlinCountBuilder(SqlBuilder.countFrom(table))
+    completer(builder)
+    return builder.dsl.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+}
 
-fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
-    completer(SqlBuilder.deleteFrom(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProvider {
+    val builder = KotlinDeleteBuilder(SqlBuilder.deleteFrom(table))
+    completer(builder)
+    return builder.dsl.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+}
 
 fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>): InsertStatementProvider<T> =
-    completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+        completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: SelectCompleter) =
-    completer(from(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: SelectCompleter): SelectStatementProvider {
+    val builder = KotlinQueryBuilder(from(table))
+    completer(builder)
+    return builder.dsl.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+}
 
-fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: String, completer: SelectCompleter) =
-    completer(from(table, alias)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: String, completer: SelectCompleter): SelectStatementProvider {
+    val builder = KotlinQueryBuilder(from(table, alias))
+    completer(builder)
+    return builder.dsl.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+}
 
-fun update(table: SqlTable, completer: UpdateCompleter) =
-    completer(SqlBuilder.update(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun select(start: QueryExpressionDSL<SelectModel>, completer: SelectCompleter): SelectStatementProvider {
+    val builder = KotlinQueryBuilder(start)
+    completer(builder)
+    return builder.dsl.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+}
+
+fun update(table: SqlTable, completer: UpdateCompleter): UpdateStatementProvider {
+    val builder = KotlinUpdateBuilder(SqlBuilder.update(table))
+    completer(builder)
+    return builder.dsl.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+}
