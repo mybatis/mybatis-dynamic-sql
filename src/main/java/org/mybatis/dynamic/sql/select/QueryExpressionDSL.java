@@ -69,6 +69,12 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         return whereBuilder;
     }
 
+    public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
+            List<SqlCriterion<?>> subCriteria) {
+        whereBuilder.where(column, condition, subCriteria);
+        return whereBuilder;
+    }
+
     @SuppressWarnings("unchecked")
     public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
         return (QueryExpressionWhereBuilder) whereApplier.apply(whereBuilder);

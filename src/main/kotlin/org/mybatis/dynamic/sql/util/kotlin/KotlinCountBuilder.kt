@@ -20,10 +20,11 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.util.Buildable
 
-typealias CountCompleter = KotlinCountBuilder.() -> KotlinCountBuilder
+typealias CountCompleter = KotlinCountBuilder.() -> Buildable<SelectModel>
 
-class KotlinCountBuilder(val dsl: CountDSL<SelectModel>) {
+class KotlinCountBuilder(private val dsl: CountDSL<SelectModel>): Buildable<SelectModel> {
     fun join(table: SqlTable, receiver: JoinReceiver) =
             apply {
                 val collector = JoinCollector()
@@ -89,8 +90,7 @@ class KotlinCountBuilder(val dsl: CountDSL<SelectModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where(column, condition, *collector.criteria.toTypedArray())
+                dsl.where(column, condition, collector.criteria)
             }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -107,8 +107,7 @@ class KotlinCountBuilder(val dsl: CountDSL<SelectModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where().and(column, condition, *collector.criteria.toTypedArray())
+                dsl.where().and(column, condition, collector.criteria)
             }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -120,9 +119,10 @@ class KotlinCountBuilder(val dsl: CountDSL<SelectModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where().or(column, condition, *collector.criteria.toTypedArray())
+                dsl.where().or(column, condition, collector.criteria)
             }
 
     fun allRows() = this
+
+    override fun build(): SelectModel = dsl.build()
 }

@@ -18,10 +18,11 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.*
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.util.Buildable
 
-typealias SelectCompleter = KotlinQueryBuilder.() -> KotlinQueryBuilder
+typealias SelectCompleter = KotlinQueryBuilder.() -> Buildable<SelectModel>
 
-class KotlinQueryBuilder(val dsl: QueryExpressionDSL<SelectModel>) {
+class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>): Buildable<SelectModel> {
     fun join(table: SqlTable, receiver: JoinReceiver) =
             apply {
                 val collector = JoinCollector()
@@ -87,8 +88,7 @@ class KotlinQueryBuilder(val dsl: QueryExpressionDSL<SelectModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where(column, condition, *collector.criteria.toTypedArray())
+                dsl.where(column, condition, collector.criteria)
             }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -105,8 +105,7 @@ class KotlinQueryBuilder(val dsl: QueryExpressionDSL<SelectModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where().and(column, condition, *collector.criteria.toTypedArray())
+                dsl.where().and(column, condition, collector.criteria)
             }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -118,8 +117,7 @@ class KotlinQueryBuilder(val dsl: QueryExpressionDSL<SelectModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where().or(column, condition, *collector.criteria.toTypedArray())
+                dsl.where().or(column, condition, collector.criteria)
             }
 
     fun groupBy(vararg columns: BasicColumn) =
@@ -148,4 +146,6 @@ class KotlinQueryBuilder(val dsl: QueryExpressionDSL<SelectModel>) {
             }
 
     fun allRows() = this
+
+    override fun build(): SelectModel = dsl.build()
 }

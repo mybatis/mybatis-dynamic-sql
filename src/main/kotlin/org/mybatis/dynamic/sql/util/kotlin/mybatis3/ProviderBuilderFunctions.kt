@@ -32,13 +32,13 @@ import org.mybatis.dynamic.sql.util.kotlin.*
 fun countFrom(table: SqlTable, completer: CountCompleter): SelectStatementProvider {
     val builder = KotlinCountBuilder(SqlBuilder.countFrom(table))
     completer(builder)
-    return builder.dsl.build().render(RenderingStrategies.MYBATIS3)
+    return builder.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProvider {
     val builder = KotlinDeleteBuilder(SqlBuilder.deleteFrom(table))
     completer(builder)
-    return builder.dsl.build().render(RenderingStrategies.MYBATIS3)
+    return builder.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>): InsertStatementProvider<T> =
@@ -50,23 +50,23 @@ fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: Multi
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: SelectCompleter): SelectStatementProvider {
     val builder = KotlinQueryBuilder(from(table))
     completer(builder)
-    return builder.dsl.build().render(RenderingStrategies.MYBATIS3)
+    return builder.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: String, completer: SelectCompleter): SelectStatementProvider {
     val builder = KotlinQueryBuilder(from(table, alias))
     completer(builder)
-    return builder.dsl.build().render(RenderingStrategies.MYBATIS3)
+    return builder.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun select(start: QueryExpressionDSL<SelectModel>, completer: SelectCompleter): SelectStatementProvider {
     val builder = KotlinQueryBuilder(start)
     completer(builder)
-    return builder.dsl.build().render(RenderingStrategies.MYBATIS3)
+    return builder.build().render(RenderingStrategies.MYBATIS3)
 }
 
 fun update(table: SqlTable, completer: UpdateCompleter): UpdateStatementProvider {
     val builder = KotlinUpdateBuilder(SqlBuilder.update(table))
     completer(builder)
-    return builder.dsl.build().render(RenderingStrategies.MYBATIS3)
+    return builder.build().render(RenderingStrategies.MYBATIS3)
 }

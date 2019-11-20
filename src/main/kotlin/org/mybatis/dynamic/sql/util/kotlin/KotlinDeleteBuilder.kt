@@ -19,10 +19,11 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
+import org.mybatis.dynamic.sql.util.Buildable
 
-typealias DeleteCompleter = KotlinDeleteBuilder.() -> KotlinDeleteBuilder
+typealias DeleteCompleter = KotlinDeleteBuilder.() -> Buildable<DeleteModel>
 
-class KotlinDeleteBuilder(val dsl: DeleteDSL<DeleteModel>) {
+class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>): Buildable<DeleteModel> {
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
             apply {
                 dsl.where(column, condition)
@@ -32,8 +33,7 @@ class KotlinDeleteBuilder(val dsl: DeleteDSL<DeleteModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where(column, condition, *collector.criteria.toTypedArray())
+                dsl.where(column, condition, collector.criteria)
             }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -50,8 +50,7 @@ class KotlinDeleteBuilder(val dsl: DeleteDSL<DeleteModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where().and(column, condition, *collector.criteria.toTypedArray())
+                dsl.where().and(column, condition, collector.criteria)
             }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -63,9 +62,10 @@ class KotlinDeleteBuilder(val dsl: DeleteDSL<DeleteModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where().or(column, condition, *collector.criteria.toTypedArray())
+                dsl.where().or(column, condition, collector.criteria)
             }
 
     fun allRows() = this
+
+    override fun build(): DeleteModel = dsl.build()
 }

@@ -309,6 +309,27 @@ class PersonMapperTest {
     }
 
     @Test
+    fun testUpdateOneFieldInAllRows() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+
+            var rows = mapper.insert(record)
+            assertThat(rows).isEqualTo(1)
+
+            rows = mapper.update {
+                set(occupation).equalTo("Programmer")
+            }
+
+            assertThat(rows).isEqualTo(7)
+
+            val newRecord = mapper.selectByPrimaryKey(100)
+            assertThat(newRecord?.occupation).isEqualTo("Programmer")
+        }
+    }
+
+    @Test
     fun testUpdateAll() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)

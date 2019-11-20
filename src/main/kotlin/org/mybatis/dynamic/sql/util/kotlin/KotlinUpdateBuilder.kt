@@ -22,15 +22,16 @@ import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
+import org.mybatis.dynamic.sql.util.Buildable
 
 // insert completers are here because sonar doesn't see them as covered if they are in a file by themselves
 typealias InsertCompleter<T> = InsertDSL<T>.() -> InsertDSL<T>
 
 typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> MultiRowInsertDSL<T>
 
-typealias UpdateCompleter = KotlinUpdateBuilder.() -> KotlinUpdateBuilder
+typealias UpdateCompleter = KotlinUpdateBuilder.() -> Buildable<UpdateModel>
 
-class KotlinUpdateBuilder(val dsl: UpdateDSL<UpdateModel>) {
+class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) : Buildable<UpdateModel> {
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
             apply {
                 dsl.where(column, condition)
@@ -40,8 +41,7 @@ class KotlinUpdateBuilder(val dsl: UpdateDSL<UpdateModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where(column, condition, *collector.criteria.toTypedArray())
+                dsl.where(column, condition, collector.criteria)
             }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -58,8 +58,7 @@ class KotlinUpdateBuilder(val dsl: UpdateDSL<UpdateModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where().and(column, condition, *collector.criteria.toTypedArray())
+                dsl.where().and(column, condition, collector.criteria)
             }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -71,11 +70,12 @@ class KotlinUpdateBuilder(val dsl: UpdateDSL<UpdateModel>) {
             apply {
                 val collector = CriteriaCollector()
                 collect(collector)
-                // TODO...awkward
-                dsl.where().or(column, condition, *collector.criteria.toTypedArray())
+                dsl.where().or(column, condition, collector.criteria)
             }
 
     fun <T> set(column: SqlColumn<T>): UpdateDSL<UpdateModel>.SetClauseFinisher<T> {
         return dsl.set(column)
     }
+
+    override fun build(): UpdateModel = dsl.build()
 }
