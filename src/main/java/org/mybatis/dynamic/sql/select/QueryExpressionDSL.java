@@ -69,9 +69,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         return whereBuilder;
     }
 
-    @SuppressWarnings("unchecked")
     public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return (QueryExpressionWhereBuilder) whereApplier.apply(whereBuilder);
+        return whereBuilder.applyWhere(whereApplier);
     }
 
     @Override

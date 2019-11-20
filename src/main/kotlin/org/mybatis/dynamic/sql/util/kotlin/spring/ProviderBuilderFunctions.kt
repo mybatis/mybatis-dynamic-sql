@@ -54,12 +54,6 @@ fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: St
     return builder.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 }
 
-fun select(start: QueryExpressionDSL<SelectModel>, completer: SelectCompleter): SelectStatementProvider {
-    val builder = KotlinQueryBuilder(start)
-    completer(builder)
-    return builder.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
-}
-
 fun update(table: SqlTable, completer: UpdateCompleter): UpdateStatementProvider {
     val builder = KotlinUpdateBuilder(SqlBuilder.update(table))
     completer(builder)

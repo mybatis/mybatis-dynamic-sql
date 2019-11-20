@@ -548,6 +548,31 @@ class GeneralKotlinTest {
     }
 
     @Test
+    fun testSelectWithFetchFirst() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.select {
+                allRows()
+                orderBy(id)
+                offset(2)
+                fetchFirst(3).rowsOnly()
+            }
+
+            assertThat(rows.size).isEqualTo(3)
+            with(rows[0]) {
+                assertThat(id).isEqualTo(3)
+                assertThat(firstName).isEqualTo("Pebbles")
+                assertThat(lastName?.name).isEqualTo("Flintstone")
+                assertThat(birthDate).isNotNull()
+                assertThat(employed).isFalse()
+                assertThat(occupation).isNull()
+                assertThat(addressId).isEqualTo(1)
+            }
+        }
+    }
+
+    @Test
     fun testRawUpdate1() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)

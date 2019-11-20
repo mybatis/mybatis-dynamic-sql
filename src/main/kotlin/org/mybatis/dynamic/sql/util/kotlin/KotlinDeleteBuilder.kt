@@ -15,51 +15,20 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.BindableColumn
-import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias DeleteCompleter = KotlinDeleteBuilder.() -> Buildable<DeleteModel>
 
-class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>): Buildable<DeleteModel> {
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-            apply {
-                dsl.where(column, condition)
-            }
-
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-            apply {
-                dsl.where().where(column, condition, collect)
-            }
-
-    fun applyWhere(whereApplier: WhereApplier) =
-            apply {
-                dsl.applyWhere(whereApplier)
-            }
-
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-            apply {
-                dsl.where().and(column, condition)
-            }
-
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-            apply {
-                dsl.where().and(column, condition, collect)
-            }
-
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-            apply {
-                dsl.where().or(column, condition)
-            }
-
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-            apply {
-                dsl.where().or(column, condition, collect)
-            }
+class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
+        KotlinBaseBuilder<DeleteModel, DeleteDSL<DeleteModel>.DeleteWhereBuilder, KotlinDeleteBuilder>() {
 
     fun allRows() = this
 
     override fun build(): DeleteModel = dsl.build()
+
+    override fun getWhere(): DeleteDSL<DeleteModel>.DeleteWhereBuilder = dsl.where()
+
+    override fun getThis(): KotlinDeleteBuilder = this
 }

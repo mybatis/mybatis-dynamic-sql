@@ -15,92 +15,20 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.BindableColumn
-import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias CountCompleter = KotlinCountBuilder.() -> Buildable<SelectModel>
 
-class KotlinCountBuilder(private val dsl: CountDSL<SelectModel>): Buildable<SelectModel> {
-    fun join(table: SqlTable, receiver: JoinReceiver) =
-            apply {
-                dsl.join(table, receiver)
-            }
-
-    fun join(table: SqlTable, alias: String, receiver: JoinReceiver) =
-            apply {
-                dsl.join(table, alias, receiver)
-            }
-
-    fun fullJoin(table: SqlTable, receiver: JoinReceiver) =
-            apply {
-                dsl.fullJoin(table, receiver)
-            }
-
-    fun fullJoin(table: SqlTable, alias: String, receiver: JoinReceiver) =
-            apply {
-                dsl.fullJoin(table, alias, receiver)
-            }
-
-    fun leftJoin(table: SqlTable, receiver: JoinReceiver) =
-            apply {
-                dsl.leftJoin(table, receiver)
-            }
-
-    fun leftJoin(table: SqlTable, alias: String, receiver: JoinReceiver) =
-            apply {
-                dsl.leftJoin(table, alias, receiver)
-            }
-
-    fun rightJoin(table: SqlTable, receiver: JoinReceiver) =
-            apply {
-                dsl.rightJoin(table, receiver)
-            }
-
-    fun rightJoin(table: SqlTable, alias: String, receiver: JoinReceiver) =
-            apply {
-                dsl.rightJoin(table, alias, receiver)
-            }
-
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-            apply {
-                dsl.where(column, condition)
-            }
-
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-            apply {
-                dsl.where().where(column, condition, collect)
-            }
-
-    fun applyWhere(whereApplier: WhereApplier) =
-            apply {
-                dsl.applyWhere(whereApplier)
-            }
-
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-            apply {
-                dsl.where().and(column, condition)
-            }
-
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-            apply {
-                dsl.where().and(column, condition, collect)
-            }
-
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-            apply {
-                dsl.where().or(column, condition)
-            }
-
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-            apply {
-                dsl.where().or(column, condition, collect)
-            }
+class KotlinCountBuilder(private val dsl: CountDSL<SelectModel>) :
+    KotlinBaseJoiningBuilder<CountDSL<SelectModel>, CountDSL<SelectModel>.CountWhereBuilder, KotlinCountBuilder>(dsl) {
 
     fun allRows() = this
 
-    override fun build(): SelectModel = dsl.build()
+    override fun  build(): SelectModel = dsl.build()
+
+    override fun getWhere(): CountDSL<SelectModel>.CountWhereBuilder = dsl.where()
+
+    override fun getThis() = this
 }

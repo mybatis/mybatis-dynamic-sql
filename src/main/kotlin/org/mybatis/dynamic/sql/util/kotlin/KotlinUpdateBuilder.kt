@@ -15,9 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.SqlColumn
-import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.update.UpdateDSL
@@ -31,43 +29,14 @@ typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> MultiRowInsert
 
 typealias UpdateCompleter = KotlinUpdateBuilder.() -> Buildable<UpdateModel>
 
-class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) : Buildable<UpdateModel> {
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-            apply {
-                dsl.where(column, condition)
-            }
-
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-            apply {
-                dsl.where().where(column, condition, collect)
-            }
-
-    fun applyWhere(whereApplier: WhereApplier) =
-            apply {
-                dsl.applyWhere(whereApplier)
-            }
-
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-            apply {
-                dsl.where().and(column, condition)
-            }
-
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-            apply {
-                dsl.where().and(column, condition, collect)
-            }
-
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-            apply {
-                dsl.where().or(column, condition)
-            }
-
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-            apply {
-                dsl.where().or(column, condition, collect)
-            }
+class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
+        KotlinBaseBuilder<UpdateModel, UpdateDSL<UpdateModel>.UpdateWhereBuilder, KotlinUpdateBuilder>() {
 
     fun <T> set(column: SqlColumn<T>): UpdateDSL<UpdateModel>.SetClauseFinisher<T> = dsl.set(column)
 
     override fun build(): UpdateModel = dsl.build()
+
+    override fun getWhere(): UpdateDSL<UpdateModel>.UpdateWhereBuilder = dsl.where()
+
+    override fun getThis(): KotlinUpdateBuilder = this
 }

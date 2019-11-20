@@ -456,7 +456,7 @@ class PersonMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val rows = mapper.count { allRows() }
+            val rows = mapper.count { allRows()  }
 
             assertThat(rows).isEqualTo(6L)
         }
