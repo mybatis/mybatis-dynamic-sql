@@ -31,9 +31,7 @@ class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>): Buildable<De
 
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
             apply {
-                val collector = CriteriaCollector()
-                collect(collector)
-                dsl.where(column, condition, collector.criteria)
+                dsl.where().where(column, condition, collect)
             }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -48,9 +46,7 @@ class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>): Buildable<De
 
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
             apply {
-                val collector = CriteriaCollector()
-                collect(collector)
-                dsl.where().and(column, condition, collector.criteria)
+                dsl.where().and(column, condition, collect)
             }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -60,9 +56,7 @@ class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>): Buildable<De
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
             apply {
-                val collector = CriteriaCollector()
-                collect(collector)
-                dsl.where().or(column, condition, collector.criteria)
+                dsl.where().or(column, condition, collect)
             }
 
     fun allRows() = this

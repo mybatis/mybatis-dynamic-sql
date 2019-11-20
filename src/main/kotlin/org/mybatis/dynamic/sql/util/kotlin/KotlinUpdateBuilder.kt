@@ -39,9 +39,7 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) : Buildable<U
 
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
             apply {
-                val collector = CriteriaCollector()
-                collect(collector)
-                dsl.where(column, condition, collector.criteria)
+                dsl.where().where(column, condition, collect)
             }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -56,9 +54,7 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) : Buildable<U
 
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
             apply {
-                val collector = CriteriaCollector()
-                collect(collector)
-                dsl.where().and(column, condition, collector.criteria)
+                dsl.where().and(column, condition, collect)
             }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -68,14 +64,10 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) : Buildable<U
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
             apply {
-                val collector = CriteriaCollector()
-                collect(collector)
-                dsl.where().or(column, condition, collector.criteria)
+                dsl.where().or(column, condition, collect)
             }
 
-    fun <T> set(column: SqlColumn<T>): UpdateDSL<UpdateModel>.SetClauseFinisher<T> {
-        return dsl.set(column)
-    }
+    fun <T> set(column: SqlColumn<T>): UpdateDSL<UpdateModel>.SetClauseFinisher<T> = dsl.set(column)
 
     override fun build(): UpdateModel = dsl.build()
 }

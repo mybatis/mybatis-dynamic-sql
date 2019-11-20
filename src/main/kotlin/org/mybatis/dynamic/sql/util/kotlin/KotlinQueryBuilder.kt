@@ -25,58 +25,42 @@ typealias SelectCompleter = KotlinQueryBuilder.() -> Buildable<SelectModel>
 class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>): Buildable<SelectModel> {
     fun join(table: SqlTable, receiver: JoinReceiver) =
             apply {
-                val collector = JoinCollector()
-                receiver(collector)
-                dsl.join(table, collector.onJoinCriterion, collector.andJoinCriteria)
+                dsl.join(table, receiver)
             }
 
     fun join(table: SqlTable, alias: String, receiver: JoinReceiver) =
             apply {
-                val collector = JoinCollector()
-                receiver(collector)
-                dsl.join(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
+                dsl.join(table, alias, receiver)
             }
 
     fun fullJoin(table: SqlTable, receiver: JoinReceiver) =
             apply {
-                val collector = JoinCollector()
-                receiver(collector)
-                dsl.fullJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
+                dsl.fullJoin(table, receiver)
             }
 
     fun fullJoin(table: SqlTable, alias: String, receiver: JoinReceiver) =
             apply {
-                val collector = JoinCollector()
-                receiver(collector)
-                dsl.fullJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
+                dsl.fullJoin(table, alias, receiver)
             }
 
     fun leftJoin(table: SqlTable, receiver: JoinReceiver) =
             apply {
-                val collector = JoinCollector()
-                receiver(collector)
-                dsl.leftJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
+                dsl.leftJoin(table, receiver)
             }
 
     fun leftJoin(table: SqlTable, alias: String, receiver: JoinReceiver) =
             apply {
-                val collector = JoinCollector()
-                receiver(collector)
-                dsl.leftJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
+                dsl.leftJoin(table, alias, receiver)
             }
 
     fun rightJoin(table: SqlTable, receiver: JoinReceiver) =
             apply {
-                val collector = JoinCollector()
-                receiver(collector)
-                dsl.rightJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
+                dsl.rightJoin(table, receiver)
             }
 
     fun rightJoin(table: SqlTable, alias: String, receiver: JoinReceiver) =
             apply {
-                val collector = JoinCollector()
-                receiver(collector)
-                dsl.rightJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
+                dsl.rightJoin(table, alias, receiver)
             }
 
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -86,9 +70,7 @@ class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>): Buil
 
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
             apply {
-                val collector = CriteriaCollector()
-                collect(collector)
-                dsl.where(column, condition, collector.criteria)
+                dsl.where().where(column, condition, collect)
             }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -103,9 +85,7 @@ class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>): Buil
 
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
             apply {
-                val collector = CriteriaCollector()
-                collect(collector)
-                dsl.where().and(column, condition, collector.criteria)
+                dsl.where().and(column, condition, collect)
             }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -115,9 +95,7 @@ class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>): Buil
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
             apply {
-                val collector = CriteriaCollector()
-                collect(collector)
-                dsl.where().or(column, condition, collector.criteria)
+                dsl.where().or(column, condition, collect)
             }
 
     fun groupBy(vararg columns: BasicColumn) =

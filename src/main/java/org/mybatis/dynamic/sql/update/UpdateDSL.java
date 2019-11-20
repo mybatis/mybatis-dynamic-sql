@@ -69,12 +69,6 @@ public class UpdateDSL<R> implements Buildable<R> {
         return whereBuilder;
     }
 
-    public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            List<SqlCriterion<?>> subCriteria) {
-        whereBuilder.where(column, condition, subCriteria);
-        return whereBuilder;
-    }
-
     @SuppressWarnings("unchecked")
     public UpdateWhereBuilder applyWhere(WhereApplier whereApplier) {
         return (UpdateWhereBuilder) whereApplier.apply(whereBuilder);

@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -54,12 +53,6 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
 
     public <T> CountWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
-        whereBuilder.where(column, condition, subCriteria);
-        return whereBuilder;
-    }
-
-    public <T> CountWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            List<SqlCriterion<?>> subCriteria) {
         whereBuilder.where(column, condition, subCriteria);
         return whereBuilder;
     }
