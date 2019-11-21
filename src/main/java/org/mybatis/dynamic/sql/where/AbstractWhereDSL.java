@@ -44,7 +44,12 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         addCriterion(column, condition, subCriteria);
         return getThis();
     }
-    
+
+    @SuppressWarnings("unchecked")
+    public T applyWhere(WhereApplier whereApplier) {
+        return (T) whereApplier.apply(this);
+    }
+
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition) {
         addCriterion("and", column, condition); //$NON-NLS-1$
         return getThis();

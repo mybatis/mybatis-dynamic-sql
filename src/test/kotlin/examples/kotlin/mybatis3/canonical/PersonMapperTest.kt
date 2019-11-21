@@ -30,10 +30,6 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.allRows
-import org.mybatis.dynamic.sql.util.kotlin.and
-import org.mybatis.dynamic.sql.util.kotlin.or
-import org.mybatis.dynamic.sql.util.kotlin.where
 import java.io.InputStreamReader
 import java.sql.DriverManager
 import java.util.*
@@ -306,6 +302,27 @@ class PersonMapperTest {
             }
 
             assertThat(rows).isEqualTo(1)
+
+            val newRecord = mapper.selectByPrimaryKey(100)
+            assertThat(newRecord?.occupation).isEqualTo("Programmer")
+        }
+    }
+
+    @Test
+    fun testUpdateOneFieldInAllRows() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+
+            var rows = mapper.insert(record)
+            assertThat(rows).isEqualTo(1)
+
+            rows = mapper.update {
+                set(occupation).equalTo("Programmer")
+            }
+
+            assertThat(rows).isEqualTo(7)
 
             val newRecord = mapper.selectByPrimaryKey(100)
             assertThat(newRecord?.occupation).isEqualTo("Programmer")

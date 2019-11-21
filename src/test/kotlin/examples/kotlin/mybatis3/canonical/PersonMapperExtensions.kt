@@ -24,12 +24,7 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
-import org.mybatis.dynamic.sql.update.UpdateDSL
-import org.mybatis.dynamic.sql.update.UpdateModel
-import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
-import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
-import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.*
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
 
 fun PersonMapper.count(completer: CountCompleter) =
@@ -98,7 +93,7 @@ fun PersonMapper.selectByPrimaryKey(id_: Int) =
 fun PersonMapper.update(completer: UpdateCompleter) =
     update(this::update, Person, completer)
 
-fun UpdateDSL<UpdateModel>.updateAllColumns(record: PersonRecord) =
+fun KotlinUpdateBuilder.updateAllColumns(record: PersonRecord) =
     apply {
         set(id).equalTo(record::id)
         set(firstName).equalTo(record::firstName)
@@ -109,7 +104,7 @@ fun UpdateDSL<UpdateModel>.updateAllColumns(record: PersonRecord) =
         set(addressId).equalTo(record::addressId)
     }
 
-fun UpdateDSL<UpdateModel>.updateSelectiveColumns(record: PersonRecord) =
+fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
     apply {
         set(id).equalToWhenPresent(record::id)
         set(firstName).equalToWhenPresent(record::firstName)

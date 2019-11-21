@@ -51,9 +51,8 @@ public class DeleteDSL<R> implements Buildable<R> {
         return whereBuilder;
     }
 
-    @SuppressWarnings("unchecked")
     public DeleteWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return (DeleteWhereBuilder) whereApplier.apply(whereBuilder);
+        return whereBuilder.applyWhere(whereApplier);
     }
 
     /**
@@ -99,7 +98,7 @@ public class DeleteDSL<R> implements Buildable<R> {
         private DeleteWhereBuilder() {
             super();
         }
-        
+
         @Override
         public R build() {
             return DeleteDSL.this.build();

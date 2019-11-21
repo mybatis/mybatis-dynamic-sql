@@ -340,7 +340,7 @@ val rows = mapper.update {
 It is also possible to write a utility method that will set values. For example:
 
 ```kotlin
-fun UpdateDSL<UpdateModel>.updateSelectiveColumns(record: PersonRecord) =
+fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
     apply {
         set(id).equalToWhenPresent(record::id)
         set(firstName).equalToWhenPresent(record::firstName)

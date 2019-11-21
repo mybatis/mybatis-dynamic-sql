@@ -69,9 +69,8 @@ public class UpdateDSL<R> implements Buildable<R> {
         return whereBuilder;
     }
 
-    @SuppressWarnings("unchecked")
     public UpdateWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return (UpdateWhereBuilder) whereApplier.apply(whereBuilder);
+        return whereBuilder.applyWhere(whereApplier);
     }
 
     /**

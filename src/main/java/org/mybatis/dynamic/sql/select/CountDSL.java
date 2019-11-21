@@ -57,9 +57,8 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
         return whereBuilder;
     }
 
-    @SuppressWarnings("unchecked")
     public CountWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return (CountWhereBuilder) whereApplier.apply(whereBuilder);
+        return whereBuilder.applyWhere(whereApplier);
     }
 
     @Override

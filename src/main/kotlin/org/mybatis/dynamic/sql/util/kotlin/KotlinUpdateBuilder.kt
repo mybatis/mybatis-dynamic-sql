@@ -15,8 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.BindableColumn
-import org.mybatis.dynamic.sql.VisitableCondition
+import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.update.UpdateDSL
@@ -25,31 +24,19 @@ import org.mybatis.dynamic.sql.util.Buildable
 
 // insert completers are here because sonar doesn't see them as covered if they are in a file by themselves
 typealias InsertCompleter<T> = InsertDSL<T>.() -> InsertDSL<T>
+
 typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> MultiRowInsertDSL<T>
 
-typealias UpdateCompleter = UpdateDSL<UpdateModel>.() -> Buildable<UpdateModel>
+typealias UpdateCompleter = KotlinUpdateBuilder.() -> Buildable<UpdateModel>
 
-fun <T> UpdateDSL<UpdateModel>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().where(column, condition, collect)
-    }
+class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
+        KotlinBaseBuilder<UpdateModel, UpdateDSL<UpdateModel>.UpdateWhereBuilder, KotlinUpdateBuilder>() {
 
-fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-    apply {
-        where().and(column, condition)
-    }
+    fun <T> set(column: SqlColumn<T>): UpdateDSL<UpdateModel>.SetClauseFinisher<T> = dsl.set(column)
 
-fun <T> UpdateDSL<UpdateModel>.and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().and(column, condition, collect)
-    }
+    override fun build(): UpdateModel = dsl.build()
 
-fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
-    apply {
-        where().or(column, condition)
-    }
+    override fun getWhere(): UpdateDSL<UpdateModel>.UpdateWhereBuilder = dsl.where()
 
-fun <T> UpdateDSL<UpdateModel>.or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver) =
-    apply {
-        where().or(column, condition, collect)
-    }
+    override fun getThis(): KotlinUpdateBuilder = this
+}

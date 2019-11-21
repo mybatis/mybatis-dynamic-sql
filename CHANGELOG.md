@@ -9,7 +9,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 ### Added
 
 - Added support for reusing WHERE clauses among count, delete, select, and update statements ([#152](https://github.com/mybatis/mybatis-dynamic-sql/pull/152))
-
+- Improved Kotlin support. Previously, several overloaded methods could collide causing queries to be fragile and very dependent on having the correct imports in a Kotlin file. With this improved support there is no longer any ambiguity. ([#154](https://github.com/mybatis/mybatis-dynamic-sql/pull/154))
 
 ### Bugs Fixed
 

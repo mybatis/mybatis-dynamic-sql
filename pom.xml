@@ -43,6 +43,7 @@
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
     <jacoco.version>0.8.4</jacoco.version>
+    <kotlin.code.style>official</kotlin.code.style>
   </properties>
 
   <build>
