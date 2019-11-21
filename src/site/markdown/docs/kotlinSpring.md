@@ -280,7 +280,7 @@ This is the two step execution process. This can be combined into a single step 
     }
 ```
 
-There a many different set mappings the allow setting values to null, constantats, etc. There is also a maping that will only set the column value if the passed value is non null.
+There a many different set mappings the allow setting values to null, constants, etc. There is also a mapping that will only set the column value if the passed value is non null.
 
 If you wish to update all rows in a table, simply omit the where clause:
 
