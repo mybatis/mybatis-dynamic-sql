@@ -573,6 +573,24 @@ class GeneralKotlinTest {
     }
 
     @Test
+    fun testRawSelectWithGroupBy() {
+
+        val ss = select(lastName, count())
+            .from(Person) {
+                where(firstName, isNotEqualTo("Bamm Bamm"))
+                groupBy(lastName)
+                orderBy(lastName)
+            }
+
+        val expected = "select last_name, count(*) from Person " +
+                "where first_name <> #{parameters.p1,jdbcType=VARCHAR} " +
+                "group by last_name " +
+                "order by last_name"
+
+        assertThat(ss.selectStatement).isEqualTo(expected)
+    }
+
+    @Test
     fun testRawUpdate1() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
