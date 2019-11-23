@@ -17,7 +17,3 @@ addons:
     organization: "mybatis"
     token:
       secure: "Hci6OzYOkzcy6CUWlJTe5zLHRFRUO0KVe5o/V3RvtWndz3/4CHmWkP/dZjMxYliUiOZ+UR9uQhVH6dqcKSR94vb++CiDDxorkzqWiWlMEZMaWflvOe/dQsvKwPGZ/QO32RR+Boh0b3VrWZIOsu84wpYAMyZmncXJ0Y2QvmodiqtChYvV+8F6ZimNCfkGZRJhRfKnAbqFsPlB/c9TQc6hW0Dg9rWtjsbQFVtnkIhu48NdVtylPidHUSQWj0JsVQRvWUmBkoMr7lFSImyCW2r7X5vrVIccH6LTPk1Q5V4A8UgCtHhSnQcAFmFi/cxpUqIRgfjvB3azjp/Z9PrzZUFLgRzo3piKZkuQpI5a9xAANH7xcfiZfqztapLx6glW1c5oHRvk771dLcm5+he6JxKIKBBt8BFGOpkXG5NyvDOGHA4bo36oz6VL2L7oVRrS0KdgfFBmQFCuB0cRH3sQGGE4TjyghJUWLnYDRvQGz1IiX94xPUf/+MOHrMeLs/QIROOKJRTMyNC9u+ZQJeQK+i20b4A7euFP8fwzvQRJm3EgEuQf501raPUUDv+Kh4YskDg86fDHxJrmrpM4UsFe6V/WDPFGZc1zRJJRI5yeiaVg5M0KAt5SYfrV1YcjU5ExvKj7x9vyQ3pcfpLlKIKyFKBJMRryMQLNCn+frEJbxlrxJDE="
-      
-script:
-- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package org.jacoco:jacoco-maven-plugin:report
-- if [ "$TRAVIS_JDK_VERSION" == "openjdk8" ]; then mvn sonar:sonar -Dsonar.projectKey=mybatis_mybatis-dynamic-sql; fi

@@ -54,5 +54,5 @@ class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
 
     override fun getWhere(): QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder = dsl.where()
 
-    override fun getThis() = this
+    override fun self() = this
 }
