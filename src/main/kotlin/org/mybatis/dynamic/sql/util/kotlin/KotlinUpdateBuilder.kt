@@ -38,5 +38,5 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
 
     override fun getWhere(): UpdateDSL<UpdateModel>.UpdateWhereBuilder = dsl.where()
 
-    override fun getThis(): KotlinUpdateBuilder = this
+    override fun self() = this
 }

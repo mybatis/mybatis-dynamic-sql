@@ -30,5 +30,5 @@ class KotlinCountBuilder(private val dsl: CountDSL<SelectModel>) :
 
     override fun getWhere(): CountDSL<SelectModel>.CountWhereBuilder = dsl.where()
 
-    override fun getThis() = this
+    override fun self() = this
 }

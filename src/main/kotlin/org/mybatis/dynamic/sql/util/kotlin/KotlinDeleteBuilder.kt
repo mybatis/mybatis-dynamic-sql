@@ -30,5 +30,5 @@ class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
 
     override fun getWhere(): DeleteDSL<DeleteModel>.DeleteWhereBuilder = dsl.where()
 
-    override fun getThis(): KotlinDeleteBuilder = this
+    override fun self() = this
 }
