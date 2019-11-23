@@ -16,47 +16,51 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class LimitAndOffsetPagingModelRenderer {
-    private static final String LIMIT_PARAMETER = &quot;_limit&quot;; //$NON-NLS-1$
-    private static final String OFFSET_PARAMETER = &quot;_offset&quot;; //$NON-NLS-1$
     private RenderingStrategy renderingStrategy;
     private Long limit;
     private PagingModel pagingModel;
+    private AtomicInteger sequence;
 
     public LimitAndOffsetPagingModelRenderer(RenderingStrategy renderingStrategy,
-<span class="fc" id="L32">            Long limit, PagingModel pagingModel) {</span>
+<span class="fc" id="L32">            Long limit, PagingModel pagingModel, AtomicInteger sequence) {</span>
 <span class="fc" id="L33">        this.renderingStrategy = renderingStrategy;</span>
 <span class="fc" id="L34">        this.limit = limit;</span>
 <span class="fc" id="L35">        this.pagingModel = pagingModel;</span>
-<span class="fc" id="L36">    }</span>
-    
+<span class="fc" id="L36">        this.sequence = sequence;</span>
+<span class="fc" id="L37">    }</span>
+
     public Optional&lt;FragmentAndParameters&gt; render() {
-<span class="fc" id="L39">        return pagingModel.offset().map(this::renderLimitAndOffset)</span>
-<span class="fc" id="L40">                .orElseGet(this::renderLimitOnly);</span>
+<span class="fc" id="L40">        return pagingModel.offset().map(this::renderLimitAndOffset)</span>
+<span class="fc" id="L41">                .orElseGet(this::renderLimitOnly);</span>
     }
 
     private Optional&lt;FragmentAndParameters&gt; renderLimitOnly() {
-<span class="fc" id="L44">        return FragmentAndParameters.withFragment(&quot;limit &quot; + renderPlaceholder(LIMIT_PARAMETER)) //$NON-NLS-1$</span>
-<span class="fc" id="L45">                .withParameter(LIMIT_PARAMETER, limit)</span>
-<span class="fc" id="L46">                .buildOptional();</span>
+<span class="fc" id="L45">        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);</span>
+<span class="fc" id="L46">        return FragmentAndParameters.withFragment(&quot;limit &quot; + renderPlaceholder(mapKey)) //$NON-NLS-1$</span>
+<span class="fc" id="L47">                .withParameter(mapKey, limit)</span>
+<span class="fc" id="L48">                .buildOptional();</span>
     }
-    
+
     private Optional&lt;FragmentAndParameters&gt; renderLimitAndOffset(Long offset) {
-<span class="fc" id="L50">        return FragmentAndParameters.withFragment(&quot;limit &quot; + renderPlaceholder(LIMIT_PARAMETER) //$NON-NLS-1$</span>
-<span class="fc" id="L51">                    + &quot; offset &quot; + renderPlaceholder(OFFSET_PARAMETER)) //$NON-NLS-1$</span>
-<span class="fc" id="L52">                .withParameter(LIMIT_PARAMETER, limit)</span>
-<span class="fc" id="L53">                .withParameter(OFFSET_PARAMETER, offset)</span>
-<span class="fc" id="L54">                .buildOptional();</span>
+<span class="fc" id="L52">        String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);</span>
+<span class="fc" id="L53">        String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);</span>
+<span class="fc" id="L54">        return FragmentAndParameters.withFragment(&quot;limit &quot; + renderPlaceholder(mapKey1) //$NON-NLS-1$</span>
+<span class="fc" id="L55">                    + &quot; offset &quot; + renderPlaceholder(mapKey2)) //$NON-NLS-1$</span>
+<span class="fc" id="L56">                .withParameter(mapKey1, limit)</span>
+<span class="fc" id="L57">                .withParameter(mapKey2, offset)</span>
+<span class="fc" id="L58">                .buildOptional();</span>
     }
-    
+
     private String renderPlaceholder(String parameterName) {
-<span class="fc" id="L58">        return renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX,</span>
-                parameterName); 
+<span class="fc" id="L62">        return renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX,</span>
+                parameterName);
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

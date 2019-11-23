@@ -87,9 +87,9 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>              assertAll(
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>                      () -&gt; assertThat(records.size()).isEqualTo(3),
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>                      () -&gt; assertThat(records.get(0).getId()).isEqualTo(23),
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>                      () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only"</span>),
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>                      () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"_fetchFirstRows"</span>)).isEqualTo(3L),
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>                      () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"_offset"</span>)).isEqualTo(22L)
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>                      () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData offset #{parameters.p1} rows fetch first #{parameters.p2} rows only"</span>),
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>                      () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"p2"</span>)).isEqualTo(3L),
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>                      () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"p1"</span>)).isEqualTo(22L)
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>              );
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          }
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      }
@@ -109,8 +109,8 @@
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>             assertAll(
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>                     () -&gt; assertThat(records.size()).isEqualTo(3),
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>                     () -&gt; assertThat(records.get(0).getId()).isEqualTo(1),
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData fetch first #{parameters._fetchFirstRows} rows only"</span>),
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"_fetchFirstRows"</span>)).isEqualTo(3L)
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData fetch first #{parameters.p1} rows only"</span>),
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"p1"</span>)).isEqualTo(3L)
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>             );
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         }
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     }
@@ -133,9 +133,9 @@
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>             assertAll(
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>                     () -&gt; assertThat(records.size()).isEqualTo(3),
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>                     () -&gt; assertThat(records.get(0).getId()).isEqualTo(45),
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData where id &lt; #{parameters.p1,jdbcType=INTEGER} and id &gt; #{parameters.p2,jdbcType=INTEGER} offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only"</span>),
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"_fetchFirstRows"</span>)).isEqualTo(3L),
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"_offset"</span>)).isEqualTo(22L)
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData where id &lt; #{parameters.p1,jdbcType=INTEGER} and id &gt; #{parameters.p2,jdbcType=INTEGER} offset #{parameters.p3} rows fetch first #{parameters.p4} rows only"</span>),
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"p4"</span>)).isEqualTo(3L),
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"p3"</span>)).isEqualTo(22L)
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>             );
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         }
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     }
@@ -156,8 +156,8 @@
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>             assertAll(
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>                     () -&gt; assertThat(records.size()).isEqualTo(3),
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>                     () -&gt; assertThat(records.get(0).getId()).isEqualTo(1),
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData where id &lt; #{parameters.p1,jdbcType=INTEGER} fetch first #{parameters._fetchFirstRows} rows only"</span>),
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"_fetchFirstRows"</span>)).isEqualTo(3L)
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData where id &lt; #{parameters.p1,jdbcType=INTEGER} fetch first #{parameters.p2} rows only"</span>),
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"p2"</span>)).isEqualTo(3L)
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>             );
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         }
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>     }
@@ -179,9 +179,9 @@
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>             assertAll(
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>                     () -&gt; assertThat(records.size()).isEqualTo(3),
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>                     () -&gt; assertThat(records.get(0).getId()).isEqualTo(23),
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData order by id offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only"</span>),
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"_fetchFirstRows"</span>)).isEqualTo(3L),
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"_offset"</span>)).isEqualTo(22L)
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData order by id offset #{parameters.p1} rows fetch first #{parameters.p2} rows only"</span>),
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"p2"</span>)).isEqualTo(3L),
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"p1"</span>)).isEqualTo(22L)
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>             );
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>         }
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>     }
@@ -202,8 +202,8 @@
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>             assertAll(
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>                     () -&gt; assertThat(records.size()).isEqualTo(3),
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>                     () -&gt; assertThat(records.get(0).getId()).isEqualTo(1),
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData order by id fetch first #{parameters._fetchFirstRows} rows only"</span>),
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"_fetchFirstRows"</span>)).isEqualTo(3L)
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>                     () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select * from AnimalData order by id fetch first #{parameters.p1} rows only"</span>),
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>                     () -&gt; assertThat(selectStatement.getParameters().get(<span class="jxr_string">"p1"</span>)).isEqualTo(3L)
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>             );
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>         }
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>     }

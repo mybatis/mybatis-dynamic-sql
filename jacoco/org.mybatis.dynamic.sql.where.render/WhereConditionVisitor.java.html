@@ -72,7 +72,7 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Op
 
     @Override
     public Optional&lt;FragmentAndParameters&gt; visit(AbstractSingleValueCondition&lt;T&gt; condition) {
-<span class="fc" id="L75">        String mapKey = formatParameterMapKey(sequence.getAndIncrement());</span>
+<span class="fc" id="L75">        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);</span>
 <span class="fc" id="L76">        String fragment = condition.renderCondition(columnName(),</span>
 <span class="fc" id="L77">                getFormattedJdbcPlaceholder(mapKey));</span>
 
@@ -83,8 +83,8 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Op
 
     @Override
     public Optional&lt;FragmentAndParameters&gt; visit(AbstractTwoValueCondition&lt;T&gt; condition) {
-<span class="fc" id="L86">        String mapKey1 = formatParameterMapKey(sequence.getAndIncrement());</span>
-<span class="fc" id="L87">        String mapKey2 = formatParameterMapKey(sequence.getAndIncrement());</span>
+<span class="fc" id="L86">        String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);</span>
+<span class="fc" id="L87">        String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);</span>
 <span class="fc" id="L88">        String fragment = condition.renderCondition(columnName(),</span>
 <span class="fc" id="L89">                getFormattedJdbcPlaceholder(mapKey1),</span>
 <span class="fc" id="L90">                getFormattedJdbcPlaceholder(mapKey2));</span>
@@ -118,65 +118,61 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Op
     }
     
     private FragmentAndParameters toFragmentAndParameters(T value) {
-<span class="fc" id="L121">        String mapKey = formatParameterMapKey(sequence.getAndIncrement());</span>
-        
+<span class="fc" id="L121">        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);</span>
+
 <span class="fc" id="L123">        return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))</span>
 <span class="fc" id="L124">                .withParameter(mapKey, value)</span>
 <span class="fc" id="L125">                .build();</span>
     }
 
-    private String formatParameterMapKey(int number) {
-<span class="fc" id="L129">        return &quot;p&quot; + number; //$NON-NLS-1$</span>
-    }
-    
     private String getFormattedJdbcPlaceholder(String mapKey) {
-<span class="fc" id="L133">        return renderingStrategy.getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        </span>
+<span class="fc" id="L129">        return renderingStrategy.getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        </span>
     }
     
     private String columnName() {
-<span class="fc" id="L137">        return column.renderWithTableAlias(tableAliasCalculator);</span>
+<span class="fc" id="L133">        return column.renderWithTableAlias(tableAliasCalculator);</span>
     }
     
     public static &lt;T&gt; Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
-<span class="fc" id="L141">        return new Builder&lt;T&gt;().withColumn(column);</span>
+<span class="fc" id="L137">        return new Builder&lt;T&gt;().withColumn(column);</span>
     }
     
-<span class="fc" id="L144">    public static class Builder&lt;T&gt; {</span>
+<span class="fc" id="L140">    public static class Builder&lt;T&gt; {</span>
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         private BindableColumn&lt;T&gt; column;
         private TableAliasCalculator tableAliasCalculator;
-<span class="fc" id="L149">        private String parameterPrefix = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;</span>
+<span class="fc" id="L145">        private String parameterPrefix = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;</span>
         
         public Builder&lt;T&gt; withSequence(AtomicInteger sequence) {
-<span class="fc" id="L152">            this.sequence = sequence;</span>
-<span class="fc" id="L153">            return this;</span>
+<span class="fc" id="L148">            this.sequence = sequence;</span>
+<span class="fc" id="L149">            return this;</span>
         }
         
         public Builder&lt;T&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L157">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L158">            return this;</span>
+<span class="fc" id="L153">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L154">            return this;</span>
         }
         
         public Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
-<span class="fc" id="L162">            this.column = column;</span>
-<span class="fc" id="L163">            return this;</span>
+<span class="fc" id="L158">            this.column = column;</span>
+<span class="fc" id="L159">            return this;</span>
         }
         
         public Builder&lt;T&gt; withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L167">            this.tableAliasCalculator = tableAliasCalculator;</span>
-<span class="fc" id="L168">            return this;</span>
+<span class="fc" id="L163">            this.tableAliasCalculator = tableAliasCalculator;</span>
+<span class="fc" id="L164">            return this;</span>
         }
 
         public Builder&lt;T&gt; withParameterName(String parameterName) {
-<span class="fc bfc" id="L172" title="All 2 branches covered.">            if (parameterName != null) {</span>
-<span class="fc" id="L173">                parameterPrefix = parameterName + &quot;.&quot; + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">            if (parameterName != null) {</span>
+<span class="fc" id="L169">                parameterPrefix = parameterName + &quot;.&quot; + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$</span>
             }
-<span class="fc" id="L175">            return this;</span>
+<span class="fc" id="L171">            return this;</span>
         }
         
         public WhereConditionVisitor&lt;T&gt; build() {
-<span class="fc" id="L179">            return new WhereConditionVisitor&lt;&gt;(this);</span>
+<span class="fc" id="L175">            return new WhereConditionVisitor&lt;&gt;(this);</span>
         }
     }
 }

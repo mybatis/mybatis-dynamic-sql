@@ -34,22 +34,22 @@ public class SelectRenderer {
     private SelectModel selectModel;
     private RenderingStrategy renderingStrategy;
     private AtomicInteger sequence;
-    
+
 <span class="fc" id="L38">    private SelectRenderer(Builder builder) {</span>
 <span class="fc" id="L39">        selectModel = Objects.requireNonNull(builder.selectModel);</span>
 <span class="fc" id="L40">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
 <span class="fc" id="L41">        sequence = builder.sequence().orElseGet(() -&gt; new AtomicInteger(1));</span>
 <span class="fc" id="L42">    }</span>
-    
+
     public SelectStatementProvider render() {
 <span class="fc" id="L45">        FragmentCollector fragmentCollector = selectModel</span>
 <span class="fc" id="L46">                .mapQueryExpressions(this::renderQueryExpression)</span>
 <span class="fc" id="L47">                .collect(FragmentCollector.collect());</span>
 <span class="fc" id="L48">        renderOrderBy(fragmentCollector);</span>
 <span class="fc" id="L49">        renderPagingModel(fragmentCollector);</span>
-        
+
 <span class="fc" id="L51">        String selectStatement = fragmentCollector.fragments().collect(Collectors.joining(&quot; &quot;)); //$NON-NLS-1$</span>
-        
+
 <span class="fc" id="L53">        return DefaultSelectStatementProvider.withSelectStatement(selectStatement)</span>
 <span class="fc" id="L54">                .withParameters(fragmentCollector.parameters())</span>
 <span class="fc" id="L55">                .build();</span>
@@ -66,13 +66,13 @@ public class SelectRenderer {
     private void renderOrderBy(FragmentCollector fragmentCollector) {
 <span class="fc" id="L67">        selectModel.orderByModel().ifPresent(om -&gt; renderOrderBy(fragmentCollector, om));</span>
 <span class="fc" id="L68">    }</span>
-    
+
     private void renderOrderBy(FragmentCollector fragmentCollector, OrderByModel orderByModel) {
 <span class="fc" id="L71">        String phrase = orderByModel.mapColumns(this::calculateOrderByPhrase)</span>
 <span class="fc" id="L72">                .collect(CustomCollectors.joining(&quot;, &quot;, &quot;order by &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
 <span class="fc" id="L73">        fragmentCollector.add(FragmentAndParameters.withFragment(phrase).build());</span>
 <span class="fc" id="L74">    }</span>
-    
+
     private String calculateOrderByPhrase(SortSpecification column) {
 <span class="fc" id="L77">        String phrase = column.aliasOrName();</span>
 <span class="fc bfc" id="L78" title="All 2 branches covered.">        if (column.isDescending()) {</span>
@@ -80,50 +80,51 @@ public class SelectRenderer {
         }
 <span class="fc" id="L81">        return phrase;</span>
     }
-    
+
     private void renderPagingModel(FragmentCollector fragmentCollector) {
 <span class="fc" id="L85">        selectModel.pagingModel().flatMap(this::renderPagingModel)</span>
 <span class="fc" id="L86">            .ifPresent(fragmentCollector::add);</span>
 <span class="fc" id="L87">    }</span>
-    
+
     private Optional&lt;FragmentAndParameters&gt; renderPagingModel(PagingModel pagingModel) {
 <span class="fc" id="L90">        return new PagingModelRenderer.Builder()</span>
 <span class="fc" id="L91">                .withPagingModel(pagingModel)</span>
 <span class="fc" id="L92">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L93">                .build()</span>
-<span class="fc" id="L94">                .render();</span>
+<span class="fc" id="L93">                .withSequence(sequence)</span>
+<span class="fc" id="L94">                .build()</span>
+<span class="fc" id="L95">                .render();</span>
     }
 
     public static Builder withSelectModel(SelectModel selectModel) {
-<span class="fc" id="L98">        return new Builder().withSelectModel(selectModel);</span>
+<span class="fc" id="L99">        return new Builder().withSelectModel(selectModel);</span>
     }
-    
-<span class="fc" id="L101">    public static class Builder {</span>
+
+<span class="fc" id="L102">    public static class Builder {</span>
         private SelectModel selectModel;
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
-        
+
         public Builder withSelectModel(SelectModel selectModel) {
-<span class="fc" id="L107">            this.selectModel = selectModel;</span>
-<span class="fc" id="L108">            return this;</span>
+<span class="fc" id="L108">            this.selectModel = selectModel;</span>
+<span class="fc" id="L109">            return this;</span>
         }
-        
+
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L112">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L113">            return this;</span>
+<span class="fc" id="L113">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L114">            return this;</span>
         }
-        
+
         public Builder withSequence(AtomicInteger sequence) {
-<span class="fc" id="L117">            this.sequence = sequence;</span>
-<span class="fc" id="L118">            return this;</span>
+<span class="fc" id="L118">            this.sequence = sequence;</span>
+<span class="fc" id="L119">            return this;</span>
         }
-        
+
         private Optional&lt;AtomicInteger&gt; sequence() {
-<span class="fc" id="L122">            return Optional.ofNullable(sequence);</span>
+<span class="fc" id="L123">            return Optional.ofNullable(sequence);</span>
         }
-        
+
         public SelectRenderer build() {
-<span class="fc" id="L126">            return new SelectRenderer(this);</span>
+<span class="fc" id="L127">            return new SelectRenderer(this);</span>
         }
     }
 }

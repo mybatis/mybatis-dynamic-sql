@@ -409,7 +409,7 @@
 <a class="jxr_linenumber" name="L401" href="#L401">401</a>                     .build()
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>             
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name limit #{parameters._limit} offset #{parameters._offset}"</span>;
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name limit #{parameters.p1} offset #{parameters.p2}"</span>;
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>             
 <a class="jxr_linenumber" name="L407" href="#L407">407</a>             List&lt;Map&lt;String, Object&gt;&gt; rows = mapper.generalSelect(selectStatement);
@@ -432,7 +432,7 @@
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>                     .build()
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L426" href="#L426">426</a>             
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name limit #{parameters._limit}"</span>;
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name limit #{parameters.p1}"</span>;
 <a class="jxr_linenumber" name="L428" href="#L428">428</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L429" href="#L429">429</a>             
 <a class="jxr_linenumber" name="L430" href="#L430">430</a>             List&lt;Map&lt;String, Object&gt;&gt; rows = mapper.generalSelect(selectStatement);
@@ -455,7 +455,7 @@
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>                     .build()
 <a class="jxr_linenumber" name="L448" href="#L448">448</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L449" href="#L449">449</a>             
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name offset #{parameters._offset} rows"</span>;
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name offset #{parameters.p1} rows"</span>;
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L452" href="#L452">452</a>             
 <a class="jxr_linenumber" name="L453" href="#L453">453</a>             List&lt;Map&lt;String, Object&gt;&gt; rows = mapper.generalSelect(selectStatement);
@@ -479,7 +479,7 @@
 <a class="jxr_linenumber" name="L471" href="#L471">471</a>                     .build()
 <a class="jxr_linenumber" name="L472" href="#L472">472</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>             
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name offset #{parameters._offset} rows fetch first #{parameters._fetchFirstRows} rows only"</span>;
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name offset #{parameters.p1} rows fetch first #{parameters.p2} rows only"</span>;
 <a class="jxr_linenumber" name="L475" href="#L475">475</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L476" href="#L476">476</a>             
 <a class="jxr_linenumber" name="L477" href="#L477">477</a>             List&lt;Map&lt;String, Object&gt;&gt; rows = mapper.generalSelect(selectStatement);
@@ -502,7 +502,7 @@
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>                     .build()
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L496" href="#L496">496</a>             
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name fetch first #{parameters._fetchFirstRows} rows only"</span>;
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>             String expected = <span class="jxr_string">"select last_name, count(*) as count from Person group by last_name fetch first #{parameters.p1} rows only"</span>;
 <a class="jxr_linenumber" name="L498" href="#L498">498</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L499" href="#L499">499</a>             
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>             List&lt;Map&lt;String, Object&gt;&gt; rows = mapper.generalSelect(selectStatement);

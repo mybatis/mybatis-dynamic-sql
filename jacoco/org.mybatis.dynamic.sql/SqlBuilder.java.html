@@ -162,12 +162,12 @@ public interface SqlBuilder {
     }
     
     static &lt;T&gt; WhereDSL where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L165">        return WhereDSL.where(column, condition);</span>
+<span class="fc" id="L165">        return WhereDSL.where().where(column, condition);</span>
     }
     
     static &lt;T&gt; WhereDSL where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;... subCriteria) {
-<span class="fc" id="L170">        return WhereDSL.where(column, condition, subCriteria);</span>
+<span class="fc" id="L170">        return WhereDSL.where().where(column, condition, subCriteria);</span>
     }
     
     // where condition connectors

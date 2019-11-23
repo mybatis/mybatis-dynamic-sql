@@ -33,10 +33,10 @@
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Component;
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  @Component
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="UpdateStatementConvertor" href="../../../examples/springbatch/common/UpdateStatementConvertor.html#UpdateStatementConvertor">UpdateStatementConvertor</a> <strong class="jxr_keyword">implements</strong> Converter&lt;Person, UpdateStatementProvider&gt; {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="UpdateStatementConvertor" href="../../../examples/springbatch/common/UpdateStatementConvertor.html#UpdateStatementConvertor">UpdateStatementConvertor</a> <strong class="jxr_keyword">implements</strong> Converter&lt;PersonRecord, UpdateStatementProvider&gt; {
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      @Override
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">public</strong> UpdateStatementProvider convert(<a name="Person" href="../../../examples/springbatch/common/Person.html#Person">Person</a> source) {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">public</strong> UpdateStatementProvider convert(<a name="PersonRecord" href="../../../examples/springbatch/common/PersonRecord.html#PersonRecord">PersonRecord</a> source) {
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>          <strong class="jxr_keyword">return</strong> UpdateDSL.update(person)
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>                  .set(firstName).equalTo(source::getFirstName)
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>                  .set(lastName).equalTo(source::getLastName)

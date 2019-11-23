@@ -55,7 +55,7 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.springframework.transaction.PlatformTransactionManager;
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> examples.springbatch.common.Person;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> examples.springbatch.common.PersonRecord;
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> examples.springbatch.mapper.PersonMapper;
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  @EnableBatchProcessing
@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      }
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      @Bean
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <strong class="jxr_keyword">public</strong> MyBatisPagingItemReader&lt;Person&gt; reader(SqlSessionFactory sqlSessionFactory) {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <strong class="jxr_keyword">public</strong> MyBatisPagingItemReader&lt;PersonRecord&gt; reader(SqlSessionFactory sqlSessionFactory) {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          SelectStatementProvider selectStatement =  SpringBatchUtility.selectForPaging(person.allColumns())
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>                  .from(person)
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>                  .where(forPagingTest, isEqualTo(<strong class="jxr_keyword">true</strong>))
@@ -102,7 +102,7 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>                  .build()
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>                  .render();
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          MyBatisPagingItemReader&lt;Person&gt; reader = <strong class="jxr_keyword">new</strong> MyBatisPagingItemReader&lt;&gt;();
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          MyBatisPagingItemReader&lt;PersonRecord&gt; reader = <strong class="jxr_keyword">new</strong> MyBatisPagingItemReader&lt;&gt;();
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          reader.setQueryId(PersonMapper.<strong class="jxr_keyword">class</strong>.getName() + <span class="jxr_string">".selectMany"</span>);
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>          reader.setSqlSessionFactory(sqlSessionFactory);
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>         reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement));
@@ -111,9 +111,9 @@
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>     }
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     @Bean
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">public</strong> MyBatisBatchItemWriter&lt;Person&gt; writer(SqlSessionFactory sqlSessionFactory,
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>             Converter&lt;Person, UpdateStatementProvider&gt; convertor) {
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         MyBatisBatchItemWriter&lt;Person&gt; writer = <strong class="jxr_keyword">new</strong> MyBatisBatchItemWriter&lt;&gt;();
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">public</strong> MyBatisBatchItemWriter&lt;PersonRecord&gt; writer(SqlSessionFactory sqlSessionFactory,
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>             Converter&lt;PersonRecord, UpdateStatementProvider&gt; convertor) {
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         MyBatisBatchItemWriter&lt;PersonRecord&gt; writer = <strong class="jxr_keyword">new</strong> MyBatisBatchItemWriter&lt;&gt;();
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         writer.setSqlSessionFactory(sqlSessionFactory);
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         writer.setItemToParameterConverter(convertor);
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         writer.setStatementId(PersonMapper.<strong class="jxr_keyword">class</strong>.getName() + <span class="jxr_string">".update"</span>);
@@ -121,9 +121,9 @@
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>     }
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>     
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>     @Bean
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">public</strong> Step step1(ItemReader&lt;Person&gt; reader, ItemProcessor&lt;Person, Person&gt; processor, ItemWriter&lt;Person&gt; writer) {
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">public</strong> Step step1(ItemReader&lt;PersonRecord&gt; reader, ItemProcessor&lt;PersonRecord, PersonRecord&gt; processor, ItemWriter&lt;PersonRecord&gt; writer) {
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         <strong class="jxr_keyword">return</strong> stepBuilderFactory.get(<span class="jxr_string">"step1"</span>)
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>                 .&lt;Person, Person&gt;chunk(7)
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>                 .&lt;PersonRecord, PersonRecord&gt;chunk(7)
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                 .reader(reader)
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .processor(processor)
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>                 .writer(writer)

@@ -27,26 +27,32 @@ import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 
     private Function&lt;DeleteModel, R&gt; adapterFunction;
     private SqlTable table;
-<span class="fc" id="L35">    private DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();</span>
+<span class="fc" id="L37">    private DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();</span>
     
-<span class="fc" id="L37">    private DeleteDSL(SqlTable table, Function&lt;DeleteModel, R&gt; adapterFunction) {</span>
-<span class="fc" id="L38">        this.table = Objects.requireNonNull(table);</span>
-<span class="fc" id="L39">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L39">    private DeleteDSL(SqlTable table, Function&lt;DeleteModel, R&gt; adapterFunction) {</span>
+<span class="fc" id="L40">        this.table = Objects.requireNonNull(table);</span>
+<span class="fc" id="L41">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
+<span class="fc" id="L42">    }</span>
     
     public DeleteWhereBuilder where() {
-<span class="fc" id="L43">        return whereBuilder;</span>
+<span class="fc" id="L45">        return whereBuilder;</span>
     }
     
     public &lt;T&gt; DeleteWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;...subCriteria) {
-<span class="fc" id="L48">        whereBuilder.and(column, condition, subCriteria);</span>
-<span class="fc" id="L49">        return whereBuilder;</span>
+<span class="fc" id="L50">        whereBuilder.where(column, condition, subCriteria);</span>
+<span class="fc" id="L51">        return whereBuilder;</span>
+    }
+
+    public DeleteWhereBuilder applyWhere(WhereApplier whereApplier) {
+<span class="fc" id="L55">        return whereBuilder.applyWhere(whereApplier);</span>
     }
 
     /**
@@ -57,18 +63,18 @@ public class DeleteDSL&lt;R&gt; implements Buildable&lt;R&gt; {
      */
     @Override
     public R build() {
-<span class="fc" id="L60">        DeleteModel deleteModel = DeleteModel.withTable(table)</span>
-<span class="fc" id="L61">                .withWhereModel(whereBuilder.buildWhereModel())</span>
-<span class="fc" id="L62">                .build();</span>
-<span class="fc" id="L63">        return adapterFunction.apply(deleteModel);</span>
+<span class="fc" id="L66">        DeleteModel deleteModel = DeleteModel.withTable(table)</span>
+<span class="fc" id="L67">                .withWhereModel(whereBuilder.buildWhereModel())</span>
+<span class="fc" id="L68">                .build();</span>
+<span class="fc" id="L69">        return adapterFunction.apply(deleteModel);</span>
     }
     
     public static &lt;R&gt; DeleteDSL&lt;R&gt; deleteFrom(Function&lt;DeleteModel, R&gt; adapterFunction, SqlTable table) {
-<span class="fc" id="L67">        return new DeleteDSL&lt;&gt;(table, adapterFunction);</span>
+<span class="fc" id="L73">        return new DeleteDSL&lt;&gt;(table, adapterFunction);</span>
     }
     
     public static DeleteDSL&lt;DeleteModel&gt; deleteFrom(SqlTable table) {
-<span class="fc" id="L71">        return deleteFrom(Function.identity(), table);</span>
+<span class="fc" id="L77">        return deleteFrom(Function.identity(), table);</span>
     }
     
     /**
@@ -84,23 +90,28 @@ public class DeleteDSL&lt;R&gt; implements Buildable&lt;R&gt; {
     @Deprecated
     public static &lt;T&gt; DeleteDSL&lt;MyBatis3DeleteModelAdapter&lt;T&gt;&gt; deleteFromWithMapper(
             Function&lt;DeleteStatementProvider, T&gt; mapperMethod, SqlTable table) {
-<span class="fc" id="L87">        return deleteFrom(deleteModel -&gt; MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);</span>
+<span class="fc" id="L93">        return deleteFrom(deleteModel -&gt; MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);</span>
     }
     
     public class DeleteWhereBuilder extends AbstractWhereDSL&lt;DeleteWhereBuilder&gt; implements Buildable&lt;R&gt; {
         
-<span class="fc" id="L92">        private DeleteWhereBuilder() {</span>
-<span class="fc" id="L93">            super();</span>
-<span class="fc" id="L94">        }</span>
-        
+<span class="fc" id="L98">        private DeleteWhereBuilder() {</span>
+<span class="fc" id="L99">            super();</span>
+<span class="fc" id="L100">        }</span>
+
         @Override
         public R build() {
-<span class="fc" id="L98">            return DeleteDSL.this.build();</span>
+<span class="fc" id="L104">            return DeleteDSL.this.build();</span>
         }
         
         @Override
         protected DeleteWhereBuilder getThis() {
-<span class="fc" id="L103">            return this;</span>
+<span class="fc" id="L109">            return this;</span>
+        }
+
+        @Override
+        protected WhereModel buildWhereModel() {
+<span class="fc" id="L114">            return super.internalBuild();</span>
         }
     }
 }

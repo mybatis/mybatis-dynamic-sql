@@ -25,6 +25,8 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 /**
  * DSL for building count queries. Count queries are specializations of select queries. They have joins and where
@@ -38,67 +40,76 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 public class CountDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;CountDSL&lt;R&gt;, R&gt; implements Buildable&lt;R&gt; {
 
     private Function&lt;SelectModel, R&gt; adapterFunction;
-<span class="fc" id="L41">    private CountWhereBuilder whereBuilder = new CountWhereBuilder();</span>
+<span class="fc" id="L43">    private CountWhereBuilder whereBuilder = new CountWhereBuilder();</span>
     
     private CountDSL(SqlTable table, Function&lt;SelectModel, R&gt; adapterFunction) {
-<span class="fc" id="L44">        super(table);</span>
-<span class="fc" id="L45">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L46">        super(table);</span>
+<span class="fc" id="L47">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
+<span class="fc" id="L48">    }</span>
     
     public CountWhereBuilder where() {
-<span class="fc" id="L49">        return whereBuilder;</span>
+<span class="fc" id="L51">        return whereBuilder;</span>
     }
 
     public &lt;T&gt; CountWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;...subCriteria) {
-<span class="fc" id="L54">        whereBuilder.and(column, condition, subCriteria);</span>
-<span class="fc" id="L55">        return whereBuilder;</span>
+<span class="fc" id="L56">        whereBuilder.where(column, condition, subCriteria);</span>
+<span class="fc" id="L57">        return whereBuilder;</span>
+    }
+
+    public CountWhereBuilder applyWhere(WhereApplier whereApplier) {
+<span class="fc" id="L61">        return whereBuilder.applyWhere(whereApplier);</span>
     }
 
     @Override
     public R build() {
-<span class="fc" id="L60">        return adapterFunction.apply(buildModel());</span>
+<span class="fc" id="L66">        return adapterFunction.apply(buildModel());</span>
     }
 
     private SelectModel buildModel() {
-<span class="fc" id="L64">        QueryExpressionModel.Builder b = new QueryExpressionModel.Builder()</span>
-<span class="fc" id="L65">                .withSelectColumn(SqlBuilder.count())</span>
-<span class="fc" id="L66">                .withTable(table())</span>
-<span class="fc" id="L67">                .withTableAliases(tableAliases)</span>
-<span class="fc" id="L68">                .withWhereModel(whereBuilder.buildWhereModel());</span>
+<span class="fc" id="L70">        QueryExpressionModel.Builder b = new QueryExpressionModel.Builder()</span>
+<span class="fc" id="L71">                .withSelectColumn(SqlBuilder.count())</span>
+<span class="fc" id="L72">                .withTable(table())</span>
+<span class="fc" id="L73">                .withTableAliases(tableAliases)</span>
+<span class="fc" id="L74">                .withWhereModel(whereBuilder.buildWhereModel());</span>
         
-<span class="fc" id="L70">        buildJoinModel().ifPresent(b::withJoinModel);</span>
+<span class="fc" id="L76">        buildJoinModel().ifPresent(b::withJoinModel);</span>
         
-<span class="fc" id="L72">        return new SelectModel.Builder()</span>
-<span class="fc" id="L73">                .withQueryExpression(b.build())</span>
-<span class="fc" id="L74">                .build();</span>
+<span class="fc" id="L78">        return new SelectModel.Builder()</span>
+<span class="fc" id="L79">                .withQueryExpression(b.build())</span>
+<span class="fc" id="L80">                .build();</span>
     }
     
     public static CountDSL&lt;SelectModel&gt; countFrom(SqlTable table) {
-<span class="fc" id="L78">        return countFrom(Function.identity(), table);</span>
+<span class="fc" id="L84">        return countFrom(Function.identity(), table);</span>
     }
     
     public static &lt;R&gt; CountDSL&lt;R&gt; countFrom(Function&lt;SelectModel, R&gt; adapterFunction, SqlTable table) {
-<span class="fc" id="L82">        return new CountDSL&lt;&gt;(table, adapterFunction);</span>
+<span class="fc" id="L88">        return new CountDSL&lt;&gt;(table, adapterFunction);</span>
     }
     
     @Override
     protected CountDSL&lt;R&gt; getThis() {
-<span class="fc" id="L87">        return this;</span>
+<span class="fc" id="L93">        return this;</span>
     }
     
     public class CountWhereBuilder extends AbstractWhereDSL&lt;CountWhereBuilder&gt;
             implements Buildable&lt;R&gt; {
-<span class="fc" id="L92">        private &lt;T&gt; CountWhereBuilder() {}</span>
+<span class="fc" id="L98">        private &lt;T&gt; CountWhereBuilder() {}</span>
 
         @Override
         public R build() {
-<span class="fc" id="L96">            return CountDSL.this.build();</span>
+<span class="fc" id="L102">            return CountDSL.this.build();</span>
         }
         
         @Override
         protected CountWhereBuilder getThis() {
-<span class="fc" id="L101">            return this;</span>
+<span class="fc" id="L107">            return this;</span>
+        }
+
+        @Override
+        protected WhereModel buildWhereModel() {
+<span class="fc" id="L112">            return super.internalBuild();</span>
         }
     }
 }

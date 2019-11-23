@@ -15,44 +15,28 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.VisitableCondition;
-
 public class WhereDSL extends AbstractWhereDSL&lt;WhereDSL&gt; {
 
     private WhereDSL() {
         super();
     }
 
-    private &lt;T&gt; WhereDSL(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L29">        super(column, condition);</span>
-<span class="fc" id="L30">    }</span>
-
-    private &lt;T&gt; WhereDSL(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition, SqlCriterion&lt;?&gt;... subCriteria) {
-<span class="fc" id="L33">        super(column, condition, subCriteria);</span>
-<span class="fc" id="L34">    }</span>
-
     @Override
     protected WhereDSL getThis() {
-<span class="fc" id="L38">        return this;</span>
+<span class="fc" id="L26">        return this;</span>
     }
 
     public static WhereDSL where() {
-<span class="fc" id="L42">        return new WhereDSL();</span>
+<span class="fc" id="L30">        return new WhereDSL();</span>
     }
 
-    public static &lt;T&gt; WhereDSL where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition) {
-<span class="fc" id="L46">        return new WhereDSL(column, condition);</span>
-    }
-
-    public static &lt;T&gt; WhereDSL where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
-            SqlCriterion&lt;?&gt;... subCriteria) {
-<span class="fc" id="L51">        return new WhereDSL(column, condition, subCriteria);</span>
+    @Override
+    protected WhereModel buildWhereModel() {
+<span class="fc" id="L35">        return super.internalBuild();</span>
     }
 
     public WhereModel build() {
-<span class="fc" id="L55">        return super.buildWhereModel();</span>
+<span class="fc" id="L39">        return buildWhereModel();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
