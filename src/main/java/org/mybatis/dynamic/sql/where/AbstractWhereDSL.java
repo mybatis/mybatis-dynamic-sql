@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     private List<SqlCriterion<?>> criteria = new ArrayList<>();
     
-    protected <S> AbstractWhereDSL() {
+    protected AbstractWhereDSL() {
         super();
     }
     
@@ -45,9 +45,9 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         return getThis();
     }
 
-    @SuppressWarnings("unchecked")
     public T applyWhere(WhereApplier whereApplier) {
-        return (T) whereApplier.apply(this);
+        whereApplier.accept(this);
+        return getThis();
     }
 
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition) {

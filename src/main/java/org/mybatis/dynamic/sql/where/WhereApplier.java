@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-import java.util.function.UnaryOperator;
+import java.util.function.Consumer;
 
 @FunctionalInterface
-public interface WhereApplier extends UnaryOperator<AbstractWhereDSL<?>> {}
+public interface WhereApplier extends Consumer<AbstractWhereDSL<?>> {}
