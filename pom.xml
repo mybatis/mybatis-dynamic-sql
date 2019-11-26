@@ -42,7 +42,7 @@
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
-    <jacoco.version>0.8.4</jacoco.version>
+    <jacoco.version>0.8.5</jacoco.version>
     <kotlin.code.style>official</kotlin.code.style>
   </properties>
 
