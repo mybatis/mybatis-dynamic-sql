@@ -22,12 +22,13 @@ import org.mybatis.dynamic.sql.select.join.JoinCriterion
 typealias JoinReceiver = JoinCollector.() -> JoinCollector
 
 class JoinCollector {
-    lateinit var onJoinCriterion: JoinCriterion
+    val onJoinCriterion: JoinCriterion by lazy { internalOnCriterion }
     val andJoinCriteria = mutableListOf<JoinCriterion>()
+    private lateinit var internalOnCriterion: JoinCriterion
 
     fun on(column: BasicColumn, condition: JoinCondition) =
         apply {
-            onJoinCriterion = JoinCriterion.Builder()
+            internalOnCriterion = JoinCriterion.Builder()
                 .withConnector("on")
                 .withJoinColumn(column)
                 .withJoinCondition(condition)
