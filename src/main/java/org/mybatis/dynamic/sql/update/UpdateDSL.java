@@ -168,7 +168,7 @@ public class UpdateDSL<R> implements Buildable<R> {
 
     public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> implements Buildable<R> {
         
-        public <T> UpdateWhereBuilder() {
+        public UpdateWhereBuilder() {
             super();
         }
         

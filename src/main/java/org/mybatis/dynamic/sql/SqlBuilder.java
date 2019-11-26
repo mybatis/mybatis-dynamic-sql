@@ -263,25 +263,21 @@ public interface SqlBuilder {
     }
     
     // functions
-    @SafeVarargs
     static <T extends Number> Add<T> add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Add.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
     
-    @SafeVarargs
     static <T extends Number> Divide<T> divide(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Divide.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
     
-    @SafeVarargs
     static <T extends Number> Multiply<T> multiply(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Multiply.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
     
-    @SafeVarargs
     static <T extends Number> Subtract<T> subtract(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Subtract.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
