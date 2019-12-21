@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
@@ -32,6 +33,10 @@ public class SqlProviderAdapter {
 
     public String delete(DeleteStatementProvider deleteStatement) {
         return deleteStatement.getDeleteStatement();
+    }
+    
+    public String generalInsert(GeneralInsertStatementProvider insertStatement) {
+        return insertStatement.getInsertStatement();
     }
     
     public String insert(InsertStatementProvider<?> insertStatement) {

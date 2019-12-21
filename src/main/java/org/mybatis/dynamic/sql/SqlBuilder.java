@@ -17,14 +17,18 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
+import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
+import org.mybatis.dynamic.sql.insert.GeneralInsertDSL.SetClauseFinisher;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
+import org.mybatis.dynamic.sql.insert.InsertSelectDSL.SelectGatherer;
 import org.mybatis.dynamic.sql.select.CountDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
@@ -133,8 +137,8 @@ public interface SqlBuilder {
         return MultiRowInsertDSL.insert(records);
     }
     
-    static InsertSelectDSL.InsertColumnGatherer insertInto(SqlTable table) {
-        return InsertSelectDSL.insertInto(table);
+    static InsertIntoNextStep insertInto(SqlTable table) {
+        return new InsertIntoNextStep(table);
     }
     
     static FromGatherer<SelectModel> select(BasicColumn...selectList) {
@@ -635,5 +639,29 @@ public interface SqlBuilder {
     // order by support
     static SortSpecification sortColumn(String name) {
         return SimpleSortSpecification.of(name);
+    }
+
+    public static class InsertIntoNextStep {
+
+        private SqlTable table;
+        
+        private InsertIntoNextStep(SqlTable table) {
+            this.table = Objects.requireNonNull(table);
+        }
+        
+        public InsertSelectDSL withSelectStatement(Buildable<SelectModel> selectModelBuilder) {
+            return InsertSelectDSL.insertInto(table)
+                    .withSelectStatement(selectModelBuilder);
+        }
+
+        public SelectGatherer withColumnList(SqlColumn<?>...columns) {
+            return InsertSelectDSL.insertInto(table)
+                    .withColumnList(columns);
+        }
+
+        public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
+            return GeneralInsertDSL.insertInto(table)
+                    .set(column);
+        }
     }
 }

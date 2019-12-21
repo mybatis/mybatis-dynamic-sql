@@ -13,8 +13,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package org.mybatis.dynamic.sql.insert.render;
 
-public interface InsertMappingVisitor<T> extends BaseInsertMappingVisitor<T> {
-    T visit(PropertyMapping mapping);
+import java.util.Map;
+
+public interface GeneralInsertStatementProvider {
+    Map<String, Object> getParameters();
+
+    String getInsertStatement();
 }

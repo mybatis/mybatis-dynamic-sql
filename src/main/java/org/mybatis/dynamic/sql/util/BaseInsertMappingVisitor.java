@@ -15,6 +15,10 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public interface InsertMappingVisitor<T> extends BaseInsertMappingVisitor<T> {
-    T visit(PropertyMapping mapping);
+public interface BaseInsertMappingVisitor<T> {
+    T visit(NullMapping mapping);
+
+    T visit(ConstantMapping mapping);
+
+    T visit(StringConstantMapping mapping);
 }

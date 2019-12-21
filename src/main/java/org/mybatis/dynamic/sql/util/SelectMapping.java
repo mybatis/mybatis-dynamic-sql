@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.util;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.select.SelectModel;
 
-public class SelectMapping extends AbstractColumnMapping implements UpdateMapping {
+public class SelectMapping extends AbstractColumnMapping implements UpdateMapping, GeneralInsertMapping {
 
     private SelectModel selectModel;
     
@@ -33,6 +33,11 @@ public class SelectMapping extends AbstractColumnMapping implements UpdateMappin
 
     @Override
     public <R> R accept(UpdateMappingVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
+    public <R> R accept(GeneralInsertMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 

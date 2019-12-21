@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ValueMapping<T> extends AbstractColumnMapping implements UpdateMapping {
+public class ValueMapping<T> extends AbstractColumnMapping implements UpdateMapping, GeneralInsertMapping {
 
     private Supplier<T> valueSupplier;
     
@@ -34,6 +34,11 @@ public class ValueMapping<T> extends AbstractColumnMapping implements UpdateMapp
 
     @Override
     public <R> R accept(UpdateMappingVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
+    public <R> R accept(GeneralInsertMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 
