@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class NullMapping extends AbstractColumnMapping implements GeneralInsertMapping, InsertMapping, UpdateMapping {
+public class NullMapping extends AbstractColumnMapping {
     private NullMapping(SqlColumn<?> column) {
         super(column);
     }
@@ -27,17 +27,7 @@ public class NullMapping extends AbstractColumnMapping implements GeneralInsertM
     }
 
     @Override
-    public <R> R accept(GeneralInsertMappingVisitor<R> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public <R> R accept(InsertMappingVisitor<R> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public <R> R accept(UpdateMappingVisitor<R> visitor) {
+    public <R> R accept(ColumnMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 }

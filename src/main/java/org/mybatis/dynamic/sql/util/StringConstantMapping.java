@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
  * @author Jeff Butler
  *
  */
-public class StringConstantMapping extends AbstractColumnMapping implements GeneralInsertMapping, InsertMapping, UpdateMapping {
+public class StringConstantMapping extends AbstractColumnMapping {
     private String constant;
     
     private StringConstantMapping(SqlColumn<?> column) {
@@ -42,17 +42,7 @@ public class StringConstantMapping extends AbstractColumnMapping implements Gene
     }
 
     @Override
-    public <R> R accept(GeneralInsertMappingVisitor<R> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public <R> R accept(InsertMappingVisitor<R> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public <R> R accept(UpdateMappingVisitor<R> visitor) {
+    public <R> R accept(ColumnMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 }

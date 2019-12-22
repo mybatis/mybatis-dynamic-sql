@@ -23,16 +23,16 @@ import java.util.function.Supplier;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
-import org.mybatis.dynamic.sql.util.GeneralInsertMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 
 public class GeneralInsertDSL {
-    private List<GeneralInsertMapping> insertMappings = new ArrayList<>();
+    private List<AbstractColumnMapping> insertMappings = new ArrayList<>();
     private SqlTable table;
 
     private GeneralInsertDSL(SqlTable table) {

@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.update.UpdateModel;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
@@ -98,11 +98,11 @@ public class UpdateRenderer {
                 .render();
     }
 
-    private Function<UpdateMapping, FragmentAndParameters> toFragmentAndParameters(SetPhraseVisitor visitor) {
+    private Function<AbstractColumnMapping, FragmentAndParameters> toFragmentAndParameters(SetPhraseVisitor visitor) {
         return updateMapping -> toFragmentAndParameters(visitor, updateMapping);
     }
     
-    private FragmentAndParameters toFragmentAndParameters(SetPhraseVisitor visitor, UpdateMapping updateMapping) {
+    private FragmentAndParameters toFragmentAndParameters(SetPhraseVisitor visitor, AbstractColumnMapping updateMapping) {
         return updateMapping.accept(visitor);
     }
     

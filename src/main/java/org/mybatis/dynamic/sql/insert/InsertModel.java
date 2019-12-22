@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.InsertMapping;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public class InsertModel<T> {
     private SqlTable table;
     private T record;
-    private List<InsertMapping> columnMappings;
+    private List<AbstractColumnMapping> columnMappings;
     
     private InsertModel(Builder<T> builder) {
         table = Objects.requireNonNull(builder.table);
@@ -38,7 +38,7 @@ public class InsertModel<T> {
         columnMappings = Objects.requireNonNull(builder.columnMappings);
     }
 
-    public <R> Stream<R> mapColumnMappings(Function<InsertMapping, R> mapper) {
+    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
         return columnMappings.stream().map(mapper);
     }
     
@@ -64,7 +64,7 @@ public class InsertModel<T> {
     public static class Builder<T> {
         private SqlTable table;
         private T record;
-        private List<InsertMapping> columnMappings = new ArrayList<>();
+        private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
         
         public Builder<T> withTable(SqlTable table) {
             this.table = table;
@@ -76,7 +76,7 @@ public class InsertModel<T> {
             return this;
         }
         
-        public Builder<T> withColumnMappings(List<InsertMapping> columnMappings) {
+        public Builder<T> withColumnMappings(List<AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }

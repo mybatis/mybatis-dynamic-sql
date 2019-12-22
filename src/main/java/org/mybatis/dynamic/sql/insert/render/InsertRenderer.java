@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.InsertMapping;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public class InsertRenderer<T> {
 
@@ -51,11 +51,11 @@ public class InsertRenderer<T> {
                 + spaceBefore(collector.valuesPhrase());
     }
 
-    private Function<InsertMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {
+    private Function<AbstractColumnMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
     
-    private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, InsertMapping insertMapping) {
+    private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
     

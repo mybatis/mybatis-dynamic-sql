@@ -24,12 +24,12 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.util.InsertMapping;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public abstract class AbstractMultiRowInsertModel<T> {
     private SqlTable table;
     private List<T> records;
-    private List<InsertMapping> columnMappings;
+    private List<AbstractColumnMapping> columnMappings;
     
     protected AbstractMultiRowInsertModel(AbstractBuilder<T, ?> builder) {
         table = Objects.requireNonNull(builder.table);
@@ -37,7 +37,7 @@ public abstract class AbstractMultiRowInsertModel<T> {
         columnMappings = Objects.requireNonNull(builder.columnMappings);
     }
 
-    public <R> Stream<R> mapColumnMappings(Function<InsertMapping, R> mapper) {
+    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
         return columnMappings.stream().map(mapper);
     }
     
@@ -56,7 +56,7 @@ public abstract class AbstractMultiRowInsertModel<T> {
     public abstract static class AbstractBuilder<T, S extends AbstractBuilder<T, S>> {
         private SqlTable table;
         private List<T> records = new ArrayList<>();
-        private List<InsertMapping> columnMappings = new ArrayList<>();
+        private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
         
         public S withTable(SqlTable table) {
             this.table = table;
@@ -68,7 +68,7 @@ public abstract class AbstractMultiRowInsertModel<T> {
             return getThis();
         }
         
-        public S withColumnMappings(List<InsertMapping> columnMappings) {
+        public S withColumnMappings(List<AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return getThis();
         }

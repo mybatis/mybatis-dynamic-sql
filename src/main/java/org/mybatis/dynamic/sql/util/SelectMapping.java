@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.util;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.select.SelectModel;
 
-public class SelectMapping extends AbstractColumnMapping implements UpdateMapping, GeneralInsertMapping {
+public class SelectMapping extends AbstractColumnMapping {
 
     private SelectModel selectModel;
     
@@ -32,12 +32,7 @@ public class SelectMapping extends AbstractColumnMapping implements UpdateMappin
     }
 
     @Override
-    public <R> R accept(GeneralInsertMappingVisitor<R> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public <R> R accept(UpdateMappingVisitor<R> visitor) {
+    public <R> R accept(ColumnMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 

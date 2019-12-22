@@ -25,19 +25,19 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.GeneralInsertMapping;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public class GeneralInsertModel {
 
     private SqlTable table;
-    private List<GeneralInsertMapping> insertMappings;
+    private List<AbstractColumnMapping> insertMappings;
 
     private GeneralInsertModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
         insertMappings = builder.insertMappings;
     }
     
-    public <R> Stream<R> mapColumnMappings(Function<GeneralInsertMapping, R> mapper) {
+    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
         return insertMappings.stream().map(mapper);
     }
 
@@ -54,14 +54,14 @@ public class GeneralInsertModel {
 
     public static class Builder {
         private SqlTable table;
-        private List<GeneralInsertMapping> insertMappings = new ArrayList<>();
+        private List<AbstractColumnMapping> insertMappings = new ArrayList<>();
         
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
         
-        public Builder withInsertMappings(List<GeneralInsertMapping> insertMappings) {
+        public Builder withInsertMappings(List<AbstractColumnMapping> insertMappings) {
             this.insertMappings.addAll(insertMappings);
             return this;
         }
