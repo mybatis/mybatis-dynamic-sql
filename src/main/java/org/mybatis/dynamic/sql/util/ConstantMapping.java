@@ -42,7 +42,7 @@ public class ConstantMapping extends AbstractColumnMapping implements GeneralIns
     }
 
     @Override
-    public <R> R accept(UpdateMappingVisitor<R> visitor) {
+    public <R> R accept(GeneralInsertMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 
@@ -52,7 +52,7 @@ public class ConstantMapping extends AbstractColumnMapping implements GeneralIns
     }
 
     @Override
-    public <R> R accept(GeneralInsertMappingVisitor<R> visitor) {
+    public <R> R accept(UpdateMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 }

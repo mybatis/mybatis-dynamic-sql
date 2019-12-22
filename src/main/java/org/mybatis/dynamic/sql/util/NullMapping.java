@@ -27,7 +27,7 @@ public class NullMapping extends AbstractColumnMapping implements GeneralInsertM
     }
 
     @Override
-    public <R> R accept(UpdateMappingVisitor<R> visitor) {
+    public <R> R accept(GeneralInsertMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 
@@ -37,7 +37,7 @@ public class NullMapping extends AbstractColumnMapping implements GeneralInsertM
     }
 
     @Override
-    public <R> R accept(GeneralInsertMappingVisitor<R> visitor) {
+    public <R> R accept(UpdateMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 }
