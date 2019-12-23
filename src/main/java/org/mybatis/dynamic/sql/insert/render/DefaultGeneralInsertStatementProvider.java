@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DefaultGeneralInsertStatementProvider implements GeneralInsertStatementProvider {
+public class DefaultGeneralInsertStatementProvider
+        implements GeneralInsertStatementProvider, InsertSelectStatementProvider {
     private String insertStatement;
     private Map<String, Object> parameters = new HashMap<>();
 
