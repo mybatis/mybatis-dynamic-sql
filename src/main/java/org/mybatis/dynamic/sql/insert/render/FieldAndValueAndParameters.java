@@ -38,10 +38,6 @@ public class FieldAndValueAndParameters {
         return valuePhrase;
     }
     
-    public String valuePhrase(int row) {
-        return String.format(valuePhrase, row);
-    }
-
     public Map<String, Object> parameters() {
         return parameters;
     }

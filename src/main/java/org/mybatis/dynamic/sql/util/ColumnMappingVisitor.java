@@ -33,18 +33,18 @@ public interface ColumnMappingVisitor<T> {
     T visit(StringConstantMapping mapping);
 
     default <R> T visit(ValueMapping<R> mapping) {
-        return null;
+        throw new UnsupportedOperationException();
     }
     
     default T visit(SelectMapping mapping) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     default T visit(PropertyMapping mapping) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     default T visit(ColumnToColumnMapping columnMapping) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
