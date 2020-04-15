@@ -38,7 +38,7 @@
     <spring.batch.version>4.2.2.RELEASE</spring.batch.version>
     <clirr.comparisonVersion>1.1.0</clirr.comparisonVersion>
     <module.name>org.mybatis.dynamic.sql</module.name>
-    <kotlin.version>1.3.71</kotlin.version>
+    <kotlin.version>1.3.72</kotlin.version>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
