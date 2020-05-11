@@ -5,6 +5,7 @@ import static examples.custom_render.JsonTestDynamicSqlSupport.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.DeleteProvider;
@@ -27,6 +28,9 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 public interface JsonTestMapper {
+    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
+    List<Map<String, Object>> generalSelect(SelectStatementProvider selectStatement);
+
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @Results(id = "JsonTestResult", value = {
             @Result(column = "id", property = "id", id = true),

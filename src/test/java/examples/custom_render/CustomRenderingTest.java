@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.mapping.Environment;
@@ -31,9 +32,12 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -42,7 +46,7 @@ public class CustomRenderingTest {
 
     @Container
     private static PgContainer postgres = new PgContainer("examples/custom_render/dbInit.sql");
-
+    
     private static SqlSessionFactory sqlSessionFactory;
 
     @BeforeAll
@@ -149,32 +153,6 @@ public class CustomRenderingTest {
     }
 
     @Test
-    public void testJsonQuery() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
-
-            JsonTest record1 = new JsonTest();
-            record1.setId(1);
-            record1.setDescription("Fred");
-            record1.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
-
-            JsonTest record2 = new JsonTest();
-            record2.setId(2);
-            record2.setDescription("Wilma");
-            record2.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
-
-            int rows = mapper.insertMultiple(record1, record2);
-            assertThat(rows).isEqualTo(2);
-            
-            Optional<JsonTest> record = mapper.selectOne(c ->
-                c.where(info, isEqualTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}")));
-            
-            assertThat(record).hasValueSatisfying( c ->
-                c.getInfo().equals("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"));
-        }
-    }
-    
-    @Test
     public void testDefererence() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
@@ -193,14 +171,44 @@ public class CustomRenderingTest {
             assertThat(rows).isEqualTo(2);
             
             Optional<JsonTest> record = mapper.selectOne(c ->
-                c.where(dereference(info, "->>'age'"), isEqualTo("25")));
+                c.where(dereference(info, "age"), isEqualTo("25")));
             
             assertThat(record).hasValueSatisfying( c ->
                 c.getInfo().equals("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"));
         }
     }
     
-    private <T> SqlColumn<String> dereference(SqlColumn<T> column, String drString) {
-        return SqlColumn.of(column.name() + drString, column.table());
+    @Test
+    public void testDefererence2() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
+
+            JsonTest record1 = new JsonTest();
+            record1.setId(1);
+            record1.setDescription("Fred");
+            record1.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
+
+            JsonTest record2 = new JsonTest();
+            record2.setId(2);
+            record2.setDescription("Wilma");
+            record2.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
+
+            int rows = mapper.insertMultiple(record1, record2);
+            assertThat(rows).isEqualTo(2);
+            
+            SelectStatementProvider selectStatement = SqlBuilder.select(dereference(info, "firstName").as("firstname"))
+                    .from(jsonTest)
+                    .where(dereference(info, "age"), isEqualTo("25"))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            
+            List<Map<String, Object>> records = mapper.generalSelect(selectStatement);
+            assertThat(records.size()).isEqualTo(1);
+            assertThat(records.get(0).get("firstname")).isEqualTo("Wilma");
+        }
+    }
+    
+    private <T> SqlColumn<String> dereference(SqlColumn<T> column, String attribute) {
+        return SqlColumn.of(column.name() + "->>'" + attribute + "'", column.table());
     }
 }
