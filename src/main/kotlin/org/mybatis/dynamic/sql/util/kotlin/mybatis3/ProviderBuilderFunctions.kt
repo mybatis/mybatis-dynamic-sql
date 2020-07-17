@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,8 +18,10 @@ package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
+import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
@@ -42,18 +44,28 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProv
 }
 
 fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>): InsertStatementProvider<T> =
-        completer(into(table)).build().render(RenderingStrategies.MYBATIS3)
+    completer(into(table)).build().render(RenderingStrategies.MYBATIS3)
 
-fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: MultiRowInsertCompleter<T>): MultiRowInsertStatementProvider<T> =
-        completer(into(table)).build().render(RenderingStrategies.MYBATIS3)
+fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(
+    table: SqlTable,
+    completer: MultiRowInsertCompleter<T>
+): MultiRowInsertStatementProvider<T> =
+    completer(into(table)).build().render(RenderingStrategies.MYBATIS3)
 
-fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: SelectCompleter): SelectStatementProvider {
+fun QueryExpressionDSL.FromGatherer<SelectModel>.from(
+    table: SqlTable,
+    completer: SelectCompleter
+): SelectStatementProvider {
     val builder = KotlinQueryBuilder(from(table))
     completer(builder)
     return builder.build().render(RenderingStrategies.MYBATIS3)
 }
 
-fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: String, completer: SelectCompleter): SelectStatementProvider {
+fun QueryExpressionDSL.FromGatherer<SelectModel>.from(
+    table: SqlTable,
+    alias: String,
+    completer: SelectCompleter
+): SelectStatementProvider {
     val builder = KotlinQueryBuilder(from(table, alias))
     completer(builder)
     return builder.build().render(RenderingStrategies.MYBATIS3)
@@ -70,3 +82,6 @@ fun update(table: SqlTable, completer: UpdateCompleter): UpdateStatementProvider
     completer(builder)
     return builder.build().render(RenderingStrategies.MYBATIS3)
 }
+
+fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertStatementProvider =
+    completer(GeneralInsertDSL.insertInto(table)).build().render(RenderingStrategies.MYBATIS3)

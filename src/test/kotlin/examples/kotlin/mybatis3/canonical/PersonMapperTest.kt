@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
@@ -193,6 +195,25 @@ class PersonMapperTest {
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
             val rows = mapper.insert(record)
+            assertThat(rows).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testGeneralInsert() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.insert {
+                set(id).equalTo(100)
+                set(firstName).equalTo("Joe")
+                set(lastName).equalTo(LastName("Jones"))
+                set(employed).equalTo(true)
+                set(occupation).equalTo("Developer")
+                set(addressId).equalTo(1)
+                set(birthDate).equalTo(Date())
+            }
+
             assertThat(rows).isEqualTo(1)
         }
     }

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,11 +24,9 @@ import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
-import org.mybatis.dynamic.sql.insert.GeneralInsertDSL.SetClauseFinisher;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
-import org.mybatis.dynamic.sql.insert.InsertSelectDSL.SelectGatherer;
 import org.mybatis.dynamic.sql.select.CountDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
@@ -641,25 +639,25 @@ public interface SqlBuilder {
         return SimpleSortSpecification.of(name);
     }
 
-    public static class InsertIntoNextStep {
+    class InsertIntoNextStep {
 
         private SqlTable table;
-        
+
         private InsertIntoNextStep(SqlTable table) {
             this.table = Objects.requireNonNull(table);
         }
-        
+
         public InsertSelectDSL withSelectStatement(Buildable<SelectModel> selectModelBuilder) {
             return InsertSelectDSL.insertInto(table)
                     .withSelectStatement(selectModelBuilder);
         }
 
-        public SelectGatherer withColumnList(SqlColumn<?>...columns) {
+        public InsertSelectDSL.SelectGatherer withColumnList(SqlColumn<?>...columns) {
             return InsertSelectDSL.insertInto(table)
                     .withColumnList(columns);
         }
 
-        public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
+        public <T> GeneralInsertDSL.SetClauseFinisher<T> set(SqlColumn<T> column) {
             return GeneralInsertDSL.insertInto(table)
                     .set(column);
         }

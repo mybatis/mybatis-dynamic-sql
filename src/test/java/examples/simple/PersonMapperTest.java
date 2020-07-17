@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -208,6 +208,24 @@ public class PersonMapperTest {
             record.setAddressId(1);
             
             int rows = mapper.insert(record);
+            assertThat(rows).isEqualTo(1);
+        }
+    }
+
+    @Test
+    public void testGeneralInsert() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+            int rows = mapper.insert(c -> 
+                c.set(id).equalTo(100)
+                .set(firstName).equalTo("Joe")
+                .set(lastName).equalTo(LastName.of("Jones"))
+                .set(birthDate).equalTo(new Date())
+                .set(employed).equalTo(true)
+                .set(occupation).equalTo("Developer")
+                .set(addressId).equalTo(1)
+            );
+            
             assertThat(rows).isEqualTo(1);
         }
     }

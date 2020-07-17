@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.from
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -210,6 +209,52 @@ class CanonicalSpringKotlinTest {
         val rows = template.insert(insertStatement)
 
         assertThat(rows).isEqualTo(1)
+    }
+
+    @Test
+    fun testGeneralInsert() {
+
+        val insertStatement = insertInto(Person) {
+            set(id).equalTo(100)
+            set(firstName).equalTo("Joe")
+            set(lastName).equalTo("Jones")
+            set(birthDate).equalTo(Date())
+            set(employed).equalTo("Yes")
+            set(occupation).equalTo("Developer")
+            set(addressId).equalTo(1)
+        }
+
+        val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
+                " values (:p1, :p2, :p3, :p4, :p5, :p6, :p7)"
+
+        assertThat(insertStatement.insertStatement).isEqualTo(expected)
+
+        val rows = template.insert(insertStatement)
+        val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId)
+            .from(Person) {
+                where(id, isEqualTo(100))
+            }.withRowMapper { rs, _ ->
+                val record = PersonRecord()
+                record.id = rs.getInt(1)
+                record.firstName = rs.getString(2)
+                record.lastName = rs.getString(3)
+                record.birthDate = rs.getTimestamp(4)
+                record.employed = rs.getString(5)
+                record.occupation = rs.getString(6)
+                record.addressId = rs.getInt(7)
+                record
+            }
+
+        assertThat(rows).isEqualTo(1)
+        with(record!!) {
+            assertThat(id).isEqualTo(100)
+            assertThat(firstName).isEqualTo("Joe")
+            assertThat(lastName).isEqualTo("Jones")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("Yes")
+            assertThat(occupation).isEqualTo("Developer")
+            assertThat(addressId).isEqualTo(1)
+        }
     }
 
     @Test

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.*
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
@@ -152,6 +151,21 @@ class CanonicalSpringKotlinTemplateDirectTest {
             map(employed).toProperty("employed")
             map(occupation).toPropertyWhenPresent("occupation", record::occupation)
             map(addressId).toProperty("addressId")
+        }
+
+        assertThat(rows).isEqualTo(1)
+    }
+
+    @Test
+    fun testGeneralInsert() {
+        val rows = template.insertInto(Person) {
+            set(id).equalTo(100)
+            set(firstName).equalTo("Joe")
+            set(lastName).equalTo("Jones")
+            set(birthDate).equalTo(Date())
+            set(employed).equalTo("Yes")
+            set(occupation).equalTo("Developer")
+            set(addressId).equalTo(1)
         }
 
         assertThat(rows).isEqualTo(1)

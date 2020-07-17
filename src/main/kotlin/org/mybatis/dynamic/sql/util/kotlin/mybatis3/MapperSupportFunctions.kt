@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
@@ -36,22 +37,53 @@ fun deleteFrom(mapper: (DeleteStatementProvider) -> Int, table: SqlTable, comple
 fun <T> insert(mapper: (InsertStatementProvider<T>) -> Int, record: T, table: SqlTable, completer: InsertCompleter<T>) =
     mapper(SqlBuilder.insert(record).into(table, completer))
 
-fun <T> insertMultiple(mapper: (MultiRowInsertStatementProvider<T>) -> Int, records: Collection<T>, table: SqlTable, completer: MultiRowInsertCompleter<T>) =
+fun insertInto(mapper: (GeneralInsertStatementProvider) -> Int, table: SqlTable, completer: GeneralInsertCompleter) =
+    mapper(insertInto(table, completer))
+
+fun <T> insertMultiple(
+    mapper: (MultiRowInsertStatementProvider<T>) -> Int,
+    records: Collection<T>,
+    table: SqlTable,
+    completer: MultiRowInsertCompleter<T>
+) =
     mapper(SqlBuilder.insertMultiple(records).into(table, completer))
 
-fun <T> selectDistinct(mapper: (SelectStatementProvider) -> List<T>, selectList: List<BasicColumn>, table: SqlTable, completer: SelectCompleter) =
+fun <T> selectDistinct(
+    mapper: (SelectStatementProvider) -> List<T>,
+    selectList: List<BasicColumn>,
+    table: SqlTable,
+    completer: SelectCompleter
+) =
     mapper(SqlBuilder.selectDistinct(selectList).from(table, completer))
 
-fun <T> selectList(mapper: (SelectStatementProvider) -> List<T>, selectList: List<BasicColumn>, table: SqlTable, completer: SelectCompleter) =
+fun <T> selectList(
+    mapper: (SelectStatementProvider) -> List<T>,
+    selectList: List<BasicColumn>,
+    table: SqlTable,
+    completer: SelectCompleter
+) =
     mapper(SqlBuilder.select(selectList).from(table, completer))
 
-fun <T> selectList(mapper: (SelectStatementProvider) -> List<T>, start: QueryExpressionDSL<SelectModel>, completer: SelectCompleter) =
+fun <T> selectList(
+    mapper: (SelectStatementProvider) -> List<T>,
+    start: QueryExpressionDSL<SelectModel>,
+    completer: SelectCompleter
+) =
     mapper(select(start, completer))
 
-fun <T> selectOne(mapper: (SelectStatementProvider) -> T?, selectList: List<BasicColumn>, table: SqlTable, completer: SelectCompleter) =
+fun <T> selectOne(
+    mapper: (SelectStatementProvider) -> T?,
+    selectList: List<BasicColumn>,
+    table: SqlTable,
+    completer: SelectCompleter
+) =
     mapper(SqlBuilder.select(selectList).from(table, completer))
 
-fun <T> selectOne(mapper: (SelectStatementProvider) -> T?, start: QueryExpressionDSL<SelectModel>, completer: SelectCompleter) =
+fun <T> selectOne(
+    mapper: (SelectStatementProvider) -> T?,
+    start: QueryExpressionDSL<SelectModel>,
+    completer: SelectCompleter
+) =
     mapper(select(start, completer))
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter) =

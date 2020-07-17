@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,12 +20,9 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectRenderer;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.ColumnMappingVisitor;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
-import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 
@@ -68,25 +65,6 @@ public class GeneralInsertValuePhraseVisitor implements ColumnMappingVisitor<Fie
         return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase(jdbcPlaceholder)
                 .withParameter(mapKey, mapping.value())
-                .build();
-    }
-
-    @Override
-    public FieldAndValueAndParameters visit(SelectMapping mapping) {
-        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(mapping.selectModel())
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
-                .build()
-                .render();
-        
-        String fragment = mapping.mapColumn(SqlColumn::name)
-                + " = (" //$NON-NLS-1$
-                + selectStatement.getSelectStatement()
-                + ")"; //$NON-NLS-1$
-        
-        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
-                .withValuePhrase(fragment)
-                .withParameters(selectStatement.getParameters())
                 .build();
     }
 
