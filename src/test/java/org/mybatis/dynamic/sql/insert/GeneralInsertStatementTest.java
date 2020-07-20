@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
-public class GeneralInsertStatementTest {
+class GeneralInsertStatementTest {
 
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
@@ -35,7 +35,7 @@ public class GeneralInsertStatementTest {
     private static final SqlColumn<String> occupation = foo.column("occupation", JDBCType.VARCHAR);
     
     @Test
-    public void testFullInsertStatementBuilder() {
+    void testFullInsertStatementBuilder() {
 
         GeneralInsertStatementProvider insertStatement = insertInto(foo)
                 .set(id).equalTo(2)
@@ -52,7 +52,7 @@ public class GeneralInsertStatementTest {
     }
 
     @Test
-    public void testInsertStatementBuilderWithNulls() {
+    void testInsertStatementBuilderWithNulls() {
 
         GeneralInsertStatementProvider insertStatement = insertInto(foo)
                 .set(id).equalTo(1)
@@ -68,7 +68,7 @@ public class GeneralInsertStatementTest {
     }
 
     @Test
-    public void testInsertStatementBuilderWithConstants() {
+    void testInsertStatementBuilderWithConstants() {
 
         GeneralInsertStatementProvider insertStatement = insertInto(foo)
                 .set(id).equalToConstant("3")
@@ -84,7 +84,7 @@ public class GeneralInsertStatementTest {
     }
     
     @Test
-    public void testSelectiveInsertStatementBuilder() {
+    void testSelectiveInsertStatementBuilder() {
         Integer myId = null;
         String myFirstName = null;
         String myLastName = "jones";

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
-public class ColumnMappingVisitorTest {
+class ColumnMappingVisitorTest {
 
     @Test
-    public void testThatUnimplementedMethod1ThrowExceptions() {
+    void testThatUnimplementedMethod1ThrowExceptions() {
         TestTable table = new TestTable();
         TestVisitor tv = new TestVisitor();
         ColumnToColumnMapping mapping = ColumnToColumnMapping.of(table.id, table.description);
@@ -34,7 +34,7 @@ public class ColumnMappingVisitorTest {
     }
 
     @Test
-    public void testThatUnimplementedMethod2ThrowExceptions() {
+    void testThatUnimplementedMethod2ThrowExceptions() {
         TestTable table = new TestTable();
         TestVisitor tv = new TestVisitor();
         ValueMapping<Integer> mapping = ValueMapping.of(table.id,  () -> 3);
@@ -43,7 +43,7 @@ public class ColumnMappingVisitorTest {
     }
 
     @Test
-    public void testThatUnimplementedMethod3ThrowExceptions() {
+    void testThatUnimplementedMethod3ThrowExceptions() {
         TestTable table = new TestTable();
         TestVisitor tv = new TestVisitor();
         SelectMapping mapping = SelectMapping.of(table.id, SqlBuilder.select(table.id).from(table));
@@ -52,7 +52,7 @@ public class ColumnMappingVisitorTest {
     }
 
     @Test
-    public void testThatUnimplementedMethod4ThrowExceptions() {
+    void testThatUnimplementedMethod4ThrowExceptions() {
         TestTable table = new TestTable();
         TestVisitor tv = new TestVisitor();
         PropertyMapping mapping = PropertyMapping.of(table.id, "id");

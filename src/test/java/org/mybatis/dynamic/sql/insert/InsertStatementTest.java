@@ -176,7 +176,7 @@ class InsertStatementTest {
         assertAll(
                 () -> assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase),
                 () -> assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase),
-                () -> assertThat(collector.parameters().size()).isEqualTo(4)
+                () -> assertThat(collector.parameters()).hasSize(4)
         );
     }
     

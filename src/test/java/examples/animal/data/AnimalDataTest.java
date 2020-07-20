@@ -1753,9 +1753,9 @@ class AnimalDataTest {
                     + "values (#{parameters.p1,jdbcType=INTEGER}, 'Fred', 2.2, #{parameters.p2,jdbcType=DOUBLE})";
             
             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
-            assertThat(insertStatement.getParameters().size()).isEqualTo(2);
-            assertThat(insertStatement.getParameters().get("p1")).isEqualTo(101);
-            assertThat(insertStatement.getParameters().get("p2")).isEqualTo(4.5);
+            assertThat(insertStatement.getParameters()).hasSize(2);
+            assertThat(insertStatement.getParameters()).containsEntry("p1", 101);
+            assertThat(insertStatement.getParameters()).containsEntry("p2", 4.5);
             
             int rows = mapper.generalInsert(insertStatement);
             assertThat(rows).isEqualTo(1);
