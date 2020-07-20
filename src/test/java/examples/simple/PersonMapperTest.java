@@ -217,13 +217,13 @@ class PersonMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             int rows = mapper.insert(c -> 
-                c.set(id).equalTo(100)
-                .set(firstName).equalTo("Joe")
-                .set(lastName).equalTo(LastName.of("Jones"))
-                .set(birthDate).equalTo(new Date())
-                .set(employed).equalTo(true)
-                .set(occupation).equalTo("Developer")
-                .set(addressId).equalTo(1)
+                c.set(id).toValue(100)
+                .set(firstName).toValue("Joe")
+                .set(lastName).toValue(LastName.of("Jones"))
+                .set(birthDate).toValue(new Date())
+                .set(employed).toValue(true)
+                .set(occupation).toValue("Developer")
+                .set(addressId).toValue(1)
             );
             
             assertThat(rows).isEqualTo(1);

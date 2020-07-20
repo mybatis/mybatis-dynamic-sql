@@ -59,35 +59,35 @@ public class GeneralInsertDSL {
             this.column = column;
         }
         
-        public GeneralInsertDSL equalToNull() {
+        public GeneralInsertDSL toNull() {
             insertMappings.add(NullMapping.of(column));
             return GeneralInsertDSL.this;
         }
 
-        public GeneralInsertDSL equalToConstant(String constant) {
+        public GeneralInsertDSL toConstant(String constant) {
             insertMappings.add(ConstantMapping.of(column, constant));
             return GeneralInsertDSL.this;
         }
         
-        public GeneralInsertDSL equalToStringConstant(String constant) {
+        public GeneralInsertDSL toStringConstant(String constant) {
             insertMappings.add(StringConstantMapping.of(column, constant));
             return GeneralInsertDSL.this;
         }
         
-        public GeneralInsertDSL equalTo(T value) {
-            return equalTo(() -> value);
+        public GeneralInsertDSL toValue(T value) {
+            return toValue(() -> value);
         }
 
-        public GeneralInsertDSL equalTo(Supplier<T> valueSupplier) {
+        public GeneralInsertDSL toValue(Supplier<T> valueSupplier) {
             insertMappings.add(ValueMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
         }
 
-        public GeneralInsertDSL equalToWhenPresent(T value) {
-            return equalToWhenPresent(() -> value);
+        public GeneralInsertDSL toValueWhenPresent(T value) {
+            return toValueWhenPresent(() -> value);
         }
 
-        public GeneralInsertDSL equalToWhenPresent(Supplier<T> valueSupplier) {
+        public GeneralInsertDSL toValueWhenPresent(Supplier<T> valueSupplier) {
             if (valueSupplier.get() != null) {
                 insertMappings.add(ValueMapping.of(column, valueSupplier));
             }

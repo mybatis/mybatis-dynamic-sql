@@ -38,9 +38,9 @@ class GeneralInsertStatementTest {
     void testFullInsertStatementBuilder() {
 
         GeneralInsertStatementProvider insertStatement = insertInto(foo)
-                .set(id).equalTo(2)
-                .set(firstName).equalTo("Jones")
-                .set(occupation).equalTo("dino driver")
+                .set(id).toValue(2)
+                .set(firstName).toValue("Jones")
+                .set(occupation).toValue("dino driver")
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         
@@ -55,10 +55,10 @@ class GeneralInsertStatementTest {
     void testInsertStatementBuilderWithNulls() {
 
         GeneralInsertStatementProvider insertStatement = insertInto(foo)
-                .set(id).equalTo(1)
-                .set(firstName).equalTo("Fred")
-                .set(lastName).equalTo("Smith")
-                .set(occupation).equalToNull()
+                .set(id).toValue(1)
+                .set(firstName).toValue("Fred")
+                .set(lastName).toValue("Smith")
+                .set(occupation).toNull()
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -71,10 +71,10 @@ class GeneralInsertStatementTest {
     void testInsertStatementBuilderWithConstants() {
 
         GeneralInsertStatementProvider insertStatement = insertInto(foo)
-                .set(id).equalToConstant("3")
-                .set(firstName).equalTo("Fred")
-                .set(lastName).equalTo("Jones")
-                .set(occupation).equalToStringConstant("Y")
+                .set(id).toConstant("3")
+                .set(firstName).toValue("Fred")
+                .set(lastName).toValue("Jones")
+                .set(occupation).toStringConstant("Y")
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -91,10 +91,10 @@ class GeneralInsertStatementTest {
         String myOccupation = "dino driver";
         
         GeneralInsertStatementProvider insertStatement = insertInto(foo)
-                .set(id).equalToWhenPresent(() -> myId)
-                .set(firstName).equalToWhenPresent(myFirstName)
-                .set(lastName).equalToWhenPresent(() -> myLastName)
-                .set(occupation).equalToWhenPresent(myOccupation)
+                .set(id).toValueWhenPresent(() -> myId)
+                .set(firstName).toValueWhenPresent(myFirstName)
+                .set(lastName).toValueWhenPresent(() -> myLastName)
+                .set(occupation).toValueWhenPresent(myOccupation)
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

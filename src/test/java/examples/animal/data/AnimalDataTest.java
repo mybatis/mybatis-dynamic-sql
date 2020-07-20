@@ -1742,10 +1742,10 @@ class AnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             
             GeneralInsertStatementProvider insertStatement = insertInto(animalData)
-                    .set(id).equalTo(101)
-                    .set(animalName).equalToStringConstant("Fred")
-                    .set(brainWeight).equalToConstant("2.2")
-                    .set(bodyWeight).equalTo(4.5)
+                    .set(id).toValue(101)
+                    .set(animalName).toStringConstant("Fred")
+                    .set(brainWeight).toConstant("2.2")
+                    .set(bodyWeight).toValue(4.5)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             

@@ -215,13 +215,13 @@ class CanonicalSpringKotlinTest {
     fun testGeneralInsert() {
 
         val insertStatement = insertInto(Person) {
-            set(id).equalTo(100)
-            set(firstName).equalTo("Joe")
-            set(lastName).equalTo("Jones")
-            set(birthDate).equalTo(Date())
-            set(employed).equalTo("Yes")
-            set(occupation).equalTo("Developer")
-            set(addressId).equalTo(1)
+            set(id).toValue(100)
+            set(firstName).toValue("Joe")
+            set(lastName).toValue("Jones")
+            set(birthDate).toValue(Date())
+            set(employed).toValue("Yes")
+            set(occupation).toValue("Developer")
+            set(addressId).toValue(1)
         }
 
         val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +

@@ -205,13 +205,13 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.insert {
-                set(id).equalTo(100)
-                set(firstName).equalTo("Joe")
-                set(lastName).equalTo(LastName("Jones"))
-                set(employed).equalTo(true)
-                set(occupation).equalTo("Developer")
-                set(addressId).equalTo(1)
-                set(birthDate).equalTo(Date())
+                set(id).toValue(100)
+                set(firstName).toValue("Joe")
+                set(lastName).toValue(LastName("Jones"))
+                set(employed).toValue(true)
+                set(occupation).toValue("Developer")
+                set(addressId).toValue(1)
+                set(birthDate).toValue(Date())
             }
 
             assertThat(rows).isEqualTo(1)
