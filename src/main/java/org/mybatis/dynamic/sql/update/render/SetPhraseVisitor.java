@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.ColumnMapping;
+import org.mybatis.dynamic.sql.util.ColumnToColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.NullMapping;
@@ -100,7 +100,7 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
     }
 
     @Override
-    public FragmentAndParameters visit(ColumnMapping mapping) {
+    public FragmentAndParameters visit(ColumnToColumnMapping mapping) {
         String setPhrase = mapping.mapColumn(SqlColumn::name)
                 + " = "  //$NON-NLS-1$
                 + mapping.rightColumn().renderWithTableAlias(TableAliasCalculator.empty());

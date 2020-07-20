@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,11 +28,13 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValue;
+import org.mybatis.dynamic.sql.insert.render.FieldAndValueAndParameters;
+import org.mybatis.dynamic.sql.insert.render.FieldAndValueAndParametersCollector;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValueCollector;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
-public class InsertStatementTest {
+class InsertStatementTest {
 
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
@@ -41,7 +43,7 @@ public class InsertStatementTest {
     private static final SqlColumn<String> occupation = foo.column("occupation", JDBCType.VARCHAR);
     
     @Test
-    public void testFullInsertStatementBuilder() {
+    void testFullInsertStatementBuilder() {
 
         TestRecord record = new TestRecord();
         record.setLastName("jones");
@@ -64,7 +66,7 @@ public class InsertStatementTest {
     }
 
     @Test
-    public void testInsertStatementBuilderWithNulls() {
+    void testInsertStatementBuilderWithNulls() {
 
         TestRecord record = new TestRecord();
         
@@ -83,7 +85,7 @@ public class InsertStatementTest {
     }
 
     @Test
-    public void testInsertStatementBuilderWithConstants() {
+    void testInsertStatementBuilderWithConstants() {
 
         TestRecord record = new TestRecord();
         
@@ -102,7 +104,7 @@ public class InsertStatementTest {
     }
     
     @Test
-    public void testSelectiveInsertStatementBuilder() {
+    void testSelectiveInsertStatementBuilder() {
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
@@ -122,7 +124,7 @@ public class InsertStatementTest {
     }
 
     @Test
-    public void testParallelStream() {
+    void testParallelStream() {
 
         List<FieldAndValue> mappings = new ArrayList<>();
         
@@ -153,7 +155,41 @@ public class InsertStatementTest {
     }
     
     @Test
-    public void testParallelStreamForMultiRecord() {
+    void testParallelStreamWithParameters() {
+
+        List<FieldAndValueAndParameters> mappings = new ArrayList<>();
+        
+        mappings.add(newFieldAndValueAndParameter(id.name(), "{p1}", "p1", 1));
+        mappings.add(newFieldAndValueAndParameter(firstName.name(), "{p2}", "p2", "Fred"));
+        mappings.add(newFieldAndValueAndParameter(lastName.name(), "{p3}", "p3", "Flintstone"));
+        mappings.add(newFieldAndValueAndParameter(occupation.name(), "{p4}", "p4", "Driver"));
+        
+        FieldAndValueAndParametersCollector collector = 
+                mappings.parallelStream().collect(Collector.of(
+                        FieldAndValueAndParametersCollector::new,
+                        FieldAndValueAndParametersCollector::add,
+                        FieldAndValueAndParametersCollector::merge));
+                
+        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+        String expectedValuesPhrase = "values ({p1}, {p2}, {p3}, {p4})";
+        
+        assertAll(
+                () -> assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase),
+                () -> assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase),
+                () -> assertThat(collector.parameters()).hasSize(4)
+        );
+    }
+    
+    private FieldAndValueAndParameters newFieldAndValueAndParameter(String fieldName, String valuePhrase, String parameterName,
+            Object parameterValue) {
+        return FieldAndValueAndParameters.withFieldName(fieldName)
+                .withValuePhrase(valuePhrase)
+                .withParameter(parameterName, parameterValue)
+                .build();
+    }
+    
+    @Test
+    void testParallelStreamForMultiRecord() {
 
         List<FieldAndValue> mappings = new ArrayList<>();
         
@@ -185,41 +221,41 @@ public class InsertStatementTest {
                 .build();
     }
     
-    public static class TestRecord {
+    static class TestRecord {
         private Integer id;
         private String firstName;
         private String lastName;
         private String occupation;
 
-        public Integer getId() {
+        Integer getId() {
             return id;
         }
 
-        public void setId(Integer id) {
+        void setId(Integer id) {
             this.id = id;
         }
 
-        public String getFirstName() {
+        String getFirstName() {
             return firstName;
         }
 
-        public void setFirstName(String firstName) {
+        void setFirstName(String firstName) {
             this.firstName = firstName;
         }
 
-        public String getLastName() {
+        String getLastName() {
             return lastName;
         }
 
-        public void setLastName(String lastName) {
+        void setLastName(String lastName) {
             this.lastName = lastName;
         }
 
-        public String getOccupation() {
+        String getOccupation() {
             return occupation;
         }
 
-        public void setOccupation(String occupation) {
+        void setOccupation(String occupation) {
             this.occupation = occupation;
         }
     }

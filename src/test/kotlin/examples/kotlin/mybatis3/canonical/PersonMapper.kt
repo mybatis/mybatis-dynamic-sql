@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package examples.kotlin.mybatis3.canonical
 import org.apache.ibatis.annotations.*
 import org.apache.ibatis.type.JdbcType
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
@@ -41,6 +42,9 @@ interface PersonMapper {
 
     @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
     fun insert(insertStatement: InsertStatementProvider<PersonRecord>): Int
+
+    @InsertProvider(type = SqlProviderAdapter::class, method = "generalInsert")
+    fun generalInsert(insertStatement: GeneralInsertStatementProvider): Int
 
     @InsertProvider(type = SqlProviderAdapter::class, method = "insertMultiple")
     fun insertMultiple(insertStatement: MultiRowInsertStatementProvider<PersonRecord>): Int

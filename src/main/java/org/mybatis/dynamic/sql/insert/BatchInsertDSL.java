@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
-import org.mybatis.dynamic.sql.util.InsertMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
@@ -32,7 +32,7 @@ public class BatchInsertDSL<T> {
 
     private Collection<T> records;
     private SqlTable table;
-    private List<InsertMapping> columnMappings = new ArrayList<>();
+    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     
     private BatchInsertDSL(Collection<T> records, SqlTable table) {
         this.records = records;

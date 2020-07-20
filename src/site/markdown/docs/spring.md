@@ -23,7 +23,7 @@ MyBatis3 is a higher level abstraction over JDBC than Spring JDBC templates. Whi
 The Spring Named Parameter JDBC template expects an SQL statement with parameter markers in the Spring format, and a set of matched parameters.  MyBatis Dynamic SQL will generate both.  The parameters returned from the generated SQL statement can be wrapped in a Spring `MapSqlParameterSource`.  Spring also expects you to provide a row mapper for creating the returned objects.  The following code shows a complete example:
 
 ```java
-    NamedParameterJdbcTemplate template = getTemplate();
+    NamedParameterJdbcTemplate template = getTemplate();  // not shown
 
     SelectStatementProvider selectStatement = select(id, firstName, lastName, fullName)
             .from(generatedAlways)
@@ -47,11 +47,46 @@ The Spring Named Parameter JDBC template expects an SQL statement with parameter
             });
 ```
 
-## Executing Insert Statements
-Insert statements are a bit different - MyBatis Dynamic SQL generates a properly formatted SQL string for Spring, but instead of a map of parameters, the parameter mappings are created for the inserted record itself.  So the parameters for the Spring template are created by a `BeanPropertySqlParameterSource`.  Generated keys in Spring are supported with a `GeneratedKeyHolder`.  The following is a complete example:
+## Executing General Insert Statements
+General insert statements do not require a POJO object matching a table row. Following is a complete example:
 
 ```java
-    NamedParameterJdbcTemplate template = getTemplate();
+    NamedParameterJdbcTemplate template = getTemplate();  // not shown
+
+    GeneralInsertStatementProvider insertStatement = insertInto(generatedAlways)
+            .set(id).toValue(100)
+            .set(firstName).toValue("Bob")
+            .set(lastName).toValue("Jones")
+            .build()
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+    int rows = template.update(insertStatement.getInsertStatement(), insertStatement.getParameters());
+```
+
+If you want to retrieve generated keys for a general insert statement the steps are similar except that you must wrap the parameters in a `MapSqlParameterSource` object and use a `GeneratedKeyHolder`. Following is a complete example of this usage:
+
+```java
+    NamedParameterJdbcTemplate template = getTemplate();  // not shown
+
+    GeneralInsertStatementProvider insertStatement = insertInto(generatedAlways)
+            .set(id).toValue(100)
+            .set(firstName).toValue("Bob")
+            .set(lastName).toValue("Jones")
+            .build()
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+    MapSqlParameterSource parameterSource = new MapSqlParameterSource(insertStatement.getParameters());
+    KeyHolder keyHolder = new GeneratedKeyHolder();
+
+    int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
+    String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
+```
+
+## Executing Insert Record Statements
+Insert record statements are a bit different - MyBatis Dynamic SQL generates a properly formatted SQL string for Spring, but instead of a map of parameters, the parameter mappings are created for the inserted record itself.  So the parameters for the Spring template are created by a `BeanPropertySqlParameterSource`.  Generated keys in Spring are supported with a `GeneratedKeyHolder`.  The following is a complete example:
+
+```java
+    NamedParameterJdbcTemplate template = getTemplate();  // not shown
 
     GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
     record.setId(100);
@@ -77,7 +112,7 @@ Insert statements are a bit different - MyBatis Dynamic SQL generates a properly
 Batch insert support in Spring is a bit different than batch support in MyBatis3 and Spring does not support returning generated keys from a batch insert.  The following is a complete example of a batch insert (note the use of `SqlParameterSourceUtils` to create an array of parameter sources from an array of input records):
 
 ```java
-    NamedParameterJdbcTemplate template = getTemplate();
+    NamedParameterJdbcTemplate template = getTemplate();  // not shown
 
     List<GeneratedAlwaysRecord> records = new ArrayList<>();
     GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -109,11 +144,11 @@ Batch insert support in Spring is a bit different than batch support in MyBatis3
 Updates and deletes use the `MapSqlParameterSource` as with select statements, but use the `update` method in the template.  For example:
 
 ```java
-    NamedParameterJdbcTemplate template = getTemplate();
+    NamedParameterJdbcTemplate template = getTemplate();  // not shown
 
     UpdateStatementProvider updateStatement = update(generatedAlways)
             .set(firstName).equalToStringConstant("Rob")
-            .where(id,  isIn(1, 5, 22))
+            .where(id, isIn(1, 5, 22))
             .build()
             .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         

@@ -13,9 +13,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package org.mybatis.dynamic.sql.insert.render;
 
-@FunctionalInterface
-public interface InsertMapping {
-    <R> R accept(InsertMappingVisitor<R> visitor);
+import java.util.Map;
+
+public interface GeneralInsertStatementProvider {
+    Map<String, Object> getParameters();
+
+    String getInsertStatement();
 }

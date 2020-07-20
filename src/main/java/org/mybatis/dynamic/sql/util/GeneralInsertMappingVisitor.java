@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,7 +15,19 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-@FunctionalInterface
-public interface UpdateMapping {
-    <R> R accept(UpdateMappingVisitor<R> visitor);
+public interface GeneralInsertMappingVisitor<T> extends ColumnMappingVisitor<T> {
+    @Override
+    default T visit(SelectMapping mapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default T visit(PropertyMapping mapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default T visit(ColumnToColumnMapping columnMapping) {
+        throw new UnsupportedOperationException();
+    }
 }

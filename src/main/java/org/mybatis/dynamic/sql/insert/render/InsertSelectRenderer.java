@@ -40,7 +40,7 @@ public class InsertSelectRenderer {
     public InsertSelectStatementProvider render() {
         SelectStatementProvider selectStatement = model.selectModel().render(renderingStrategy);
         
-        return DefaultInsertSelectStatementProvider.withInsertStatement(calculateInsertStatement(selectStatement))
+        return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(selectStatement))
                 .withParameters(selectStatement.getParameters())
                 .build();
     }

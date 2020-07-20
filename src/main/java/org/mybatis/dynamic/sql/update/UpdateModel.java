@@ -27,13 +27,13 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.mybatis.dynamic.sql.util.UpdateMapping;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
     private SqlTable table;
     private WhereModel whereModel;
-    private List<UpdateMapping> columnMappings;
+    private List<AbstractColumnMapping> columnMappings;
     
     private UpdateModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
@@ -49,7 +49,7 @@ public class UpdateModel {
         return Optional.ofNullable(whereModel);
     }
     
-    public <R> Stream<R> mapColumnMappings(Function<UpdateMapping, R> mapper) {
+    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
         return columnMappings.stream().map(mapper);
     }
 
@@ -68,14 +68,14 @@ public class UpdateModel {
     public static class Builder {
         private SqlTable table;
         private WhereModel whereModel;
-        private List<UpdateMapping> columnMappings = new ArrayList<>();
+        private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
         
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
         
-        public Builder withColumnMappings(List<UpdateMapping> columnMappings) {
+        public Builder withColumnMappings(List<AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }

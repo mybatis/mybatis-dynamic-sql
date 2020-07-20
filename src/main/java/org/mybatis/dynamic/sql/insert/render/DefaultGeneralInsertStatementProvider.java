@@ -19,25 +19,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DefaultInsertSelectStatementProvider implements InsertSelectStatementProvider {
+public class DefaultGeneralInsertStatementProvider
+        implements GeneralInsertStatementProvider, InsertSelectStatementProvider {
     private String insertStatement;
-    private Map<String, Object> parameters;
-    
-    private DefaultInsertSelectStatementProvider(Builder builder) {
+    private Map<String, Object> parameters = new HashMap<>();
+
+    private DefaultGeneralInsertStatementProvider(Builder builder) {
         insertStatement = Objects.requireNonNull(builder.insertStatement);
-        parameters = Objects.requireNonNull(builder.parameters);
+        parameters.putAll(builder.parameters);
     }
-    
-    @Override
-    public String getInsertStatement() {
-        return insertStatement;
-    }
-    
+
     @Override
     public Map<String, Object> getParameters() {
         return parameters;
     }
 
+    @Override
+    public String getInsertStatement() {
+        return insertStatement;
+    }
+    
     public static Builder withInsertStatement(String insertStatement) {
         return new Builder().withInsertStatement(insertStatement);
     }
@@ -50,14 +51,14 @@ public class DefaultInsertSelectStatementProvider implements InsertSelectStateme
             this.insertStatement = insertStatement;
             return this;
         }
-
+        
         public Builder withParameters(Map<String, Object> parameters) {
             this.parameters.putAll(parameters);
             return this;
         }
         
-        public DefaultInsertSelectStatementProvider build() {
-            return new DefaultInsertSelectStatementProvider(this);
+        public DefaultGeneralInsertStatementProvider build() {
+            return new DefaultGeneralInsertStatementProvider(this);
         }
     }
 }

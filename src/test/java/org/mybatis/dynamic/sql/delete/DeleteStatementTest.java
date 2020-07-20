@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
-public class DeleteStatementTest {
+class DeleteStatementTest {
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = foo.column("first_name", JDBCType.VARCHAR);
 
     @Test
-    public void testFullStatement() {
+    void testFullStatement() {
         DeleteStatementProvider deleteStatement = deleteFrom(foo)
                 .where(id, isEqualTo(3), and(firstName, isEqualTo("Betty")))
                 .or(firstName, isLikeCaseInsensitive("%Fr%"))
@@ -44,15 +44,15 @@ public class DeleteStatementTest {
 
         assertAll(
                 () -> assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(deleteStatement.getParameters().size()).isEqualTo(3),
-                () -> assertThat(deleteStatement.getParameters().get("p1")).isEqualTo(3),
-                () -> assertThat(deleteStatement.getParameters().get("p2")).isEqualTo("Betty"),
-                () -> assertThat(deleteStatement.getParameters().get("p3")).isEqualTo("%FR%")
+                () -> assertThat(deleteStatement.getParameters()).hasSize(3),
+                () -> assertThat(deleteStatement.getParameters()).containsEntry("p1", 3),
+                () -> assertThat(deleteStatement.getParameters()).containsEntry("p2", "Betty"),
+                () -> assertThat(deleteStatement.getParameters()).containsEntry("p3", "%FR%")
         );
     }
 
     @Test
-    public void testFullStatementWithoutWhere() {
+    void testFullStatementWithoutWhere() {
         DeleteStatementProvider deleteStatement = deleteFrom(foo)
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -61,7 +61,7 @@ public class DeleteStatementTest {
 
         assertAll(
                 () -> assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(deleteStatement.getParameters().size()).isEqualTo(0)
+                () -> assertThat(deleteStatement.getParameters()).isEmpty()
         );
     }
 }

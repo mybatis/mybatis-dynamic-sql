@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,14 +29,14 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class SelectStatementTest {
+class SelectStatementTest {
     
-    public static final SqlTable table = SqlTable.of("foo");
-    public static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
-    public static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
+    static final SqlTable table = SqlTable.of("foo");
+    static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
+    static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
 
     @Test
-    public void testSimpleCriteria() {
+    void testSimpleCriteria() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
@@ -55,15 +55,15 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d),
-                () -> assertThat(parameters.get("p2")).isEqualTo(33),
-                () -> assertThat(parameters.get("p3")).isEqualTo(4),
-                () -> assertThat(parameters.get("p4")).isEqualTo(3)
+                () -> assertThat(parameters).containsEntry("p1", d),
+                () -> assertThat(parameters).containsEntry("p2", 33),
+                () -> assertThat(parameters).containsEntry("p3", 4),
+                () -> assertThat(parameters).containsEntry("p4", 3)
         );
     }
 
     @Test
-    public void testComplexCriteria() {
+    void testComplexCriteria() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
@@ -88,18 +88,18 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d),
-                () -> assertThat(parameters.get("p2")).isEqualTo(4),
-                () -> assertThat(parameters.get("p3")).isEqualTo(3),
-                () -> assertThat(parameters.get("p4")).isEqualTo(4),
-                () -> assertThat(parameters.get("p5")).isEqualTo(6),
-                () -> assertThat(parameters.get("p6")).isEqualTo(3),
-                () -> assertThat(parameters.get("p7")).isEqualTo(d)
+                () -> assertThat(parameters).containsEntry("p1", d),
+                () -> assertThat(parameters).containsEntry("p2", 4),
+                () -> assertThat(parameters).containsEntry("p3", 3),
+                () -> assertThat(parameters).containsEntry("p4", 4),
+                () -> assertThat(parameters).containsEntry("p5", 6),
+                () -> assertThat(parameters).containsEntry("p6", 3),
+                () -> assertThat(parameters).containsEntry("p7", d)
         );
     }
 
     @Test
-    public void testOrderBySingleColumnAscending() {
+    void testOrderBySingleColumnAscending() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
@@ -118,12 +118,12 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+                () -> assertThat(parameters).containsEntry("p1", d)
         );
     }
 
     @Test
-    public void testOrderBySingleColumnDescending() {
+    void testOrderBySingleColumnDescending() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
@@ -142,12 +142,12 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+                () -> assertThat(parameters).containsEntry("p1", d)
         );
     }
 
     @Test
-    public void testOrderByMultipleColumns() {
+    void testOrderByMultipleColumns() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
@@ -166,12 +166,12 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+                () -> assertThat(parameters).containsEntry("p1", d)
         );
     }
 
     @Test
-    public void testDistinct() {
+    void testDistinct() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = selectDistinct(column1.as("A_COLUMN1"), column2)
@@ -190,12 +190,12 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+                () -> assertThat(parameters).containsEntry("p1", d)
         );
     }
 
     @Test
-    public void testCount() {
+    void testCount() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(count())
@@ -212,12 +212,12 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+                () -> assertThat(parameters).containsEntry("p1", d)
         );
     }
 
     @Test
-    public void testNoWhere() {
+    void testNoWhere() {
         SelectStatementProvider selectStatement = select(count())
                 .from(table, "a")
                 .build()
@@ -230,12 +230,12 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(parameters.size()).isEqualTo(0)
+                () -> assertThat(parameters).isEmpty()
         );
     }
     
     @Test
-    public void testGroupBySingleColumn() {
+    void testGroupBySingleColumn() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
@@ -254,7 +254,7 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d)
+                () -> assertThat(parameters).containsEntry("p1", d)
         );
     }
 }

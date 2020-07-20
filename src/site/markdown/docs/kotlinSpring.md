@@ -101,9 +101,9 @@ There is also an extention method that can be used to count all rows in a table:
     }
 ```
 
-## Insert Method Support
+## Insert Record Method Support
 
-Insert method support enables the creation of arbitrary insert statements.
+Insert method support enables the creation of arbitrary insert statements given a class that matches a database row. If you do not with to create such a class, then see the general insert support following this section.
 
 The DSL for insert methods looks like this:
 
@@ -128,7 +128,7 @@ This code creates an `InsertStatementProvider` that can be executed with an exte
     val rows = template.insert(insertStatement)  // rows is an Int
 ```
 
-This is the two step execution process. This can be combined into a single step with code like the following:
+This is the two step execution process. These steps can be combined into a single step with code like the following:
 
 ```kotlin
     val record = PersonRecord(100, "Joe", "Jones", Date(), "Yes", "Developer", 1)
@@ -145,6 +145,49 @@ This is the two step execution process. This can be combined into a single step 
 ```
 
 Note the use of the `toPropertyWhenPresent` mapping - this will only set the insert value if the value of the property is non null. Also note that you can use the mapping methods to map insert fields to nulls and constants if desired.
+
+## General Insert Method Support
+
+General insert method support enables the creation of arbitrary insert statements and does not require the creation of a class matching the database row.
+
+The DSL for general insert methods looks like this:
+
+```kotlin
+    val insertStatement = insertInto(Person) {  // insertStatement is a GeneralInsertStatementProvider
+        set(id).toValue(100)
+        set(firstName).toValue("Joe")
+        set(lastName).toValue("Jones")
+        set(birthDate).toValue(Date())
+        set(employed).toValue("Yes")
+        set(occupation).toValue("Developer")
+        set(addressId).toValue(1)
+    }
+```
+
+This code creates a `GeneralInsertStatementProvider` that can be executed with an extension method for `NamedParameterJdbcTemplate` like this:
+
+```kotlin
+    val template: NamedParameterJdbcTemplate = getTemplate() // not shown
+    val rows = template.insert(insertStatement)  // rows is an Int
+```
+
+This is the two step execution process. These steps can be combined into a single step with code like the following:
+
+```kotlin
+    val myOccupation = "Developer"
+
+    val rows = template.insertInto(Person) {
+        set(id).toValue(100)
+        set(firstName).toValue("Joe")
+        set(lastName).toValue("Jones")
+        set(birthDate).toValue(Date())
+        set(employed).toValue("Yes")
+        set(occupation).toValueWhenPresent(myOccupation)
+        set(addressId).toValue(1)
+    }
+```
+
+Note the use of the `toValueWhenPresent` mapping - this will only set the insert value if the value of the property is non null. Also note that you can use the mapping methods to map insert fields to nulls and constants if desired.
 
 ## Select Method Support
 

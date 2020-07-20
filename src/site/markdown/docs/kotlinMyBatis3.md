@@ -152,13 +152,16 @@ val rows = mapper.delete { allRows() }
 
 Insert method support enables the removal of some of the boilerplate code from insert methods in a mapper interfaces.
 
-To use this support, we envision creating several methods - two standard mapper methods, and other extension methods. The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute a delete:
+To use this support, we envision creating several methods - both standard mapper methods, and other extension methods. The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute an insert:
 
 ```kotlin
 @Mapper
 interface PersonMapper {
     @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
     fun insert(insertStatement: InsertStatementProvider<PersonRecord>): Int
+
+    @InsertProvider(type = SqlProviderAdapter::class, method = "generalInsert")
+    fun generalInsert(insertStatement: GeneralInsertStatementProvider): Int
 
     @InsertProvider(type = SqlProviderAdapter::class, method = "insertMultiple")
     fun insertMultiple(insertStatement: MultiRowInsertStatementProvider<PersonRecord>): Int
@@ -178,6 +181,9 @@ fun PersonMapper.insert(record: PersonRecord) =
         map(occupation).toProperty("occupation")
         map(addressId).toProperty("addressId")
     }
+
+fun PersonMapper.insert(completer: GeneralInsertCompleter) =
+    insertInto(this::generalInsert, Person, completer)
 
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
     insertMultiple(records.toList())
@@ -205,7 +211,7 @@ fun PersonMapper.insertSelective(record: PersonRecord) =
     }
 ```
 
-Note these methods use Kotlin utility methods named `insert` and `insertMultiple`. Both methods accept a function with a receiver that will allow column mappings. The methods will build and execute insert statements.= with the supplied column mappings.
+Note these methods use Kotlin utility methods named `insert`, `insertInto`, and `insertMultiple`. Those methods accept a function with a receiver that will allow column mappings. The methods will build and execute insert statements with the supplied column mappings.
 
 Clients use these methods as follows:
 
@@ -213,6 +219,17 @@ Clients use these methods as follows:
 // single insert...
 val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 val rows = mapper.insert(record)
+
+// general insert...
+val rows = mapper.insert {
+    set(id).toValue(100)
+    set(firstName).toValue("Joe")
+    set(lastName).toValue(LastName("Jones"))
+    set(employed).toValue(true)
+    set(occupation).toValue("Developer")
+    set(addressId).toValue(1)
+    set(birthDate).toValue(Date())
+}
 
 // multiple insert...
 val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import examples.simple.LastName;
 import examples.simple.PersonRecord;
 
-public class LegacyPersonMapperTest {
+class LegacyPersonMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -52,7 +52,7 @@ public class LegacyPersonMapperTest {
     private SqlSessionFactory sqlSessionFactory;
     
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/simple/CreateSimpleDB.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -69,7 +69,7 @@ public class LegacyPersonMapperTest {
     }
     
     @Test
-    public void testSelectByExample() {
+    void testSelectByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
@@ -79,12 +79,12 @@ public class LegacyPersonMapperTest {
                     .build()
                     .execute();
             
-            assertThat(rows.size()).isEqualTo(3);
+            assertThat(rows).hasSize(3);
         }
     }
 
     @Test
-    public void testSelectByExampleWithRowbounds() {
+    void testSelectByExampleWithRowbounds() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             RowBounds rowBounds = new RowBounds(2, 2);
@@ -95,12 +95,12 @@ public class LegacyPersonMapperTest {
                     .build()
                     .execute();
             
-            assertThat(rows.size()).isEqualTo(1);
+            assertThat(rows).hasSize(1);
         }
     }
 
     @Test
-    public void testSelectDistinctByExample() {
+    void testSelectDistinctByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
@@ -110,12 +110,12 @@ public class LegacyPersonMapperTest {
                     .build()
                     .execute();
             
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
         }
     }
     
     @Test
-    public void testSelectDistinctByExampleWithRowbounds() {
+    void testSelectDistinctByExampleWithRowbounds() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             RowBounds rowBounds = new RowBounds(2, 2);
@@ -126,12 +126,12 @@ public class LegacyPersonMapperTest {
                     .build()
                     .execute();
             
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows).hasSize(2);
         }
     }
     
     @Test
-    public void testSelectByExampleWithTypeHandler() {
+    void testSelectByExampleWithTypeHandler() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
@@ -142,7 +142,7 @@ public class LegacyPersonMapperTest {
                     .execute();
             
             assertAll(
-                    () -> assertThat(rows.size()).isEqualTo(2),
+                    () -> assertThat(rows).hasSize(2),
                     () -> assertThat(rows.get(0).getId()).isEqualTo(3),
                     () -> assertThat(rows.get(1).getId()).isEqualTo(6)
             );
@@ -150,7 +150,7 @@ public class LegacyPersonMapperTest {
     }
 
     @Test
-    public void testFirstNameIn() {
+    void testFirstNameIn() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
@@ -160,7 +160,7 @@ public class LegacyPersonMapperTest {
                     .execute();
             
             assertAll(
-                    () -> assertThat(rows.size()).isEqualTo(2),
+                    () -> assertThat(rows).hasSize(2),
                     () -> assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone"),
                     () -> assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble")
             );
@@ -168,7 +168,7 @@ public class LegacyPersonMapperTest {
     }
 
     @Test
-    public void testDeleteByExample() {
+    void testDeleteByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             int rows = mapper.deleteByExample()
@@ -180,7 +180,7 @@ public class LegacyPersonMapperTest {
     }
     
     @Test
-    public void testDeleteByPrimaryKey() {
+    void testDeleteByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             int rows = mapper.deleteByPrimaryKey(2);
@@ -190,7 +190,7 @@ public class LegacyPersonMapperTest {
     }
     
     @Test
-    public void testInsert() {
+    void testInsert() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             PersonRecord record = new PersonRecord();
@@ -208,7 +208,7 @@ public class LegacyPersonMapperTest {
     }
 
     @Test
-    public void testInsertSelective() {
+    void testInsertSelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             PersonRecord record = new PersonRecord();
@@ -225,7 +225,7 @@ public class LegacyPersonMapperTest {
     }
 
     @Test
-    public void testUpdateByPrimaryKey() {
+    void testUpdateByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             PersonRecord record = new PersonRecord();
@@ -250,7 +250,7 @@ public class LegacyPersonMapperTest {
     }
 
     @Test
-    public void testUpdateByPrimaryKeySelective() {
+    void testUpdateByPrimaryKeySelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             PersonRecord record = new PersonRecord();
@@ -278,7 +278,7 @@ public class LegacyPersonMapperTest {
     }
 
     @Test
-    public void testUpdateWithNulls() {
+    void testUpdateWithNulls() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             PersonRecord record = new PersonRecord();
@@ -306,14 +306,14 @@ public class LegacyPersonMapperTest {
             PersonRecord newRecord = mapper.selectByPrimaryKey(100);
             assertAll(
                     () -> assertThat(newRecord.getOccupation()).isNull(),
-                    () -> assertThat(newRecord.getEmployed()).isEqualTo(false),
+                    () -> assertThat(newRecord.getEmployed()).isFalse(),
                     () -> assertThat(newRecord.getFirstName()).isEqualTo("Joe")
             );
         }
     }
 
     @Test
-    public void testUpdateByExample() {
+    void testUpdateByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             PersonRecord record = new PersonRecord();
@@ -343,7 +343,7 @@ public class LegacyPersonMapperTest {
     }
 
     @Test
-    public void testCountByExample() {
+    void testCountByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             long rows = mapper.countByExample()
@@ -356,7 +356,7 @@ public class LegacyPersonMapperTest {
     }
     
     @Test
-    public void testTypeHandledLike() {
+    void testTypeHandledLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
@@ -366,13 +366,13 @@ public class LegacyPersonMapperTest {
                     .build()
                     .execute();
             
-            assertThat(rows.size()).isEqualTo(3);
+            assertThat(rows).hasSize(3);
             assertThat(rows.get(0).getFirstName()).isEqualTo("Fred");
         }
     }
     
     @Test
-    public void testTypeHandledNotLike() {
+    void testTypeHandledNotLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             
@@ -382,7 +382,7 @@ public class LegacyPersonMapperTest {
                     .build()
                     .execute();
             
-            assertThat(rows.size()).isEqualTo(3);
+            assertThat(rows).hasSize(3);
             assertThat(rows.get(0).getFirstName()).isEqualTo("Barney");
         }
     }

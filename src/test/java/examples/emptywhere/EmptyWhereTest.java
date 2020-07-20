@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,10 +36,10 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.where.WhereDSL;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
-public class EmptyWhereTest {
+class EmptyWhereTest {
 
     @Test
-    public void testDeleteThreeConditions() {
+    void testDeleteThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -60,7 +60,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testDeleteTwoConditions() {
+    void testDeleteTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -80,7 +80,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testDeleteFirstNameNull() {
+    void testDeleteFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
         
@@ -99,7 +99,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testDeleteLastNameNull() {
+    void testDeleteLastNameNull() {
         String fName = "Fred";
         String lName = null;
         
@@ -118,7 +118,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testDeleteAllNull() {
+    void testDeleteAllNull() {
         String fName = null;
         String lName = null;
         
@@ -136,7 +136,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testSelectThreeConditions() {
+    void testSelectThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -159,7 +159,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testSelectTwoConditions() {
+    void testSelectTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -181,7 +181,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testSelectFirstNameNull() {
+    void testSelectFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
         
@@ -202,7 +202,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testSelectLastNameNull() {
+    void testSelectLastNameNull() {
         String fName = "Fred";
         String lName = null;
         
@@ -223,7 +223,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testSelectAllNull() {
+    void testSelectAllNull() {
         String fName = null;
         String lName = null;
         
@@ -243,7 +243,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testJoinThreeConditions() {
+    void testJoinThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -267,7 +267,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testJoinTwoConditions() {
+    void testJoinTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -290,7 +290,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testJoinFirstNameNull() {
+    void testJoinFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
         
@@ -312,7 +312,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testJoinLastNameNull() {
+    void testJoinLastNameNull() {
         String fName = "Fred";
         String lName = null;
         
@@ -334,7 +334,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testJoinAllNull() {
+    void testJoinAllNull() {
         String fName = null;
         String lName = null;
         
@@ -355,7 +355,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testUpdateThreeConditions() {
+    void testUpdateThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -378,7 +378,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testUpdateTwoConditions() {
+    void testUpdateTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -400,7 +400,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testUpdateFirstNameNull() {
+    void testUpdateFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
         
@@ -419,7 +419,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testUpdateLastNameNull() {
+    void testUpdateLastNameNull() {
         String fName = "Fred";
         String lName = null;
         
@@ -440,7 +440,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testUpdateAllNull() {
+    void testUpdateAllNull() {
         String fName = null;
         String lName = null;
         
@@ -460,7 +460,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testWhereThreeConditions() {
+    void testWhereThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -479,7 +479,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testWhereTwoConditions() {
+    void testWhereTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -497,7 +497,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testWhereFirstNameNull() {
+    void testWhereFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
         
@@ -514,7 +514,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testWhereLastNameNull() {
+    void testWhereLastNameNull() {
         String fName = "Fred";
         String lName = null;
         
@@ -531,7 +531,7 @@ public class EmptyWhereTest {
     }
 
     @Test
-    public void testWhereAllNull() {
+    void testWhereAllNull() {
         String fName = null;
         String lName = null;
         

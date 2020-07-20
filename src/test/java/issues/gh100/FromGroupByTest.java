@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class FromGroupByTest {
+class FromGroupByTest {
 
     @Test
-    public void testFromGroupByB1() {
+    void testFromGroupByB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -44,7 +44,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByB2() {
+    void testFromGroupByB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -60,7 +60,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByLimitB1() {
+    void testFromGroupByLimitB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -79,7 +79,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByLimitB2() {
+    void testFromGroupByLimitB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -98,7 +98,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByLimitB3() {
+    void testFromGroupByLimitB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -117,7 +117,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOffsetB1() {
+    void testFromGroupByOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -136,7 +136,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOffsetB2() {
+    void testFromGroupByOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -155,7 +155,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOffsetB3() {
+    void testFromGroupByOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -174,7 +174,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByFetchFirstB1() {
+    void testFromGroupByFetchFirstB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -193,7 +193,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByFetchFirstB2() {
+    void testFromGroupByFetchFirstB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -212,7 +212,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByFetchFirstB3() {
+    void testFromGroupByFetchFirstB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -231,7 +231,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOrderByB1() {
+    void testFromGroupByOrderByB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -250,7 +250,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOrderByB2() {
+    void testFromGroupByOrderByB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -269,7 +269,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOrderByB3() {
+    void testFromGroupByOrderByB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -288,7 +288,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOrderByOffsetB1() {
+    void testFromGroupByOrderByOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -310,7 +310,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOrderByOffsetB2() {
+    void testFromGroupByOrderByOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -332,7 +332,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOrderByOffsetB3() {
+    void testFromGroupByOrderByOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         
@@ -354,7 +354,7 @@ public class FromGroupByTest {
     }
 
     @Test
-    public void testFromGroupByOrderByOffsetB4() {
+    void testFromGroupByOrderByOffsetB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
         

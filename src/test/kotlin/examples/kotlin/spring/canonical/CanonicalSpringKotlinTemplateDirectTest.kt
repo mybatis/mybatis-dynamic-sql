@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.*
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
@@ -158,6 +157,21 @@ class CanonicalSpringKotlinTemplateDirectTest {
     }
 
     @Test
+    fun testGeneralInsert() {
+        val rows = template.insertInto(Person) {
+            set(id).toValue(100)
+            set(firstName).toValue("Joe")
+            set(lastName).toValue("Jones")
+            set(birthDate).toValue(Date())
+            set(employed).toValue("Yes")
+            set(occupation).toValue("Developer")
+            set(addressId).toValue(1)
+        }
+
+        assertThat(rows).isEqualTo(1)
+    }
+
+    @Test
     fun testSelectAll() {
         val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
@@ -175,7 +189,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 record
             }
 
-        assertThat(rows.size).isEqualTo(6)
+        assertThat(rows).hasSize(6)
     }
 
     @Test
@@ -200,7 +214,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 record
             }
 
-        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows).hasSize(2)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -261,7 +275,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 rs.getString(1)
             }
 
-        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows).hasSize(2)
     }
 
     @Test
@@ -273,7 +287,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 rs.getString(1)
             }
 
-        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows).hasSize(2)
     }
 
     @Test
@@ -307,7 +321,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
             }
 
 
-        assertThat(rows.size).isEqualTo(3)
+        assertThat(rows).hasSize(3)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -346,7 +360,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 record
             }
 
-        assertThat(rows.size).isEqualTo(1)
+        assertThat(rows).hasSize(1)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -382,7 +396,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 record
             }
 
-        assertThat(rows.size).isEqualTo(3)
+        assertThat(rows).hasSize(3)
         with(rows[2]) {
             assertThat(id).isEqualTo(4)
             assertThat(firstName).isEqualTo("Barney")

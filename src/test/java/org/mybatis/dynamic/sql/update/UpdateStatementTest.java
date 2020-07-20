@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
-public class UpdateStatementTest {
+class UpdateStatementTest {
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
     private static final SqlColumn<String> firstName = foo.column("firstName", JDBCType.VARCHAR);
@@ -35,7 +35,7 @@ public class UpdateStatementTest {
     private static final SqlColumn<String> occupation = foo.column("occupation", JDBCType.VARCHAR);
 
     @Test
-    public void testUpdateParameterWithMultipleCriteria() {
+    void testUpdateParameterWithMultipleCriteria() {
         UpdateStatementProvider updateStatement = update(foo)
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
@@ -49,17 +49,17 @@ public class UpdateStatementTest {
 
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
-                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(5),
-                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
-                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
-                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3),
-                () -> assertThat(updateStatement.getParameters().get("p4")).isEqualTo(4),
-                () -> assertThat(updateStatement.getParameters().get("p5")).isEqualTo(5)
+                () -> assertThat(updateStatement.getParameters()).hasSize(5),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p1", "fred"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p2", "jones"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p3", 3),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p4", 4),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p5", 5)
         );
     }
 
     @Test
-    public void testUpdateParameterWithMultipleNestedCriteria() {
+    void testUpdateParameterWithMultipleNestedCriteria() {
         UpdateStatementProvider updateStatement = update(foo)
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
@@ -73,17 +73,17 @@ public class UpdateStatementTest {
                 
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
-                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(5),
-                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
-                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
-                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3),
-                () -> assertThat(updateStatement.getParameters().get("p4")).isEqualTo(4),
-                () -> assertThat(updateStatement.getParameters().get("p5")).isEqualTo(5)
+                () -> assertThat(updateStatement.getParameters()).hasSize(5),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p1", "fred"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p2", "jones"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p3", 3),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p4", 4),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p5", 5)
         );
     }
     
     @Test
-    public void testUpdateParameterStartWithNull() {
+    void testUpdateParameterStartWithNull() {
         UpdateStatementProvider updateStatement = update(foo)
                 .set(occupation).equalToNull()
                 .set(firstName).equalTo("fred")
@@ -98,16 +98,16 @@ public class UpdateStatementTest {
         
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
-                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(4),
-                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
-                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
-                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3),
-                () -> assertThat(updateStatement.getParameters().get("p4")).isEqualTo("barney")
+                () -> assertThat(updateStatement.getParameters()).hasSize(4),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p1", "fred"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p2", "jones"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p3", 3),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p4", "barney")
         );
     }
     
     @Test
-    public void testUpdateParameterStartWithConstant() {
+    void testUpdateParameterStartWithConstant() {
         UpdateStatementProvider updateStatement = update(foo)
                 .set(occupation).equalToStringConstant("Y")
                 .set(firstName).equalTo("fred")
@@ -123,16 +123,16 @@ public class UpdateStatementTest {
         
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
-                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(4),
-                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
-                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
-                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3),
-                () -> assertThat(updateStatement.getParameters().get("p4")).isEqualTo("barney")
+                () -> assertThat(updateStatement.getParameters()).hasSize(4),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p1", "fred"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p2", "jones"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p3", 3),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p4", "barney")
         );
     }
     
     @Test
-    public void testFullUpdateStatement() {
+    void testFullUpdateStatement() {
         UpdateStatementProvider updateStatement = update(foo)
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
@@ -147,15 +147,15 @@ public class UpdateStatementTest {
                 
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
-                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(3),
-                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
-                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones"),
-                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3)
+                () -> assertThat(updateStatement.getParameters()).hasSize(3),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p1", "fred"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p2", "jones"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p3", 3)
         );
     }
 
     @Test
-    public void testFullUpdateStatementNoWhere() {
+    void testFullUpdateStatementNoWhere() {
         UpdateStatementProvider updateStatement = update(foo)
                 .set(firstName).equalTo("fred")
                 .set(lastName).equalTo("jones")
@@ -168,14 +168,14 @@ public class UpdateStatementTest {
                 
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
-                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(2),
-                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("fred"),
-                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo("jones")
+                () -> assertThat(updateStatement.getParameters()).hasSize(2),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p1", "fred"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p2", "jones")
         );
     }
     
     @Test
-    public void testUpdateStatementArithmeticOperation() {
+    void testUpdateStatementArithmeticOperation() {
         UpdateStatementProvider updateStatement = update(foo)
                 .set(id).equalTo(add(id, constant("1")))
                 .set(id).equalTo(subtract(id, constant("2")))
@@ -192,12 +192,12 @@ public class UpdateStatementTest {
                 
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
-                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(0)
+                () -> assertThat(updateStatement.getParameters()).isEmpty()
         );
     }
 
     @Test
-    public void testUpdateSelectStatement() {
+    void testUpdateSelectStatement() {
         UpdateStatementProvider updateStatement = update(foo)
                 .set(lastName).equalTo("Jones")
                 .set(firstName).equalTo(select(firstName).from(foo).where(id, isEqualTo(4)))
@@ -211,10 +211,10 @@ public class UpdateStatementTest {
 
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
-                () -> assertThat(updateStatement.getParameters().size()).isEqualTo(3),
-                () -> assertThat(updateStatement.getParameters().get("p1")).isEqualTo("Jones"),
-                () -> assertThat(updateStatement.getParameters().get("p2")).isEqualTo(4),
-                () -> assertThat(updateStatement.getParameters().get("p3")).isEqualTo(3)
+                () -> assertThat(updateStatement.getParameters()).hasSize(3),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p1", "Jones"),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p2", 4),
+                () -> assertThat(updateStatement.getParameters()).containsEntry("p3", 3)
         );
     }
 }
