@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -43,11 +43,11 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import examples.generated.always.GeneratedAlwaysRecord;
 
-public class SpringTest {
+class SpringTest {
     private NamedParameterJdbcTemplate template;
     
     @BeforeEach
-    public void setup() {
+    void setup() {
         EmbeddedDatabase db = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.HSQL)
                 .generateUniqueName(true)
@@ -57,7 +57,7 @@ public class SpringTest {
     }
     
     @Test
-    public void testRender() {
+    void testRender() {
         SelectStatementProvider selectStatement = select(id.as("A_ID"), firstName, lastName, fullName)
                 .from(generatedAlways, "a")
                 .where(id, isGreaterThan(3))
@@ -74,7 +74,7 @@ public class SpringTest {
     }
     
     @Test
-    public void testSelect() {
+    void testSelect() {
         SelectStatementProvider selectStatement = select(id, firstName, lastName, fullName)
                 .from(generatedAlways)
                 .where(id, isGreaterThan(3))
@@ -94,7 +94,7 @@ public class SpringTest {
                     return record;
                 });
         
-        assertThat(records.size()).isEqualTo(3);
+        assertThat(records).hasSize(3);
         assertThat(records.get(0).getId()).isEqualTo(6);
         assertThat(records.get(0).getFirstName()).isEqualTo("Bamm Bamm");
         assertThat(records.get(0).getLastName()).isEqualTo("Rubble");
@@ -106,7 +106,7 @@ public class SpringTest {
     }
 
     @Test
-    public void testDelete() {
+    void testDelete() {
         DeleteStatementProvider deleteStatement = deleteFrom(generatedAlways)
                 .where(id,  isLessThan(3))
                 .build()
@@ -120,7 +120,7 @@ public class SpringTest {
     }
     
     @Test
-    public void testInsert() {
+    void testInsert() {
         GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
         record.setId(100);
         record.setFirstName("Bob");
@@ -146,7 +146,7 @@ public class SpringTest {
     }
     
     @Test
-    public void testInsertBatch() {
+    void testInsertBatch() {
         List<GeneratedAlwaysRecord> records = new ArrayList<>();
         GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
         record.setId(100);
@@ -172,13 +172,13 @@ public class SpringTest {
         
         int[] updateCounts = template.batchUpdate(batchInsert.getInsertStatementSQL(), batch);
         
-        assertThat(updateCounts.length).isEqualTo(2);
+        assertThat(updateCounts).hasSize(2);
         assertThat(updateCounts[0]).isEqualTo(1);
         assertThat(updateCounts[1]).isEqualTo(1);
     }
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         UpdateStatementProvider updateStatement = update(generatedAlways)
                 .set(firstName).equalToStringConstant("Rob")
                 .where(id,  isIn(1, 5, 22))

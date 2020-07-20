@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.from
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -236,7 +235,7 @@ class CanonicalSpringKotlinTest {
             record
         }
 
-        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows).hasSize(2)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -318,7 +317,7 @@ class CanonicalSpringKotlinTest {
         }
 
 
-        assertThat(rows.size).isEqualTo(3)
+        assertThat(rows).hasSize(3)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -368,7 +367,7 @@ class CanonicalSpringKotlinTest {
             record
         }
 
-        assertThat(rows.size).isEqualTo(1)
+        assertThat(rows).hasSize(1)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -415,7 +414,7 @@ class CanonicalSpringKotlinTest {
             record
         }
 
-        assertThat(rows.size).isEqualTo(3)
+        assertThat(rows).hasSize(3)
         with(rows[2]) {
             assertThat(id).isEqualTo(4)
             assertThat(firstName).isEqualTo("Barney")

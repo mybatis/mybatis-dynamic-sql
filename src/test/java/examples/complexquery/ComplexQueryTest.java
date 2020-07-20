@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,10 +30,10 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class ComplexQueryTest {
+class ComplexQueryTest {
 
     @Test
-    public void testId() {
+    void testId() {
         SelectStatementProvider selectStatement = search(2, null, null);
         
         String expected = "select person_id, first_name, last_name"
@@ -43,12 +43,12 @@ public class ComplexQueryTest {
                 + " fetch first #{parameters.p2} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 50L);
     }
     
     @Test
-    public void testFirstNameOnly() {
+    void testFirstNameOnly() {
         SelectStatementProvider selectStatement = search(null, "fred", null);
         
         String expected = "select person_id, first_name, last_name"
@@ -58,12 +58,12 @@ public class ComplexQueryTest {
                 + " fetch first #{parameters.p2} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%fred%");
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%fred%");
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 50L);
     }
     
     @Test
-    public void testLastNameOnly() {
+    void testLastNameOnly() {
         SelectStatementProvider selectStatement = search(null, null, "flintstone");
         
         String expected = "select person_id, first_name, last_name"
@@ -73,12 +73,12 @@ public class ComplexQueryTest {
                 + " fetch first #{parameters.p2} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%flintstone%");
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%flintstone%");
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 50L);
     }
     
     @Test
-    public void testBothNames() {
+    void testBothNames() {
         SelectStatementProvider selectStatement = search(null, "fred", "flintstone");
         
         String expected = "select person_id, first_name, last_name"
@@ -89,13 +89,13 @@ public class ComplexQueryTest {
                 + " fetch first #{parameters.p3} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%fred%");
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo("%flintstone%");
-        assertThat(selectStatement.getParameters().get("p3")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%fred%");
+        assertThat(selectStatement.getParameters()).containsEntry("p2", "%flintstone%");
+        assertThat(selectStatement.getParameters()).containsEntry("p3", 50L);
     }
     
     @Test
-    public void testAllNull() {
+    void testAllNull() {
         SelectStatementProvider selectStatement = search(null, null, null);
         
         String expected = "select person_id, first_name, last_name"
@@ -104,10 +104,10 @@ public class ComplexQueryTest {
                 + " fetch first #{parameters.p1} rows only";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(50L);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 50L);
     }
     
-    public SelectStatementProvider search(Integer targetId, String fName, String lName) {
+    SelectStatementProvider search(Integer targetId, String fName, String lName) {
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
                 .where();
@@ -128,7 +128,7 @@ public class ComplexQueryTest {
         return builder.build().render(RenderingStrategies.MYBATIS3);
     }
     
-    public String addWildcards(String s) {
+    String addWildcards(String s) {
         return "%" + s + "%";
     }
 }

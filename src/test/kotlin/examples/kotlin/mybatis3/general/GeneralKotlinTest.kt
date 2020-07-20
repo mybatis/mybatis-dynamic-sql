@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.*
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.from
 import java.io.InputStreamReader
@@ -318,7 +317,7 @@ class GeneralKotlinTest {
 
             val rows = mapper.selectMany(selectStatement)
 
-            assertThat(rows.size).isEqualTo(2)
+            assertThat(rows).hasSize(2)
             with(rows[0]) {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
@@ -349,7 +348,7 @@ class GeneralKotlinTest {
 
             val rows = mapper.selectMany(selectStatement)
 
-            assertThat(rows.size).isEqualTo(3)
+            assertThat(rows).hasSize(3)
             with(rows[0]) {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
@@ -386,7 +385,7 @@ class GeneralKotlinTest {
 
             val rows = mapper.selectMany(selectStatement)
 
-            assertThat(rows.size).isEqualTo(1)
+            assertThat(rows).hasSize(1)
             with(rows[0]) {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
@@ -424,7 +423,7 @@ class GeneralKotlinTest {
 
             val rows = mapper.selectMany(selectStatement)
 
-            assertThat(rows.size).isEqualTo(3)
+            assertThat(rows).hasSize(3)
             with(rows[2]) {
                 assertThat(id).isEqualTo(4)
                 assertThat(firstName).isEqualTo("Barney")
@@ -468,7 +467,7 @@ class GeneralKotlinTest {
 
             val rows = mapper.selectMany(selectStatement)
 
-            assertThat(rows.size).isEqualTo(1)
+            assertThat(rows).hasSize(1)
             with(rows[0]) {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
@@ -509,7 +508,7 @@ class GeneralKotlinTest {
 
             val rows = mapper.selectMany(selectStatement)
 
-            assertThat(rows.size).isEqualTo(3)
+            assertThat(rows).hasSize(3)
             with(rows[2]) {
                 assertThat(id).isEqualTo(4)
                 assertThat(firstName).isEqualTo("Barney")
@@ -534,7 +533,7 @@ class GeneralKotlinTest {
                 offset(2)
             }
 
-            assertThat(rows.size).isEqualTo(3)
+            assertThat(rows).hasSize(3)
             with(rows[0]) {
                 assertThat(id).isEqualTo(3)
                 assertThat(firstName).isEqualTo("Pebbles")
@@ -559,7 +558,7 @@ class GeneralKotlinTest {
                 fetchFirst(3).rowsOnly()
             }
 
-            assertThat(rows.size).isEqualTo(3)
+            assertThat(rows).hasSize(3)
             with(rows[0]) {
                 assertThat(id).isEqualTo(3)
                 assertThat(firstName).isEqualTo("Pebbles")

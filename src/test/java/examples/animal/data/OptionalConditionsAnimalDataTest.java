@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class OptionalConditionsAnimalDataTest {
+class OptionalConditionsAnimalDataTest {
     
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
@@ -48,7 +48,7 @@ public class OptionalConditionsAnimalDataTest {
     private SqlSessionFactory sqlSessionFactory;
     
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/animal/data/CreateAnimalData.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -65,7 +65,7 @@ public class OptionalConditionsAnimalDataTest {
     }
     
     @Test
-    public void testAllIgnored() {
+    void testAllIgnored() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -77,7 +77,7 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(65),
+                    () -> assertThat(animals).hasSize(65),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1),
                     () -> assertThat(animals.get(1).getId()).isEqualTo(2)
             );
@@ -85,7 +85,7 @@ public class OptionalConditionsAnimalDataTest {
     }
     
     @Test
-    public void testIgnoredBetweenRendered() {
+    void testIgnoredBetweenRendered() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -99,7 +99,7 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(3),
                     () -> assertThat(animals.get(1).getId()).isEqualTo(4)
             );
@@ -107,7 +107,7 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIgnoredInWhere() {
+    void testIgnoredInWhere() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -121,7 +121,7 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(3),
                     () -> assertThat(animals.get(1).getId()).isEqualTo(4)
             );
@@ -129,7 +129,7 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testManyIgnored() {
+    void testManyIgnored() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -144,7 +144,7 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(3),
                     () -> assertThat(animals.get(1).getId()).isEqualTo(4)
             );
@@ -152,7 +152,7 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testIgnoredInitialWhere() {
+    void testIgnoredInitialWhere() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -165,7 +165,7 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(3),
                     () -> assertThat(animals.get(1).getId()).isEqualTo(4)
             );
@@ -173,7 +173,7 @@ public class OptionalConditionsAnimalDataTest {
     }
 
     @Test
-    public void testEqualWhenPresentWithValue() {
+    void testEqualWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -185,14 +185,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(1),
+                    () -> assertThat(animals).hasSize(1),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(4)
             );
         }
     }
 
     @Test
-    public void testEqualWhenPresentWithoutValue() {
+    void testEqualWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -205,14 +205,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testNotEqualWhenPresentWithValue() {
+    void testNotEqualWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -225,14 +225,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <> #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(9),
+                    () -> assertThat(animals).hasSize(9),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testNotEqualWhenPresentWithoutValue() {
+    void testNotEqualWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -245,14 +245,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testGreaterThanWhenPresentWithValue() {
+    void testGreaterThanWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -265,14 +265,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id > #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(6),
+                    () -> assertThat(animals).hasSize(6),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(5)
             );
         }
     }
 
     @Test
-    public void testGreaterThanWhenPresentWithoutValue() {
+    void testGreaterThanWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -285,14 +285,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testGreaterThanOrEqualToWhenPresentWithValue() {
+    void testGreaterThanOrEqualToWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -305,14 +305,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id >= #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(7),
+                    () -> assertThat(animals).hasSize(7),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(4)
             );
         }
     }
 
     @Test
-    public void testGreaterThanOrEqualToWhenPresentWithoutValue() {
+    void testGreaterThanOrEqualToWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -325,14 +325,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testLessThanWhenPresentWithValue() {
+    void testLessThanWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -344,14 +344,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals).hasSize(3),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testLessThanWhenPresentWithoutValue() {
+    void testLessThanWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -364,14 +364,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testLessThanOrEqualToWhenPresentWithValue() {
+    void testLessThanOrEqualToWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -383,14 +383,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(4),
+                    () -> assertThat(animals).hasSize(4),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testLessThanOrEqualToWhenPresentWithoutValue() {
+    void testLessThanOrEqualToWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -403,14 +403,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsInWhenPresentWithValue() {
+    void testIsInWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -422,14 +422,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(3),
+                    () -> assertThat(animals).hasSize(3),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(4)
             );
         }
     }
 
     @Test
-    public void testIsInWhenPresentWithSomeValues() {
+    void testIsInWhenPresentWithSomeValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -441,14 +441,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(3)
             );
         }
     }
 
     @Test
-    public void testIsInWhenPresentWithNoValues() {
+    void testIsInWhenPresentWithNoValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -461,14 +461,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsInCaseInsensitiveWhenPresentWithValue() {
+    void testIsInCaseInsensitiveWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -480,14 +480,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(4)
             );
         }
     }
 
     @Test
-    public void testIsInCaseInsensitiveWhenPresentWithSomeValues() {
+    void testIsInCaseInsensitiveWhenPresentWithSomeValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -499,14 +499,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(4)
             );
         }
     }
 
     @Test
-    public void testIsInCaseInsensitiveWhenPresentWithNoValues() {
+    void testIsInCaseInsensitiveWhenPresentWithNoValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -519,14 +519,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotInWhenPresentWithValue() {
+    void testIsNotInWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -539,14 +539,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) and id <= #{parameters.p4,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(7),
+                    () -> assertThat(animals).hasSize(7),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotInWhenPresentWithSomeValues() {
+    void testIsNotInWhenPresentWithSomeValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -559,14 +559,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(8),
+                    () -> assertThat(animals).hasSize(8),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotInWhenPresentWithNoValues() {
+    void testIsNotInWhenPresentWithNoValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -579,14 +579,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotInCaseInsensitiveWhenPresentWithValue() {
+    void testIsNotInCaseInsensitiveWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -599,14 +599,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(8),
+                    () -> assertThat(animals).hasSize(8),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotInCaseInsensitiveWhenPresentWithSomeValues() {
+    void testIsNotInCaseInsensitiveWhenPresentWithSomeValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -619,14 +619,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(8),
+                    () -> assertThat(animals).hasSize(8),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotInCaseInsensitiveWhenPresentWithNoValues() {
+    void testIsNotInCaseInsensitiveWhenPresentWithNoValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -639,14 +639,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsBetweenWhenPresentWithValues() {
+    void testIsBetweenWhenPresentWithValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -658,14 +658,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(4),
+                    () -> assertThat(animals).hasSize(4),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(3)
             );
         }
     }
 
     @Test
-    public void testIsBetweenWhenPresentWithFirstMissing() {
+    void testIsBetweenWhenPresentWithFirstMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -678,14 +678,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsBetweenWhenPresentWithSecondMissing() {
+    void testIsBetweenWhenPresentWithSecondMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -698,14 +698,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsBetweenWhenPresentWithBothMissing() {
+    void testIsBetweenWhenPresentWithBothMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -718,14 +718,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotBetweenWhenPresentWithValues() {
+    void testIsNotBetweenWhenPresentWithValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -738,14 +738,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(6),
+                    () -> assertThat(animals).hasSize(6),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotBetweenWhenPresentWithFirstMissing() {
+    void testIsNotBetweenWhenPresentWithFirstMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -758,14 +758,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotBetweenWhenPresentWithSecondMissing() {
+    void testIsNotBetweenWhenPresentWithSecondMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -778,14 +778,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotBetweenWhenPresentWithBothMissing() {
+    void testIsNotBetweenWhenPresentWithBothMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -798,14 +798,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsLikeWhenPresentWithValue() {
+    void testIsLikeWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -818,14 +818,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(6)
             );
         }
     }
 
     @Test
-    public void testIsLikeWhenPresentWithoutValue() {
+    void testIsLikeWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -838,14 +838,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsLikeCaseInsensitiveWhenPresentWithValue() {
+    void testIsLikeCaseInsensitiveWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -858,14 +858,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(2),
+                    () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(6)
             );
         }
     }
 
     @Test
-    public void testIsLikeCaseInsensitiveWhenPresentWithoutValue() {
+    void testIsLikeCaseInsensitiveWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -878,14 +878,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotLikeWhenPresentWithValue() {
+    void testIsNotLikeWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -898,14 +898,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name not like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(8),
+                    () -> assertThat(animals).hasSize(8),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotLikeWhenPresentWithoutValue() {
+    void testIsNotLikeWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -918,14 +918,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotLikeCaseInsensitiveWhenPresentWithValue() {
+    void testIsNotLikeCaseInsensitiveWhenPresentWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -938,14 +938,14 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(8),
+                    () -> assertThat(animals).hasSize(8),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }
     }
 
     @Test
-    public void testIsNotLikeCaseInsensitiveWhenPresentWithoutValue() {
+    void testIsNotLikeCaseInsensitiveWhenPresentWithoutValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -958,7 +958,7 @@ public class OptionalConditionsAnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
-                    () -> assertThat(animals.size()).isEqualTo(10),
+                    () -> assertThat(animals).hasSize(10),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
             );
         }

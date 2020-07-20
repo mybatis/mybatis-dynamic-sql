@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class FetchFirstTest {
+class FetchFirstTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -47,7 +47,7 @@ public class FetchFirstTest {
     private SqlSessionFactory sqlSessionFactory;
     
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/animal/data/CreateAnimalData.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -64,7 +64,7 @@ public class FetchFirstTest {
     }
 
     @Test
-    public void testOffsetAndFetchFirstAfterFrom() {
+    void testOffsetAndFetchFirstAfterFrom() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             SelectStatementProvider selectStatement = select(animalData.allColumns())
                     .from(animalData)
@@ -77,17 +77,17 @@ public class FetchFirstTest {
             List<AnimalData> records = mapper.selectMany(selectStatement);
         
             assertAll(
-                    () -> assertThat(records.size()).isEqualTo(3),
+                    () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(23),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData offset #{parameters.p1} rows fetch first #{parameters.p2} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(3L),
-                    () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(22L)
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p2", 3L),
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 22L)
             );
         }
     }
 
     @Test
-    public void testFetchFirstOnlyAfterFrom() {
+    void testFetchFirstOnlyAfterFrom() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             SelectStatementProvider selectStatement = select(animalData.allColumns())
                     .from(animalData)
@@ -99,16 +99,16 @@ public class FetchFirstTest {
             List<AnimalData> records = mapper.selectMany(selectStatement);
         
             assertAll(
-                    () -> assertThat(records.size()).isEqualTo(3),
+                    () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(1),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData fetch first #{parameters.p1} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(3L)
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3L)
             );
         }
     }
 
     @Test
-    public void testOffsetAndFetchFirstAfterWhere() {
+    void testOffsetAndFetchFirstAfterWhere() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             SelectStatementProvider selectStatement = select(animalData.allColumns())
                     .from(animalData)
@@ -123,17 +123,17 @@ public class FetchFirstTest {
             List<AnimalData> records = mapper.selectMany(selectStatement);
         
             assertAll(
-                    () -> assertThat(records.size()).isEqualTo(3),
+                    () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(45),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} and id > #{parameters.p2,jdbcType=INTEGER} offset #{parameters.p3} rows fetch first #{parameters.p4} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("p4")).isEqualTo(3L),
-                    () -> assertThat(selectStatement.getParameters().get("p3")).isEqualTo(22L)
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p4", 3L),
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p3", 22L)
             );
         }
     }
 
     @Test
-    public void testFetchFirstOnlyAfterWhere() {
+    void testFetchFirstOnlyAfterWhere() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             SelectStatementProvider selectStatement = select(animalData.allColumns())
                     .from(animalData)
@@ -146,16 +146,16 @@ public class FetchFirstTest {
             List<AnimalData> records = mapper.selectMany(selectStatement);
         
             assertAll(
-                    () -> assertThat(records.size()).isEqualTo(3),
+                    () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(1),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} fetch first #{parameters.p2} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(3L)
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p2", 3L)
             );
         }
     }
 
     @Test
-    public void testOffsetAndFetchFirstAfterOrderBy() {
+    void testOffsetAndFetchFirstAfterOrderBy() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             SelectStatementProvider selectStatement = select(animalData.allColumns())
                     .from(animalData)
@@ -169,17 +169,17 @@ public class FetchFirstTest {
             List<AnimalData> records = mapper.selectMany(selectStatement);
         
             assertAll(
-                    () -> assertThat(records.size()).isEqualTo(3),
+                    () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(23),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id offset #{parameters.p1} rows fetch first #{parameters.p2} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(3L),
-                    () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(22L)
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p2", 3L),
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 22L)
             );
         }
     }
 
     @Test
-    public void testLimitOnlyAfterOrderBy() {
+    void testLimitOnlyAfterOrderBy() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             SelectStatementProvider selectStatement = select(animalData.allColumns())
                     .from(animalData)
@@ -192,10 +192,10 @@ public class FetchFirstTest {
             List<AnimalData> records = mapper.selectMany(selectStatement);
         
             assertAll(
-                    () -> assertThat(records.size()).isEqualTo(3),
+                    () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(1),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id fetch first #{parameters.p1} rows only"),
-                    () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(3L)
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3L)
             );
         }
     }

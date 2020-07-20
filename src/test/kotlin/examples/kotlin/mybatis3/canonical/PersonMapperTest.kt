@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ class PersonMapperTest {
                 or(occupation, isNull())
             }
 
-            assertThat(rows.size).isEqualTo(3)
+            assertThat(rows).hasSize(3)
         }
     }
 
@@ -74,7 +74,7 @@ class PersonMapperTest {
 
             val rows = mapper.select { allRows() }
 
-            assertThat(rows.size).isEqualTo(6)
+            assertThat(rows).hasSize(6)
             assertThat(rows[0].id).isEqualTo(1)
             assertThat(rows[5].id).isEqualTo(6)
         }
@@ -90,7 +90,7 @@ class PersonMapperTest {
                 orderBy(lastName.descending(), firstName.descending())
             }
 
-            assertThat(rows.size).isEqualTo(6)
+            assertThat(rows).hasSize(6)
             assertThat(rows[0].id).isEqualTo(5)
             assertThat(rows[5].id).isEqualTo(1)
         }
@@ -106,7 +106,7 @@ class PersonMapperTest {
                 or(occupation, isNull())
             }
 
-            assertThat(rows.size).isEqualTo(5)
+            assertThat(rows).hasSize(5)
         }
     }
 
@@ -120,7 +120,7 @@ class PersonMapperTest {
                 orderBy(id)
             }
 
-            assertThat(rows.size).isEqualTo(2)
+            assertThat(rows).hasSize(2)
             assertThat(rows[0].id).isEqualTo(3)
             assertThat(rows[1].id).isEqualTo(6)
         }
@@ -145,7 +145,7 @@ class PersonMapperTest {
                 where(firstName, isIn("Fred", "Barney"))
             }
 
-            assertThat(rows.size).isEqualTo(2)
+            assertThat(rows).hasSize(2)
             assertThat(rows[0].lastName?.name).isEqualTo("Flintstone")
             assertThat(rows[1].lastName?.name).isEqualTo("Rubble")
         }
@@ -472,7 +472,7 @@ class PersonMapperTest {
                 orderBy(id)
             }
 
-            assertThat(rows.size).isEqualTo(3)
+            assertThat(rows).hasSize(3)
             assertThat(rows[0].firstName).isEqualTo("Fred")
         }
     }
@@ -487,7 +487,7 @@ class PersonMapperTest {
                 orderBy(id)
             }
 
-            assertThat(rows.size).isEqualTo(3)
+            assertThat(rows).hasSize(3)
             assertThat(rows[0].firstName).isEqualTo("Barney")
         }
     }
@@ -502,7 +502,7 @@ class PersonMapperTest {
                 orderBy(id)
             }
 
-            assertThat(records.size).isEqualTo(6L)
+            assertThat(records).hasSize(6)
             with(records[0]) {
                 assertThat(id).isEqualTo(1)
                 assertThat(employed).isTrue()
@@ -527,7 +527,7 @@ class PersonMapperTest {
                 where(id, isEqualTo(1))
             }
 
-            assertThat(records.size).isEqualTo(1L)
+            assertThat(records).hasSize(1)
             with(records[0]) {
                 assertThat(id).isEqualTo(1)
                 assertThat(employed).isTrue()

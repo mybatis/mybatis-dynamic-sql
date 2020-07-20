@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,13 +29,13 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class SelectStatementTest {
-    public static final SqlTable table = SqlTable.of("foo");
-    public static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
-    public static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
+class SelectStatementTest {
+    static final SqlTable table = SqlTable.of("foo");
+    static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
+    static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
 
     @Test
-    public void testSimpleCriteriaWithoutAlias() {
+    void testSimpleCriteriaWithoutAlias() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1, column2)
@@ -52,14 +52,14 @@ public class SelectStatementTest {
         Map<String, Object> parameters = selectStatement.getParameters();
         
         assertAll(
-                () -> assertThat(parameters.get("p1")).isEqualTo(d),
-                () -> assertThat(parameters.get("p2")).isEqualTo(4),
-                () -> assertThat(parameters.get("p3")).isEqualTo(3)
+                () -> assertThat(parameters).containsEntry("p1", d),
+                () -> assertThat(parameters).containsEntry("p2", 4),
+                () -> assertThat(parameters).containsEntry("p3", 3)
         );
     }
 
     @Test
-    public void testComplexCriteriaWithoutAlias() {
+    void testComplexCriteriaWithoutAlias() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1, column2)
@@ -85,18 +85,18 @@ public class SelectStatementTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d),
-                () -> assertThat(parameters.get("p2")).isEqualTo(4),
-                () -> assertThat(parameters.get("p3")).isEqualTo(3),
-                () -> assertThat(parameters.get("p4")).isEqualTo(4),
-                () -> assertThat(parameters.get("p5")).isEqualTo(6),
-                () -> assertThat(parameters.get("p6")).isEqualTo(3),
-                () -> assertThat(parameters.get("p7")).isEqualTo(d)
+                () -> assertThat(parameters).containsEntry("p1", d),
+                () -> assertThat(parameters).containsEntry("p2", 4),
+                () -> assertThat(parameters).containsEntry("p3", 3),
+                () -> assertThat(parameters).containsEntry("p4", 4),
+                () -> assertThat(parameters).containsEntry("p5", 6),
+                () -> assertThat(parameters).containsEntry("p6", 3),
+                () -> assertThat(parameters).containsEntry("p7", d)
         );
     }
 
     @Test
-    public void testSimpleCriteriaWithAlias() {
+    void testSimpleCriteriaWithAlias() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1, column2)
@@ -112,14 +112,14 @@ public class SelectStatementTest {
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(
                     "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}"),
-                () -> assertThat(parameters.get("p1")).isEqualTo(d),
-                () -> assertThat(parameters.get("p2")).isEqualTo(4),
-                () -> assertThat(parameters.get("p3")).isEqualTo(3)
+                () -> assertThat(parameters).containsEntry("p1", d),
+                () -> assertThat(parameters).containsEntry("p2", 4),
+                () -> assertThat(parameters).containsEntry("p3", 3)
         );
     }
 
     @Test
-    public void testComplexCriteriaWithAlias() {
+    void testComplexCriteriaWithAlias() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1, column2)
@@ -145,15 +145,15 @@ public class SelectStatementTest {
 
         assertAll(
             () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-            () -> assertThat(parameters.get("p1")).isEqualTo(d),
-            () -> assertThat(parameters.get("p2")).isEqualTo(4),
-            () -> assertThat(parameters.get("p3")).isEqualTo(3),
-            () -> assertThat(parameters.get("p4")).isEqualTo(4),
-            () -> assertThat(parameters.get("p5")).isEqualTo(6),
-            () -> assertThat(parameters.get("p6")).isEqualTo(7),
-            () -> assertThat(parameters.get("p7")).isEqualTo(3),
-            () -> assertThat(parameters.get("p8")).isEqualTo(d),
-            () -> assertThat(parameters.get("p9")).isEqualTo(88)
+            () -> assertThat(parameters).containsEntry("p1", d),
+            () -> assertThat(parameters).containsEntry("p2", 4),
+            () -> assertThat(parameters).containsEntry("p3", 3),
+            () -> assertThat(parameters).containsEntry("p4", 4),
+            () -> assertThat(parameters).containsEntry("p5", 6),
+            () -> assertThat(parameters).containsEntry("p6", 7),
+            () -> assertThat(parameters).containsEntry("p7", 3),
+            () -> assertThat(parameters).containsEntry("p8", d),
+            () -> assertThat(parameters).containsEntry("p9", 88)
         );
     }
 }
