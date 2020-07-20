@@ -1,3 +1,18 @@
+/**
+ *    Copyright 2016-2020 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package examples.custom_render;
 
 import static examples.custom_render.JsonTestDynamicSqlSupport.*;
@@ -37,11 +52,11 @@ public interface JsonTestMapper {
             @Result(column = "description", property = "description"),
             @Result(column = "info", property = "info")
     })
-    List<JsonTest> selectMany(SelectStatementProvider selectStatement);
+    List<JsonTestRecord> selectMany(SelectStatementProvider selectStatement);
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @ResultMap("JsonTestResult")
-    Optional<JsonTest> selectOne(SelectStatementProvider selectStatement);
+    Optional<JsonTestRecord> selectOne(SelectStatementProvider selectStatement);
 
     @DeleteProvider(type = SqlProviderAdapter.class, method = "delete")
     int delete(DeleteStatementProvider deleteStatement);
@@ -50,15 +65,15 @@ public interface JsonTestMapper {
     int update(UpdateStatementProvider updateStatement);
 
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
-    int insert(InsertStatementProvider<JsonTest> insertStatement);
+    int insert(InsertStatementProvider<JsonTestRecord> insertStatement);
     
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
-    int insertMultiple(MultiRowInsertStatementProvider<JsonTest> insertStatement);
+    int insertMultiple(MultiRowInsertStatementProvider<JsonTestRecord> insertStatement);
 
     BasicColumn[] selectList =
             BasicColumn.columnList(id, description, info);
 
-    default int insert(JsonTest record) {
+    default int insert(JsonTestRecord record) {
         return MyBatis3Utils.insert(this::insert, record, jsonTest, c ->
            c.map(id).toProperty("id")
            .map(description).toProperty("description")
@@ -66,11 +81,11 @@ public interface JsonTestMapper {
         );
     }
     
-    default int insertMultiple(JsonTest...records) {
+    default int insertMultiple(JsonTestRecord...records) {
         return insertMultiple(Arrays.asList(records));
     }
 
-    default int insertMultiple(Collection<JsonTest> records) {
+    default int insertMultiple(Collection<JsonTestRecord> records) {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, jsonTest, c ->
             c.map(id).toProperty("id")
             .map(description).toProperty("description")
@@ -78,11 +93,11 @@ public interface JsonTestMapper {
         );
     }
 
-    default List<JsonTest> selectMany(SelectDSLCompleter completer) {
+    default List<JsonTestRecord> selectMany(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, jsonTest, completer);
     }
     
-    default Optional<JsonTest> selectOne(SelectDSLCompleter completer) {
+    default Optional<JsonTestRecord> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, jsonTest, completer);
     }
     

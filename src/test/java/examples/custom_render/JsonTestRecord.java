@@ -15,19 +15,32 @@
  */
 package examples.custom_render;
 
-import javax.sql.DataSource;
+public class JsonTestRecord {
+    private int id;
+    private String description;
+    private String info;
 
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-
-public class PgContainer extends PostgreSQLContainer<PgContainer> {
-
-    public PgContainer(String initScriptPath) {
-        super();
-        withInitScript(initScriptPath);
+    public int getId() {
+        return id;
     }
 
-    public DataSource getUnpooledDataSource() {
-        return new UnpooledDataSource(getDriverClassName(), getJdbcUrl(), getUsername(), getPassword());
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

@@ -42,7 +42,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-public class CustomRenderingTest {
+class CustomRenderingTest {
 
     @Container
     private static PgContainer postgres = new PgContainer("examples/custom_render/dbInit.sql");
@@ -69,11 +69,11 @@ public class CustomRenderingTest {
     }
     
     @Test
-    public void testInsert() {
+    void testInsert() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
 
-            JsonTest record = new JsonTest();
+            JsonTestRecord record = new JsonTestRecord();
             record.setId(1);
             record.setDescription("Fred");
             record.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
@@ -81,7 +81,7 @@ public class CustomRenderingTest {
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
             
-            record = new JsonTest();
+            record = new JsonTestRecord();
             record.setId(2);
             record.setDescription("Wilma");
             record.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
@@ -89,7 +89,7 @@ public class CustomRenderingTest {
             rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
             
-            List<JsonTest> records = mapper.selectMany(SelectDSLCompleter.allRowsOrderedBy(id));
+            List<JsonTestRecord> records = mapper.selectMany(SelectDSLCompleter.allRowsOrderedBy(id));
             assertThat(records.size()).isEqualTo(2);
             assertThat(records.get(0).getInfo()).isEqualTo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
             assertThat(records.get(1).getInfo()).isEqualTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
@@ -97,16 +97,16 @@ public class CustomRenderingTest {
     }
 
     @Test
-    public void testInsertMultiple() {
+    void testInsertMultiple() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
 
-            JsonTest record1 = new JsonTest();
+            JsonTestRecord record1 = new JsonTestRecord();
             record1.setId(1);
             record1.setDescription("Fred");
             record1.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
 
-            JsonTest record2 = new JsonTest();
+            JsonTestRecord record2 = new JsonTestRecord();
             record2.setId(2);
             record2.setDescription("Wilma");
             record2.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
@@ -114,7 +114,7 @@ public class CustomRenderingTest {
             int rows = mapper.insertMultiple(record1, record2);
             assertThat(rows).isEqualTo(2);
             
-            List<JsonTest> records = mapper.selectMany(SelectDSLCompleter.allRowsOrderedBy(id));
+            List<JsonTestRecord> records = mapper.selectMany(SelectDSLCompleter.allRowsOrderedBy(id));
             assertThat(records.size()).isEqualTo(2);
             assertThat(records.get(0).getInfo()).isEqualTo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
             assertThat(records.get(1).getInfo()).isEqualTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
@@ -122,16 +122,16 @@ public class CustomRenderingTest {
     }
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
 
-            JsonTest record1 = new JsonTest();
+            JsonTestRecord record1 = new JsonTestRecord();
             record1.setId(1);
             record1.setDescription("Fred");
             record1.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
 
-            JsonTest record2 = new JsonTest();
+            JsonTestRecord record2 = new JsonTestRecord();
             record2.setId(2);
             record2.setDescription("Wilma");
             record2.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
@@ -145,7 +145,7 @@ public class CustomRenderingTest {
             );
             assertThat(rows).isEqualTo(1);
             
-            List<JsonTest> records = mapper.selectMany(SelectDSLCompleter.allRowsOrderedBy(id));
+            List<JsonTestRecord> records = mapper.selectMany(SelectDSLCompleter.allRowsOrderedBy(id));
             assertThat(records.size()).isEqualTo(2);
             assertThat(records.get(0).getInfo()).isEqualTo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
             assertThat(records.get(1).getInfo()).isEqualTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 26}");
@@ -153,16 +153,16 @@ public class CustomRenderingTest {
     }
 
     @Test
-    public void testDefererence() {
+    void testDefererence() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
 
-            JsonTest record1 = new JsonTest();
+            JsonTestRecord record1 = new JsonTestRecord();
             record1.setId(1);
             record1.setDescription("Fred");
             record1.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
 
-            JsonTest record2 = new JsonTest();
+            JsonTestRecord record2 = new JsonTestRecord();
             record2.setId(2);
             record2.setDescription("Wilma");
             record2.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
@@ -170,7 +170,7 @@ public class CustomRenderingTest {
             int rows = mapper.insertMultiple(record1, record2);
             assertThat(rows).isEqualTo(2);
             
-            Optional<JsonTest> record = mapper.selectOne(c ->
+            Optional<JsonTestRecord> record = mapper.selectOne(c ->
                 c.where(dereference(info, "age"), isEqualTo("25")));
             
             assertThat(record).hasValueSatisfying( c ->
@@ -179,16 +179,16 @@ public class CustomRenderingTest {
     }
     
     @Test
-    public void testDefererence2() {
+    void testDefererence2() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
 
-            JsonTest record1 = new JsonTest();
+            JsonTestRecord record1 = new JsonTestRecord();
             record1.setId(1);
             record1.setDescription("Fred");
             record1.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
 
-            JsonTest record2 = new JsonTest();
+            JsonTestRecord record2 = new JsonTestRecord();
             record2.setId(2);
             record2.setDescription("Wilma");
             record2.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
@@ -203,8 +203,8 @@ public class CustomRenderingTest {
                     .render(RenderingStrategies.MYBATIS3);
             
             List<Map<String, Object>> records = mapper.generalSelect(selectStatement);
-            assertThat(records.size()).isEqualTo(1);
-            assertThat(records.get(0).get("firstname")).isEqualTo("Wilma");
+            assertThat(records).hasSize(1);
+            assertThat(records.get(0)).containsEntry("firstname", "Wilma");
         }
     }
     
