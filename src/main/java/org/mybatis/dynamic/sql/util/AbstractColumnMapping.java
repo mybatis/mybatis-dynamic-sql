@@ -33,4 +33,3 @@ public abstract class AbstractColumnMapping {
     
     public abstract <R> R accept(ColumnMappingVisitor<R> visitor);
 }
- 
