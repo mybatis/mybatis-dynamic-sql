@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -35,6 +36,8 @@ import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
@@ -61,6 +64,9 @@ public interface PersonMapper {
     
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
+
+    @InsertProvider(type=SqlProviderAdapter.class, method="generalInsert")
+    int generalInsert(GeneralInsertStatementProvider insertStatement);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<PersonRecord> insertStatement);
@@ -104,6 +110,10 @@ public interface PersonMapper {
         );
     }
 
+    default int insert(UnaryOperator<GeneralInsertDSL> completer) {
+        return MyBatis3Utils.insert(this::generalInsert, person, completer);
+    }
+    
     default int insert(PersonRecord record) {
         return MyBatis3Utils.insert(this::insert, record, person, c -> 
             c.map(id).toProperty("id")

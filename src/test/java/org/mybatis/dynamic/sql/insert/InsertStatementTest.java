@@ -28,6 +28,8 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValue;
+import org.mybatis.dynamic.sql.insert.render.FieldAndValueAndParameters;
+import org.mybatis.dynamic.sql.insert.render.FieldAndValueAndParametersCollector;
 import org.mybatis.dynamic.sql.insert.render.FieldAndValueCollector;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -149,6 +151,40 @@ class InsertStatementTest {
     private FieldAndValue newFieldAndValue(String fieldName, String valuePhrase) {
         return FieldAndValue.withFieldName(fieldName)
                 .withValuePhrase(valuePhrase)
+                .build();
+    }
+    
+    @Test
+    void testParallelStreamWithParameters() {
+
+        List<FieldAndValueAndParameters> mappings = new ArrayList<>();
+        
+        mappings.add(newFieldAndValueAndParameter(id.name(), "{p1}", "p1", 1));
+        mappings.add(newFieldAndValueAndParameter(firstName.name(), "{p2}", "p2", "Fred"));
+        mappings.add(newFieldAndValueAndParameter(lastName.name(), "{p3}", "p3", "Flintstone"));
+        mappings.add(newFieldAndValueAndParameter(occupation.name(), "{p4}", "p4", "Driver"));
+        
+        FieldAndValueAndParametersCollector collector = 
+                mappings.parallelStream().collect(Collector.of(
+                        FieldAndValueAndParametersCollector::new,
+                        FieldAndValueAndParametersCollector::add,
+                        FieldAndValueAndParametersCollector::merge));
+                
+        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
+        String expectedValuesPhrase = "values ({p1}, {p2}, {p3}, {p4})";
+        
+        assertAll(
+                () -> assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase),
+                () -> assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase),
+                () -> assertThat(collector.parameters()).hasSize(4)
+        );
+    }
+    
+    private FieldAndValueAndParameters newFieldAndValueAndParameter(String fieldName, String valuePhrase, String parameterName,
+            Object parameterValue) {
+        return FieldAndValueAndParameters.withFieldName(fieldName)
+                .withValuePhrase(valuePhrase)
+                .withParameter(parameterName, parameterValue)
                 .build();
     }
     

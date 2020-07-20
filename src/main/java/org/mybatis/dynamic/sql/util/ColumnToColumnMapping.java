@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package org.mybatis.dynamic.sql.util;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ColumnMapping extends AbstractColumnMapping implements UpdateMapping {
+public class ColumnToColumnMapping extends AbstractColumnMapping {
 
     private BasicColumn rightColumn;
     
-    private ColumnMapping(SqlColumn<?> column, BasicColumn rightColumn) {
+    private ColumnToColumnMapping(SqlColumn<?> column, BasicColumn rightColumn) {
         super(column);
         this.rightColumn = rightColumn;
     }
@@ -32,11 +32,11 @@ public class ColumnMapping extends AbstractColumnMapping implements UpdateMappin
     }
     
     @Override
-    public <R> R accept(UpdateMappingVisitor<R> visitor) {
+    public <R> R accept(ColumnMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
 
-    public static ColumnMapping of(SqlColumn<?> column, BasicColumn rightColumn) {
-        return new ColumnMapping(column, rightColumn);
+    public static ColumnToColumnMapping of(SqlColumn<?> column, BasicColumn rightColumn) {
+        return new ColumnToColumnMapping(column, rightColumn);
     }
 }

@@ -4,7 +4,8 @@ The library will generate a variety of INSERT statements:
 1. An insert for a single record
 1. An insert for multiple records with a single statement
 1. An insert for multiple records with a JDBC batch
-2. An insert with a select statement 
+1. A general insert statement
+1. An insert with a select statement 
 
 ## Single Record Insert
 A single record insert is a statement that inserts a single record into a table.  This statement is configured differently than other statements in the library so that MyBatis' support for generated keys will work properly.  To use the statement, you must first create an object that will map to the database row, then map object attributes to fields in the database.  For example:
@@ -212,6 +213,66 @@ A batch insert is a collection of statements that can be used to execute a JDBC 
 It is important to open a MyBatis session by setting the executor type to BATCH.  The records are inserted on the commit.  You can call commit multiple times if you want to do intermediate commits.
 
 Notice that the same mapper method that is used to insert a single record is now executed multiple times.  The `map` methods are the same with the exception that the `toPropertyWhenPresent` mapping is not supported for batch inserts. 
+
+## General Insert Statement
+A general insert is used to build arbitrary insert statements. The general insert does not require a separate record object o hold values for the statement - any value can be passed into the statement. This version of the insert is not convienient for retriving generated keys with MyBatis - for that use case we recommend the "single record insert". However the general insert is perfectly acceptible for Spring JDBC template or MyBatis inserts that do not return generated keys. For example
+
+```java
+    GeneralInsertStatementProvider insertStatement = insertInto(animalData)
+            .set(id).toValue(101)
+            .set(animalName).toStringConstant("Fred")
+            .set(brainWeight).toConstant("2.2")
+            .set(bodyWeight).toValue(4.5)
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
+```
+
+Notice the `set` method.  It is used to set the value for a database column.  There are several different possibilities:
+
+1. `set(column).toNull()` will insert a null into a column
+2. `set(column).toConstant(constant_value)` will insert a constant into a column.  The constant_value will be written into the generated insert statement exactly as entered
+3. `set(column).toStringConstant(constant_value)` will insert a constant into a column.  The constant_value will be written into the generated insert statement surrounded by single quote marks (as an SQL String)
+4. `set(column).toValue(value)` will insert a value into a column.  The value of the property will be bound to the SQL statement as a prepared statement parameter
+5. `set(column).toValueWhenPresent(property, Supplier<?> valueSupplier)` will insert a value into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.
+
+### Annotated Mapper for General Insert Statements
+The GeneralInsertStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
+are using an annotated mapper, the insert method should look like this:
+
+```java
+import org.apache.ibatis.annotations.InsertProvider;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+
+...
+    @InsertProvider(type=SqlProviderAdapter.class, method="generalInsert")
+    int generalInsert(GeneralInsertStatementProvider insertStatement);
+...
+
+```
+
+### XML Mapper for General Insert Statements
+We do not recommend using an XML mapper for insert statements, but if you want to do so the GeneralInsertStatementProvider object can be used as a parameter to a MyBatis mapper method directly.
+
+If you are using an XML mapper, the insert method should look like this in the Java interface:
+  
+```java
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
+
+...
+    int generalInsert(GeneralInsertStatementProvider insertStatement);
+...
+
+```
+
+The XML element should look like this:
+
+```xml
+  <insert id="generalInsert">
+    ${insertStatement}
+  </insert>
+```
+
 
 ## Insert with Select
 An insert select is an SQL insert statement the inserts the results of a select.  For example:

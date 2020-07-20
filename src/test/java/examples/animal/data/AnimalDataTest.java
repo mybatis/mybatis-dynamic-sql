@@ -44,6 +44,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -1732,6 +1733,32 @@ class AnimalDataTest {
                     () -> assertThat(insertSelectStatement.getParameters()).containsEntry("p1", 33),
                     () -> assertThat(rows).isEqualTo(32)
             );
+        }
+    }
+
+    @Test
+    void testGeneralInsert() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            GeneralInsertStatementProvider insertStatement = insertInto(animalData)
+                    .set(id).toValue(101)
+                    .set(animalName).toStringConstant("Fred")
+                    .set(brainWeight).toConstant("2.2")
+                    .set(bodyWeight).toValue(4.5)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            
+            String expected = "insert into AnimalData (id, animal_name, brain_weight, body_weight) "
+                    + "values (#{parameters.p1,jdbcType=INTEGER}, 'Fred', 2.2, #{parameters.p2,jdbcType=DOUBLE})";
+            
+            assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
+            assertThat(insertStatement.getParameters()).hasSize(2);
+            assertThat(insertStatement.getParameters()).containsEntry("p1", 101);
+            assertThat(insertStatement.getParameters()).containsEntry("p2", 4.5);
+            
+            int rows = mapper.generalInsert(insertStatement);
+            assertThat(rows).isEqualTo(1);
         }
     }
 

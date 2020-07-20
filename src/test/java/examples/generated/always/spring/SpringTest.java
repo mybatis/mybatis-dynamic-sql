@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -142,9 +143,41 @@ class SpringTest {
         
         assertThat(rows).isEqualTo(1);
         assertThat(generatedKey).isEqualTo("Bob Jones");
-        
     }
-    
+
+    @Test
+    void testGeneralInsert() {
+        GeneralInsertStatementProvider insertStatement = insertInto(generatedAlways)
+                .set(id).toValue(100)
+                .set(firstName).toValue("Bob")
+                .set(lastName).toValue("Jones")
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        int rows = template.update(insertStatement.getInsertStatement(), insertStatement.getParameters());
+
+        assertThat(rows).isEqualTo(1);
+    }
+
+    @Test
+    void testGeneralInsertWithGeneratedKey() {
+        GeneralInsertStatementProvider insertStatement = insertInto(generatedAlways)
+                .set(id).toValue(100)
+                .set(firstName).toValue("Bob")
+                .set(lastName).toValue("Jones")
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource(insertStatement.getParameters());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
+        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
+
+        assertThat(rows).isEqualTo(1);
+        assertThat(generatedKey).isEqualTo("Bob Jones");
+    }
+
     @Test
     void testInsertBatch() {
         List<GeneratedAlwaysRecord> records = new ArrayList<>();

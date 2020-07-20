@@ -73,21 +73,28 @@ int rows = mapper.delete(DeleteDSLCompleter.allRows());
 
 The goal of insert method support is to remove some of the boilerplate code from insert methods in a mapper interfaces.
 
-To use this support, we envision creating several methods on a MyBatis mapper interface. The first two methods are the standard MyBatis Dynamic SQL method that will execute an insert:
+To use this support, we envision creating several methods on a MyBatis mapper interface. The first methods are the standard MyBatis methods that will execute an insert:
 
 ```java
 @InsertProvider(type=SqlProviderAdapter.class, method="insert")
 int insert(InsertStatementProvider<PersonRecord> insertStatement);
 
+@InsertProvider(type=SqlProviderAdapter.class, method="generalInsert")
+int generalInsert(GeneralInsertStatementProvider insertStatement);
+
 @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
 int insertMultiple(MultiRowInsertStatementProvider<PersonRecord> insertStatement);
 ```
 
-These two methods are standard methods for MyBatis Dynamic SQL. They execute a single row insert and a multiple row insert.
+These methods are standard methods for MyBatis Dynamic SQL. They execute a single row insert, a general insert, and a multiple row insert.
 
 These methods can be used to implement simplified insert methods:
 
 ```java
+default int insert(UnaryOperator<GeneralInsertDSL> completer) {
+    return MyBatis3Utils.insert(this::generalInsert, person, completer);
+}
+
 default int insert(PersonRecord record) {
     return MyBatis3Utils.insert(this::insert, record, person, c -> 
         c.map(id).toProperty("id")
@@ -117,7 +124,7 @@ default int insertMultiple(Collection<PersonRecord> records) {
 }
 ```
 
-In the mapper, only the column mappings need to be specified and no other boilerplate code is needed.
+The first insert method is a general insert and can be used to create arbitrary inserts with different combinations of columns specified. The other methods have the insert statements mapped to a POJO "record" class that holds values for the insert statement.
 
 ## Select Method Support
 

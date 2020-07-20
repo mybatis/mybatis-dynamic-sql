@@ -157,6 +157,21 @@ class CanonicalSpringKotlinTemplateDirectTest {
     }
 
     @Test
+    fun testGeneralInsert() {
+        val rows = template.insertInto(Person) {
+            set(id).toValue(100)
+            set(firstName).toValue("Joe")
+            set(lastName).toValue("Jones")
+            set(birthDate).toValue(Date())
+            set(employed).toValue("Yes")
+            set(occupation).toValue("Developer")
+            set(addressId).toValue(1)
+        }
+
+        assertThat(rows).isEqualTo(1)
+    }
+
+    @Test
     fun testSelectAll() {
         val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {

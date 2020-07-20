@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,8 +27,10 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -91,6 +93,18 @@ public class MyBatis3Utils {
     public static <R> int insert(ToIntFunction<InsertStatementProvider<R>> mapper, R record, 
             SqlTable table, UnaryOperator<InsertDSL<R>> completer) {
         return mapper.applyAsInt(insert(record, table, completer));
+    }
+    
+    public static GeneralInsertStatementProvider insert(SqlTable table,
+            UnaryOperator<GeneralInsertDSL> completer) {
+        return completer.apply(GeneralInsertDSL.insertInto(table))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+    }
+
+    public static int insert(ToIntFunction<GeneralInsertStatementProvider> mapper, 
+            SqlTable table, UnaryOperator<GeneralInsertDSL> completer) {
+        return mapper.applyAsInt(insert(table, completer));
     }
     
     public static <R> MultiRowInsertStatementProvider<R> insertMultiple(Collection<R> records, SqlTable table,

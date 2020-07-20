@@ -15,6 +15,8 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
@@ -193,6 +195,25 @@ class PersonMapperTest {
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
             val rows = mapper.insert(record)
+            assertThat(rows).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testGeneralInsert() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.insert {
+                set(id).toValue(100)
+                set(firstName).toValue("Joe")
+                set(lastName).toValue(LastName("Jones"))
+                set(employed).toValue(true)
+                set(occupation).toValue("Developer")
+                set(addressId).toValue(1)
+                set(birthDate).toValue(Date())
+            }
+
             assertThat(rows).isEqualTo(1)
         }
     }

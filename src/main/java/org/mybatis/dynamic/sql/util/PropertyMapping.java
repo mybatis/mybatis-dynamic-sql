@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class PropertyMapping extends AbstractColumnMapping implements InsertMapping {
+public class PropertyMapping extends AbstractColumnMapping {
     private String property;
     
     private PropertyMapping(SqlColumn<?> column) {
@@ -29,7 +29,7 @@ public class PropertyMapping extends AbstractColumnMapping implements InsertMapp
     }
 
     @Override
-    public <S> S accept(InsertMappingVisitor<S> visitor) {
+    public <R> R accept(ColumnMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
     

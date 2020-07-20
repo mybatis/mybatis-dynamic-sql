@@ -15,53 +15,61 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
-import org.mybatis.dynamic.sql.util.InsertMappingVisitor;
+import org.mybatis.dynamic.sql.util.GeneralInsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
-import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
+import org.mybatis.dynamic.sql.util.ValueMapping;
 
-public class ValuePhraseVisitor implements InsertMappingVisitor<FieldAndValue> {
+public class GeneralInsertValuePhraseVisitor implements GeneralInsertMappingVisitor<FieldAndValueAndParameters> {
     
     protected RenderingStrategy renderingStrategy;
+    private AtomicInteger sequence = new AtomicInteger(1);
     
-    public ValuePhraseVisitor(RenderingStrategy renderingStrategy) {
+    public GeneralInsertValuePhraseVisitor(RenderingStrategy renderingStrategy) {
         this.renderingStrategy = renderingStrategy;
     }
 
     @Override
-    public FieldAndValue visit(NullMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+    public FieldAndValueAndParameters visit(NullMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("null") //$NON-NLS-1$
                 .build();
     }
 
     @Override
-    public FieldAndValue visit(ConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+    public FieldAndValueAndParameters visit(ConstantMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase(mapping.constant())
                 .build();
     }
 
     @Override
-    public FieldAndValue visit(StringConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+    public FieldAndValueAndParameters visit(StringConstantMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .build();
     }
     
     @Override
-    public FieldAndValue visit(PropertyMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
-                .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
+    public <R> FieldAndValueAndParameters visit(ValueMapping<R> mapping) {
+        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+
+        String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
+        
+        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
+                .withValuePhrase(jdbcPlaceholder)
+                .withParameter(mapKey, mapping.value())
                 .build();
     }
-    
+
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> renderingStrategy.getFormattedJdbcPlaceholder(column, "record", parameterName); //$NON-NLS-1$
+        return column -> renderingStrategy
+                .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }

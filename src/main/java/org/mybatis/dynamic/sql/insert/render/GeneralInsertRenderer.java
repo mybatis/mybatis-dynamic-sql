@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,65 +20,67 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.insert.InsertModel;
+import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
-public class InsertRenderer<T> {
+public class GeneralInsertRenderer {
 
-    private InsertModel<T> model;
+    private GeneralInsertModel model;
     private RenderingStrategy renderingStrategy;
     
-    private InsertRenderer(Builder<T> builder) {
+    private GeneralInsertRenderer(Builder builder) {
         model = Objects.requireNonNull(builder.model);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
     
-    public InsertStatementProvider<T> render() {
-        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
-        FieldAndValueCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
-                .collect(FieldAndValueCollector.collect());
+    public GeneralInsertStatementProvider render() {
+        GeneralInsertValuePhraseVisitor visitor = new GeneralInsertValuePhraseVisitor(renderingStrategy);
+        FieldAndValueAndParametersCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
+                .collect(FieldAndValueAndParametersCollector.collect());
         
-        return DefaultInsertStatementProvider.withRecord(model.record())
-                .withInsertStatement(calculateInsertStatement(collector))
+        return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(collector))
+                .withParameters(collector.parameters())
                 .build();
     }
 
-    private String calculateInsertStatement(FieldAndValueCollector collector) {
+    private String calculateInsertStatement(FieldAndValueAndParametersCollector collector) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(collector.columnsPhrase())
                 + spaceBefore(collector.valuesPhrase());
     }
 
-    private Function<AbstractColumnMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {
+    private Function<AbstractColumnMapping, FieldAndValueAndParameters> toFieldAndValue(
+            GeneralInsertValuePhraseVisitor visitor) {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
     
-    private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, AbstractColumnMapping insertMapping) {
+    private FieldAndValueAndParameters toFieldAndValue(GeneralInsertValuePhraseVisitor visitor,
+            AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
     
-    public static <T> Builder<T> withInsertModel(InsertModel<T> model) {
-        return new Builder<T>().withInsertModel(model);
+    public static Builder withInsertModel(GeneralInsertModel model) {
+        return new Builder().withInsertModel(model);
     }
     
-    public static class Builder<T> {
-        private InsertModel<T> model;
+    public static class Builder {
+        private GeneralInsertModel model;
         private RenderingStrategy renderingStrategy;
         
-        public Builder<T> withInsertModel(InsertModel<T> model) {
+        public Builder withInsertModel(GeneralInsertModel model) {
             this.model = model;
             return this;
         }
         
-        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
         
-        public InsertRenderer<T> build() {
-            return new InsertRenderer<>(this);
+        public GeneralInsertRenderer build() {
+            return new GeneralInsertRenderer(this);
         }
     }
 }

@@ -30,13 +30,13 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.ColumnMapping;
+import org.mybatis.dynamic.sql.util.ColumnToColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
-import org.mybatis.dynamic.sql.util.UpdateMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
@@ -46,7 +46,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class UpdateDSL<R> implements Buildable<R> {
 
     private Function<UpdateModel, R> adapterFunction;
-    private List<UpdateMapping> columnMappings = new ArrayList<>();
+    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     private SqlTable table;
     private UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();
     
@@ -150,7 +150,7 @@ public class UpdateDSL<R> implements Buildable<R> {
         }
 
         public UpdateDSL<R> equalTo(BasicColumn rightColumn) {
-            columnMappings.add(ColumnMapping.of(column, rightColumn));
+            columnMappings.add(ColumnToColumnMapping.of(column, rightColumn));
             return UpdateDSL.this;
         }
 
