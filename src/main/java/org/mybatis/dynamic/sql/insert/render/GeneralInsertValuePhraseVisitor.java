@@ -20,13 +20,13 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.ColumnMappingVisitor;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.GeneralInsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 
-public class GeneralInsertValuePhraseVisitor implements ColumnMappingVisitor<FieldAndValueAndParameters> {
+public class GeneralInsertValuePhraseVisitor implements GeneralInsertMappingVisitor<FieldAndValueAndParameters> {
     
     protected RenderingStrategy renderingStrategy;
     private AtomicInteger sequence = new AtomicInteger(1);

@@ -25,36 +25,63 @@ import org.mybatis.dynamic.sql.SqlTable;
 class ColumnMappingVisitorTest {
 
     @Test
-    void testThatUnimplementedMethod1ThrowExceptions() {
+    void testThatGeneralInsertVisitorErrorsForColumnToColumnMapping() {
         TestTable table = new TestTable();
-        TestVisitor tv = new TestVisitor();
+        GeneralInsertVisitor tv = new GeneralInsertVisitor();
         ColumnToColumnMapping mapping = ColumnToColumnMapping.of(table.id, table.description);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
     }
 
     @Test
-    void testThatUnimplementedMethod2ThrowExceptions() {
+    void testThatGeneralInsertVisitorErrorsForSelectMapping() {
         TestTable table = new TestTable();
-        TestVisitor tv = new TestVisitor();
-        ValueMapping<Integer> mapping = ValueMapping.of(table.id,  () -> 3);
-
-        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
-    }
-
-    @Test
-    void testThatUnimplementedMethod3ThrowExceptions() {
-        TestTable table = new TestTable();
-        TestVisitor tv = new TestVisitor();
+        GeneralInsertVisitor tv = new GeneralInsertVisitor();
         SelectMapping mapping = SelectMapping.of(table.id, SqlBuilder.select(table.id).from(table));
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
     }
 
     @Test
-    void testThatUnimplementedMethod4ThrowExceptions() {
+    void testThatGeneralInsertVisitorErrorsForPropertyMapping() {
         TestTable table = new TestTable();
-        TestVisitor tv = new TestVisitor();
+        GeneralInsertVisitor tv = new GeneralInsertVisitor();
+        PropertyMapping mapping = PropertyMapping.of(table.id, "id");
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+    
+    @Test
+    void testThatInsertVisitorErrorsForColumnToColumnMapping() {
+        TestTable table = new TestTable();
+        InsertVisitor tv = new InsertVisitor();
+        ColumnToColumnMapping mapping = ColumnToColumnMapping.of(table.id, table.description);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
+    void testThatInsertVisitorErrorsForSelectMapping() {
+        TestTable table = new TestTable();
+        InsertVisitor tv = new InsertVisitor();
+        SelectMapping mapping = SelectMapping.of(table.id, SqlBuilder.select(table.id).from(table));
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
+    void testThatInsertVisitorErrorsForValueMapping() {
+        TestTable table = new TestTable();
+        InsertVisitor tv = new InsertVisitor();
+        ValueMapping<Integer> mapping = ValueMapping.of(table.id, () -> 3);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
+    void testThatUpdateVisitorErrorsForPropertyMapping() {
+        TestTable table = new TestTable();
+        UpdateVisitor tv = new UpdateVisitor();
         PropertyMapping mapping = PropertyMapping.of(table.id, "id");
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
@@ -72,7 +99,7 @@ class ColumnMappingVisitorTest {
         }
     }
 
-    private static class TestVisitor implements ColumnMappingVisitor<String> {
+    private static class GeneralInsertVisitor implements GeneralInsertMappingVisitor<String> {
         @Override
         public String visit(NullMapping mapping) {
             return "Null Mapping";
@@ -86,6 +113,66 @@ class ColumnMappingVisitorTest {
         @Override
         public String visit(StringConstantMapping mapping) {
             return "String Constant Mapping";
+        }
+
+        @Override
+        public <R> String visit(ValueMapping<R> mapping) {
+            return "Value Mapping";
+        }
+    }
+
+    private static class InsertVisitor implements InsertMappingVisitor<String> {
+        @Override
+        public String visit(NullMapping mapping) {
+            return "Null Mapping";
+        }
+
+        @Override
+        public String visit(ConstantMapping mapping) {
+            return "Constant Mapping";
+        }
+
+        @Override
+        public String visit(StringConstantMapping mapping) {
+            return "String Constant Mapping";
+        }
+
+        @Override
+        public String visit(PropertyMapping mapping) {
+            return "Property Mapping";
+        }
+    }
+
+    private static class UpdateVisitor implements UpdateMappingVisitor<String> {
+        @Override
+        public String visit(NullMapping mapping) {
+            return "Null Mapping";
+        }
+
+        @Override
+        public String visit(ConstantMapping mapping) {
+            return "Constant Mapping";
+        }
+
+        @Override
+        public String visit(StringConstantMapping mapping) {
+            return "String Constant Mapping";
+        }
+
+        @Override
+        public <R> String visit(ValueMapping<R> mapping) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String visit(SelectMapping mapping) {
+            return "Select Mapping";
+        }
+
+        @Override
+        public String visit(ColumnToColumnMapping columnMapping) {
+            return "Column to Column Mapping";
         }
     }
 }
