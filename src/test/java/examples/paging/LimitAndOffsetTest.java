@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 
 import examples.animal.data.AnimalData;
 
-public class LimitAndOffsetTest {
+class LimitAndOffsetTest {
     
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -45,7 +45,7 @@ public class LimitAndOffsetTest {
     private SqlSessionFactory sqlSessionFactory;
     
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/animal/data/CreateAnimalData.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -62,7 +62,7 @@ public class LimitAndOffsetTest {
     }
     
     @Test
-    public void testLimitandOffset() {
+    void testLimitandOffset() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             LimitAndOffsetMapper mapper = sqlSession.getMapper(LimitAndOffsetMapper.class);
             
@@ -71,7 +71,7 @@ public class LimitAndOffsetTest {
                     .build()
                     .execute();
             
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
             assertThat(rows.get(0).getId()).isEqualTo(4);
         }
     }

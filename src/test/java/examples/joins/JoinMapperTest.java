@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class JoinMapperTest {
+class JoinMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
@@ -52,7 +52,7 @@ public class JoinMapperTest {
     private SqlSessionFactory sqlSessionFactory;
     
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/joins/CreateJoinDB.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -69,7 +69,7 @@ public class JoinMapperTest {
     }
     
     @Test
-    public void testSingleTableJoin1() {
+    void testSingleTableJoin1() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -85,10 +85,10 @@ public class JoinMapperTest {
             
             List<OrderMaster> rows = mapper.selectMany(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows).hasSize(2);
             OrderMaster orderMaster = rows.get(0);
             assertThat(orderMaster.getId()).isEqualTo(1);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            assertThat(orderMaster.getDetails()).hasSize(2);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
@@ -96,14 +96,14 @@ public class JoinMapperTest {
 
             orderMaster = rows.get(1);
             assertThat(orderMaster.getId()).isEqualTo(2);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(1);
+            assertThat(orderMaster.getDetails()).hasSize(1);
             orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
         }
     }
     
     @Test
-    public void testSingleTableJoin2() {
+    void testSingleTableJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -119,10 +119,10 @@ public class JoinMapperTest {
             
             List<OrderMaster> rows = mapper.selectMany(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows).hasSize(2);
             OrderMaster orderMaster = rows.get(0);
             assertThat(orderMaster.getId()).isEqualTo(1);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            assertThat(orderMaster.getDetails()).hasSize(2);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
@@ -130,14 +130,14 @@ public class JoinMapperTest {
 
             orderMaster = rows.get(1);
             assertThat(orderMaster.getId()).isEqualTo(2);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(1);
+            assertThat(orderMaster.getDetails()).hasSize(1);
             orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
         }
     }
     
     @Test
-    public void testCompoundJoin1() {
+    void testCompoundJoin1() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
@@ -151,7 +151,7 @@ public class JoinMapperTest {
     }
 
     @Test
-    public void testCompoundJoin2() {
+    void testCompoundJoin2() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
@@ -166,7 +166,7 @@ public class JoinMapperTest {
     }
     
     @Test
-    public void testCompoundJoin3() {
+    void testCompoundJoin3() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
@@ -180,7 +180,7 @@ public class JoinMapperTest {
     }
 
     @Test
-    public void testCompoundJoin4() {
+    void testCompoundJoin4() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
@@ -194,7 +194,7 @@ public class JoinMapperTest {
     }
 
     @Test
-    public void testCompoundJoin5() {
+    void testCompoundJoin5() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
@@ -208,7 +208,7 @@ public class JoinMapperTest {
     }
 
     @Test
-    public void testCompoundJoin6() {
+    void testCompoundJoin6() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
@@ -222,7 +222,7 @@ public class JoinMapperTest {
     }
 
     @Test
-    public void testMultipleTableJoinWithWhereClause() {
+    void testMultipleTableJoinWithWhereClause() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -241,10 +241,10 @@ public class JoinMapperTest {
             
             List<OrderMaster> rows = mapper.selectMany(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(1);
+            assertThat(rows).hasSize(1);
             OrderMaster orderMaster = rows.get(0);
             assertThat(orderMaster.getId()).isEqualTo(2);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            assertThat(orderMaster.getDetails()).hasSize(2);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
@@ -253,7 +253,7 @@ public class JoinMapperTest {
     }
 
     @Test
-    public void testMultipleTableJoinWithApplyWhere() {
+    void testMultipleTableJoinWithApplyWhere() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -272,10 +272,10 @@ public class JoinMapperTest {
             
             List<OrderMaster> rows = mapper.selectMany(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(1);
+            assertThat(rows).hasSize(1);
             OrderMaster orderMaster = rows.get(0);
             assertThat(orderMaster.getId()).isEqualTo(2);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            assertThat(orderMaster.getDetails()).hasSize(2);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
@@ -284,7 +284,7 @@ public class JoinMapperTest {
     }
 
     @Test
-    public void testMultipleTableJoinWithComplexWhereClause() {
+    void testMultipleTableJoinWithComplexWhereClause() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -303,17 +303,17 @@ public class JoinMapperTest {
             
             List<OrderMaster> rows = mapper.selectMany(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(1);
+            assertThat(rows).hasSize(1);
             OrderMaster orderMaster = rows.get(0);
             assertThat(orderMaster.getId()).isEqualTo(2);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(1);
+            assertThat(orderMaster.getDetails()).hasSize(1);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(2);
         }
     }
 
     @Test
-    public void testMultipleTableJoinWithOrderBy() {
+    void testMultipleTableJoinWithOrderBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -332,16 +332,16 @@ public class JoinMapperTest {
             
             List<OrderMaster> rows = mapper.selectMany(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows).hasSize(2);
             OrderMaster orderMaster = rows.get(0);
             assertThat(orderMaster.getId()).isEqualTo(1);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(1);
+            assertThat(orderMaster.getDetails()).hasSize(1);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
 
             orderMaster = rows.get(1);
             assertThat(orderMaster.getId()).isEqualTo(2);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            assertThat(orderMaster.getDetails()).hasSize(2);
             orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
@@ -350,7 +350,7 @@ public class JoinMapperTest {
     }
 
     @Test
-    public void testMultibleTableJoinNoAliasWithOrderBy() {
+    void testMultibleTableJoinNoAliasWithOrderBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -371,10 +371,10 @@ public class JoinMapperTest {
             
             List<OrderMaster> rows = mapper.selectMany(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(1);
+            assertThat(rows).hasSize(1);
             OrderMaster orderMaster = rows.get(0);
             assertThat(orderMaster.getId()).isEqualTo(2);
-            assertThat(orderMaster.getDetails().size()).isEqualTo(2);
+            assertThat(orderMaster.getDetails()).hasSize(2);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
             assertThat(orderDetail.getLineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
@@ -383,7 +383,7 @@ public class JoinMapperTest {
     }
     
     @Test
-    public void testRightJoin() {
+    void testRightJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -401,23 +401,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
-            assertThat(row.get("ORDER_ID")).isEqualTo(1);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(33);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("ITEM_ID", 33);
 
             row = rows.get(4);
-            assertThat(row.get("ORDER_ID")).isNull();
-            assertThat(row.get("QUANTITY")).isNull();
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
         }
     }
 
     @Test
-    public void testRightJoin2() {
+    void testRightJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -437,23 +437,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isNull();
-            assertThat(row.get("QUANTITY")).isNull();
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
 
             row = rows.get(4);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testRightJoin3() {
+    void testRightJoin3() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -473,23 +473,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isNull();
-            assertThat(row.get("QUANTITY")).isNull();
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
 
             row = rows.get(4);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testRightJoinNoAliases() {
+    void testRightJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -509,23 +509,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isNull();
-            assertThat(row.get("QUANTITY")).isNull();
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
 
             row = rows.get(4);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testLeftJoin() {
+    void testLeftJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -543,23 +543,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
-            assertThat(row.get("ORDER_ID")).isEqualTo(1);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(33);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("ITEM_ID", 33);
 
             row = rows.get(4);
-            assertThat(row.get("ORDER_ID")).isNull();
-            assertThat(row.get("QUANTITY")).isNull();
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
         }
     }
 
     @Test
-    public void testLeftJoin2() {
+    void testLeftJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -579,23 +579,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(6);
-            assertThat(row.get("DESCRIPTION")).isNull();
-            assertThat(row.get("ITEM_ID")).isNull();
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("ITEM_ID");
 
             row = rows.get(4);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testLeftJoin3() {
+    void testLeftJoin3() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -615,23 +615,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(6);
-            assertThat(row.get("DESCRIPTION")).isNull();
-            assertThat(row.get("ITEM_ID")).isNull();
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("ITEM_ID");
 
             row = rows.get(4);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testLeftJoinNoAliases() {
+    void testLeftJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -651,23 +651,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(5);
+            assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(6);
-            assertThat(row.get("DESCRIPTION")).isNull();
-            assertThat(row.get("ITEM_ID")).isNull();
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("ITEM_ID");
 
             row = rows.get(4);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testFullJoin() {
+    void testFullJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -685,30 +685,30 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(6);
+            assertThat(rows).hasSize(6);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(6);
-            assertThat(row.get("OL_ITEMID")).isEqualTo(66);
-            assertThat(row.get("DESCRIPTION")).isNull();
-            assertThat(row.get("IM_ITEMID")).isNull();
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).containsEntry("OL_ITEMID", 66);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("IM_ITEMID");
 
             row = rows.get(3);
-            assertThat(row.get("ORDER_ID")).isEqualTo(1);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
-            assertThat(row.get("IM_ITEMID")).isEqualTo(33);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("IM_ITEMID", 33);
 
             row = rows.get(5);
-            assertThat(row.get("ORDER_ID")).isNull();
-            assertThat(row.get("QUANTITY")).isNull();
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("IM_ITEMID")).isEqualTo(55);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("IM_ITEMID", 55);
         }
     }
 
     @Test
-    public void testFullJoin2() {
+    void testFullJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -728,29 +728,29 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(6);
+            assertThat(rows).hasSize(6);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isNull();
-            assertThat(row.get("QUANTITY")).isNull();
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
 
             row = rows.get(3);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(6);
-            assertThat(row.get("DESCRIPTION")).isNull();
-            assertThat(row.get("ITEM_ID")).isNull();
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("ITEM_ID");
 
             row = rows.get(5);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testFullJoin3() {
+    void testFullJoin3() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -770,29 +770,29 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(6);
+            assertThat(rows).hasSize(6);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isNull();
-            assertThat(row.get("QUANTITY")).isNull();
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
 
             row = rows.get(3);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(6);
-            assertThat(row.get("DESCRIPTION")).isNull();
-            assertThat(row.get("ITEM_ID")).isNull();
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("ITEM_ID");
 
             row = rows.get(5);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testFullJoinNoAliases() {
+    void testFullJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -812,29 +812,29 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(6);
+            assertThat(rows).hasSize(6);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isNull();
-            assertThat(row.get("QUANTITY")).isNull();
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Catcher Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(55);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
 
             row = rows.get(3);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(6);
-            assertThat(row.get("DESCRIPTION")).isNull();
-            assertThat(row.get("ITEM_ID")).isNull();
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("ITEM_ID");
 
             row = rows.get(5);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testSelf() {
+    void testSelf() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -853,7 +853,7 @@ public class JoinMapperTest {
             
             List<User> rows = mapper.selectUsers(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(1);
+            assertThat(rows).hasSize(1);
             User row = rows.get(0);
             assertThat(row.getUserId()).isEqualTo(2);
             assertThat(row.getUserName()).isEqualTo("Barney");
@@ -862,7 +862,7 @@ public class JoinMapperTest {
     }
 
     @Test
-    public void testLimitAndOffsetAfterJoin() {
+    void testLimitAndOffsetAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -881,23 +881,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
-            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+            assertThat(row).containsEntry("ITEM_ID", 22);
 
             row = rows.get(1);
-            assertThat(row.get("ORDER_ID")).isEqualTo(1);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(33);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("ITEM_ID", 33);
         }
     }
 
     @Test
-    public void testLimitOnlyAfterJoin() {
+    void testLimitOnlyAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -915,23 +915,23 @@ public class JoinMapperTest {
 
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isEqualTo(1);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
-            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+            assertThat(row).containsEntry("ITEM_ID", 22);
 
             row = rows.get(1);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
-            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+            assertThat(row).containsEntry("ITEM_ID", 22);
         }
     }
 
     @Test
-    public void testOffsetOnlyAfterJoin() {
+    void testOffsetOnlyAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -949,23 +949,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(3);
+            assertThat(rows).hasSize(3);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isEqualTo(1);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(33);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("ITEM_ID", 33);
 
             row = rows.get(1);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Outfield Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(44);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
         }
     }
 
     @Test
-    public void testOffsetAndFetchFirstAfterJoin() {
+    void testOffsetAndFetchFirstAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -984,23 +984,23 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
-            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+            assertThat(row).containsEntry("ITEM_ID", 22);
 
             row = rows.get(1);
-            assertThat(row.get("ORDER_ID")).isEqualTo(1);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("First Base Glove");
-            assertThat(row.get("ITEM_ID")).isEqualTo(33);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("ITEM_ID", 33);
         }
     }
 
     @Test
-    public void testFetchFirstOnlyAfterJoin() {
+    void testFetchFirstOnlyAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
             
@@ -1018,18 +1018,18 @@ public class JoinMapperTest {
             
             List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
 
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
-            assertThat(row.get("ORDER_ID")).isEqualTo(1);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
-            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+            assertThat(row).containsEntry("ITEM_ID", 22);
 
             row = rows.get(1);
-            assertThat(row.get("ORDER_ID")).isEqualTo(2);
-            assertThat(row.get("QUANTITY")).isEqualTo(1);
-            assertThat(row.get("DESCRIPTION")).isEqualTo("Helmet");
-            assertThat(row.get("ITEM_ID")).isEqualTo(22);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+            assertThat(row).containsEntry("ITEM_ID", 22);
         }
     }
 }

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import static issues.lhg142.MyMarkDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-public class Issue142Test {
+class Issue142Test {
 
     @Test
-    public void LimitWithSubqueries() {
+    void LimitWithSubqueries() {
         Page page = new Page(100L, 10L);
         SelectStatementProvider selectStatement = select(id, updateTime.as("mutime"), createTime.as("mctime")).from(myMark)
                 .where(id, isLessThanOrEqualTo(
@@ -42,9 +42,9 @@ public class Issue142Test {
                 " where id <= (select id from my_mark order by update_time DESC, create_time DESC limit #{parameters.p1} offset #{parameters.p2})" +
                 " order by mutime DESC, mctime DESC limit #{parameters.p3} offset #{parameters.p4}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(1L);
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(100L);
-        assertThat(selectStatement.getParameters().get("p3")).isEqualTo(10L);
-        assertThat(selectStatement.getParameters().get("p4")).isEqualTo(0L);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 1L);
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 100L);
+        assertThat(selectStatement.getParameters()).containsEntry("p3", 10L);
+        assertThat(selectStatement.getParameters()).containsEntry("p4", 0L);
     }
 }

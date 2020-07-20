@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import examples.springbatch.mapper.PersonMapper;
 
 @SpringBatchTest
 @SpringJUnitConfig(classes=BulkInsertConfiguration.class)
-public class SpringBatchBulkInsertTest {
+class SpringBatchBulkInsertTest {
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
@@ -46,9 +46,9 @@ public class SpringBatchBulkInsertTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @Test
-    public void testThatRowsAreInserted() throws Exception {
+    void testThatRowsAreInserted() throws Exception {
         // starting condition
-        assertThat(rowCount()).isEqualTo(0);
+        assertThat(rowCount()).isZero();
 
         JobExecution execution = jobLauncherTestUtils.launchJob();
         assertThat(execution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);

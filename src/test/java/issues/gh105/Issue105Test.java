@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Predicates;
 
-public class Issue105Test {
+class Issue105Test {
 
     @Test
-    public void testFuzzyLikeBothPresent() {
+    void testFuzzyLikeBothPresent() {
         String fName = "Fred";
         String lName = "Flintstone";
         
@@ -46,12 +46,12 @@ public class Issue105Test {
                 + " and last_name like #{parameters.p2}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%Fred%");
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo("%Flintstone%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%Fred%");
+        assertThat(selectStatement.getParameters()).containsEntry("p2", "%Flintstone%");
     }
 
     @Test
-    public void testFuzzyLikeFirstNameNull() {
+    void testFuzzyLikeFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
         
@@ -67,11 +67,11 @@ public class Issue105Test {
                 + " where last_name like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%Flintstone%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%Flintstone%");
     }
 
     @Test
-    public void testFuzzyLikeLastNameNull() {
+    void testFuzzyLikeLastNameNull() {
         String fName = "Fred";
         String lName = null;
         
@@ -87,11 +87,11 @@ public class Issue105Test {
                 + " where first_name like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%Fred%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%Fred%");
     }
 
     @Test
-    public void testFuzzyLikeBothNull() {
+    void testFuzzyLikeBothNull() {
         String fName = null;
         String lName = null;
         
@@ -106,11 +106,11 @@ public class Issue105Test {
                 + " from Person";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().size()).isEqualTo(0);
+        assertThat(selectStatement.getParameters()).isEmpty();
     }
 
     @Test
-    public void testBetweenTransform() {
+    void testBetweenTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -123,12 +123,12 @@ public class Issue105Test {
                 + " where age between #{parameters.p1} and #{parameters.p2}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(12);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 12);
     }
 
     @Test
-    public void testBetweenWhenPresentTransform() {
+    void testBetweenWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -141,12 +141,12 @@ public class Issue105Test {
                 + " where age between #{parameters.p1} and #{parameters.p2}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(12);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 12);
     }
 
     @Test
-    public void testEqualTransform() {
+    void testEqualTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -159,11 +159,11 @@ public class Issue105Test {
                 + " where age = #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testEqualWhenPresentTransform() {
+    void testEqualWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -176,11 +176,11 @@ public class Issue105Test {
                 + " where age = #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testGreaterThanTransform() {
+    void testGreaterThanTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -193,11 +193,11 @@ public class Issue105Test {
                 + " where age > #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testGreaterThanOrEqualTransform() {
+    void testGreaterThanOrEqualTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -210,11 +210,11 @@ public class Issue105Test {
                 + " where age >= #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testGreaterThanOrEqualWhenPresentTransform() {
+    void testGreaterThanOrEqualWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -227,11 +227,11 @@ public class Issue105Test {
                 + " where age >= #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testGreaterThanWhenPresentTransform() {
+    void testGreaterThanWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -244,11 +244,11 @@ public class Issue105Test {
                 + " where age > #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testLessThanTransform() {
+    void testLessThanTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -261,11 +261,11 @@ public class Issue105Test {
                 + " where age < #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testLessThanOrEqualTransform() {
+    void testLessThanOrEqualTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -278,11 +278,11 @@ public class Issue105Test {
                 + " where age <= #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testLessThanOrEqualWhenPresentTransform() {
+    void testLessThanOrEqualWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -295,11 +295,11 @@ public class Issue105Test {
                 + " where age <= #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testLessThanWhenPresentTransform() {
+    void testLessThanWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -312,11 +312,11 @@ public class Issue105Test {
                 + " where age < #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testLikeTransform() {
+    void testLikeTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -329,11 +329,11 @@ public class Issue105Test {
                 + " where first_name like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%fred%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%fred%");
     }
 
     @Test
-    public void testLikeCaseInsensitiveTransform() {
+    void testLikeCaseInsensitiveTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -346,11 +346,11 @@ public class Issue105Test {
                 + " where upper(first_name) like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%FRED%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%FRED%");
     }
 
     @Test
-    public void testLikeCaseInsensitiveWhenPresentTransform() {
+    void testLikeCaseInsensitiveWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -363,11 +363,11 @@ public class Issue105Test {
                 + " where upper(first_name) like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%FRED%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%FRED%");
     }
 
     @Test
-    public void testLikeWhenPresentTransform() {
+    void testLikeWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -380,11 +380,11 @@ public class Issue105Test {
                 + " where first_name like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%fred%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%fred%");
     }
 
     @Test
-    public void testNotBetweenTransform() {
+    void testNotBetweenTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -397,12 +397,12 @@ public class Issue105Test {
                 + " where age not between #{parameters.p1} and #{parameters.p2}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(12);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 12);
     }
 
     @Test
-    public void testNotBetweenWhenPresentTransform() {
+    void testNotBetweenWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -415,12 +415,12 @@ public class Issue105Test {
                 + " where age not between #{parameters.p1} and #{parameters.p2}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
-        assertThat(selectStatement.getParameters().get("p2")).isEqualTo(12);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 12);
     }
 
     @Test
-    public void testNotEqualTransform() {
+    void testNotEqualTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -433,11 +433,11 @@ public class Issue105Test {
                 + " where age <> #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testNotEqualWhenPresentTransform() {
+    void testNotEqualWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -450,11 +450,11 @@ public class Issue105Test {
                 + " where age <> #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo(2);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
     }
 
     @Test
-    public void testNotLikeTransform() {
+    void testNotLikeTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -467,11 +467,11 @@ public class Issue105Test {
                 + " where first_name not like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%fred%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%fred%");
     }
 
     @Test
-    public void testNotLikeCaseInsensitiveTransform() {
+    void testNotLikeCaseInsensitiveTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -484,11 +484,11 @@ public class Issue105Test {
                 + " where upper(first_name) not like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%FRED%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%FRED%");
     }
 
     @Test
-    public void testNotLikeCaseInsensitiveWhenPresentTransform() {
+    void testNotLikeCaseInsensitiveWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -501,11 +501,11 @@ public class Issue105Test {
                 + " where upper(first_name) not like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%FRED%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%FRED%");
     }
 
     @Test
-    public void testNotLikeWhenPresentTransform() {
+    void testNotLikeWhenPresentTransform() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -518,11 +518,11 @@ public class Issue105Test {
                 + " where first_name not like #{parameters.p1}";
                 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters().get("p1")).isEqualTo("%fred%");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", "%fred%");
     }
 
     @Test
-    public void testBetweenTransformWithNull() {
+    void testBetweenTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -537,7 +537,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testBetweenWhenPresentTransformWithNull() {
+    void testBetweenWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -552,7 +552,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testEqualTransformWithNull() {
+    void testEqualTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -567,7 +567,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testEqualWhenPresentTransformWithNull() {
+    void testEqualWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -582,7 +582,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testGreaterThanTransformWithNull() {
+    void testGreaterThanTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -597,7 +597,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testGreaterThanOrEqualTransformWithNull() {
+    void testGreaterThanOrEqualTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -612,7 +612,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testGreaterThanOrEqualWhenPresentTransformWithNull() {
+    void testGreaterThanOrEqualWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -627,7 +627,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testGreaterThanWhenPresentTransformWithNull() {
+    void testGreaterThanWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -642,7 +642,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testLessThanTransformWithNull() {
+    void testLessThanTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -657,7 +657,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testLessThanOrEqualTransformWithNull() {
+    void testLessThanOrEqualTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -672,7 +672,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testLessThanOrEqualWhenPresentTransformWithNull() {
+    void testLessThanOrEqualWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -687,7 +687,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testLessThanWhenPresentTransformWithNull() {
+    void testLessThanWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -702,7 +702,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testLikeTransformWithNull() {
+    void testLikeTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -717,7 +717,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testLikeCaseInsensitiveTransformWithNull() {
+    void testLikeCaseInsensitiveTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -732,7 +732,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testLikeCaseInsensitiveWhenPresentTransformWithNull() {
+    void testLikeCaseInsensitiveWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -747,7 +747,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testLikeWhenPresentTransformWithNull() {
+    void testLikeWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -762,7 +762,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testNotBetweenTransformWithNull() {
+    void testNotBetweenTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -777,7 +777,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testNotBetweenWhenPresentTransformWithNull() {
+    void testNotBetweenWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -792,7 +792,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testNotEqualTransformWithNull() {
+    void testNotEqualTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -807,7 +807,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testNotEqualWhenPresentTransformWithNull() {
+    void testNotEqualWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -822,7 +822,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testNotLikeTransformWithNull() {
+    void testNotLikeTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -837,7 +837,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testNotLikeCaseInsensitiveTransformWithNull() {
+    void testNotLikeCaseInsensitiveTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -852,7 +852,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testNotLikeCaseInsensitiveWhenPresentTransformWithNull() {
+    void testNotLikeCaseInsensitiveWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
@@ -867,7 +867,7 @@ public class Issue105Test {
     }
 
     @Test
-    public void testNotLikeWhenPresentTransformWithNull() {
+    void testNotLikeWhenPresentTransformWithNull() {
         
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)

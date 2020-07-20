@@ -189,7 +189,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 record
             }
 
-        assertThat(rows.size).isEqualTo(6)
+        assertThat(rows).hasSize(6)
     }
 
     @Test
@@ -214,7 +214,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 record
             }
 
-        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows).hasSize(2)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -275,7 +275,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 rs.getString(1)
             }
 
-        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows).hasSize(2)
     }
 
     @Test
@@ -287,7 +287,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 rs.getString(1)
             }
 
-        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows).hasSize(2)
     }
 
     @Test
@@ -321,7 +321,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
             }
 
 
-        assertThat(rows.size).isEqualTo(3)
+        assertThat(rows).hasSize(3)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -360,7 +360,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 record
             }
 
-        assertThat(rows.size).isEqualTo(1)
+        assertThat(rows).hasSize(1)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -396,7 +396,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 record
             }
 
-        assertThat(rows.size).isEqualTo(3)
+        assertThat(rows).hasSize(3)
         with(rows[2]) {
             assertThat(id).isEqualTo(4)
             assertThat(firstName).isEqualTo("Barney")

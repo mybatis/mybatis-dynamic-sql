@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 import examples.generated.always.PersonRecord;
 
-public class PersonMapperTest {
+class PersonMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -52,7 +52,7 @@ public class PersonMapperTest {
     private SqlSessionFactory sqlSessionFactory;
     
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/generated/always/CreateGeneratedAlwaysDB.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -69,7 +69,7 @@ public class PersonMapperTest {
     }
     
     @Test
-    public void testInsertSelectWithOneRecord() {
+    void testInsertSelectWithOneRecord() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             
@@ -97,7 +97,7 @@ public class PersonMapperTest {
             
             rows = mapper.insertSelect(insertSelectStatement);
             assertThat(rows).isEqualTo(1);
-            assertThat(insertSelectStatement.getParameters().get("id")).isEqualTo(23);
+            assertThat(insertSelectStatement.getParameters()).containsEntry("id", 23);
             
             SelectStatementProvider selectStatement = SqlBuilder.select(id, firstName, lastName)
                     .from(person)
@@ -106,14 +106,14 @@ public class PersonMapperTest {
                     .render(RenderingStrategies.MYBATIS3);
             
             List<PersonRecord> records = mapper.selectMany(selectStatement);
-            assertThat(records.size()).isEqualTo(2);
+            assertThat(records).hasSize(2);
             assertThat(records.get(0).getId()).isEqualTo(22);
             assertThat(records.get(1).getId()).isEqualTo(23);
         }
     }
 
     @Test
-    public void testInsertSelectWithMultipleRecords() {
+    void testInsertSelectWithMultipleRecords() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             
@@ -161,7 +161,7 @@ public class PersonMapperTest {
                     .render(RenderingStrategies.MYBATIS3);
             
             List<PersonRecord> records = mapper.selectMany(selectStatement);
-            assertThat(records.size()).isEqualTo(4);
+            assertThat(records).hasSize(4);
             assertThat(records.get(0).getId()).isEqualTo(22);
             assertThat(records.get(1).getId()).isEqualTo(23);
             assertThat(records.get(2).getId()).isEqualTo(24);

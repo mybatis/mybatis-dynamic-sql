@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,18 +22,18 @@ import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
-public class SqlTableTest {
+class SqlTableTest {
     
     private static final String NAME_PROPERTY = "nameProperty";
 
     @Test
-    public void testFullName() {
+    void testFullName() {
         SqlTable table = new SqlTable("my_table");
         assertThat(table.tableNameAtRuntime()).isEqualTo("my_table");
     }
 
     @Test
-    public void testFullNameSupplier() {
+    void testFullNameSupplier() {
         
         System.setProperty(NAME_PROPERTY, "my_table");
         SqlTable table = new SqlTable(SqlTableTest::namePropertyReader);
@@ -42,25 +42,25 @@ public class SqlTableTest {
     }
 
     @Test
-    public void testSchemaSupplierEmpty() {
+    void testSchemaSupplierEmpty() {
         SqlTable table = new SqlTable(Optional::empty, "my_table");
         assertThat(table.tableNameAtRuntime()).isEqualTo("my_table");
     }
 
     @Test
-    public void testSchemaSupplierWithValue() {
+    void testSchemaSupplierWithValue() {
         SqlTable table = new SqlTable(() -> Optional.of("my_schema"), "my_table");
         assertThat(table.tableNameAtRuntime()).isEqualTo("my_schema.my_table");
     }
     
     @Test
-    public void testSingletonSchemaSupplier() {
+    void testSingletonSchemaSupplier() {
         SqlTable table = new SqlTable(MySchemaSupplier.instance(), "my_table");
         assertThat(table.tableNameAtRuntime()).isEqualTo("first_schema.my_table");
     }
 
     @Test
-    public void testThatSchemaSupplierDoesDelay() {
+    void testThatSchemaSupplierDoesDelay() {
         MySchemaSupplier schemaSupplier = new MySchemaSupplier();
         SqlTable table = new SqlTable(schemaSupplier, "my_table");
         assertThat(table.tableNameAtRuntime()).isEqualTo("first_schema.my_table");
@@ -70,19 +70,19 @@ public class SqlTableTest {
     }
     
     @Test
-    public void testCatalogAndSchemaSupplierEmpty() {
+    void testCatalogAndSchemaSupplierEmpty() {
         SqlTable table = new SqlTable(Optional::empty, Optional::empty, "my_table");
         assertThat(table.tableNameAtRuntime()).isEqualTo("my_table");
     }
 
     @Test
-    public void testCatalogSupplierWithValue() {
+    void testCatalogSupplierWithValue() {
         SqlTable table = new SqlTable(() -> Optional.of("my_catalog"), Optional::empty, "my_table");
         assertThat(table.tableNameAtRuntime()).isEqualTo("my_catalog..my_table");
     }
     
     @Test
-    public void testThatCatalogSupplierDoesDelay() {
+    void testThatCatalogSupplierDoesDelay() {
         MyCatalogSupplier catalogSupplier = new MyCatalogSupplier();
         SqlTable table = new SqlTable(catalogSupplier, Optional::empty, "my_table");
         assertThat(table.tableNameAtRuntime()).isEqualTo("first_catalog..my_table");
@@ -92,7 +92,7 @@ public class SqlTableTest {
     }
     
     @Test
-    public void testThatCatalogSupplierAndSchemaSupplierBothDelay() {
+    void testThatCatalogSupplierAndSchemaSupplierBothDelay() {
         MyCatalogSupplier catalogSupplier = new MyCatalogSupplier();
         MySchemaSupplier schemaSupplier = new MySchemaSupplier();
         SqlTable table = new SqlTable(catalogSupplier, schemaSupplier, "my_table");
@@ -122,21 +122,21 @@ public class SqlTableTest {
         return System.getProperty(NAME_PROPERTY);
     }
     
-    public static class MySchemaSupplier implements Supplier<Optional<String>> {
+    static class MySchemaSupplier implements Supplier<Optional<String>> {
         private static MySchemaSupplier instance = new MySchemaSupplier();
         
-        public static MySchemaSupplier instance() {
+        static MySchemaSupplier instance() {
             return instance;
         }
         
         private boolean first = true;
         private boolean empty;
         
-        public void setFirst(boolean first) {
+        void setFirst(boolean first) {
             this.first = first;
         }
         
-        public void setEmpty(boolean empty) {
+        void setEmpty(boolean empty) {
             this.empty = empty;
         }
 
@@ -154,15 +154,15 @@ public class SqlTableTest {
         }
     }
 
-    public static class MyCatalogSupplier implements Supplier<Optional<String>> {
+    static class MyCatalogSupplier implements Supplier<Optional<String>> {
         private boolean first = true;
         private boolean empty;
         
-        public void setFirst(boolean first) {
+        void setFirst(boolean first) {
             this.first = first;
         }
 
-        public void setEmpty(boolean empty) {
+        void setEmpty(boolean empty) {
             this.empty = empty;
         }
 

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.where.render;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 import java.sql.JDBCType;
 import java.util.HashMap;
@@ -31,10 +32,10 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 
-public class CriterionRendererTest {
+class CriterionRendererTest {
 
     @Test
-    public void testAliasWithIgnore() {
+    void testAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         
@@ -53,12 +54,11 @@ public class CriterionRendererTest {
                 .renderWithInitialConnector();
         
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
-        assertThat(fp.parameters().size()).isEqualTo(1);
-        assertThat(fp.parameters().get("p1")).isEqualTo(3);
+        assertThat(fp.parameters()).containsExactly(entry("p1", 3));
     }
 
     @Test
-    public void testAliasWithoutIgnore() {
+    void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
@@ -80,7 +80,6 @@ public class CriterionRendererTest {
                 .renderWithInitialConnector();
         
         assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
-        assertThat(fp.parameters().size()).isEqualTo(1);
-        assertThat(fp.parameters().get("p1")).isEqualTo(3);
+        assertThat(fp.parameters()).containsExactly(entry("p1", 3));
     }
 }

@@ -281,7 +281,7 @@ class CanonicalSpringKotlinTest {
             record
         }
 
-        assertThat(rows.size).isEqualTo(2)
+        assertThat(rows).hasSize(2)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -363,7 +363,7 @@ class CanonicalSpringKotlinTest {
         }
 
 
-        assertThat(rows.size).isEqualTo(3)
+        assertThat(rows).hasSize(3)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -413,7 +413,7 @@ class CanonicalSpringKotlinTest {
             record
         }
 
-        assertThat(rows.size).isEqualTo(1)
+        assertThat(rows).hasSize(1)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -460,7 +460,7 @@ class CanonicalSpringKotlinTest {
             record
         }
 
-        assertThat(rows.size).isEqualTo(3)
+        assertThat(rows).hasSize(3)
         with(rows[2]) {
             assertThat(id).isEqualTo(4)
             assertThat(firstName).isEqualTo("Barney")

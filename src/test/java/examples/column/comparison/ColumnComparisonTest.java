@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class ColumnComparisonTest {
+class ColumnComparisonTest {
     
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -47,7 +47,7 @@ public class ColumnComparisonTest {
     private SqlSessionFactory sqlSessionFactory;
     
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/column/comparison/CreateDB.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -64,7 +64,7 @@ public class ColumnComparisonTest {
     }
     
     @Test
-    public void testColumnComparisonLessThan() {
+    void testColumnComparisonLessThan() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             ColumnComparisonMapper mapper = sqlSession.getMapper(ColumnComparisonMapper.class);
             
@@ -84,7 +84,7 @@ public class ColumnComparisonTest {
             
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-                    () -> assertThat(records.size()).isEqualTo(5),
+                    () -> assertThat(records).hasSize(5),
                     () -> assertThat(records.get(0).getNumber1()).isEqualTo(1),
                     () -> assertThat(records.get(4).getNumber1()).isEqualTo(5)
             );
@@ -92,7 +92,7 @@ public class ColumnComparisonTest {
     }
     
     @Test
-    public void testColumnComparisonLessThanOrEqual() {
+    void testColumnComparisonLessThanOrEqual() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             ColumnComparisonMapper mapper = sqlSession.getMapper(ColumnComparisonMapper.class);
             
@@ -112,7 +112,7 @@ public class ColumnComparisonTest {
             
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-                    () -> assertThat(records.size()).isEqualTo(6),
+                    () -> assertThat(records).hasSize(6),
                     () -> assertThat(records.get(0).getNumber1()).isEqualTo(1),
                     () -> assertThat(records.get(5).getNumber1()).isEqualTo(6)
             );
@@ -120,7 +120,7 @@ public class ColumnComparisonTest {
     }
     
     @Test
-    public void testColumnComparisonGreaterThan() {
+    void testColumnComparisonGreaterThan() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             ColumnComparisonMapper mapper = sqlSession.getMapper(ColumnComparisonMapper.class);
             
@@ -140,7 +140,7 @@ public class ColumnComparisonTest {
             
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-                    () -> assertThat(records.size()).isEqualTo(5),
+                    () -> assertThat(records).hasSize(5),
                     () -> assertThat(records.get(0).getNumber1()).isEqualTo(7),
                     () -> assertThat(records.get(4).getNumber1()).isEqualTo(11)
             );
@@ -148,7 +148,7 @@ public class ColumnComparisonTest {
     }
     
     @Test
-    public void testColumnComparisonGreaterThanOrEqual() {
+    void testColumnComparisonGreaterThanOrEqual() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             ColumnComparisonMapper mapper = sqlSession.getMapper(ColumnComparisonMapper.class);
             
@@ -168,7 +168,7 @@ public class ColumnComparisonTest {
             
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-                    () -> assertThat(records.size()).isEqualTo(6),
+                    () -> assertThat(records).hasSize(6),
                     () -> assertThat(records.get(0).getNumber1()).isEqualTo(6),
                     () -> assertThat(records.get(5).getNumber1()).isEqualTo(11)
             );
@@ -176,7 +176,7 @@ public class ColumnComparisonTest {
     }
     
     @Test
-    public void testColumnComparisonEqual() {
+    void testColumnComparisonEqual() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             ColumnComparisonMapper mapper = sqlSession.getMapper(ColumnComparisonMapper.class);
             
@@ -196,14 +196,14 @@ public class ColumnComparisonTest {
             
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-                    () -> assertThat(records.size()).isEqualTo(1),
+                    () -> assertThat(records).hasSize(1),
                     () -> assertThat(records.get(0).getNumber1()).isEqualTo(6)
             );
         }
     }
     
     @Test
-    public void testColumnComparisonNotEqual() {
+    void testColumnComparisonNotEqual() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             ColumnComparisonMapper mapper = sqlSession.getMapper(ColumnComparisonMapper.class);
             
@@ -223,7 +223,7 @@ public class ColumnComparisonTest {
             
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-                    () -> assertThat(records.size()).isEqualTo(10),
+                    () -> assertThat(records).hasSize(10),
                     () -> assertThat(records.get(0).getNumber1()).isEqualTo(1),
                     () -> assertThat(records.get(9).getNumber1()).isEqualTo(11)
             );
