@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class FromJoinWhereTest {
+class FromJoinWhereTest {
 
     @Test
-    public void testNormalUsage() {
+    void testNormalUsage() {
         SelectStatementProvider selectStatement = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
@@ -58,7 +58,7 @@ public class FromJoinWhereTest {
     }
 
     @Test
-    public void testFrom() {
+    void testFrom() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
         
@@ -71,7 +71,7 @@ public class FromJoinWhereTest {
     }
 
     @Test
-    public void testFromJoinB1() {
+    void testFromJoinB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -88,7 +88,7 @@ public class FromJoinWhereTest {
     }
 
     @Test
-    public void testFromJoinB2() {
+    void testFromJoinB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -105,7 +105,7 @@ public class FromJoinWhereTest {
     }
 
     @Test
-    public void testfromJoinWhereB1() {
+    void testfromJoinWhereB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -125,7 +125,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testfromJoinWhereB2() {
+    void testfromJoinWhereB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -145,7 +145,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testfromJoinWhereB3() {
+    void testfromJoinWhereB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -165,7 +165,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionB1() {
+    void testFromJoinWhereUnionB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -192,7 +192,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionB2() {
+    void testFromJoinWhereUnionB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -219,7 +219,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionB3() {
+    void testFromJoinWhereUnionB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -246,7 +246,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionB4() {
+    void testFromJoinWhereUnionB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -273,7 +273,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionUnionB1() {
+    void testFromJoinWhereUnionUnionB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -311,7 +311,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionUnionB2() {
+    void testFromJoinWhereUnionUnionB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -349,7 +349,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionUnionB3() {
+    void testFromJoinWhereUnionUnionB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -387,7 +387,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionUnionB4() {
+    void testFromJoinWhereUnionUnionB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -425,7 +425,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionUnionB5() {
+    void testFromJoinWhereUnionUnionB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -463,7 +463,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByB1() {
+    void testFromJoinWhereUnionOrderByB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -493,7 +493,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByB2() {
+    void testFromJoinWhereUnionOrderByB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -523,7 +523,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByB3() {
+    void testFromJoinWhereUnionOrderByB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -553,7 +553,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByB4() {
+    void testFromJoinWhereUnionOrderByB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -583,7 +583,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByB5() {
+    void testFromJoinWhereUnionOrderByB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -613,7 +613,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitB1() {
+    void testFromJoinWhereUnionOrderByLimitB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -646,7 +646,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitB2() {
+    void testFromJoinWhereUnionOrderByLimitB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -679,7 +679,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitB3() {
+    void testFromJoinWhereUnionOrderByLimitB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -712,7 +712,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitB4() {
+    void testFromJoinWhereUnionOrderByLimitB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -745,7 +745,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitB5() {
+    void testFromJoinWhereUnionOrderByLimitB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -778,7 +778,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitB6() {
+    void testFromJoinWhereUnionOrderByLimitB6() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -811,7 +811,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitOffsetB1() {
+    void testFromJoinWhereUnionOrderByLimitOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -847,7 +847,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitOffsetB2() {
+    void testFromJoinWhereUnionOrderByLimitOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -883,7 +883,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitOffsetB3() {
+    void testFromJoinWhereUnionOrderByLimitOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -919,7 +919,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitOffsetB4() {
+    void testFromJoinWhereUnionOrderByLimitOffsetB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -955,7 +955,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitOffsetB5() {
+    void testFromJoinWhereUnionOrderByLimitOffsetB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -991,7 +991,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitOffsetB6() {
+    void testFromJoinWhereUnionOrderByLimitOffsetB6() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1027,7 +1027,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByLimitOffsetB7() {
+    void testFromJoinWhereUnionOrderByLimitOffsetB7() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1063,7 +1063,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetB1() {
+    void testFromJoinWhereUnionOrderByOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1097,7 +1097,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetB2() {
+    void testFromJoinWhereUnionOrderByOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1131,7 +1131,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetB3() {
+    void testFromJoinWhereUnionOrderByOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1165,7 +1165,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetB4() {
+    void testFromJoinWhereUnionOrderByOffsetB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1199,7 +1199,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetB5() {
+    void testFromJoinWhereUnionOrderByOffsetB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1233,7 +1233,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetB6() {
+    void testFromJoinWhereUnionOrderByOffsetB6() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1267,7 +1267,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetFetchFirstB1() {
+    void testFromJoinWhereUnionOrderByOffsetFetchFirstB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1303,7 +1303,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetFetchFirstB2() {
+    void testFromJoinWhereUnionOrderByOffsetFetchFirstB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1339,7 +1339,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetFetchFirstB3() {
+    void testFromJoinWhereUnionOrderByOffsetFetchFirstB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1375,7 +1375,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetFetchFirstB4() {
+    void testFromJoinWhereUnionOrderByOffsetFetchFirstB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1411,7 +1411,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetFetchFirstB5() {
+    void testFromJoinWhereUnionOrderByOffsetFetchFirstB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1447,7 +1447,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetFetchFirstB6() {
+    void testFromJoinWhereUnionOrderByOffsetFetchFirstB6() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1483,7 +1483,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByOffsetFetchFirstB7() {
+    void testFromJoinWhereUnionOrderByOffsetFetchFirstB7() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1519,7 +1519,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByFetchFirstB1() {
+    void testFromJoinWhereUnionOrderByFetchFirstB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1552,7 +1552,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByFetchFirstB2() {
+    void testFromJoinWhereUnionOrderByFetchFirstB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1585,7 +1585,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByFetchFirstB3() {
+    void testFromJoinWhereUnionOrderByFetchFirstB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1618,7 +1618,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByFetchFirstB4() {
+    void testFromJoinWhereUnionOrderByFetchFirstB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1651,7 +1651,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByFetchFirstB5() {
+    void testFromJoinWhereUnionOrderByFetchFirstB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1684,7 +1684,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOrderByFetchFirstB6() {
+    void testFromJoinWhereUnionOrderByFetchFirstB6() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1717,7 +1717,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionLimitB1() {
+    void testFromJoinWhereUnionLimitB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1747,7 +1747,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionLimitB2() {
+    void testFromJoinWhereUnionLimitB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1777,7 +1777,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionLimitB3() {
+    void testFromJoinWhereUnionLimitB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1807,7 +1807,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionLimitB4() {
+    void testFromJoinWhereUnionLimitB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1837,7 +1837,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionLimitB5() {
+    void testFromJoinWhereUnionLimitB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1867,7 +1867,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionLimitOffsetB1() {
+    void testFromJoinWhereUnionLimitOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1900,7 +1900,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionLimitOffsetB2() {
+    void testFromJoinWhereUnionLimitOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1933,7 +1933,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionLimitOffsetB3() {
+    void testFromJoinWhereUnionLimitOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1966,7 +1966,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionLimitOffsetB4() {
+    void testFromJoinWhereUnionLimitOffsetB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -1999,7 +1999,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionLimitOffsetB5() {
+    void testFromJoinWhereUnionLimitOffsetB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2032,7 +2032,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionLimitOffsetB6() {
+    void testFromJoinWhereUnionLimitOffsetB6() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2065,7 +2065,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionOffsetB1() {
+    void testFromJoinWhereUnionOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2095,7 +2095,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOffsetB2() {
+    void testFromJoinWhereUnionOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2125,7 +2125,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOffsetB3() {
+    void testFromJoinWhereUnionOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2155,7 +2155,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOffsetB4() {
+    void testFromJoinWhereUnionOffsetB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2185,7 +2185,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOffsetB5() {
+    void testFromJoinWhereUnionOffsetB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2215,7 +2215,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionOffsetFetchFirstB1() {
+    void testFromJoinWhereUnionOffsetFetchFirstB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2248,7 +2248,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionOffsetFetchFirstB2() {
+    void testFromJoinWhereUnionOffsetFetchFirstB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2281,7 +2281,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionOffsetFetchFirstB3() {
+    void testFromJoinWhereUnionOffsetFetchFirstB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2314,7 +2314,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionOffsetFetchFirstB4() {
+    void testFromJoinWhereUnionOffsetFetchFirstB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2347,7 +2347,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionOffsetFetchFirstB5() {
+    void testFromJoinWhereUnionOffsetFetchFirstB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2380,7 +2380,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionOffsetFetchFirstB6() {
+    void testFromJoinWhereUnionOffsetFetchFirstB6() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2413,7 +2413,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereUnionFetchFirstB1() {
+    void testFromJoinWhereUnionFetchFirstB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2443,7 +2443,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionFetchFirstB2() {
+    void testFromJoinWhereUnionFetchFirstB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2473,7 +2473,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionFetchFirstB3() {
+    void testFromJoinWhereUnionFetchFirstB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2503,7 +2503,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionFetchFirstB4() {
+    void testFromJoinWhereUnionFetchFirstB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2533,7 +2533,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereUnionFetchFirstB5() {
+    void testFromJoinWhereUnionFetchFirstB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2563,7 +2563,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOrderByB1() {
+    void testFromJoinWhereOrderByB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2586,7 +2586,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByB2() {
+    void testFromJoinWhereOrderByB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2609,7 +2609,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByB3() {
+    void testFromJoinWhereOrderByB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2632,7 +2632,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByB4() {
+    void testFromJoinWhereOrderByB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2655,7 +2655,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByLimitB1() {
+    void testFromJoinWhereOrderByLimitB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2681,7 +2681,7 @@ public class FromJoinWhereTest {
     }
            
     @Test
-    public void testFromJoinWhereOrderByLimitB2() {
+    void testFromJoinWhereOrderByLimitB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2707,7 +2707,7 @@ public class FromJoinWhereTest {
     }
            
     @Test
-    public void testFromJoinWhereOrderByLimitB3() {
+    void testFromJoinWhereOrderByLimitB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2733,7 +2733,7 @@ public class FromJoinWhereTest {
     }
            
     @Test
-    public void testFromJoinWhereOrderByLimitB4() {
+    void testFromJoinWhereOrderByLimitB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2759,7 +2759,7 @@ public class FromJoinWhereTest {
     }
            
     @Test
-    public void testFromJoinWhereOrderByLimitB5() {
+    void testFromJoinWhereOrderByLimitB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2785,7 +2785,7 @@ public class FromJoinWhereTest {
     }
            
     @Test
-    public void testFromJoinWhereOrderByLimitOffsetB1() {
+    void testFromJoinWhereOrderByLimitOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2814,7 +2814,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByLimitOffsetB2() {
+    void testFromJoinWhereOrderByLimitOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2843,7 +2843,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByLimitOffsetB3() {
+    void testFromJoinWhereOrderByLimitOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2872,7 +2872,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByLimitOffsetB4() {
+    void testFromJoinWhereOrderByLimitOffsetB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2901,7 +2901,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByLimitOffsetB5() {
+    void testFromJoinWhereOrderByLimitOffsetB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2930,7 +2930,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByLimitOffsetB6() {
+    void testFromJoinWhereOrderByLimitOffsetB6() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2959,7 +2959,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByOffsetB1() {
+    void testFromJoinWhereOrderByOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -2985,7 +2985,7 @@ public class FromJoinWhereTest {
     }
             
     @Test
-    public void testFromJoinWhereOrderByOffsetB2() {
+    void testFromJoinWhereOrderByOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3011,7 +3011,7 @@ public class FromJoinWhereTest {
     }
             
     @Test
-    public void testFromJoinWhereOrderByOffsetB3() {
+    void testFromJoinWhereOrderByOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3037,7 +3037,7 @@ public class FromJoinWhereTest {
     }
             
     @Test
-    public void testFromJoinWhereOrderByOffsetB4() {
+    void testFromJoinWhereOrderByOffsetB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3063,7 +3063,7 @@ public class FromJoinWhereTest {
     }
             
     @Test
-    public void testFromJoinWhereOrderByOffsetB5() {
+    void testFromJoinWhereOrderByOffsetB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3089,7 +3089,7 @@ public class FromJoinWhereTest {
     }
             
     @Test
-    public void testFromJoinWhereOrderByOffsetFetchFirstB1() {
+    void testFromJoinWhereOrderByOffsetFetchFirstB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3118,7 +3118,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByOffsetFetchFirstB2() {
+    void testFromJoinWhereOrderByOffsetFetchFirstB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3147,7 +3147,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByOffsetFetchFirstB3() {
+    void testFromJoinWhereOrderByOffsetFetchFirstB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3176,7 +3176,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByOffsetFetchFirstB4() {
+    void testFromJoinWhereOrderByOffsetFetchFirstB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3205,7 +3205,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByOffsetFetchFirstB5() {
+    void testFromJoinWhereOrderByOffsetFetchFirstB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3234,7 +3234,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByOffsetFetchFirstB6() {
+    void testFromJoinWhereOrderByOffsetFetchFirstB6() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3263,7 +3263,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOrderByFetchFirstB1() {
+    void testFromJoinWhereOrderByFetchFirstB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3289,7 +3289,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOrderByFetchFirstB2() {
+    void testFromJoinWhereOrderByFetchFirstB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3315,7 +3315,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOrderByFetchFirstB3() {
+    void testFromJoinWhereOrderByFetchFirstB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3341,7 +3341,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOrderByFetchFirstB4() {
+    void testFromJoinWhereOrderByFetchFirstB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3367,7 +3367,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOrderByFetchFirstB5() {
+    void testFromJoinWhereOrderByFetchFirstB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3393,7 +3393,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereLimitB1() {
+    void testFromJoinWhereLimitB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3416,7 +3416,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereLimitB2() {
+    void testFromJoinWhereLimitB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3439,7 +3439,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereLimitB3() {
+    void testFromJoinWhereLimitB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3462,7 +3462,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereLimitB4() {
+    void testFromJoinWhereLimitB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3485,7 +3485,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereLimitOffsetB1() {
+    void testFromJoinWhereLimitOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3511,7 +3511,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereLimitOffsetB2() {
+    void testFromJoinWhereLimitOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3537,7 +3537,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereLimitOffsetB3() {
+    void testFromJoinWhereLimitOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3563,7 +3563,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereLimitOffsetB4() {
+    void testFromJoinWhereLimitOffsetB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3589,7 +3589,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereLimitOffsetB5() {
+    void testFromJoinWhereLimitOffsetB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3615,7 +3615,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOffsetB1() {
+    void testFromJoinWhereOffsetB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3638,7 +3638,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOffsetB2() {
+    void testFromJoinWhereOffsetB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3661,7 +3661,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOffsetB3() {
+    void testFromJoinWhereOffsetB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3684,7 +3684,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOffsetB4() {
+    void testFromJoinWhereOffsetB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3707,7 +3707,7 @@ public class FromJoinWhereTest {
     }
         
     @Test
-    public void testFromJoinWhereOffsetFetchFirstB1() {
+    void testFromJoinWhereOffsetFetchFirstB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3733,7 +3733,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOffsetFetchFirstB2() {
+    void testFromJoinWhereOffsetFetchFirstB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3759,7 +3759,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOffsetFetchFirstB3() {
+    void testFromJoinWhereOffsetFetchFirstB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3785,7 +3785,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOffsetFetchFirstB4() {
+    void testFromJoinWhereOffsetFetchFirstB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3811,7 +3811,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereOffsetFetchFirstB5() {
+    void testFromJoinWhereOffsetFetchFirstB5() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3837,7 +3837,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereFetchFirstB1() {
+    void testFromJoinWhereFetchFirstB1() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3860,7 +3860,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereFetchFirstB2() {
+    void testFromJoinWhereFetchFirstB2() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3883,7 +3883,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereFetchFirstB3() {
+    void testFromJoinWhereFetchFirstB3() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
@@ -3906,7 +3906,7 @@ public class FromJoinWhereTest {
     }
     
     @Test
-    public void testFromJoinWhereFetchFirstB4() {
+    void testFromJoinWhereFetchFirstB4() {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 

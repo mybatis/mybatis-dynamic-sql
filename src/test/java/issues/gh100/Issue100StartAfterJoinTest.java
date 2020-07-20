@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class Issue100StartAfterJoinTest {
+class Issue100StartAfterJoinTest {
 
     @Test
-    public void testSuccessiveBuild02() {
+    void testSuccessiveBuild02() {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
@@ -46,7 +46,7 @@ public class Issue100StartAfterJoinTest {
     }
 
     @Test
-    public void testSuccessiveBuild03() {
+    void testSuccessiveBuild03() {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
@@ -67,7 +67,7 @@ public class Issue100StartAfterJoinTest {
     }
 
     @Test
-    public void testSuccessiveBuild04() {
+    void testSuccessiveBuild04() {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
@@ -85,7 +85,7 @@ public class Issue100StartAfterJoinTest {
     }
 
     @Test
-    public void testSuccessiveBuild05() {
+    void testSuccessiveBuild05() {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
@@ -109,7 +109,7 @@ public class Issue100StartAfterJoinTest {
     }
 
     @Test
-    public void testSuccessiveBuild06() {
+    void testSuccessiveBuild06() {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
@@ -131,7 +131,7 @@ public class Issue100StartAfterJoinTest {
     }
 
     @Test
-    public void testSuccessiveBuild07() {
+    void testSuccessiveBuild07() {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
@@ -155,7 +155,7 @@ public class Issue100StartAfterJoinTest {
     }
 
     @Test
-    public void testSuccessiveBuild08() {
+    void testSuccessiveBuild08() {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)

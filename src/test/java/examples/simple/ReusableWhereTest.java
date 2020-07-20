@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.where.WhereApplier;
 
-public class ReusableWhereTest {
+class ReusableWhereTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
@@ -47,7 +47,7 @@ public class ReusableWhereTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/simple/CreateSimpleDB.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -65,7 +65,7 @@ public class ReusableWhereTest {
     }
 
     @Test
-    public void testCount() {
+    void testCount() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
@@ -76,7 +76,7 @@ public class ReusableWhereTest {
     }
 
     @Test
-    public void testDelete() {
+    void testDelete() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
@@ -87,7 +87,7 @@ public class ReusableWhereTest {
     }
 
     @Test
-    public void testSelect() {
+    void testSelect() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
@@ -95,12 +95,12 @@ public class ReusableWhereTest {
                 c.applyWhere(commonWhere)
                 .orderBy(id));
 
-            assertThat(rows.size()).isEqualTo(3);
+            assertThat(rows).hasSize(3);
         }
     }
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 

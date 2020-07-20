@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class SampleWhereClausesTest {
+class SampleWhereClausesTest {
 
     @Test
-    public void simpleClause1() {
+    void simpleClause1() {
         SelectStatementProvider selectStatement = select(count())
                 .from(person)
                 .where(id, isEqualTo(3))
@@ -38,7 +38,7 @@ public class SampleWhereClausesTest {
     }
     
     @Test
-    public void simpleClause2() {
+    void simpleClause2() {
         SelectStatementProvider selectStatement = select(count())
                 .from(person, "a")
                 .where(id, isNull())
@@ -49,7 +49,7 @@ public class SampleWhereClausesTest {
     }
     
     @Test
-    public void betweenClause() {
+    void betweenClause() {
         SelectStatementProvider selectStatement = select(count())
                 .from(person, "a")
                 .where(id, isBetween(1).and(4))
@@ -61,7 +61,7 @@ public class SampleWhereClausesTest {
     }
 
     @Test
-    public void complexClause() {
+    void complexClause() {
         SelectStatementProvider selectStatement = select(count())
                 .from(person, "a")
                 .where(id, isGreaterThan(2))

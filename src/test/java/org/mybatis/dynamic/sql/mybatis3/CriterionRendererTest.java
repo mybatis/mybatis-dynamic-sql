@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
 
-public class CriterionRendererTest {
+class CriterionRendererTest {
     @Test
-    public void testAliasWithIgnore() {
+    void testAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         
@@ -56,12 +56,12 @@ public class CriterionRendererTest {
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
-                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+                () -> assertThat(fp.parameters()).hasSize(1)
         );
     }
 
     @Test
-    public void testAliasWithoutIgnore() {
+    void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
@@ -82,12 +82,12 @@ public class CriterionRendererTest {
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}"),
-                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+                () -> assertThat(fp.parameters()).hasSize(1)
         );
     }
 
     @Test
-    public void testTypeHandler() {
+    void testTypeHandler() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Date> column = SqlColumn.withName("id")
                 .withTable(table)
@@ -110,12 +110,12 @@ public class CriterionRendererTest {
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"),
-                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+                () -> assertThat(fp.parameters()).hasSize(1)
         );
     }
 
     @Test
-    public void testTypeHandlerAndAlias() {
+    void testTypeHandlerAndAlias() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER, "foo.Bar");
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
@@ -137,7 +137,7 @@ public class CriterionRendererTest {
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"),
-                () -> assertThat(fp.parameters().size()).isEqualTo(1)
+                () -> assertThat(fp.parameters()).hasSize(1)
         );
     }
 }

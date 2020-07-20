@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 import examples.generated.always.GeneratedAlwaysRecord;
 
-public class GeneratedAlwaysAnnotatedMapperTest {
+class GeneratedAlwaysAnnotatedMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
@@ -54,7 +54,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     private SqlSessionFactory sqlSessionFactory;
     
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/generated/always/CreateGeneratedAlwaysDB.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -71,7 +71,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
     
     @Test
-    public void testSelectByExample() {
+    void testSelectByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
@@ -82,12 +82,12 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             
             List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectStatement);
             
-            assertThat(rows.size()).isEqualTo(1);
+            assertThat(rows).hasSize(1);
         }
     }
 
     @Test
-    public void testFirstNameIn() {
+    void testFirstNameIn() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             
@@ -98,12 +98,12 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             
             List<GeneratedAlwaysRecord> rows = mapper.selectMany(selectStatement);
             
-            assertThat(rows.size()).isEqualTo(2);
+            assertThat(rows).hasSize(2);
         }
     }
 
     @Test
-    public void testInsert() {
+    void testInsert() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -121,7 +121,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
 
     @Test
-    public void testBatchInsertWithList() {
+    void testBatchInsertWithList() {
         try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
@@ -148,7 +148,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
 
     @Test
-    public void testBatchInsertWithArray() {
+    void testBatchInsertWithArray() {
         try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
 
@@ -182,7 +182,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
     
     @Test
-    public void testMultiInsertWithRawMyBatisAnnotations() {
+    void testMultiInsertWithRawMyBatisAnnotations() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
@@ -207,7 +207,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
     
     @Test
-    public void testMultiInsertWithListAndGeneratedKeys() {
+    void testMultiInsertWithListAndGeneratedKeys() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
@@ -242,7 +242,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
 
     @Test
-    public void testMultiInsertWithArray() {
+    void testMultiInsertWithArray() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
 
@@ -277,7 +277,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
     
     @Test
-    public void testMultiInsertWithArrayAndVariousMappings() {
+    void testMultiInsertWithArrayAndVariousMappings() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
 
@@ -339,7 +339,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
 
     @Test
-    public void testInsertSelective() {
+    void testInsertSelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -357,7 +357,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
 
     @Test
-    public void testUpdateByPrimaryKey() {
+    void testUpdateByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -379,7 +379,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
 
     @Test
-    public void testUpdateByExampleSelective() {
+    void testUpdateByExampleSelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -401,7 +401,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
             
             List<GeneratedAlwaysRecord> records = mapper.selectMany(selectStatement);
             assertAll(
-                    () -> assertThat(records.size()).isEqualTo(3),
+                    () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getFullName()).isEqualTo("Fred Jones"),
                     () -> assertThat(records.get(1).getFullName()).isEqualTo("Pebbles Jones"),
                     () -> assertThat(records.get(2).getFullName()).isEqualTo("Wilma Jones")
@@ -410,7 +410,7 @@ public class GeneratedAlwaysAnnotatedMapperTest {
     }
     
     @Test
-    public void testUpdateByExample() {
+    void testUpdateByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();

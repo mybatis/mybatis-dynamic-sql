@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,14 +28,14 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class SubSelectTest {
+class SubSelectTest {
     
-    public static final SqlTable table = SqlTable.of("foo");
-    public static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
-    public static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
+    static final SqlTable table = SqlTable.of("foo");
+    static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
+    static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
 
     @Test
-    public void testInSubSelect() {
+    void testInSubSelect() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
@@ -52,13 +52,13 @@ public class SubSelectTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(3),
-                () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(d)
+                () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3),
+                () -> assertThat(selectStatement.getParameters()).containsEntry("p2", d)
         );
     }
 
     @Test
-    public void testNotInSubSelect() {
+    void testNotInSubSelect() {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
@@ -75,8 +75,8 @@ public class SubSelectTest {
 
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-                () -> assertThat(selectStatement.getParameters().get("p1")).isEqualTo(3),
-                () -> assertThat(selectStatement.getParameters().get("p2")).isEqualTo(d)
+                () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3),
+                () -> assertThat(selectStatement.getParameters()).containsEntry("p2", d)
         );
     }
 }

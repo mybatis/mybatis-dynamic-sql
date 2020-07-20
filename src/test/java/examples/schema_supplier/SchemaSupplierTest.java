@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 
-public class SchemaSupplierTest {
+class SchemaSupplierTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
@@ -45,7 +45,7 @@ public class SchemaSupplierTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/schema_supplier/CreateDB.sql");
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
@@ -62,26 +62,24 @@ public class SchemaSupplierTest {
     }
 
     @Test
-    public void testUnsetSchemaProperty() {
+    void testUnsetSchemaProperty() {
         System.clearProperty(SchemaSupplier.schema_property);
 
         try (SqlSession session = sqlSessionFactory.openSession()) {
             UserMapper mapper = session.getMapper(UserMapper.class);
 
+            User user = new User();
+            user.setId(1);
+            user.setName("Fred");
+            
             assertThrows(PersistenceException.class, () -> {
-                User user = new User();
-                user.setId(1);
-                user.setName("Fred");
-
-                int rows = mapper.insert(user);
-
-                assertThat(rows).isEqualTo(1);
+                mapper.insert(user);
             });
         }
     }
 
     @Test
-    public void testSchemaProperty() {
+    void testSchemaProperty() {
         System.setProperty(SchemaSupplier.schema_property, "schema1");
 
         try (SqlSession session = sqlSessionFactory.openSession()) {
@@ -90,12 +88,12 @@ public class SchemaSupplierTest {
             insertFlintstones(mapper);
             
             List<User> records = mapper.select(SelectDSLCompleter.allRows());
-            assertThat(records.size()).isEqualTo(2);
+            assertThat(records).hasSize(2);
         }
     }
 
     @Test
-    public void testSchemaSwitchingProperty() {
+    void testSchemaSwitchingProperty() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             UserMapper mapper = session.getMapper(UserMapper.class);
 
@@ -110,7 +108,7 @@ public class SchemaSupplierTest {
             insertRubbles(mapper);
             
             records = mapper.select(SelectDSLCompleter.allRows());
-            assertThat(records.size()).isEqualTo(3);
+            assertThat(records).hasSize(3);
         }
     }
 

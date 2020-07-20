@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.insert.render.FieldAndValueCollector;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
-public class InsertStatementTest {
+class InsertStatementTest {
 
     private static final SqlTable foo = SqlTable.of("foo");
     private static final SqlColumn<Integer> id = foo.column("id", JDBCType.INTEGER);
@@ -41,7 +41,7 @@ public class InsertStatementTest {
     private static final SqlColumn<String> occupation = foo.column("occupation", JDBCType.VARCHAR);
     
     @Test
-    public void testFullInsertStatementBuilder() {
+    void testFullInsertStatementBuilder() {
 
         TestRecord record = new TestRecord();
         record.setLastName("jones");
@@ -64,7 +64,7 @@ public class InsertStatementTest {
     }
 
     @Test
-    public void testInsertStatementBuilderWithNulls() {
+    void testInsertStatementBuilderWithNulls() {
 
         TestRecord record = new TestRecord();
         
@@ -83,7 +83,7 @@ public class InsertStatementTest {
     }
 
     @Test
-    public void testInsertStatementBuilderWithConstants() {
+    void testInsertStatementBuilderWithConstants() {
 
         TestRecord record = new TestRecord();
         
@@ -102,7 +102,7 @@ public class InsertStatementTest {
     }
     
     @Test
-    public void testSelectiveInsertStatementBuilder() {
+    void testSelectiveInsertStatementBuilder() {
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
@@ -122,7 +122,7 @@ public class InsertStatementTest {
     }
 
     @Test
-    public void testParallelStream() {
+    void testParallelStream() {
 
         List<FieldAndValue> mappings = new ArrayList<>();
         
@@ -153,7 +153,7 @@ public class InsertStatementTest {
     }
     
     @Test
-    public void testParallelStreamForMultiRecord() {
+    void testParallelStreamForMultiRecord() {
 
         List<FieldAndValue> mappings = new ArrayList<>();
         
@@ -185,41 +185,41 @@ public class InsertStatementTest {
                 .build();
     }
     
-    public static class TestRecord {
+    static class TestRecord {
         private Integer id;
         private String firstName;
         private String lastName;
         private String occupation;
 
-        public Integer getId() {
+        Integer getId() {
             return id;
         }
 
-        public void setId(Integer id) {
+        void setId(Integer id) {
             this.id = id;
         }
 
-        public String getFirstName() {
+        String getFirstName() {
             return firstName;
         }
 
-        public void setFirstName(String firstName) {
+        void setFirstName(String firstName) {
             this.firstName = firstName;
         }
 
-        public String getLastName() {
+        String getLastName() {
             return lastName;
         }
 
-        public void setLastName(String lastName) {
+        void setLastName(String lastName) {
             this.lastName = lastName;
         }
 
-        public String getOccupation() {
+        String getOccupation() {
             return occupation;
         }
 
-        public void setOccupation(String occupation) {
+        void setOccupation(String occupation) {
             this.occupation = occupation;
         }
     }
