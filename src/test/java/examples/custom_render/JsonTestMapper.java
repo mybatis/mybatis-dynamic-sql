@@ -15,10 +15,6 @@
  */
 package examples.custom_render;
 
-import static examples.custom_render.JsonTestDynamicSqlSupport.*;
-
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,17 +26,13 @@ import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 public interface JsonTestMapper {
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
@@ -67,45 +59,9 @@ public interface JsonTestMapper {
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
     int insert(InsertStatementProvider<JsonTestRecord> insertStatement);
     
+    @InsertProvider(type = SqlProviderAdapter.class, method = "generalInsert")
+    int generalInsert(GeneralInsertStatementProvider insertStatement);
+    
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<JsonTestRecord> insertStatement);
-
-    BasicColumn[] selectList =
-            BasicColumn.columnList(id, description, info);
-
-    default int insert(JsonTestRecord record) {
-        return MyBatis3Utils.insert(this::insert, record, jsonTest, c ->
-           c.map(id).toProperty("id")
-           .map(description).toProperty("description")
-           .map(info).toProperty("info")
-        );
-    }
-    
-    default int insertMultiple(JsonTestRecord...records) {
-        return insertMultiple(Arrays.asList(records));
-    }
-
-    default int insertMultiple(Collection<JsonTestRecord> records) {
-        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, jsonTest, c ->
-            c.map(id).toProperty("id")
-            .map(description).toProperty("description")
-            .map(info).toProperty("info")
-        );
-    }
-
-    default List<JsonTestRecord> selectMany(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectList(this::selectMany, selectList, jsonTest, completer);
-    }
-    
-    default Optional<JsonTestRecord> selectOne(SelectDSLCompleter completer) {
-        return MyBatis3Utils.selectOne(this::selectOne, selectList, jsonTest, completer);
-    }
-    
-    default int delete(DeleteDSLCompleter completer) {
-        return MyBatis3Utils.deleteFrom(this::delete, jsonTest, completer);
-    }
-    
-    default int update(UpdateDSLCompleter completer) {
-        return MyBatis3Utils.update(this::update, jsonTest, completer);
-    }
 }
