@@ -4,6 +4,9 @@ jdk:
   - openjdk11
   - openjdk8
 
+services:
+  - docker
+
 after_success:
   - chmod -R 777 ./travis/after_success.sh
   - ./travis/after_success.sh
