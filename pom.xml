@@ -44,6 +44,7 @@
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
     <jacoco.version>0.8.5</jacoco.version>
     <kotlin.code.style>official</kotlin.code.style>
+    <test.containers.version>1.14.3</test.containers.version>
   </properties>
 
   <build>
@@ -250,6 +251,25 @@
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
       <version>2.2</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${test.containers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${test.containers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.14</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

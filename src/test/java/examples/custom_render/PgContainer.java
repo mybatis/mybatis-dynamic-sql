@@ -13,23 +13,21 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package examples.custom_render;
 
-import java.util.Objects;
-import java.util.function.Function;
+import javax.sql.DataSource;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
+import org.testcontainers.containers.PostgreSQLContainer;
 
-public abstract class AbstractColumnMapping {
-    protected SqlColumn<?> column;
-    
-    protected AbstractColumnMapping(SqlColumn<?> column) {
-        this.column = Objects.requireNonNull(column);
+public class PgContainer extends PostgreSQLContainer<PgContainer> {
+
+    public PgContainer(String initScriptPath) {
+        super();
+        withInitScript(initScriptPath);
     }
-    
-    public <R> R mapColumn(Function<SqlColumn<?>, R> mapper) {
-        return mapper.apply(column);
+
+    public DataSource getUnpooledDataSource() {
+        return new UnpooledDataSource(getDriverClassName(), getJdbcUrl(), getUsername(), getPassword());
     }
-    
-    public abstract <R> R accept(ColumnMappingVisitor<R> visitor);
 }

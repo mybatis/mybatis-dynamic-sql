@@ -62,6 +62,7 @@ public class ValuePhraseVisitor implements InsertMappingVisitor<FieldAndValue> {
     }
     
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> renderingStrategy.getFormattedJdbcPlaceholder(column, "record", parameterName); //$NON-NLS-1$
+        return column -> column.renderingStrategy().orElse(renderingStrategy)
+                .getFormattedJdbcPlaceholder(column, "record", parameterName); //$NON-NLS-1$
     }
 }

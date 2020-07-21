@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql;
 
 import java.sql.JDBCType;
 import java.util.Optional;
+
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 /**
  * Describes additional attributes of columns that are necessary for binding the column as a JDBC parameter.
@@ -39,4 +41,8 @@ public interface BindableColumn<T> extends BasicColumn {
     Optional<JDBCType> jdbcType();
     
     Optional<String> typeHandler();
+    
+    default Optional<RenderingStrategy> renderingStrategy() {
+        return Optional.empty();
+    }
 }

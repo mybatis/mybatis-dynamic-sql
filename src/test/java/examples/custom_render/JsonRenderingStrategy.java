@@ -13,23 +13,15 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package examples.custom_render;
 
-import java.util.Objects;
-import java.util.function.Function;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.MyBatis3RenderingStrategy;
 
-import org.mybatis.dynamic.sql.SqlColumn;
+public class JsonRenderingStrategy extends MyBatis3RenderingStrategy {
 
-public abstract class AbstractColumnMapping {
-    protected SqlColumn<?> column;
-    
-    protected AbstractColumnMapping(SqlColumn<?> column) {
-        this.column = Objects.requireNonNull(column);
+    @Override
+    public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
+        return super.getFormattedJdbcPlaceholder(column, prefix, parameterName) + "::json";
     }
-    
-    public <R> R mapColumn(Function<SqlColumn<?>, R> mapper) {
-        return mapper.apply(column);
-    }
-    
-    public abstract <R> R accept(ColumnMappingVisitor<R> visitor);
 }

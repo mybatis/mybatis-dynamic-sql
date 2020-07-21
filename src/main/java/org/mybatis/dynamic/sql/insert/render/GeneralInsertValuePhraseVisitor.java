@@ -69,7 +69,7 @@ public class GeneralInsertValuePhraseVisitor implements GeneralInsertMappingVisi
     }
 
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> renderingStrategy
+        return column -> column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }

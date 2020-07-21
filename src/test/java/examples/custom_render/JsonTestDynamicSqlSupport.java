@@ -13,23 +13,23 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package examples.custom_render;
 
-import java.util.Objects;
-import java.util.function.Function;
+import java.sql.JDBCType;
 
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
-public abstract class AbstractColumnMapping {
-    protected SqlColumn<?> column;
-    
-    protected AbstractColumnMapping(SqlColumn<?> column) {
-        this.column = Objects.requireNonNull(column);
+public class JsonTestDynamicSqlSupport {
+    public static JsonTest jsonTest = new JsonTest();
+    public static SqlColumn<Integer> id = jsonTest.column("id", JDBCType.INTEGER);
+    public static SqlColumn<String> description = jsonTest.column("description", JDBCType.VARCHAR);
+    public static SqlColumn<String> info = jsonTest.column("info", JDBCType.VARCHAR)
+            .withRenderingStrategy(new JsonRenderingStrategy()); 
+
+    public static class JsonTest extends SqlTable {
+        public JsonTest() {
+            super("JsonTest");
+        }
     }
-    
-    public <R> R mapColumn(Function<SqlColumn<?>, R> mapper) {
-        return mapper.apply(column);
-    }
-    
-    public abstract <R> R accept(ColumnMappingVisitor<R> visitor);
 }
