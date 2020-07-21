@@ -9,6 +9,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 ### Added
 
 - Added a general insert statement that does not require a separate record class to hold values for the insert. ([#201](https://github.com/mybatis/mybatis-dynamic-sql/issues/201))
+- Added the capability to specify a rendering strategy on a column to override the defaut rendering strategy for a statement. This will allow certain edge cases where a parameter marker needs to be formatted in a unique way (for example, "::jsonb" needs to be added to parameter markers for JSON fields in PostgreSQL) ([#200](https://github.com/mybatis/mybatis-dynamic-sql/issues/200))
 
 ## Release 1.1.4 - November 23, 2019
 
