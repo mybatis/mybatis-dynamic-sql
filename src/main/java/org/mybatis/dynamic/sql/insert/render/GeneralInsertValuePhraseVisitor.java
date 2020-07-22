@@ -21,6 +21,7 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.GeneralInsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
@@ -59,31 +60,26 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
     
     @Override
-    public <R> Optional<FieldAndValueAndParameters> visit(ValueMapping<R> mapping) {
+    public <T> Optional<FieldAndValueAndParameters> visit(ValueMapping<T> mapping) {
+        return buildFragment(mapping, mapping.value());
+    }
+
+    @Override
+    public <T> Optional<FieldAndValueAndParameters> visit(ValueWhenPresentMapping<T> mapping) {
+        return mapping.value().flatMap(v -> buildFragment(mapping, v));
+    }
+
+    private <T> Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
         String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
         
         return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase(jdbcPlaceholder)
-                .withParameter(mapKey, mapping.value())
+                .withParameter(mapKey, value)
                 .buildOptional();
     }
-
-    @Override
-    public <R> Optional<FieldAndValueAndParameters> visit(ValueWhenPresentMapping<R> mapping) {
-        return mapping.value().flatMap(v -> {
-            String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
-
-            String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
-            
-            return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
-                    .withValuePhrase(jdbcPlaceholder)
-                    .withParameter(mapKey, v)
-                    .buildOptional();
-        });
-    }
-
+    
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
         return column -> column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
