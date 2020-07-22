@@ -13,27 +13,44 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.function;
+package examples.type_conversion;
 
 import java.sql.JDBCType;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
 
-public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>>
-        extends AbstractTypeConvertingFunction<T, T, U> {
+public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToBase64> {
 
-    protected AbstractFunction(BindableColumn<T> column) {
+    protected ToBase64(BindableColumn<byte[]> column) {
         super(column);
     }
-    
+
     @Override
     public Optional<JDBCType> jdbcType() {
-        return column.jdbcType();
+        return Optional.of(JDBCType.VARCHAR);
     }
 
     @Override
     public Optional<String> typeHandler() {
-        return column.typeHandler();
+        return Optional.empty();
+    }
+
+    @Override
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "TO_BASE64(" //$NON-NLS-1$
+                + column.renderWithTableAlias(tableAliasCalculator)
+                + ")"; //$NON-NLS-1$
+    }
+
+    @Override
+    protected ToBase64 copy() {
+        return new ToBase64(column);
+    }
+    
+    public static ToBase64 toBase64(BindableColumn<byte[]> column) {
+        return new ToBase64(column);
     }
 }

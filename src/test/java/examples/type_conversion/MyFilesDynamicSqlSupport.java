@@ -13,27 +13,24 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.function;
+package examples.type_conversion;
 
 import java.sql.JDBCType;
-import java.util.Optional;
 
-import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
-public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>>
-        extends AbstractTypeConvertingFunction<T, T, U> {
+public final class MyFilesDynamicSqlSupport {
+    public static final MyFiles myfiles = new MyFiles();
+    public static final SqlColumn<Integer> fileId = myfiles.fileId;
+    public static final SqlColumn<byte[]> fileContents = myfiles.fileContents;
 
-    protected AbstractFunction(BindableColumn<T> column) {
-        super(column);
-    }
-    
-    @Override
-    public Optional<JDBCType> jdbcType() {
-        return column.jdbcType();
-    }
+    public static final class MyFiles extends SqlTable {
+        public final SqlColumn<Integer> fileId = column("file_id", JDBCType.INTEGER);
+        public final SqlColumn<byte[]> fileContents = column("file_contents", JDBCType.LONGVARBINARY);
 
-    @Override
-    public Optional<String> typeHandler() {
-        return column.typeHandler();
+        public MyFiles() {
+            super("MyFiles");
+        }
     }
 }
