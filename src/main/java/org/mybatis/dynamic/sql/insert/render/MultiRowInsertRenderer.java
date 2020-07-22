@@ -17,7 +17,10 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -34,21 +37,33 @@ public class MultiRowInsertRenderer<T> {
     
     public MultiRowInsertStatementProvider<T> render() {
         MultiRowValuePhraseVisitor visitor = new MultiRowValuePhraseVisitor(renderingStrategy, "records[%s]"); //$NON-NLS-1$
-        FieldAndValueCollector collector = model.mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
-                .collect(FieldAndValueCollector.collect());
+        List<FieldAndValue> fieldsAndValues = model.mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
+                .collect(Collectors.toList());
         
         return new DefaultMultiRowInsertStatementProvider.Builder<T>().withRecords(model.records())
-                .withInsertStatement(calculateInsertStatement(collector))
+                .withInsertStatement(calculateInsertStatement(fieldsAndValues))
                 .build();
     }
     
-    private String calculateInsertStatement(FieldAndValueCollector collector) {
+    private String calculateInsertStatement(List<FieldAndValue> fieldsAndValues) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
-                + spaceBefore(collector.columnsPhrase())
-                + spaceBefore(collector.multiRowInsertValuesPhrase(model.recordCount()));
+                + spaceBefore(MultiRowRenderingUtilities.calculateColumnsPhrase(fieldsAndValues))
+                + spaceBefore(calculateMultiRowInsertValuesPhrase(fieldsAndValues, model.recordCount()));
     }
     
+    private String calculateMultiRowInsertValuesPhrase(List<FieldAndValue> fieldsAndValues, int rowCount) {
+        return IntStream.range(0, rowCount)
+                .mapToObj(i -> toSingleRowOfValues(fieldsAndValues, i))
+                .collect(Collectors.joining(", ", "values ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+    
+    private String toSingleRowOfValues(List<FieldAndValue> fieldsAndValues, int row) {
+        return fieldsAndValues.stream()
+                .map(fmv -> fmv.valuePhrase(row))
+                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
     public static <T> Builder<T> withMultiRowInsertModel(MultiRowInsertModel<T> model) {
         return new Builder<T>().withMultiRowInsertModel(model);
     }

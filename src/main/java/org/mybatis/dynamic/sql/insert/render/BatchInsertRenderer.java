@@ -17,7 +17,9 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -34,21 +36,27 @@ public class BatchInsertRenderer<T> {
     
     public BatchInsert<T> render() {
         MultiRowValuePhraseVisitor visitor = new MultiRowValuePhraseVisitor(renderingStrategy, "record"); //$NON-NLS-1$)
-        FieldAndValueCollector collector = model.mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
-                .collect(FieldAndValueCollector.collect());
+        List<FieldAndValue> fieldsAndValues = model.mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
+                .collect(Collectors.toList());
         
         return BatchInsert.withRecords(model.records())
-                .withInsertStatement(calculateInsertStatement(collector))
+                .withInsertStatement(calculateInsertStatement(fieldsAndValues))
                 .build();
     }
     
-    private String calculateInsertStatement(FieldAndValueCollector collector) {
+    private String calculateInsertStatement(List<FieldAndValue> fieldsAndValues) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
-                + spaceBefore(collector.columnsPhrase())
-                + spaceBefore(collector.valuesPhrase());
+                + spaceBefore(MultiRowRenderingUtilities.calculateColumnsPhrase(fieldsAndValues))
+                + spaceBefore(calculateVluesPhrase(fieldsAndValues));
     }
     
+    private String calculateVluesPhrase(List<FieldAndValue> fieldsAndValues) {
+        return fieldsAndValues.stream()
+                .map(FieldAndValue::valuePhrase)
+                .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
     public static <T> Builder<T> withBatchInsertModel(BatchInsertModel<T> model) {
         return new Builder<T>().withBatchInsertModel(model);
     }

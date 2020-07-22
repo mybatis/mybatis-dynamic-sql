@@ -15,7 +15,9 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
@@ -30,4 +32,11 @@ public class MultiRowRenderingUtilities {
     public static FieldAndValue toFieldAndValue(MultiRowValuePhraseVisitor visitor, AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
+
+    public static String calculateColumnsPhrase(List<FieldAndValue> fieldsAndValues) {
+        return fieldsAndValues.stream()
+                .map(FieldAndValue::fieldName)
+                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
 }
