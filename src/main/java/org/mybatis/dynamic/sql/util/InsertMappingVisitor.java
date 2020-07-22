@@ -22,6 +22,11 @@ public abstract class InsertMappingVisitor<T> implements ColumnMappingVisitor<T>
     }
     
     @Override
+    public <R> T visit(ValueWhenPresentMapping<R> mapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public final T visit(SelectMapping mapping) {
         throw new UnsupportedOperationException();
     }
@@ -29,11 +34,5 @@ public abstract class InsertMappingVisitor<T> implements ColumnMappingVisitor<T>
     @Override
     public final T visit(ColumnToColumnMapping columnMapping) {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <R> T visit(ValueWhenPresentMapping<R> mapping) {
-        // TODO - remove this method
-        return null;
     }
 }

@@ -19,18 +19,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class FieldAndValueAndParametersCollector {
     
-    private List<FieldAndValueAndParameters> fieldsAndValue = new ArrayList<>();
+    private List<Optional<FieldAndValueAndParameters>> fieldsAndValue = new ArrayList<>();
     
     public FieldAndValueAndParametersCollector() {
         super();
     }
     
-    public void add(FieldAndValueAndParameters fieldAndValue) {
+    public void add(Optional<FieldAndValueAndParameters> fieldAndValue) {
         fieldsAndValue.add(fieldAndValue);
     }
     
@@ -41,23 +42,29 @@ public class FieldAndValueAndParametersCollector {
 
     public String columnsPhrase() {
         return fieldsAndValue.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(FieldAndValueAndParameters::fieldName)
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public String valuesPhrase() {
         return fieldsAndValue.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(FieldAndValueAndParameters::valuePhrase)
                 .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     public Map<String, Object> parameters() {
         return fieldsAndValue.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(FieldAndValueAndParameters::parameters)
                 .collect(HashMap::new, HashMap::putAll, HashMap::putAll);
     }
     
-    public static Collector<FieldAndValueAndParameters, FieldAndValueAndParametersCollector,
+    public static Collector<Optional<FieldAndValueAndParameters>, FieldAndValueAndParametersCollector,
             FieldAndValueAndParametersCollector> collect() {
         return Collector.of(FieldAndValueAndParametersCollector::new,
                 FieldAndValueAndParametersCollector::add,

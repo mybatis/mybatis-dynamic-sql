@@ -79,6 +79,15 @@ class ColumnMappingVisitorTest {
     }
 
     @Test
+    void testThatInsertVisitorErrorsForValueWhenPresentMapping() {
+        TestTable table = new TestTable();
+        InsertVisitor tv = new InsertVisitor();
+        ValueWhenPresentMapping<Integer> mapping = ValueWhenPresentMapping.of(table.id, () -> 3);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
     void testThatMultiRowInsertVisitorErrorsForColumnToColumnMapping() {
         TestTable table = new TestTable();
         MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
@@ -154,6 +163,11 @@ class ColumnMappingVisitorTest {
         @Override
         public <R> String visit(ValueMapping<R> mapping) {
             return "Value Mapping";
+        }
+
+        @Override
+        public <R> String visit(ValueWhenPresentMapping<R> mapping) {
+            return "Value When Present Mapping";
         }
     }
 

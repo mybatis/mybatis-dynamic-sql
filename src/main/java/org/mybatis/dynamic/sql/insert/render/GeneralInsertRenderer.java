@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.insert.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
@@ -51,12 +52,12 @@ public class GeneralInsertRenderer {
                 + spaceBefore(collector.valuesPhrase());
     }
 
-    private Function<AbstractColumnMapping, FieldAndValueAndParameters> toFieldAndValue(
+    private Function<AbstractColumnMapping, Optional<FieldAndValueAndParameters>> toFieldAndValue(
             GeneralInsertValuePhraseVisitor visitor) {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
     
-    private FieldAndValueAndParameters toFieldAndValue(GeneralInsertValuePhraseVisitor visitor,
+    private Optional<FieldAndValueAndParameters> toFieldAndValue(GeneralInsertValuePhraseVisitor visitor,
             AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }

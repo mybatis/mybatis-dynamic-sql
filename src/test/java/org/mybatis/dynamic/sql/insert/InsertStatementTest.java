@@ -22,6 +22,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collector;
 
 import org.junit.jupiter.api.Test;
@@ -157,7 +158,7 @@ class InsertStatementTest {
     @Test
     void testParallelStreamWithParameters() {
 
-        List<FieldAndValueAndParameters> mappings = new ArrayList<>();
+        List<Optional<FieldAndValueAndParameters>> mappings = new ArrayList<>();
         
         mappings.add(newFieldAndValueAndParameter(id.name(), "{p1}", "p1", 1));
         mappings.add(newFieldAndValueAndParameter(firstName.name(), "{p2}", "p2", "Fred"));
@@ -180,12 +181,12 @@ class InsertStatementTest {
         );
     }
     
-    private FieldAndValueAndParameters newFieldAndValueAndParameter(String fieldName, String valuePhrase, String parameterName,
+    private Optional<FieldAndValueAndParameters> newFieldAndValueAndParameter(String fieldName, String valuePhrase, String parameterName,
             Object parameterValue) {
         return FieldAndValueAndParameters.withFieldName(fieldName)
                 .withValuePhrase(valuePhrase)
                 .withParameter(parameterName, parameterValue)
-                .build();
+                .buildOptional();
     }
     
     @Test
