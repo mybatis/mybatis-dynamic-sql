@@ -22,7 +22,7 @@ public abstract class InsertMappingVisitor<T> implements ColumnMappingVisitor<T>
     }
     
     @Override
-    public <R> T visit(ValueWhenPresentMapping<R> mapping) {
+    public final <R> T visit(ValueWhenPresentMapping<R> mapping) {
         throw new UnsupportedOperationException();
     }
 

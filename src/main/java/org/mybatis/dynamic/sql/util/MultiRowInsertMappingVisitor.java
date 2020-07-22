@@ -15,27 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public abstract class MultiRowInsertMappingVisitor<T> implements ColumnMappingVisitor<T> {
-    @Override
-    public final <R> T visit(ValueMapping<R> mapping) {
-        throw new UnsupportedOperationException();
-    }
-    
-    @Override
-    public final T visit(SelectMapping mapping) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public final T visit(ColumnToColumnMapping columnMapping) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public final <R> T visit(ValueWhenPresentMapping<R> mapping) {
-        throw new UnsupportedOperationException();
-    }
-
+public abstract class MultiRowInsertMappingVisitor<T> extends InsertMappingVisitor<T> {
     @Override
     public final T visit(PropertyWhenPresentMapping mapping) {
         throw new UnsupportedOperationException();
