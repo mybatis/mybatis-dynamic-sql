@@ -99,7 +99,7 @@ class ColumnMappingVisitorTest {
         }
     }
 
-    private static class GeneralInsertVisitor implements GeneralInsertMappingVisitor<String> {
+    private static class GeneralInsertVisitor extends GeneralInsertMappingVisitor<String> {
         @Override
         public String visit(NullMapping mapping) {
             return "Null Mapping";
@@ -121,7 +121,7 @@ class ColumnMappingVisitorTest {
         }
     }
 
-    private static class InsertVisitor implements InsertMappingVisitor<String> {
+    private static class InsertVisitor extends InsertMappingVisitor<String> {
         @Override
         public String visit(NullMapping mapping) {
             return "Null Mapping";
@@ -143,7 +143,7 @@ class ColumnMappingVisitorTest {
         }
     }
 
-    private static class UpdateVisitor implements UpdateMappingVisitor<String> {
+    private static class UpdateVisitor extends UpdateMappingVisitor<String> {
         @Override
         public String visit(NullMapping mapping) {
             return "Null Mapping";

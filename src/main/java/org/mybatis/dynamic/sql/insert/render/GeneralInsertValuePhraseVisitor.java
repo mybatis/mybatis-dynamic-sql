@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 
-public class GeneralInsertValuePhraseVisitor implements GeneralInsertMappingVisitor<FieldAndValueAndParameters> {
+public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor<FieldAndValueAndParameters> {
     
     protected RenderingStrategy renderingStrategy;
     private AtomicInteger sequence = new AtomicInteger(1);

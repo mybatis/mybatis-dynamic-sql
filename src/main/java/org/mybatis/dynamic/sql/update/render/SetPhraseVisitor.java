@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.UpdateMappingVisitor;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 
-public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParameters> {
+public class SetPhraseVisitor extends UpdateMappingVisitor<FragmentAndParameters> {
     
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;

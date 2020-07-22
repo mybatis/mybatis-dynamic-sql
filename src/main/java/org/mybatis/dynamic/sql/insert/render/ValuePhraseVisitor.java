@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class ValuePhraseVisitor implements InsertMappingVisitor<FieldAndValue> {
+public class ValuePhraseVisitor extends InsertMappingVisitor<FieldAndValue> {
     
     protected RenderingStrategy renderingStrategy;
     
