@@ -38,6 +38,8 @@ public interface ColumnMappingVisitor<T> {
 
     <R> T visit(ValueMapping<R> mapping);
     
+    <R> T visit(ValueWhenPresentMapping<R> mapping);
+    
     T visit(SelectMapping mapping);
 
     T visit(PropertyMapping mapping);

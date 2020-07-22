@@ -13,64 +13,52 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package org.mybatis.dynamic.sql.update.render;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public class FragmentCollector {
-    List<FragmentAndParameters> fragments = new ArrayList<>();
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+
+public class OptionalFragmentCollector {
+    List<Optional<FragmentAndParameters>> fragments = new ArrayList<>();
     
-    FragmentCollector() {
+    OptionalFragmentCollector() {
         super();
     }
     
-    private FragmentCollector(FragmentAndParameters initialFragment) {
-        add(initialFragment);
-    }
-    
-    public void add(FragmentAndParameters fragmentAndParameters) {
+    public void add(Optional<FragmentAndParameters> fragmentAndParameters) {
         fragments.add(fragmentAndParameters);
     }
     
-    public FragmentCollector merge(FragmentCollector other) {
+    public OptionalFragmentCollector merge(OptionalFragmentCollector other) {
         fragments.addAll(other.fragments);
         return this;
     }
     
     public Stream<String> fragments() {
         return fragments.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(FragmentAndParameters::fragment);
     }
     
     public Map<String, Object> parameters() {
         return fragments.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(FragmentAndParameters::parameters)
                 .collect(HashMap::new, HashMap::putAll, HashMap::putAll);
     }
     
-    public boolean hasMultipleFragments() {
-        return fragments.size() > 1;
-    }
-    
-    public boolean isEmpty() {
-        return fragments.isEmpty();
-    }
-    
-    public static Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> collect() {
-        return Collector.of(FragmentCollector::new,
-                FragmentCollector::add,
-                FragmentCollector::merge);
-    }
-
-    public static Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> collect(
-            FragmentAndParameters initialFragment) {
-        return Collector.of(() -> new FragmentCollector(initialFragment),
-                FragmentCollector::add,
-                FragmentCollector::merge);
+    public static Collector<Optional<FragmentAndParameters>, OptionalFragmentCollector, OptionalFragmentCollector> collect() {
+        return Collector.of(OptionalFragmentCollector::new,
+                OptionalFragmentCollector::add,
+                OptionalFragmentCollector::merge);
     }
 }

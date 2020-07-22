@@ -30,4 +30,10 @@ public abstract class InsertMappingVisitor<T> implements ColumnMappingVisitor<T>
     public final T visit(ColumnToColumnMapping columnMapping) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public <R> T visit(ValueWhenPresentMapping<R> mapping) {
+        // TODO - remove this method
+        return null;
+    }
 }

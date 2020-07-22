@@ -28,7 +28,6 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
@@ -44,7 +43,7 @@ public class UpdateRenderer {
     }
     
     public UpdateStatementProvider render() {
-        FragmentCollector fc = calculateColumnMappings();
+        OptionalFragmentCollector fc = calculateColumnMappings();
         
         return updateModel.whereModel()
                 .flatMap(this::renderWhereClause)
@@ -52,14 +51,14 @@ public class UpdateRenderer {
                 .orElseGet(() -> renderWithoutWhereClause(fc));
     }
 
-    private FragmentCollector calculateColumnMappings() {
+    private OptionalFragmentCollector calculateColumnMappings() {
         SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy);
 
         return updateModel.mapColumnMappings(toFragmentAndParameters(visitor))
-                .collect(FragmentCollector.collect());
+                .collect(OptionalFragmentCollector.collect());
     }
     
-    private UpdateStatementProvider renderWithWhereClause(FragmentCollector columnMappings,
+    private UpdateStatementProvider renderWithWhereClause(OptionalFragmentCollector columnMappings,
             WhereClauseProvider whereClause) {
         return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(columnMappings, whereClause))
                 .withParameters(columnMappings.parameters())
@@ -67,24 +66,24 @@ public class UpdateRenderer {
                 .build();
     }
 
-    private String calculateUpdateStatement(FragmentCollector fc, WhereClauseProvider whereClause) {
+    private String calculateUpdateStatement(OptionalFragmentCollector fc, WhereClauseProvider whereClause) {
         return calculateUpdateStatement(fc)
                 + spaceBefore(whereClause.getWhereClause());
     }
     
-    private String calculateUpdateStatement(FragmentCollector fc) {
+    private String calculateUpdateStatement(OptionalFragmentCollector fc) {
         return "update" //$NON-NLS-1$
                 + spaceBefore(updateModel.table().tableNameAtRuntime())
                 + spaceBefore(calculateSetPhrase(fc));
     }
     
-    private UpdateStatementProvider renderWithoutWhereClause(FragmentCollector columnMappings) {
+    private UpdateStatementProvider renderWithoutWhereClause(OptionalFragmentCollector columnMappings) {
         return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(columnMappings))
                 .withParameters(columnMappings.parameters())
                 .build();
     }
 
-    private String calculateSetPhrase(FragmentCollector collector) {
+    private String calculateSetPhrase(OptionalFragmentCollector collector) {
         return collector.fragments()
                 .collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -98,11 +97,11 @@ public class UpdateRenderer {
                 .render();
     }
 
-    private Function<AbstractColumnMapping, FragmentAndParameters> toFragmentAndParameters(SetPhraseVisitor visitor) {
+    private Function<AbstractColumnMapping, Optional<FragmentAndParameters>> toFragmentAndParameters(SetPhraseVisitor visitor) {
         return updateMapping -> toFragmentAndParameters(visitor, updateMapping);
     }
     
-    private FragmentAndParameters toFragmentAndParameters(SetPhraseVisitor visitor,
+    private Optional<FragmentAndParameters> toFragmentAndParameters(SetPhraseVisitor visitor,
             AbstractColumnMapping updateMapping) {
         return updateMapping.accept(visitor);
     }

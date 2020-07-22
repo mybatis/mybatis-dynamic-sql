@@ -13,30 +13,33 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package org.mybatis.dynamic.sql.update.render;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-class FragmentCollectorTest {
+class OptionalFragmentCollectorTest {
 
     @Test
     void testWhereFragmentCollectorMerge() {
-        FragmentCollector fc1 = new FragmentCollector();
+        OptionalFragmentCollector fc1 = new OptionalFragmentCollector();
         FragmentAndParameters fp1 = FragmentAndParameters.withFragment(":p1")
                 .withParameter("p1", 1)
                 .build();
-        fc1.add(fp1);
+        fc1.add(Optional.of(fp1));
 
-        FragmentCollector fc2 = new FragmentCollector();
+        OptionalFragmentCollector fc2 = new OptionalFragmentCollector();
+        fc2.add(Optional.empty());
         FragmentAndParameters fp2 = FragmentAndParameters.withFragment(":p2")
                 .withParameter("p2", 2)
                 .build();
-        fc2.add(fp2);
+        fc2.add(Optional.of(fp2));
 
         fc1.merge(fc2);
         

@@ -79,6 +79,42 @@ class ColumnMappingVisitorTest {
     }
 
     @Test
+    void testThatMultiRowInsertVisitorErrorsForColumnToColumnMapping() {
+        TestTable table = new TestTable();
+        MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
+        ColumnToColumnMapping mapping = ColumnToColumnMapping.of(table.id, table.description);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
+    void testThatMultiRowInsertVisitorErrorsForSelectMapping() {
+        TestTable table = new TestTable();
+        MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
+        SelectMapping mapping = SelectMapping.of(table.id, SqlBuilder.select(table.id).from(table));
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
+    void testThatMultiRowInsertVisitorErrorsForValueMapping() {
+        TestTable table = new TestTable();
+        MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
+        ValueMapping<Integer> mapping = ValueMapping.of(table.id, () -> 3);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
+    void testThatMultiRowInsertVisitorErrorsForValueWhenPresentMapping() {
+        TestTable table = new TestTable();
+        MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
+        ValueWhenPresentMapping<Integer> mapping = ValueWhenPresentMapping.of(table.id, () -> 3);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
     void testThatUpdateVisitorErrorsForPropertyMapping() {
         TestTable table = new TestTable();
         UpdateVisitor tv = new UpdateVisitor();
@@ -161,10 +197,14 @@ class ColumnMappingVisitorTest {
 
         @Override
         public <R> String visit(ValueMapping<R> mapping) {
-            // TODO Auto-generated method stub
-            return null;
+            return "Value Mapping";
         }
 
+        @Override
+        public <R> String visit(ValueWhenPresentMapping<R> mapping) {
+            return "Value When Present Mapping";
+        }
+        
         @Override
         public String visit(SelectMapping mapping) {
             return "Select Mapping";
@@ -174,5 +214,29 @@ class ColumnMappingVisitorTest {
         public String visit(ColumnToColumnMapping columnMapping) {
             return "Column to Column Mapping";
         }
+    }
+    
+    private static class MultiRowInsertVisitor extends MultiRowInsertMappingVisitor<String> {
+
+        @Override
+        public String visit(NullMapping mapping) {
+            return "Null Mapping";
+        }
+
+        @Override
+        public String visit(ConstantMapping mapping) {
+            return "Constant Mapping";
+        }
+
+        @Override
+        public String visit(StringConstantMapping mapping) {
+            return "String Constant Mapping";
+        }
+
+        @Override
+        public String visit(PropertyMapping mapping) {
+            return "Property Mapping";
+        }
+        
     }
 }
