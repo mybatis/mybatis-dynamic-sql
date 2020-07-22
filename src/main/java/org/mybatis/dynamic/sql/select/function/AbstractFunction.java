@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,31 +16,17 @@
 package org.mybatis.dynamic.sql.select.function;
 
 import java.sql.JDBCType;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 
-public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>> implements BindableColumn<T> {
-    protected BindableColumn<T> column;
-    protected String alias;
+public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>>
+        extends AbstractTypeConvertingFunction<T, T, U> {
 
     protected AbstractFunction(BindableColumn<T> column) {
-        this.column = Objects.requireNonNull(column);
+        super(column);
     }
     
-    @Override
-    public Optional<String> alias() {
-        return Optional.ofNullable(alias);
-    }
-
-    @Override
-    public U as(String alias) {
-        U newThing = copy();
-        newThing.alias = alias;
-        return newThing;
-    }
-
     @Override
     public Optional<JDBCType> jdbcType() {
         return column.jdbcType();
@@ -50,6 +36,4 @@ public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>> impl
     public Optional<String> typeHandler() {
         return column.typeHandler();
     }
-    
-    protected abstract U copy();
 }
