@@ -13,21 +13,21 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.insert.render;
+package org.mybatis.dynamic.sql.util;
 
-import java.util.function.Function;
-
-import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
-
-public class MultiRowRenderingUtilities {
-    
-    private MultiRowRenderingUtilities() {}
-    
-    public static Function<AbstractColumnMapping, FieldAndValue> toFieldAndValue(MultiRowValuePhraseVisitor visitor) {
-        return insertMapping -> MultiRowRenderingUtilities.toFieldAndValue(visitor, insertMapping);
+public abstract class MultiRowInsertMappingVisitor<T> implements ColumnMappingVisitor<T> {
+    @Override
+    public final <R> T visit(ValueMapping<R> mapping) {
+        throw new UnsupportedOperationException();
     }
     
-    public static FieldAndValue toFieldAndValue(MultiRowValuePhraseVisitor visitor, AbstractColumnMapping insertMapping) {
-        return insertMapping.accept(visitor);
+    @Override
+    public final T visit(SelectMapping mapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public final T visit(ColumnToColumnMapping columnMapping) {
+        throw new UnsupportedOperationException();
     }
 }
