@@ -17,8 +17,13 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -36,31 +41,55 @@ public class GeneralInsertRenderer {
     
     public GeneralInsertStatementProvider render() {
         GeneralInsertValuePhraseVisitor visitor = new GeneralInsertValuePhraseVisitor(renderingStrategy);
-        FieldAndValueAndParametersCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
-                .collect(FieldAndValueAndParametersCollector.collect());
+        List<Optional<FieldAndValueAndParameters>> fieldsAndValues = model.mapColumnMappings(toFieldAndValue(visitor))
+                .collect(Collectors.toList());
         
-        return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(collector))
-                .withParameters(collector.parameters())
+        return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(fieldsAndValues))
+                .withParameters(calculateParameters(fieldsAndValues))
                 .build();
     }
 
-    private String calculateInsertStatement(FieldAndValueAndParametersCollector collector) {
+    private String calculateInsertStatement(List<Optional<FieldAndValueAndParameters>> fieldsAndValues) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
-                + spaceBefore(collector.columnsPhrase())
-                + spaceBefore(collector.valuesPhrase());
+                + spaceBefore(calculateColumnsPhrase(fieldsAndValues))
+                + spaceBefore(calculateValuesPhrase(fieldsAndValues));
     }
 
-    private Function<AbstractColumnMapping, FieldAndValueAndParameters> toFieldAndValue(
+    private Function<AbstractColumnMapping, Optional<FieldAndValueAndParameters>> toFieldAndValue(
             GeneralInsertValuePhraseVisitor visitor) {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
     
-    private FieldAndValueAndParameters toFieldAndValue(GeneralInsertValuePhraseVisitor visitor,
+    private Optional<FieldAndValueAndParameters> toFieldAndValue(GeneralInsertValuePhraseVisitor visitor,
             AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
     
+    private String calculateColumnsPhrase(List<Optional<FieldAndValueAndParameters>> fieldsAndValues) {
+        return fieldsAndValues.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(FieldAndValueAndParameters::fieldName)
+                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    private String calculateValuesPhrase(List<Optional<FieldAndValueAndParameters>> fieldsAndValues) {
+        return fieldsAndValues.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(FieldAndValueAndParameters::valuePhrase)
+                .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+    
+    private Map<String, Object> calculateParameters(List<Optional<FieldAndValueAndParameters>> fieldsAndValues) {
+        return fieldsAndValues.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(FieldAndValueAndParameters::parameters)
+                .collect(HashMap::new, HashMap::putAll, HashMap::putAll);
+    }
+
     public static Builder withInsertModel(GeneralInsertModel model) {
         return new Builder().withInsertModel(model);
     }

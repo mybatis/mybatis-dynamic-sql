@@ -16,7 +16,9 @@
 package org.mybatis.dynamic.sql.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.assertj.core.api.Assertions.entry;
+
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,14 +39,8 @@ class FragmentCollectorTest {
         fc2.add(fp2);
 
         fc1.merge(fc2);
-
-        assertAll(
-                () -> assertThat(fc1.fragments).hasSize(2),
-                () -> assertThat(fc1.fragments.get(0)).isEqualTo(":p1"),
-                () -> assertThat(fc1.fragments.get(1)).isEqualTo(":p2"),
-                () -> assertThat(fc1.parameters).hasSize(2),
-                () -> assertThat(fc1.parameters).containsEntry("p1", 1),
-                () -> assertThat(fc1.parameters).containsEntry("p2", 2)
-        );
+        
+        assertThat(fc1.fragments().collect(Collectors.toList())).containsExactly(":p1", ":p2");
+        assertThat(fc1.parameters()).containsExactly(entry("p1", 1), entry("p2", 2));
     }
 }

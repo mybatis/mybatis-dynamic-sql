@@ -22,7 +22,7 @@ package org.mybatis.dynamic.sql.util;
  * an insert - so the ColumnToColumnMapping is only supported on update statements.
  * 
  * <p>Rather than implement this interface directly, we recommend implementing one of the derived
- * interfaces. The derived interfaces encapsulate the rules about which mappings are applicable to the
+ * classes. The derived classes encapsulate the rules about which mappings are applicable to the
  * different types of statements.
  * 
  * @author Jeff Butler
@@ -38,9 +38,13 @@ public interface ColumnMappingVisitor<T> {
 
     <R> T visit(ValueMapping<R> mapping);
     
+    <R> T visit(ValueWhenPresentMapping<R> mapping);
+    
     T visit(SelectMapping mapping);
 
     T visit(PropertyMapping mapping);
+
+    T visit(PropertyWhenPresentMapping mapping);
 
     T visit(ColumnToColumnMapping columnMapping);
 }

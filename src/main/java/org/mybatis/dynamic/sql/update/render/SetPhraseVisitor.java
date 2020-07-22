@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.update.render;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -24,6 +25,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.ColumnToColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -32,8 +34,9 @@ import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.UpdateMappingVisitor;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
-public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParameters> {
+public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndParameters>> {
     
     private AtomicInteger sequence;
     private RenderingStrategy renderingStrategy;
@@ -44,31 +47,40 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
     }
 
     @Override
-    public FragmentAndParameters visit(NullMapping mapping) {
+    public Optional<FragmentAndParameters> visit(NullMapping mapping) {
         return FragmentAndParameters.withFragment(mapping.mapColumn(SqlColumn::name) + " = null") //$NON-NLS-1$
-                .build();
+                .buildOptional();
     }
 
     @Override
-    public FragmentAndParameters visit(ConstantMapping mapping) {
+    public Optional<FragmentAndParameters> visit(ConstantMapping mapping) {
         String fragment = mapping.mapColumn(SqlColumn::name) + " = " + mapping.constant(); //$NON-NLS-1$
         return FragmentAndParameters.withFragment(fragment)
-                .build();
+                .buildOptional();
     }
 
     @Override
-    public FragmentAndParameters visit(StringConstantMapping mapping) {
+    public Optional<FragmentAndParameters> visit(StringConstantMapping mapping) {
         String fragment = mapping.mapColumn(SqlColumn::name)
                 + " = '" //$NON-NLS-1$
                 + mapping.constant()
                 + "'"; //$NON-NLS-1$
         
         return FragmentAndParameters.withFragment(fragment)
-                .build();
+                .buildOptional();
     }
     
     @Override
-    public <T> FragmentAndParameters visit(ValueMapping<T> mapping) {
+    public <T> Optional<FragmentAndParameters> visit(ValueMapping<T> mapping) {
+        return buildFragment(mapping, mapping.value());
+    }
+
+    @Override
+    public <T> Optional<FragmentAndParameters> visit(ValueWhenPresentMapping<T> mapping) {
+        return mapping.value().flatMap(v -> buildFragment(mapping, v));
+    }
+    
+    private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
         String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
@@ -77,12 +89,17 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
                 + jdbcPlaceholder;
         
         return FragmentAndParameters.withFragment(setPhrase)
-                .withParameter(mapKey, mapping.value())
-                .build();
+                .withParameter(mapKey, value)
+                .buildOptional();
+    }
+    
+    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
+        return column -> column.renderingStrategy().orElse(renderingStrategy)
+                .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 
     @Override
-    public FragmentAndParameters visit(SelectMapping mapping) {
+    public Optional<FragmentAndParameters> visit(SelectMapping mapping) {
         SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(mapping.selectModel())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
@@ -96,21 +113,16 @@ public class SetPhraseVisitor implements UpdateMappingVisitor<FragmentAndParamet
         
         return FragmentAndParameters.withFragment(fragment)
                 .withParameters(selectStatement.getParameters())
-                .build();
+                .buildOptional();
     }
 
     @Override
-    public FragmentAndParameters visit(ColumnToColumnMapping mapping) {
+    public Optional<FragmentAndParameters> visit(ColumnToColumnMapping mapping) {
         String setPhrase = mapping.mapColumn(SqlColumn::name)
                 + " = "  //$NON-NLS-1$
                 + mapping.rightColumn().renderWithTableAlias(TableAliasCalculator.empty());
         
         return FragmentAndParameters.withFragment(setPhrase)
-                .build();
-    }
-    
-    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> column.renderingStrategy().orElse(renderingStrategy)
-                .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
+                .buildOptional();
     }
 }

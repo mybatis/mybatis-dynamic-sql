@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.WhereApplier;
@@ -159,9 +160,7 @@ public class UpdateDSL<R> implements Buildable<R> {
         }
 
         public UpdateDSL<R> equalToWhenPresent(Supplier<T> valueSupplier) {
-            if (valueSupplier.get() != null) {
-                columnMappings.add(ValueMapping.of(column, valueSupplier));
-            }
+            columnMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));
             return UpdateDSL.this;
         }
     }

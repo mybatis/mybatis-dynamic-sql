@@ -16,21 +16,22 @@
 package org.mybatis.dynamic.sql.util;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ValueMapping<T> extends AbstractColumnMapping {
+public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
 
     private Supplier<T> valueSupplier;
     
-    private ValueMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
+    private ValueWhenPresentMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
         super(column);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
     }
     
-    public T value() {
-        return valueSupplier.get();
+    public Optional<T> value() {
+        return Optional.ofNullable(valueSupplier.get());
     }
 
     @Override
@@ -38,7 +39,7 @@ public class ValueMapping<T> extends AbstractColumnMapping {
         return visitor.visit(this);
     }
 
-    public static <T> ValueMapping<T> of(SqlColumn<T> column, Supplier<T> valueSupplier) {
-        return new ValueMapping<>(column, valueSupplier);
+    public static <T> ValueWhenPresentMapping<T> of(SqlColumn<T> column, Supplier<T> valueSupplier) {
+        return new ValueWhenPresentMapping<>(column, valueSupplier);
     }
 }

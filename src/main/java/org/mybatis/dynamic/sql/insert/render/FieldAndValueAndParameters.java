@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.insert.render;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class FieldAndValueAndParameters {
     private String fieldName;
@@ -68,6 +69,10 @@ public class FieldAndValueAndParameters {
         
         public FieldAndValueAndParameters build() {
             return new FieldAndValueAndParameters(this);
+        }
+        
+        public Optional<FieldAndValueAndParameters> buildOptional() {
+            return Optional.of(build());
         }
     }
 }

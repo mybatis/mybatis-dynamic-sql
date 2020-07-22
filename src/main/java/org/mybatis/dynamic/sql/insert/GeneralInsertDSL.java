@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertDSL {
     private List<AbstractColumnMapping> insertMappings = new ArrayList<>();
@@ -88,9 +89,7 @@ public class GeneralInsertDSL {
         }
 
         public GeneralInsertDSL toValueWhenPresent(Supplier<T> valueSupplier) {
-            if (valueSupplier.get() != null) {
-                insertMappings.add(ValueMapping.of(column, valueSupplier));
-            }
+            insertMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
         }
     }

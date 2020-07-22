@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public class FragmentCollector {
-    List<String> fragments = new ArrayList<>();
-    Map<String, Object> parameters = new HashMap<>();
+    List<FragmentAndParameters> fragments = new ArrayList<>();
     
     FragmentCollector() {
         super();
@@ -35,22 +34,23 @@ public class FragmentCollector {
     }
     
     public void add(FragmentAndParameters fragmentAndParameters) {
-        fragments.add(fragmentAndParameters.fragment());
-        parameters.putAll(fragmentAndParameters.parameters());
+        fragments.add(fragmentAndParameters);
     }
     
     public FragmentCollector merge(FragmentCollector other) {
         fragments.addAll(other.fragments);
-        parameters.putAll(other.parameters);
         return this;
     }
     
     public Stream<String> fragments() {
-        return fragments.stream();
+        return fragments.stream()
+                .map(FragmentAndParameters::fragment);
     }
     
     public Map<String, Object> parameters() {
-        return parameters;
+        return fragments.stream()
+                .map(FragmentAndParameters::parameters)
+                .collect(HashMap::new, HashMap::putAll, HashMap::putAll);
     }
     
     public boolean hasMultipleFragments() {

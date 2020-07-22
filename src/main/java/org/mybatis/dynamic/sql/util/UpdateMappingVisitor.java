@@ -15,9 +15,14 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public interface UpdateMappingVisitor<T> extends ColumnMappingVisitor<T> {
+public abstract class UpdateMappingVisitor<T> implements ColumnMappingVisitor<T> {
     @Override
-    default T visit(PropertyMapping mapping) {
+    public final T visit(PropertyMapping mapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public final T visit(PropertyWhenPresentMapping mapping) {
         throw new UnsupportedOperationException();
     }
 }

@@ -19,24 +19,52 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.MultiRowInsertMappingVisitor;
+import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
+import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class MultiRowValuePhraseVisitor extends ValuePhraseVisitor {
+public class MultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<FieldAndValue> {
 
-    public MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy) {
-        super(renderingStrategy);
+    private RenderingStrategy renderingStrategy;
+    private String prefix;
+
+    public MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
+        this.renderingStrategy = renderingStrategy;
+        this.prefix = prefix;
     }
 
     @Override
-    public FieldAndValue visit(PropertyMapping mapping) {
+    public FieldAndValue visit(NullMapping mapping) {
         return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
-                .withValuePhrase(mapping.mapColumn(toMultiRowJdbcPlaceholder(mapping.property())))
+                .withValuePhrase("null") //$NON-NLS-1$
                 .build();
     }
 
-    private Function<SqlColumn<?>, String> toMultiRowJdbcPlaceholder(String parameterName) {
+    @Override
+    public FieldAndValue visit(ConstantMapping mapping) {
+        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+                .withValuePhrase(mapping.constant())
+                .build();
+    }
+
+    @Override
+    public FieldAndValue visit(StringConstantMapping mapping) {
+        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+                .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
+                .build();
+    }
+    
+    @Override
+    public FieldAndValue visit(PropertyMapping mapping) {
+        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+                .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
+                .build();
+    }
+
+    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
         return column -> column.renderingStrategy().orElse(renderingStrategy)
-                .getFormattedJdbcPlaceholder(column, "records[%s]", //$NON-NLS-1$
-                        parameterName);
+                .getFormattedJdbcPlaceholder(column, prefix, parameterName);
     }
 }

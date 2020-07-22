@@ -16,21 +16,13 @@
 package org.mybatis.dynamic.sql.insert;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 
 import java.sql.JDBCType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collector;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.FieldAndValue;
-import org.mybatis.dynamic.sql.insert.render.FieldAndValueAndParameters;
-import org.mybatis.dynamic.sql.insert.render.FieldAndValueAndParametersCollector;
-import org.mybatis.dynamic.sql.insert.render.FieldAndValueCollector;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
@@ -123,104 +115,6 @@ class InsertStatementTest {
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
     }
 
-    @Test
-    void testParallelStream() {
-
-        List<FieldAndValue> mappings = new ArrayList<>();
-        
-        mappings.add(newFieldAndValue(id.name(), "{record.id}"));
-        mappings.add(newFieldAndValue(firstName.name(), "{record.firstName}"));
-        mappings.add(newFieldAndValue(lastName.name(), "{record.lastName}"));
-        mappings.add(newFieldAndValue(occupation.name(), "{record.occupation}"));
-        
-        FieldAndValueCollector collector = 
-                mappings.parallelStream().collect(Collector.of(
-                        FieldAndValueCollector::new,
-                        FieldAndValueCollector::add,
-                        FieldAndValueCollector::merge));
-                
-        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        String expectedValuesPhrase = "values ({record.id}, {record.firstName}, {record.lastName}, {record.occupation})";
-        
-        assertAll(
-                () -> assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase),
-                () -> assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase)
-        );
-    }
-    
-    private FieldAndValue newFieldAndValue(String fieldName, String valuePhrase) {
-        return FieldAndValue.withFieldName(fieldName)
-                .withValuePhrase(valuePhrase)
-                .build();
-    }
-    
-    @Test
-    void testParallelStreamWithParameters() {
-
-        List<FieldAndValueAndParameters> mappings = new ArrayList<>();
-        
-        mappings.add(newFieldAndValueAndParameter(id.name(), "{p1}", "p1", 1));
-        mappings.add(newFieldAndValueAndParameter(firstName.name(), "{p2}", "p2", "Fred"));
-        mappings.add(newFieldAndValueAndParameter(lastName.name(), "{p3}", "p3", "Flintstone"));
-        mappings.add(newFieldAndValueAndParameter(occupation.name(), "{p4}", "p4", "Driver"));
-        
-        FieldAndValueAndParametersCollector collector = 
-                mappings.parallelStream().collect(Collector.of(
-                        FieldAndValueAndParametersCollector::new,
-                        FieldAndValueAndParametersCollector::add,
-                        FieldAndValueAndParametersCollector::merge));
-                
-        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        String expectedValuesPhrase = "values ({p1}, {p2}, {p3}, {p4})";
-        
-        assertAll(
-                () -> assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase),
-                () -> assertThat(collector.valuesPhrase()).isEqualTo(expectedValuesPhrase),
-                () -> assertThat(collector.parameters()).hasSize(4)
-        );
-    }
-    
-    private FieldAndValueAndParameters newFieldAndValueAndParameter(String fieldName, String valuePhrase, String parameterName,
-            Object parameterValue) {
-        return FieldAndValueAndParameters.withFieldName(fieldName)
-                .withValuePhrase(valuePhrase)
-                .withParameter(parameterName, parameterValue)
-                .build();
-    }
-    
-    @Test
-    void testParallelStreamForMultiRecord() {
-
-        List<FieldAndValue> mappings = new ArrayList<>();
-        
-        mappings.add(newFieldAndValues(id.name(), "#{records[%s].id}"));
-        mappings.add(newFieldAndValues(firstName.name(), "#{records[%s].firstName}"));
-        mappings.add(newFieldAndValues(lastName.name(), "#{records[%s].lastName}"));
-        mappings.add(newFieldAndValues(occupation.name(), "#{records[%s].occupation}"));
-        
-        FieldAndValueCollector collector = 
-                mappings.parallelStream().collect(Collector.of(
-                        FieldAndValueCollector::new,
-                        FieldAndValueCollector::add,
-                        FieldAndValueCollector::merge));
-                
-        String expectedColumnsPhrase = "(id, first_name, last_name, occupation)";
-        String expectedValuesPhrase = "values"
-                + " (#{records[0].id}, #{records[0].firstName}, #{records[0].lastName}, #{records[0].occupation}),"
-                + " (#{records[1].id}, #{records[1].firstName}, #{records[1].lastName}, #{records[1].occupation})";
-        
-        assertAll(
-                () -> assertThat(collector.columnsPhrase()).isEqualTo(expectedColumnsPhrase),
-                () -> assertThat(collector.multiRowInsertValuesPhrase(2)).isEqualTo(expectedValuesPhrase)
-        );
-    }
-    
-    private FieldAndValue newFieldAndValues(String fieldName, String valuePhrase) {
-        return FieldAndValue.withFieldName(fieldName)
-                .withValuePhrase(valuePhrase)
-                .build();
-    }
-    
     static class TestRecord {
         private Integer id;
         private String firstName;

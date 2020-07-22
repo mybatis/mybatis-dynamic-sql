@@ -20,25 +20,24 @@ import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ValueMapping<T> extends AbstractColumnMapping {
-
-    private Supplier<T> valueSupplier;
+public class PropertyWhenPresentMapping extends PropertyMapping {
+    private Supplier<?> valueSupplier;
     
-    private ValueMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
-        super(column);
+    private PropertyWhenPresentMapping(SqlColumn<?> column, String property, Supplier<?> valueSupplier) {
+        super(column, property);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
     }
     
-    public T value() {
-        return valueSupplier.get();
+    public boolean shouldRender() {
+        return valueSupplier.get() != null;
     }
 
     @Override
     public <R> R accept(ColumnMappingVisitor<R> visitor) {
         return visitor.visit(this);
     }
-
-    public static <T> ValueMapping<T> of(SqlColumn<T> column, Supplier<T> valueSupplier) {
-        return new ValueMapping<>(column, valueSupplier);
+    
+    public static PropertyWhenPresentMapping of(SqlColumn<?> column, String property, Supplier<?> valueSupplier) {
+        return new PropertyWhenPresentMapping(column, property, valueSupplier);
     }
 }
