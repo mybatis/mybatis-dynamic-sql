@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public interface StringUtilities {
 
     static String spaceAfter(Optional<String> in) {
-        return in.map(s -> s + " ") //$NON-NLS-1$
+        return in.map(StringUtilities::spaceAfter)
                 .orElse(""); //$NON-NLS-1$
     }
 
@@ -31,7 +31,7 @@ public interface StringUtilities {
     }
     
     static String spaceBefore(Optional<String> in) {
-        return in.map(s -> " " + s) //$NON-NLS-1$
+        return in.map(StringUtilities::spaceBefore)
                 .orElse(""); //$NON-NLS-1$
     }
 

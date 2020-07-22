@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,13 +15,16 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.Objects;
+
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class PropertyMapping extends AbstractColumnMapping {
     private String property;
     
-    private PropertyMapping(SqlColumn<?> column) {
+    protected PropertyMapping(SqlColumn<?> column, String property) {
         super(column);
+        this.property = Objects.requireNonNull(property);
     }
     
     public String property() {
@@ -34,8 +37,6 @@ public class PropertyMapping extends AbstractColumnMapping {
     }
     
     public static PropertyMapping of(SqlColumn<?> column, String property) {
-        PropertyMapping mapping = new PropertyMapping(column);
-        mapping.property = property;
-        return mapping;
+        return new PropertyMapping(column, property);
     }
 }

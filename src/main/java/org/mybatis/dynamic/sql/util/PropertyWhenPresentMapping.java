@@ -20,18 +20,12 @@ import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class PropertyWhenPresentMapping extends AbstractColumnMapping {
-    private String property;
+public class PropertyWhenPresentMapping extends PropertyMapping {
     private Supplier<?> valueSupplier;
     
     private PropertyWhenPresentMapping(SqlColumn<?> column, String property, Supplier<?> valueSupplier) {
-        super(column);
-        this.property = Objects.requireNonNull(property);
+        super(column, property);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
-    }
-    
-    public String property() {
-        return property;
     }
     
     public boolean shouldRender() {

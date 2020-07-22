@@ -66,9 +66,7 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
     @Override
     public Optional<FieldAndValue> visit(PropertyWhenPresentMapping mapping) {
         if (mapping.shouldRender()) {
-            return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
-                    .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
-                    .buildOptional();
+            return visit((PropertyMapping) mapping);
         } else {
             return Optional.empty();
         }
