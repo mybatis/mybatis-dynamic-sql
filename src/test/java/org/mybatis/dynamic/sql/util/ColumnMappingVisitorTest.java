@@ -52,6 +52,15 @@ class ColumnMappingVisitorTest {
     }
     
     @Test
+    void testThatGeneralInsertVisitorErrorsForPropertyWhenPresentMapping() {
+        TestTable table = new TestTable();
+        GeneralInsertVisitor tv = new GeneralInsertVisitor();
+        PropertyWhenPresentMapping mapping = PropertyWhenPresentMapping.of(table.id, "id", () -> 3);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+    
+    @Test
     void testThatInsertVisitorErrorsForColumnToColumnMapping() {
         TestTable table = new TestTable();
         InsertVisitor tv = new InsertVisitor();
@@ -124,10 +133,28 @@ class ColumnMappingVisitorTest {
     }
 
     @Test
+    void testThatMultiRowInsertVisitorErrorsForPropertyWhenPresentMapping() {
+        TestTable table = new TestTable();
+        MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
+        PropertyWhenPresentMapping mapping = PropertyWhenPresentMapping.of(table.id, "id", () -> 3);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
     void testThatUpdateVisitorErrorsForPropertyMapping() {
         TestTable table = new TestTable();
         UpdateVisitor tv = new UpdateVisitor();
         PropertyMapping mapping = PropertyMapping.of(table.id, "id");
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+    
+    @Test
+    void testThatUpdateVisitorErrorsForPropertyWhenPresentMapping() {
+        TestTable table = new TestTable();
+        UpdateVisitor tv = new UpdateVisitor();
+        PropertyWhenPresentMapping mapping = PropertyWhenPresentMapping.of(table.id, "id", () -> 3);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
     }
@@ -190,6 +217,11 @@ class ColumnMappingVisitorTest {
         @Override
         public String visit(PropertyMapping mapping) {
             return "Property Mapping";
+        }
+
+        @Override
+        public String visit(PropertyWhenPresentMapping mapping) {
+            return "Property Whn Present Mapping";
         }
     }
 

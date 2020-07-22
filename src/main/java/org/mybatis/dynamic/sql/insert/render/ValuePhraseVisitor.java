@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -23,9 +24,10 @@ import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.InsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
+import org.mybatis.dynamic.sql.util.PropertyWhenPresentMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class ValuePhraseVisitor extends InsertMappingVisitor<FieldAndValue> {
+public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndValue>> {
     
     protected RenderingStrategy renderingStrategy;
     
@@ -34,33 +36,44 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<FieldAndValue> {
     }
 
     @Override
-    public FieldAndValue visit(NullMapping mapping) {
+    public Optional<FieldAndValue> visit(NullMapping mapping) {
         return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("null") //$NON-NLS-1$
-                .build();
+                .buildOptional();
     }
 
     @Override
-    public FieldAndValue visit(ConstantMapping mapping) {
+    public Optional<FieldAndValue> visit(ConstantMapping mapping) {
         return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase(mapping.constant())
-                .build();
+                .buildOptional();
     }
 
     @Override
-    public FieldAndValue visit(StringConstantMapping mapping) {
+    public Optional<FieldAndValue> visit(StringConstantMapping mapping) {
         return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
-                .build();
+                .buildOptional();
     }
     
     @Override
-    public FieldAndValue visit(PropertyMapping mapping) {
+    public Optional<FieldAndValue> visit(PropertyMapping mapping) {
         return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
-                .build();
+                .buildOptional();
     }
     
+    @Override
+    public Optional<FieldAndValue> visit(PropertyWhenPresentMapping mapping) {
+        if (mapping.shouldRender()) {
+            return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+                    .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
+                    .buildOptional();
+        } else {
+            return Optional.empty();
+        }
+    }
+
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
         return column -> column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, "record", parameterName); //$NON-NLS-1$

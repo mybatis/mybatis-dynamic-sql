@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,8 +17,11 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -36,26 +39,43 @@ public class InsertRenderer<T> {
     
     public InsertStatementProvider<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
-        FieldAndValueCollector collector = model.mapColumnMappings(toFieldAndValue(visitor))
-                .collect(FieldAndValueCollector.collect());
+        
+        List<Optional<FieldAndValue>> fieldsAndValues = model.mapColumnMappings(toFieldAndValue(visitor))
+                .collect(Collectors.toList());
         
         return DefaultInsertStatementProvider.withRecord(model.record())
-                .withInsertStatement(calculateInsertStatement(collector))
+                .withInsertStatement(calculateInsertStatement(fieldsAndValues))
                 .build();
     }
 
-    private String calculateInsertStatement(FieldAndValueCollector collector) {
+    private String calculateInsertStatement(List<Optional<FieldAndValue>> fieldsAndValues) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
-                + spaceBefore(collector.columnsPhrase())
-                + spaceBefore(collector.valuesPhrase());
+                + spaceBefore(calculateColumnsPhrase(fieldsAndValues))
+                + spaceBefore(calculateValuesPhrase(fieldsAndValues));
+    }
+    
+    private String calculateColumnsPhrase(List<Optional<FieldAndValue>> fieldsAndValues) {
+        return fieldsAndValues.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(FieldAndValue::fieldName)
+                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    private Function<AbstractColumnMapping, FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor) {
+    private String calculateValuesPhrase(List<Optional<FieldAndValue>> fieldsAndValues) {
+        return fieldsAndValues.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(FieldAndValue::valuePhrase)
+                .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+    
+    private Function<AbstractColumnMapping, Optional<FieldAndValue>> toFieldAndValue(ValuePhraseVisitor visitor) {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
     
-    private FieldAndValue toFieldAndValue(ValuePhraseVisitor visitor, AbstractColumnMapping insertMapping) {
+    private Optional<FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor, AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
     

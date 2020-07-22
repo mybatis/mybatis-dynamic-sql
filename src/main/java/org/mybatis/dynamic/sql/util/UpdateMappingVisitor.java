@@ -20,4 +20,9 @@ public abstract class UpdateMappingVisitor<T> implements ColumnMappingVisitor<T>
     public final T visit(PropertyMapping mapping) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public final T visit(PropertyWhenPresentMapping mapping) {
+        throw new UnsupportedOperationException();
+    }
 }

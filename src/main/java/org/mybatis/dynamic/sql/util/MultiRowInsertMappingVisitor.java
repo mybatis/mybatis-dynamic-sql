@@ -35,4 +35,9 @@ public abstract class MultiRowInsertMappingVisitor<T> implements ColumnMappingVi
     public final <R> T visit(ValueWhenPresentMapping<R> mapping) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public final T visit(PropertyWhenPresentMapping mapping) {
+        throw new UnsupportedOperationException();
+    }
 }

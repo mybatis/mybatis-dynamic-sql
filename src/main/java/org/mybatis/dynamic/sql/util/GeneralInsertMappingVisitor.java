@@ -27,6 +27,11 @@ public abstract class GeneralInsertMappingVisitor<T> implements ColumnMappingVis
     }
 
     @Override
+    public final T visit(PropertyWhenPresentMapping mapping) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public final T visit(ColumnToColumnMapping columnMapping) {
         throw new UnsupportedOperationException();
     }
