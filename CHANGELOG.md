@@ -6,6 +6,12 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.5+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.5+)
 
+### General Announcements
+
+This release includes a significant refactoring of the classes in the "org.mybatis.dynamic.sql.select.function" package. The new classes are more consistent and flexible and should be compatible with existing code at the source level (meaning that code should be recompiled for the new version of the library).
+
+If you have written your own set of functions to extend the library, you will notice that the base classes 'AbstractFunction" and "AbstractMultipleColumnArithmeticFunction" are now deprecated. Their replacement classes are "AbstractUniTypeFunction" and "OperatorFunction" respectively.
+
 ### Added
 
 - Added a general insert statement that does not require a separate record class to hold values for the insert. ([#201](https://github.com/mybatis/mybatis-dynamic-sql/issues/201))

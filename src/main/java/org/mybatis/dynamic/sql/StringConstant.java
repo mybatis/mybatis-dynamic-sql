@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class StringConstant implements BasicColumn {
+public class StringConstant implements BindableColumn<String> {
 
     private String alias;
     private String value;

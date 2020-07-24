@@ -258,7 +258,7 @@ public interface SqlBuilder {
     }
 
     // constants
-    static Constant constant(String constant) {
+    static <T> Constant<T> constant(String constant) {
         return Constant.of(constant);
     }
     
@@ -292,7 +292,7 @@ public interface SqlBuilder {
         return Concatenate.concatenate(firstColumn, secondColumn, subsequentColumns);
     }
     
-    static <T> OperatorFunction<T> operatorFunction(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    static <T> OperatorFunction<T> applyOperator(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns);
     }

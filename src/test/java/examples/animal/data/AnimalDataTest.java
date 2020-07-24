@@ -768,6 +768,36 @@ class AnimalDataTest {
     }
 
     @Test
+    void testDeprecatedAdd() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatementProvider selectStatement = select(id, animalName, DeprecatedAdd.of(bodyWeight, brainWeight).as("calculated_weight"))
+                    .from(animalData, "a")
+                    .where(DeprecatedAdd.of(bodyWeight, brainWeight), isGreaterThan(10000.0))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select a.id, a.animal_name, (a.body_weight + a.brain_weight) as calculated_weight "
+                    + "from AnimalData a "
+                    + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
+            
+            List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
+            
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals).hasSize(3),
+                    () -> assertThat(animals.get(0)).containsEntry("ANIMAL_NAME", "African elephant"),
+                    () -> assertThat(animals.get(0)).containsEntry("CALCULATED_WEIGHT", 12366.0),
+                    () -> assertThat(animals.get(1)).containsEntry("ANIMAL_NAME", "Dipliodocus"),
+                    () -> assertThat(animals.get(1)).containsEntry("CALCULATED_WEIGHT", 11750.0),
+                    () -> assertThat(animals.get(2)).containsEntry("ANIMAL_NAME", "Brachiosaurus"),
+                    () -> assertThat(animals.get(2)).containsEntry("CALCULATED_WEIGHT", 87154.5)
+            );
+        }
+    }
+    
+    @Test
     void testAdd() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
@@ -828,6 +858,36 @@ class AnimalDataTest {
     }
     
     @Test
+    void testAddConstantWithConstantFirst() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatementProvider selectStatement = select(id, animalName, add(constant("22"), bodyWeight, constant("33")).as("calculated_weight"))
+                    .from(animalData, "a")
+                    .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select a.id, a.animal_name, (22 + a.body_weight + 33) as calculated_weight "
+                    + "from AnimalData a "
+                    + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
+            
+            List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals).hasSize(3),
+                    () -> assertThat(animals.get(0)).containsEntry("ANIMAL_NAME", "African elephant"),
+                    () -> assertThat(animals.get(0)).containsEntry("CALCULATED_WEIGHT", 5767.0),
+                    () -> assertThat(animals.get(1)).containsEntry("ANIMAL_NAME", "Dipliodocus"),
+                    () -> assertThat(animals.get(1)).containsEntry("CALCULATED_WEIGHT", 105.0),
+                    () -> assertThat(animals.get(2)).containsEntry("ANIMAL_NAME", "Brachiosaurus"),
+                    () -> assertThat(animals.get(2)).containsEntry("CALCULATED_WEIGHT", 209.5)
+            );
+        }
+    }
+    
+    @Test
     void testConcatenate() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
@@ -850,6 +910,33 @@ class AnimalDataTest {
                     () -> assertThat(animals.get(0)).containsEntry("DISPLAY_NAME", "African elephant - The Legend"),
                     () -> assertThat(animals.get(1)).containsEntry("DISPLAY_NAME", "Dipliodocus - The Legend"),
                     () -> assertThat(animals.get(2)).containsEntry("DISPLAY_NAME", "Brachiosaurus - The Legend")
+            );
+        }
+    }
+    
+    @Test
+    void testConcatenateConstantFirst() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatementProvider selectStatement = select(id, concatenate(stringConstant("Name: "), animalName).as("display_name"))
+                    .from(animalData, "a")
+                    .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select a.id, ('Name: ' || a.animal_name) as display_name "
+                    + "from AnimalData a "
+                    + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
+            
+            List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
+            
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals).hasSize(3),
+                    () -> assertThat(animals.get(0)).containsEntry("DISPLAY_NAME", "Name: African elephant"),
+                    () -> assertThat(animals.get(1)).containsEntry("DISPLAY_NAME", "Name: Dipliodocus"),
+                    () -> assertThat(animals.get(2)).containsEntry("DISPLAY_NAME", "Name: Brachiosaurus")
             );
         }
     }
@@ -1030,6 +1117,36 @@ class AnimalDataTest {
                     () -> assertThat(animals.get(1)).containsEntry("CALCULATED_WEIGHT", 44.5),
                     () -> assertThat(animals.get(2)).containsEntry("ANIMAL_NAME", "Brachiosaurus"),
                     () -> assertThat(animals.get(2)).containsEntry("CALCULATED_WEIGHT", 149.0)
+            );
+        }
+    }
+    
+    @Test
+    void testGeneralOperator() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatementProvider selectStatement = select(id, animalName, applyOperator("-", bodyWeight, brainWeight).as("calculated_weight"))
+                    .from(animalData, "a")
+                    .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select a.id, a.animal_name, (a.body_weight - a.brain_weight) as calculated_weight "
+                    + "from AnimalData a "
+                    + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
+            
+            List<Map<String, Object>> animals = mapper.generalSelect(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals).hasSize(3),
+                    () -> assertThat(animals.get(0)).containsEntry("ANIMAL_NAME", "African elephant"),
+                    () -> assertThat(animals.get(0)).containsEntry("CALCULATED_WEIGHT", -942.0),
+                    () -> assertThat(animals.get(1)).containsEntry("ANIMAL_NAME", "Dipliodocus"),
+                    () -> assertThat(animals.get(1)).containsEntry("CALCULATED_WEIGHT", -11650.0),
+                    () -> assertThat(animals.get(2)).containsEntry("ANIMAL_NAME", "Brachiosaurus"),
+                    () -> assertThat(animals.get(2)).containsEntry("CALCULATED_WEIGHT", -86845.5)
             );
         }
     }

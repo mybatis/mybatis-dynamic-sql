@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Constant implements BasicColumn {
+public class Constant<T> implements BindableColumn<T> {
 
     private String alias;
     private String value;
@@ -40,13 +40,13 @@ public class Constant implements BasicColumn {
     }
 
     @Override
-    public Constant as(String alias) {
-        Constant copy = new Constant(value);
+    public Constant<T> as(String alias) {
+        Constant<T> copy = new Constant<>(value);
         copy.alias = alias;
         return copy;
     }
     
-    public static Constant of(String value) {
-        return new Constant(value);
+    public static <T> Constant<T> of(String value) {
+        return new Constant<>(value);
     }
 }
