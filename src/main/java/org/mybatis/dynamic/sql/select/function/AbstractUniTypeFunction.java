@@ -16,38 +16,25 @@
 package org.mybatis.dynamic.sql.select.function;
 
 import java.sql.JDBCType;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 
 /**
- * @deprecated in favor of {@link AbstractUniTypeFunction}
+ * Represents a function that does not change the underlying data type.
  * 
  * @author Jeff Butler
+ *
+ * @param <T> The type of the underlying column 
+ * @param <U> the specific subtype that implements the function
  */
-@Deprecated
-public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>> implements BindableColumn<T> {
-    
-    protected BindableColumn<T> column;
-    protected String alias;
+public abstract class AbstractUniTypeFunction<T, U extends AbstractUniTypeFunction<T, U>>
+        extends AbstractTypeConvertingFunction<T, T, U> {
 
-    protected AbstractFunction(BindableColumn<T> column) {
-        this.column = Objects.requireNonNull(column);
+    protected AbstractUniTypeFunction(BindableColumn<T> column) {
+        super(column);
     }
     
-    @Override
-    public Optional<String> alias() {
-        return Optional.ofNullable(alias);
-    }
-
-    @Override
-    public U as(String alias) {
-        U newThing = copy();
-        newThing.alias = alias;
-        return newThing;
-    }
-
     @Override
     public Optional<JDBCType> jdbcType() {
         return column.jdbcType();
@@ -57,6 +44,4 @@ public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>> impl
     public Optional<String> typeHandler() {
         return column.typeHandler();
     }
-    
-    protected abstract U copy();
 }

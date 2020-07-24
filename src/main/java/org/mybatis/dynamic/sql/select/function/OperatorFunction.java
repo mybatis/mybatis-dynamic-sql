@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.function;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -26,38 +27,38 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-/**
- * @deprecated in favor of {@link OperatorFunction}.
- * 
- * @author Jeff Butler
- */
-@Deprecated
-public abstract class AbstractMultipleColumnArithmeticFunction<T extends Number,
-        U extends AbstractMultipleColumnArithmeticFunction<T, U>>
-        extends AbstractFunction<T, AbstractMultipleColumnArithmeticFunction<T, U>> {
-
+public class OperatorFunction<T> extends AbstractUniTypeFunction<T, OperatorFunction<T>> {
+    
     protected BasicColumn secondColumn;
     protected List<BasicColumn> subsequentColumns = new ArrayList<>();
-
-    protected AbstractMultipleColumnArithmeticFunction(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    private String operator;
+    
+    protected OperatorFunction(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
         super(firstColumn);
         this.secondColumn = Objects.requireNonNull(secondColumn);
         this.subsequentColumns.addAll(subsequentColumns);
+        this.operator = Objects.requireNonNull(operator);
+    }
+
+    @Override
+    protected OperatorFunction<T> copy() {
+        return new OperatorFunction<>(operator, column, secondColumn, subsequentColumns);
     }
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        // note - the cast below is added for a type inference bug in the Java9
-        // compiler.
+        String paddedOperator = " " + operator + " "; //$NON-NLS-1$ //$NON-NLS-2$
+
+        // note - the cast below is added for a type inference bug in the Java9 compiler.
         return Stream.of(Stream.of((BasicColumn) column), Stream.of(secondColumn), subsequentColumns.stream())
-                .flatMap(Function.identity()).map(column -> column.renderWithTableAlias(tableAliasCalculator))
-                .collect(Collectors.joining(padOperator(), "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$
+                .flatMap(Function.identity())
+                .map(column -> column.renderWithTableAlias(tableAliasCalculator))
+                .collect(Collectors.joining(paddedOperator, "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    private String padOperator() {
-        return " " + operator() + " "; //$NON-NLS-1$ //$NON-NLS-2$
+    public static <T> OperatorFunction<T> of(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            BasicColumn... subsequentColumns) {
+        return new OperatorFunction<>(operator, firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
-
-    protected abstract String operator();
 }
