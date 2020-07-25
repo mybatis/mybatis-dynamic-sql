@@ -15,25 +15,26 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 
-public class Add<T extends Number> extends OperatorFunction<T> {
-    
-    private Add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+public class Concatenate<T> extends OperatorFunction<T> {
+
+    protected Concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
-        super("+", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$
+        super("||", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$
     }
 
     @Override
-    protected Add<T> copy() {
-        return new Add<>(column, secondColumn, subsequentColumns);
+    protected Concatenate<T> copy() {
+        return new Concatenate<>(column, secondColumn, subsequentColumns);
     }
 
-    public static <T extends Number> Add<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
-            List<BasicColumn> subsequentColumns) {
-        return new Add<>(firstColumn, secondColumn, subsequentColumns);
+    public static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            BasicColumn... subsequentColumns) {
+        return new Concatenate<>(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
 }

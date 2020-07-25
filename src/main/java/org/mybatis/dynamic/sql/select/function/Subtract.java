@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,21 +20,16 @@ import java.util.List;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 
-public class Subtract<T extends Number> extends AbstractMultipleColumnArithmeticFunction<T, Subtract<T>> {
+public class Subtract<T extends Number> extends OperatorFunction<T> {
     
     private Subtract(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
-        super(firstColumn, secondColumn, subsequentColumns);
+        super("-", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$
     }
 
     @Override
     protected Subtract<T> copy() {
         return new Subtract<>(column, secondColumn, subsequentColumns);
-    }
-
-    @Override
-    protected String operator() {
-        return "-"; //$NON-NLS-1$
     }
 
     public static <T extends Number> Subtract<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,

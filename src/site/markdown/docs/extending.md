@@ -21,7 +21,7 @@ A calculated column can be used anywhere in a SELECT statement.  If you don't ne
 ```java
 public class CountAll implements BasicColumn {
     
-    private Optional<String> alias = Optional.empty();
+    private String alias;
 
     public CountAll() {
         super();
@@ -34,13 +34,13 @@ public class CountAll implements BasicColumn {
 
     @Override
     public Optional<String> alias() {
-        return alias;
+        return Optional.ofNullable(alias);
     }
 
     @Override
     public CountAll as(String alias) {
         CountAll copy = new CountAll();
-        copy.alias = Optional.of(alias);
+        copy.alias = alias;
         return copy;
     }
 }
@@ -52,64 +52,113 @@ This class is used to implement the `count(*)` function in a SELECT list.  There
 2.  `as` - this method can be called by the user to add an alias to the column expression.  In the method you should return a new instance of the object, with the alias passed by the user.
 3. `alias` - this method is called by the default renderer to obtain the column alias for the select list.  If there is no alias, then returning Optional.empty() will disable setting a column alias.
 
-### Writing a Custom Where Condition
+## Writing Custom Functions
 
-If you want to use your calculated column in a WHERE clause in addition the select list and the GROUP BY clause, then you must implement `org.mybatis.dynamic.sql.BindableColumn`.  This interface extends the `BasicColumn` interface from above and adds two methods.  An example from the library is the `org.mybatis.dynamic.sql.select.function.Add` class:
+Relational database vendors provide hundreds of functions in their SQL dialects to aid with queries and offload processing to the database servers. This library does not try to implement every function that exists. This library also does not provide any abstraction over the different functions on different databases. For example, bitwise operator support is non-standard and it would be difficult to provide a function in this library that worked on every database. So we take the approach of supplying examples for a few very common functions, and making it relatively easy to write your own functions.
+
+The supplied functions are all in the `org.mybatis.dynamic.sql.select.function` package. They are all implemented as `BindableColumn` - meaning that they can appear in a select list or a where clause.
+
+We provide some base classes that you can easily extend to write functions of your own. Those classes are as follows:
+
+Note: the base classes are all in the `org.mybatis.dynamic.sql.select.function` package.
+
+| Interface | Purpose|
+|-----------|--------|
+| `o.m.d.s.s.f.AbstractTypeConvertingFunction` | Extend this class if you want to build a function that changes a column data type. For example, using a database function to calculate the Base64 String for a binary field. |
+| `o.m.d.s.s.f.AbstractUniTypeFunction` | Extend this class if you want to build a function that does not change a column data type. For example UPPER(), LOWER(), etc. |
+| `o.m.d.s.s.f.OperatorFunction` | Extend this class if you want to build a function the implements an operator. For example column1 + column2. |
+
+### AbstractTypeConvertingFunction Example
+
+The following function uses HSQLDB's `TO_BASE64` function to calculate the BASE64 string for a binary field. Note that the function changes the data type from `byte[]` to `String`.
 
 ```java
-public class Add<T extends Number> implements BindableColumn<T> {
-    
-    private Optional<String> alias = Optional.empty();
-    private BindableColumn<T> column1;
-    private BindableColumn<T> column2;
-    
-    private Add(BindableColumn<T> column1, BindableColumn<T> column2) {
-        this.column1 = Objects.requireNonNull(column1);
-        this.column2 = Objects.requireNonNull(column2);
+public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToBase64> {
+
+    protected ToBase64(BindableColumn<byte[]> column) {
+        super(column);
     }
 
     @Override
-    public Optional<String> alias() {
-        return alias;
-    }
-
-    @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return column1.applyTableAliasToName(tableAliasCalculator)
-                + " + " //$NON-NLS-1$
-                + column2.applyTableAliasToName(tableAliasCalculator);
-    }
-
-    @Override
-    public BindableColumn<T> as(String alias) {
-        Add<T> newColumn = new Add<>(column1, column2);
-        newColumn.alias = Optional.of(alias);
-        return newColumn;
-    }
-
-    @Override
-    public JDBCType jdbcType() {
-        return column1.jdbcType();
+    public Optional<JDBCType> jdbcType() {
+        return Optional.of(JDBCType.VARCHAR);
     }
 
     @Override
     public Optional<String> typeHandler() {
-        return column1.typeHandler();
+        return Optional.empty();
     }
 
-    public static <T extends Number> Add<T> of(BindableColumn<T> column1, BindableColumn<T> column2) {
-        return new Add<>(column1, column2);
+    @Override
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "TO_BASE64(" //$NON-NLS-1$
+                + column.renderWithTableAlias(tableAliasCalculator)
+                + ")"; //$NON-NLS-1$
+    }
+
+    @Override
+    protected ToBase64 copy() {
+        return new ToBase64(column);
+    }
+    
+    public static ToBase64 toBase64(BindableColumn<byte[]> column) {
+        return new ToBase64(column);
     }
 }
 ```
 
-This class implements the idea of adding two numeric columns together in a SELECT statement.  This class accepts two other columns as parameters and then overrides `renderWithTableAlias` to render the addition.  The `alias` and `as` methods work as described above.
+### AbstractUniTypeFunction Example
 
-The two additional methods are:
+The following function implements the common database `UPPER()` function.
 
-1. `jdbcType` - returns the JDBC Type of the column for the WHERE clause.  This is used by the MyBatis3 rendering strategy to render a full MyBatis parameter expression.
-2. `typeHandler` - returns a type handler if specified by the user.  Again, this is used by the MyBatis3 rendering strategy to render a full MyBatis parameter expression.  
+```java
+public class Upper extends AbstractUniTypeFunction<String, Upper> {
+    
+    private Upper(BindableColumn<String> column) {
+        super(column);
+    }
 
+    @Override
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "upper(" //$NON-NLS-1$
+                + column.renderWithTableAlias(tableAliasCalculator)
+                + ")"; //$NON-NLS-1$
+    }
+
+    @Override
+    protected Upper copy() {
+        return new Upper(column);
+    }
+
+    public static Upper of(BindableColumn<String> column) {
+        return new Upper(column);
+    }
+}
+```
+
+### OperatorFunction Example
+
+The following function implements the concatenate operator. Note that the operator can be applied to list of columns of arbitrary length:
+
+```java
+public class Concatenate<T> extends OperatorFunction<T> {
+
+    protected Concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            List<BasicColumn> subsequentColumns) {
+        super("||", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$
+    }
+
+    @Override
+    protected Concatenate<T> copy() {
+        return new Concatenate<>(column, secondColumn, subsequentColumns);
+    }
+
+    public static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            BasicColumn... subsequentColumns) {
+        return new Concatenate<>(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+    }
+}
+```
 
 ## Writing Custom Rendering Strategies
 

@@ -6,11 +6,18 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.5+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.5+)
 
+### General Announcements
+
+This release includes a significant refactoring of the classes in the "org.mybatis.dynamic.sql.select.function" package. The new classes are more consistent and flexible and should be compatible with existing code at the source level (meaning that code should be recompiled for the new version of the library).
+
+If you have written your own set of functions to extend the library, you will notice that the base classes 'AbstractFunction" and "AbstractMultipleColumnArithmeticFunction" are now deprecated. Their replacement classes are "AbstractUniTypeFunction" and "OperatorFunction" respectively.
+
 ### Added
 
 - Added a general insert statement that does not require a separate record class to hold values for the insert. ([#201](https://github.com/mybatis/mybatis-dynamic-sql/issues/201))
 - Added the capability to specify a rendering strategy on a column to override the defaut rendering strategy for a statement. This will allow certain edge cases where a parameter marker needs to be formatted in a unique way (for example, "::jsonb" needs to be added to parameter markers for JSON fields in PostgreSQL) ([#200](https://github.com/mybatis/mybatis-dynamic-sql/issues/200))
 - Added the ability to write a function that will change the column data type ([#197](https://github.com/mybatis/mybatis-dynamic-sql/issues/197))
+- Added the `applyOperator` function to make it easy to use non-standard database operators in expressions ([#220](https://github.com/mybatis/mybatis-dynamic-sql/issues/220))
 
 ## Release 1.1.4 - November 23, 2019
 

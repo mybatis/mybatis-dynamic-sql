@@ -40,9 +40,11 @@ import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
 import org.mybatis.dynamic.sql.select.function.Add;
+import org.mybatis.dynamic.sql.select.function.Concatenate;
 import org.mybatis.dynamic.sql.select.function.Divide;
 import org.mybatis.dynamic.sql.select.function.Lower;
 import org.mybatis.dynamic.sql.select.function.Multiply;
+import org.mybatis.dynamic.sql.select.function.OperatorFunction;
 import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Subtract;
 import org.mybatis.dynamic.sql.select.function.Upper;
@@ -256,7 +258,7 @@ public interface SqlBuilder {
     }
 
     // constants
-    static Constant constant(String constant) {
+    static <T> Constant<T> constant(String constant) {
         return Constant.of(constant);
     }
     
@@ -283,6 +285,16 @@ public interface SqlBuilder {
     static <T extends Number> Subtract<T> subtract(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Subtract.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+    }
+    
+    static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            BasicColumn... subsequentColumns) {
+        return Concatenate.concatenate(firstColumn, secondColumn, subsequentColumns);
+    }
+    
+    static <T> OperatorFunction<T> applyOperator(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
+            BasicColumn... subsequentColumns) {
+        return OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns);
     }
     
     static Lower lower(BindableColumn<String> column) {

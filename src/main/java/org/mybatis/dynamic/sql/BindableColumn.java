@@ -38,9 +38,13 @@ public interface BindableColumn<T> extends BasicColumn {
     @Override
     BindableColumn<T> as(String alias);
 
-    Optional<JDBCType> jdbcType();
+    default Optional<JDBCType> jdbcType() {
+        return Optional.empty();
+    }
     
-    Optional<String> typeHandler();
+    default Optional<String> typeHandler() {
+        return Optional.empty();
+    }
     
     default Optional<RenderingStrategy> renderingStrategy() {
         return Optional.empty();
