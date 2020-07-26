@@ -484,6 +484,28 @@ class PersonMapperTest {
     }
 
     @Test
+    fun testCountLastName() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.count(lastName) { allRows() }
+
+            assertThat(rows).isEqualTo(6L)
+        }
+    }
+
+    @Test
+    fun testCountDistinctLastName() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.countDistinct(lastName) { allRows() }
+
+            assertThat(rows).isEqualTo(2L)
+        }
+    }
+
+    @Test
     fun testTypeHandledLike() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)

@@ -28,6 +28,12 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.*
 
+fun count(mapper: (SelectStatementProvider) -> Long, column: BasicColumn, table: SqlTable, completer: CountCompleter) =
+    mapper(SqlBuilder.countColumn(column).from(table, completer))
+
+fun countDistinct(mapper: (SelectStatementProvider) -> Long, column: BasicColumn, table: SqlTable, completer: CountCompleter) =
+    mapper(SqlBuilder.countDistinctColumn(column).from(table, completer))
+
 fun countFrom(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter) =
     mapper(countFrom(table, completer))
 

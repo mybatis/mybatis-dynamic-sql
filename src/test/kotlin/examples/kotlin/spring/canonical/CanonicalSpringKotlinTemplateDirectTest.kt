@@ -66,6 +66,24 @@ class CanonicalSpringKotlinTemplateDirectTest {
     }
 
     @Test
+    fun testCountLastName() {
+        val rows = template.count(lastName).from(Person) {
+            allRows()
+        }
+
+        assertThat(rows).isEqualTo(6)
+    }
+
+    @Test
+    fun testCountDistinctLastName() {
+        val rows = template.countDistinct(lastName).from(Person) {
+            allRows()
+        }
+
+        assertThat(rows).isEqualTo(2)
+    }
+
+    @Test
     fun testAllRows() {
         val rows = template.deleteFrom(Person) {
             allRows()

@@ -29,7 +29,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.*
-import org.mybatis.dynamic.sql.util.kotlin.spring.from
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
@@ -54,8 +53,10 @@ class CanonicalSpringKotlinTest {
             where(id, isLessThan(4))
         }
 
-        assertThat(countStatement.selectStatement).isEqualTo("select count(*) from Person" +
-            " where id < :p1")
+        assertThat(countStatement.selectStatement).isEqualTo(
+            "select count(*) from Person" +
+                    " where id < :p1"
+        )
 
         val rows = template.count(countStatement)
 
@@ -76,13 +77,41 @@ class CanonicalSpringKotlinTest {
     }
 
     @Test
+    fun testRawCountLastName() {
+        val countStatement = countColumn(lastName).from(Person) {
+            allRows()
+        }
+
+        assertThat(countStatement.selectStatement).isEqualTo("select count(last_name) from Person")
+
+        val rows = template.count(countStatement)
+
+        assertThat(rows).isEqualTo(6)
+    }
+
+    @Test
+    fun testRawCountDistinctLastName() {
+        val countStatement = countDistinctColumn(lastName).from(Person) {
+            allRows()
+        }
+
+        assertThat(countStatement.selectStatement).isEqualTo("select count(distinct last_name) from Person")
+
+        val rows = template.count(countStatement)
+
+        assertThat(rows).isEqualTo(2)
+    }
+
+    @Test
     fun testRawDelete1() {
         val deleteStatement = deleteFrom(Person) {
             where(id, isLessThan(4))
         }
 
-        assertThat(deleteStatement.deleteStatement).isEqualTo("delete from Person" +
-            " where id < :p1")
+        assertThat(deleteStatement.deleteStatement).isEqualTo(
+            "delete from Person" +
+                    " where id < :p1"
+        )
 
         val rows = template.delete(deleteStatement)
 
@@ -96,8 +125,10 @@ class CanonicalSpringKotlinTest {
             and(occupation, isNotNull())
         }
 
-        assertThat(deleteStatement.deleteStatement).isEqualTo("delete from Person" +
-            " where id < :p1 and occupation is not null")
+        assertThat(deleteStatement.deleteStatement).isEqualTo(
+            "delete from Person" +
+                    " where id < :p1 and occupation is not null"
+        )
 
         val rows = template.delete(deleteStatement)
 
@@ -112,8 +143,10 @@ class CanonicalSpringKotlinTest {
             or(occupation, isNotNull())
         }
 
-        assertThat(deleteStatement.deleteStatement).isEqualTo("delete from Person" +
-            " where id < :p1 or occupation is not null")
+        assertThat(deleteStatement.deleteStatement).isEqualTo(
+            "delete from Person" +
+                    " where id < :p1 or occupation is not null"
+        )
 
         val rows = template.delete(deleteStatement)
 
@@ -131,8 +164,8 @@ class CanonicalSpringKotlinTest {
         }
 
         val expected = "delete from Person" +
-            " where (id < :p1 or occupation is not null)" +
-            " and employed = :p2"
+                " where (id < :p1 or occupation is not null)" +
+                " and employed = :p2"
 
         assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
@@ -151,9 +184,9 @@ class CanonicalSpringKotlinTest {
         }
 
         val expected = "delete from Person" +
-            " where id < :p1 or (occupation is not null" +
-            " and employed =" +
-            " :p2)"
+                " where id < :p1 or (occupation is not null" +
+                " and employed =" +
+                " :p2)"
 
         assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
@@ -172,8 +205,8 @@ class CanonicalSpringKotlinTest {
         }
 
         val expected = "delete from Person where id < :p1" +
-            " and (occupation is not null and" +
-            " employed = :p2)"
+                " and (occupation is not null and" +
+                " employed = :p2)"
 
         assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
@@ -198,11 +231,11 @@ class CanonicalSpringKotlinTest {
         }
 
         val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
-            " values" +
-            " (:id, :firstName," +
-            " :lastName," +
-            " :birthDate, :employed," +
-            " :occupation, :addressId)"
+                " values" +
+                " (:id, :firstName," +
+                " :lastName," +
+                " :birthDate, :employed," +
+                " :occupation, :addressId)"
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
@@ -259,8 +292,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawSelect() {
-        val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId).from(Person) {
+        val selectStatement = select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            addressId
+        ).from(Person) {
             where(id, isLessThan(4)) {
                 and(occupation, isNotNull())
             }
@@ -295,8 +330,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawSelectByPrimaryKey() {
-        val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId).from(Person) {
+        val selectStatement = select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            addressId
+        ).from(Person) {
             where(id, isEqualTo(1))
         }
 
@@ -325,8 +362,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawSelectWithJoin() {
-        val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            Address.id, Address.streetAddress, Address.city, Address.state)
+        val selectStatement = select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            Address.id, Address.streetAddress, Address.city, Address.state
+        )
             .from(Person, "p") {
                 join(Address, "a") {
                     on(addressId, equalTo(Address.id))
@@ -337,9 +376,9 @@ class CanonicalSpringKotlinTest {
             }
 
         val expected = "select p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed," +
-            " p.occupation, a.address_id, a.street_address, a.city, a.state" +
-            " from Person p join Address a on p.address_id = a.address_id" +
-            " where p.id < :p1 order by id limit :p2"
+                " p.occupation, a.address_id, a.street_address, a.city, a.state" +
+                " from Person p join Address a on p.address_id = a.address_id" +
+                " where p.id < :p1 order by id limit :p2"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -380,8 +419,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawSelectWithComplexWhere1() {
-        val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId).from(Person) {
+        val selectStatement = select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            addressId
+        ).from(Person) {
             where(id, isLessThan(5))
             and(id, isLessThan(4)) {
                 and(id, isLessThan(3)) {
@@ -393,11 +434,11 @@ class CanonicalSpringKotlinTest {
         }
 
         val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id" +
-            " from Person" +
-            " where id < :p1" +
-            " and (id < :p2" +
-            " and (id < :p3 and id < :p4))" +
-            " order by id limit :p5"
+                " from Person" +
+                " where id < :p1" +
+                " and (id < :p2" +
+                " and (id < :p3 and id < :p4))" +
+                " order by id limit :p5"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -427,8 +468,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawSelectWithComplexWhere2() {
-        val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId).from(Person) {
+        val selectStatement = select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            addressId
+        ).from(Person) {
             where(id, isEqualTo(5))
             or(id, isEqualTo(4)) {
                 or(id, isEqualTo(3)) {
@@ -440,11 +483,11 @@ class CanonicalSpringKotlinTest {
         }
 
         val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id" +
-            " from Person" +
-            " where id = :p1" +
-            " or (id = :p2" +
-            " or (id = :p3 or id = :p4))" +
-            " order by id limit :p5"
+                " from Person" +
+                " where id = :p1" +
+                " or (id = :p2" +
+                " or (id = :p3 or id = :p4))" +
+                " order by id limit :p5"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -479,9 +522,11 @@ class CanonicalSpringKotlinTest {
             where(firstName, isEqualTo("Fred"))
         }
 
-        assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-            " set first_name = :p1" +
-            " where first_name = :p2")
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set first_name = :p1" +
+                    " where first_name = :p2"
+        )
 
         val rows = template.update(updateStatement)
 
@@ -497,9 +542,11 @@ class CanonicalSpringKotlinTest {
             }
         }
 
-        assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-            " set first_name = :p1" +
-            " where (first_name = :p2 or id > :p3)")
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set first_name = :p1" +
+                    " where (first_name = :p2 or id > :p3)"
+        )
 
         val rows = template.update(updateStatement)
 
@@ -516,10 +563,12 @@ class CanonicalSpringKotlinTest {
             }
         }
 
-        assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-            " set first_name = :p1" +
-            " where first_name = :p2" +
-            " or (id = :p3 or id = :p4)")
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set first_name = :p1" +
+                    " where first_name = :p2" +
+                    " or (id = :p3 or id = :p4)"
+        )
 
         val rows = template.update(updateStatement)
 
@@ -536,10 +585,12 @@ class CanonicalSpringKotlinTest {
             }
         }
 
-        assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-            " set first_name = :p1" +
-            " where first_name = :p2" +
-            " and (id = :p3 or id = :p4)")
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set first_name = :p1" +
+                    " where first_name = :p2" +
+                    " and (id = :p3 or id = :p4)"
+        )
 
         val rows = template.update(updateStatement)
 
@@ -554,10 +605,12 @@ class CanonicalSpringKotlinTest {
             or(id, isEqualTo(3))
         }
 
-        assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-            " set first_name = :p1" +
-            " where first_name = :p2" +
-            " or id = :p3")
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set first_name = :p1" +
+                    " where first_name = :p2" +
+                    " or id = :p3"
+        )
 
         val rows = template.update(updateStatement)
 

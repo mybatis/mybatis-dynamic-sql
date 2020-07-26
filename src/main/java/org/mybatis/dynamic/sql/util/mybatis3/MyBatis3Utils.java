@@ -58,7 +58,7 @@ public class MyBatis3Utils {
     }
 
     public static SelectStatementProvider count(BasicColumn column, SqlTable table, CountDSLCompleter completer) {
-        return countFrom(SqlBuilder.countFrom(column, table), completer);
+        return countFrom(SqlBuilder.countColumn(column).from(table), completer);
     }
 
     public static long countDistinct(ToLongFunction<SelectStatementProvider> mapper, BasicColumn column, SqlTable table,
@@ -67,7 +67,7 @@ public class MyBatis3Utils {
     }
 
     public static SelectStatementProvider countDistinct(BasicColumn column, SqlTable table, CountDSLCompleter completer) {
-        return countFrom(SqlBuilder.countDistinctFrom(column, table), completer);
+        return countFrom(SqlBuilder.countDistinctColumn(column).from(table), completer);
     }
 
     public static SelectStatementProvider countFrom(SqlTable table, CountDSLCompleter completer) {
