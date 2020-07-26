@@ -52,6 +52,24 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 public class MyBatis3Utils {
     private MyBatis3Utils() {}
 
+    public static long count(ToLongFunction<SelectStatementProvider> mapper, BasicColumn column, SqlTable table,
+            CountDSLCompleter completer) {
+        return mapper.applyAsLong(count(column, table, completer));
+    }
+
+    public static SelectStatementProvider count(BasicColumn column, SqlTable table, CountDSLCompleter completer) {
+        return countFrom(SqlBuilder.countFrom(column, table), completer);
+    }
+
+    public static long countDistinct(ToLongFunction<SelectStatementProvider> mapper, BasicColumn column, SqlTable table,
+            CountDSLCompleter completer) {
+        return mapper.applyAsLong(countDistinct(column, table, completer));
+    }
+
+    public static SelectStatementProvider countDistinct(BasicColumn column, SqlTable table, CountDSLCompleter completer) {
+        return countFrom(SqlBuilder.countDistinctFrom(column, table), completer);
+    }
+
     public static SelectStatementProvider countFrom(SqlTable table, CountDSLCompleter completer) {
         return countFrom(SqlBuilder.countFrom(table), completer);
     }

@@ -107,6 +107,33 @@ import org.mybatis.dynamic.sql.where.condition.IsNull;
 public interface SqlBuilder {
 
     // statements
+
+    /**
+     * Renders as select count(distinct column) from table...
+     * 
+     * @param table
+     * @return CountDSL for adding an optional where clause
+     */
+    static CountDSL<SelectModel> countDistinctFrom(BasicColumn column, SqlTable table) {
+        return CountDSL.countDistinct(column).from(table);
+    }
+    
+    /**
+     * Renders as select count(column) from table...
+     * 
+     * @param table
+     * @return CountDSL for adding an optional where clause
+     */
+    static CountDSL<SelectModel> countFrom(BasicColumn column, SqlTable table) {
+        return CountDSL.count(column).from(table);
+    }
+    
+    /**
+     * Renders as select count(*) from table...
+     * 
+     * @param table
+     * @return CountDSL for adding an optional where clause
+     */
     static CountDSL<SelectModel> countFrom(SqlTable table) {
         return CountDSL.countFrom(table);
     }

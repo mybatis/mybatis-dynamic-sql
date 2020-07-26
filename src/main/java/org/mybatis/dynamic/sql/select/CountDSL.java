@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.select;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -41,9 +42,11 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
 
     private Function<SelectModel, R> adapterFunction;
     private CountWhereBuilder whereBuilder = new CountWhereBuilder();
+    private BasicColumn countColumn;
     
-    private CountDSL(SqlTable table, Function<SelectModel, R> adapterFunction) {
+    private CountDSL(BasicColumn countColumn, SqlTable table, Function<SelectModel, R> adapterFunction) {
         super(table);
+        this.countColumn = Objects.requireNonNull(countColumn);
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
     
@@ -68,7 +71,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
 
     private SelectModel buildModel() {
         QueryExpressionModel.Builder b = new QueryExpressionModel.Builder()
-                .withSelectColumn(SqlBuilder.count())
+                .withSelectColumn(countColumn)
                 .withTable(table())
                 .withTableAliases(tableAliases)
                 .withWhereModel(whereBuilder.buildWhereModel());
@@ -85,12 +88,42 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
     }
     
     public static <R> CountDSL<R> countFrom(Function<SelectModel, R> adapterFunction, SqlTable table) {
-        return new CountDSL<>(table, adapterFunction);
+        return new CountDSL<>(SqlBuilder.count(), table, adapterFunction);
+    }
+    
+    public static FromGatherer<SelectModel> count(BasicColumn column) {
+        return count(Function.identity(), column);
+    }
+    
+    public static <R> FromGatherer<R> count(Function<SelectModel, R> adapterFunction, BasicColumn column) {
+        return new FromGatherer<>(adapterFunction, SqlBuilder.count(column));
+    }
+    
+    public static FromGatherer<SelectModel> countDistinct(BasicColumn column) {
+        return countDistinct(Function.identity(), column);
+    }
+    
+    public static <R> FromGatherer<R> countDistinct(Function<SelectModel, R> adapterFunction, BasicColumn column) {
+        return new FromGatherer<>(adapterFunction, SqlBuilder.countDistinct(column));
     }
     
     @Override
     protected CountDSL<R> getThis() {
         return this;
+    }
+    
+    public static class FromGatherer<R> {
+        private BasicColumn column;
+        private Function<SelectModel, R> adapterFunction;
+        
+        public FromGatherer(Function<SelectModel, R> adapterFunction, BasicColumn column) {
+            this.adapterFunction = adapterFunction;
+            this.column = column;
+        }
+        
+        public CountDSL<R> from(SqlTable table) {
+            return new CountDSL<> (column, table, adapterFunction);
+        }
     }
     
     public class CountWhereBuilder extends AbstractWhereDSL<CountWhereBuilder>
