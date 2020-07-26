@@ -60,7 +60,8 @@ public class UpdateRenderer {
 
     private UpdateStatementProvider renderWithWhereClause(List<Optional<FragmentAndParameters>> fragmentsAndParameters,
             WhereClauseProvider whereClause) {
-        return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(fragmentsAndParameters, whereClause))
+        return DefaultUpdateStatementProvider
+                .withUpdateStatement(calculateUpdateStatement(fragmentsAndParameters, whereClause))
                 .withParameters(calculateParameters(fragmentsAndParameters))
                 .withParameters(whereClause.getParameters())
                 .build();
@@ -78,7 +79,8 @@ public class UpdateRenderer {
                 + spaceBefore(calculateSetPhrase(fragmentsAndParameters));
     }
     
-    private UpdateStatementProvider renderWithoutWhereClause(List<Optional<FragmentAndParameters>> fragmentsAndParameters) {
+    private UpdateStatementProvider renderWithoutWhereClause(
+            List<Optional<FragmentAndParameters>> fragmentsAndParameters) {
         return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(fragmentsAndParameters))
                 .withParameters(calculateParameters(fragmentsAndParameters))
                 .build();
@@ -109,7 +111,8 @@ public class UpdateRenderer {
                 .render();
     }
 
-    private Function<AbstractColumnMapping, Optional<FragmentAndParameters>> toFragmentAndParameters(SetPhraseVisitor visitor) {
+    private Function<AbstractColumnMapping, Optional<FragmentAndParameters>> toFragmentAndParameters(
+            SetPhraseVisitor visitor) {
         return updateMapping -> toFragmentAndParameters(visitor, updateMapping);
     }
     

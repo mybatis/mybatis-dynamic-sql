@@ -22,6 +22,8 @@ import java.util.Optional;
 import org.mybatis.dynamic.sql.BindableColumn;
 
 /**
+ * Represents a database function.
+ * 
  * @deprecated in favor of {@link AbstractUniTypeFunction}
  * 
  * @author Jeff Butler

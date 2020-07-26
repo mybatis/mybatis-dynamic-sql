@@ -29,7 +29,8 @@ public class MultiRowRenderingUtilities {
         return insertMapping -> MultiRowRenderingUtilities.toFieldAndValue(visitor, insertMapping);
     }
     
-    public static FieldAndValue toFieldAndValue(MultiRowValuePhraseVisitor visitor, AbstractColumnMapping insertMapping) {
+    public static FieldAndValue toFieldAndValue(MultiRowValuePhraseVisitor visitor,
+            AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
 

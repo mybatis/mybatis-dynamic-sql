@@ -310,8 +310,8 @@ public interface SqlBuilder {
         return Concatenate.concatenate(firstColumn, secondColumn, subsequentColumns);
     }
     
-    static <T> OperatorFunction<T> applyOperator(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
-            BasicColumn... subsequentColumns) {
+    static <T> OperatorFunction<T> applyOperator(String operator, BindableColumn<T> firstColumn,
+            BasicColumn secondColumn, BasicColumn... subsequentColumns) {
         return OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns);
     }
     

@@ -122,7 +122,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
         }
         
         public CountDSL<R> from(SqlTable table) {
-            return new CountDSL<> (column, table, adapterFunction);
+            return new CountDSL<>(column, table, adapterFunction);
         }
     }
     

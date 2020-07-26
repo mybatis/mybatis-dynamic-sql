@@ -80,24 +80,6 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
         return mapping.value().flatMap(v -> buildFragment(mapping, v));
     }
     
-    private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
-        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
-
-        String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
-        String setPhrase = mapping.mapColumn(SqlColumn::name)
-                + " = "  //$NON-NLS-1$
-                + jdbcPlaceholder;
-        
-        return FragmentAndParameters.withFragment(setPhrase)
-                .withParameter(mapKey, value)
-                .buildOptional();
-    }
-    
-    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> column.renderingStrategy().orElse(renderingStrategy)
-                .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
-    }
-
     @Override
     public Optional<FragmentAndParameters> visit(SelectMapping mapping) {
         SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(mapping.selectModel())
@@ -124,5 +106,23 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
         
         return FragmentAndParameters.withFragment(setPhrase)
                 .buildOptional();
+    }
+
+    private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
+        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+
+        String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
+        String setPhrase = mapping.mapColumn(SqlColumn::name)
+                + " = "  //$NON-NLS-1$
+                + jdbcPlaceholder;
+        
+        return FragmentAndParameters.withFragment(setPhrase)
+                .withParameter(mapKey, value)
+                .buildOptional();
+    }
+    
+    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
+        return column -> column.renderingStrategy().orElse(renderingStrategy)
+                .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }
