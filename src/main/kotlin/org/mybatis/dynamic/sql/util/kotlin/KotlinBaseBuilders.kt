@@ -20,10 +20,9 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 
-abstract class KotlinBaseBuilder<M, W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<M, W, B>> : Buildable<M> {
+abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<W, B>> {
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applySelf {
             getWhere().where(column, condition)
@@ -69,7 +68,7 @@ abstract class KotlinBaseBuilder<M, W : AbstractWhereDSL<W>, B : KotlinBaseBuild
 
 abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, SelectModel>, W : AbstractWhereDSL<W>, B : KotlinBaseJoiningBuilder<T, W, B>>(
     private val dsl: AbstractQueryExpressionDSL<T, SelectModel>
-) : KotlinBaseBuilder<SelectModel, W, B>() {
+) : KotlinBaseBuilder<W, B>() {
 
     fun join(table: SqlTable, receiver: JoinReceiver): B =
         applySelf {

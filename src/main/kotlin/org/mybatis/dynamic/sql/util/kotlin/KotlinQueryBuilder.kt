@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias SelectCompleter = KotlinQueryBuilder.() -> Buildable<SelectModel>
 
 class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
-    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder, KotlinQueryBuilder>(dsl) {
+    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder, KotlinQueryBuilder>(dsl), Buildable<SelectModel> {
 
     fun groupBy(vararg columns: BasicColumn) =
             apply {
