@@ -22,21 +22,27 @@ import org.mybatis.dynamic.sql.select.SelectModel
 
 class KotlinUnionBuilder(private val dsl: QueryExpressionDSL<SelectModel>) {
     fun select(vararg selectList: BasicColumn) =
-        select(listOf(*selectList))
+        select(selectList.toList())
 
     fun select(selectList: List<BasicColumn>) =
-        KotlinUnionFromGatherer(dsl, selectList)
+        KotlinUnionFromGatherer(dsl, dsl.union().select(selectList))
+
+    fun selectDistinct(vararg selectList: BasicColumn) =
+        selectDistinct(selectList.toList())
+
+    fun selectDistinct(selectList: List<BasicColumn>) =
+        KotlinUnionFromGatherer(dsl, dsl.union().selectDistinct(selectList))
 }
 
 class KotlinUnionFromGatherer(
     private val dsl: QueryExpressionDSL<SelectModel>,
-    private val selectList: List<BasicColumn>
+    private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>
 ) {
     fun from(
         table: SqlTable,
         enhance: KotlinUnionQueryBuilder.() -> KotlinUnionQueryBuilder
     ): QueryExpressionDSL<SelectModel> {
-        val unionBuilder = KotlinUnionQueryBuilder(dsl.union().select(selectList).from(table))
+        val unionBuilder = KotlinUnionQueryBuilder(fromGatherer.from(table))
         enhance(unionBuilder)
         return dsl
     }
@@ -46,7 +52,7 @@ class KotlinUnionFromGatherer(
         alias: String,
         enhance: KotlinUnionQueryBuilder.() -> KotlinUnionQueryBuilder
     ): QueryExpressionDSL<SelectModel> {
-        val unionBuilder = KotlinUnionQueryBuilder(dsl.union().select(selectList).from(table, alias))
+        val unionBuilder = KotlinUnionQueryBuilder(fromGatherer.from(table, alias))
         enhance(unionBuilder)
         return dsl
     }
