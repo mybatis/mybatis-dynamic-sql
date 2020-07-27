@@ -20,45 +20,26 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 
-class KotlinUnionBuilder(
-    private val outerDsl: QueryExpressionDSL<SelectModel>,
-    private val unionBuilder: QueryExpressionDSL<SelectModel>.UnionBuilder
-) {
+class KotlinUnionBuilder(private val unionBuilder: QueryExpressionDSL<SelectModel>.UnionBuilder) {
     fun select(vararg selectList: BasicColumn) =
         select(selectList.toList())
 
     fun select(selectList: List<BasicColumn>) =
-        KotlinUnionFromGatherer(outerDsl, unionBuilder.select(selectList))
+        KotlinUnionFromGatherer(unionBuilder.select(selectList))
 
     fun selectDistinct(vararg selectList: BasicColumn) =
         selectDistinct(selectList.toList())
 
     fun selectDistinct(selectList: List<BasicColumn>) =
-        KotlinUnionFromGatherer(outerDsl, unionBuilder.selectDistinct(selectList))
+        KotlinUnionFromGatherer(unionBuilder.selectDistinct(selectList))
 }
 
-class KotlinUnionFromGatherer(
-    private val outerDsl: QueryExpressionDSL<SelectModel>,
-    private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>
-) {
-    fun from(
-        table: SqlTable,
-        enhance: KotlinUnionQueryBuilder.() -> KotlinUnionQueryBuilder
-    ): QueryExpressionDSL<SelectModel> {
-        val unionBuilder = KotlinUnionQueryBuilder(fromGatherer.from(table))
-        enhance(unionBuilder)
-        return outerDsl
-    }
+class KotlinUnionFromGatherer(private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>) {
+    fun from(table: SqlTable, enhance: KotlinUnionQueryBuilder.() -> Unit) =
+        enhance(KotlinUnionQueryBuilder(fromGatherer.from(table)))
 
-    fun from(
-        table: SqlTable,
-        alias: String,
-        enhance: KotlinUnionQueryBuilder.() -> KotlinUnionQueryBuilder
-    ): QueryExpressionDSL<SelectModel> {
-        val unionBuilder = KotlinUnionQueryBuilder(fromGatherer.from(table, alias))
-        enhance(unionBuilder)
-        return outerDsl
-    }
+    fun from(table: SqlTable, alias: String, enhance: KotlinUnionQueryBuilder.() -> Unit) =
+        enhance(KotlinUnionQueryBuilder(fromGatherer.from(table, alias)))
 }
 
 class KotlinUnionQueryBuilder(private val unionDsl: QueryExpressionDSL<SelectModel>) :

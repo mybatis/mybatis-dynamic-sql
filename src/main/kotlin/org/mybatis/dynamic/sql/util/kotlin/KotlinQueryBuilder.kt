@@ -50,14 +50,14 @@ class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
 
     fun allRows() = this
 
-    fun union(union: KotlinUnionBuilder.() -> QueryExpressionDSL<SelectModel>) =
+    fun union(union: KotlinUnionBuilder.() -> Unit) =
         apply {
-            union(KotlinUnionBuilder(dsl, dsl.union()))
+            union(KotlinUnionBuilder(dsl.union()))
         }
 
-    fun unionAll(unionAll: KotlinUnionBuilder.() -> QueryExpressionDSL<SelectModel>) =
+    fun unionAll(unionAll: KotlinUnionBuilder.() -> Unit) =
         apply {
-            unionAll(KotlinUnionBuilder(dsl, dsl.unionAll()))
+            unionAll(KotlinUnionBuilder(dsl.unionAll()))
         }
 
     override fun build(): SelectModel = dsl.build()
