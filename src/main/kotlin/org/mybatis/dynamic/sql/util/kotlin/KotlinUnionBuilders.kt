@@ -20,22 +20,25 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 
-class KotlinUnionBuilder(private val dsl: QueryExpressionDSL<SelectModel>) {
+class KotlinUnionBuilder(
+    private val outerDsl: QueryExpressionDSL<SelectModel>,
+    private val unionBuilder: QueryExpressionDSL<SelectModel>.UnionBuilder
+) {
     fun select(vararg selectList: BasicColumn) =
         select(selectList.toList())
 
     fun select(selectList: List<BasicColumn>) =
-        KotlinUnionFromGatherer(dsl, dsl.union().select(selectList))
+        KotlinUnionFromGatherer(outerDsl, unionBuilder.select(selectList))
 
     fun selectDistinct(vararg selectList: BasicColumn) =
         selectDistinct(selectList.toList())
 
     fun selectDistinct(selectList: List<BasicColumn>) =
-        KotlinUnionFromGatherer(dsl, dsl.union().selectDistinct(selectList))
+        KotlinUnionFromGatherer(outerDsl, unionBuilder.selectDistinct(selectList))
 }
 
 class KotlinUnionFromGatherer(
-    private val dsl: QueryExpressionDSL<SelectModel>,
+    private val outerDsl: QueryExpressionDSL<SelectModel>,
     private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>
 ) {
     fun from(
@@ -44,7 +47,7 @@ class KotlinUnionFromGatherer(
     ): QueryExpressionDSL<SelectModel> {
         val unionBuilder = KotlinUnionQueryBuilder(fromGatherer.from(table))
         enhance(unionBuilder)
-        return dsl
+        return outerDsl
     }
 
     fun from(
@@ -54,14 +57,14 @@ class KotlinUnionFromGatherer(
     ): QueryExpressionDSL<SelectModel> {
         val unionBuilder = KotlinUnionQueryBuilder(fromGatherer.from(table, alias))
         enhance(unionBuilder)
-        return dsl
+        return outerDsl
     }
 }
 
-class KotlinUnionQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
+class KotlinUnionQueryBuilder(private val unionDsl: QueryExpressionDSL<SelectModel>) :
     KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder,
-            KotlinUnionQueryBuilder>(dsl) {
+            KotlinUnionQueryBuilder>(unionDsl) {
     override fun self() = this
 
-    override fun getWhere(): QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder = dsl.where()
+    override fun getWhere(): QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder = unionDsl.where()
 }
