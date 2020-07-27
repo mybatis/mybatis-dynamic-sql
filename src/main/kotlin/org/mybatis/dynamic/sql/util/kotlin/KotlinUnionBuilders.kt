@@ -40,6 +40,16 @@ class KotlinUnionFromGatherer(
         enhance(unionBuilder)
         return dsl
     }
+
+    fun from(
+        table: SqlTable,
+        alias: String,
+        enhance: KotlinUnionQueryBuilder.() -> KotlinUnionQueryBuilder
+    ): QueryExpressionDSL<SelectModel> {
+        val unionBuilder = KotlinUnionQueryBuilder(dsl.union().select(selectList).from(table, alias))
+        enhance(unionBuilder)
+        return dsl
+    }
 }
 
 class KotlinUnionQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
