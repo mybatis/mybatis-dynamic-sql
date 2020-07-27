@@ -107,6 +107,24 @@ import org.mybatis.dynamic.sql.where.condition.IsNull;
 public interface SqlBuilder {
 
     // statements
+
+    /**
+     * Renders as select count(distinct column) from table...
+     */
+    static CountDSL.FromGatherer<SelectModel> countDistinctColumn(BasicColumn column) {
+        return CountDSL.countDistinct(column);
+    }
+    
+    /**
+     * Renders as select count(column) from table...
+     */
+    static CountDSL.FromGatherer<SelectModel> countColumn(BasicColumn column) {
+        return CountDSL.count(column);
+    }
+    
+    /**
+     * Renders as select count(*) from table...
+     */
     static CountDSL<SelectModel> countFrom(SqlTable table) {
         return CountDSL.countFrom(table);
     }
@@ -292,8 +310,8 @@ public interface SqlBuilder {
         return Concatenate.concatenate(firstColumn, secondColumn, subsequentColumns);
     }
     
-    static <T> OperatorFunction<T> applyOperator(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
-            BasicColumn... subsequentColumns) {
+    static <T> OperatorFunction<T> applyOperator(String operator, BindableColumn<T> firstColumn,
+            BasicColumn secondColumn, BasicColumn... subsequentColumns) {
         return OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns);
     }
     

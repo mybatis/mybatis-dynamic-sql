@@ -100,6 +100,14 @@ public interface PersonMapper {
         return MyBatis3Utils.countFrom(this::count, person, completer);
     }
 
+    default long count(BasicColumn column, CountDSLCompleter completer) {
+        return MyBatis3Utils.count(this::count, column, person, completer);
+    }
+
+    default long countDistinct(BasicColumn column, CountDSLCompleter completer) {
+        return MyBatis3Utils.countDistinct(this::count, column, person, completer);
+    }
+
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, person, completer);
     }

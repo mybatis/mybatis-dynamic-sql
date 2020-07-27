@@ -23,9 +23,16 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstNa
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
+import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.*
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
+
+fun PersonMapper.count(column: BasicColumn, completer: CountCompleter) =
+    count(this::count, column, Person, completer)
+
+fun PersonMapper.countDistinct(column: BasicColumn, completer: CountCompleter) =
+    countDistinct(this::count, column, Person, completer)
 
 fun PersonMapper.count(completer: CountCompleter) =
     countFrom(this::count, Person, completer)

@@ -80,7 +80,7 @@ A count query is a specialized select - it returns a single column - typically a
 
 Count method support enables the creation of methods that execute a count query allowing a user to specify a where clause at runtime, but abstracting away all other details.
 
-To use this support, we envision creating two methods - one standard mapper method, and one extension method. The first method is the standard MyBatis Dynamic SQL method that will execute a select:
+To use this support, we envision creating several methods - one standard mapper method, and other extension methods. The first method is the standard MyBatis Dynamic SQL method that will execute a select:
 
 ```kotlin
 @Mapper
@@ -90,14 +90,20 @@ interface PersonMapper {
 }
 ```
 
-This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `Long`. The second method should be an extension maethod. It will reuse the abstract method and supply everything needed to build the select statement except the where clause:
+This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `Long`. The other methods should be extension methods. They will reuse the abstract method and supply everything needed to build the select statement except the where clause:
 
 ```kotlin
-fun PersonMapper.count(completer: CountCompleter) =
+fun PersonMapper.count(completer: CountCompleter) = // count(*)
     countFrom(this::count, Person, completer)
+
+fun PersonMapper.count(column: BasicColumn, completer: CountCompleter) = // count(column)
+    count(this::count, column, Person, completer)
+
+fun PersonMapper.countDistinct(column: BasicColumn, completer: CountCompleter) = // count(distinct column)
+    countDistinct(this::count, column, Person, completer)
 ```
 
-This method shows the use of `CountCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. This also shows use of the Kotlin `countFrom` method which is supplied by the library. That method will build and execute the select count statement with the supplied where clause. Clients can use the method as follows:
+These methods show the use of `CountCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. This also shows use of the Kotlin `countFrom`, `count`, and `countDistinct` methods which are supplied by the library. Those methods will build and execute the select count statements with the supplied where clause. Clients can use the methods as follows:
 
 ```kotlin
 val rows = mapper.count {

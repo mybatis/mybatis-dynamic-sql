@@ -474,6 +474,26 @@ class PersonMapperTest {
     }
     
     @Test
+    void testCountLastName() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+            long rows = mapper.count(lastName, CountDSLCompleter.allRows());
+            
+            assertThat(rows).isEqualTo(6L);
+        }
+    }
+    
+    @Test
+    void testCountDistinctLastName() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+            long rows = mapper.countDistinct(lastName, CountDSLCompleter.allRows());
+            
+            assertThat(rows).isEqualTo(2L);
+        }
+    }
+    
+    @Test
     void testTypeHandledLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);

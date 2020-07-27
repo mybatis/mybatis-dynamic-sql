@@ -23,17 +23,12 @@ import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
+import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.*
-
-fun countFrom(table: SqlTable, completer: CountCompleter): SelectStatementProvider {
-    val builder = KotlinCountBuilder(SqlBuilder.countFrom(table))
-    completer(builder)
-    return builder.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
-}
 
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProvider {
     val builder = KotlinDeleteBuilder(SqlBuilder.deleteFrom(table))
@@ -41,8 +36,23 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProv
     return builder.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 }
 
+fun countFrom(table: SqlTable, completer: CountCompleter): SelectStatementProvider {
+    val builder = KotlinCountBuilder(SqlBuilder.countFrom(table))
+    completer(builder)
+    return builder.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+}
+
 fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>): InsertStatementProvider<T> =
     completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
+fun CountDSL.FromGatherer<SelectModel>.from(
+    table: SqlTable,
+    completer: CountCompleter
+): SelectStatementProvider {
+    val builder = KotlinCountBuilder(from(table))
+    completer(builder)
+    return builder.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+}
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(
     table: SqlTable,

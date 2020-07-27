@@ -9,22 +9,36 @@ With version 1.1.3, specialized interfaces and utilities were added that can fur
 
 The goal of count method support is to enable the creation of methods that execute a count query allowing a user to specify a where clause at runtime, but abstracting away all other details.
 
-To use this support, we envision creating two methods on a MyBatis mapper interface. The first method is the standard MyBatis Dynamic SQL method that will execute a select:
+To use this support, we envision creating several methods on a MyBatis mapper interface. The first method is the standard MyBatis Dynamic SQL method that will execute a select:
 
 ```java
 @SelectProvider(type=SqlProviderAdapter.class, method="select")
 long count(SelectStatementProvider selectStatement);
 ```
 
-This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `long`. The second method will reuse this method and supply everything needed to build the select statement except the where clause:
+This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `long`. The other methods will reuse this method and supply everything needed to build the select statement except the where clause. There are several varients of count queries that may be useful:
+
+1. `count(*)` - counts the number of rows that match a where clause
+1. `count(column)` - counts the number of non-null column values that match a where clause
+1. `count(distinct column)` - counts the number of unique column values that match a where clause
+
+Corresponding mapper methods are as follows:
 
 ```java
-default long count(CountDSLCompleter completer) {
+default long count(CountDSLCompleter completer) {  // count(*)
     return MyBatis3Utils.countFrom(this::count, person, completer);
+}
+
+default long count(BasicColumn column, CountDSLCompleter completer) { // count(column)
+    return MyBatis3Utils.count(this::count, column, person, completer);
+}
+
+default long countDistinct(BasicColumn column, CountDSLCompleter completer) { // count(distinct column)
+    return MyBatis3Utils.countDistinct(this::count, column, person, completer);
 }
 ```
 
-This method shows the use of `CountDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
+These methods show the use of `CountDSLCompleter` which is a specialization of a `java.util.Function` that will allow a user to supply a where clause. Clients can use the method as follows:
 
 ```java
 long rows = mapper.count(c ->

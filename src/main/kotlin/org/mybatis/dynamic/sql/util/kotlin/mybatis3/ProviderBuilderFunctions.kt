@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
+import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
@@ -51,6 +52,15 @@ fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(
     completer: MultiRowInsertCompleter<T>
 ): MultiRowInsertStatementProvider<T> =
     completer(into(table)).build().render(RenderingStrategies.MYBATIS3)
+
+fun CountDSL.FromGatherer<SelectModel>.from(
+    table: SqlTable,
+    completer: CountCompleter
+): SelectStatementProvider {
+    val builder = KotlinCountBuilder(from(table))
+    completer(builder)
+    return builder.build().render(RenderingStrategies.MYBATIS3)
+}
 
 fun QueryExpressionDSL.FromGatherer<SelectModel>.from(
     table: SqlTable,
