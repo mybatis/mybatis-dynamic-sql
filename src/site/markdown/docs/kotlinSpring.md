@@ -35,15 +35,34 @@ This object is a singleton containing the `SqlTable` and `SqlColumn` objects tha
 
 A count query is a specialized select - it returns a single column - typically a long - and supports joins and a where clause.
 
+The library supports three types of count statements:
+
+1. `count(*)` - counts the number of rows that match a where clause
+1. `count(column)` - counts the number of non-null column values that match a where clause
+1. `count(distinct column)` - counts the number of unique column values that match a where clause
+
 The DSL for count methods looks like this:
 
 ```kotlin
+    // count(*)
     val countStatement = countFrom(Person) {  // countStatement is a SelectStatementProvider
         where(id, isLessThan(4))
     }
+
+    // count(column)
+    val countStatement = countColumn(lastName).from(Person) {  // countStatement is a SelectStatementProvider
+        allRows()
+    }
+
+    // count(distinct column)
+    val countStatement = countDistinctColumn(lastName).from(Person) {  // countStatement is a SelectStatementProvider
+        allRows()
+    }
 ```
 
-This code creates a `SelectStatementProvider` that can be executed with an extension method for `NamedParameterJdbcTemplate` like this:
+Note the somewhat awkward method names `countColumn`, and `countDistinctColumn`. The methods are named this way to avoid a name collision with other methods in the `SqlBuilder`. This awkwardness can be avoided by using the one step method shown below.
+
+These methods create a `SelectStatementProvider` that can be executed with an extension method for `NamedParameterJdbcTemplate` like this:
 
 ```kotlin
     val template: NamedParameterJdbcTemplate = getTemplate() // not shown
@@ -54,6 +73,14 @@ This is the two step execution process. This can be combined into a single step 
 
 ```kotlin
     val rows = template.countFrom(Person) {
+        where(id, isLessThan(4))
+    }
+
+    val rows = template.count(lastName).from(Person) {
+        where(id, isLessThan(4))
+    }
+
+    val rows = template.countDistinct(lastName).from(Person) {
         where(id, isLessThan(4))
     }
 ```
