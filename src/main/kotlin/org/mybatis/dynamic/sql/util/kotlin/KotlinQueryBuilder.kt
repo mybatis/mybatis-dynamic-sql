@@ -15,7 +15,8 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.*
+import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectDSL
 import org.mybatis.dynamic.sql.select.SelectModel
@@ -24,27 +25,29 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias SelectCompleter = KotlinQueryBuilder.() -> Buildable<SelectModel>
 
 class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
-    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder, KotlinQueryBuilder>(dsl), Buildable<SelectModel> {
+    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>,
+            QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder,
+            KotlinQueryBuilder>(dsl), Buildable<SelectModel> {
 
     fun groupBy(vararg columns: BasicColumn) =
-            apply {
-                dsl.groupBy(*columns)
-            }
+        apply {
+            dsl.groupBy(columns.toList())
+        }
 
     fun orderBy(vararg columns: SortSpecification) =
-            apply {
-                dsl.orderBy(*columns)
-            }
+        apply {
+            dsl.orderBy(columns.toList())
+        }
 
     fun limit(limit: Long) =
-            apply {
-                dsl.limit(limit)
-            }
+        apply {
+            dsl.limit(limit)
+        }
 
     fun offset(offset: Long) =
-            apply {
-                dsl.offset(offset)
-            }
+        apply {
+            dsl.offset(offset)
+        }
 
     fun fetchFirst(fetchFirstRows: Long): SelectDSL<SelectModel>.FetchFirstFinisher = dsl.fetchFirst(fetchFirstRows)
 

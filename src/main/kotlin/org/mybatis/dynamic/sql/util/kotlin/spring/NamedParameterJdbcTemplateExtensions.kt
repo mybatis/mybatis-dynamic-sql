@@ -24,7 +24,12 @@ import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
-import org.mybatis.dynamic.sql.util.kotlin.*
+import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
+import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
+import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.ResultSet

@@ -24,7 +24,17 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.util.kotlin.*
+import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
+import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
+import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinDeleteBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinQueryBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
+import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
 fun countFrom(table: SqlTable, completer: CountCompleter) =
     completer(KotlinCountBuilder(SqlBuilder.countFrom(table))).build().render(RenderingStrategies.MYBATIS3)

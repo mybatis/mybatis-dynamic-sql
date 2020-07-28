@@ -22,7 +22,8 @@ import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 
-@DslMarker annotation class MyBatisDslMarker
+@DslMarker
+annotation class MyBatisDslMarker
 
 @MyBatisDslMarker
 abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<W, B>> {
@@ -69,9 +70,9 @@ abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<
     protected abstract fun getWhere(): W
 }
 
-abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, SelectModel>, W : AbstractWhereDSL<W>, B : KotlinBaseJoiningBuilder<T, W, B>>(
-    private val dsl: AbstractQueryExpressionDSL<T, SelectModel>
-) : KotlinBaseBuilder<W, B>() {
+abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, SelectModel>, W : AbstractWhereDSL<W>,
+        B : KotlinBaseJoiningBuilder<T, W, B>>
+    (private val dsl: AbstractQueryExpressionDSL<T, SelectModel>) : KotlinBaseBuilder<W, B>() {
 
     fun join(table: SqlTable, receiver: JoinReceiver): B =
         applySelf {

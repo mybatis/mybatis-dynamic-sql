@@ -44,7 +44,8 @@ class KotlinUnionFromGatherer(private val fromGatherer: QueryExpressionDSL.FromG
 }
 
 class KotlinUnionQueryBuilder(private val unionDsl: QueryExpressionDSL<SelectModel>) :
-    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder,
+    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>,
+            QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder,
             KotlinUnionQueryBuilder>(unionDsl) {
     fun allRows() = this
 

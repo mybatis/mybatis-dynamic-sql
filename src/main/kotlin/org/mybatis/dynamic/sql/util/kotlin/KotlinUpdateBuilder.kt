@@ -16,7 +16,12 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.SqlColumn
-import org.mybatis.dynamic.sql.insert.*
+import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
+import org.mybatis.dynamic.sql.insert.GeneralInsertModel
+import org.mybatis.dynamic.sql.insert.InsertDSL
+import org.mybatis.dynamic.sql.insert.InsertModel
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
