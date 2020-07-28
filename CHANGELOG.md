@@ -19,6 +19,7 @@ If you have written your own set of functions to extend the library, you will no
 - Added the ability to write a function that will change the column data type ([#197](https://github.com/mybatis/mybatis-dynamic-sql/issues/197))
 - Added the `applyOperator` function to make it easy to use non-standard database operators in expressions ([#220](https://github.com/mybatis/mybatis-dynamic-sql/issues/220))
 - Added convenience methods for count(column) and count(distinct column)([#221](https://github.com/mybatis/mybatis-dynamic-sql/issues/221))
+- Added support for union queries in Kotlin([#187](https://github.com/mybatis/mybatis-dynamic-sql/issues/187))
 
 ## Release 1.1.4 - November 23, 2019
 
