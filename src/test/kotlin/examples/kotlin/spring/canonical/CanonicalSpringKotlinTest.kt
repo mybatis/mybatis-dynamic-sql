@@ -599,9 +599,10 @@ class CanonicalSpringKotlinTest {
                     id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
                     addressId
                 ).from(Person, "p") {
-                    where(id, isEqualTo(3))
+                    allRows()
                 }
             }
+            orderBy(sortColumn("A_ID"))
         }
 
         val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
@@ -614,7 +615,7 @@ class CanonicalSpringKotlinTest {
                 "union all " +
                 "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
                 "from Person p " +
-                "where p.id = :p3"
+                "order by A_ID"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -630,7 +631,7 @@ class CanonicalSpringKotlinTest {
             record
         }
 
-        assertThat(records).hasSize(3)
+        assertThat(records).hasSize(8)
         with(records[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
@@ -642,12 +643,12 @@ class CanonicalSpringKotlinTest {
         }
 
         with(records[2]) {
-            assertThat(id).isEqualTo(3)
-            assertThat(firstName).isEqualTo("Pebbles")
+            assertThat(id).isEqualTo(2)
+            assertThat(firstName).isEqualTo("Wilma")
             assertThat(lastName).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("No")
-            assertThat(occupation).isNull()
+            assertThat(employed).isEqualTo("Yes")
+            assertThat(occupation).isEqualTo("Accountant")
             assertThat(addressId).isEqualTo(1)
         }
     }
