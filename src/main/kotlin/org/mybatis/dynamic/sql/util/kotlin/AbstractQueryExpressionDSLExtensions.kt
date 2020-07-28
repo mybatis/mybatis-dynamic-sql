@@ -21,56 +21,48 @@ import org.mybatis.dynamic.sql.select.SelectModel
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
         .join(table: SqlTable, collect: JoinReceiver): T {
-    val collector = JoinCollector()
-    collect(collector)
+    val collector = collect(JoinCollector())
     return join(table, collector.onJoinCriterion, collector.andJoinCriteria)
 }
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
         .join(table: SqlTable, alias: String, collect: JoinReceiver): T {
-    val collector = JoinCollector()
-    collect(collector)
+    val collector = collect(JoinCollector())
     return join(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
 }
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
         .fullJoin(table: SqlTable, collect: JoinReceiver): T {
-    val collector = JoinCollector()
-    collect(collector)
+    val collector = collect(JoinCollector())
     return fullJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
 }
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
         .fullJoin(table: SqlTable, alias: String, collect: JoinReceiver): T {
-    val collector = JoinCollector()
-    collect(collector)
+    val collector = collect(JoinCollector())
     return fullJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
 }
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
         .leftJoin(table: SqlTable, collect: JoinReceiver): T {
-    val collector = JoinCollector()
-    collect(collector)
+    val collector = collect(JoinCollector())
     return leftJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
 }
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
         .leftJoin(table: SqlTable, alias: String, collect: JoinReceiver): T {
-    val collector = JoinCollector()
-    collect(collector)
+    val collector = collect(JoinCollector())
     return leftJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
 }
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
         .rightJoin(table: SqlTable, collect: JoinReceiver): T {
-    val collector = JoinCollector()
-    collect(collector)
+    val collector = collect(JoinCollector())
     return rightJoin(table, collector.onJoinCriterion, collector.andJoinCriteria)
 }
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
         .rightJoin(table: SqlTable, alias: String, collect: JoinReceiver): T {
-    val collector = JoinCollector()
-    collect(collector)
+    val collector = collect(JoinCollector())
     return rightJoin(table, alias, collector.onJoinCriterion, collector.andJoinCriteria)
 }
