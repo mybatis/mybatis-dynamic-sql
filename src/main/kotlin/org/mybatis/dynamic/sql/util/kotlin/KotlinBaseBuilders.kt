@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,10 +20,12 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 
-abstract class KotlinBaseBuilder<M, W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<M, W, B>> : Buildable<M> {
+@DslMarker annotation class MyBatisDslMarker
+
+@MyBatisDslMarker
+abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<W, B>> {
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applySelf {
             getWhere().where(column, condition)
@@ -69,7 +71,7 @@ abstract class KotlinBaseBuilder<M, W : AbstractWhereDSL<W>, B : KotlinBaseBuild
 
 abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, SelectModel>, W : AbstractWhereDSL<W>, B : KotlinBaseJoiningBuilder<T, W, B>>(
     private val dsl: AbstractQueryExpressionDSL<T, SelectModel>
-) : KotlinBaseBuilder<SelectModel, W, B>() {
+) : KotlinBaseBuilder<W, B>() {
 
     fun join(table: SqlTable, receiver: JoinReceiver): B =
         applySelf {

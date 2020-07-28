@@ -33,7 +33,7 @@ typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> MultiRowInsert
 typealias UpdateCompleter = KotlinUpdateBuilder.() -> Buildable<UpdateModel>
 
 class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
-    KotlinBaseBuilder<UpdateModel, UpdateDSL<UpdateModel>.UpdateWhereBuilder, KotlinUpdateBuilder>() {
+    KotlinBaseBuilder<UpdateDSL<UpdateModel>.UpdateWhereBuilder, KotlinUpdateBuilder>(), Buildable<UpdateModel> {
 
     fun <T> set(column: SqlColumn<T>): UpdateDSL<UpdateModel>.SetClauseFinisher<T> = dsl.set(column)
 

@@ -361,6 +361,299 @@ class CanonicalSpringKotlinTest {
     }
 
     @Test
+    fun testRawSelectWithUnion() {
+        val selectStatement = select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            addressId
+        ).from(Person) {
+            where(id, isEqualTo(1))
+            union {
+                select(
+                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId
+                ).from(Person) {
+                    where(id, isEqualTo(2))
+                }
+            }
+            union {
+                select(
+                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId
+                ).from(Person) {
+                    where(id, isEqualTo(3))
+                }
+            }
+        }
+
+        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+            "from Person " +
+            "where id = :p1 " +
+            "union " +
+            "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+            "from Person " +
+            "where id = :p2 " +
+            "union " +
+            "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+            "from Person " +
+            "where id = :p3"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
+        val records = template.selectList(selectStatement) { rs, _ ->
+            val record = PersonRecord()
+            record.id = rs.getInt(1)
+            record.firstName = rs.getString(2)
+            record.lastName = rs.getString(3)
+            record.birthDate = rs.getTimestamp(4)
+            record.employed = rs.getString(5)
+            record.occupation = rs.getString(6)
+            record.addressId = rs.getInt(7)
+            record
+        }
+
+        assertThat(records).hasSize(3)
+        with(records[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(firstName).isEqualTo("Fred")
+            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("Yes")
+            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(addressId).isEqualTo(1)
+        }
+
+        with(records[2]) {
+            assertThat(id).isEqualTo(3)
+            assertThat(firstName).isEqualTo("Pebbles")
+            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("No")
+            assertThat(occupation).isNull()
+            assertThat(addressId).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testRawSelectWithUnionAndAlias() {
+        val selectStatement = select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            addressId
+        ).from(Person) {
+            where(id, isEqualTo(1))
+            union {
+                select(
+                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId
+                ).from(Person) {
+                    where(id, isEqualTo(2))
+                }
+            }
+            union {
+                select(
+                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId
+                ).from(Person, "p") {
+                    where(id, isEqualTo(3))
+                }
+            }
+        }
+
+        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person " +
+                "where id = :p1 " +
+                "union " +
+                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person " +
+                "where id = :p2 " +
+                "union " +
+                "select p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
+                "from Person p " +
+                "where p.id = :p3"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
+        val records = template.selectList(selectStatement) { rs, _ ->
+            val record = PersonRecord()
+            record.id = rs.getInt(1)
+            record.firstName = rs.getString(2)
+            record.lastName = rs.getString(3)
+            record.birthDate = rs.getTimestamp(4)
+            record.employed = rs.getString(5)
+            record.occupation = rs.getString(6)
+            record.addressId = rs.getInt(7)
+            record
+        }
+
+        assertThat(records).hasSize(3)
+        with(records[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(firstName).isEqualTo("Fred")
+            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("Yes")
+            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(addressId).isEqualTo(1)
+        }
+
+        with(records[2]) {
+            assertThat(id).isEqualTo(3)
+            assertThat(firstName).isEqualTo("Pebbles")
+            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("No")
+            assertThat(occupation).isNull()
+            assertThat(addressId).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testRawSelectWithUnionAndDistinct() {
+        val selectStatement = select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            addressId
+        ).from(Person) {
+            where(id, isEqualTo(1))
+            union {
+                select(
+                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId
+                ).from(Person) {
+                    where(id, isEqualTo(2))
+                }
+            }
+            union {
+                selectDistinct(
+                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId
+                ).from(Person, "p") {
+                    where(id, isEqualTo(3))
+                }
+            }
+        }
+
+        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person " +
+                "where id = :p1 " +
+                "union " +
+                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person " +
+                "where id = :p2 " +
+                "union " +
+                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
+                "from Person p " +
+                "where p.id = :p3"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
+        val records = template.selectList(selectStatement) { rs, _ ->
+            val record = PersonRecord()
+            record.id = rs.getInt(1)
+            record.firstName = rs.getString(2)
+            record.lastName = rs.getString(3)
+            record.birthDate = rs.getTimestamp(4)
+            record.employed = rs.getString(5)
+            record.occupation = rs.getString(6)
+            record.addressId = rs.getInt(7)
+            record
+        }
+
+        assertThat(records).hasSize(3)
+        with(records[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(firstName).isEqualTo("Fred")
+            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("Yes")
+            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(addressId).isEqualTo(1)
+        }
+
+        with(records[2]) {
+            assertThat(id).isEqualTo(3)
+            assertThat(firstName).isEqualTo("Pebbles")
+            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("No")
+            assertThat(occupation).isNull()
+            assertThat(addressId).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testRawSelectWithUnionAllAndDistinct() {
+        val selectStatement = select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            addressId
+        ).from(Person) {
+            where(id, isEqualTo(1))
+            union {
+                select(
+                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId
+                ).from(Person) {
+                    where(id, isEqualTo(2))
+                }
+            }
+            unionAll {
+                selectDistinct(
+                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId
+                ).from(Person, "p") {
+                    allRows()
+                }
+            }
+            orderBy(sortColumn("A_ID"))
+        }
+
+        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person " +
+                "where id = :p1 " +
+                "union " +
+                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person " +
+                "where id = :p2 " +
+                "union all " +
+                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
+                "from Person p " +
+                "order by A_ID"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
+        val records = template.selectList(selectStatement) { rs, _ ->
+            val record = PersonRecord()
+            record.id = rs.getInt(1)
+            record.firstName = rs.getString(2)
+            record.lastName = rs.getString(3)
+            record.birthDate = rs.getTimestamp(4)
+            record.employed = rs.getString(5)
+            record.occupation = rs.getString(6)
+            record.addressId = rs.getInt(7)
+            record
+        }
+
+        assertThat(records).hasSize(8)
+        with(records[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(firstName).isEqualTo("Fred")
+            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("Yes")
+            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(addressId).isEqualTo(1)
+        }
+
+        with(records[2]) {
+            assertThat(id).isEqualTo(2)
+            assertThat(firstName).isEqualTo("Wilma")
+            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isEqualTo("Yes")
+            assertThat(occupation).isEqualTo("Accountant")
+            assertThat(addressId).isEqualTo(1)
+        }
+    }
+
+    @Test
     fun testRawSelectWithJoin() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,

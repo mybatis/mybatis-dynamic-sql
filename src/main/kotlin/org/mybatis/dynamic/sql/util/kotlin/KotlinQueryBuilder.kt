@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias SelectCompleter = KotlinQueryBuilder.() -> Buildable<SelectModel>
 
 class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
-    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder, KotlinQueryBuilder>(dsl) {
+    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder, KotlinQueryBuilder>(dsl), Buildable<SelectModel> {
 
     fun groupBy(vararg columns: BasicColumn) =
             apply {
@@ -49,6 +49,16 @@ class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
     fun fetchFirst(fetchFirstRows: Long): SelectDSL<SelectModel>.FetchFirstFinisher = dsl.fetchFirst(fetchFirstRows)
 
     fun allRows() = this
+
+    fun union(union: KotlinUnionBuilder.() -> Unit) =
+        apply {
+            union(KotlinUnionBuilder(dsl.union()))
+        }
+
+    fun unionAll(unionAll: KotlinUnionBuilder.() -> Unit) =
+        apply {
+            unionAll(KotlinUnionBuilder(dsl.unionAll()))
+        }
 
     override fun build(): SelectModel = dsl.build()
 
