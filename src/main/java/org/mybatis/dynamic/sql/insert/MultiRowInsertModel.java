@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.Collection;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -26,7 +27,8 @@ public class MultiRowInsertModel<T> extends AbstractMultiRowInsertModel<T> {
     private MultiRowInsertModel(Builder<T> builder) {
         super(builder);
     }
-    
+
+    @NotNull
     public MultiRowInsertStatementProvider<T> render(RenderingStrategy renderingStrategy) {
         return MultiRowInsertRenderer.withMultiRowInsertModel(this)
                 .withRenderingStrategy(renderingStrategy)

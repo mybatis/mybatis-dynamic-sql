@@ -23,13 +23,14 @@ import java.util.function.Supplier;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
+import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
-public class GeneralInsertDSL {
+public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
     private List<AbstractColumnMapping> insertMappings = new ArrayList<>();
     private SqlTable table;
 
@@ -40,7 +41,8 @@ public class GeneralInsertDSL {
     public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
         return new SetClauseFinisher<>(column);
     }
-    
+
+    @Override
     public GeneralInsertModel build() {
         return new GeneralInsertModel.Builder()
                 .withTable(table)
