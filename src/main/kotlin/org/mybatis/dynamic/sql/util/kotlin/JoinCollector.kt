@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.select.join.JoinCriterion
 
 typealias JoinReceiver = JoinCollector.() -> JoinCollector
 
+@MyBatisDslMarker
 class JoinCollector {
     val onJoinCriterion: JoinCriterion by lazy { internalOnCriterion }
     val andJoinCriteria = mutableListOf<JoinCriterion>()

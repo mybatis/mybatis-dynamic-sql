@@ -20,6 +20,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 
+@MyBatisDslMarker
 class KotlinUnionBuilder(private val unionBuilder: QueryExpressionDSL<SelectModel>.UnionBuilder) {
     fun select(vararg selectList: BasicColumn) =
         select(selectList.toList())

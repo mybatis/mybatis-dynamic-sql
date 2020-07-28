@@ -22,6 +22,9 @@ import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 
+@DslMarker annotation class MyBatisDslMarker
+
+@MyBatisDslMarker
 abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<W, B>> {
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applySelf {

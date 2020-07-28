@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.VisitableCondition
 
 typealias CriteriaReceiver = CriteriaCollector.() -> CriteriaCollector
 
+@MyBatisDslMarker
 class CriteriaCollector {
     val criteria = mutableListOf<SqlCriterion<*>>()
 
