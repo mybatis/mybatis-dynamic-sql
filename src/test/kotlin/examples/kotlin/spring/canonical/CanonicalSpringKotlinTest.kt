@@ -34,7 +34,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import java.util.*
 
-@Suppress("LargeClass", "LongMethod")
+@Suppress("LargeClass", "LongMethod", "MaxLineLength")
 class CanonicalSpringKotlinTest {
     private lateinit var template: NamedParameterJdbcTemplate
 
@@ -258,8 +258,7 @@ class CanonicalSpringKotlinTest {
             set(addressId).toValue(1)
         }
 
-        val expected = "insert into Person (id, first_name, last_name, birth_date," +
-                " employed, occupation, address_id)" +
+        val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
                 " values (:p1, :p2, :p3, :p4, :p5, :p6, :p7)"
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
@@ -460,18 +459,15 @@ class CanonicalSpringKotlinTest {
             }
         }
 
-        val expected = "select id as A_ID, first_name, last_name, birth_date, " +
-                "employed, occupation, address_id " +
+        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
                 "from Person " +
                 "where id = :p1 " +
                 "union " +
-                "select id as A_ID, first_name, last_name, birth_date, " +
-                "employed, occupation, address_id " +
+                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
                 "from Person " +
                 "where id = :p2 " +
                 "union " +
-                "select p.id as A_ID, p.first_name, p.last_name, p.birth_date, " +
-                "p.employed, p.occupation, p.address_id " +
+                "select p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
                 "from Person p " +
                 "where p.id = :p3"
 
@@ -536,18 +532,15 @@ class CanonicalSpringKotlinTest {
             }
         }
 
-        val expected = "select id as A_ID, first_name, last_name, birth_date, " +
-                "employed, occupation, address_id " +
+        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
                 "from Person " +
                 "where id = :p1 " +
                 "union " +
-                "select id as A_ID, first_name, last_name, birth_date, " +
-                "employed, occupation, address_id " +
+                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
                 "from Person " +
                 "where id = :p2 " +
                 "union " +
-                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, " +
-                "p.employed, p.occupation, p.address_id " +
+                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
                 "from Person p " +
                 "where p.id = :p3"
 
@@ -613,18 +606,15 @@ class CanonicalSpringKotlinTest {
             orderBy(sortColumn("A_ID"))
         }
 
-        val expected = "select id as A_ID, first_name, last_name, birth_date, " +
-                "employed, occupation, address_id " +
+        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
                 "from Person " +
                 "where id = :p1 " +
                 "union " +
-                "select id as A_ID, first_name, last_name, birth_date, " +
-                "employed, occupation, address_id " +
+                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
                 "from Person " +
                 "where id = :p2 " +
                 "union all " +
-                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, " +
-                "p.employed, p.occupation, p.address_id " +
+                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
                 "from Person p " +
                 "order by A_ID"
 
@@ -737,8 +727,7 @@ class CanonicalSpringKotlinTest {
             limit(3)
         }
 
-        val expected = "select id as A_ID, first_name, last_name, birth_date," +
-                " employed, occupation, address_id" +
+        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id" +
                 " from Person" +
                 " where id < :p1" +
                 " and (id < :p2" +
