@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ValueMapping<T> extends AbstractColumnMapping {
+public class ValueMapping<T> extends AbstractColumnMapping<T> {
 
     private Supplier<T> valueSupplier;
     

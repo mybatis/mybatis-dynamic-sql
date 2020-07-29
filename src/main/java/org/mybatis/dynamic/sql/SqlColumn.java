@@ -31,15 +31,17 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected String alias;
     protected String typeHandler;
     protected RenderingStrategy renderingStrategy;
-    
+    protected ParameterTypeConverter<T> parameterTypeConverter;
+
     private SqlColumn(Builder builder) {
         name = Objects.requireNonNull(builder.name);
         jdbcType = builder.jdbcType;
         table = Objects.requireNonNull(builder.table);
         typeHandler = builder.typeHandler;
     }
-    
-    protected SqlColumn(SqlColumn<?> sqlColumn) {
+
+    @SuppressWarnings("unchecked")
+    protected <S> SqlColumn(SqlColumn<S> sqlColumn) {
         name = sqlColumn.name;
         table = sqlColumn.table;
         jdbcType = sqlColumn.jdbcType;
@@ -47,6 +49,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         alias = sqlColumn.alias;
         typeHandler = sqlColumn.typeHandler;
         renderingStrategy = sqlColumn.renderingStrategy;
+        parameterTypeConverter = (ParameterTypeConverter<T>) sqlColumn.parameterTypeConverter;
     }
     
     public String name() {
@@ -70,6 +73,10 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     @Override
     public Optional<String> typeHandler() {
         return Optional.ofNullable(typeHandler);
+    }
+    
+    public Optional<ParameterTypeConverter<T>> parameterTypeConverter() {
+        return Optional.ofNullable(parameterTypeConverter);
     }
     
     @Override
@@ -108,8 +115,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return Optional.ofNullable(renderingStrategy);
     }
     
-    public SqlColumn<T> withTypeHandler(String typeHandler) {
-        SqlColumn<T> column = new SqlColumn<>(this);
+    public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
+        SqlColumn<S> column = new SqlColumn<>(this);
         column.typeHandler = typeHandler;
         return column;
     }
@@ -117,6 +124,12 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
         SqlColumn<S> column = new SqlColumn<>(this);
         column.renderingStrategy = renderingStrategy;
+        return column;
+    }
+
+    public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S> parameterTypeConverter) {
+        SqlColumn<S> column = new SqlColumn<>(this);
+        column.parameterTypeConverter = parameterTypeConverter;
         return column;
     }
 

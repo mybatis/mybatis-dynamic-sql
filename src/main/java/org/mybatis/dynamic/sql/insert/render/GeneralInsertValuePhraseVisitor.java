@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+import org.mybatis.dynamic.sql.ParameterTypeConverter;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -39,21 +40,21 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
 
     @Override
-    public Optional<FieldAndValueAndParameters> visit(NullMapping mapping) {
+    public <T> Optional<FieldAndValueAndParameters> visit(NullMapping<T> mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
-    public Optional<FieldAndValueAndParameters> visit(ConstantMapping mapping) {
+    public <T> Optional<FieldAndValueAndParameters> visit(ConstantMapping<T> mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase(mapping.constant())
                 .buildOptional();
     }
 
     @Override
-    public Optional<FieldAndValueAndParameters> visit(StringConstantMapping mapping) {
+    public <T> Optional<FieldAndValueAndParameters> visit(StringConstantMapping<T> mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .buildOptional();
@@ -61,15 +62,23 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     
     @Override
     public <T> Optional<FieldAndValueAndParameters> visit(ValueMapping<T> mapping) {
-        return buildFragment(mapping, mapping.value());
+        return buildValueFragment(mapping, mapping.value());
     }
 
     @Override
     public <T> Optional<FieldAndValueAndParameters> visit(ValueWhenPresentMapping<T> mapping) {
-        return mapping.value().flatMap(v -> buildFragment(mapping, v));
+        return mapping.value().flatMap(v -> buildValueFragment(mapping, v));
+    }
+    
+    private <T> Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping<T> mapping, T value) {
+        Optional<ParameterTypeConverter<T>> typeConverter = mapping.parameterTypeConverter();
+        
+        return buildFragment(mapping, typeConverter.map(tc -> tc.convert(value))
+                .orElse(value));
+        
     }
 
-    private <T> Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
+    private <T> Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping<T> mapping, Object value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
         String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));

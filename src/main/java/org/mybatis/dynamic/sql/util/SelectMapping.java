@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package org.mybatis.dynamic.sql.util;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.select.SelectModel;
 
-public class SelectMapping extends AbstractColumnMapping {
+public class SelectMapping<T> extends AbstractColumnMapping<T> {
 
     private SelectModel selectModel;
     
-    private SelectMapping(SqlColumn<?> column, Buildable<SelectModel> selectModelBuilder) {
+    private SelectMapping(SqlColumn<T> column, Buildable<SelectModel> selectModelBuilder) {
         super(column);
         selectModel = selectModelBuilder.build();
     }
@@ -36,7 +36,7 @@ public class SelectMapping extends AbstractColumnMapping {
         return visitor.visit(this);
     }
 
-    public static SelectMapping of(SqlColumn<?> column, Buildable<SelectModel> selectModelBuilder) {
-        return new SelectMapping(column, selectModelBuilder);
+    public static <T> SelectMapping<T> of(SqlColumn<T> column, Buildable<SelectModel> selectModelBuilder) {
+        return new SelectMapping<>(column, selectModelBuilder);
     }
 }

@@ -20,10 +20,10 @@ import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class PropertyWhenPresentMapping extends PropertyMapping {
+public class PropertyWhenPresentMapping<T> extends PropertyMapping<T> {
     private Supplier<?> valueSupplier;
     
-    private PropertyWhenPresentMapping(SqlColumn<?> column, String property, Supplier<?> valueSupplier) {
+    private PropertyWhenPresentMapping(SqlColumn<T> column, String property, Supplier<T> valueSupplier) {
         super(column, property);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
     }
@@ -37,7 +37,8 @@ public class PropertyWhenPresentMapping extends PropertyMapping {
         return visitor.visit(this);
     }
     
-    public static PropertyWhenPresentMapping of(SqlColumn<?> column, String property, Supplier<?> valueSupplier) {
-        return new PropertyWhenPresentMapping(column, property, valueSupplier);
+    public static <T> PropertyWhenPresentMapping<T> of(SqlColumn<T> column, String property,
+            Supplier<T> valueSupplier) {
+        return new PropertyWhenPresentMapping<>(column, property, valueSupplier);
     }
 }

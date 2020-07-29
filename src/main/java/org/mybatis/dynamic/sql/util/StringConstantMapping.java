@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import org.mybatis.dynamic.sql.SqlColumn;
  * @author Jeff Butler
  *
  */
-public class StringConstantMapping extends AbstractColumnMapping {
+public class StringConstantMapping<T> extends AbstractColumnMapping<T> {
     private String constant;
     
-    private StringConstantMapping(SqlColumn<?> column) {
+    private StringConstantMapping(SqlColumn<T> column) {
         super(column);
     }
 
@@ -35,8 +35,8 @@ public class StringConstantMapping extends AbstractColumnMapping {
         return constant;
     }
     
-    public static StringConstantMapping of(SqlColumn<?> column, String constant) {
-        StringConstantMapping mapping = new StringConstantMapping(column);
+    public static <T> StringConstantMapping<T> of(SqlColumn<T> column, String constant) {
+        StringConstantMapping<T> mapping = new StringConstantMapping<>(column);
         mapping.constant = constant;
         return mapping;
     }

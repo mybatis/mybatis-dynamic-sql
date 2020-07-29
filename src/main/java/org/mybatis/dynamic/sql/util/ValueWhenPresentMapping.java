@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
+public class ValueWhenPresentMapping<T> extends AbstractColumnMapping<T> {
 
     private Supplier<T> valueSupplier;
     

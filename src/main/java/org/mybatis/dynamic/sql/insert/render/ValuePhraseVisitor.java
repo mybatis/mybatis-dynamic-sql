@@ -36,37 +36,37 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
     }
 
     @Override
-    public Optional<FieldAndValue> visit(NullMapping mapping) {
+    public <T> Optional<FieldAndValue> visit(NullMapping<T> mapping) {
         return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
-    public Optional<FieldAndValue> visit(ConstantMapping mapping) {
+    public <T> Optional<FieldAndValue> visit(ConstantMapping<T> mapping) {
         return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase(mapping.constant())
                 .buildOptional();
     }
 
     @Override
-    public Optional<FieldAndValue> visit(StringConstantMapping mapping) {
+    public <T> Optional<FieldAndValue> visit(StringConstantMapping<T> mapping) {
         return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .buildOptional();
     }
     
     @Override
-    public Optional<FieldAndValue> visit(PropertyMapping mapping) {
+    public <T> Optional<FieldAndValue> visit(PropertyMapping<T> mapping) {
         return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
                 .buildOptional();
     }
     
     @Override
-    public Optional<FieldAndValue> visit(PropertyWhenPresentMapping mapping) {
+    public <T> Optional<FieldAndValue> visit(PropertyWhenPresentMapping<T> mapping) {
         if (mapping.shouldRender()) {
-            return visit((PropertyMapping) mapping);
+            return visit((PropertyMapping<T>) mapping);
         } else {
             return Optional.empty();
         }

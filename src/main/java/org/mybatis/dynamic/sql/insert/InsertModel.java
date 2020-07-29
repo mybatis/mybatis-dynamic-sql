@@ -31,7 +31,7 @@ import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 public class InsertModel<T> {
     private SqlTable table;
     private T record;
-    private List<AbstractColumnMapping> columnMappings;
+    private List<AbstractColumnMapping<?>> columnMappings;
     
     private InsertModel(Builder<T> builder) {
         table = Objects.requireNonNull(builder.table);
@@ -39,7 +39,7 @@ public class InsertModel<T> {
         columnMappings = Objects.requireNonNull(builder.columnMappings);
     }
 
-    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
+    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping<?>, R> mapper) {
         return columnMappings.stream().map(mapper);
     }
     
@@ -66,7 +66,7 @@ public class InsertModel<T> {
     public static class Builder<T> {
         private SqlTable table;
         private T record;
-        private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+        private List<AbstractColumnMapping<?>> columnMappings = new ArrayList<>();
         
         public Builder<T> withTable(SqlTable table) {
             this.table = table;
@@ -78,7 +78,7 @@ public class InsertModel<T> {
             return this;
         }
         
-        public Builder<T> withColumnMappings(List<AbstractColumnMapping> columnMappings) {
+        public Builder<T> withColumnMappings(List<AbstractColumnMapping<?>> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }

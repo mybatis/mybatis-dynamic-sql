@@ -31,14 +31,14 @@ import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 public class GeneralInsertModel {
 
     private SqlTable table;
-    private List<AbstractColumnMapping> insertMappings;
+    private List<AbstractColumnMapping<?>> insertMappings;
 
     private GeneralInsertModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
         insertMappings = builder.insertMappings;
     }
     
-    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
+    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping<?>, R> mapper) {
         return insertMappings.stream().map(mapper);
     }
 
@@ -56,14 +56,14 @@ public class GeneralInsertModel {
 
     public static class Builder {
         private SqlTable table;
-        private List<AbstractColumnMapping> insertMappings = new ArrayList<>();
+        private List<AbstractColumnMapping<?>> insertMappings = new ArrayList<>();
         
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
         
-        public Builder withInsertMappings(List<AbstractColumnMapping> insertMappings) {
+        public Builder withInsertMappings(List<AbstractColumnMapping<?>> insertMappings) {
             this.insertMappings.addAll(insertMappings);
             return this;
         }

@@ -16,19 +16,25 @@
 package org.mybatis.dynamic.sql.util;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
+import org.mybatis.dynamic.sql.ParameterTypeConverter;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public abstract class AbstractColumnMapping {
-    protected SqlColumn<?> column;
+public abstract class AbstractColumnMapping<T> {
+    protected SqlColumn<T> column;
     
-    protected AbstractColumnMapping(SqlColumn<?> column) {
+    protected AbstractColumnMapping(SqlColumn<T> column) {
         this.column = Objects.requireNonNull(column);
     }
     
     public <R> R mapColumn(Function<SqlColumn<?>, R> mapper) {
         return mapper.apply(column);
+    }
+    
+    public Optional<ParameterTypeConverter<T>> parameterTypeConverter() {
+        return column.parameterTypeConverter();
     }
     
     public abstract <R> R accept(ColumnMappingVisitor<R> visitor);

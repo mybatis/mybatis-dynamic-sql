@@ -25,12 +25,13 @@ public class MultiRowRenderingUtilities {
     
     private MultiRowRenderingUtilities() {}
     
-    public static Function<AbstractColumnMapping, FieldAndValue> toFieldAndValue(MultiRowValuePhraseVisitor visitor) {
+    public static Function<AbstractColumnMapping<?>, FieldAndValue> toFieldAndValue(
+            MultiRowValuePhraseVisitor visitor) {
         return insertMapping -> MultiRowRenderingUtilities.toFieldAndValue(visitor, insertMapping);
     }
     
     public static FieldAndValue toFieldAndValue(MultiRowValuePhraseVisitor visitor,
-            AbstractColumnMapping insertMapping) {
+            AbstractColumnMapping<?> insertMapping) {
         return insertMapping.accept(visitor);
     }
 
@@ -39,5 +40,4 @@ public class MultiRowRenderingUtilities {
                 .map(FieldAndValue::fieldName)
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
-
 }

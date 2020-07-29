@@ -33,7 +33,7 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
 
     private T record;
     private SqlTable table;
-    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+    private List<AbstractColumnMapping<?>> columnMappings = new ArrayList<>();
     
     private InsertDSL(T record, SqlTable table) {
         this.record = record;
@@ -80,7 +80,7 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
             return InsertDSL.this;
         }
             
-        public InsertDSL<T> toPropertyWhenPresent(String property, Supplier<?> valueSupplier) {
+        public InsertDSL<T> toPropertyWhenPresent(String property, Supplier<F> valueSupplier) {
             columnMappings.add(PropertyWhenPresentMapping.of(column, property, valueSupplier));
             return InsertDSL.this;
         }
