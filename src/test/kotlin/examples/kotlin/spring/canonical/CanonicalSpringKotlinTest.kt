@@ -34,6 +34,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import java.util.*
 
+@Suppress("LargeClass", "LongMethod", "MaxLineLength")
 class CanonicalSpringKotlinTest {
     private lateinit var template: NamedParameterJdbcTemplate
 

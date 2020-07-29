@@ -17,18 +17,21 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
+import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertDSL
+import org.mybatis.dynamic.sql.insert.InsertModel
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
 
 // insert completers are here because sonar doesn't see them as covered if they are in a file by themselves
-typealias GeneralInsertCompleter = GeneralInsertDSL.() -> GeneralInsertDSL
+typealias GeneralInsertCompleter = GeneralInsertDSL.() -> Buildable<GeneralInsertModel>
 
-typealias InsertCompleter<T> = InsertDSL<T>.() -> InsertDSL<T>
+typealias InsertCompleter<T> = InsertDSL<T>.() -> Buildable<InsertModel<T>>
 
-typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> MultiRowInsertDSL<T>
+typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> Buildable<MultiRowInsertModel<T>>
 
 typealias UpdateCompleter = KotlinUpdateBuilder.() -> Buildable<UpdateModel>
 

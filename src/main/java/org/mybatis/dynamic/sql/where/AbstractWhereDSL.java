@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
@@ -30,51 +31,61 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         super();
     }
     
+    @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition) {
         addCriterion(column, condition);
         return getThis();
     }
     
+    @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
         addCriterion(column, condition, Arrays.asList(subCriteria));
         return getThis();
     }
     
+    @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
         addCriterion(column, condition, subCriteria);
         return getThis();
     }
 
+    @NotNull
     public T applyWhere(WhereApplier whereApplier) {
         whereApplier.accept(this);
         return getThis();
     }
 
+    @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition) {
         addCriterion("and", column, condition); //$NON-NLS-1$
         return getThis();
     }
     
+    @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
         addCriterion("and", column, condition, Arrays.asList(subCriteria)); //$NON-NLS-1$
         return getThis();
     }
     
+    @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
         addCriterion("and", column, condition, subCriteria); //$NON-NLS-1$
         return getThis();
     }
     
+    @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition) {
         addCriterion("or", column, condition); //$NON-NLS-1$
         return getThis();
     }
     
+    @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
         addCriterion("or", column, condition, Arrays.asList(subCriteria)); //$NON-NLS-1$
         return getThis();
     }
     
+    @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
         addCriterion("or", column, condition, subCriteria); //$NON-NLS-1$
         return getThis();

@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@file:Suppress("TooManyFunctions")
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn
@@ -26,12 +27,23 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
-import org.mybatis.dynamic.sql.util.kotlin.*
+import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
+import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
+import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
 fun count(mapper: (SelectStatementProvider) -> Long, column: BasicColumn, table: SqlTable, completer: CountCompleter) =
     mapper(SqlBuilder.countColumn(column).from(table, completer))
 
-fun countDistinct(mapper: (SelectStatementProvider) -> Long, column: BasicColumn, table: SqlTable, completer: CountCompleter) =
+fun countDistinct(
+    mapper: (SelectStatementProvider) -> Long,
+    column: BasicColumn,
+    table: SqlTable,
+    completer: CountCompleter
+) =
     mapper(SqlBuilder.countDistinctColumn(column).from(table, completer))
 
 fun countFrom(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter) =

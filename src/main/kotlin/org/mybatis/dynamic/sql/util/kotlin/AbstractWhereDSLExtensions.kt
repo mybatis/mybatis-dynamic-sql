@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,20 +21,21 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 
 typealias WhereApplier = AbstractWhereDSL<*>.() -> Unit
 
-fun <T, M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.where(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver): M {
-    val collector = CriteriaCollector()
-    collect(collector)
-    return where(column, condition, collector.criteria)
-}
+fun <T, M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.where(
+    column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver
+) =
+    where(column, condition, collect(CriteriaCollector()).criteria)
 
-fun <T, M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.and(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver): M {
-    val collector = CriteriaCollector()
-    collect(collector)
-    return and(column, condition, collector.criteria)
-}
+fun <T, M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.and(
+    column: BindableColumn<T>,
+    condition: VisitableCondition<T>,
+    collect: CriteriaReceiver
+) =
+    and(column, condition, collect(CriteriaCollector()).criteria)
 
-fun <T, M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.or(column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver): M {
-    val collector = CriteriaCollector()
-    collect(collector)
-    return or(column, condition, collector.criteria)
-}
+fun <T, M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.or(
+    column: BindableColumn<T>,
+    condition: VisitableCondition<T>,
+    collect: CriteriaReceiver
+) =
+    or(column, condition, collect(CriteriaCollector()).criteria)
