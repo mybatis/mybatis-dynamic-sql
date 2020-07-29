@@ -212,7 +212,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelect() {
-        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+        val rows = template.select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
                 where(id, isLessThan(4)) {
                     and(occupation, isNotNull())
@@ -246,7 +247,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectByPrimaryKey() {
-        val record = template.selectOne(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+        val record = template.selectOne(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
                 where(id, isEqualTo(1))
             }.withRowMapper { rs, _ ->
@@ -310,7 +312,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithJoin() {
-        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+        val rows = template.select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
             Address.id, Address.streetAddress, Address.city, Address.state)
             .from(Person, "p") {
                 join(Address, "a") {
@@ -356,7 +359,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithComplexWhere1() {
-        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+        val rows = template.select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
                 where(id, isLessThan(5))
                 and(id, isLessThan(4)) {
@@ -392,7 +396,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithComplexWhere2() {
-        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+        val rows = template.select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
                 where(id, isEqualTo(5))
                 or(id, isEqualTo(4)) {

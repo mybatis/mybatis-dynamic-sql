@@ -15,4 +15,9 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-data class AddressRecord(var id: Int? = null, var streetAddress: String? = null, var city: String? = null, var state: String? = null)
+data class AddressRecord(
+    var id: Int? = null,
+    var streetAddress: String? = null,
+    var city: String? = null,
+    var state: String? = null
+)

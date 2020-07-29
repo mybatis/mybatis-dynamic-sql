@@ -15,8 +15,8 @@
  */
 package examples.kotlin.mybatis3.general
 
-import examples.kotlin.mybatis3.canonical.*
 import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.Address
+import examples.kotlin.mybatis3.canonical.LastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
@@ -25,6 +25,12 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstNa
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.mybatis3.canonical.PersonMapper
+import examples.kotlin.mybatis3.canonical.PersonMapperTest
+import examples.kotlin.mybatis3.canonical.PersonRecord
+import examples.kotlin.mybatis3.canonical.PersonWithAddressMapper
+import examples.kotlin.mybatis3.canonical.YesNoTypeHandler
+import examples.kotlin.mybatis3.canonical.select
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -34,13 +40,26 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.*
+import org.mybatis.dynamic.sql.SqlBuilder.count
+import org.mybatis.dynamic.sql.SqlBuilder.equalTo
+import org.mybatis.dynamic.sql.SqlBuilder.insert
+import org.mybatis.dynamic.sql.SqlBuilder.insertMultiple
+import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
+import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
+import org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isNotNull
+import org.mybatis.dynamic.sql.SqlBuilder.select
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.from
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.into
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 import java.io.InputStreamReader
 import java.sql.DriverManager
 import java.util.*
 
+@Suppress("MaxLineLength")
 class GeneralKotlinTest {
     private fun newSession(): SqlSession {
         Class.forName(PersonMapperTest.JDBC_DRIVER)
@@ -69,8 +88,10 @@ class GeneralKotlinTest {
                 where(id, isLessThan(4))
             }
 
-            assertThat(countStatement.selectStatement).isEqualTo("select count(*) from Person" +
-                " where id < #{parameters.p1,jdbcType=INTEGER}")
+            assertThat(countStatement.selectStatement).isEqualTo(
+                "select count(*) from Person" +
+                        " where id < #{parameters.p1,jdbcType=INTEGER}"
+            )
 
             val rows = mapper.count(countStatement)
 
@@ -104,8 +125,10 @@ class GeneralKotlinTest {
                 where(id, isLessThan(4))
             }
 
-            assertThat(deleteStatement.deleteStatement).isEqualTo("delete from Person" +
-                " where id < #{parameters.p1,jdbcType=INTEGER}")
+            assertThat(deleteStatement.deleteStatement).isEqualTo(
+                "delete from Person" +
+                        " where id < #{parameters.p1,jdbcType=INTEGER}"
+            )
 
             val rows = mapper.delete(deleteStatement)
 
@@ -123,8 +146,10 @@ class GeneralKotlinTest {
                 and(occupation, isNotNull())
             }
 
-            assertThat(deleteStatement.deleteStatement).isEqualTo("delete from Person" +
-                " where id < #{parameters.p1,jdbcType=INTEGER} and occupation is not null")
+            assertThat(deleteStatement.deleteStatement).isEqualTo(
+                "delete from Person" +
+                        " where id < #{parameters.p1,jdbcType=INTEGER} and occupation is not null"
+            )
 
             val rows = mapper.delete(deleteStatement)
 
@@ -142,8 +167,10 @@ class GeneralKotlinTest {
                 or(occupation, isNotNull())
             }
 
-            assertThat(deleteStatement.deleteStatement).isEqualTo("delete from Person" +
-                " where id < #{parameters.p1,jdbcType=INTEGER} or occupation is not null")
+            assertThat(deleteStatement.deleteStatement).isEqualTo(
+                "delete from Person" +
+                        " where id < #{parameters.p1,jdbcType=INTEGER} or occupation is not null"
+            )
 
             val rows = mapper.delete(deleteStatement)
 
@@ -164,9 +191,9 @@ class GeneralKotlinTest {
             }
 
             val expected = "delete from Person" +
-                " where (id < #{parameters.p1,jdbcType=INTEGER} or occupation is not null)" +
-                " and employed =" +
-                " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}"
+                    " where (id < #{parameters.p1,jdbcType=INTEGER} or occupation is not null)" +
+                    " and employed =" +
+                    " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}"
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
@@ -189,9 +216,9 @@ class GeneralKotlinTest {
             }
 
             val expected = "delete from Person" +
-                " where id < #{parameters.p1,jdbcType=INTEGER} or (occupation is not null" +
-                " and employed =" +
-                " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler})"
+                    " where id < #{parameters.p1,jdbcType=INTEGER} or (occupation is not null" +
+                    " and employed =" +
+                    " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler})"
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
@@ -214,9 +241,9 @@ class GeneralKotlinTest {
             }
 
             val expected = "delete from Person where id < #{parameters.p1,jdbcType=INTEGER}" +
-                " and (occupation is not null and" +
-                " employed =" +
-                " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler})"
+                    " and (occupation is not null and" +
+                    " employed =" +
+                    " #{parameters.p2,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler})"
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
@@ -243,12 +270,14 @@ class GeneralKotlinTest {
                 map(addressId).toProperty("addressId")
             }
 
-            val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
-                " values" +
-                " (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}," +
-                " #{record.lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
-                " #{record.birthDate,jdbcType=DATE}, #{record.employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
-                " #{record.occupation,jdbcType=VARCHAR}, #{record.addressId,jdbcType=INTEGER})"
+            val expected =
+                "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
+                        "values " +
+                        "(#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, " +
+                        "#{record.lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}, " +
+                        "#{record.birthDate,jdbcType=DATE}, " +
+                        "#{record.employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}, " +
+                        "#{record.occupation,jdbcType=VARCHAR}, #{record.addressId,jdbcType=INTEGER})"
 
             assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
@@ -275,22 +304,23 @@ class GeneralKotlinTest {
                 map(addressId).toProperty("addressId")
             }
 
-            val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
-                " values" +
-                " (#{records[0].id,jdbcType=INTEGER}," +
-                " #{records[0].firstName,jdbcType=VARCHAR}," +
-                " #{records[0].lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
-                " #{records[0].birthDate,jdbcType=DATE}," +
-                " #{records[0].employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
-                " #{records[0].occupation,jdbcType=VARCHAR}," +
-                " #{records[0].addressId,jdbcType=INTEGER})" +
-                ", (#{records[1].id,jdbcType=INTEGER}," +
-                " #{records[1].firstName,jdbcType=VARCHAR}," +
-                " #{records[1].lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
-                " #{records[1].birthDate,jdbcType=DATE}," +
-                " #{records[1].employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
-                " #{records[1].occupation,jdbcType=VARCHAR}," +
-                " #{records[1].addressId,jdbcType=INTEGER})"
+            val expected =
+                "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
+                        " values" +
+                        " (#{records[0].id,jdbcType=INTEGER}," +
+                        " #{records[0].firstName,jdbcType=VARCHAR}," +
+                        " #{records[0].lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
+                        " #{records[0].birthDate,jdbcType=DATE}," +
+                        " #{records[0].employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
+                        " #{records[0].occupation,jdbcType=VARCHAR}," +
+                        " #{records[0].addressId,jdbcType=INTEGER})" +
+                        ", (#{records[1].id,jdbcType=INTEGER}," +
+                        " #{records[1].firstName,jdbcType=VARCHAR}," +
+                        " #{records[1].lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
+                        " #{records[1].birthDate,jdbcType=DATE}," +
+                        " #{records[1].employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
+                        " #{records[1].occupation,jdbcType=VARCHAR}," +
+                        " #{records[1].addressId,jdbcType=INTEGER})"
 
             assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
@@ -305,8 +335,10 @@ class GeneralKotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                addressId).from(Person) {
+            val selectStatement = select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                addressId
+            ).from(Person) {
                 where(id, isLessThan(4)) {
                     and(occupation, isNotNull())
                 }
@@ -335,8 +367,10 @@ class GeneralKotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
-            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                Address.id, Address.streetAddress, Address.city, Address.state)
+            val selectStatement = select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                Address.id, Address.streetAddress, Address.city, Address.state
+            )
                 .from(Person) {
                     join(Address) {
                         on(addressId, equalTo(Address.id))
@@ -369,8 +403,10 @@ class GeneralKotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
-            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                Address.id, Address.streetAddress, Address.city, Address.state)
+            val selectStatement = select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                Address.id, Address.streetAddress, Address.city, Address.state
+            )
                 .from(Person) {
                     join(Address) {
                         on(addressId, equalTo(Address.id))
@@ -406,8 +442,10 @@ class GeneralKotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
-            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                Address.id, Address.streetAddress, Address.city, Address.state).from(Person) {
+            val selectStatement = select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                Address.id, Address.streetAddress, Address.city, Address.state
+            ).from(Person) {
                 join(Address) {
                     on(addressId, equalTo(Address.id))
                 }
@@ -444,8 +482,10 @@ class GeneralKotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                addressId).from(Person) {
+            val selectStatement = select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                addressId
+            ).from(Person) {
                 where(id, isLessThan(5))
                 and(id, isLessThan(4)) {
                     and(id, isLessThan(3)) {
@@ -457,11 +497,11 @@ class GeneralKotlinTest {
             }
 
             val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id" +
-                " from Person" +
-                " where id < #{parameters.p1,jdbcType=INTEGER}" +
-                " and (id < #{parameters.p2,jdbcType=INTEGER}" +
-                " and (id < #{parameters.p3,jdbcType=INTEGER} and id < #{parameters.p4,jdbcType=INTEGER}))" +
-                " order by id limit #{parameters.p5}"
+                    " from Person" +
+                    " where id < #{parameters.p1,jdbcType=INTEGER}" +
+                    " and (id < #{parameters.p2,jdbcType=INTEGER}" +
+                    " and (id < #{parameters.p3,jdbcType=INTEGER} and id < #{parameters.p4,jdbcType=INTEGER}))" +
+                    " order by id limit #{parameters.p5}"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -485,8 +525,10 @@ class GeneralKotlinTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val selectStatement = select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                addressId).from(Person) {
+            val selectStatement = select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                addressId
+            ).from(Person) {
                 where(id, isEqualTo(5))
                 or(id, isEqualTo(4)) {
                     or(id, isEqualTo(3)) {
@@ -498,11 +540,11 @@ class GeneralKotlinTest {
             }
 
             val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id" +
-                " from Person" +
-                " where id = #{parameters.p1,jdbcType=INTEGER}" +
-                " or (id = #{parameters.p2,jdbcType=INTEGER}" +
-                " or (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER}))" +
-                " order by id limit #{parameters.p5}"
+                    " from Person" +
+                    " where id = #{parameters.p1,jdbcType=INTEGER}" +
+                    " or (id = #{parameters.p2,jdbcType=INTEGER}" +
+                    " or (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER}))" +
+                    " order by id limit #{parameters.p5}"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -599,9 +641,11 @@ class GeneralKotlinTest {
                 where(firstName, isEqualTo("Fred"))
             }
 
-            assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-                " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
-                " where first_name = #{parameters.p2,jdbcType=VARCHAR}")
+            assertThat(updateStatement.updateStatement).isEqualTo(
+                "update Person" +
+                        " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                        " where first_name = #{parameters.p2,jdbcType=VARCHAR}"
+            )
 
             val rows = mapper.update(updateStatement)
 
@@ -621,9 +665,11 @@ class GeneralKotlinTest {
                 }
             }
 
-            assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-                " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
-                " where (first_name = #{parameters.p2,jdbcType=VARCHAR} or id > #{parameters.p3,jdbcType=INTEGER})")
+            assertThat(updateStatement.updateStatement).isEqualTo(
+                "update Person" +
+                        " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                        " where (first_name = #{parameters.p2,jdbcType=VARCHAR} or id > #{parameters.p3,jdbcType=INTEGER})"
+            )
 
             val rows = mapper.update(updateStatement)
 
@@ -644,10 +690,12 @@ class GeneralKotlinTest {
                 }
             }
 
-            assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-                " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
-                " where first_name = #{parameters.p2,jdbcType=VARCHAR}" +
-                " or (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER})")
+            assertThat(updateStatement.updateStatement).isEqualTo(
+                "update Person" +
+                        " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                        " where first_name = #{parameters.p2,jdbcType=VARCHAR}" +
+                        " or (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER})"
+            )
 
             val rows = mapper.update(updateStatement)
 
@@ -668,10 +716,12 @@ class GeneralKotlinTest {
                 }
             }
 
-            assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-                " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
-                " where first_name = #{parameters.p2,jdbcType=VARCHAR}" +
-                " and (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER})")
+            assertThat(updateStatement.updateStatement).isEqualTo(
+                "update Person" +
+                        " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                        " where first_name = #{parameters.p2,jdbcType=VARCHAR}" +
+                        " and (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER})"
+            )
 
             val rows = mapper.update(updateStatement)
 
@@ -690,10 +740,12 @@ class GeneralKotlinTest {
                 or(id, isEqualTo(3))
             }
 
-            assertThat(updateStatement.updateStatement).isEqualTo("update Person" +
-                " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
-                " where first_name = #{parameters.p2,jdbcType=VARCHAR}" +
-                " or id = #{parameters.p3,jdbcType=INTEGER}")
+            assertThat(updateStatement.updateStatement).isEqualTo(
+                "update Person" +
+                        " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
+                        " where first_name = #{parameters.p2,jdbcType=VARCHAR}" +
+                        " or id = #{parameters.p3,jdbcType=INTEGER}"
+            )
 
             val rows = mapper.update(updateStatement)
 

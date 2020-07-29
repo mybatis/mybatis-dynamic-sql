@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@file:Suppress("TooManyFunctions")
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn

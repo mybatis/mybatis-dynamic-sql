@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.util.Buildable
 
 typealias SelectCompleter = KotlinQueryBuilder.() -> Buildable<SelectModel>
 
+@Suppress("TooManyFunctions")
 class KotlinQueryBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
     KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>,
             QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder,

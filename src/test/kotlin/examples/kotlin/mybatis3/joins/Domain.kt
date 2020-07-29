@@ -17,7 +17,12 @@ package examples.kotlin.mybatis3.joins
 
 import java.util.*
 
-data class OrderDetail(var orderId: Int? = null, var lineNumber: Int? = null, var description: String? = null, var quantity: Int? = null)
+data class OrderDetail(
+    var orderId: Int? = null,
+    var lineNumber: Int? = null,
+    var description: String? = null,
+    var quantity: Int? = null
+)
 
 data class User(var userId: Int? = null, var userName: String? = null, var parentId: Int? = null)
 
