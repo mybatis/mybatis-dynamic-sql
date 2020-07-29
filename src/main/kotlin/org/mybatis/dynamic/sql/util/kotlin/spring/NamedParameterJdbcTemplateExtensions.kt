@@ -14,6 +14,7 @@
  *    limitations under the License.
  */
 @file:Suppress("TooManyFunctions")
+
 package org.mybatis.dynamic.sql.util.kotlin.spring
 
 import org.mybatis.dynamic.sql.BasicColumn
@@ -31,6 +32,7 @@ import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.ResultSet
@@ -83,8 +85,11 @@ fun <T> NamedParameterJdbcTemplate.selectList(
 fun <T> NamedParameterJdbcTemplate.selectOne(
     selectStatement: SelectStatementProvider,
     rowMapper: (rs: ResultSet, rowNum: Int) -> T
-): T? =
+): T? = try {
     queryForObject(selectStatement.selectStatement, selectStatement.parameters, rowMapper)
+} catch (e: EmptyResultDataAccessException) {
+    null
+}
 
 fun NamedParameterJdbcTemplate.update(updateStatement: UpdateStatementProvider) =
     update(updateStatement.updateStatement, updateStatement.parameters)
