@@ -38,17 +38,16 @@ class CriteriaCollector {
     fun <T> and(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
-        collect: CriteriaCollector.() -> CriteriaCollector
+        collect: CriteriaReceiver
     ) =
         apply {
-            val collector = CriteriaCollector()
-            collect(collector)
-            val criterion: SqlCriterion<T> = SqlCriterion.withColumn(column)
-                .withCondition(condition)
-                .withSubCriteria(collector.criteria)
-                .withConnector("and")
-                .build()
-            criteria.add(criterion)
+            criteria.add(
+                SqlCriterion.withColumn(column)
+                    .withCondition(condition)
+                    .withSubCriteria(collect(CriteriaCollector()).criteria)
+                    .withConnector("and")
+                    .build()
+            )
         }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -64,16 +63,15 @@ class CriteriaCollector {
     fun <T> or(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
-        collect: CriteriaCollector.() -> CriteriaCollector
+        collect: CriteriaReceiver
     ) =
         apply {
-            val collector = CriteriaCollector()
-            collect(collector)
-            val criterion: SqlCriterion<T> = SqlCriterion.withColumn(column)
-                .withCondition(condition)
-                .withSubCriteria(collector.criteria)
-                .withConnector("or")
-                .build()
-            criteria.add(criterion)
+            criteria.add(
+                SqlCriterion.withColumn(column)
+                    .withCondition(condition)
+                    .withSubCriteria(collect(CriteriaCollector()).criteria)
+                    .withConnector("or")
+                    .build()
+            )
         }
 }
