@@ -32,7 +32,19 @@ import org.mybatis.dynamic.sql.util.kotlin.spring.*
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
+import java.sql.ResultSet
 import java.util.*
+
+fun personRowMapper(rs: ResultSet, rowNum: Int) =
+    PersonRecord().apply {
+        id = rs.getInt(1)
+        firstName = rs.getString(2)
+        lastName = rs.getString(3)
+        birthDate = rs.getTimestamp(4)
+        employed = rs.getString(5)
+        occupation = rs.getString(6)
+        addressId = rs.getInt(7)
+    }
 
 class CanonicalSpringKotlinTemplateDirectTest {
     private lateinit var template: NamedParameterJdbcTemplate
@@ -195,17 +207,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
             .from(Person) {
                 allRows()
                 orderBy(id)
-            }.withRowMapper { rs, _ ->
-                val record = PersonRecord()
-                record.id = rs.getInt(1)
-                record.firstName = rs.getString(2)
-                record.lastName = rs.getString(3)
-                record.birthDate = rs.getTimestamp(4)
-                record.employed = rs.getString(5)
-                record.occupation = rs.getString(6)
-                record.addressId = rs.getInt(7)
-                record
-            }
+            }.withRowMapper(::personRowMapper)
 
         assertThat(rows).hasSize(6)
     }
@@ -221,17 +223,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 and(occupation, isNotNull())
                 orderBy(id)
                 limit(3)
-            }.withRowMapper { rs, _ ->
-                val record = PersonRecord()
-                record.id = rs.getInt(1)
-                record.firstName = rs.getString(2)
-                record.lastName = rs.getString(3)
-                record.birthDate = rs.getTimestamp(4)
-                record.employed = rs.getString(5)
-                record.occupation = rs.getString(6)
-                record.addressId = rs.getInt(7)
-                record
-            }
+            }.withRowMapper(::personRowMapper)
 
         assertThat(rows).hasSize(2)
         with(rows[0]) {
@@ -251,17 +243,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
                 where(id, isEqualTo(1))
-            }.withRowMapper { rs, _ ->
-                val record = PersonRecord()
-                record.id = rs.getInt(1)
-                record.firstName = rs.getString(2)
-                record.lastName = rs.getString(3)
-                record.birthDate = rs.getTimestamp(4)
-                record.employed = rs.getString(5)
-                record.occupation = rs.getString(6)
-                record.addressId = rs.getInt(7)
-                record
-            }
+            }.withRowMapper(::personRowMapper)
 
         with(record!!) {
             assertThat(id).isEqualTo(1)
@@ -370,17 +352,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 }
                 orderBy(id)
                 limit(3)
-            }.withRowMapper { rs, _ ->
-                val record = PersonRecord()
-                record.id = rs.getInt(1)
-                record.firstName = rs.getString(2)
-                record.lastName = rs.getString(3)
-                record.birthDate = rs.getTimestamp(4)
-                record.employed = rs.getString(5)
-                record.occupation = rs.getString(6)
-                record.addressId = rs.getInt(7)
-                record
-            }
+            }.withRowMapper(::personRowMapper)
 
         assertThat(rows).hasSize(1)
         with(rows[0]) {
@@ -407,17 +379,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 }
                 orderBy(id)
                 limit(3)
-            }.withRowMapper { rs, _ ->
-                val record = PersonRecord()
-                record.id = rs.getInt(1)
-                record.firstName = rs.getString(2)
-                record.lastName = rs.getString(3)
-                record.birthDate = rs.getTimestamp(4)
-                record.employed = rs.getString(5)
-                record.occupation = rs.getString(6)
-                record.addressId = rs.getInt(7)
-                record
-            }
+            }.withRowMapper(::personRowMapper)
 
         assertThat(rows).hasSize(3)
         with(rows[2]) {

@@ -34,7 +34,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import java.util.*
 
-@Suppress("LargeClass", "LongMethod", "MaxLineLength")
+@Suppress("LargeClass", "MaxLineLength")
 class CanonicalSpringKotlinTest {
     private lateinit var template: NamedParameterJdbcTemplate
 
@@ -267,17 +267,7 @@ class CanonicalSpringKotlinTest {
         val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
                 where(id, isEqualTo(100))
-            }.withRowMapper { rs, _ ->
-                val record = PersonRecord()
-                record.id = rs.getInt(1)
-                record.firstName = rs.getString(2)
-                record.lastName = rs.getString(3)
-                record.birthDate = rs.getTimestamp(4)
-                record.employed = rs.getString(5)
-                record.occupation = rs.getString(6)
-                record.addressId = rs.getInt(7)
-                record
-            }
+            }.withRowMapper(::personRowMapper)
 
         assertThat(rows).isEqualTo(1)
         with(record!!) {
@@ -305,17 +295,7 @@ class CanonicalSpringKotlinTest {
             limit(3)
         }
 
-        val rows = template.selectList(selectStatement) { rs, _ ->
-            val record = PersonRecord()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-            record.addressId = rs.getInt(7)
-            record
-        }
+        val rows = template.selectList(selectStatement, ::personRowMapper)
 
         assertThat(rows).hasSize(2)
         with(rows[0]) {
@@ -338,17 +318,7 @@ class CanonicalSpringKotlinTest {
             where(id, isEqualTo(300))
         }
 
-        val record = template.selectOne(selectStatement) { rs, _ ->
-            val record = PersonRecord()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-            record.addressId = rs.getInt(7)
-            record
-        }
+        val record = template.selectOne(selectStatement, ::personRowMapper)
 
         assertThat(record).isNull()
     }
@@ -362,17 +332,7 @@ class CanonicalSpringKotlinTest {
             where(id, isEqualTo(1))
         }
 
-        val record = template.selectOne(selectStatement) { rs, _ ->
-            val record = PersonRecord()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-            record.addressId = rs.getInt(7)
-            record
-        }
+        val record = template.selectOne(selectStatement, ::personRowMapper)
 
         with(record!!) {
             assertThat(id).isEqualTo(1)
@@ -424,17 +384,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val records = template.selectList(selectStatement) { rs, _ ->
-            val record = PersonRecord()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-            record.addressId = rs.getInt(7)
-            record
-        }
+        val records = template.selectList(selectStatement, ::personRowMapper)
 
         assertThat(records).hasSize(3)
         with(records[0]) {
@@ -497,17 +447,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val records = template.selectList(selectStatement) { rs, _ ->
-            val record = PersonRecord()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-            record.addressId = rs.getInt(7)
-            record
-        }
+        val records = template.selectList(selectStatement, ::personRowMapper)
 
         assertThat(records).hasSize(3)
         with(records[0]) {
@@ -570,17 +510,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val records = template.selectList(selectStatement) { rs, _ ->
-            val record = PersonRecord()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-            record.addressId = rs.getInt(7)
-            record
-        }
+        val records = template.selectList(selectStatement, ::personRowMapper)
 
         assertThat(records).hasSize(3)
         with(records[0]) {
@@ -644,17 +574,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val records = template.selectList(selectStatement) { rs, _ ->
-            val record = PersonRecord()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-            record.addressId = rs.getInt(7)
-            record
-        }
+        val records = template.selectList(selectStatement, ::personRowMapper)
 
         assertThat(records).hasSize(8)
         with(records[0]) {
@@ -760,17 +680,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val rows = template.selectList(selectStatement) { rs, _ ->
-            val record = PersonRecord()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-            record.addressId = rs.getInt(7)
-            record
-        }
+        val rows = template.selectList(selectStatement, ::personRowMapper)
 
         assertThat(rows).hasSize(1)
         with(rows[0]) {
@@ -809,17 +719,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val rows = template.selectList(selectStatement) { rs, _ ->
-            val record = PersonRecord()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-            record.addressId = rs.getInt(7)
-            record
-        }
+        val rows = template.selectList(selectStatement, ::personRowMapper)
 
         assertThat(rows).hasSize(3)
         with(rows[2]) {
