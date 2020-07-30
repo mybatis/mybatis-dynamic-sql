@@ -118,9 +118,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
     }
     
     private Object convertValue(T value) {
-        return column.parameterTypeConverter()
-                .map(tc -> tc.convert(value))
-                .orElse(value);
+        return column.convertParameterType(value);
     }
 
     private FragmentAndParameters toFragmentAndParameters(T value) {

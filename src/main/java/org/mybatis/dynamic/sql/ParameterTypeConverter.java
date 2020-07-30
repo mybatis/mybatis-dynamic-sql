@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql;
 
 /**
  * A parameter type converter is used to change a parameter value from one type to another
- * during statement rendering before the parameter is placed into the parameter map. This can be used
+ * during statement rendering and before the parameter is placed into the parameter map. This can be used
  * to somewhat mimic the function of a MyBatis type handler for runtimes such as Spring that don't have
  * a corresponding concept.
  * 
@@ -28,27 +28,27 @@ package org.mybatis.dynamic.sql;
  *
  * <p>A parameter type converter is associated with a SqlColumn.
  * 
- * <p>A parameter type converter is compatible with Spring's general Converter interface so existing converters
- * can be reused here if they are marked with this additional interface. The return type is always Object as the
- * converter is called immediately before a value is placed into a parameter Map and there is no longer any need for
- * the actual target type. Having a fixed return type removes quite a few generic hurdles.
+ * <p>This interface is based on Spring's general Converter interface and is intentionally compatible with it.
+ * Existing converters may be reused if they are marked with this additional interface.
  *
- * <p>The converter is only used for parameters - it is not used for result set processing. The converter will be
- * called in the following circumstances:
+ * <p>The converter is only used for parameters in a parameter map. It is not used for result set processing.
+ * It is also not used for insert statements that are based on an external record class. The converter will be called
+ * in the following circumstances:
  *
  * <ul>
- *     <li>Parameters in a general insert statement</li>
- *     <li>Parameters in an update statement</li>
- *     <li>Parameters in a where clause in any statement</li>
+ *     <li>Parameters in a general insert statement (for the Value and ValueWhenPresent mappings)</li>
+ *     <li>Parameters in an update statement (for the Value and ValueWhenPresent mappings)</li>
+ *     <li>Parameters in a where clause in any statement (for conditions that accept a value or multiple values)</li>
  * </ul>
  * 
  * @param <S> Source Type
+ * @param <T> Target Type
  *
  * @see SqlColumn
  * @author Jeff Butler
  * @since 1.1.5
  */
 @FunctionalInterface
-public interface ParameterTypeConverter<S> {
-    Object convert(S source);
+public interface ParameterTypeConverter<S, T> {
+    T convert(S source);
 }

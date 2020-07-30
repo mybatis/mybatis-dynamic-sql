@@ -47,8 +47,8 @@ public interface BindableColumn<T> extends BasicColumn {
     default Optional<RenderingStrategy> renderingStrategy() {
         return Optional.empty();
     }
-
-    default Optional<ParameterTypeConverter<T>> parameterTypeConverter() {
-        return Optional.empty();
+    
+    default Object convertParameterType(T value) {
+        return value;
     }
 }

@@ -38,7 +38,7 @@ public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
     }
     
     private Object convert(T value) {
-        return localColumn.parameterTypeConverter().map(tc -> tc.convert(value)).orElse(value);
+        return localColumn.convertParameterType(value);
     }
 
     @Override

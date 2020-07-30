@@ -33,8 +33,7 @@ public class ValueMapping<T> extends AbstractColumnMapping {
     }
     
     public Object value() {
-        return localColumn.parameterTypeConverter().map(tc -> tc.convert(valueSupplier.get()))
-                .orElseGet(valueSupplier);
+        return localColumn.convertParameterType(valueSupplier.get());
     }
 
     @Override

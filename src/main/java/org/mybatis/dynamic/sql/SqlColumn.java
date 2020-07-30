@@ -31,7 +31,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected String alias;
     protected String typeHandler;
     protected RenderingStrategy renderingStrategy;
-    protected ParameterTypeConverter<T> parameterTypeConverter;
+    protected ParameterTypeConverter<T, ?> parameterTypeConverter;
 
     private SqlColumn(Builder builder) {
         name = Objects.requireNonNull(builder.name);
@@ -49,7 +49,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         alias = sqlColumn.alias;
         typeHandler = sqlColumn.typeHandler;
         renderingStrategy = sqlColumn.renderingStrategy;
-        parameterTypeConverter = (ParameterTypeConverter<T>) sqlColumn.parameterTypeConverter;
+        parameterTypeConverter = (ParameterTypeConverter<T, ?>) sqlColumn.parameterTypeConverter;
     }
     
     public String name() {
@@ -76,8 +76,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
     
     @Override
-    public Optional<ParameterTypeConverter<T>> parameterTypeConverter() {
-        return Optional.ofNullable(parameterTypeConverter);
+    public Object convertParameterType(T value) {
+        return parameterTypeConverter == null ? value : parameterTypeConverter.convert(value);
     }
     
     @Override
@@ -128,7 +128,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return column;
     }
 
-    public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S> parameterTypeConverter) {
+    public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
         SqlColumn<S> column = new SqlColumn<>(this);
         column.parameterTypeConverter = parameterTypeConverter;
         return column;
