@@ -29,8 +29,9 @@ public class ValueMapping<T> extends AbstractColumnMapping<T> {
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
     }
     
-    public T value() {
-        return valueSupplier.get();
+    public Object value() {
+        return column.parameterTypeConverter().map(tc -> tc.convert(valueSupplier.get()))
+                .orElseGet(valueSupplier);
     }
 
     @Override

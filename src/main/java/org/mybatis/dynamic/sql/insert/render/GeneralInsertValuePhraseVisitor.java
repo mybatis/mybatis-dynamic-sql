@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.ParameterTypeConverter;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -70,14 +69,10 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
         return mapping.value().flatMap(v -> buildValueFragment(mapping, v));
     }
     
-    private <T> Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping<T> mapping, T value) {
-        Optional<ParameterTypeConverter<T>> typeConverter = mapping.parameterTypeConverter();
-        
-        return buildFragment(mapping, typeConverter.map(tc -> tc.convert(value))
-                .orElse(value));
-        
+    private <T> Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping<T> mapping, Object value) {
+        return buildFragment(mapping, value);
     }
-
+    
     private <T> Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping<T> mapping, Object value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 

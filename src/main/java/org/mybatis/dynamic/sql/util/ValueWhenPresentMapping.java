@@ -30,8 +30,12 @@ public class ValueWhenPresentMapping<T> extends AbstractColumnMapping<T> {
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
     }
     
-    public Optional<T> value() {
-        return Optional.ofNullable(valueSupplier.get());
+    public Optional<Object> value() {
+        return Optional.ofNullable(valueSupplier.get()).map(this::convert);
+    }
+    
+    private Object convert(T value) {
+        return column.parameterTypeConverter().map(tc -> tc.convert(value)).orElse(value);
     }
 
     @Override

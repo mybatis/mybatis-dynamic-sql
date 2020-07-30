@@ -21,7 +21,10 @@ package org.mybatis.dynamic.sql;
  * to somewhat mimic the function of a MyBatis type handler for runtimes such as Spring that don't have
  * a corresponding concept.
  *
- * <p>A parameter type converter is associated with a SqlColumn
+ * <p>A parameter type converter is associated with a SqlColumn.
+ * 
+ * <p>A parameter type converter is compatible with Spring's general Converter interface so existing converters can be reused
+ * here if they are marked with this additional interface.
  *
  * <p>The converter is only used for parameters - it is not used for result set processing. The converter will be
  * called in the following circumstances:
@@ -31,7 +34,7 @@ package org.mybatis.dynamic.sql;
  *     <li>Parameters in an update statement</li>
  *     <li>Parameters in a where clause in any statement</li>
  * </ul>
- *
+ * 
  * @param <S> Source Type
  *
  * @see SqlColumn

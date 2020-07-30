@@ -21,9 +21,13 @@ import java.util.function.Supplier;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class PropertyWhenPresentMapping<T> extends PropertyMapping<T> {
-    private Supplier<?> valueSupplier;
+    /**
+     * The Supplier is of type Object because we need to allow for data type changes
+     * for Spring where there are no type handlers.
+     */
+    private Supplier<Object> valueSupplier;
     
-    private PropertyWhenPresentMapping(SqlColumn<T> column, String property, Supplier<T> valueSupplier) {
+    private PropertyWhenPresentMapping(SqlColumn<T> column, String property, Supplier<Object> valueSupplier) {
         super(column, property);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
     }
@@ -38,7 +42,7 @@ public class PropertyWhenPresentMapping<T> extends PropertyMapping<T> {
     }
     
     public static <T> PropertyWhenPresentMapping<T> of(SqlColumn<T> column, String property,
-            Supplier<T> valueSupplier) {
+            Supplier<Object> valueSupplier) {
         return new PropertyWhenPresentMapping<>(column, property, valueSupplier);
     }
 }

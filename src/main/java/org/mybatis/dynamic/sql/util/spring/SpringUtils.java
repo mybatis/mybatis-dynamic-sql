@@ -57,13 +57,15 @@ public class SpringUtils {
     
     public static <T> Optional<T> selectOne(SelectStatementProvider selectStatement,
             NamedParameterJdbcTemplate template, RowMapper<T> rowMapper) {
+        T result;
         try {
-            return Optional.of(
-                    template.queryForObject(selectStatement.getSelectStatement(), selectStatement.getParameters(),
-                            rowMapper));
+            result = template.queryForObject(selectStatement.getSelectStatement(), selectStatement.getParameters(),
+                            rowMapper);
         } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
+            result = null;
         }
+        
+        return Optional.ofNullable(result);
     }
     
     public static int delete(Buildable<DeleteModel> deleteStatement, NamedParameterJdbcTemplate template) {

@@ -41,7 +41,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     @SuppressWarnings("unchecked")
-    protected <S> SqlColumn(SqlColumn<S> sqlColumn) {
+    protected SqlColumn(SqlColumn<?> sqlColumn) {
         name = sqlColumn.name;
         table = sqlColumn.table;
         jdbcType = sqlColumn.jdbcType;
@@ -75,6 +75,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return Optional.ofNullable(typeHandler);
     }
     
+    @Override
     public Optional<ParameterTypeConverter<T>> parameterTypeConverter() {
         return Optional.ofNullable(parameterTypeConverter);
     }
