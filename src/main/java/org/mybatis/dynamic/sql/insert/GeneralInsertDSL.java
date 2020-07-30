@@ -31,7 +31,7 @@ import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
-    private List<AbstractColumnMapping<?>> insertMappings = new ArrayList<>();
+    private List<AbstractColumnMapping> insertMappings = new ArrayList<>();
     private SqlTable table;
 
     private GeneralInsertDSL(SqlTable table) {

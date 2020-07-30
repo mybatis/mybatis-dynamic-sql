@@ -18,11 +18,11 @@ package org.mybatis.dynamic.sql.util;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ColumnToColumnMapping<T> extends AbstractColumnMapping<T> {
+public class ColumnToColumnMapping extends AbstractColumnMapping {
 
     private BasicColumn rightColumn;
     
-    private ColumnToColumnMapping(SqlColumn<T> column, BasicColumn rightColumn) {
+    private ColumnToColumnMapping(SqlColumn<?> column, BasicColumn rightColumn) {
         super(column);
         this.rightColumn = rightColumn;
     }
@@ -36,7 +36,7 @@ public class ColumnToColumnMapping<T> extends AbstractColumnMapping<T> {
         return visitor.visit(this);
     }
 
-    public static <T> ColumnToColumnMapping<T> of(SqlColumn<T> column, BasicColumn rightColumn) {
-        return new ColumnToColumnMapping<>(column, rightColumn);
+    public static ColumnToColumnMapping of(SqlColumn<?> column, BasicColumn rightColumn) {
+        return new ColumnToColumnMapping(column, rightColumn);
     }
 }

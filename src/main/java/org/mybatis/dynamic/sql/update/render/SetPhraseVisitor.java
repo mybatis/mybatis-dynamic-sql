@@ -47,20 +47,20 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     }
 
     @Override
-    public <T> Optional<FragmentAndParameters> visit(NullMapping<T> mapping) {
+    public Optional<FragmentAndParameters> visit(NullMapping mapping) {
         return FragmentAndParameters.withFragment(mapping.mapColumn(SqlColumn::name) + " = null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
-    public <T> Optional<FragmentAndParameters> visit(ConstantMapping<T> mapping) {
+    public Optional<FragmentAndParameters> visit(ConstantMapping mapping) {
         String fragment = mapping.mapColumn(SqlColumn::name) + " = " + mapping.constant(); //$NON-NLS-1$
         return FragmentAndParameters.withFragment(fragment)
                 .buildOptional();
     }
 
     @Override
-    public <T> Optional<FragmentAndParameters> visit(StringConstantMapping<T> mapping) {
+    public Optional<FragmentAndParameters> visit(StringConstantMapping mapping) {
         String fragment = mapping.mapColumn(SqlColumn::name)
                 + " = '" //$NON-NLS-1$
                 + mapping.constant()
@@ -81,7 +81,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     }
     
     @Override
-    public <T> Optional<FragmentAndParameters> visit(SelectMapping<T> mapping) {
+    public Optional<FragmentAndParameters> visit(SelectMapping mapping) {
         SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(mapping.selectModel())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
@@ -99,7 +99,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     }
 
     @Override
-    public <T> Optional<FragmentAndParameters> visit(ColumnToColumnMapping<T> mapping) {
+    public Optional<FragmentAndParameters> visit(ColumnToColumnMapping mapping) {
         String setPhrase = mapping.mapColumn(SqlColumn::name)
                 + " = "  //$NON-NLS-1$
                 + mapping.rightColumn().renderWithTableAlias(TableAliasCalculator.empty());
@@ -108,7 +108,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
                 .buildOptional();
     }
 
-    private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping<T> mapping, Object value) {
+    private Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
         String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));

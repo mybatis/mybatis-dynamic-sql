@@ -39,21 +39,21 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
 
     @Override
-    public <T> Optional<FieldAndValueAndParameters> visit(NullMapping<T> mapping) {
+    public Optional<FieldAndValueAndParameters> visit(NullMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
-    public <T> Optional<FieldAndValueAndParameters> visit(ConstantMapping<T> mapping) {
+    public Optional<FieldAndValueAndParameters> visit(ConstantMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase(mapping.constant())
                 .buildOptional();
     }
 
     @Override
-    public <T> Optional<FieldAndValueAndParameters> visit(StringConstantMapping<T> mapping) {
+    public Optional<FieldAndValueAndParameters> visit(StringConstantMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .buildOptional();
@@ -69,12 +69,12 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
         return mapping.value().flatMap(v -> buildValueFragment(mapping, v));
     }
     
-    private <T> Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping<T> mapping,
+    private Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping mapping,
             Object value) {
         return buildFragment(mapping, value);
     }
     
-    private <T> Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping<T> mapping, Object value) {
+    private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
         String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));

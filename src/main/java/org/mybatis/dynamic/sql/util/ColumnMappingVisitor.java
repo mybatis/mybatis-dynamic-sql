@@ -30,21 +30,21 @@ package org.mybatis.dynamic.sql.util;
  * @param <R> The type of object created by the visitor
  */
 public interface ColumnMappingVisitor<R> {
-    <T> R visit(NullMapping<T> mapping);
+    R visit(NullMapping mapping);
 
-    <T> R visit(ConstantMapping<T> mapping);
+    R visit(ConstantMapping mapping);
 
-    <T> R visit(StringConstantMapping<T> mapping);
+    R visit(StringConstantMapping mapping);
 
     <T> R visit(ValueMapping<T> mapping);
     
     <T> R visit(ValueWhenPresentMapping<T> mapping);
     
-    <T> R visit(SelectMapping<T> mapping);
+    R visit(SelectMapping mapping);
 
-    <T> R visit(PropertyMapping<T> mapping);
+    R visit(PropertyMapping mapping);
 
-    <T> R visit(PropertyWhenPresentMapping<T> mapping);
+    R visit(PropertyWhenPresentMapping mapping);
 
-    <T> R visit(ColumnToColumnMapping<T> columnMapping);
+    R visit(ColumnToColumnMapping columnMapping);
 }

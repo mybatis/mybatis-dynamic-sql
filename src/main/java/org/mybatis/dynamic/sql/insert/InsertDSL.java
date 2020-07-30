@@ -33,7 +33,7 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
 
     private T record;
     private SqlTable table;
-    private List<AbstractColumnMapping<?>> columnMappings = new ArrayList<>();
+    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     
     private InsertDSL(T record, SqlTable table) {
         this.record = record;

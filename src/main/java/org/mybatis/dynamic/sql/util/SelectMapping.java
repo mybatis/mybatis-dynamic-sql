@@ -18,11 +18,11 @@ package org.mybatis.dynamic.sql.util;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.select.SelectModel;
 
-public class SelectMapping<T> extends AbstractColumnMapping<T> {
+public class SelectMapping extends AbstractColumnMapping {
 
     private SelectModel selectModel;
     
-    private SelectMapping(SqlColumn<T> column, Buildable<SelectModel> selectModelBuilder) {
+    private SelectMapping(SqlColumn<?> column, Buildable<SelectModel> selectModelBuilder) {
         super(column);
         selectModel = selectModelBuilder.build();
     }
@@ -36,7 +36,7 @@ public class SelectMapping<T> extends AbstractColumnMapping<T> {
         return visitor.visit(this);
     }
 
-    public static <T> SelectMapping<T> of(SqlColumn<T> column, Buildable<SelectModel> selectModelBuilder) {
-        return new SelectMapping<>(column, selectModelBuilder);
+    public static SelectMapping of(SqlColumn<?> column, Buildable<SelectModel> selectModelBuilder) {
+        return new SelectMapping(column, selectModelBuilder);
     }
 }

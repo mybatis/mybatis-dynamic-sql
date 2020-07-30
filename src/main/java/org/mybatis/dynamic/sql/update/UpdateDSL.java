@@ -47,7 +47,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class UpdateDSL<R> implements Buildable<R> {
 
     private Function<UpdateModel, R> adapterFunction;
-    private List<AbstractColumnMapping<?>> columnMappings = new ArrayList<>();
+    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     private SqlTable table;
     private UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();
     

@@ -20,10 +20,10 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public abstract class AbstractColumnMapping<T> {
-    protected SqlColumn<T> column;
+public abstract class AbstractColumnMapping {
+    protected SqlColumn<?> column;
     
-    protected AbstractColumnMapping(SqlColumn<T> column) {
+    protected AbstractColumnMapping(SqlColumn<?> column) {
         this.column = Objects.requireNonNull(column);
     }
     

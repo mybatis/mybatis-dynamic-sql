@@ -20,17 +20,20 @@ import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ValueMapping<T> extends AbstractColumnMapping<T> {
+public class ValueMapping<T> extends AbstractColumnMapping {
 
     private Supplier<T> valueSupplier;
+    // keep a reference to the column so we don't lose the type
+    private SqlColumn<T> localColumn;
     
     private ValueMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
         super(column);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
+        localColumn = Objects.requireNonNull(column);
     }
     
     public Object value() {
-        return column.parameterTypeConverter().map(tc -> tc.convert(valueSupplier.get()))
+        return localColumn.parameterTypeConverter().map(tc -> tc.convert(valueSupplier.get()))
                 .orElseGet(valueSupplier);
     }
 

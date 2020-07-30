@@ -25,13 +25,13 @@ public class MultiRowRenderingUtilities {
     
     private MultiRowRenderingUtilities() {}
     
-    public static Function<AbstractColumnMapping<?>, FieldAndValue> toFieldAndValue(
+    public static Function<AbstractColumnMapping, FieldAndValue> toFieldAndValue(
             AbstractMultiRowValuePhraseVisitor visitor) {
         return insertMapping -> MultiRowRenderingUtilities.toFieldAndValue(visitor, insertMapping);
     }
     
     public static FieldAndValue toFieldAndValue(AbstractMultiRowValuePhraseVisitor visitor,
-            AbstractColumnMapping<?> insertMapping) {
+            AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
 

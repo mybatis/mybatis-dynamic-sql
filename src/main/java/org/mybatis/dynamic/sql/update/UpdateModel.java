@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class UpdateModel {
     private SqlTable table;
     private WhereModel whereModel;
-    private List<AbstractColumnMapping<?>> columnMappings;
+    private List<AbstractColumnMapping> columnMappings;
     
     private UpdateModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
@@ -49,7 +49,7 @@ public class UpdateModel {
         return Optional.ofNullable(whereModel);
     }
     
-    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping<?>, R> mapper) {
+    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
         return columnMappings.stream().map(mapper);
     }
 
@@ -68,14 +68,14 @@ public class UpdateModel {
     public static class Builder {
         private SqlTable table;
         private WhereModel whereModel;
-        private List<AbstractColumnMapping<?>> columnMappings = new ArrayList<>();
+        private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
         
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
         
-        public Builder withColumnMappings(List<AbstractColumnMapping<?>> columnMappings) {
+        public Builder withColumnMappings(List<AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }

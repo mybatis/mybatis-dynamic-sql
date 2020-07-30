@@ -21,13 +21,16 @@ import java.util.function.Supplier;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class ValueWhenPresentMapping<T> extends AbstractColumnMapping<T> {
+public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
 
     private Supplier<T> valueSupplier;
+    // keep a reference to the column so we don't lose the type
+    private SqlColumn<T> localColumn;
     
     private ValueWhenPresentMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
         super(column);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
+        localColumn = Objects.requireNonNull(column);
     }
     
     public Optional<Object> value() {
@@ -35,7 +38,7 @@ public class ValueWhenPresentMapping<T> extends AbstractColumnMapping<T> {
     }
     
     private Object convert(T value) {
-        return column.parameterTypeConverter().map(tc -> tc.convert(value)).orElse(value);
+        return localColumn.parameterTypeConverter().map(tc -> tc.convert(value)).orElse(value);
     }
 
     @Override

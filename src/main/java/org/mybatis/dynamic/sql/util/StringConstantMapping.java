@@ -24,10 +24,10 @@ import org.mybatis.dynamic.sql.SqlColumn;
  * @author Jeff Butler
  *
  */
-public class StringConstantMapping<T> extends AbstractColumnMapping<T> {
+public class StringConstantMapping extends AbstractColumnMapping {
     private String constant;
     
-    private StringConstantMapping(SqlColumn<T> column) {
+    private StringConstantMapping(SqlColumn<?> column) {
         super(column);
     }
 
@@ -35,8 +35,8 @@ public class StringConstantMapping<T> extends AbstractColumnMapping<T> {
         return constant;
     }
     
-    public static <T> StringConstantMapping<T> of(SqlColumn<T> column, String constant) {
-        StringConstantMapping<T> mapping = new StringConstantMapping<>(column);
+    public static StringConstantMapping of(SqlColumn<?> column, String constant) {
+        StringConstantMapping mapping = new StringConstantMapping(column);
         mapping.constant = constant;
         return mapping;
     }

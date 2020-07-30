@@ -19,10 +19,10 @@ import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class PropertyMapping<T> extends AbstractColumnMapping<T> {
+public class PropertyMapping extends AbstractColumnMapping {
     private String property;
     
-    protected PropertyMapping(SqlColumn<T> column, String property) {
+    protected PropertyMapping(SqlColumn<?> column, String property) {
         super(column);
         this.property = Objects.requireNonNull(property);
     }
@@ -36,7 +36,7 @@ public class PropertyMapping<T> extends AbstractColumnMapping<T> {
         return visitor.visit(this);
     }
     
-    public static <T> PropertyMapping<T> of(SqlColumn<T> column, String property) {
-        return new PropertyMapping<>(column, property);
+    public static PropertyMapping of(SqlColumn<?> column, String property) {
+        return new PropertyMapping(column, property);
     }
 }

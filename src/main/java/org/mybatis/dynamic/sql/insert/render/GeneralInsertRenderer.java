@@ -56,13 +56,13 @@ public class GeneralInsertRenderer {
                 + spaceBefore(calculateValuesPhrase(fieldsAndValues));
     }
 
-    private Function<AbstractColumnMapping<?>, Optional<FieldAndValueAndParameters>> toFieldAndValue(
+    private Function<AbstractColumnMapping, Optional<FieldAndValueAndParameters>> toFieldAndValue(
             GeneralInsertValuePhraseVisitor visitor) {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
     
-    private <T> Optional<FieldAndValueAndParameters> toFieldAndValue(GeneralInsertValuePhraseVisitor visitor,
-            AbstractColumnMapping<T> insertMapping) {
+    private Optional<FieldAndValueAndParameters> toFieldAndValue(GeneralInsertValuePhraseVisitor visitor,
+            AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
     

@@ -17,12 +17,12 @@ package org.mybatis.dynamic.sql.util;
 
 public abstract class UpdateMappingVisitor<R> implements ColumnMappingVisitor<R> {
     @Override
-    public final <T> R visit(PropertyMapping<T> mapping) {
+    public final R visit(PropertyMapping mapping) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public final <T> R visit(PropertyWhenPresentMapping<T> mapping) {
+    public final R visit(PropertyWhenPresentMapping mapping) {
         throw new UnsupportedOperationException();
     }
 }

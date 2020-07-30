@@ -17,13 +17,13 @@ package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 
-public class NullMapping<T> extends AbstractColumnMapping<T> {
-    private NullMapping(SqlColumn<T> column) {
+public class NullMapping extends AbstractColumnMapping {
+    private NullMapping(SqlColumn<?> column) {
         super(column);
     }
     
-    public static <T> NullMapping<T> of(SqlColumn<T> column) {
-        return new NullMapping<>(column);
+    public static NullMapping of(SqlColumn<?> column) {
+        return new NullMapping(column);
     }
 
     @Override

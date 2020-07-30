@@ -27,12 +27,12 @@ public abstract class InsertMappingVisitor<R> implements ColumnMappingVisitor<R>
     }
 
     @Override
-    public final <T> R visit(SelectMapping<T> mapping) {
+    public final R visit(SelectMapping mapping) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public final <T> R visit(ColumnToColumnMapping<T> columnMapping) {
+    public final R visit(ColumnToColumnMapping columnMapping) {
         throw new UnsupportedOperationException();
     }
 }

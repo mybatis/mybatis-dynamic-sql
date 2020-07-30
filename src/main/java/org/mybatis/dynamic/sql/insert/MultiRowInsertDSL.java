@@ -33,7 +33,7 @@ public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
 
     private Collection<T> records;
     private SqlTable table;
-    private List<AbstractColumnMapping<?>> columnMappings = new ArrayList<>();
+    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     
     private MultiRowInsertDSL(Collection<T> records, SqlTable table) {
         this.records = records;

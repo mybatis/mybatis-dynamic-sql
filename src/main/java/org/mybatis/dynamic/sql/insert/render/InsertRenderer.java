@@ -71,12 +71,12 @@ public class InsertRenderer<T> {
                 .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
-    private Function<AbstractColumnMapping<?>, Optional<FieldAndValue>> toFieldAndValue(ValuePhraseVisitor visitor) {
+    private Function<AbstractColumnMapping, Optional<FieldAndValue>> toFieldAndValue(ValuePhraseVisitor visitor) {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
     
     private Optional<FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor,
-            AbstractColumnMapping<?> insertMapping) {
+            AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
     

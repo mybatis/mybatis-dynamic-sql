@@ -33,7 +33,7 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
 
     private Collection<T> records;
     private SqlTable table;
-    private List<AbstractColumnMapping<?>> columnMappings = new ArrayList<>();
+    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     
     private BatchInsertDSL(Collection<T> records, SqlTable table) {
         this.records = records;
