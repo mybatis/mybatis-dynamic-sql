@@ -25,12 +25,16 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
+import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -146,6 +150,30 @@ class SpringTest {
     }
 
     @Test
+    void testInsertWithExtensions() {
+        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+        record.setId(100);
+        record.setFirstName("Bob");
+        record.setLastName("Jones");
+        
+        Buildable<InsertModel<GeneratedAlwaysRecord>> insertStatement = insert(record)
+                .into(generatedAlways)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName");
+       
+        NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
+        
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        
+        int rows = extensions.insert(insertStatement, keyHolder);
+        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
+        
+        assertThat(rows).isEqualTo(1);
+        assertThat(generatedKey).isEqualTo("Bob Jones");
+    }
+
+    @Test
     void testGeneralInsert() {
         GeneralInsertStatementProvider insertStatement = insertInto(generatedAlways)
                 .set(id).toValue(100)
@@ -172,6 +200,23 @@ class SpringTest {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
+        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
+
+        assertThat(rows).isEqualTo(1);
+        assertThat(generatedKey).isEqualTo("Bob Jones");
+    }
+
+    @Test
+    void testGeneralInsertWithGeneratedKeyAndExtensions() {
+        Buildable<GeneralInsertModel> insertStatement = insertInto(generatedAlways)
+                .set(id).toValue(100)
+                .set(firstName).toValue("Bob")
+                .set(lastName).toValue("Jones");
+
+        NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        int rows = extensions.generalInsert(insertStatement, keyHolder);
         String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
 
         assertThat(rows).isEqualTo(1);
@@ -223,6 +268,5 @@ class SpringTest {
         int rows = template.update(updateStatement.getUpdateStatement(), parameterSource);
         
         assertThat(rows).isEqualTo(2);
-        
     }
 }
