@@ -69,7 +69,8 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
         return mapping.value().flatMap(v -> buildValueFragment(mapping, v));
     }
     
-    private <T> Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping<T> mapping, Object value) {
+    private <T> Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping<T> mapping,
+            Object value) {
         return buildFragment(mapping, value);
     }
     

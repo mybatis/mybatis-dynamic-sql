@@ -111,7 +111,7 @@ public class UpdateRenderer {
                 .render();
     }
 
-    private <T> Function<AbstractColumnMapping<?>, Optional<FragmentAndParameters>> toFragmentAndParameters(
+    private Function<AbstractColumnMapping<?>, Optional<FragmentAndParameters>> toFragmentAndParameters(
             SetPhraseVisitor visitor) {
         return updateMapping -> toFragmentAndParameters(visitor, updateMapping);
     }

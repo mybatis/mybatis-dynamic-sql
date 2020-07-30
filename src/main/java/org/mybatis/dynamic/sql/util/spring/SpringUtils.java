@@ -15,9 +15,6 @@
  */
 package org.mybatis.dynamic.sql.util.spring;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
@@ -30,84 +27,27 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 public class SpringUtils {
     private SpringUtils() {}
     
-    public static long count(NamedParameterJdbcTemplate template, Buildable<SelectModel> countStatement) {
-        return count(template, countStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
+    public static DeleteStatementProvider buildDelete(Buildable<DeleteModel> deleteStatement) {
+        return deleteStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
     
-    public static long count(NamedParameterJdbcTemplate template, SelectStatementProvider countStatement) {
-        return template.queryForObject(countStatement.getSelectStatement(), countStatement.getParameters(), Long.class);
+    public static GeneralInsertStatementProvider buildGeneralInsert(Buildable<GeneralInsertModel> insertStatement) {
+        return insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
     
-    public static int delete(NamedParameterJdbcTemplate template, Buildable<DeleteModel> deleteStatement) {
-        return delete(template, deleteStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
+    public static <T> InsertStatementProvider<T> buildInsert(Buildable<InsertModel<T>> insertStatement) {
+        return insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
     
-    public static int delete(NamedParameterJdbcTemplate template, DeleteStatementProvider deleteStatement) {
-        return template.update(deleteStatement.getDeleteStatement(), deleteStatement.getParameters());
-    }
-
-    public static int generalInsert(NamedParameterJdbcTemplate template,
-            Buildable<GeneralInsertModel> insertStatement) {
-        return generalInsert(template, insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
+    public static SelectStatementProvider buildSelect(Buildable<SelectModel> selectStatement) {
+        return selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
     
-    public static int generalInsert(NamedParameterJdbcTemplate template, 
-            GeneralInsertStatementProvider insertStatement) {
-        return template.update(insertStatement.getInsertStatement(), insertStatement.getParameters());
-    }
-
-    public static <T> int insert(NamedParameterJdbcTemplate template, Buildable<InsertModel<T>> insertStatement) {
-        return insert(template, insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
-    }
-    
-    public static <T> int insert(NamedParameterJdbcTemplate template, InsertStatementProvider<T> insertStatement) {
-        return template.update(insertStatement.getInsertStatement(),
-                new BeanPropertySqlParameterSource(insertStatement.getRecord()));
-    }
-
-    public static <T> List<T> selectList(NamedParameterJdbcTemplate template, Buildable<SelectModel> selectStatement,
-            RowMapper<T> rowMapper) {
-        return selectList(template, selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER),
-                rowMapper);
-    }
-
-    public static <T> List<T> selectList(NamedParameterJdbcTemplate template, SelectStatementProvider selectStatement,
-            RowMapper<T> rowMapper) {
-        return template.query(selectStatement.getSelectStatement(), selectStatement.getParameters(), rowMapper);
-    }
-
-    public static <T> Optional<T> selectOne(NamedParameterJdbcTemplate template, Buildable<SelectModel> selectStatement,
-            RowMapper<T> rowMapper) {
-        return selectOne(template, selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER),
-                rowMapper);
-    }
-    
-    public static <T> Optional<T> selectOne(NamedParameterJdbcTemplate template, SelectStatementProvider selectStatement,
-            RowMapper<T> rowMapper) {
-        T result;
-        try {
-            result = template.queryForObject(selectStatement.getSelectStatement(), selectStatement.getParameters(),
-                            rowMapper);
-        } catch (EmptyResultDataAccessException e) {
-            result = null;
-        }
-        
-        return Optional.ofNullable(result);
-    }
-    
-    public static int update(NamedParameterJdbcTemplate template, Buildable<UpdateModel> updateStatement) {
-        return update(template, updateStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
-    }
-    
-    public static int update(NamedParameterJdbcTemplate template, UpdateStatementProvider updateStatement) {
-        return template.update(updateStatement.getUpdateStatement(), updateStatement.getParameters());
+    public static UpdateStatementProvider buildUpdate(Buildable<UpdateModel> updateStatement) {
+        return updateStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
 }
