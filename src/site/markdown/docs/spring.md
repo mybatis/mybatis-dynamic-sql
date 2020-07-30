@@ -17,7 +17,6 @@ The SQL statement objects are created in exactly the same way as for MyBatis - o
 MyBatis3 is a higher level abstraction over JDBC than Spring JDBC templates. While most functions in the library will work with Spring, there are some functions that do not work:
 
 1. Spring JDBC templates do not have anything equivalent to a type handler in MyBatis3. Therefore it is best to use data types that can be automatically understood by Spring
-1. The multiple row insert statement *will not* render properly for Spring. However, batch inserts *will* render properly for Spring
 
 ## Executing Select Statements
 The Spring Named Parameter JDBC template expects an SQL statement with parameter markers in the Spring format, and a set of matched parameters.  MyBatis Dynamic SQL will generate both.  The parameters returned from the generated SQL statement can be wrapped in a Spring `MapSqlParameterSource`.  Spring also expects you to provide a row mapper for creating the returned objects.  The following code shows a complete example:

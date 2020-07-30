@@ -215,7 +215,7 @@ It is important to open a MyBatis session by setting the executor type to BATCH.
 Notice that the same mapper method that is used to insert a single record is now executed multiple times.  The `map` methods are the same with the exception that the `toPropertyWhenPresent` mapping is not supported for batch inserts. 
 
 ## General Insert Statement
-A general insert is used to build arbitrary insert statements. The general insert does not require a separate record object o hold values for the statement - any value can be passed into the statement. This version of the insert is not convienient for retriving generated keys with MyBatis - for that use case we recommend the "single record insert". However the general insert is perfectly acceptible for Spring JDBC template or MyBatis inserts that do not return generated keys. For example
+A general insert is used to build arbitrary insert statements. The general insert does not require a separate record object to hold values for the statement - any value can be passed into the statement. This version of the insert is not convenient for retrieving generated keys with MyBatis - for that use case we recommend the "single record insert". However the general insert is perfectly acceptable for Spring JDBC template or MyBatis inserts that do not return generated keys. For example
 
 ```java
     GeneralInsertStatementProvider insertStatement = insertInto(animalData)

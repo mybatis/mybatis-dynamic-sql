@@ -113,7 +113,7 @@ val rows = mapper.count {
 }
 ```
 
-There is also an extention method that can be used to count all rows in a table:
+There is also an extension method that can be used to count all rows in a table:
 
 ```kotlin
 val rows = mapper.count { allRows() }

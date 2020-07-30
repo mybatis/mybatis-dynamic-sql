@@ -16,7 +16,7 @@ To use this support, we envision creating several methods on a MyBatis mapper in
 long count(SelectStatementProvider selectStatement);
 ```
 
-This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `long`. The other methods will reuse this method and supply everything needed to build the select statement except the where clause. There are several varients of count queries that may be useful:
+This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `long`. The other methods will reuse this method and supply everything needed to build the select statement except the where clause. There are several variants of count queries that may be useful:
 
 1. `count(*)` - counts the number of rows that match a where clause
 1. `count(column)` - counts the number of non-null column values that match a where clause
