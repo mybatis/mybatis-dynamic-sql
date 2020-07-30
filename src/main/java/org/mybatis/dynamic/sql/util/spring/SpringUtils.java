@@ -38,25 +38,60 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 public class SpringUtils {
     private SpringUtils() {}
     
-    public static <T> List<T> selectList(Buildable<SelectModel> selectStatement, NamedParameterJdbcTemplate template,
+    public static long count(NamedParameterJdbcTemplate template, Buildable<SelectModel> countStatement) {
+        return count(template, countStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
+    }
+    
+    public static long count(NamedParameterJdbcTemplate template, SelectStatementProvider countStatement) {
+        return template.queryForObject(countStatement.getSelectStatement(), countStatement.getParameters(), Long.class);
+    }
+    
+    public static int delete(NamedParameterJdbcTemplate template, Buildable<DeleteModel> deleteStatement) {
+        return delete(template, deleteStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
+    }
+    
+    public static int delete(NamedParameterJdbcTemplate template, DeleteStatementProvider deleteStatement) {
+        return template.update(deleteStatement.getDeleteStatement(), deleteStatement.getParameters());
+    }
+
+    public static int generalInsert(NamedParameterJdbcTemplate template,
+            Buildable<GeneralInsertModel> insertStatement) {
+        return generalInsert(template, insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
+    }
+    
+    public static int generalInsert(NamedParameterJdbcTemplate template, 
+            GeneralInsertStatementProvider insertStatement) {
+        return template.update(insertStatement.getInsertStatement(), insertStatement.getParameters());
+    }
+
+    public static <T> int insert(NamedParameterJdbcTemplate template, Buildable<InsertModel<T>> insertStatement) {
+        return insert(template, insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
+    }
+    
+    public static <T> int insert(NamedParameterJdbcTemplate template, InsertStatementProvider<T> insertStatement) {
+        return template.update(insertStatement.getInsertStatement(),
+                new BeanPropertySqlParameterSource(insertStatement.getRecord()));
+    }
+
+    public static <T> List<T> selectList(NamedParameterJdbcTemplate template, Buildable<SelectModel> selectStatement,
             RowMapper<T> rowMapper) {
-        return selectList(selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), template,
+        return selectList(template, selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER),
                 rowMapper);
     }
 
-    public static <T> List<T> selectList(SelectStatementProvider selectStatement, NamedParameterJdbcTemplate template,
+    public static <T> List<T> selectList(NamedParameterJdbcTemplate template, SelectStatementProvider selectStatement,
             RowMapper<T> rowMapper) {
         return template.query(selectStatement.getSelectStatement(), selectStatement.getParameters(), rowMapper);
     }
 
-    public static <T> Optional<T> selectOne(Buildable<SelectModel> selectStatement,
-            NamedParameterJdbcTemplate template, RowMapper<T> rowMapper) {
-        return selectOne(selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER),
-                template, rowMapper);
+    public static <T> Optional<T> selectOne(NamedParameterJdbcTemplate template, Buildable<SelectModel> selectStatement,
+            RowMapper<T> rowMapper) {
+        return selectOne(template, selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER),
+                rowMapper);
     }
     
-    public static <T> Optional<T> selectOne(SelectStatementProvider selectStatement,
-            NamedParameterJdbcTemplate template, RowMapper<T> rowMapper) {
+    public static <T> Optional<T> selectOne(NamedParameterJdbcTemplate template, SelectStatementProvider selectStatement,
+            RowMapper<T> rowMapper) {
         T result;
         try {
             result = template.queryForObject(selectStatement.getSelectStatement(), selectStatement.getParameters(),
@@ -68,38 +103,11 @@ public class SpringUtils {
         return Optional.ofNullable(result);
     }
     
-    public static int delete(Buildable<DeleteModel> deleteStatement, NamedParameterJdbcTemplate template) {
-        return delete(deleteStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), template);
+    public static int update(NamedParameterJdbcTemplate template, Buildable<UpdateModel> updateStatement) {
+        return update(template, updateStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
     
-    public static int delete(DeleteStatementProvider deleteStatement, NamedParameterJdbcTemplate template) {
-        return template.update(deleteStatement.getDeleteStatement(), deleteStatement.getParameters());
-    }
-
-    public static int generalInsert(Buildable<GeneralInsertModel> insertStatement,
-            NamedParameterJdbcTemplate template) {
-        return generalInsert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), template);
-    }
-    
-    public static int generalInsert(GeneralInsertStatementProvider insertStatement,
-            NamedParameterJdbcTemplate template) {
-        return template.update(insertStatement.getInsertStatement(), insertStatement.getParameters());
-    }
-
-    public static <T> int insert(Buildable<InsertModel<T>> insertStatement, NamedParameterJdbcTemplate template) {
-        return insert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), template);
-    }
-    
-    public static <T> int insert(InsertStatementProvider<T> insertStatement, NamedParameterJdbcTemplate template) {
-        return template.update(insertStatement.getInsertStatement(),
-                new BeanPropertySqlParameterSource(insertStatement.getRecord()));
-    }
-
-    public static int update(Buildable<UpdateModel> updateStatement, NamedParameterJdbcTemplate template) {
-        return update(updateStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), template);
-    }
-    
-    public static int update(UpdateStatementProvider updateStatement, NamedParameterJdbcTemplate template) {
+    public static int update(NamedParameterJdbcTemplate template, UpdateStatementProvider updateStatement) {
         return template.update(updateStatement.getUpdateStatement(), updateStatement.getParameters());
     }
 }
