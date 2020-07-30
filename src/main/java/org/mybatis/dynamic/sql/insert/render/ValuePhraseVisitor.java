@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.insert.render;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -59,7 +58,7 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
     @Override
     public Optional<FieldAndValue> visit(PropertyMapping mapping) {
         return FieldAndValue.withFieldName(mapping.columnName())
-                .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
+                .withValuePhrase(mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapping.property())))
                 .buildOptional();
     }
     
@@ -70,10 +69,6 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
         } else {
             return Optional.empty();
         }
-    }
-
-    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> calculateJdbcPlaceholder(column, parameterName);
     }
 
     private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {

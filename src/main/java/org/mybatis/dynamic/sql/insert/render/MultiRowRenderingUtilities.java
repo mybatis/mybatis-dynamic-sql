@@ -16,25 +16,12 @@
 package org.mybatis.dynamic.sql.insert.render;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public class MultiRowRenderingUtilities {
     
     private MultiRowRenderingUtilities() {}
     
-    public static Function<AbstractColumnMapping, FieldAndValue> toFieldAndValue(
-            AbstractMultiRowValuePhraseVisitor visitor) {
-        return insertMapping -> MultiRowRenderingUtilities.toFieldAndValue(visitor, insertMapping);
-    }
-    
-    public static FieldAndValue toFieldAndValue(AbstractMultiRowValuePhraseVisitor visitor,
-            AbstractColumnMapping insertMapping) {
-        return insertMapping.accept(visitor);
-    }
-
     public static String calculateColumnsPhrase(List<FieldAndValue> fieldsAndValues) {
         return fieldsAndValues.stream()
                 .map(FieldAndValue::fieldName)

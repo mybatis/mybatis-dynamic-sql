@@ -39,7 +39,7 @@ public class MultiRowInsertRenderer<T> {
         MultiRowValuePhraseVisitor visitor =
                 new MultiRowValuePhraseVisitor(renderingStrategy, "records[%s]"); //$NON-NLS-1$
         List<FieldAndValue> fieldsAndValues = model
-                .mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
+                .mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
         
         return new DefaultMultiRowInsertStatementProvider.Builder<T>().withRecords(model.records())

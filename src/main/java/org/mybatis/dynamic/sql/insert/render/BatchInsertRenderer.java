@@ -37,7 +37,7 @@ public class BatchInsertRenderer<T> {
     public BatchInsert<T> render() {
         BatchValuePhraseVisitor visitor = new BatchValuePhraseVisitor(renderingStrategy, "record"); //$NON-NLS-1$)
         List<FieldAndValue> fieldsAndValues = model
-                .mapColumnMappings(MultiRowRenderingUtilities.toFieldAndValue(visitor))
+                .mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
         
         return BatchInsert.withRecords(model.records())
