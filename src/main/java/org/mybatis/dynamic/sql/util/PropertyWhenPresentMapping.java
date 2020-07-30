@@ -37,8 +37,7 @@ public class PropertyWhenPresentMapping extends PropertyMapping {
         return visitor.visit(this);
     }
     
-    public static PropertyWhenPresentMapping of(SqlColumn<?> column, String property,
-            Supplier<Object> valueSupplier) {
+    public static PropertyWhenPresentMapping of(SqlColumn<?> column, String property, Supplier<?> valueSupplier) {
         return new PropertyWhenPresentMapping(column, property, valueSupplier);
     }
 }

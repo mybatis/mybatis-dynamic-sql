@@ -80,7 +80,7 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
             return InsertDSL.this;
         }
             
-        public InsertDSL<T> toPropertyWhenPresent(String property, Supplier<Object> valueSupplier) {
+        public InsertDSL<T> toPropertyWhenPresent(String property, Supplier<?> valueSupplier) {
             columnMappings.add(PropertyWhenPresentMapping.of(column, property, valueSupplier));
             return InsertDSL.this;
         }

@@ -75,8 +75,7 @@ public class InsertRenderer<T> {
         return insertMapping -> toFieldAndValue(visitor, insertMapping);
     }
     
-    private Optional<FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor,
-            AbstractColumnMapping insertMapping) {
+    private Optional<FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor, AbstractColumnMapping insertMapping) {
         return insertMapping.accept(visitor);
     }
     

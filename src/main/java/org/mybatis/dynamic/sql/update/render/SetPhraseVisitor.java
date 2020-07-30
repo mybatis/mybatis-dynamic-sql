@@ -108,7 +108,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
                 .buildOptional();
     }
 
-    private Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
+    private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
         String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
