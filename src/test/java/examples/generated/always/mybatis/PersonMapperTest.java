@@ -150,7 +150,6 @@ class PersonMapperTest {
             
             rows = mapper.insertSelect(insertSelectStatement, keys);
             assertThat(rows).isEqualTo(2);
-            System.out.println(keys);
             assertThat(keys.get(0).getKey()).isEqualTo(24);
             assertThat(keys.get(1).getKey()).isEqualTo(25);
             

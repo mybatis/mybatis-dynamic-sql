@@ -48,11 +48,17 @@ public class BatchInsertRenderer<T> {
     private String calculateInsertStatement(List<FieldAndValue> fieldsAndValues) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
-                + spaceBefore(MultiRowRenderingUtilities.calculateColumnsPhrase(fieldsAndValues))
-                + spaceBefore(calculateVluesPhrase(fieldsAndValues));
+                + spaceBefore(calculateColumnsPhrase(fieldsAndValues))
+                + spaceBefore(calculateValuesPhrase(fieldsAndValues));
     }
     
-    private String calculateVluesPhrase(List<FieldAndValue> fieldsAndValues) {
+    private String calculateColumnsPhrase(List<FieldAndValue> fieldsAndValues) {
+        return fieldsAndValues.stream()
+                .map(FieldAndValue::fieldName)
+                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+    
+    private String calculateValuesPhrase(List<FieldAndValue> fieldsAndValues) {
         return fieldsAndValues.stream()
                 .map(FieldAndValue::valuePhrase)
                 .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

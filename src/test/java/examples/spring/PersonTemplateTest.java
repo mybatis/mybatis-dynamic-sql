@@ -28,6 +28,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
+import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
@@ -279,6 +280,47 @@ class PersonTemplateTest {
         int rows = template.insertMultiple(insertStatement);
         
         assertThat(rows).isEqualTo(2);
+    }
+
+    @Test
+    void testInsertBatch() {
+        
+        List<PersonRecord> records = new ArrayList<>();
+        
+        PersonRecord record = new PersonRecord();
+        record.setId(100);
+        record.setFirstName("Joe");
+        record.setLastName(LastName.of("Jones"));
+        record.setBirthDate(new Date());
+        record.setEmployed(true);
+        record.setOccupation("Developer");
+        record.setAddressId(1);
+        records.add(record);
+        
+        record = new PersonRecord();
+        record.setId(101);
+        record.setFirstName("Sarah");
+        record.setLastName(LastName.of("Smith"));
+        record.setBirthDate(new Date());
+        record.setEmployed(true);
+        record.setOccupation("Architect");
+        record.setAddressId(2);
+        records.add(record);
+
+        Buildable<BatchInsertModel<PersonRecord>> insertStatement = insert(records).into(person)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastNameAsString")
+                .map(birthDate).toProperty("birthDate")
+                .map(employed).toProperty("employedAsString")
+                .map(occupation).toProperty("occupation")
+                .map(addressId).toProperty("addressId");
+        
+        int[] rows = template.insertBatch(insertStatement);
+        
+        assertThat(rows).hasSize(2);
+        assertThat(rows[0]).isEqualTo(1);
+        assertThat(rows[1]).isEqualTo(1);
     }
 
     @Test

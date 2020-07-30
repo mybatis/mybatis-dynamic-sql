@@ -36,6 +36,7 @@ public class MultiRowInsertRenderer<T> {
     }
     
     public MultiRowInsertStatementProvider<T> render() {
+        // the prefix is a generic format that will be resolved below with String.format(...)
         MultiRowValuePhraseVisitor visitor =
                 new MultiRowValuePhraseVisitor(renderingStrategy, "records[%s]"); //$NON-NLS-1$
         List<FieldAndValue> fieldsAndValues = model
@@ -50,8 +51,14 @@ public class MultiRowInsertRenderer<T> {
     private String calculateInsertStatement(List<FieldAndValue> fieldsAndValues) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
-                + spaceBefore(MultiRowRenderingUtilities.calculateColumnsPhrase(fieldsAndValues))
+                + spaceBefore(calculateColumnsPhrase(fieldsAndValues))
                 + spaceBefore(calculateMultiRowInsertValuesPhrase(fieldsAndValues, model.recordCount()));
+    }
+    
+    private String calculateColumnsPhrase(List<FieldAndValue> fieldsAndValues) {
+        return fieldsAndValues.stream()
+                .map(FieldAndValue::fieldName)
+                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     private String calculateMultiRowInsertValuesPhrase(List<FieldAndValue> fieldsAndValues, int rowCount) {
@@ -62,7 +69,8 @@ public class MultiRowInsertRenderer<T> {
     
     private String toSingleRowOfValues(List<FieldAndValue> fieldsAndValues, int row) {
         return fieldsAndValues.stream()
-                .map(fmv -> fmv.valuePhrase(row))
+                .map(FieldAndValue::valuePhrase)
+                .map(s -> String.format(s, row))
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
