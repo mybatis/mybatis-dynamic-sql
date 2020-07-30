@@ -25,7 +25,7 @@ public class JsonTestDynamicSqlSupport {
     public static SqlColumn<Integer> id = jsonTest.column("id", JDBCType.INTEGER);
     public static SqlColumn<String> description = jsonTest.column("description", JDBCType.VARCHAR);
     public static SqlColumn<String> info = jsonTest.column("info", JDBCType.VARCHAR)
-            .withRenderingStrategy(new JsonRenderingStrategy()); 
+            .withRenderingStrategy(new JsonRenderingStrategy());
 
     public static class JsonTest extends SqlTable {
         public JsonTest() {
