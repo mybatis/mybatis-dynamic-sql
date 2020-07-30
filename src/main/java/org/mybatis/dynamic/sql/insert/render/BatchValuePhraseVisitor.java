@@ -20,15 +20,15 @@ import java.util.function.Function;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
-public class MultiRowValuePhraseVisitor extends AbstractMultiRowValuePhraseVisitor {
+public class BatchValuePhraseVisitor extends AbstractMultiRowValuePhraseVisitor {
 
-    public MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
+    public BatchValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
         super(renderingStrategy, prefix);
     }
 
     @Override
     Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
         return column -> column.renderingStrategy().orElse(renderingStrategy)
-                .getMultiRowFormattedJdbcPlaceholder(column, prefix, parameterName);
+                .getFormattedJdbcPlaceholder(column, prefix, parameterName);
     }
 }

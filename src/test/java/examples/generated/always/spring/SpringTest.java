@@ -17,6 +17,7 @@ package examples.generated.always.spring;
 
 import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
@@ -253,6 +255,36 @@ class SpringTest {
         assertThat(updateCounts).hasSize(2);
         assertThat(updateCounts[0]).isEqualTo(1);
         assertThat(updateCounts[1]).isEqualTo(1);
+    }
+
+    @Test
+    void testMultiRowInsert() {
+        NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        List<GeneratedAlwaysRecord> records = new ArrayList<>();
+        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+        record.setId(100);
+        record.setFirstName("Bob");
+        record.setLastName("Jones");
+        records.add(record);
+        
+        record = new GeneratedAlwaysRecord();
+        record.setId(101);
+        record.setFirstName("Jim");
+        record.setLastName("Smith");
+        records.add(record);
+        
+        Buildable<MultiRowInsertModel<GeneratedAlwaysRecord>> insertStatement = insertMultiple(records).into(generatedAlways)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName");
+        
+        int rows = extensions.insertMultiple(insertStatement, keyHolder);
+
+        assertThat(rows).isEqualTo(2);
+        assertThat(keyHolder.getKeyList().get(0)).contains(entry("FULL_NAME", "Bob Jones"));
+        assertThat(keyHolder.getKeyList().get(1)).contains(entry("FULL_NAME", "Jim Smith"));
     }
 
     @Test

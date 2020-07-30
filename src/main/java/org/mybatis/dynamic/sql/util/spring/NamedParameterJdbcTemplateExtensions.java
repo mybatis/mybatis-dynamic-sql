@@ -23,8 +23,10 @@ import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateModel;
@@ -93,6 +95,24 @@ public class NamedParameterJdbcTemplateExtensions {
     public <T> int insert(InsertStatementProvider<T> insertStatement, KeyHolder keyHolder) {
         return template.update(insertStatement.getInsertStatement(),
                 new BeanPropertySqlParameterSource(insertStatement.getRecord()), keyHolder);
+    }
+
+    public <T> int insertMultiple(Buildable<MultiRowInsertModel<T>> insertStatement) {
+        return insertMultiple(SpringUtils.buildMultiRowInsert(insertStatement));
+    }
+
+    public <T> int insertMultiple(MultiRowInsertStatementProvider<T> insertStatement) {
+        return template.update(insertStatement.getInsertStatement(),
+                new BeanPropertySqlParameterSource(insertStatement));
+    }
+
+    public <T> int insertMultiple(Buildable<MultiRowInsertModel<T>> insertStatement, KeyHolder keyHolder) {
+        return insertMultiple(SpringUtils.buildMultiRowInsert(insertStatement), keyHolder);
+    }
+
+    public <T> int insertMultiple(MultiRowInsertStatementProvider<T> insertStatement, KeyHolder keyHolder) {
+        return template.update(insertStatement.getInsertStatement(),
+                new BeanPropertySqlParameterSource(insertStatement), keyHolder);
     }
 
     public <T> List<T> selectList(Buildable<SelectModel> selectStatement, RowMapper<T> rowMapper) {

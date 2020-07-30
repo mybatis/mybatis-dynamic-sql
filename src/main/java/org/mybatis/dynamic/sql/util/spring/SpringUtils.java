@@ -19,8 +19,10 @@ import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -40,6 +42,10 @@ public class SpringUtils {
     }
     
     public static <T> InsertStatementProvider<T> buildInsert(Buildable<InsertModel<T>> insertStatement) {
+        return insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+    }
+    
+    public static <T> MultiRowInsertStatementProvider<T> buildMultiRowInsert(Buildable<MultiRowInsertModel<T>> insertStatement) {
         return insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
     
