@@ -51,7 +51,8 @@ public class SpringUtils {
         return insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
     
-    public static <T> MultiRowInsertStatementProvider<T> buildMultiRowInsert(Buildable<MultiRowInsertModel<T>> insertStatement) {
+    public static <T> MultiRowInsertStatementProvider<T> buildMultiRowInsert(
+            Buildable<MultiRowInsertModel<T>> insertStatement) {
         return insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
     
