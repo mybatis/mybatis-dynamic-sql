@@ -40,21 +40,21 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
 
     @Override
     public Optional<FieldAndValueAndParameters> visit(NullMapping mapping) {
-        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase("null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
     public Optional<FieldAndValueAndParameters> visit(ConstantMapping mapping) {
-        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.constant())
                 .buildOptional();
     }
 
     @Override
     public Optional<FieldAndValueAndParameters> visit(StringConstantMapping mapping) {
-        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .buildOptional();
     }
@@ -79,14 +79,18 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
 
         String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
         
-        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(jdbcPlaceholder)
                 .withParameter(mapKey, value)
                 .buildOptional();
     }
     
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> column.renderingStrategy().orElse(renderingStrategy)
+        return column -> calculateJdbcPlaceholder(column, parameterName);
+    }
+
+    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+        return column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }

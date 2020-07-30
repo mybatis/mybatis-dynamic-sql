@@ -48,20 +48,20 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(NullMapping mapping) {
-        return FragmentAndParameters.withFragment(mapping.mapColumn(SqlColumn::name) + " = null") //$NON-NLS-1$
+        return FragmentAndParameters.withFragment(mapping.columnName() + " = null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
     public Optional<FragmentAndParameters> visit(ConstantMapping mapping) {
-        String fragment = mapping.mapColumn(SqlColumn::name) + " = " + mapping.constant(); //$NON-NLS-1$
+        String fragment = mapping.columnName() + " = " + mapping.constant(); //$NON-NLS-1$
         return FragmentAndParameters.withFragment(fragment)
                 .buildOptional();
     }
 
     @Override
     public Optional<FragmentAndParameters> visit(StringConstantMapping mapping) {
-        String fragment = mapping.mapColumn(SqlColumn::name)
+        String fragment = mapping.columnName()
                 + " = '" //$NON-NLS-1$
                 + mapping.constant()
                 + "'"; //$NON-NLS-1$
@@ -122,7 +122,11 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     }
     
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> column.renderingStrategy().orElse(renderingStrategy)
+        return column -> calculateJdbcPlaceholder(column, parameterName);
+    }
+
+    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+        return column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }

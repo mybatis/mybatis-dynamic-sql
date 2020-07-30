@@ -37,31 +37,35 @@ public abstract class AbstractMultiRowValuePhraseVisitor extends MultiRowInsertM
 
     @Override
     public FieldAndValue visit(NullMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValue.withFieldName(mapping.columnName())
                 .withValuePhrase("null") //$NON-NLS-1$
                 .build();
     }
 
     @Override
     public FieldAndValue visit(ConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValue.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.constant())
                 .build();
     }
 
     @Override
     public FieldAndValue visit(StringConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValue.withFieldName(mapping.columnName())
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .build();
     }
     
     @Override
     public FieldAndValue visit(PropertyMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValue.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
                 .build();
     }
 
-    abstract Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName);
+    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
+        return column -> calculateJdbcPlaceholder(column, parameterName);
+    }
+
+    abstract String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName);
 }

@@ -37,28 +37,28 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
 
     @Override
     public Optional<FieldAndValue> visit(NullMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValue.withFieldName(mapping.columnName())
                 .withValuePhrase("null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
     public Optional<FieldAndValue> visit(ConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValue.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.constant())
                 .buildOptional();
     }
 
     @Override
     public Optional<FieldAndValue> visit(StringConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValue.withFieldName(mapping.columnName())
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .buildOptional();
     }
     
     @Override
     public Optional<FieldAndValue> visit(PropertyMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValue.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.mapColumn(toJdbcPlaceholder(mapping.property())))
                 .buildOptional();
     }
@@ -73,7 +73,11 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
     }
 
     private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> column.renderingStrategy().orElse(renderingStrategy)
+        return column -> calculateJdbcPlaceholder(column, parameterName);
+    }
+
+    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+        return column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, "record", parameterName); //$NON-NLS-1$
     }
 }

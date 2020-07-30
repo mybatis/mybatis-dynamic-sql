@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import java.util.function.Function;
-
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
@@ -27,8 +25,8 @@ public class BatchValuePhraseVisitor extends AbstractMultiRowValuePhraseVisitor 
     }
 
     @Override
-    Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> column.renderingStrategy().orElse(renderingStrategy)
+    String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+        return column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, prefix, parameterName);
     }
 }
