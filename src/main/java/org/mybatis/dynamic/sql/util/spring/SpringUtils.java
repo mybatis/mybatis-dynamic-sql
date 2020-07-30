@@ -17,9 +17,11 @@ package org.mybatis.dynamic.sql.util.spring;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
+import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
@@ -35,6 +37,10 @@ public class SpringUtils {
     
     public static DeleteStatementProvider buildDelete(Buildable<DeleteModel> deleteStatement) {
         return deleteStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+    }
+    
+    public static <T> BatchInsert<T> buildBatchInsert(Buildable<BatchInsertModel<T>> insertStatement) {
+        return insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
     
     public static GeneralInsertStatementProvider buildGeneralInsert(Buildable<GeneralInsertModel> insertStatement) {

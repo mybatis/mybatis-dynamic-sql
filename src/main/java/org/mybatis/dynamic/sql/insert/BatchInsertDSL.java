@@ -23,12 +23,13 @@ import java.util.List;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
+import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class BatchInsertDSL<T> {
+public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
 
     private Collection<T> records;
     private SqlTable table;
@@ -43,6 +44,7 @@ public class BatchInsertDSL<T> {
         return new ColumnMappingFinisher<>(column);
     }
     
+    @Override
     public BatchInsertModel<T> build() {
         return BatchInsertModel.withRecords(records)
                 .withTable(table)

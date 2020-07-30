@@ -26,6 +26,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
@@ -240,7 +241,7 @@ class SpringTest {
         record.setLastName("Smith");
         records.add(record);
 
-        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records.toArray());
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records);
         
         BatchInsert<GeneratedAlwaysRecord> batchInsert = insert(records)
                 .into(generatedAlways)
@@ -251,6 +252,36 @@ class SpringTest {
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
         
         int[] updateCounts = template.batchUpdate(batchInsert.getInsertStatementSQL(), batch);
+        
+        assertThat(updateCounts).hasSize(2);
+        assertThat(updateCounts[0]).isEqualTo(1);
+        assertThat(updateCounts[1]).isEqualTo(1);
+    }
+
+    @Test
+    void testInsertBatchWithExtensions() {
+        NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
+
+        List<GeneratedAlwaysRecord> records = new ArrayList<>();
+        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+        record.setId(100);
+        record.setFirstName("Bob");
+        record.setLastName("Jones");
+        records.add(record);
+        
+        record = new GeneratedAlwaysRecord();
+        record.setId(101);
+        record.setFirstName("Jim");
+        record.setLastName("Smith");
+        records.add(record);
+
+        Buildable<BatchInsertModel<GeneratedAlwaysRecord>> insertStatement = insert(records)
+                .into(generatedAlways)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName");
+        
+        int[] updateCounts = extensions.insertBatch(insertStatement);
         
         assertThat(updateCounts).hasSize(2);
         assertThat(updateCounts[0]).isEqualTo(1);

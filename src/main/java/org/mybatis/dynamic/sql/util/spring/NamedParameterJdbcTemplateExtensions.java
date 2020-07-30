@@ -21,9 +21,11 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
+import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
@@ -37,7 +39,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.KeyHolder;
+
 
 public class NamedParameterJdbcTemplateExtensions {
     private NamedParameterJdbcTemplate template;
@@ -95,6 +100,15 @@ public class NamedParameterJdbcTemplateExtensions {
     public <T> int insert(InsertStatementProvider<T> insertStatement, KeyHolder keyHolder) {
         return template.update(insertStatement.getInsertStatement(),
                 new BeanPropertySqlParameterSource(insertStatement.getRecord()), keyHolder);
+    }
+
+    public <T> int[] insertBatch(Buildable<BatchInsertModel<T>> insertStatement) {
+        return insertBatch(SpringUtils.buildBatchInsert(insertStatement));
+    }
+
+    public <T> int[] insertBatch(BatchInsert<T> insertStatement) {
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(insertStatement.getRecords());
+        return template.batchUpdate(insertStatement.getInsertStatementSQL(), batch);
     }
 
     public <T> int insertMultiple(Buildable<MultiRowInsertModel<T>> insertStatement) {
