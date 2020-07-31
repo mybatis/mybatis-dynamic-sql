@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.insert.InsertModel
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.kotlin.spring.insert
 import org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.spring.into
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -40,3 +41,8 @@ class MultiRowInsertHelper<T>(private val records: List<T>, private val template
         template.insertMultiple(SqlBuilder.insertMultiple(records).into(table, completer))
 }
 
+@MyBatisDslMarker
+class SingleRowInsertHelper<T>(private val record: T, private val template: NamedParameterJdbcTemplate) {
+    fun into(table: SqlTable, completer: InsertCompleter<T>) =
+        template.insert(SqlBuilder.insert(record).into(table, completer))
+}

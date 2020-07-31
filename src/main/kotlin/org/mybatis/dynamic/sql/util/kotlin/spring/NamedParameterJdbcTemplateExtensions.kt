@@ -33,6 +33,7 @@ import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertHelper
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.SingleRowInsertHelper
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
@@ -57,18 +58,28 @@ fun NamedParameterJdbcTemplate.delete(deleteStatement: DeleteStatementProvider) 
 fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteCompleter) =
     delete(org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom(table, completer))
 
+// single record insert
 fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>) =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.record))
 
+fun <T> NamedParameterJdbcTemplate.insert(record: T) =
+    SingleRowInsertHelper(record, this)
+
+@Deprecated(
+    message = "Deprecated for being awkward and inconsistent",
+    replaceWith = ReplaceWith("insert(record).into(table, completer)")
+)
 fun <T> NamedParameterJdbcTemplate.insert(record: T, table: SqlTable, completer: InsertCompleter<T>) =
     insert(SqlBuilder.insert(record).into(table, completer))
 
+// general insert
 fun NamedParameterJdbcTemplate.insert(insertStatement: GeneralInsertStatementProvider) =
     update(insertStatement.insertStatement, insertStatement.parameters)
 
 fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
     insert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer))
 
+// multiple record insert
 fun <T> NamedParameterJdbcTemplate.insertMultiple(vararg records: T) =
     insertMultiple(records.asList())
 
