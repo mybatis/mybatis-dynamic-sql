@@ -19,6 +19,7 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
@@ -115,19 +116,22 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     public Optional<RenderingStrategy> renderingStrategy() {
         return Optional.ofNullable(renderingStrategy);
     }
-    
+
+    @NotNull
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
         SqlColumn<S> column = new SqlColumn<>(this);
         column.typeHandler = typeHandler;
         return column;
     }
 
+    @NotNull
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
         SqlColumn<S> column = new SqlColumn<>(this);
         column.renderingStrategy = renderingStrategy;
         return column;
     }
 
+    @NotNull
     public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
         SqlColumn<S> column = new SqlColumn<>(this);
         column.parameterTypeConverter = parameterTypeConverter;

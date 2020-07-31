@@ -97,7 +97,7 @@ class PersonTemplateTest {
 
     @Test
     void testSelectDistinct() {
-        Buildable<SelectModel> selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+        Buildable<SelectModel> selectStatement = selectDistinct(id, firstName, lastName, birthDate, employed, occupation, addressId)
                 .from(person)
                 .where(id, isGreaterThan(1))
                 .or(occupation, isNull());
@@ -105,6 +105,46 @@ class PersonTemplateTest {
         List<PersonRecord> rows = template.selectList(selectStatement, personRowMapper);
 
         assertThat(rows).hasSize(5);
+    }
+    
+    @Test
+    void testSelectWithUnion() {
+        Buildable<SelectModel> selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                .from(person)
+                .where(id, isEqualTo(1))
+                .union()
+                .select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                .from(person)
+                .where(id, isEqualTo(2))
+                .union()
+                .select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                .from(person)
+                .where(id, isEqualTo(2));
+
+        
+        List<PersonRecord> rows = template.selectList(selectStatement, personRowMapper);
+
+        assertThat(rows).hasSize(2);
+    }
+    
+    @Test
+    void testSelectWithUnionAll() {
+        Buildable<SelectModel> selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                .from(person)
+                .where(id, isEqualTo(1))
+                .union()
+                .select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                .from(person)
+                .where(id, isEqualTo(2))
+                .unionAll()
+                .select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                .from(person)
+                .where(id, isEqualTo(2));
+
+        
+        List<PersonRecord> rows = template.selectList(selectStatement, personRowMapper);
+
+        assertThat(rows).hasSize(3);
     }
     
     @Test

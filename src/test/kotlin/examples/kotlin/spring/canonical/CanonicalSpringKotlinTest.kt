@@ -161,7 +161,7 @@ class CanonicalSpringKotlinTest {
             where(id, isLessThan(4)) {
                 or(occupation, isNotNull())
             }
-            and(employed, isEqualTo("Yes"))
+            and(employed, isEqualTo(true))
         }
 
         val expected = "delete from Person" +
@@ -169,6 +169,8 @@ class CanonicalSpringKotlinTest {
                 " and employed = :p2"
 
         assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
+        assertThat(deleteStatement.parameters).containsEntry("p1", 4)
+        assertThat(deleteStatement.parameters).containsEntry("p2", "Yes")
 
         val rows = template.delete(deleteStatement)
 
@@ -180,7 +182,7 @@ class CanonicalSpringKotlinTest {
         val deleteStatement = deleteFrom(Person) {
             where(id, isLessThan(4))
             or(occupation, isNotNull()) {
-                and(employed, isEqualTo("Yes"))
+                and(employed, isEqualTo(true))
             }
         }
 
@@ -201,7 +203,7 @@ class CanonicalSpringKotlinTest {
         val deleteStatement = deleteFrom(Person) {
             where(id, isLessThan(4))
             and(occupation, isNotNull()) {
-                and(employed, isEqualTo("Yes"))
+                and(employed, isEqualTo(true))
             }
         }
 
@@ -219,14 +221,14 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testInsert() {
 
-        val record = PersonRecord(100, "Joe", "Jones", Date(), "Yes", "Developer", 1)
+        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
         val insertStatement = insert(record).into(Person) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastName")
+            map(lastName).toProperty("lastNameAsString")
             map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employed")
+            map(employed).toProperty("employedAsString")
             map(occupation).toProperty("occupation")
             map(addressId).toProperty("addressId")
         }
@@ -234,8 +236,8 @@ class CanonicalSpringKotlinTest {
         val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
                 " values" +
                 " (:id, :firstName," +
-                " :lastName," +
-                " :birthDate, :employed," +
+                " :lastNameAsString," +
+                " :birthDate, :employedAsString," +
                 " :occupation, :addressId)"
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
@@ -251,9 +253,9 @@ class CanonicalSpringKotlinTest {
         val insertStatement = insertInto(Person) {
             set(id).toValue(100)
             set(firstName).toValue("Joe")
-            set(lastName).toValue("Jones")
+            set(lastName).toValue(LastName("Jones"))
             set(birthDate).toValue(Date())
-            set(employed).toValue("Yes")
+            set(employed).toValue(true)
             set(occupation).toValue("Developer")
             set(addressId).toValue(1)
         }
@@ -273,12 +275,37 @@ class CanonicalSpringKotlinTest {
         with(record!!) {
             assertThat(id).isEqualTo(100)
             assertThat(firstName).isEqualTo("Joe")
-            assertThat(lastName).isEqualTo("Jones")
+            assertThat(lastName!!.name).isEqualTo("Jones")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Developer")
             assertThat(addressId).isEqualTo(1)
         }
+    }
+
+    @Test
+    fun testMultiRowInsert() {
+        TODO()
+    }
+
+    @Test
+    fun testBatchInsert() {
+        TODO()
+    }
+
+    @Test
+    fun testGeneralInsertWithGeneratedKey() {
+        TODO()
+    }
+
+    @Test
+    fun testInsertWithGeneratedKey() {
+        TODO()
+    }
+
+    @Test
+    fun testMultiRowInsertWithGeneratedKey() {
+        TODO()
     }
 
     @Test
@@ -301,9 +328,9 @@ class CanonicalSpringKotlinTest {
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -337,9 +364,9 @@ class CanonicalSpringKotlinTest {
         with(record!!) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -390,9 +417,9 @@ class CanonicalSpringKotlinTest {
         with(records[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -400,9 +427,9 @@ class CanonicalSpringKotlinTest {
         with(records[2]) {
             assertThat(id).isEqualTo(3)
             assertThat(firstName).isEqualTo("Pebbles")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("No")
+            assertThat(employed).isFalse()
             assertThat(occupation).isNull()
             assertThat(addressId).isEqualTo(1)
         }
@@ -453,9 +480,9 @@ class CanonicalSpringKotlinTest {
         with(records[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -463,9 +490,9 @@ class CanonicalSpringKotlinTest {
         with(records[2]) {
             assertThat(id).isEqualTo(3)
             assertThat(firstName).isEqualTo("Pebbles")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("No")
+            assertThat(employed).isFalse()
             assertThat(occupation).isNull()
             assertThat(addressId).isEqualTo(1)
         }
@@ -516,9 +543,9 @@ class CanonicalSpringKotlinTest {
         with(records[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -526,9 +553,9 @@ class CanonicalSpringKotlinTest {
         with(records[2]) {
             assertThat(id).isEqualTo(3)
             assertThat(firstName).isEqualTo("Pebbles")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("No")
+            assertThat(employed).isFalse()
             assertThat(occupation).isNull()
             assertThat(addressId).isEqualTo(1)
         }
@@ -580,9 +607,9 @@ class CanonicalSpringKotlinTest {
         with(records[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -590,9 +617,9 @@ class CanonicalSpringKotlinTest {
         with(records[2]) {
             assertThat(id).isEqualTo(2)
             assertThat(firstName).isEqualTo("Wilma")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Accountant")
             assertThat(addressId).isEqualTo(1)
         }
@@ -620,33 +647,15 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val rows = template.selectList(selectStatement) { rs, _ ->
-            val record = PersonWithAddress()
-            record.id = rs.getInt(1)
-            record.firstName = rs.getString(2)
-            record.lastName = rs.getString(3)
-            record.birthDate = rs.getTimestamp(4)
-            record.employed = rs.getString(5)
-            record.occupation = rs.getString(6)
-
-            val address = AddressRecord()
-            record.address = address
-            address.id = rs.getInt(7)
-            address.streetAddress = rs.getString(8)
-            address.city = rs.getString(9)
-            address.state = rs.getString(10)
-
-            record
-        }
+        val rows = template.selectList(selectStatement, ::personWithAddressRowMapper)
 
 
-        assertThat(rows).hasSize(3)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(address?.id).isEqualTo(1)
             assertThat(address?.streetAddress).isEqualTo("123 Main Street")
@@ -686,9 +695,9 @@ class CanonicalSpringKotlinTest {
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -725,9 +734,9 @@ class CanonicalSpringKotlinTest {
         with(rows[2]) {
             assertThat(id).isEqualTo(4)
             assertThat(firstName).isEqualTo("Barney")
-            assertThat(lastName).isEqualTo("Rubble")
+            assertThat(lastName!!.name).isEqualTo("Rubble")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(2)
         }
@@ -736,15 +745,17 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testRawUpdate1() {
         val updateStatement = update(Person) {
-            set(firstName).equalTo("Sam")
+            set(lastName).equalTo(LastName("Smith"))
             where(firstName, isEqualTo("Fred"))
         }
 
         assertThat(updateStatement.updateStatement).isEqualTo(
             "update Person" +
-                    " set first_name = :p1" +
+                    " set last_name = :p1" +
                     " where first_name = :p2"
         )
+        assertThat(updateStatement.parameters).containsEntry("p1", "Smith")
+        assertThat(updateStatement.parameters).containsEntry("p2", "Fred")
 
         val rows = template.update(updateStatement)
 

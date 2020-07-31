@@ -32,19 +32,7 @@ import org.mybatis.dynamic.sql.util.kotlin.spring.*
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
-import java.sql.ResultSet
 import java.util.*
-
-fun personRowMapper(rs: ResultSet, rowNum: Int) =
-    PersonRecord().apply {
-        id = rs.getInt(1)
-        firstName = rs.getString(2)
-        lastName = rs.getString(3)
-        birthDate = rs.getTimestamp(4)
-        employed = rs.getString(5)
-        occupation = rs.getString(6)
-        addressId = rs.getInt(7)
-    }
 
 class CanonicalSpringKotlinTemplateDirectTest {
     private lateinit var template: NamedParameterJdbcTemplate
@@ -139,7 +127,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
             where(id, isLessThan(4)) {
                 or(occupation, isNotNull())
             }
-            and(employed, isEqualTo("Yes"))
+            and(employed, isEqualTo(true))
         }
 
         assertThat(rows).isEqualTo(4)
@@ -150,7 +138,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
         val rows = template.deleteFrom(Person) {
             where(id, isLessThan(4))
             or(occupation, isNotNull()) {
-                and(employed, isEqualTo("Yes"))
+                and(employed, isEqualTo(true))
             }
         }
 
@@ -162,7 +150,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
         val rows = template.deleteFrom(Person) {
             where(id, isLessThan(4))
             and(occupation, isNotNull()) {
-                and(employed, isEqualTo("Yes"))
+                and(employed, isEqualTo(true))
             }
         }
 
@@ -171,14 +159,14 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testInsert() {
-        val record = PersonRecord(100, "Joe", "Jones", Date(), "Yes", "Developer", 1)
+        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
         val rows = template.insert(record, Person) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastName")
+            map(lastName).toProperty("lastNameAsString")
             map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employed")
+            map(employed).toProperty("employedAsString")
             map(occupation).toPropertyWhenPresent("occupation", record::occupation)
             map(addressId).toProperty("addressId")
         }
@@ -191,14 +179,39 @@ class CanonicalSpringKotlinTemplateDirectTest {
         val rows = template.insertInto(Person) {
             set(id).toValue(100)
             set(firstName).toValue("Joe")
-            set(lastName).toValue("Jones")
+            set(lastName).toValue(LastName("Jones"))
             set(birthDate).toValue(Date())
-            set(employed).toValue("Yes")
+            set(employed).toValue(true)
             set(occupation).toValue("Developer")
             set(addressId).toValue(1)
         }
 
         assertThat(rows).isEqualTo(1)
+    }
+
+    @Test
+    fun testMultiRowInsert() {
+        TODO()
+    }
+
+    @Test
+    fun testBatchInsert() {
+        TODO()
+    }
+
+    @Test
+    fun testGeneralInsertWithGeneratedKey() {
+        TODO()
+    }
+
+    @Test
+    fun testInsertWithGeneratedKey() {
+        TODO()
+    }
+
+    @Test
+    fun testMultiRowInsertWithGeneratedKey() {
+        TODO()
     }
 
     @Test
@@ -229,9 +242,73 @@ class CanonicalSpringKotlinTemplateDirectTest {
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
+            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(addressId).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testSelectWithUnion() {
+        val rows = template.select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId)
+            .from(Person) {
+                where(id, isEqualTo(1))
+                union {
+                    select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(Person) {
+                            where(id, isEqualTo(2))
+                        }
+                }
+                union {
+                    select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(Person) {
+                            where(id, isEqualTo(2))
+                        }
+                }
+            }.withRowMapper(::personRowMapper)
+
+        assertThat(rows).hasSize(2)
+        with(rows[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(firstName).isEqualTo("Fred")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isTrue()
+            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(addressId).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testSelectWithUnionAll() {
+        val rows = template.select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId)
+            .from(Person) {
+                where(id, isEqualTo(1))
+                union {
+                    select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(Person) {
+                            where(id, isEqualTo(2))
+                        }
+                }
+                unionAll {
+                    select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(Person) {
+                            where(id, isEqualTo(2))
+                        }
+                }
+            }.withRowMapper(::personRowMapper)
+
+        assertThat(rows).hasSize(3)
+        with(rows[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(firstName).isEqualTo("Fred")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull()
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -248,9 +325,9 @@ class CanonicalSpringKotlinTemplateDirectTest {
         with(record!!) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -304,33 +381,16 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 where(id, isLessThan(4))
                 orderBy(id)
                 limit(3)
-            }.withRowMapper { rs, _ ->
-                val record = PersonWithAddress()
-                record.id = rs.getInt(1)
-                record.firstName = rs.getString(2)
-                record.lastName = rs.getString(3)
-                record.birthDate = rs.getTimestamp(4)
-                record.employed = rs.getString(5)
-                record.occupation = rs.getString(6)
-
-                val address = AddressRecord()
-                record.address = address
-                address.id = rs.getInt(7)
-                address.streetAddress = rs.getString(8)
-                address.city = rs.getString(9)
-                address.state = rs.getString(10)
-
-                record
-            }
+            }.withRowMapper(::personWithAddressRowMapper)
 
 
         assertThat(rows).hasSize(3)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(address?.id).isEqualTo(1)
             assertThat(address?.streetAddress).isEqualTo("123 Main Street")
@@ -358,9 +418,9 @@ class CanonicalSpringKotlinTemplateDirectTest {
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
-            assertThat(lastName).isEqualTo("Flintstone")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -385,9 +445,9 @@ class CanonicalSpringKotlinTemplateDirectTest {
         with(rows[2]) {
             assertThat(id).isEqualTo(4)
             assertThat(firstName).isEqualTo("Barney")
-            assertThat(lastName).isEqualTo("Rubble")
+            assertThat(lastName!!.name).isEqualTo("Rubble")
             assertThat(birthDate).isNotNull()
-            assertThat(employed).isEqualTo("Yes")
+            assertThat(employed).isTrue()
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(2)
         }
