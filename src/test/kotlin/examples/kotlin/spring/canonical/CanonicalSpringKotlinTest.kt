@@ -285,25 +285,43 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testMultiRowInsert() {
-        TODO()
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+        val insertStatement = insertMultiple(record1, record2).into(Person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        assertThat(insertStatement.insertStatement).isEqualTo(
+            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
+                    "values (:records[0].id, :records[0].firstName, :records[0].lastNameAsString, " +
+                    ":records[0].birthDate, :records[0].employedAsString, :records[0].occupation, :records[0].addressId), " +
+                    "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
+                    ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, :records[1].addressId)"
+        )
+
+        val rows = template.insertMultiple(insertStatement)
+        assertThat(rows).isEqualTo(2)
     }
 
-    @Test
     fun testBatchInsert() {
         TODO()
     }
 
-    @Test
     fun testGeneralInsertWithGeneratedKey() {
         TODO()
     }
 
-    @Test
     fun testInsertWithGeneratedKey() {
         TODO()
     }
 
-    @Test
     fun testMultiRowInsertWithGeneratedKey() {
         TODO()
     }

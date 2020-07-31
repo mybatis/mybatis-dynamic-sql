@@ -19,6 +19,7 @@ import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
@@ -31,6 +32,7 @@ import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinDeleteBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinQueryBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
+import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
@@ -43,6 +45,9 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
         .render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>) =
+    completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
+fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
     completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun CountDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: CountCompleter) =

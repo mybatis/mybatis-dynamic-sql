@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
@@ -30,6 +31,7 @@ import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertHelper
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.springframework.dao.EmptyResultDataAccessException
@@ -66,6 +68,15 @@ fun NamedParameterJdbcTemplate.insert(insertStatement: GeneralInsertStatementPro
 
 fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
     insert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer))
+
+fun <T> NamedParameterJdbcTemplate.insertMultiple(vararg records: T) =
+    insertMultiple(records.asList())
+
+fun <T> NamedParameterJdbcTemplate.insertMultiple(records: List<T>) =
+    MultiRowInsertHelper(records, this)
+
+fun <T> NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider<T>) =
+    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement))
 
 fun NamedParameterJdbcTemplate.select(vararg selectList: BasicColumn) =
     SelectListFromGatherer(selectList.toList(), this)

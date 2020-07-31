@@ -191,25 +191,34 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testMultiRowInsert() {
-        TODO()
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+        val rows = template.insertMultiple(record1, record2).into(Person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        assertThat(rows).isEqualTo(2)
     }
 
-    @Test
     fun testBatchInsert() {
         TODO()
     }
 
-    @Test
     fun testGeneralInsertWithGeneratedKey() {
         TODO()
     }
 
-    @Test
     fun testInsertWithGeneratedKey() {
         TODO()
     }
 
-    @Test
     fun testMultiRowInsertWithGeneratedKey() {
         TODO()
     }
