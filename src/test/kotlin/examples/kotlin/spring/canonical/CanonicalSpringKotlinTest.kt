@@ -16,6 +16,7 @@
 package examples.kotlin.spring.canonical
 
 import examples.kotlin.spring.canonical.AddressDynamicSqlSupport.Address
+import examples.kotlin.spring.canonical.GeneratedAlwaysDynamicSqlSupport.GeneratedAlways
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.addressId
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.birthDate
@@ -32,6 +33,8 @@ import org.mybatis.dynamic.sql.util.kotlin.spring.*
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
+import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.jdbc.support.KeyHolder
 import java.util.*
 
 @Suppress("LargeClass", "MaxLineLength")
@@ -40,11 +43,13 @@ class CanonicalSpringKotlinTest {
 
     @BeforeEach
     fun setup() {
-        val db = EmbeddedDatabaseBuilder()
-            .setType(EmbeddedDatabaseType.HSQL)
-            .generateUniqueName(true)
-            .addScript("classpath:/examples/kotlin/spring/CreateSimpleDB.sql")
-            .build()
+        val db = EmbeddedDatabaseBuilder().run {
+            setType(EmbeddedDatabaseType.HSQL)
+            generateUniqueName(true)
+            addScript("classpath:/examples/kotlin/spring/CreateGeneratedAlwaysDB.sql")
+            addScript("classpath:/examples/kotlin/spring/CreateSimpleDB.sql")
+            build()
+        }
         template = NamedParameterJdbcTemplate(db)
     }
 
@@ -314,8 +319,19 @@ class CanonicalSpringKotlinTest {
         TODO()
     }
 
+    @Test
     fun testGeneralInsertWithGeneratedKey() {
-        TODO()
+        val insertStatement = insertInto(GeneratedAlways) {
+            set(GeneratedAlways.firstName).toValue("Fred")
+            set(GeneratedAlways.lastName).toValue("Flintstone")
+        }
+
+        val keyHolder = GeneratedKeyHolder()
+
+        val rows = template.insert(insertStatement, keyHolder)
+        assertThat(rows).isEqualTo(1)
+        assertThat(keyHolder.keys).containsEntry("ID", 22)
+        assertThat(keyHolder.keys).containsEntry("FULL_NAME", "Fred Flintstone")
     }
 
     fun testInsertWithGeneratedKey() {

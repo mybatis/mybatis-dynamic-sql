@@ -31,13 +31,15 @@ import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
-import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertHelper
+import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.MyBatisDslMarker
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.SingleRowInsertHelper
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.jdbc.support.KeyHolder
 import java.sql.ResultSet
 
 fun NamedParameterJdbcTemplate.count(selectStatement: SelectStatementProvider) =
@@ -75,6 +77,9 @@ fun <T> NamedParameterJdbcTemplate.insert(record: T, table: SqlTable, completer:
 // general insert
 fun NamedParameterJdbcTemplate.insert(insertStatement: GeneralInsertStatementProvider) =
     update(insertStatement.insertStatement, insertStatement.parameters)
+
+fun NamedParameterJdbcTemplate.insert(insertStatement: GeneralInsertStatementProvider, keyHolder: KeyHolder) =
+    update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters), keyHolder)
 
 fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
     insert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer))
@@ -184,4 +189,16 @@ class SelectOneMapperGatherer(
 ) {
     fun <T> withRowMapper(rowMapper: (rs: ResultSet, rowNum: Int) -> T) =
         template.selectOne(selectStatement, rowMapper)
+}
+
+@MyBatisDslMarker
+class MultiRowInsertHelper<T>(private val records: List<T>, private val template: NamedParameterJdbcTemplate) {
+    fun into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
+        template.insertMultiple(SqlBuilder.insertMultiple(records).into(table, completer))
+}
+
+@MyBatisDslMarker
+class SingleRowInsertHelper<T>(private val record: T, private val template: NamedParameterJdbcTemplate) {
+    fun into(table: SqlTable, completer: InsertCompleter<T>) =
+        template.insert(SqlBuilder.insert(record).into(table, completer))
 }
