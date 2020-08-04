@@ -110,8 +110,10 @@ fun <T> NamedParameterJdbcTemplate.insertMultiple(records: List<T>) =
 fun <T> NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider<T>) =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement))
 
-fun <T> NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider<T>,
-                                                  keyHolder: KeyHolder) =
+fun <T> NamedParameterJdbcTemplate.insertMultiple(
+    insertStatement: MultiRowInsertStatementProvider<T>,
+    keyHolder: KeyHolder
+) =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)
 
 // insert with KeyHolder support
@@ -237,17 +239,23 @@ class BatchInsertHelper<T>(private val records: List<T>, private val template: N
 }
 
 @MyBatisDslMarker
-class MultiRowInsertHelper<T>(private val records: List<T>, private val template: NamedParameterJdbcTemplate,
-                              private val keyHolder: KeyHolder? = null) {
+class MultiRowInsertHelper<T>(
+    private val records: List<T>, private val template: NamedParameterJdbcTemplate,
+    private val keyHolder: KeyHolder? = null
+) {
     fun into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
-        keyHolder?.let { template.insertMultiple(SqlBuilder.insertMultiple(records).into(table, completer), it) }
-            ?:template.insertMultiple(SqlBuilder.insertMultiple(records).into(table, completer))
+        with(SqlBuilder.insertMultiple(records).into(table, completer)) {
+            keyHolder?.let { template.insertMultiple(this, it) } ?: template.insertMultiple(this)
+        }
 }
 
 @MyBatisDslMarker
-class SingleRowInsertHelper<T>(private val record: T, private val template: NamedParameterJdbcTemplate,
-                               private val keyHolder: KeyHolder? = null) {
+class SingleRowInsertHelper<T>(
+    private val record: T, private val template: NamedParameterJdbcTemplate,
+    private val keyHolder: KeyHolder? = null
+) {
     fun into(table: SqlTable, completer: InsertCompleter<T>) =
-        keyHolder?.let { template.insert(SqlBuilder.insert(record).into(table, completer), it) }
-            ?:template.insert(SqlBuilder.insert(record).into(table, completer))
+        with(SqlBuilder.insert(record).into(table, completer)) {
+            keyHolder?.let { template.insert(this, it) } ?: template.insert(this)
+        }
 }
