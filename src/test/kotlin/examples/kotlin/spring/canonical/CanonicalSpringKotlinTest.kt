@@ -943,6 +943,10 @@ class CanonicalSpringKotlinTest {
                     " where id = :p3"
         )
 
+        assertThat(updateStatement.parameters).containsEntry("p1", "Sam")
+        assertThat(updateStatement.parameters).containsEntry("p2", null)
+        assertThat(updateStatement.parameters).containsEntry("p3", 3)
+
         val rows = template.update(updateStatement)
 
         assertThat(rows).isEqualTo(1)
@@ -956,5 +960,41 @@ class CanonicalSpringKotlinTest {
         val returnedRecord = template.selectOne(selectStatement, ::personRowMapper)
         assertThat(returnedRecord).isNotNull()
         assertThat(returnedRecord!!.lastName).isNull()
+    }
+
+    @Test
+    fun testUpdateWithTypeConverterAndNonNullValue() {
+        val record = PersonRecord(id = 3, firstName = "Sam", lastName = LastName("Smith"))
+
+        val updateStatement = update(Person) {
+            set(firstName).equalTo(record::firstName)
+            set(lastName).equalTo(record::lastName)
+            where(id, isEqualTo(record::id))
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set first_name = :p1," +
+                    " last_name = :p2" +
+                    " where id = :p3"
+        )
+
+        assertThat(updateStatement.parameters).containsEntry("p1", "Sam")
+        assertThat(updateStatement.parameters).containsEntry("p2", "Smith")
+        assertThat(updateStatement.parameters).containsEntry("p3", 3)
+
+        val rows = template.update(updateStatement)
+
+        assertThat(rows).isEqualTo(1)
+
+        val selectStatement = select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId
+        ).from(Person) {
+            where(id, isEqualTo(record::id))
+        }
+
+        val returnedRecord = template.selectOne(selectStatement, ::personRowMapper)
+        assertThat(returnedRecord).isNotNull()
+        assertThat(returnedRecord!!.lastName?.name).isEqualTo("Smith")
     }
 }
