@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
+import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
@@ -65,6 +66,12 @@ fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteComp
 // batch insert
 fun <T> NamedParameterJdbcTemplate.insert(insertStatement: BatchInsert<T>): IntArray =
     batchUpdate(insertStatement.insertStatementSQL, SqlParameterSourceUtils.createBatch(insertStatement.records))
+
+fun <T> NamedParameterJdbcTemplate.insert(vararg records: T) =
+    insert(records.asList())
+
+fun <T> NamedParameterJdbcTemplate.insert(records: List<T>) =
+    BatchInsertHelper(records, this)
 
 // single record insert
 fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>) =
@@ -202,6 +209,12 @@ class SelectOneMapperGatherer(
 ) {
     fun <T> withRowMapper(rowMapper: (rs: ResultSet, rowNum: Int) -> T) =
         template.selectOne(selectStatement, rowMapper)
+}
+
+@MyBatisDslMarker
+class BatchInsertHelper<T>(private val records: List<T>, private val template: NamedParameterJdbcTemplate) {
+    fun into(table: SqlTable, completer: BatchInsertCompleter<T>) =
+        template.insert(SqlBuilder.insert(records).into(table, completer))
 }
 
 @MyBatisDslMarker

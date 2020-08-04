@@ -226,8 +226,24 @@ class CanonicalSpringKotlinTemplateDirectTest {
         assertThat(rows).isEqualTo(2)
     }
 
+    @Test
     fun testBatchInsert() {
-        TODO()
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+        val rows = template.insert(record1, record2).into(Person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        assertThat(rows).hasSize(2)
+        assertThat(rows[0]).isEqualTo(1)
+        assertThat(rows[1]).isEqualTo(1)
     }
 
     fun testGeneralInsertWithGeneratedKey() {
