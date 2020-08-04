@@ -19,12 +19,9 @@ import java.util.*
 
 data class LastName(val name: String)
 
-fun lastNameConverter(source: LastName?) = source?.name
+val lastNameConverter: (LastName?) -> String? = { it?.name }
 
-fun booleanToStringConverter(source: Boolean?): String {
-    fun Boolean.asString() = if(this) "Yes" else "No"
-    return source?.asString()?:"No"
-}
+val booleanToStringConverter: (Boolean?) -> String = { it?.let { if (it) "Yes" else "No" } ?: "No" }
 
 data class PersonRecord(
     var id: Int? = null,
@@ -59,7 +56,7 @@ data class AddressRecord(
     var state: String? = null
 )
 
-data class GeneratedAlwaysRecord (
+data class GeneratedAlwaysRecord(
     var id: Int? = null,
     var firstName: String? = null,
     var lastName: String? = null,

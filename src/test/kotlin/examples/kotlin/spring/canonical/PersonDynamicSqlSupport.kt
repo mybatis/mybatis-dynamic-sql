@@ -24,10 +24,10 @@ object PersonDynamicSqlSupport {
         val id = column<Int>("id", JDBCType.INTEGER)
         val firstName = column<String>("first_name", JDBCType.VARCHAR)
         val lastName = column<LastName>("last_name", JDBCType.VARCHAR)
-            .withParameterTypeConverter(::lastNameConverter)
+            .withParameterTypeConverter(lastNameConverter)
         val birthDate = column<Date>("birth_date", JDBCType.DATE)
         val employed = column<Boolean>("employed", JDBCType.VARCHAR)
-            .withParameterTypeConverter(::booleanToStringConverter)
+            .withParameterTypeConverter(booleanToStringConverter)
         val occupation = column<String>("occupation", JDBCType.VARCHAR)
         val addressId = column<Int>("address_id", JDBCType.INTEGER)
     }
