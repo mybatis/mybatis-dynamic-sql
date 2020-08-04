@@ -17,11 +17,11 @@ package examples.kotlin.spring.canonical
 
 import java.sql.ResultSet
 
-fun personRowMapper(rs: ResultSet, rowNum : Int) =
+fun personRowMapper(rs: ResultSet, rowNum: Int) =
     PersonRecord().apply {
         id = rs.getInt(1)
         firstName = rs.getString(2)
-        lastName = LastName(rs.getString(3))
+        lastName = rs.getString(3)?.let { LastName(it) }
         birthDate = rs.getTimestamp(4)
         employed = "Yes" == rs.getString(5)
         occupation = rs.getString(6)
@@ -32,7 +32,7 @@ fun personWithAddressRowMapper(rs: ResultSet, rowNum: Int) =
     PersonWithAddress().apply {
         id = rs.getInt(1)
         firstName = rs.getString(2)
-        lastName = LastName(rs.getString(3))
+        lastName = rs.getString(3)?.let { LastName(it) }
         birthDate = rs.getTimestamp(4)
         employed = "Yes" == rs.getString(5)
         occupation = rs.getString(6)

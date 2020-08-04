@@ -925,4 +925,36 @@ class CanonicalSpringKotlinTest {
 
         assertThat(rows).isEqualTo(2)
     }
+
+    @Test
+    fun testUpdateWithTypeConverterAndNullValue() {
+        val record = PersonRecord(id = 3, firstName = "Sam")
+
+        val updateStatement = update(Person) {
+            set(firstName).equalTo(record::firstName)
+            set(lastName).equalTo(record::lastName)
+            where(id, isEqualTo(record::id))
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set first_name = :p1," +
+                    " last_name = :p2" +
+                    " where id = :p3"
+        )
+
+        val rows = template.update(updateStatement)
+
+        assertThat(rows).isEqualTo(1)
+
+        val selectStatement = select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId
+        ).from(Person) {
+            where(id, isEqualTo(record::id))
+        }
+
+        val returnedRecord = template.selectOne(selectStatement, ::personRowMapper)
+        assertThat(returnedRecord).isNotNull()
+        assertThat(returnedRecord!!.lastName).isNull()
+    }
 }
