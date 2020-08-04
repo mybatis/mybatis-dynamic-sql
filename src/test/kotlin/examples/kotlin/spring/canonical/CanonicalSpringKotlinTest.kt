@@ -34,7 +34,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import org.springframework.jdbc.support.GeneratedKeyHolder
-import org.springframework.jdbc.support.KeyHolder
 import java.util.*
 
 @Suppress("LargeClass", "MaxLineLength")
@@ -43,7 +42,7 @@ class CanonicalSpringKotlinTest {
 
     @BeforeEach
     fun setup() {
-        val db = EmbeddedDatabaseBuilder().run {
+        val db = with(EmbeddedDatabaseBuilder()) {
             setType(EmbeddedDatabaseType.HSQL)
             generateUniqueName(true)
             addScript("classpath:/examples/kotlin/spring/CreateGeneratedAlwaysDB.sql")
@@ -315,8 +314,25 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(2)
     }
 
+    @Test
     fun testBatchInsert() {
-        TODO()
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+        val insertStatement = insert(record1, record2).into(Person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        val rows = template.insert(insertStatement)
+        assertThat(rows).hasSize(2)
+        assertThat(rows[0]).isEqualTo(1)
+        assertThat(rows[1]).isEqualTo(1)
     }
 
     @Test
@@ -334,12 +350,42 @@ class CanonicalSpringKotlinTest {
         assertThat(keyHolder.keys).containsEntry("FULL_NAME", "Fred Flintstone")
     }
 
+    @Test
     fun testInsertWithGeneratedKey() {
-        TODO()
+        val record = GeneratedAlwaysRecord(firstName = "Fred", lastName = "Flintstone")
+
+        val insertStatement = insert(record).into(GeneratedAlways) {
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastName")
+        }
+
+        val keyHolder = GeneratedKeyHolder()
+
+        val rows = template.insert(insertStatement, keyHolder)
+        assertThat(rows).isEqualTo(1)
+        assertThat(keyHolder.keys).containsEntry("ID", 22)
+        assertThat(keyHolder.keys).containsEntry("FULL_NAME", "Fred Flintstone")
     }
 
+    @Test
     fun testMultiRowInsertWithGeneratedKey() {
-        TODO()
+        val record1 = GeneratedAlwaysRecord(firstName = "Fred", lastName = "Flintstone")
+        val record2 = GeneratedAlwaysRecord(firstName = "Barney", lastName = "Rubble")
+
+        val insertStatement = insertMultiple(record1, record2)
+            .into(GeneratedAlways) {
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastName")
+        }
+
+        val keyHolder = GeneratedKeyHolder()
+
+        val rows = template.insertMultiple(insertStatement, keyHolder)
+        assertThat(rows).isEqualTo(2)
+        assertThat(keyHolder.keyList[0]).containsEntry("ID", 22)
+        assertThat(keyHolder.keyList[0]).containsEntry("FULL_NAME", "Fred Flintstone")
+        assertThat(keyHolder.keyList[1]).containsEntry("ID", 23)
+        assertThat(keyHolder.keyList[1]).containsEntry("FULL_NAME", "Barney Rubble")
     }
 
     @Test

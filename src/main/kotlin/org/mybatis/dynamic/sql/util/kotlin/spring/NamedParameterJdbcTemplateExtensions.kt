@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
+import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
@@ -39,6 +40,7 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils
 import org.springframework.jdbc.support.KeyHolder
 import java.sql.ResultSet
 
@@ -60,9 +62,16 @@ fun NamedParameterJdbcTemplate.delete(deleteStatement: DeleteStatementProvider) 
 fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteCompleter) =
     delete(org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom(table, completer))
 
+// batch insert
+fun <T> NamedParameterJdbcTemplate.insert(insertStatement: BatchInsert<T>): IntArray =
+    batchUpdate(insertStatement.insertStatementSQL, SqlParameterSourceUtils.createBatch(insertStatement.records))
+
 // single record insert
 fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>) =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.record))
+
+fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>, keyHolder: KeyHolder) =
+    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.record), keyHolder)
 
 fun <T> NamedParameterJdbcTemplate.insert(record: T) =
     SingleRowInsertHelper(record, this)
@@ -93,6 +102,10 @@ fun <T> NamedParameterJdbcTemplate.insertMultiple(records: List<T>) =
 
 fun <T> NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider<T>) =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement))
+
+fun <T> NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider<T>,
+                                                  keyHolder: KeyHolder) =
+    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)
 
 fun NamedParameterJdbcTemplate.select(vararg selectList: BasicColumn) =
     SelectListFromGatherer(selectList.toList(), this)

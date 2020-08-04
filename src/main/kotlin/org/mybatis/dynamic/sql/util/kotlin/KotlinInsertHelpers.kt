@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
+import org.mybatis.dynamic.sql.insert.BatchInsertDSL
+import org.mybatis.dynamic.sql.insert.BatchInsertModel
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertDSL
@@ -28,3 +30,5 @@ typealias GeneralInsertCompleter = GeneralInsertDSL.() -> Buildable<GeneralInser
 typealias InsertCompleter<T> = InsertDSL<T>.() -> Buildable<InsertModel<T>>
 
 typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> Buildable<MultiRowInsertModel<T>>
+
+typealias BatchInsertCompleter<T> = BatchInsertDSL<T>.() -> Buildable<BatchInsertModel<T>>

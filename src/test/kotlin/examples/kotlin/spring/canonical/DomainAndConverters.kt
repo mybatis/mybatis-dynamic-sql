@@ -58,3 +58,10 @@ data class AddressRecord(
     var city: String? = null,
     var state: String? = null
 )
+
+data class GeneratedAlwaysRecord (
+    var id: Int? = null,
+    var firstName: String? = null,
+    var lastName: String? = null,
+    var fullName: String? = null
+)
