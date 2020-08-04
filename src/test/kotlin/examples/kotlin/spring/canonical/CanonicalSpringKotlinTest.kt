@@ -355,8 +355,8 @@ class CanonicalSpringKotlinTest {
         val record = GeneratedAlwaysRecord(firstName = "Fred", lastName = "Flintstone")
 
         val insertStatement = insert(record).into(GeneratedAlways) {
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastName")
+            map(GeneratedAlways.firstName).toProperty("firstName")
+            map(GeneratedAlways.lastName).toProperty("lastName")
         }
 
         val keyHolder = GeneratedKeyHolder()
@@ -374,8 +374,8 @@ class CanonicalSpringKotlinTest {
 
         val insertStatement = insertMultiple(record1, record2)
             .into(GeneratedAlways) {
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastName")
+            map(GeneratedAlways.firstName).toProperty("firstName")
+            map(GeneratedAlways.lastName).toProperty("lastName")
         }
 
         val keyHolder = GeneratedKeyHolder()
