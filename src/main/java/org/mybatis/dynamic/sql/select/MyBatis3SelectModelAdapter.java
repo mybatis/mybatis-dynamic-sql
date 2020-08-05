@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 /**
  * This adapter will render the underlying select model for MyBatis3, and then call a MyBatis mapper method.
  *
- * @deprecated in favor is {@link SelectDSLCompleter}. This class will be removed without direct replacement
+ * @deprecated in favor of {@link SelectDSLCompleter}. This class will be removed without direct replacement
  *     in a future version
  *     
  * @author Jeff Butler

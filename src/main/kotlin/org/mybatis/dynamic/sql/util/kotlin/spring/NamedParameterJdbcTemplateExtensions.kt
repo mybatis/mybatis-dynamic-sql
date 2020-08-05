@@ -64,13 +64,13 @@ fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteComp
     delete(org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom(table, completer))
 
 // batch insert
-fun <T> NamedParameterJdbcTemplate.insert(insertStatement: BatchInsert<T>): IntArray =
+fun <T> NamedParameterJdbcTemplate.insertBatch(insertStatement: BatchInsert<T>): IntArray =
     batchUpdate(insertStatement.insertStatementSQL, SqlParameterSourceUtils.createBatch(insertStatement.records))
 
-fun <T> NamedParameterJdbcTemplate.insert(vararg records: T) =
-    insert(records.asList())
+fun <T> NamedParameterJdbcTemplate.insertBatch(vararg records: T) =
+    insertBatch(records.asList())
 
-fun <T> NamedParameterJdbcTemplate.insert(records: List<T>) =
+fun <T> NamedParameterJdbcTemplate.insertBatch(records: List<T>) =
     BatchInsertHelper(records, this)
 
 // single record insert
@@ -235,7 +235,7 @@ class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: Na
 @MyBatisDslMarker
 class BatchInsertHelper<T>(private val records: List<T>, private val template: NamedParameterJdbcTemplate) {
     fun into(table: SqlTable, completer: BatchInsertCompleter<T>) =
-        template.insert(SqlBuilder.insert(records).into(table, completer))
+        template.insertBatch(SqlBuilder.insert(records).into(table, completer))
 }
 
 @MyBatisDslMarker

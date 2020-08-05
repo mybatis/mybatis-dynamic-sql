@@ -233,7 +233,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-        val rows = template.insert(record1, record2).into(Person) {
+        val rows = template.insertBatch(record1, record2).into(Person) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")

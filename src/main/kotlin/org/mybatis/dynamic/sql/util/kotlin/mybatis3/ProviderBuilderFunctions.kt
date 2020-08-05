@@ -42,6 +42,9 @@ fun countFrom(table: SqlTable, completer: CountCompleter) =
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
     completer(KotlinDeleteBuilder(SqlBuilder.deleteFrom(table))).build().render(RenderingStrategies.MYBATIS3)
 
+fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
+    completer(GeneralInsertDSL.insertInto(table)).build().render(RenderingStrategies.MYBATIS3)
+
 fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>) =
     completer(into(table)).build().render(RenderingStrategies.MYBATIS3)
 
@@ -62,6 +65,3 @@ fun select(start: QueryExpressionDSL<SelectModel>, completer: SelectCompleter) =
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
     completer(KotlinUpdateBuilder(SqlBuilder.update(table))).build().render(RenderingStrategies.MYBATIS3)
-
-fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
-    completer(GeneralInsertDSL.insertInto(table)).build().render(RenderingStrategies.MYBATIS3)

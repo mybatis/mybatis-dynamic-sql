@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateModel;
@@ -43,16 +44,15 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.KeyHolder;
 
-
 public class NamedParameterJdbcTemplateExtensions {
-    private NamedParameterJdbcTemplate template;
+    private final NamedParameterJdbcTemplate template;
     
     public NamedParameterJdbcTemplateExtensions(NamedParameterJdbcTemplate template) {
         this.template = Objects.requireNonNull(template);
     }
 
     public long count(Buildable<SelectModel> countStatement) {
-        return count(SpringUtils.buildSelect(countStatement));
+        return count(countStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
     
     public long count(SelectStatementProvider countStatement) {
@@ -60,7 +60,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
     
     public int delete(Buildable<DeleteModel> deleteStatement) {
-        return delete(SpringUtils.buildDelete(deleteStatement));
+        return delete(deleteStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
     
     public int delete(DeleteStatementProvider deleteStatement) {
@@ -68,7 +68,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public int generalInsert(Buildable<GeneralInsertModel> insertStatement) {
-        return generalInsert(SpringUtils.buildGeneralInsert(insertStatement));
+        return generalInsert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
     
     public int generalInsert(GeneralInsertStatementProvider insertStatement) {
@@ -76,7 +76,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public int generalInsert(Buildable<GeneralInsertModel> insertStatement, KeyHolder keyHolder) {
-        return generalInsert(SpringUtils.buildGeneralInsert(insertStatement), keyHolder);
+        return generalInsert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), keyHolder);
     }
     
     public int generalInsert(GeneralInsertStatementProvider insertStatement, KeyHolder keyHolder) {
@@ -85,7 +85,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public <T> int insert(Buildable<InsertModel<T>> insertStatement) {
-        return insert(SpringUtils.buildInsert(insertStatement));
+        return insert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
 
     public <T> int insert(InsertStatementProvider<T> insertStatement) {
@@ -94,7 +94,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public <T> int insert(Buildable<InsertModel<T>> insertStatement, KeyHolder keyHolder) {
-        return insert(SpringUtils.buildInsert(insertStatement), keyHolder);
+        return insert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), keyHolder);
     }
 
     public <T> int insert(InsertStatementProvider<T> insertStatement, KeyHolder keyHolder) {
@@ -103,7 +103,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public <T> int[] insertBatch(Buildable<BatchInsertModel<T>> insertStatement) {
-        return insertBatch(SpringUtils.buildBatchInsert(insertStatement));
+        return insertBatch(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
 
     public <T> int[] insertBatch(BatchInsert<T> insertStatement) {
@@ -112,7 +112,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public <T> int insertMultiple(Buildable<MultiRowInsertModel<T>> insertStatement) {
-        return insertMultiple(SpringUtils.buildMultiRowInsert(insertStatement));
+        return insertMultiple(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
 
     public <T> int insertMultiple(MultiRowInsertStatementProvider<T> insertStatement) {
@@ -121,7 +121,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public <T> int insertMultiple(Buildable<MultiRowInsertModel<T>> insertStatement, KeyHolder keyHolder) {
-        return insertMultiple(SpringUtils.buildMultiRowInsert(insertStatement), keyHolder);
+        return insertMultiple(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), keyHolder);
     }
 
     public <T> int insertMultiple(MultiRowInsertStatementProvider<T> insertStatement, KeyHolder keyHolder) {
@@ -130,7 +130,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public <T> List<T> selectList(Buildable<SelectModel> selectStatement, RowMapper<T> rowMapper) {
-        return selectList(SpringUtils.buildSelect(selectStatement), rowMapper);
+        return selectList(selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), rowMapper);
     }
 
     public <T> List<T> selectList(SelectStatementProvider selectStatement, RowMapper<T> rowMapper) {
@@ -138,7 +138,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public <T> Optional<T> selectOne(Buildable<SelectModel> selectStatement, RowMapper<T> rowMapper) {
-        return selectOne(SpringUtils.buildSelect(selectStatement), rowMapper);
+        return selectOne(selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), rowMapper);
     }
     
     public <T> Optional<T> selectOne(SelectStatementProvider selectStatement, RowMapper<T> rowMapper) {
@@ -154,7 +154,7 @@ public class NamedParameterJdbcTemplateExtensions {
     }
     
     public int update(Buildable<UpdateModel> updateStatement) {
-        return update(SpringUtils.buildUpdate(updateStatement));
+        return update(updateStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
     
     public int update(UpdateStatementProvider updateStatement) {

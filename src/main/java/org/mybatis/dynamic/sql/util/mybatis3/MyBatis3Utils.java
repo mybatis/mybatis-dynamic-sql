@@ -114,16 +114,16 @@ public class MyBatis3Utils {
         return mapper.applyAsInt(insert(record, table, completer));
     }
     
-    public static GeneralInsertStatementProvider insert(SqlTable table,
+    public static GeneralInsertStatementProvider generalInsert(SqlTable table,
             UnaryOperator<GeneralInsertDSL> completer) {
         return completer.apply(GeneralInsertDSL.insertInto(table))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
     }
 
-    public static int insert(ToIntFunction<GeneralInsertStatementProvider> mapper, 
+    public static int generalInsert(ToIntFunction<GeneralInsertStatementProvider> mapper,
             SqlTable table, UnaryOperator<GeneralInsertDSL> completer) {
-        return mapper.applyAsInt(insert(table, completer));
+        return mapper.applyAsInt(generalInsert(table, completer));
     }
     
     public static <R> MultiRowInsertStatementProvider<R> insertMultiple(Collection<R> records, SqlTable table,

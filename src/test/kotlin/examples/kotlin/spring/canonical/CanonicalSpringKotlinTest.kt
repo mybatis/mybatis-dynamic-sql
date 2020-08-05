@@ -329,7 +329,7 @@ class CanonicalSpringKotlinTest {
             map(addressId).toProperty("addressId")
         }
 
-        val rows = template.insert(insertStatement)
+        val rows = template.insertBatch(insertStatement)
         assertThat(rows).hasSize(2)
         assertThat(rows[0]).isEqualTo(1)
         assertThat(rows[1]).isEqualTo(1)

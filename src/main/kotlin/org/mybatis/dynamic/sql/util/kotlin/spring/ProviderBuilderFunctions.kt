@@ -46,6 +46,9 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
     completer(KotlinDeleteBuilder(SqlBuilder.deleteFrom(table))).build()
         .render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
+fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
+    completer(GeneralInsertDSL.insertInto(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
 fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>) =
     completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
@@ -66,6 +69,3 @@ fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: St
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
     completer(KotlinUpdateBuilder(SqlBuilder.update(table))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
-
-fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
-    completer(GeneralInsertDSL.insertInto(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
