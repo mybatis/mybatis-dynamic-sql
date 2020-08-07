@@ -273,7 +273,7 @@ class CanonicalSpringKotlinTest {
         val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
                 where(id, isEqualTo(100))
-            }.withRowMapper(::personRowMapper)
+            }.withRowMapper(personRowMapper)
 
         assertThat(rows).isEqualTo(1)
         with(record!!) {
@@ -402,7 +402,7 @@ class CanonicalSpringKotlinTest {
             limit(3)
         }
 
-        val rows = template.selectList(selectStatement, ::personRowMapper)
+        val rows = template.selectList(selectStatement, personRowMapper)
 
         assertThat(rows).hasSize(2)
         with(rows[0]) {
@@ -425,7 +425,7 @@ class CanonicalSpringKotlinTest {
             where(id, isEqualTo(300))
         }
 
-        val record = template.selectOne(selectStatement, ::personRowMapper)
+        val record = template.selectOne(selectStatement, personRowMapper)
 
         assertThat(record).isNull()
     }
@@ -439,7 +439,7 @@ class CanonicalSpringKotlinTest {
             where(id, isEqualTo(1))
         }
 
-        val record = template.selectOne(selectStatement, ::personRowMapper)
+        val record = template.selectOne(selectStatement, personRowMapper)
 
         with(record!!) {
             assertThat(id).isEqualTo(1)
@@ -491,7 +491,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val records = template.selectList(selectStatement, ::personRowMapper)
+        val records = template.selectList(selectStatement, personRowMapper)
 
         assertThat(records).hasSize(3)
         with(records[0]) {
@@ -554,7 +554,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val records = template.selectList(selectStatement, ::personRowMapper)
+        val records = template.selectList(selectStatement, personRowMapper)
 
         assertThat(records).hasSize(3)
         with(records[0]) {
@@ -617,7 +617,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val records = template.selectList(selectStatement, ::personRowMapper)
+        val records = template.selectList(selectStatement, personRowMapper)
 
         assertThat(records).hasSize(3)
         with(records[0]) {
@@ -681,7 +681,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val records = template.selectList(selectStatement, ::personRowMapper)
+        val records = template.selectList(selectStatement, personRowMapper)
 
         assertThat(records).hasSize(8)
         with(records[0]) {
@@ -727,7 +727,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val rows = template.selectList(selectStatement, ::personWithAddressRowMapper)
+        val rows = template.selectList(selectStatement, personWithAddressRowMapper)
 
 
         with(rows[0]) {
@@ -769,7 +769,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val rows = template.selectList(selectStatement, ::personRowMapper)
+        val rows = template.selectList(selectStatement, personRowMapper)
 
         assertThat(rows).hasSize(1)
         with(rows[0]) {
@@ -808,7 +808,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
-        val rows = template.selectList(selectStatement, ::personRowMapper)
+        val rows = template.selectList(selectStatement, personRowMapper)
 
         assertThat(rows).hasSize(3)
         with(rows[2]) {
@@ -957,7 +957,7 @@ class CanonicalSpringKotlinTest {
             where(id, isEqualTo(record::id))
         }
 
-        val returnedRecord = template.selectOne(selectStatement, ::personRowMapper)
+        val returnedRecord = template.selectOne(selectStatement, personRowMapper)
         assertThat(returnedRecord).isNotNull()
         assertThat(returnedRecord!!.lastName).isNull()
     }
@@ -993,7 +993,7 @@ class CanonicalSpringKotlinTest {
             where(id, isEqualTo(record::id))
         }
 
-        val returnedRecord = template.selectOne(selectStatement, ::personRowMapper)
+        val returnedRecord = template.selectOne(selectStatement, personRowMapper)
         assertThat(returnedRecord).isNotNull()
         assertThat(returnedRecord!!.lastName?.name).isEqualTo("Smith")
     }

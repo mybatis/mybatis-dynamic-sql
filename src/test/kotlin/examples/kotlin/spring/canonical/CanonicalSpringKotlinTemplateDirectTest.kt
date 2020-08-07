@@ -304,7 +304,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
             .from(Person) {
                 allRows()
                 orderBy(id)
-            }.withRowMapper(::personRowMapper)
+            }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(6)
     }
@@ -320,7 +320,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 and(occupation, isNotNull())
                 orderBy(id)
                 limit(3)
-            }.withRowMapper(::personRowMapper)
+            }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(2)
         with(rows[0]) {
@@ -352,7 +352,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                             where(id, isEqualTo(2))
                         }
                 }
-            }.withRowMapper(::personRowMapper)
+            }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(2)
         with(rows[0]) {
@@ -384,7 +384,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                             where(id, isEqualTo(2))
                         }
                 }
-            }.withRowMapper(::personRowMapper)
+            }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(3)
         with(rows[0]) {
@@ -404,7 +404,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
                 where(id, isEqualTo(1))
-            }.withRowMapper(::personRowMapper)
+            }.withRowMapper(personRowMapper)
 
         with(record!!) {
             assertThat(id).isEqualTo(1)
@@ -465,7 +465,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 where(id, isLessThan(4))
                 orderBy(id)
                 limit(3)
-            }.withRowMapper(::personWithAddressRowMapper)
+            }.withRowMapper(personWithAddressRowMapper)
 
 
         assertThat(rows).hasSize(3)
@@ -496,7 +496,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 }
                 orderBy(id)
                 limit(3)
-            }.withRowMapper(::personRowMapper)
+            }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(1)
         with(rows[0]) {
@@ -523,7 +523,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 }
                 orderBy(id)
                 limit(3)
-            }.withRowMapper(::personRowMapper)
+            }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(3)
         with(rows[2]) {

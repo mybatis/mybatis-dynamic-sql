@@ -17,7 +17,7 @@ package examples.kotlin.spring.canonical
 
 import java.sql.ResultSet
 
-fun personRowMapper(rs: ResultSet, rowNum: Int) =
+val personRowMapper: (ResultSet, Int) -> PersonRecord = { rs, _ ->
     PersonRecord().apply {
         id = rs.getInt(1)
         firstName = rs.getString(2)
@@ -27,8 +27,9 @@ fun personRowMapper(rs: ResultSet, rowNum: Int) =
         occupation = rs.getString(6)
         addressId = rs.getInt(7)
     }
+}
 
-fun personWithAddressRowMapper(rs: ResultSet, rowNum: Int) =
+val personWithAddressRowMapper: (ResultSet, Int) -> PersonWithAddress = { rs, _ ->
     PersonWithAddress().apply {
         id = rs.getInt(1)
         firstName = rs.getString(2)
@@ -44,3 +45,4 @@ fun personWithAddressRowMapper(rs: ResultSet, rowNum: Int) =
             state = rs.getString(10)
         }
     }
+}
