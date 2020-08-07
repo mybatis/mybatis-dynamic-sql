@@ -269,7 +269,7 @@ class CanonicalSpringKotlinTest {
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
-        val rows = template.insert(insertStatement)
+        val rows = template.generalInsert(insertStatement)
         val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId)
             .from(Person) {
                 where(id, isEqualTo(100))
@@ -344,7 +344,7 @@ class CanonicalSpringKotlinTest {
 
         val keyHolder = GeneratedKeyHolder()
 
-        val rows = template.insert(insertStatement, keyHolder)
+        val rows = template.generalInsert(insertStatement, keyHolder)
         assertThat(rows).isEqualTo(1)
         assertThat(keyHolder.keys).containsEntry("ID", 22)
         assertThat(keyHolder.keys).containsEntry("FULL_NAME", "Fred Flintstone")

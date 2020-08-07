@@ -91,14 +91,14 @@ fun <T> NamedParameterJdbcTemplate.insert(record: T, table: SqlTable, completer:
     insert(SqlBuilder.insert(record).into(table, completer))
 
 // general insert
-fun NamedParameterJdbcTemplate.insert(insertStatement: GeneralInsertStatementProvider) =
+fun NamedParameterJdbcTemplate.generalInsert(insertStatement: GeneralInsertStatementProvider) =
     update(insertStatement.insertStatement, insertStatement.parameters)
 
-fun NamedParameterJdbcTemplate.insert(insertStatement: GeneralInsertStatementProvider, keyHolder: KeyHolder) =
+fun NamedParameterJdbcTemplate.generalInsert(insertStatement: GeneralInsertStatementProvider, keyHolder: KeyHolder) =
     update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters), keyHolder)
 
 fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
-    insert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer))
+    generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer))
 
 // multiple record insert
 fun <T> NamedParameterJdbcTemplate.insertMultiple(vararg records: T) =
@@ -220,7 +220,7 @@ class SelectOneMapperGatherer(
 @MyBatisDslMarker
 class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: NamedParameterJdbcTemplate) {
     fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
-        template.insert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer), keyHolder)
+        template.generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer), keyHolder)
 
     fun <T> insert(record: T) =
         SingleRowInsertHelper(record, template, keyHolder)
