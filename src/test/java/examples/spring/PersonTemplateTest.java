@@ -347,7 +347,7 @@ class PersonTemplateTest {
         record.setAddressId(2);
         records.add(record);
 
-        Buildable<BatchInsertModel<PersonRecord>> insertStatement = insert(records).into(person)
+        Buildable<BatchInsertModel<PersonRecord>> insertStatement = insertBatch(records).into(person)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastNameAsString")

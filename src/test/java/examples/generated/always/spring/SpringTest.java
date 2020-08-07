@@ -243,7 +243,7 @@ class SpringTest {
 
         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records);
         
-        BatchInsert<GeneratedAlwaysRecord> batchInsert = insert(records)
+        BatchInsert<GeneratedAlwaysRecord> batchInsert = insertBatch(records)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
@@ -275,7 +275,7 @@ class SpringTest {
         record.setLastName("Smith");
         records.add(record);
 
-        Buildable<BatchInsertModel<GeneratedAlwaysRecord>> insertStatement = insert(records)
+        Buildable<BatchInsertModel<GeneratedAlwaysRecord>> insertStatement = insertBatch(records)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")

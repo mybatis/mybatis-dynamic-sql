@@ -1383,7 +1383,7 @@ class AnimalDataTest {
             record.setBodyWeight(22.5);
             records.add(record);
             
-            BatchInsert<AnimalData> batchInsert = insert(records)
+            BatchInsert<AnimalData> batchInsert = insertBatch(records)
                     .into(animalData)
                     .map(id).toProperty("id")
                     .map(animalName).toNull()
@@ -1433,7 +1433,7 @@ class AnimalDataTest {
             record.setBodyWeight(22.5);
             records.add(record);
             
-            BatchInsert<AnimalData> batchInsert = insert(records)
+            BatchInsert<AnimalData> batchInsert = insertBatch(records)
                     .into(animalData)
                     .map(id).toProperty("id")
                     .map(animalName).toStringConstant("Old Fred")

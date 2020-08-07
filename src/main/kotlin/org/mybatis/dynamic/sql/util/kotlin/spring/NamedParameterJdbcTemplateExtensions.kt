@@ -235,7 +235,7 @@ class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: Na
 @MyBatisDslMarker
 class BatchInsertHelper<T>(private val records: List<T>, private val template: NamedParameterJdbcTemplate) {
     fun into(table: SqlTable, completer: BatchInsertCompleter<T>) =
-        template.insertBatch(SqlBuilder.insert(records).into(table, completer))
+        template.insertBatch(SqlBuilder.insertBatch(records).into(table, completer))
 }
 
 @MyBatisDslMarker
