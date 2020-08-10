@@ -56,7 +56,7 @@ fun PersonMapper.insert(record: PersonRecord) =
         map(addressId).toProperty("addressId")
     }
 
-fun PersonMapper.insert(completer: GeneralInsertCompleter) =
+fun PersonMapper.generalInsert(completer: GeneralInsertCompleter) =
     insertInto(this::generalInsert, Person, completer)
 
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
