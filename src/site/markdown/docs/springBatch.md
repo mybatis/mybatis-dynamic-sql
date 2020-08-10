@@ -97,4 +97,4 @@ MyBatis mapper methods should be configured to use the specialized `@SelectProvi
 
 ## Complete Example
 
-The unit tests for MyBatis Dynamic SQL include a complete examples of using MyBatis Spring Batch support using the MyBatis supplied reader as well as both types of MyBatis supplied writers. You can see the full example here: [https://github.com/mybatis/mybatis-dynamic-sql/tree/master/src/test/java/examples/springbatch](https://github.com/mybatis/mybatis-dynamic-sql/tree/master/src/test/java/examples/springbatch)
+The unit tests for MyBatis Dynamic SQL include a complete example of using MyBatis Spring Batch support using the MyBatis supplied reader as well as both types of MyBatis supplied writers. You can see the full example here: [https://github.com/mybatis/mybatis-dynamic-sql/tree/master/src/test/java/examples/springbatch](https://github.com/mybatis/mybatis-dynamic-sql/tree/master/src/test/java/examples/springbatch)
