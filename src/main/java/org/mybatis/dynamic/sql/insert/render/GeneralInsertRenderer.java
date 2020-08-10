@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public class GeneralInsertRenderer {
 
@@ -41,7 +39,7 @@ public class GeneralInsertRenderer {
     
     public GeneralInsertStatementProvider render() {
         GeneralInsertValuePhraseVisitor visitor = new GeneralInsertValuePhraseVisitor(renderingStrategy);
-        List<Optional<FieldAndValueAndParameters>> fieldsAndValues = model.mapColumnMappings(toFieldAndValue(visitor))
+        List<Optional<FieldAndValueAndParameters>> fieldsAndValues = model.mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
         
         return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(fieldsAndValues))
@@ -56,16 +54,6 @@ public class GeneralInsertRenderer {
                 + spaceBefore(calculateValuesPhrase(fieldsAndValues));
     }
 
-    private Function<AbstractColumnMapping, Optional<FieldAndValueAndParameters>> toFieldAndValue(
-            GeneralInsertValuePhraseVisitor visitor) {
-        return insertMapping -> toFieldAndValue(visitor, insertMapping);
-    }
-    
-    private Optional<FieldAndValueAndParameters> toFieldAndValue(GeneralInsertValuePhraseVisitor visitor,
-            AbstractColumnMapping insertMapping) {
-        return insertMapping.accept(visitor);
-    }
-    
     private String calculateColumnsPhrase(List<Optional<FieldAndValueAndParameters>> fieldsAndValues) {
         return fieldsAndValues.stream()
                 .filter(Optional::isPresent)

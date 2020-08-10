@@ -19,6 +19,7 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
@@ -31,15 +32,16 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected String alias;
     protected String typeHandler;
     protected RenderingStrategy renderingStrategy;
-    
+    protected ParameterTypeConverter<T, ?> parameterTypeConverter;
+
     private SqlColumn(Builder builder) {
         name = Objects.requireNonNull(builder.name);
         jdbcType = builder.jdbcType;
         table = Objects.requireNonNull(builder.table);
         typeHandler = builder.typeHandler;
     }
-    
-    protected SqlColumn(SqlColumn<?> sqlColumn) {
+
+    protected SqlColumn(SqlColumn<T> sqlColumn) {
         name = sqlColumn.name;
         table = sqlColumn.table;
         jdbcType = sqlColumn.jdbcType;
@@ -47,6 +49,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         alias = sqlColumn.alias;
         typeHandler = sqlColumn.typeHandler;
         renderingStrategy = sqlColumn.renderingStrategy;
+        parameterTypeConverter = sqlColumn.parameterTypeConverter;
     }
     
     public String name() {
@@ -70,6 +73,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     @Override
     public Optional<String> typeHandler() {
         return Optional.ofNullable(typeHandler);
+    }
+    
+    @Override
+    public Object convertParameterType(T value) {
+        return parameterTypeConverter == null ? value : parameterTypeConverter.convert(value);
     }
     
     @Override
@@ -107,17 +115,40 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     public Optional<RenderingStrategy> renderingStrategy() {
         return Optional.ofNullable(renderingStrategy);
     }
-    
-    public SqlColumn<T> withTypeHandler(String typeHandler) {
-        SqlColumn<T> column = new SqlColumn<>(this);
+
+    @NotNull
+    public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
+        SqlColumn<S> column = copy();
         column.typeHandler = typeHandler;
         return column;
     }
 
+    @NotNull
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
-        SqlColumn<S> column = new SqlColumn<>(this);
+        SqlColumn<S> column = copy();
         column.renderingStrategy = renderingStrategy;
         return column;
+    }
+
+    @NotNull
+    public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
+        SqlColumn<S> column = copy();
+        column.parameterTypeConverter = parameterTypeConverter;
+        return column;
+    }
+
+    /**
+     * This method helps us tell a bit of fiction to the Java compiler. Java, for better or worse,
+     * does not carry generic type information through chained methods. We want to enable method
+     * chaining in the "with" methods. With this bit of fiction, we force the compiler to delay type
+     * inference to the last method in the chain.
+     *
+     * @param <S> the type. Will be the same as T for this usage.
+     * @return a new SqlColumn of type S (S is the same as T)
+     */
+    @SuppressWarnings("unchecked")
+    private <S> SqlColumn<S> copy() {
+        return new SqlColumn<>((SqlColumn<S>) this);
     }
 
     private String applyTableAlias(String tableAlias) {

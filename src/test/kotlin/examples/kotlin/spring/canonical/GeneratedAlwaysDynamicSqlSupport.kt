@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package examples.kotlin.spring.canonical
 
-import java.util.*
+import org.mybatis.dynamic.sql.SqlTable
+import java.sql.JDBCType
 
-data class PersonWithAddress(
-    var id: Int? = null,
-    var firstName: String? = null,
-    var lastName: String? = null,
-    var birthDate: Date? = null,
-    var employed: String? = null,
-    var occupation: String? = null,
-    var address: AddressRecord? = null
-)
+object GeneratedAlwaysDynamicSqlSupport {
+    object GeneratedAlways : SqlTable("GeneratedAlways") {
+        val id = column<Int>("id", JDBCType.INTEGER)
+        val firstName = column<String>("first_name", JDBCType.VARCHAR)
+        val lastName = column<String>("last_name", JDBCType.VARCHAR)
+        val fullName = column<String>("full_name", JDBCType.VARCHAR)
+    }
+}

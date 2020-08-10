@@ -216,7 +216,7 @@ class PersonMapperTest {
     void testGeneralInsert() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            int rows = mapper.insert(c -> 
+            int rows = mapper.generalInsert(c ->
                 c.set(id).toValue(100)
                 .set(firstName).toValue("Joe")
                 .set(lastName).toValue(LastName.of("Jones"))

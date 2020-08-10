@@ -23,13 +23,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.update.UpdateModel;
-import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
@@ -49,7 +47,7 @@ public class UpdateRenderer {
         SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy);
 
         List<Optional<FragmentAndParameters>> fragmentsAndParameters =
-                updateModel.mapColumnMappings(toFragmentAndParameters(visitor))
+                updateModel.mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
         
         return updateModel.whereModel()
@@ -111,16 +109,6 @@ public class UpdateRenderer {
                 .render();
     }
 
-    private Function<AbstractColumnMapping, Optional<FragmentAndParameters>> toFragmentAndParameters(
-            SetPhraseVisitor visitor) {
-        return updateMapping -> toFragmentAndParameters(visitor, updateMapping);
-    }
-    
-    private Optional<FragmentAndParameters> toFragmentAndParameters(SetPhraseVisitor visitor,
-            AbstractColumnMapping updateMapping) {
-        return updateMapping.accept(visitor);
-    }
-    
     public static Builder withUpdateModel(UpdateModel updateModel) {
         return new Builder().withUpdateModel(updateModel);
     }

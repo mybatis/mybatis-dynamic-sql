@@ -136,21 +136,84 @@ public interface SqlBuilder {
     static <T> InsertDSL.IntoGatherer<T> insert(T record) {
         return InsertDSL.insert(record);
     }
-    
+
+    /**
+     * Insert a Batch of records. The model object is structured to support bulk inserts with JDBC batch support.
+     *
+     * @param records records to insert
+     * @param <T> the type of record to insert
+     * @return the next step in the DSL
+     * @deprecated Use {@link SqlBuilder#insertBatch(Object[])} instead
+     */
+    @Deprecated
     @SafeVarargs
     static <T> BatchInsertDSL.IntoGatherer<T> insert(T...records) {
-        return BatchInsertDSL.insert(records);
+        return insertBatch(records);
     }
-    
+
+    /**
+     * Insert a Batch of records. The model object is structured to support bulk inserts with JDBC batch support.
+     *
+     * @param records records to insert
+     * @param <T> the type of record to insert
+     * @return the next step in the DSL
+     * @deprecated Use {@link SqlBuilder#insertBatch(Collection)} instead
+     */
+    @Deprecated
     static <T> BatchInsertDSL.IntoGatherer<T> insert(Collection<T> records) {
+        return insertBatch(records);
+    }
+
+    /**
+     * Insert a Batch of records. The model object is structured to support bulk inserts with JDBC batch support.
+     *
+     * @param records records to insert
+     * @param <T> the type of record to insert
+     * @return the next step in the DSL
+     */
+    @SafeVarargs
+    static <T> BatchInsertDSL.IntoGatherer<T> insertBatch(T...records) {
         return BatchInsertDSL.insert(records);
     }
-    
+
+    /**
+     * Insert a Batch of records. The model object is structured to support bulk inserts with JDBC batch support.
+     *
+     * @param records records to insert
+     * @param <T> the type of record to insert
+     * @return the next step in the DSL
+     */
+    static <T> BatchInsertDSL.IntoGatherer<T> insertBatch(Collection<T> records) {
+        return BatchInsertDSL.insert(records);
+    }
+
+    /**
+     * Insert multiple records in a single statement. The model object is structured as a single insert statement with
+     * multiple values clauses. This statement is suitable for use with a small number of records. It is not suitable
+     * for large bulk inserts as it is possible to exceed the limit of parameter markers in a prepared statement.
+     * 
+     * <p>For large bulk inserts, see {@link SqlBuilder#insertBatch(Object[])}
+     *
+     * @param records records to insert
+     * @param <T> the type of record to insert
+     * @return the next step in the DSL
+     */
     @SafeVarargs
     static <T> MultiRowInsertDSL.IntoGatherer<T> insertMultiple(T...records) {
         return MultiRowInsertDSL.insert(records);
     }
-    
+
+    /**
+     * Insert multiple records in a single statement. The model object is structured as a single insert statement with
+     * multiple values clauses. This statement is suitable for use with a small number of records. It is not suitable
+     * for large bulk inserts as it is possible to exceed the limit of parameter markers in a prepared statement.
+     *
+     * <p>For large bulk inserts, see {@link SqlBuilder#insertBatch(Collection)}
+     *
+     * @param records records to insert
+     * @param <T> the type of record to insert
+     * @return the next step in the DSL
+     */
     static <T> MultiRowInsertDSL.IntoGatherer<T> insertMultiple(Collection<T> records) {
         return MultiRowInsertDSL.insert(records);
     }

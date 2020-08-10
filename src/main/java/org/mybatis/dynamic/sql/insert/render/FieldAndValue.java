@@ -35,10 +35,6 @@ public class FieldAndValue {
         return valuePhrase;
     }
     
-    public String valuePhrase(int row) {
-        return String.format(valuePhrase, row);
-    }
-
     public static Builder withFieldName(String fieldName) {
         return new Builder().withFieldName(fieldName);
     }

@@ -17,6 +17,7 @@ package examples.generated.always.spring;
 
 import static examples.generated.always.spring.GeneratedAlwaysDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.util.ArrayList;
@@ -25,12 +26,18 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.BatchInsertModel;
+import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
+import org.mybatis.dynamic.sql.insert.InsertModel;
+import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -146,6 +153,30 @@ class SpringTest {
     }
 
     @Test
+    void testInsertWithExtensions() {
+        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+        record.setId(100);
+        record.setFirstName("Bob");
+        record.setLastName("Jones");
+        
+        Buildable<InsertModel<GeneratedAlwaysRecord>> insertStatement = insert(record)
+                .into(generatedAlways)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName");
+       
+        NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
+        
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        
+        int rows = extensions.insert(insertStatement, keyHolder);
+        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
+        
+        assertThat(rows).isEqualTo(1);
+        assertThat(generatedKey).isEqualTo("Bob Jones");
+    }
+
+    @Test
     void testGeneralInsert() {
         GeneralInsertStatementProvider insertStatement = insertInto(generatedAlways)
                 .set(id).toValue(100)
@@ -179,6 +210,23 @@ class SpringTest {
     }
 
     @Test
+    void testGeneralInsertWithGeneratedKeyAndExtensions() {
+        Buildable<GeneralInsertModel> insertStatement = insertInto(generatedAlways)
+                .set(id).toValue(100)
+                .set(firstName).toValue("Bob")
+                .set(lastName).toValue("Jones");
+
+        NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        int rows = extensions.generalInsert(insertStatement, keyHolder);
+        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
+
+        assertThat(rows).isEqualTo(1);
+        assertThat(generatedKey).isEqualTo("Bob Jones");
+    }
+
+    @Test
     void testInsertBatch() {
         List<GeneratedAlwaysRecord> records = new ArrayList<>();
         GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -193,9 +241,9 @@ class SpringTest {
         record.setLastName("Smith");
         records.add(record);
 
-        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records.toArray());
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records);
         
-        BatchInsert<GeneratedAlwaysRecord> batchInsert = insert(records)
+        BatchInsert<GeneratedAlwaysRecord> batchInsert = insertBatch(records)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
@@ -211,6 +259,66 @@ class SpringTest {
     }
 
     @Test
+    void testInsertBatchWithExtensions() {
+        NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
+
+        List<GeneratedAlwaysRecord> records = new ArrayList<>();
+        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+        record.setId(100);
+        record.setFirstName("Bob");
+        record.setLastName("Jones");
+        records.add(record);
+        
+        record = new GeneratedAlwaysRecord();
+        record.setId(101);
+        record.setFirstName("Jim");
+        record.setLastName("Smith");
+        records.add(record);
+
+        Buildable<BatchInsertModel<GeneratedAlwaysRecord>> insertStatement = insertBatch(records)
+                .into(generatedAlways)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName");
+        
+        int[] updateCounts = extensions.insertBatch(insertStatement);
+        
+        assertThat(updateCounts).hasSize(2);
+        assertThat(updateCounts[0]).isEqualTo(1);
+        assertThat(updateCounts[1]).isEqualTo(1);
+    }
+
+    @Test
+    void testMultiRowInsert() {
+        NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        List<GeneratedAlwaysRecord> records = new ArrayList<>();
+        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+        record.setId(100);
+        record.setFirstName("Bob");
+        record.setLastName("Jones");
+        records.add(record);
+        
+        record = new GeneratedAlwaysRecord();
+        record.setId(101);
+        record.setFirstName("Jim");
+        record.setLastName("Smith");
+        records.add(record);
+        
+        Buildable<MultiRowInsertModel<GeneratedAlwaysRecord>> insertStatement = insertMultiple(records).into(generatedAlways)
+                .map(id).toProperty("id")
+                .map(firstName).toProperty("firstName")
+                .map(lastName).toProperty("lastName");
+        
+        int rows = extensions.insertMultiple(insertStatement, keyHolder);
+
+        assertThat(rows).isEqualTo(2);
+        assertThat(keyHolder.getKeyList().get(0)).contains(entry("FULL_NAME", "Bob Jones"));
+        assertThat(keyHolder.getKeyList().get(1)).contains(entry("FULL_NAME", "Jim Smith"));
+    }
+
+    @Test
     void testUpdate() {
         UpdateStatementProvider updateStatement = update(generatedAlways)
                 .set(firstName).equalToStringConstant("Rob")
@@ -223,6 +331,5 @@ class SpringTest {
         int rows = template.update(updateStatement.getUpdateStatement(), parameterSource);
         
         assertThat(rows).isEqualTo(2);
-        
     }
 }

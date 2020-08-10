@@ -121,7 +121,7 @@ class GeneratedAlwaysAnnotatedMapperTest {
     }
 
     @Test
-    void testBatchInsertWithList() {
+    void testDeprecatedBatchInsertWithList() {
         try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
             List<GeneratedAlwaysRecord> records = getTestRecords();
@@ -134,10 +134,71 @@ class GeneratedAlwaysAnnotatedMapperTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             
-            batchInsert.insertStatements().stream().forEach(mapper::insert);
+            batchInsert.insertStatements().forEach(mapper::insert);
             
             session.commit();
             
+            assertAll(
+                    () -> assertThat(records.get(0).getFullName()).isEqualTo("George Jetson"),
+                    () -> assertThat(records.get(1).getFullName()).isEqualTo("Jane Jetson"),
+                    () -> assertThat(records.get(2).getFullName()).isEqualTo("Judy Jetson"),
+                    () -> assertThat(records.get(3).getFullName()).isEqualTo("Elroy Jetson")
+            );
+        }
+    }
+
+    @Test
+    void testDeprecatedBatchInsertWithArray() {
+        try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
+
+            GeneratedAlwaysRecord record1 = new GeneratedAlwaysRecord();
+            record1.setId(1000);
+            record1.setFirstName("George");
+            record1.setLastName("Jetson");
+
+            GeneratedAlwaysRecord record2 = new GeneratedAlwaysRecord();
+            record2.setId(1001);
+            record2.setFirstName("Jane");
+            record2.setLastName("Jetson");
+            
+            BatchInsert<GeneratedAlwaysRecord> batchInsert = insert(record1, record2)
+                    .into(generatedAlways)
+                    .map(id).toProperty("id")
+                    .map(firstName).toProperty("firstName")
+                    .map(lastName).toProperty("lastName")
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            
+            batchInsert.insertStatements().forEach(mapper::insert);
+            
+            session.commit();
+            
+            assertAll(
+                    () -> assertThat(record1.getFullName()).isEqualTo("George Jetson"),
+                    () -> assertThat(record2.getFullName()).isEqualTo("Jane Jetson")
+            );
+        }
+    }
+
+    @Test
+    void testBatchInsertWithList() {
+        try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
+            GeneratedAlwaysAnnotatedMapper mapper = session.getMapper(GeneratedAlwaysAnnotatedMapper.class);
+            List<GeneratedAlwaysRecord> records = getTestRecords();
+
+            BatchInsert<GeneratedAlwaysRecord> batchInsert = insertBatch(records)
+                    .into(generatedAlways)
+                    .map(id).toProperty("id")
+                    .map(firstName).toProperty("firstName")
+                    .map(lastName).toProperty("lastName")
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            batchInsert.insertStatements().forEach(mapper::insert);
+
+            session.commit();
+
             assertAll(
                     () -> assertThat(records.get(0).getFullName()).isEqualTo("George Jetson"),
                     () -> assertThat(records.get(1).getFullName()).isEqualTo("Jane Jetson"),
@@ -161,26 +222,26 @@ class GeneratedAlwaysAnnotatedMapperTest {
             record2.setId(1001);
             record2.setFirstName("Jane");
             record2.setLastName("Jetson");
-            
-            BatchInsert<GeneratedAlwaysRecord> batchInsert = insert(record1, record2)
+
+            BatchInsert<GeneratedAlwaysRecord> batchInsert = insertBatch(record1, record2)
                     .into(generatedAlways)
                     .map(id).toProperty("id")
                     .map(firstName).toProperty("firstName")
                     .map(lastName).toProperty("lastName")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
-            batchInsert.insertStatements().stream().forEach(mapper::insert);
-            
+
+            batchInsert.insertStatements().forEach(mapper::insert);
+
             session.commit();
-            
+
             assertAll(
                     () -> assertThat(record1.getFullName()).isEqualTo("George Jetson"),
                     () -> assertThat(record2.getFullName()).isEqualTo("Jane Jetson")
             );
         }
     }
-    
+
     @Test
     void testMultiInsertWithRawMyBatisAnnotations() {
         try (SqlSession session = sqlSessionFactory.openSession()) {

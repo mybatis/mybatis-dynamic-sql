@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,9 +23,11 @@ object PersonDynamicSqlSupport {
     object Person : SqlTable("Person") {
         val id = column<Int>("id", JDBCType.INTEGER)
         val firstName = column<String>("first_name", JDBCType.VARCHAR)
-        val lastName = column<String>("last_name", JDBCType.VARCHAR)
+        val lastName = column<LastName>("last_name", JDBCType.VARCHAR)
+            .withParameterTypeConverter(lastNameConverter)
         val birthDate = column<Date>("birth_date", JDBCType.DATE)
-        val employed = column<String>("employed", JDBCType.VARCHAR)
+        val employed = column<Boolean>("employed", JDBCType.VARCHAR)
+            .withParameterTypeConverter(booleanToStringConverter)
         val occupation = column<String>("occupation", JDBCType.VARCHAR)
         val addressId = column<Int>("address_id", JDBCType.INTEGER)
     }

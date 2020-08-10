@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,5 +27,10 @@ public class SpringNamedParameterRenderingStrategy extends RenderingStrategy {
     @Override
     public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
         return ":" + parameterName; //$NON-NLS-1$
+    }
+
+    @Override
+    public String getMultiRowFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
+        return ":" + prefix + "." + parameterName; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

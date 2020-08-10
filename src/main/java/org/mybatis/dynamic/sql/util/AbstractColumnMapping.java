@@ -27,6 +27,10 @@ public abstract class AbstractColumnMapping {
         this.column = Objects.requireNonNull(column);
     }
     
+    public String columnName() {
+        return column.name();
+    }
+    
     public <R> R mapColumn(Function<SqlColumn<?>, R> mapper) {
         return mapper.apply(column);
     }

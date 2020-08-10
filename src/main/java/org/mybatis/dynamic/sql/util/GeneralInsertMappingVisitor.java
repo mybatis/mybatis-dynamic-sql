@@ -15,24 +15,24 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public abstract class GeneralInsertMappingVisitor<T> implements ColumnMappingVisitor<T> {
+public abstract class GeneralInsertMappingVisitor<R> implements ColumnMappingVisitor<R> {
     @Override
-    public final T visit(SelectMapping mapping) {
+    public final R visit(SelectMapping mapping) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public final T visit(PropertyMapping mapping) {
+    public final R visit(PropertyMapping mapping) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public final T visit(PropertyWhenPresentMapping mapping) {
+    public final R visit(PropertyWhenPresentMapping mapping) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public final T visit(ColumnToColumnMapping columnMapping) {
+    public final R visit(ColumnToColumnMapping columnMapping) {
         throw new UnsupportedOperationException();
     }
 }

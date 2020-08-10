@@ -169,7 +169,7 @@ The XML element should look like this:
   </resultMap>
 
   <select id="selectMany" resultMap="animalResult">
-    ${selecteStatement}
+    ${selectStatement}
   </select>
 ```
 

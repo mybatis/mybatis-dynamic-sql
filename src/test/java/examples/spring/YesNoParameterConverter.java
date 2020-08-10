@@ -13,11 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.spring.canonical
+package examples.spring;
 
-data class AddressRecord(
-    var id: Int? = null,
-    var streetAddress: String? = null,
-    var city: String? = null,
-    var state: String? = null
-)
+import org.mybatis.dynamic.sql.ParameterTypeConverter;
+
+public class YesNoParameterConverter implements ParameterTypeConverter<Boolean, String> {
+
+    @Override
+    public String convert(Boolean source) {
+        return source == null ? null : source ? "Yes" : "No";
+    }
+}

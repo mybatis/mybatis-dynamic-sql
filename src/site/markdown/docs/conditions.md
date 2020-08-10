@@ -135,11 +135,11 @@ The following table shows the different supplied In conditions and how they will
 | IsIn| No | No| name in ('foo', null, 'bar') | name in (null) |
 | IsInWhenPresent | Yes | No | name in ('foo', 'bar') | No Render |
 | IsInCaseInsensitive | No | Yes | upper(name) in ('FOO', null, 'BAR') | upper(name) in (null) |
-| IsInCaseInsensiteveWhenPresent | Yes | Yes | upper(name) in ('FOO', 'BAR') | No Render |
+| IsInCaseInsensitiveWhenPresent | Yes | Yes | upper(name) in ('FOO', 'BAR') | No Render |
 | IsNotIn| No | No| name not in ('foo', null, 'bar') | name not in (null) |
 | IsNotInWhenPresent | Yes | No | name not in ('foo', 'bar') | No render |
 | IsNotInCaseInsensitive | No | Yes | upper(name) not in ('FOO', null, 'BAR') | upper(name) not in (null) |
-| IsNotInCaseInsensiteveWhenPresent | Yes | Yes | upper(name) not in ('FOO', 'BAR') | No Render |
+| IsNotInCaseInsensitiveWhenPresent | Yes | Yes | upper(name) not in ('FOO', 'BAR') | No Render |
 
 If none of these options meet your needs, there is an extension point where you can add your own filter and/or map conditions to the value stream. This gives you great flexibility to alter or filter the value list before the condition is rendered.
 
@@ -184,4 +184,4 @@ Then the condition could be used in a query as follows:
                     .render(RenderingStrategies.MYBATIS3);
 ```
 
-You can apply value stream operations to the conditions `IsIn`, `IsInCaseInsensitive`, `IsNotIn`, and `IsNotInCaseInsensitive`. With the case insensitive conditions, the library will automatically convert non-null strings to upper case after any value stream operation you specify.
+You can apply value stream operations to the conditions `IsIn`, `IsInCaseInsensitive`, `IsNotIn`, and `IsNotInCaseInsensitive`. With the case-insensitive conditions, the library will automatically convert non-null strings to upper case after any value stream operation you specify.

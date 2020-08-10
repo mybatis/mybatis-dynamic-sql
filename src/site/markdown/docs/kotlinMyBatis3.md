@@ -1,14 +1,14 @@
 # Kotlin Support for MyBatis3
-MyBatis Dynamic SQL includes Kotlin extension methods that enable an SQL DSL for Kotlin. This is the recommended method of using the library in Kotlin with MyBatis3.
+MyBatis Dynamic SQL includes Kotlin extensions that enable an SQL DSL for Kotlin. This is the recommended method of using the library in Kotlin with MyBatis3.
 
-The standard usage patterns for MyBatis Dynamic SQL and MyBatis3 in Java must be modified somewhat for Kotlin. Kotlin interfaces can contain both abstract and non-abstract methods (somewhat similar to Java's default methods in an interface). But using these methods in Kotlin based mapper interfaces will cause a failure with MyBatis because of the underlying Kotlin implementation.
+The standard usage patterns for MyBatis Dynamic SQL and MyBatis3 in Java must be modified somewhat for Kotlin. Kotlin interfaces can contain both abstract and non-abstract methods (somewhat similar to Java's default methods in an interface). Using these methods in Kotlin based mapper interfaces will cause a failure with MyBatis because of the underlying Kotlin implementation.
 
 This page will show our recommended pattern for using the MyBatis Dynamic SQL with Kotlin and MyBatis3. The code shown on this page is from the `src/test/kotlin/examples/kotlin/mybatis3/canonical` directory in this repository. That directory contains a complete example of using this library with Kotlin.
 
 All Kotlin support is available in two packages:
 
 * `org.mybatis.dynamic.sql.util.kotlin` - contains extension methods and utilities to enable an idiomatic Kotlin DSL for MyBatis Dynamic SQL. These objects can be used for clients using any execution target (i.e. MyBatis3 or Spring JDBC Templates)
-* `org.mybatis.dynamic.sql.util.kotlin.mybatis3` - contains utlities specifically to simplify MyBatis3 based clients
+* `org.mybatis.dynamic.sql.util.kotlin.mybatis3` - contains utilities specifically to simplify MyBatis3 based clients
 
 Using the support in these packages, it is possible to create reusable Kotlin classes, interfaces, and extension methods that mimic the code created by MyBatis Generator for Java - but code that is more idiomatic for Kotlin.
 
@@ -32,7 +32,7 @@ object PersonDynamicSqlSupport {
 This object is a singleton containing the `SqlTable` and `SqlColumn` objects that map to the database table.
 
 ## Kotlin Mappers for MyBatis3
-If you create a Kotlin mapper interface that includes both abstract and non-abstract methods, MyBatis will be confused and throw errors. By default Kotlin does not create Java default methods in an interface. For this reason, Kotlin mapper interfaces should only contain the actual MyBatis mapper abstract interface methods. What would normally be coded as default or static methods in a mapper interface should be coded as extension methods in Kotlin. For example, a simple MyBatis mapper could be coded like this:
+If you create a Kotlin mapper interface that includes both abstract and non-abstract methods, MyBatis will be confused and throw errors. By default, Kotlin does not create Java default methods in an interface. For this reason, Kotlin mapper interfaces should only contain the actual MyBatis mapper abstract interface methods. What would normally be coded as default or static methods in a mapper interface should be coded as extension methods in Kotlin. For example, a simple MyBatis mapper could be coded like this:
 
 ```kotlin
 @Mapper
@@ -80,7 +80,7 @@ A count query is a specialized select - it returns a single column - typically a
 
 Count method support enables the creation of methods that execute a count query allowing a user to specify a where clause at runtime, but abstracting away all other details.
 
-To use this support, we envision creating several methods - one standard mapper method, and other extension methods. The first method is the standard MyBatis Dynamic SQL method that will execute a select:
+To use this support, we envision creating several methods - one standard mapper method, and other extension methods. The first method is the standard MyBatis Dynamic SQL method that will execute a select statement:
 
 ```kotlin
 @Mapper
@@ -113,7 +113,7 @@ val rows = mapper.count {
 }
 ```
 
-There is also an extention method that can be used to count all rows in a table:
+There is also an extension method that can be used to count all rows in a table:
 
 ```kotlin
 val rows = mapper.count { allRows() }
@@ -188,7 +188,7 @@ fun PersonMapper.insert(record: PersonRecord) =
         map(addressId).toProperty("addressId")
     }
 
-fun PersonMapper.insert(completer: GeneralInsertCompleter) =
+fun PersonMapper.generalInsert(completer: GeneralInsertCompleter) =
     insertInto(this::generalInsert, Person, completer)
 
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
@@ -247,7 +247,7 @@ val rows = mapper.insertMultiple(record1, record2)
 
 Select method support enables the creation of methods that execute a query allowing a user to specify a where clause and/or an order by clause and/or pagination clauses at runtime, but abstracting away all other details.
 
-To use this support, we envision creating several methods - two standard mapper methods, and other extension methods. The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute a select:
+To use this support, we envision creating several methods - two standard mapper methods, and other extension methods. The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute a select statement:
 
 ```kotlin
 @Mapper
@@ -307,7 +307,7 @@ val rows = mapper.select {
 }
 ```
 
-There is a utility methods that will select all rows in a table:
+There is a utility method that will select all rows in a table:
 
 ```kotlin
 val rows = mapper.select { allRows() }

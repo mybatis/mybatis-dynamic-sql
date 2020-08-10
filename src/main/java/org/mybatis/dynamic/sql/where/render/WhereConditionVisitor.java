@@ -77,7 +77,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
                 getFormattedJdbcPlaceholder(mapKey));
 
         return FragmentAndParameters.withFragment(fragment)
-                .withParameter(mapKey, condition.value())
+                .withParameter(mapKey, convertValue(condition.value()))
                 .buildOptional();
     }
 
@@ -90,8 +90,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
                 getFormattedJdbcPlaceholder(mapKey2));
                 
         return FragmentAndParameters.withFragment(fragment)
-                .withParameter(mapKey1, condition.value1())
-                .withParameter(mapKey2, condition.value2())
+                .withParameter(mapKey1, convertValue(condition.value1()))
+                .withParameter(mapKey2, convertValue(condition.value2()))
                 .buildOptional();
     }
     
@@ -117,14 +117,18 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, Optional<Fr
         return FragmentAndParameters.withFragment(fragment).buildOptional();
     }
     
+    private Object convertValue(T value) {
+        return column.convertParameterType(value);
+    }
+
     private FragmentAndParameters toFragmentAndParameters(T value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
         return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))
-                .withParameter(mapKey, value)
+                .withParameter(mapKey, convertValue(value))
                 .build();
     }
-
+    
     private String getFormattedJdbcPlaceholder(String mapKey) {
         return column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        

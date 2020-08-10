@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -40,48 +39,53 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
 
     @Override
     public Optional<FieldAndValueAndParameters> visit(NullMapping mapping) {
-        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase("null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
     public Optional<FieldAndValueAndParameters> visit(ConstantMapping mapping) {
-        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.constant())
                 .buildOptional();
     }
 
     @Override
     public Optional<FieldAndValueAndParameters> visit(StringConstantMapping mapping) {
-        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .buildOptional();
     }
     
     @Override
     public <T> Optional<FieldAndValueAndParameters> visit(ValueMapping<T> mapping) {
-        return buildFragment(mapping, mapping.value());
+        return buildValueFragment(mapping, mapping.value());
     }
 
     @Override
     public <T> Optional<FieldAndValueAndParameters> visit(ValueWhenPresentMapping<T> mapping) {
-        return mapping.value().flatMap(v -> buildFragment(mapping, v));
+        return mapping.value().flatMap(v -> buildValueFragment(mapping, v));
     }
-
-    private <T> Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
+    
+    private Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping mapping,
+            Object value) {
+        return buildFragment(mapping, value);
+    }
+    
+    private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
-        String jdbcPlaceholder = mapping.mapColumn(toJdbcPlaceholder(mapKey));
+        String jdbcPlaceholder = mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapKey));
         
-        return FieldAndValueAndParameters.withFieldName(mapping.mapColumn(SqlColumn::name))
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(jdbcPlaceholder)
                 .withParameter(mapKey, value)
                 .buildOptional();
     }
     
-    private Function<SqlColumn<?>, String> toJdbcPlaceholder(String parameterName) {
-        return column -> column.renderingStrategy().orElse(renderingStrategy)
+    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+        return column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }

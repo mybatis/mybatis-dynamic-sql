@@ -1,6 +1,6 @@
 # Database Functions
 
-The library supplies implementations for several common database functions. We do not try to implement a large set of functions. Rather we supply some common functions as examples and make it relatively easy to write your own implementations of functions you might want to use that are not supplied by the library. See the page "Extending the Library" for informtion about how to write your own functions.
+The library supplies implementations for several common database functions. We do not try to implement a large set of functions. Rather, we supply some common functions as examples and make it relatively easy to write your own implementations of functions you might want to use that are not supplied by the library. See the page "Extending the Library" for information about how to write your own functions.
 
 The supplied functions are all in the `org.mybatis.dynamic.sql.select.function` package. In addition, there are static methods in the `SqlBuilder` to access all functions.
 

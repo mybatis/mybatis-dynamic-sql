@@ -26,9 +26,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
  * 
  * @author Jeff Butler
  *
- * @param <T> - even though the type is not directly used in this class,
- *     it is used by the compiler to match columns with conditions so it should
- *     not be removed.
+ * @param <T> - the Java type that corresponds to this column
 */
 public interface BindableColumn<T> extends BasicColumn {
 
@@ -48,5 +46,9 @@ public interface BindableColumn<T> extends BasicColumn {
     
     default Optional<RenderingStrategy> renderingStrategy() {
         return Optional.empty();
+    }
+    
+    default Object convertParameterType(T value) {
+        return value;
     }
 }

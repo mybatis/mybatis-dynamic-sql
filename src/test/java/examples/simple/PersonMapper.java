@@ -118,8 +118,8 @@ public interface PersonMapper {
         );
     }
 
-    default int insert(UnaryOperator<GeneralInsertDSL> completer) {
-        return MyBatis3Utils.insert(this::generalInsert, person, completer);
+    default int generalInsert(UnaryOperator<GeneralInsertDSL> completer) {
+        return MyBatis3Utils.generalInsert(this::generalInsert, person, completer);
     }
     
     default int insert(PersonRecord record) {

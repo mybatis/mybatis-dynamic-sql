@@ -204,7 +204,7 @@ class PersonMapperTest {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val rows = mapper.insert {
+            val rows = mapper.generalInsert {
                 set(id).toValue(100)
                 set(firstName).toValue("Joe")
                 set(lastName).toValue(LastName("Jones"))

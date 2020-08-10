@@ -23,14 +23,17 @@ import org.mybatis.dynamic.sql.SqlColumn;
 public class ValueMapping<T> extends AbstractColumnMapping {
 
     private Supplier<T> valueSupplier;
+    // keep a reference to the column so we don't lose the type
+    private SqlColumn<T> localColumn;
     
     private ValueMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
         super(column);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
+        localColumn = Objects.requireNonNull(column);
     }
     
-    public T value() {
-        return valueSupplier.get();
+    public Object value() {
+        return localColumn.convertParameterType(valueSupplier.get());
     }
 
     @Override

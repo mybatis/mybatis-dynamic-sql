@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,16 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.spring.canonical
+package examples.spring;
 
-import java.util.*
+import org.mybatis.dynamic.sql.ParameterTypeConverter;
+import org.springframework.core.convert.converter.Converter;
 
-data class PersonRecord(
-    var id: Int? = null,
-    var firstName: String? = null,
-    var lastName: String? = null,
-    var birthDate: Date? = null,
-    var employed: String? = null,
-    var occupation: String? = null,
-    var addressId: Int? = null
-)
+public class LastNameParameterConverter implements ParameterTypeConverter<LastName, String>, Converter<LastName, String> {
+    @Override
+    public String convert(LastName source) {
+        return source == null ? null : source.getName();
+    }
+}

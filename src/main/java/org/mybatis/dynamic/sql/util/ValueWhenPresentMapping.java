@@ -24,14 +24,21 @@ import org.mybatis.dynamic.sql.SqlColumn;
 public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
 
     private Supplier<T> valueSupplier;
+    // keep a reference to the column so we don't lose the type
+    private SqlColumn<T> localColumn;
     
     private ValueWhenPresentMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
         super(column);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
+        localColumn = Objects.requireNonNull(column);
     }
     
-    public Optional<T> value() {
-        return Optional.ofNullable(valueSupplier.get());
+    public Optional<Object> value() {
+        return Optional.ofNullable(valueSupplier.get()).map(this::convert);
+    }
+    
+    private Object convert(T value) {
+        return localColumn.convertParameterType(value);
     }
 
     @Override

@@ -20,12 +20,10 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public class InsertRenderer<T> {
 
@@ -40,7 +38,7 @@ public class InsertRenderer<T> {
     public InsertStatementProvider<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
         
-        List<Optional<FieldAndValue>> fieldsAndValues = model.mapColumnMappings(toFieldAndValue(visitor))
+        List<Optional<FieldAndValue>> fieldsAndValues = model.mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
         
         return DefaultInsertStatementProvider.withRecord(model.record())
@@ -69,14 +67,6 @@ public class InsertRenderer<T> {
                 .map(Optional::get)
                 .map(FieldAndValue::valuePhrase)
                 .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
-    
-    private Function<AbstractColumnMapping, Optional<FieldAndValue>> toFieldAndValue(ValuePhraseVisitor visitor) {
-        return insertMapping -> toFieldAndValue(visitor, insertMapping);
-    }
-    
-    private Optional<FieldAndValue> toFieldAndValue(ValuePhraseVisitor visitor, AbstractColumnMapping insertMapping) {
-        return insertMapping.accept(visitor);
     }
     
     public static <T> Builder<T> withInsertModel(InsertModel<T> model) {

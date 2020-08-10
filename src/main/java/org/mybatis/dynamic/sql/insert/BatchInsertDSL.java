@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,12 +23,13 @@ import java.util.List;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
+import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class BatchInsertDSL<T> {
+public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
 
     private Collection<T> records;
     private SqlTable table;
@@ -43,6 +44,7 @@ public class BatchInsertDSL<T> {
         return new ColumnMappingFinisher<>(column);
     }
     
+    @Override
     public BatchInsertModel<T> build() {
         return BatchInsertModel.withRecords(records)
                 .withTable(table)

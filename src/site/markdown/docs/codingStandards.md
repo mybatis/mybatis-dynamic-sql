@@ -20,8 +20,8 @@ these general principles for functional style coding in Java:
     - Classes never expose a modifiable Map. A Map may be exposed with an unmodifiable Map.
 - Avoid direct use of null. Any Class attribute that could be null in normal use should be wrapped in a `java.util.Optional`
 - Avoid for loops (imperative) - use map/filter/reduce/collect (declarative) instead
-- Avoid Stream.forEach() - this method is only used for side effects, and we want no side-effects
-- Avoid Optional.ifPresent() - this method is only used for side effects, and we want no side-effects
+- Avoid Stream.forEach() - this method is only used for side effects, and we want no side effects
+- Avoid Optional.ifPresent() - this method is only used for side effects, and we want no side effects
 - The only good function is a pure function.  Some functions in the library accept an AtomicInteger which is a necessary evil
 - Classes with no internal attributes are usually a collection of utility functions. Use static methods in an interface instead.
 - Remember the single responsibility principle - methods do one thing, classes have one responsibility
@@ -43,7 +43,7 @@ We are committed to clean code.  This means:
 Remember the three rules of TDD:
 
 1. You may not write production code until you have written a failing unit test.
-2. You may not write more of a unit test that is sufficient to fail, and not compiling is failing. 
+2. You may not write more of a unit test than is sufficient to fail, and not compiling is failing. 
 3. You may not write more production code than is sufficient to passing the currently failing test.
 
 
