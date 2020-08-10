@@ -41,8 +41,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         typeHandler = builder.typeHandler;
     }
 
-    @SuppressWarnings("unchecked")
-    protected SqlColumn(SqlColumn<?> sqlColumn) {
+    protected SqlColumn(SqlColumn<T> sqlColumn) {
         name = sqlColumn.name;
         table = sqlColumn.table;
         jdbcType = sqlColumn.jdbcType;
@@ -50,7 +49,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         alias = sqlColumn.alias;
         typeHandler = sqlColumn.typeHandler;
         renderingStrategy = sqlColumn.renderingStrategy;
-        parameterTypeConverter = (ParameterTypeConverter<T, ?>) sqlColumn.parameterTypeConverter;
+        parameterTypeConverter = sqlColumn.parameterTypeConverter;
     }
     
     public String name() {
@@ -119,23 +118,37 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     @NotNull
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
-        SqlColumn<S> column = new SqlColumn<>(this);
+        SqlColumn<S> column = copy();
         column.typeHandler = typeHandler;
         return column;
     }
 
     @NotNull
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
-        SqlColumn<S> column = new SqlColumn<>(this);
+        SqlColumn<S> column = copy();
         column.renderingStrategy = renderingStrategy;
         return column;
     }
 
     @NotNull
     public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
-        SqlColumn<S> column = new SqlColumn<>(this);
+        SqlColumn<S> column = copy();
         column.parameterTypeConverter = parameterTypeConverter;
         return column;
+    }
+
+    /**
+     * This method helps us tell a bit of fiction to the Java compiler. Java, for better or worse,
+     * does not carry generic type information through chained methods. We want to enable method
+     * chaining in the "with" methods. With this bit of fiction, we force the compiler to delay type
+     * inference to the last method in the chain.
+     *
+     * @param <S> the type. Will be the same as T for this usage.
+     * @return a new SqlColumn of type S (S is the same as T)
+     */
+    @SuppressWarnings("unchecked")
+    private <S> SqlColumn<S> copy() {
+        return new SqlColumn<>((SqlColumn<S>) this);
     }
 
     private String applyTableAlias(String tableAlias) {
