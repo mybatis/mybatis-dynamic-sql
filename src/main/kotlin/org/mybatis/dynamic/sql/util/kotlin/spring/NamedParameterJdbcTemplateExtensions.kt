@@ -117,8 +117,8 @@ fun <T> NamedParameterJdbcTemplate.insertMultiple(
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)
 
 // insert with KeyHolder support
-fun NamedParameterJdbcTemplate.withKeyHolder(keyHolder: KeyHolder) =
-    KeyHolderHelper(keyHolder, this)
+fun NamedParameterJdbcTemplate.withKeyHolder(keyHolder: KeyHolder, build: KeyHolderHelper.() -> Int) =
+    build(KeyHolderHelper(keyHolder, this))
 
 fun NamedParameterJdbcTemplate.select(vararg selectList: BasicColumn) =
     SelectListFromGatherer(selectList.toList(), this)

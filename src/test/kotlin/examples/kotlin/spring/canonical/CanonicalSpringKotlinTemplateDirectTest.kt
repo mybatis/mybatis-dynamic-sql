@@ -252,9 +252,11 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testGeneralInsertWithGeneratedKey() {
         val keyHolder = GeneratedKeyHolder()
 
-        val rows = template.withKeyHolder(keyHolder).insertInto(GeneratedAlways) {
-            set(GeneratedAlways.firstName).toValue("Fred")
-            set(GeneratedAlways.lastName).toValue("Flintstone")
+        val rows = template.withKeyHolder(keyHolder) {
+            insertInto(GeneratedAlways) {
+                set(GeneratedAlways.firstName).toValue("Fred")
+                set(GeneratedAlways.lastName).toValue("Flintstone")
+            }
         }
 
         assertThat(rows).isEqualTo(1)
@@ -268,9 +270,11 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
         val keyHolder = GeneratedKeyHolder()
 
-        val rows = template.withKeyHolder(keyHolder).insert(record).into(GeneratedAlways) {
-            map(GeneratedAlways.firstName).toProperty("firstName")
-            map(GeneratedAlways.lastName).toProperty("lastName")
+        val rows = template.withKeyHolder(keyHolder) {
+            insert(record).into(GeneratedAlways) {
+                map(GeneratedAlways.firstName).toProperty("firstName")
+                map(GeneratedAlways.lastName).toProperty("lastName")
+            }
         }
 
         assertThat(rows).isEqualTo(1)
@@ -285,11 +289,12 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
         val keyHolder = GeneratedKeyHolder()
 
-        val rows = template.withKeyHolder(keyHolder).insertMultiple(record1, record2)
-            .into(GeneratedAlways) {
+        val rows = template.withKeyHolder(keyHolder) {
+            insertMultiple(record1, record2).into(GeneratedAlways) {
                 map(GeneratedAlways.firstName).toProperty("firstName")
                 map(GeneratedAlways.lastName).toProperty("lastName")
             }
+        }
 
         assertThat(rows).isEqualTo(2)
         assertThat(keyHolder.keyList[0]).containsEntry("ID", 22)

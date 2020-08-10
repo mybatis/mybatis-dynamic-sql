@@ -25,10 +25,10 @@ import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
 import org.mybatis.dynamic.sql.util.Buildable
 
-typealias GeneralInsertCompleter = GeneralInsertDSL.() -> Buildable<GeneralInsertModel>
+typealias GeneralInsertCompleter = @MyBatisDslMarker GeneralInsertDSL.() -> Buildable<GeneralInsertModel>
 
-typealias InsertCompleter<T> = InsertDSL<T>.() -> Buildable<InsertModel<T>>
+typealias InsertCompleter<T> = @MyBatisDslMarker InsertDSL<T>.() -> Buildable<InsertModel<T>>
 
-typealias MultiRowInsertCompleter<T> = MultiRowInsertDSL<T>.() -> Buildable<MultiRowInsertModel<T>>
+typealias MultiRowInsertCompleter<T> = @MyBatisDslMarker MultiRowInsertDSL<T>.() -> Buildable<MultiRowInsertModel<T>>
 
-typealias BatchInsertCompleter<T> = BatchInsertDSL<T>.() -> Buildable<BatchInsertModel<T>>
+typealias BatchInsertCompleter<T> = @MyBatisDslMarker BatchInsertDSL<T>.() -> Buildable<BatchInsertModel<T>>

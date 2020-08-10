@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 
+@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 @DslMarker
 annotation class MyBatisDslMarker
 
