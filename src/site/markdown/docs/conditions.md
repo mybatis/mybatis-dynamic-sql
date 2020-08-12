@@ -124,6 +124,23 @@ The library supplies several specializations of optional conditions to be used i
 ### Optionality with the "In" Conditions
 Optionality with the "in" and "not in" conditions is a bit more complex than the other types of conditions. The first thing to know is that no "in" or "not in" condition will render if the list of values is empty. For example, there will never be rendered SQL like `where name in ()`. So optionality of the "in" conditions is more about optionality of the *values* of the condition. The library comes with functions that will filter out null values, and will upper case String values to enable case insensitive queries. There are extension points to add additional filtering and mapping if you so desire.
 
+We think it is a good thing that the library will not render invalid SQL. Normally an "in" condition will be dropped from rendering if the list of values is empty - either through filtering or from the creation of the list. But there is some danger with this stance. Because the condition could be dropped from the rendered SQL, more rows could be impacted than expected if the list ends up empty for whatever reason. Our recommended solution is to make sure that you validate list values - especially if they are coming from direct user input. Another option is to force the conditions to render even if they are empty - which will cause a database error in most cases. If you want to force "in" conditions to render even if they are empty, you will need to create your own condition and configure it to render when empty. This is easily done by subclassing one of the existing conditions. For example:
+
+```java
+    public class IsInRequired<T> extends IsIn<T> {
+        protected IsInRequired(Collection<T> values) {
+            super(values);
+            forceRenderingWhenEmpty(); // calling this method will force the condition to render even if the values list is empty
+        }
+        
+        public static <T> IsInRequired<T> isIn(Collection<T> values) {
+            return new IsInRequired<>(values);
+        }
+    }
+```
+
+Note that we do not supply conditions like this as a part of the standard library because we believe that forcing the library to render invalid SQL is an extreme measure and should be undertaken with care.
+
 The following table shows the different supplied In conditions and how they will render for different sets of inputs. The table assumes the following types of input:
 
 - Example 1 assumes an input list of ("foo", null, "bar") - like `where(name, isIn("foo", null, "bar"))`

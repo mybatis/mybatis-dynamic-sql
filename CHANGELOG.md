@@ -24,6 +24,7 @@ In the next major release of the library, all deprecated code will be removed.
 - Added the `applyOperator` function to make it easy to use non-standard database operators in expressions ([#220](https://github.com/mybatis/mybatis-dynamic-sql/issues/220))
 - Added convenience methods for count(column) and count(distinct column) ([#221](https://github.com/mybatis/mybatis-dynamic-sql/issues/221))
 - Added support for union queries in Kotlin ([#187](https://github.com/mybatis/mybatis-dynamic-sql/issues/187))
+- Added the ability to write "in" conditions that will render even if empty ([#228](https://github.com/mybatis/mybatis-dynamic-sql/issues/228))
 - Many enhancements for Spring including:
   - Fixed a bug where multi-row insert statements did not render properly for Spring  ([#224](https://github.com/mybatis/mybatis-dynamic-sql/issues/224))
   - Added support for a parameter type converter for use cases where the Java type of a column does not match the database column type  ([#131](https://github.com/mybatis/mybatis-dynamic-sql/issues/131))
