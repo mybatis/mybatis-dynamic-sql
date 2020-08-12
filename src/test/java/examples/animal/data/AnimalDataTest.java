@@ -17,6 +17,7 @@ package examples.animal.data;
 
 import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -26,10 +27,13 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -52,6 +56,7 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
+import org.mybatis.dynamic.sql.where.condition.IsIn;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 class AnimalDataTest {
@@ -564,6 +569,34 @@ class AnimalDataTest {
         }
     }
 
+    @Test
+    void testInConditionWithEmptyList() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, IsInRequired.isIn(Collections.emptyList()))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> {
+                mapper.selectMany(selectStatement);
+            });
+        }
+    }
+
+    public static class IsInRequired<T> extends IsIn<T> {
+        protected IsInRequired(Collection<T> values) {
+            super(values);
+            skipRenderingWhenEmpty = false;
+        }
+        
+        public static <T> IsInRequired<T> isIn(Collection<T> values) {
+            return new IsInRequired<>(values);
+        }
+    }
+    
     @Test
     void testInCaseSensitiveCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
