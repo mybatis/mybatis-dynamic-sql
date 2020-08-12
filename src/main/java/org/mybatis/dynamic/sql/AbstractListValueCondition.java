@@ -44,6 +44,13 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
         return skipRenderingWhenEmpty;
     }
     
+    /**
+     * Use with caution - this could cause the library to render invalid SQL like "where column in ()".
+     */
+    protected void forceRenderingWhenEmpty() {
+        skipRenderingWhenEmpty = false;
+    }
+    
     @Override
     public <R> R accept(ConditionVisitor<T, R> visitor) {
         return visitor.visit(this);

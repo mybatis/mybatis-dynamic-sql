@@ -589,7 +589,7 @@ class AnimalDataTest {
     public static class IsInRequired<T> extends IsIn<T> {
         protected IsInRequired(Collection<T> values) {
             super(values);
-            skipRenderingWhenEmpty = false;
+            forceRenderingWhenEmpty();
         }
         
         public static <T> IsInRequired<T> isIn(Collection<T> values) {
