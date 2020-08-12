@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
     protected Collection<T> values;
     protected UnaryOperator<Stream<T>> valueStreamTransformer;
+    protected boolean skipRenderingWhenEmpty = true;
 
     protected AbstractListValueCondition(Collection<T> values) {
         this(values, UnaryOperator.identity());
@@ -37,6 +38,17 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
         return valueStreamTransformer.apply(values.stream()).map(mapper);
+    }
+    
+    public boolean skipRenderingWhenEmpty() {
+        return skipRenderingWhenEmpty;
+    }
+    
+    /**
+     * Use with caution - this could cause the library to render invalid SQL like "where column in ()".
+     */
+    protected void forceRenderingWhenEmpty() {
+        skipRenderingWhenEmpty = false;
     }
     
     @Override
