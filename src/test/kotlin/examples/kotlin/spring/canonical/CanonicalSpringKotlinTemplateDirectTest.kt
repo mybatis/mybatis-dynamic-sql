@@ -315,6 +315,17 @@ class CanonicalSpringKotlinTemplateDirectTest {
     }
 
     @Test
+    fun testSelectAllWithSelectStar() {
+        val rows = template.select(Person.allColumns())
+            .from(Person) {
+                allRows()
+                orderBy(id)
+            }.withRowMapper(personRowMapper)
+
+        assertThat(rows).hasSize(6)
+    }
+
+    @Test
     fun testSelect() {
         val rows = template.select(
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
