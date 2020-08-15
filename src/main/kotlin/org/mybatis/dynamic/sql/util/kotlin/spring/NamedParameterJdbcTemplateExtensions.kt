@@ -120,14 +120,20 @@ fun <T> NamedParameterJdbcTemplate.insertMultiple(
 fun NamedParameterJdbcTemplate.withKeyHolder(keyHolder: KeyHolder, build: KeyHolderHelper.() -> Int) =
     build(KeyHolderHelper(keyHolder, this))
 
-fun NamedParameterJdbcTemplate.select(vararg selectList: BasicColumn) =
-    SelectListFromGatherer(selectList.toList(), this)
+fun NamedParameterJdbcTemplate.select(vararg selectList: BasicColumn) = select(selectList.toList())
 
-fun NamedParameterJdbcTemplate.selectDistinct(vararg selectList: BasicColumn) =
-    SelectDistinctFromGatherer(selectList.toList(), this)
+fun NamedParameterJdbcTemplate.select(selectList: List<BasicColumn>) =
+    SelectListFromGatherer(selectList, this)
 
-fun NamedParameterJdbcTemplate.selectOne(vararg selectList: BasicColumn) =
-    SelectOneFromGatherer(selectList.toList(), this)
+fun NamedParameterJdbcTemplate.selectDistinct(vararg selectList: BasicColumn) = selectDistinct(selectList.toList())
+
+fun NamedParameterJdbcTemplate.selectDistinct(selectList: List<BasicColumn>) =
+    SelectDistinctFromGatherer(selectList, this)
+
+fun NamedParameterJdbcTemplate.selectOne(vararg selectList: BasicColumn) = selectOne(selectList.toList())
+
+fun NamedParameterJdbcTemplate.selectOne(selectList: List<BasicColumn>) =
+    SelectOneFromGatherer(selectList, this)
 
 fun <T> NamedParameterJdbcTemplate.selectList(
     selectStatement: SelectStatementProvider,
