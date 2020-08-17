@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
     protected Collection<T> values;
     protected UnaryOperator<Stream<T>> valueStreamTransformer;
-    protected boolean skipRenderingWhenEmpty = true;
+    protected boolean renderWhenEmpty = false;
 
     protected AbstractListValueCondition(Collection<T> values) {
         this(values, UnaryOperator.identity());
@@ -40,15 +40,16 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
         return valueStreamTransformer.apply(values.stream()).map(mapper);
     }
     
-    public boolean skipRenderingWhenEmpty() {
-        return skipRenderingWhenEmpty;
+    @Override
+    public boolean shouldRender() {
+        return !values.isEmpty() || renderWhenEmpty;
     }
-    
+
     /**
      * Use with caution - this could cause the library to render invalid SQL like "where column in ()".
      */
     protected void forceRenderingWhenEmpty() {
-        skipRenderingWhenEmpty = false;
+        renderWhenEmpty = true;
     }
     
     @Override
