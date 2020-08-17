@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -44,6 +45,7 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
         return new ColumnMappingFinisher<>(column);
     }
     
+    @NotNull
     @Override
     public InsertModel<T> build() {
         return InsertModel.withRecord(record)

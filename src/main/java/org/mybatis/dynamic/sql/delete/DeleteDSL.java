@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -61,6 +62,7 @@ public class DeleteDSL<R> implements Buildable<R> {
      * 
      * @return the model class
      */
+    @NotNull
     @Override
     public R build() {
         DeleteModel deleteModel = DeleteModel.withTable(table)
@@ -99,6 +101,7 @@ public class DeleteDSL<R> implements Buildable<R> {
             super();
         }
 
+        @NotNull
         @Override
         public R build() {
             return DeleteDSL.this.build();

@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
@@ -157,6 +158,7 @@ public class SelectDSL<R> implements Buildable<R> {
         return new FetchFirstFinisher();
     }
 
+    @NotNull
     @Override
     public R build() {
         SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
@@ -186,6 +188,7 @@ public class SelectDSL<R> implements Buildable<R> {
             return new OffsetFinisher();
         }
         
+        @NotNull
         @Override
         public R build() {
             return SelectDSL.this.build();
@@ -193,6 +196,7 @@ public class SelectDSL<R> implements Buildable<R> {
     }
 
     public class OffsetFinisher implements Buildable<R> {
+        @NotNull
         @Override
         public R build() {
             return SelectDSL.this.build();
@@ -205,6 +209,7 @@ public class SelectDSL<R> implements Buildable<R> {
             return new FetchFirstFinisher();
         }
         
+        @NotNull
         @Override
         public R build() {
             return SelectDSL.this.build();
@@ -218,6 +223,7 @@ public class SelectDSL<R> implements Buildable<R> {
     }
     
     public class RowsOnlyFinisher implements Buildable<R> {
+        @NotNull
         @Override
         public R build() {
             return SelectDSL.this.build();

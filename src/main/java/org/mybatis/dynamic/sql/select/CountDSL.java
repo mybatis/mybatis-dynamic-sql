@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.select;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
@@ -64,6 +65,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
         return whereBuilder.applyWhere(whereApplier);
     }
 
+    @NotNull
     @Override
     public R build() {
         return adapterFunction.apply(buildModel());
@@ -130,6 +132,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
             implements Buildable<R> {
         private <T> CountWhereBuilder() {}
 
+        @NotNull
         @Override
         public R build() {
             return CountDSL.this.build();

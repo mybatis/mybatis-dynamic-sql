@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -44,6 +45,7 @@ public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
         return new ColumnMappingFinisher<>(column);
     }
 
+    @NotNull
     @Override
     public MultiRowInsertModel<T> build() {
         return MultiRowInsertModel.withRecords(records)
