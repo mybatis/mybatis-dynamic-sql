@@ -51,7 +51,7 @@ class CriterionRendererTest {
                 .build()
                 .render()
                 .get()
-                .renderWithInitialConnector();
+                .fragmentAndParametersWithConnector();
         
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters()).containsExactly(entry("p1", 3));
@@ -77,7 +77,7 @@ class CriterionRendererTest {
                 .build()
                 .render()
                 .get()
-                .renderWithInitialConnector();
+                .fragmentAndParametersWithConnector();
         
         assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters()).containsExactly(entry("p1", 3));

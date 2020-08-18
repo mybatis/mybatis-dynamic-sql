@@ -38,12 +38,6 @@ public class FragmentAndParameters {
         return parameters;
     }
     
-    public FragmentAndParameters prependFragment(String s) {
-        return FragmentAndParameters.withFragment(s + " " + fragment) //$NON-NLS-1$
-                .withParameters(parameters)
-                .build();
-    }
-    
     public static Builder withFragment(String fragment) {
         return new Builder().withFragment(fragment);
     }
