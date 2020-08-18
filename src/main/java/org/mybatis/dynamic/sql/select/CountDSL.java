@@ -41,9 +41,9 @@ import org.mybatis.dynamic.sql.where.WhereModel;
  */
 public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> implements Buildable<R> {
 
-    private Function<SelectModel, R> adapterFunction;
-    private CountWhereBuilder whereBuilder = new CountWhereBuilder();
-    private BasicColumn countColumn;
+    private final Function<SelectModel, R> adapterFunction;
+    private final CountWhereBuilder whereBuilder = new CountWhereBuilder();
+    private final BasicColumn countColumn;
     
     private CountDSL(BasicColumn countColumn, SqlTable table, Function<SelectModel, R> adapterFunction) {
         super(table);
@@ -115,8 +115,8 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
     }
     
     public static class FromGatherer<R> {
-        private BasicColumn column;
-        private Function<SelectModel, R> adapterFunction;
+        private final BasicColumn column;
+        private final Function<SelectModel, R> adapterFunction;
         
         public FromGatherer(Function<SelectModel, R> adapterFunction, BasicColumn column) {
             this.adapterFunction = adapterFunction;

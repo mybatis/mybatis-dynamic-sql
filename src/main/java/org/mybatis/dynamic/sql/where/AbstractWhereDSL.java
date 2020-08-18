@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
 public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
-    private List<SqlCriterion<?>> criteria = new ArrayList<>();
+    private final List<SqlCriterion<?>> criteria = new ArrayList<>();
     
     protected AbstractWhereDSL() {
         super();

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.util.Objects;
 
 public class DefaultGeneralInsertStatementProvider
         implements GeneralInsertStatementProvider, InsertSelectStatementProvider {
-    private String insertStatement;
-    private Map<String, Object> parameters = new HashMap<>();
+    private final String insertStatement;
+    private final Map<String, Object> parameters = new HashMap<>();
 
     private DefaultGeneralInsertStatementProvider(Builder builder) {
         insertStatement = Objects.requireNonNull(builder.insertStatement);
@@ -45,7 +45,7 @@ public class DefaultGeneralInsertStatementProvider
     
     public static class Builder {
         private String insertStatement;
-        private Map<String, Object> parameters = new HashMap<>();
+        private final Map<String, Object> parameters = new HashMap<>();
         
         public Builder withInsertStatement(String insertStatement) {
             this.insertStatement = insertStatement;

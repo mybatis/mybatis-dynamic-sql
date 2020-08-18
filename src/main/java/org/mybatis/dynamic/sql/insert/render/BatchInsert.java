@@ -22,8 +22,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class BatchInsert<T> {
-    private String insertStatement;
-    private List<T> records;
+    private final String insertStatement;
+    private final List<T> records;
     
     private BatchInsert(Builder<T> builder) {
         insertStatement = Objects.requireNonNull(builder.insertStatement);
@@ -66,7 +66,7 @@ public class BatchInsert<T> {
     
     public static class Builder<T> {
         private String insertStatement;
-        private List<T> records = new ArrayList<>();
+        private final List<T> records = new ArrayList<>();
         
         public Builder<T> withInsertStatement(String insertStatement) {
             this.insertStatement = insertStatement;

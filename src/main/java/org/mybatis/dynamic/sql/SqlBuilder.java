@@ -734,7 +734,7 @@ public interface SqlBuilder {
 
     class InsertIntoNextStep {
 
-        private SqlTable table;
+        private final SqlTable table;
 
         private InsertIntoNextStep(SqlTable table) {
             this.table = Objects.requireNonNull(table);

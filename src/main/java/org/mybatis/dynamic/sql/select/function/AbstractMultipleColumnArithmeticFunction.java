@@ -38,8 +38,8 @@ public abstract class AbstractMultipleColumnArithmeticFunction<T extends Number,
         U extends AbstractMultipleColumnArithmeticFunction<T, U>>
         extends AbstractFunction<T, AbstractMultipleColumnArithmeticFunction<T, U>> {
 
-    protected BasicColumn secondColumn;
-    protected List<BasicColumn> subsequentColumns = new ArrayList<>();
+    protected final BasicColumn secondColumn;
+    protected final List<BasicColumn> subsequentColumns = new ArrayList<>();
 
     protected AbstractMultipleColumnArithmeticFunction(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {

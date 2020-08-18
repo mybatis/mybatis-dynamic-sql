@@ -35,11 +35,11 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
     
-    private RenderingStrategy renderingStrategy;
-    private AtomicInteger sequence;
-    private BindableColumn<T> column;
-    private TableAliasCalculator tableAliasCalculator;
-    private String parameterPrefix;
+    private final RenderingStrategy renderingStrategy;
+    private final AtomicInteger sequence;
+    private final BindableColumn<T> column;
+    private final TableAliasCalculator tableAliasCalculator;
+    private final String parameterPrefix;
     
     private WhereConditionVisitor(Builder<T> builder) {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);

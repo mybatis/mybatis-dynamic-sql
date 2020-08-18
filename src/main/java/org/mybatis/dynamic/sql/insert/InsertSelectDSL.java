@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,18 +26,20 @@ import org.mybatis.dynamic.sql.util.Buildable;
 
 public class InsertSelectDSL {
 
-    private SqlTable table;
-    private InsertColumnListModel columnList;
-    private SelectModel selectModel;
+    private final SqlTable table;
+    private final InsertColumnListModel columnList;
+    private final SelectModel selectModel;
     
     private InsertSelectDSL(SqlTable table, InsertColumnListModel columnList, SelectModel selectModel) {
-        this(table, selectModel);
+        this.table = Objects.requireNonNull(table);
+        this.selectModel = Objects.requireNonNull(selectModel);
         this.columnList = columnList;
     }
     
     private InsertSelectDSL(SqlTable table, SelectModel selectModel) {
         this.table = Objects.requireNonNull(table);
         this.selectModel = Objects.requireNonNull(selectModel);
+        this.columnList = null;
     }
     
     public InsertSelectModel build() {
@@ -52,7 +54,7 @@ public class InsertSelectDSL {
     }
 
     public static class InsertColumnGatherer {
-        private SqlTable table;
+        private final SqlTable table;
         
         private InsertColumnGatherer(SqlTable table) {
             this.table = table;
@@ -68,8 +70,8 @@ public class InsertSelectDSL {
     }
     
     public static class SelectGatherer {
-        private SqlTable table;
-        private InsertColumnListModel columnList;
+        private final SqlTable table;
+        private final InsertColumnListModel columnList;
         
         private SelectGatherer(SqlTable table, List<SqlColumn<?>> columns) {
             this.table = table;

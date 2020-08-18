@@ -32,9 +32,9 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class InsertDSL<T> implements Buildable<InsertModel<T>> {
 
-    private T record;
-    private SqlTable table;
-    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+    private final T record;
+    private final SqlTable table;
+    private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     
     private InsertDSL(T record, SqlTable table) {
         this.record = record;
@@ -59,7 +59,7 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
     }
 
     public static class IntoGatherer<T> {
-        private T record;
+        private final T record;
         
         private IntoGatherer(T record) {
             this.record = record;
@@ -71,7 +71,7 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
     }
     
     public class ColumnMappingFinisher<F> {
-        private SqlColumn<F> column;
+        private final SqlColumn<F> column;
             
         public ColumnMappingFinisher(SqlColumn<F> column) {
             this.column = column;

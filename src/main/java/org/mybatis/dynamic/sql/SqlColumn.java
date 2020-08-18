@@ -25,9 +25,9 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     
-    protected String name;
-    protected SqlTable table;
-    protected JDBCType jdbcType;
+    protected final String name;
+    protected final SqlTable table;
+    protected final JDBCType jdbcType;
     protected boolean isDescending = false;
     protected String alias;
     protected String typeHandler;

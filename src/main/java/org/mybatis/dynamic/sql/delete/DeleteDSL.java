@@ -33,9 +33,9 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteDSL<R> implements Buildable<R> {
 
-    private Function<DeleteModel, R> adapterFunction;
-    private SqlTable table;
-    private DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();
+    private final Function<DeleteModel, R> adapterFunction;
+    private final SqlTable table;
+    private final DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();
     
     private DeleteDSL(SqlTable table, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);

@@ -29,9 +29,9 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public class InsertModel<T> {
-    private SqlTable table;
-    private T record;
-    private List<AbstractColumnMapping> columnMappings;
+    private final SqlTable table;
+    private final T record;
+    private final List<AbstractColumnMapping> columnMappings;
     
     private InsertModel(Builder<T> builder) {
         table = Objects.requireNonNull(builder.table);
@@ -66,7 +66,7 @@ public class InsertModel<T> {
     public static class Builder<T> {
         private SqlTable table;
         private T record;
-        private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+        private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
         
         public Builder<T> withTable(SqlTable table) {
             this.table = table;

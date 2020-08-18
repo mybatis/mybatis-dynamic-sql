@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class PropertyWhenPresentMapping extends PropertyMapping {
-    private Supplier<?> valueSupplier;
+    private final Supplier<?> valueSupplier;
     
     private PropertyWhenPresentMapping(SqlColumn<?> column, String property, Supplier<?> valueSupplier) {
         super(column, property);

@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 public class Constant<T> implements BindableColumn<T> {
 
     private String alias;
-    private String value;
+    private final String value;
     
     private Constant(String value) {
         this.value = Objects.requireNonNull(value);

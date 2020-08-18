@@ -40,8 +40,8 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
  */
 public class SelectDSL<R> implements Buildable<R> {
 
-    private Function<SelectModel, R> adapterFunction;
-    private List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();
+    private final Function<SelectModel, R> adapterFunction;
+    private final List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();
     private OrderByModel orderByModel;
     private Long limit;
     private Long offset;

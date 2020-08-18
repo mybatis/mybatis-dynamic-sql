@@ -27,8 +27,8 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 public class MultiRowInsertRenderer<T> {
 
-    private MultiRowInsertModel<T> model;
-    private RenderingStrategy renderingStrategy;
+    private final MultiRowInsertModel<T> model;
+    private final RenderingStrategy renderingStrategy;
     
     private MultiRowInsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);

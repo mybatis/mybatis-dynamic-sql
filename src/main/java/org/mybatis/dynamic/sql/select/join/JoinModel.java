@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class JoinModel {
-    private List<JoinSpecification> joinSpecifications = new ArrayList<>();
+    private final List<JoinSpecification> joinSpecifications = new ArrayList<>();
     
     private JoinModel(List<JoinSpecification> joinSpecifications) {
         this.joinSpecifications.addAll(joinSpecifications);

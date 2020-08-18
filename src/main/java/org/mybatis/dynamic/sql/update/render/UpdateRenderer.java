@@ -34,9 +34,9 @@ import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class UpdateRenderer {
-    private UpdateModel updateModel;
-    private RenderingStrategy renderingStrategy;
-    private AtomicInteger sequence = new AtomicInteger(1);
+    private final UpdateModel updateModel;
+    private final RenderingStrategy renderingStrategy;
+    private final AtomicInteger sequence = new AtomicInteger(1);
     
     private UpdateRenderer(Builder builder) {
         updateModel = Objects.requireNonNull(builder.updateModel);

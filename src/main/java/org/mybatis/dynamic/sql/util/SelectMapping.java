@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 
 public class SelectMapping extends AbstractColumnMapping {
 
-    private SelectModel selectModel;
+    private final SelectModel selectModel;
     
     private SelectMapping(SqlColumn<?> column, Buildable<SelectModel> selectModelBuilder) {
         super(column);

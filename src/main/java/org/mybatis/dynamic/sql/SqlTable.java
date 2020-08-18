@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SqlTable {
     
-    private Supplier<String> nameSupplier;
+    private final Supplier<String> nameSupplier;
 
     protected SqlTable(String tableName) {
         Objects.requireNonNull(tableName);

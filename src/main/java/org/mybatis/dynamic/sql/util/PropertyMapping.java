@@ -20,7 +20,7 @@ import java.util.Objects;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class PropertyMapping extends AbstractColumnMapping {
-    private String property;
+    private final String property;
     
     protected PropertyMapping(SqlColumn<?> column, String property) {
         super(column);

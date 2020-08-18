@@ -27,8 +27,8 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 public class InsertRenderer<T> {
 
-    private InsertModel<T> model;
-    private RenderingStrategy renderingStrategy;
+    private final InsertModel<T> model;
+    private final RenderingStrategy renderingStrategy;
     
     private InsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);

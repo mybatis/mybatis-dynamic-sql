@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndValue>> {
     
-    protected RenderingStrategy renderingStrategy;
+    protected final RenderingStrategy renderingStrategy;
     
     public ValuePhraseVisitor(RenderingStrategy renderingStrategy) {
         this.renderingStrategy = renderingStrategy;

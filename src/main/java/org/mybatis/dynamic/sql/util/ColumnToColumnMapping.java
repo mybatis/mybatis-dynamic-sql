@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
 
 public class ColumnToColumnMapping extends AbstractColumnMapping {
 
-    private BasicColumn rightColumn;
+    private final BasicColumn rightColumn;
     
     private ColumnToColumnMapping(SqlColumn<?> column, BasicColumn rightColumn) {
         super(column);

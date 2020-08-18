@@ -31,7 +31,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 @Deprecated
 public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>> implements BindableColumn<T> {
     
-    protected BindableColumn<T> column;
+    protected final BindableColumn<T> column;
     protected String alias;
 
     protected AbstractFunction(BindableColumn<T> column) {

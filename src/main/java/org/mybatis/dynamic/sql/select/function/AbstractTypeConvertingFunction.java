@@ -28,15 +28,15 @@ import org.mybatis.dynamic.sql.BindableColumn;
  * 
  * @author Jeff Butler
  *
- * @param <T> The type of the underlying column. For example, if a function converts a VARCHR to an INT, then the
+ * @param <T> The type of the underlying column. For example, if a function converts a VARCHAR to an INT, then the
  *     underlying type will be a String 
- * @param <R> The type of the column after the conversion. For example, if a function converts a VARCHR to an INT, then
+ * @param <R> The type of the column after the conversion. For example, if a function converts a VARCHAR to an INT, then
  *     the converted type will be Integer
  * @param <U> the specific subtype that implements the function
  */
 public abstract class AbstractTypeConvertingFunction<T, R, U extends AbstractTypeConvertingFunction<T, R, U>>
         implements BindableColumn<R> {
-    protected BindableColumn<T> column;
+    protected final BindableColumn<T> column;
     protected String alias;
 
     protected AbstractTypeConvertingFunction(BindableColumn<T> column) {

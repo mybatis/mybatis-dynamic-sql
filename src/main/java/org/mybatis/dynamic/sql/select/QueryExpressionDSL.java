@@ -40,11 +40,11 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>, R>
         implements Buildable<R> {
 
-    private String connector;
-    private SelectDSL<R> selectDSL;
-    private boolean isDistinct;
-    private List<BasicColumn> selectList;
-    private QueryExpressionWhereBuilder whereBuilder = new QueryExpressionWhereBuilder();
+    private final String connector;
+    private final SelectDSL<R> selectDSL;
+    private final boolean isDistinct;
+    private final List<BasicColumn> selectList;
+    private final QueryExpressionWhereBuilder whereBuilder = new QueryExpressionWhereBuilder();
     private GroupByModel groupByModel;
     
     QueryExpressionDSL(FromGatherer<R> fromGatherer) {
@@ -172,10 +172,10 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     }
     
     public static class FromGatherer<R> {
-        private String connector;
-        private List<BasicColumn> selectList;
-        private SelectDSL<R> selectDSL;
-        private boolean isDistinct;
+        private final String connector;
+        private final List<BasicColumn> selectList;
+        private final SelectDSL<R> selectDSL;
+        private final boolean isDistinct;
         private SqlTable table;
         
         public FromGatherer(Builder<R> builder) {
@@ -197,7 +197,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         
         public static class Builder<R> {
             private String connector;
-            private List<BasicColumn> selectList = new ArrayList<>();
+            private final List<BasicColumn> selectList = new ArrayList<>();
             private SelectDSL<R> selectDSL;
             private boolean isDistinct;
             
@@ -229,7 +229,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<R> {
-        private <T> QueryExpressionWhereBuilder() {
+        private QueryExpressionWhereBuilder() {
         }
 
         public UnionBuilder union() {
@@ -278,8 +278,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     }
     
     public class JoinSpecificationStarter {
-        private SqlTable joinTable;
-        private JoinType joinType;
+        private final SqlTable joinTable;
+        private final JoinType joinType;
         
         public JoinSpecificationStarter(SqlTable joinTable, JoinType joinType) {
             this.joinTable = joinTable;
@@ -297,7 +297,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     }
 
     public class JoinSpecificationFinisher implements Buildable<R> {
-        private JoinSpecification.Builder joinSpecificationBuilder;
+        private final JoinSpecification.Builder joinSpecificationBuilder;
         
         public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
                 JoinCondition joinCondition, JoinType joinType) {
@@ -453,7 +453,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     }
     
     public class UnionBuilder {
-        protected String connector;
+        protected final String connector;
         
         public UnionBuilder(String connector) {
             this.connector = connector;

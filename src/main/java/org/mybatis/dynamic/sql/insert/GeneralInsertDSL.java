@@ -32,8 +32,8 @@ import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
-    private List<AbstractColumnMapping> insertMappings = new ArrayList<>();
-    private SqlTable table;
+    private final List<AbstractColumnMapping> insertMappings = new ArrayList<>();
+    private final SqlTable table;
 
     private GeneralInsertDSL(SqlTable table) {
         this.table = Objects.requireNonNull(table);
@@ -58,7 +58,7 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
     
     public class SetClauseFinisher<T> {
         
-        private SqlColumn<T> column;
+        private final SqlColumn<T> column;
         
         public SetClauseFinisher(SqlColumn<T> column) {
             this.column = column;

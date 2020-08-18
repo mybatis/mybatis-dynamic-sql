@@ -29,9 +29,9 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public class OperatorFunction<T> extends AbstractUniTypeFunction<T, OperatorFunction<T>> {
     
-    protected BasicColumn secondColumn;
-    protected List<BasicColumn> subsequentColumns = new ArrayList<>();
-    private String operator;
+    protected final BasicColumn secondColumn;
+    protected final List<BasicColumn> subsequentColumns = new ArrayList<>();
+    private final String operator;
     
     protected OperatorFunction(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {

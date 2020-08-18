@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.function.Supplier;
  * @param <R> the type of condition being built
  */
 public abstract class AndGatherer<T, R> {
-    protected Supplier<T> valueSupplier1;
+    protected final Supplier<T> valueSupplier1;
     protected Supplier<T> valueSupplier2;
     
     protected AndGatherer(Supplier<T> valueSupplier1) {

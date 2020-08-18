@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
  * @param <T> the subclass type
  */
 public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implements BasicColumn {
-    protected BasicColumn column;
+    protected final BasicColumn column;
     protected String alias;
 
     protected AbstractAggregate(BasicColumn column) {

@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.BasicColumn;
 
 public class GroupByModel {
-    private List<BasicColumn> columns = new ArrayList<>();
+    private final List<BasicColumn> columns = new ArrayList<>();
     
     private GroupByModel(Collection<BasicColumn> columns) {
         this.columns.addAll(columns);

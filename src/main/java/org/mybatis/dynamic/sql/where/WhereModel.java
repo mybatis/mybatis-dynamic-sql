@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class WhereModel {
     private static final WhereClauseProvider EMPTY_WHERE_CLAUSE =
             new WhereClauseProvider.Builder().withWhereClause("").build(); //$NON-NLS-1$
     
-    private List<SqlCriterion<?>> criteria = new ArrayList<>();
+    private final List<SqlCriterion<?>> criteria = new ArrayList<>();
     
     private WhereModel(List<SqlCriterion<?>> criteria) {
         this.criteria.addAll(criteria);

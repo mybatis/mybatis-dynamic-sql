@@ -30,8 +30,8 @@ import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor<Optional<FieldAndValueAndParameters>> {
     
-    private RenderingStrategy renderingStrategy;
-    private AtomicInteger sequence = new AtomicInteger(1);
+    private final RenderingStrategy renderingStrategy;
+    private final AtomicInteger sequence = new AtomicInteger(1);
     
     public GeneralInsertValuePhraseVisitor(RenderingStrategy renderingStrategy) {
         this.renderingStrategy = renderingStrategy;

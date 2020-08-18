@@ -21,9 +21,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class FieldAndValueAndParameters {
-    private String fieldName;
-    private String valuePhrase;
-    private Map<String, Object> parameters;
+    private final String fieldName;
+    private final String valuePhrase;
+    private final Map<String, Object> parameters;
     
     private FieldAndValueAndParameters(Builder builder) {
         fieldName = Objects.requireNonNull(builder.fieldName);
@@ -50,7 +50,7 @@ public class FieldAndValueAndParameters {
     public static class Builder {
         private String fieldName;
         private String valuePhrase;
-        private Map<String, Object> parameters = new HashMap<>();
+        private final Map<String, Object> parameters = new HashMap<>();
 
         public Builder withFieldName(String fieldName) {
             this.fieldName = fieldName;

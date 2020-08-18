@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.mybatis.dynamic.sql.insert.render;
 import java.util.Objects;
 
 public class DefaultInsertStatementProvider<T> implements InsertStatementProvider<T> {
-    private String insertStatement;
-    private T record;
+    private final String insertStatement;
+    private final T record;
     
     private DefaultInsertStatementProvider(Builder<T> builder) {
         insertStatement = Objects.requireNonNull(builder.insertStatement);

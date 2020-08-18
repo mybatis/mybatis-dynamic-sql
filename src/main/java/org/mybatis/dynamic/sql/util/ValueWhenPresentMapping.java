@@ -23,9 +23,9 @@ import org.mybatis.dynamic.sql.SqlColumn;
 
 public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
 
-    private Supplier<T> valueSupplier;
+    private final Supplier<T> valueSupplier;
     // keep a reference to the column so we don't lose the type
-    private SqlColumn<T> localColumn;
+    private final SqlColumn<T> localColumn;
     
     private ValueWhenPresentMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
         super(column);

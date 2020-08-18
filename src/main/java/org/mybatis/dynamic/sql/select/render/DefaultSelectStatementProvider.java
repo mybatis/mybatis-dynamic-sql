@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DefaultSelectStatementProvider implements SelectStatementProvider {
-    private String selectStatement;
-    private Map<String, Object> parameters;
+    private final String selectStatement;
+    private final Map<String, Object> parameters;
     
     private DefaultSelectStatementProvider(Builder builder) {
         selectStatement = Objects.requireNonNull(builder.selectStatement);
@@ -45,7 +45,7 @@ public class DefaultSelectStatementProvider implements SelectStatementProvider {
     
     public static class Builder {
         private String selectStatement;
-        private Map<String, Object> parameters = new HashMap<>();
+        private final Map<String, Object> parameters = new HashMap<>();
         
         public Builder withSelectStatement(String selectStatement) {
             this.selectStatement = selectStatement;
