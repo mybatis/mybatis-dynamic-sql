@@ -25,8 +25,8 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public abstract class AbstractMultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<FieldAndValue> {
 
-    protected RenderingStrategy renderingStrategy;
-    protected String prefix;
+    protected final RenderingStrategy renderingStrategy;
+    protected final String prefix;
 
     public AbstractMultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
         this.renderingStrategy = renderingStrategy;

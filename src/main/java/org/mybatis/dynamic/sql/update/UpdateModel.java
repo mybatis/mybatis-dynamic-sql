@@ -31,9 +31,9 @@ import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
-    private SqlTable table;
-    private WhereModel whereModel;
-    private List<AbstractColumnMapping> columnMappings;
+    private final SqlTable table;
+    private final WhereModel whereModel;
+    private final List<AbstractColumnMapping> columnMappings;
     
     private UpdateModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
@@ -68,7 +68,7 @@ public class UpdateModel {
     public static class Builder {
         private SqlTable table;
         private WhereModel whereModel;
-        private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+        private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
         
         public Builder withTable(SqlTable table) {
             this.table = table;

@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -34,14 +34,14 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionModel {
-    private String connector;
-    private boolean isDistinct;
-    private List<BasicColumn> selectList;
-    private SqlTable table;
-    private JoinModel joinModel;
-    private TableAliasCalculator tableAliasCalculator;
-    private WhereModel whereModel;
-    private GroupByModel groupByModel;
+    private final String connector;
+    private final boolean isDistinct;
+    private final List<BasicColumn> selectList;
+    private final SqlTable table;
+    private final JoinModel joinModel;
+    private final TableAliasCalculator tableAliasCalculator;
+    private final WhereModel whereModel;
+    private final GroupByModel groupByModel;
 
     private QueryExpressionModel(Builder builder) {
         connector = builder.connector;
@@ -99,9 +99,9 @@ public class QueryExpressionModel {
     public static class Builder {
         private String connector;
         private boolean isDistinct;
-        private List<BasicColumn> selectList = new ArrayList<>();
+        private final List<BasicColumn> selectList = new ArrayList<>();
         private SqlTable table;
-        private Map<SqlTable, String> tableAliases = new HashMap<>();
+        private final Map<SqlTable, String> tableAliases = new HashMap<>();
         private WhereModel whereModel;
         private JoinModel joinModel;
         private GroupByModel groupByModel;

@@ -22,8 +22,8 @@ import java.util.Optional;
 
 public class FragmentAndParameters {
     
-    private String fragment;
-    private Map<String, Object> parameters;
+    private final String fragment;
+    private final Map<String, Object> parameters;
     
     private FragmentAndParameters(Builder builder) {
         fragment = Objects.requireNonNull(builder.fragment);
@@ -44,7 +44,7 @@ public class FragmentAndParameters {
     
     public static class Builder {
         private String fragment;
-        private Map<String, Object> parameters = new HashMap<>();
+        private final Map<String, Object> parameters = new HashMap<>();
         
         public Builder withFragment(String fragment) {
             this.fragment = fragment;

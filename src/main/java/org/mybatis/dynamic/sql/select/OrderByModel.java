@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.SortSpecification;
 
 public class OrderByModel {
-    private List<SortSpecification> columns = new ArrayList<>();
+    private final List<SortSpecification> columns = new ArrayList<>();
     
     private OrderByModel(Collection<SortSpecification> columns) {
         this.columns.addAll(columns);

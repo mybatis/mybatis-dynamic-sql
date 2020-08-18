@@ -20,8 +20,8 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public class Substring extends AbstractUniTypeFunction<String, Substring> {
 
-    private int offset;
-    private int length;
+    private final int offset;
+    private final int length;
     
     private Substring(BindableColumn<String> column, int offset, int length) {
         super(column);

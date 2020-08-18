@@ -27,9 +27,9 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public abstract class AbstractMultiRowInsertModel<T> {
-    private SqlTable table;
-    private List<T> records;
-    private List<AbstractColumnMapping> columnMappings;
+    private final SqlTable table;
+    private final List<T> records;
+    private final List<AbstractColumnMapping> columnMappings;
     
     protected AbstractMultiRowInsertModel(AbstractBuilder<T, ?> builder) {
         table = Objects.requireNonNull(builder.table);
@@ -55,8 +55,8 @@ public abstract class AbstractMultiRowInsertModel<T> {
     
     public abstract static class AbstractBuilder<T, S extends AbstractBuilder<T, S>> {
         private SqlTable table;
-        private List<T> records = new ArrayList<>();
-        private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+        private final List<T> records = new ArrayList<>();
+        private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
         
         public S withTable(SqlTable table) {
             this.table = table;

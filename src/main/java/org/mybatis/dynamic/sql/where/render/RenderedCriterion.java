@@ -20,8 +20,8 @@ import java.util.Objects;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class RenderedCriterion {
-    private String connector;
-    private FragmentAndParameters fragmentAndParameters;
+    private final String connector;
+    private final FragmentAndParameters fragmentAndParameters;
 
     private RenderedCriterion(Builder builder) {
         connector = builder.connector;

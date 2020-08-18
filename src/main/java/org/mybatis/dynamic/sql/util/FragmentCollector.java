@@ -23,7 +23,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public class FragmentCollector {
-    List<FragmentAndParameters> fragments = new ArrayList<>();
+    final List<FragmentAndParameters> fragments = new ArrayList<>();
     
     FragmentCollector() {
         super();

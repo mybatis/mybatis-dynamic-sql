@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 @Deprecated
 public class MyBatis3DeleteModelAdapter<R> {
 
-    private DeleteModel deleteModel;
-    private Function<DeleteStatementProvider, R> mapperMethod;
+    private final DeleteModel deleteModel;
+    private final Function<DeleteStatementProvider, R> mapperMethod;
     
     private MyBatis3DeleteModelAdapter(DeleteModel deleteModel, Function<DeleteStatementProvider, R> mapperMethod) {
         this.deleteModel = Objects.requireNonNull(deleteModel);

@@ -23,8 +23,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
-    protected Collection<T> values;
-    protected UnaryOperator<Stream<T>> valueStreamTransformer;
+    protected final Collection<T> values;
+    protected final UnaryOperator<Stream<T>> valueStreamTransformer;
     protected boolean renderWhenEmpty = false;
 
     protected AbstractListValueCondition(Collection<T> values) {

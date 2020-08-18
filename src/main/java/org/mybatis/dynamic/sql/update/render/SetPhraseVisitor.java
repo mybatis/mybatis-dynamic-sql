@@ -37,8 +37,8 @@ import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndParameters>> {
     
-    private AtomicInteger sequence;
-    private RenderingStrategy renderingStrategy;
+    private final AtomicInteger sequence;
+    private final RenderingStrategy renderingStrategy;
     
     public SetPhraseVisitor(AtomicInteger sequence, RenderingStrategy renderingStrategy) {
         this.sequence = Objects.requireNonNull(sequence);

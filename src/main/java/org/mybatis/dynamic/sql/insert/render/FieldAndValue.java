@@ -19,8 +19,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class FieldAndValue {
-    private String fieldName;
-    private String valuePhrase;
+    private final String fieldName;
+    private final String valuePhrase;
     
     private FieldAndValue(Builder builder) {
         fieldName = Objects.requireNonNull(builder.fieldName);

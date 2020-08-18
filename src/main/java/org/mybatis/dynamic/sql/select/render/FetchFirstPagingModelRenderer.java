@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class FetchFirstPagingModelRenderer {
-    private RenderingStrategy renderingStrategy;
-    private PagingModel pagingModel;
-    private AtomicInteger sequence;
+    private final RenderingStrategy renderingStrategy;
+    private final PagingModel pagingModel;
+    private final AtomicInteger sequence;
 
     public FetchFirstPagingModelRenderer(RenderingStrategy renderingStrategy,
             PagingModel pagingModel, AtomicInteger sequence) {

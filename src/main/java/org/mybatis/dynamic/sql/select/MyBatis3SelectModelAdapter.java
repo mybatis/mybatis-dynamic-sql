@@ -33,8 +33,8 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 @Deprecated
 public class MyBatis3SelectModelAdapter<R> {
 
-    private SelectModel selectModel;
-    private Function<SelectStatementProvider, R> mapperMethod;
+    private final SelectModel selectModel;
+    private final Function<SelectStatementProvider, R> mapperMethod;
     
     private MyBatis3SelectModelAdapter(SelectModel selectModel, Function<SelectStatementProvider, R> mapperMethod) {
         this.selectModel = Objects.requireNonNull(selectModel);

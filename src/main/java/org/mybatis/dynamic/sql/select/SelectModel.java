@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class SelectModel {
-    private List<QueryExpressionModel> queryExpressions;
-    private OrderByModel orderByModel;
-    private PagingModel pagingModel;
+    private final List<QueryExpressionModel> queryExpressions;
+    private final OrderByModel orderByModel;
+    private final PagingModel pagingModel;
 
     private SelectModel(Builder builder) {
         queryExpressions = Objects.requireNonNull(builder.queryExpressions);
@@ -63,7 +63,7 @@ public class SelectModel {
     }
     
     public static class Builder {
-        private List<QueryExpressionModel> queryExpressions = new ArrayList<>();
+        private final List<QueryExpressionModel> queryExpressions = new ArrayList<>();
         private OrderByModel orderByModel;
         private PagingModel pagingModel;
         

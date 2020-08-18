@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 public abstract class AbstractTwoValueCondition<T> implements VisitableCondition<T> {
-    protected Supplier<T> valueSupplier1;
-    protected Supplier<T> valueSupplier2;
-    private BiPredicate<T, T> predicate;
+    protected final Supplier<T> valueSupplier1;
+    protected final Supplier<T> valueSupplier2;
+    private final BiPredicate<T, T> predicate;
     
     protected AbstractTwoValueCondition(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2) {
         this.valueSupplier1 = Objects.requireNonNull(valueSupplier1);
@@ -32,7 +32,8 @@ public abstract class AbstractTwoValueCondition<T> implements VisitableCondition
 
     protected AbstractTwoValueCondition(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2,
             BiPredicate<T, T> predicate) {
-        this(valueSupplier1, valueSupplier2);
+        this.valueSupplier1 = Objects.requireNonNull(valueSupplier1);
+        this.valueSupplier2 = Objects.requireNonNull(valueSupplier2);
         this.predicate = Objects.requireNonNull(predicate);
     }
 

@@ -29,11 +29,11 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class WhereRenderer {
-    private WhereModel whereModel;
-    private AtomicInteger sequence;
-    private RenderingStrategy renderingStrategy;
-    private TableAliasCalculator tableAliasCalculator;
-    private String parameterName;
+    private final WhereModel whereModel;
+    private final AtomicInteger sequence;
+    private final RenderingStrategy renderingStrategy;
+    private final TableAliasCalculator tableAliasCalculator;
+    private final String parameterName;
     
     private WhereRenderer(Builder builder) {
         whereModel = Objects.requireNonNull(builder.whereModel);

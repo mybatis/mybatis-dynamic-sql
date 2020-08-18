@@ -47,10 +47,10 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateDSL<R> implements Buildable<R> {
 
-    private Function<UpdateModel, R> adapterFunction;
-    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
-    private SqlTable table;
-    private UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();
+    private final Function<UpdateModel, R> adapterFunction;
+    private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+    private final SqlTable table;
+    private final UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();
     
     private UpdateDSL(SqlTable table, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -117,7 +117,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     
     public class SetClauseFinisher<T> {
         
-        private SqlColumn<T> column;
+        private final SqlColumn<T> column;
         
         public SetClauseFinisher(SqlColumn<T> column) {
             this.column = column;

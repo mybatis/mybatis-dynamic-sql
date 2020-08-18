@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import java.util.stream.Stream;
 
 public class SqlCriterion<T> {
     
-    private BindableColumn<T> column;
-    private VisitableCondition<T> condition;
-    private String connector;
-    private List<SqlCriterion<?>> subCriteria;
+    private final BindableColumn<T> column;
+    private final VisitableCondition<T> condition;
+    private final String connector;
+    private final List<SqlCriterion<?>> subCriteria;
     
     private SqlCriterion(Builder<T> builder) {
         connector = builder.connector;
@@ -60,7 +60,7 @@ public class SqlCriterion<T> {
         private String connector;
         private BindableColumn<T> column;
         private VisitableCondition<T> condition;
-        private List<SqlCriterion<?>> subCriteria = new ArrayList<>();
+        private final List<SqlCriterion<?>> subCriteria = new ArrayList<>();
         
         public Builder<T> withConnector(String connector) {
             this.connector = connector;

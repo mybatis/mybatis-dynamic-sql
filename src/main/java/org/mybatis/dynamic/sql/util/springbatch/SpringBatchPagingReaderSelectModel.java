@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class SpringBatchPagingReaderSelectModel {
     
-    private SelectModel selectModel;
+    private final SelectModel selectModel;
     
     public SpringBatchPagingReaderSelectModel(SelectModel selectModel) {
         this.selectModel = selectModel;
@@ -36,8 +36,8 @@ public class SpringBatchPagingReaderSelectModel {
     }
 
     public static class LimitAndOffsetDecorator implements SelectStatementProvider {
-        private Map<String, Object> parameters = new HashMap<>();
-        private String selectStatement;
+        private final Map<String, Object> parameters = new HashMap<>();
+        private final String selectStatement;
         
         public LimitAndOffsetDecorator(SelectStatementProvider delegate) {
             parameters.putAll(delegate.getParameters());

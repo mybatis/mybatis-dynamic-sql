@@ -32,9 +32,9 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
 
-    private Collection<T> records;
-    private SqlTable table;
-    private List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+    private final Collection<T> records;
+    private final SqlTable table;
+    private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     
     private BatchInsertDSL(Collection<T> records, SqlTable table) {
         this.records = records;
@@ -64,7 +64,7 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
     }
     
     public static class IntoGatherer<T> {
-        private Collection<T> records;
+        private final Collection<T> records;
         
         private IntoGatherer(Collection<T> records) {
             this.records = records;
@@ -76,7 +76,7 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
     }
     
     public class ColumnMappingFinisher<F> {
-        private SqlColumn<F> column;
+        private final SqlColumn<F> column;
             
         public ColumnMappingFinisher(SqlColumn<F> column) {
             this.column = column;
