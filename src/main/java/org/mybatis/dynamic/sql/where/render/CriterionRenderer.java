@@ -27,6 +27,25 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
+/**
+ * Renders a {@link SqlCriterion} to a {@link RenderedCriterion}. The process is complex because all conditions
+ * may or may not be a candidate for rendering. For example, "isEqualWhenPresent" will not render when the value
+ * is null. It is also complex because SqlCriterion may or may not include sub-criteria.
+ *
+ * <p>Rendering is a recursive process. The renderer will recurse into each sub-criteria - which may also
+ * contain further sub-criteria - until all possible sub-criteria are rendered into a single fragment. So, for example,
+ * the fragment may end up looking like:
+ *
+ * <pre>
+ *     col1 = ? and (col2 = ? or (col3 = ? and col4 = ?))
+ * </pre>
+ *
+ * <p>It is also possible that the end result will be empty if all criteria and sub-criteria are not valid for
+ * rendering.
+ *
+ * @author Jeff Butler
+ * @param <T> the type of column to render. Not used during rendering.
+ */
 public class CriterionRenderer<T> {
     private final SqlCriterion<T> sqlCriterion;
     private final AtomicInteger sequence;
@@ -105,7 +124,8 @@ public class CriterionRenderer<T> {
                 subCriteria.subList(1, subCriteria.size()));
     }
 
-    private RenderedCriterion calculateRenderedCriterion(FragmentAndParameters initialCondition, List<RenderedCriterion> subCriteria) {
+    private RenderedCriterion calculateRenderedCriterion(FragmentAndParameters initialCondition,
+            List<RenderedCriterion> subCriteria) {
         FragmentCollector fc = subCriteria.stream()
                 .map(RenderedCriterion::fragmentAndParametersWithConnector)
                 .collect(FragmentCollector.collect(initialCondition));
