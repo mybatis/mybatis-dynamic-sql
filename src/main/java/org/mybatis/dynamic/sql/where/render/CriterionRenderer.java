@@ -43,23 +43,12 @@ public class CriterionRenderer<T> {
     }
     
     public Optional<RenderedCriterion> render() {
-        FragmentAndParameters initialCondition = null;
-        if (sqlCriterion.condition().shouldRender()) {
-            initialCondition = renderCondition();
-        }
-
-        List<RenderedCriterion> subCriteria = sqlCriterion.mapSubCriteria(this::renderSubCriterion)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-
         RenderedCriterion rc;
-        if (initialCondition == null) {
-            rc = renderWithoutInitialCondition(subCriteria);
+        if (sqlCriterion.condition().shouldRender()) {
+            rc = renderWithInitialCondition(renderCondition(), renderSubCriteria());
         } else {
-            rc = renderWithInitialCondition(initialCondition, subCriteria);
+            rc = renderWithoutInitialCondition(renderSubCriteria());
         }
-
         return Optional.ofNullable(rc);
     }
 
@@ -71,6 +60,13 @@ public class CriterionRenderer<T> {
                 .withParameterName(parameterName)
                 .build();
         return sqlCriterion.condition().accept(visitor);
+    }
+
+    private List<RenderedCriterion> renderSubCriteria() {
+        return sqlCriterion.mapSubCriteria(this::renderSubCriterion)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
     private <S> Optional<RenderedCriterion> renderSubCriterion(SqlCriterion<S> subCriterion) {
@@ -94,19 +90,14 @@ public class CriterionRenderer<T> {
     private RenderedCriterion renderWithInitialCondition(FragmentAndParameters initialCondition,
             List<RenderedCriterion> subCriteria) {
         if (subCriteria.isEmpty()) {
-            return fromFragmentAndParameters(initialCondition);
+            return calculateRenderedCriterion(initialCondition);
         }
 
         return calculateRenderedCriterion(initialCondition, subCriteria);
     }
 
-    private RenderedCriterion fromFragmentAndParameters(FragmentAndParameters fragmentAndParameters) {
-        RenderedCriterion.Builder builder = new RenderedCriterion.Builder()
-                .withFragmentAndParameters(fragmentAndParameters);
-
-        sqlCriterion.connector().ifPresent(builder::withConnector);
-
-        return builder.build();
+    private RenderedCriterion calculateRenderedCriterion(FragmentAndParameters initialCondition) {
+        return fromFragmentAndParameters(initialCondition);
     }
 
     private RenderedCriterion calculateRenderedCriterion(List<RenderedCriterion> subCriteria) {
@@ -118,8 +109,7 @@ public class CriterionRenderer<T> {
         FragmentCollector fc = subCriteria.stream()
                 .map(RenderedCriterion::fragmentAndParametersWithConnector)
                 .collect(FragmentCollector.collect(initialCondition));
-        String fragment = calculateFragment(fc);
-        return fromFragmentAndParameters(FragmentAndParameters.withFragment(fragment)
+        return fromFragmentAndParameters(FragmentAndParameters.withFragment(calculateFragment(fc))
                 .withParameters(fc.parameters())
                 .build());
     }
@@ -131,6 +121,15 @@ public class CriterionRenderer<T> {
         } else {
             return collector.fragments().findFirst().orElse(""); //$NON-NLS-1$
         }
+    }
+
+    private RenderedCriterion fromFragmentAndParameters(FragmentAndParameters fragmentAndParameters) {
+        RenderedCriterion.Builder builder = new RenderedCriterion.Builder()
+                .withFragmentAndParameters(fragmentAndParameters);
+
+        sqlCriterion.connector().ifPresent(builder::withConnector);
+
+        return builder.build();
     }
 
     public static <T> Builder<T> withCriterion(SqlCriterion<T> sqlCriterion) {
