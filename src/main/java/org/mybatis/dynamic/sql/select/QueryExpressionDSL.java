@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -73,6 +74,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         return whereBuilder.applyWhere(whereApplier);
     }
 
+    @NotNull
     @Override
     public R build() {
         return selectDSL.build();
@@ -258,6 +260,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
         
+        @NotNull
         @Override
         public R build() {
             return QueryExpressionDSL.this.build();
@@ -327,6 +330,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             addJoinSpecificationBuilder(joinSpecificationBuilder);
         }
         
+        @NotNull
         @Override
         public R build() {
             return QueryExpressionDSL.this.build();
@@ -421,6 +425,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
+        @NotNull
         @Override
         public R build() {
             return QueryExpressionDSL.this.build();

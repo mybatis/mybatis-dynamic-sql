@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -55,11 +55,11 @@ public class WhereRenderer {
 
         // The first is rendered without the initial connector because we don't want something like
         // where and(id = ?).  This can happen if the first condition doesn't render. 
-        FragmentAndParameters initialCriterion = renderedCriteria.get(0).renderWithoutInitialConnector();
+        FragmentAndParameters initialCriterion = renderedCriteria.get(0).fragmentAndParameters();
         
         FragmentCollector fc = renderedCriteria.stream()
                 .skip(1)
-                .map(RenderedCriterion::renderWithInitialConnector)
+                .map(RenderedCriterion::fragmentAndParametersWithConnector)
                 .collect(FragmentCollector.collect(initialCriterion));
         
         WhereClauseProvider wcp = WhereClauseProvider.withWhereClause(calculateWhereClause(fc))

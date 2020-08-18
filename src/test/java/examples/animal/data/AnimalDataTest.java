@@ -580,9 +580,7 @@ class AnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> {
-                mapper.selectMany(selectStatement);
-            });
+            assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> mapper.selectMany(selectStatement));
         }
     }
 
@@ -1425,7 +1423,7 @@ class AnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             
-            batchInsert.insertStatements().stream().forEach(mapper::insert);
+            batchInsert.insertStatements().forEach(mapper::insert);
             sqlSession.commit();
             
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -1475,7 +1473,7 @@ class AnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             
-            batchInsert.insertStatements().stream().forEach(mapper::insert);
+            batchInsert.insertStatements().forEach(mapper::insert);
             sqlSession.commit();
             
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)

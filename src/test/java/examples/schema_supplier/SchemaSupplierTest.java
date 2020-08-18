@@ -72,9 +72,7 @@ class SchemaSupplierTest {
             user.setId(1);
             user.setName("Fred");
             
-            assertThrows(PersistenceException.class, () -> {
-                mapper.insert(user);
-            });
+            assertThrows(PersistenceException.class, () -> mapper.insert(user));
         }
     }
 

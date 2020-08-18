@@ -52,7 +52,7 @@ class CriterionRendererTest {
                 .build()
                 .render()
                 .get()
-                .renderWithInitialConnector();
+                .fragmentAndParametersWithConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
@@ -78,7 +78,7 @@ class CriterionRendererTest {
                 .build()
                 .render()
                 .get()
-                .renderWithInitialConnector();
+                .fragmentAndParametersWithConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}"),
@@ -106,7 +106,7 @@ class CriterionRendererTest {
                 .build()
                 .render()
                 .get()
-                .renderWithInitialConnector();
+                .fragmentAndParametersWithConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"),
@@ -133,7 +133,7 @@ class CriterionRendererTest {
                 .build()
                 .render()
                 .get()
-                .renderWithInitialConnector();
+                .fragmentAndParametersWithConnector();
         
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"),

@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -80,6 +81,7 @@ public class UpdateDSL<R> implements Buildable<R> {
      * 
      * @return the update model
      */
+    @NotNull
     @Override
     public R build() {
         UpdateModel updateModel = UpdateModel.withTable(table)
@@ -171,6 +173,7 @@ public class UpdateDSL<R> implements Buildable<R> {
             super();
         }
         
+        @NotNull
         @Override
         public R build() {
             return UpdateDSL.this.build();

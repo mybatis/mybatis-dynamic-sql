@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,13 +25,33 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
+/**
+ * Renders a {@link SqlCriterion} to a {@link RenderedCriterion}. The process is complex because all conditions
+ * may or may not be a candidate for rendering. For example, "isEqualWhenPresent" will not render when the value
+ * is null. It is also complex because SqlCriterion may or may not include sub-criteria.
+ *
+ * <p>Rendering is a recursive process. The renderer will recurse into each sub-criteria - which may also
+ * contain further sub-criteria - until all possible sub-criteria are rendered into a single fragment. So, for example,
+ * the fragment may end up looking like:
+ *
+ * <pre>
+ *     col1 = ? and (col2 = ? or (col3 = ? and col4 = ?))
+ * </pre>
+ *
+ * <p>It is also possible that the end result will be empty if all criteria and sub-criteria are not valid for
+ * rendering.
+ *
+ * @author Jeff Butler
+ * @param <T> the type of column to render. Not used during rendering.
+ */
 public class CriterionRenderer<T> {
-    private SqlCriterion<T> sqlCriterion;
-    private AtomicInteger sequence;
-    private RenderingStrategy renderingStrategy;
-    private TableAliasCalculator tableAliasCalculator;
-    private String parameterName;
+    private final SqlCriterion<T> sqlCriterion;
+    private final AtomicInteger sequence;
+    private final RenderingStrategy renderingStrategy;
+    private final TableAliasCalculator tableAliasCalculator;
+    private final String parameterName;
     
     private CriterionRenderer(Builder<T> builder) {
         sqlCriterion = Objects.requireNonNull(builder.sqlCriterion);
@@ -42,18 +62,30 @@ public class CriterionRenderer<T> {
     }
     
     public Optional<RenderedCriterion> render() {
-        Optional<FragmentAndParameters> initialCondition = renderCondition();
-        
-        List<RenderedCriterion> subCriteria = sqlCriterion.mapSubCriteria(this::renderSubCriterion)
+        RenderedCriterion rc;
+        if (sqlCriterion.condition().shouldRender()) {
+            rc = renderWithInitialCondition(renderCondition(), renderSubCriteria());
+        } else {
+            rc = renderWithoutInitialCondition(renderSubCriteria());
+        }
+        return Optional.ofNullable(rc);
+    }
+
+    private FragmentAndParameters renderCondition() {
+        WhereConditionVisitor<T> visitor = WhereConditionVisitor.withColumn(sqlCriterion.column())
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(sequence)
+                .withTableAliasCalculator(tableAliasCalculator)
+                .withParameterName(parameterName)
+                .build();
+        return sqlCriterion.condition().accept(visitor);
+    }
+
+    private List<RenderedCriterion> renderSubCriteria() {
+        return sqlCriterion.mapSubCriteria(this::renderSubCriterion)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
-        
-        return new RenderedCriterion.Builder()
-                .withConnector(sqlCriterion.connector())
-                .withInitialCondition(initialCondition)
-                .withSubCriteria(subCriteria)
-                .build();
     }
 
     private <S> Optional<RenderedCriterion> renderSubCriterion(SqlCriterion<S> subCriterion) {
@@ -66,18 +98,58 @@ public class CriterionRenderer<T> {
                 .render();
     }
     
-    private Optional<FragmentAndParameters> renderCondition() {
-        if (!sqlCriterion.condition().shouldRender()) {
-            return Optional.empty();
+    private RenderedCriterion renderWithoutInitialCondition(List<RenderedCriterion> subCriteria) {
+        if (subCriteria.isEmpty()) {
+            return null;
         }
 
-        WhereConditionVisitor<T> visitor = WhereConditionVisitor.withColumn(sqlCriterion.column())
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
-                .withTableAliasCalculator(tableAliasCalculator)
-                .withParameterName(parameterName)
-                .build();
-        return sqlCriterion.condition().accept(visitor);
+        return calculateRenderedCriterion(subCriteria);
+    }
+
+    private RenderedCriterion renderWithInitialCondition(FragmentAndParameters initialCondition,
+            List<RenderedCriterion> subCriteria) {
+        if (subCriteria.isEmpty()) {
+            return calculateRenderedCriterion(initialCondition);
+        }
+
+        return calculateRenderedCriterion(initialCondition, subCriteria);
+    }
+
+    private RenderedCriterion calculateRenderedCriterion(FragmentAndParameters initialCondition) {
+        return fromFragmentAndParameters(initialCondition);
+    }
+
+    private RenderedCriterion calculateRenderedCriterion(List<RenderedCriterion> subCriteria) {
+        return calculateRenderedCriterion(subCriteria.get(0).fragmentAndParameters(),
+                subCriteria.subList(1, subCriteria.size()));
+    }
+
+    private RenderedCriterion calculateRenderedCriterion(FragmentAndParameters initialCondition,
+            List<RenderedCriterion> subCriteria) {
+        FragmentCollector fc = subCriteria.stream()
+                .map(RenderedCriterion::fragmentAndParametersWithConnector)
+                .collect(FragmentCollector.collect(initialCondition));
+        return fromFragmentAndParameters(FragmentAndParameters.withFragment(calculateFragment(fc))
+                .withParameters(fc.parameters())
+                .build());
+    }
+
+    private String calculateFragment(FragmentCollector collector) {
+        if (collector.hasMultipleFragments()) {
+            return collector.fragments()
+                    .collect(Collectors.joining(" ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        } else {
+            return collector.fragments().findFirst().orElse(""); //$NON-NLS-1$
+        }
+    }
+
+    private RenderedCriterion fromFragmentAndParameters(FragmentAndParameters fragmentAndParameters) {
+        RenderedCriterion.Builder builder = new RenderedCriterion.Builder()
+                .withFragmentAndParameters(fragmentAndParameters);
+
+        sqlCriterion.connector().ifPresent(builder::withConnector);
+
+        return builder.build();
     }
 
     public static <T> Builder<T> withCriterion(SqlCriterion<T> sqlCriterion) {
@@ -94,7 +166,6 @@ public class CriterionRenderer<T> {
         public Builder<T> withCriterion(SqlCriterion<T> sqlCriterion) {
             this.sqlCriterion = sqlCriterion;
             return this;
-            
         }
         
         public Builder<T> withSequence(AtomicInteger sequence) {

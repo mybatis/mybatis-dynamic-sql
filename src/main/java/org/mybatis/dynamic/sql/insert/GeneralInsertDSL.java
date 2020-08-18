@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -42,6 +43,7 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
         return new SetClauseFinisher<>(column);
     }
 
+    @NotNull
     @Override
     public GeneralInsertModel build() {
         return new GeneralInsertModel.Builder()

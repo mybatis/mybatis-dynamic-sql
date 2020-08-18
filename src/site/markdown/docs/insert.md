@@ -203,7 +203,7 @@ A batch insert is a collection of statements that can be used to execute a JDBC 
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        batchInsert.insertStatements().stream().forEach(mapper::insert);
+        batchInsert.insertStatements().forEach(mapper::insert);
 
         session.commit();
     }
