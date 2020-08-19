@@ -2,9 +2,9 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
-## Release 1.1.5 - Unreleased
+## Release 1.2.0 - August 19, 2020
 
-GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.5+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.5+)
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.2.0+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.2.0+)
 
 ### General Announcements
 
@@ -14,7 +14,7 @@ This release includes a significant refactoring of the classes in the "org.mybat
 
 With this release, we deprecated several insert methods because they were inconsistently named or awkward. All deprecated methods have documented direct replacements.
 
-In the next major release of the library, all deprecated code will be removed.
+All deprecated code will be removed in the next release.
 
 ### Added
 
