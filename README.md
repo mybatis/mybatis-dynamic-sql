@@ -4,25 +4,44 @@
 [![Coverage Status](https://coveralls.io/repos/github/mybatis/mybatis-dynamic-sql/badge.svg?branch=master)](https://coveralls.io/github/mybatis/mybatis-dynamic-sql?branch=master)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/org.mybatis.dynamic-sql/mybatis-dynamic-sql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mybatis.dynamic-sql/mybatis-dynamic-sql)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/org.mybatis.dynamic-sql/mybatis-dynamic-sql.svg)](https://oss.sonatype.org/content/repositories/snapshots/org/mybatis/dynamic-sql/mybatis-dynamic-sql/)
-[![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mybatis_mybatis-dynamic-sql&metric=alert_status)](https://sonarcloud.io/dashboard?id=mybatis_mybatis-dynamic-sql)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mybatis_mybatis-dynamic-sql&metric=security_rating)](https://sonarcloud.io/dashboard?id=mybatis_mybatis-dynamic-sql)
 
 ## What Is This?
-This library is a framework for generating dynamic SQL statements.  Think of it as a typesafe SQL templating library,
-with additional support for MyBatis3 and Spring JDBC Templates.
+This library is a general purpose SQL generator.  Think of it as a typesafe and expressive SQL DSL (domain specific language),
+with support for rendering SQL formatted properly for MyBatis3 and Spring's NamedParameterJDBCTemplate.
 
-The library will generate full DELETE, INSERT, SELECT, and UPDATE statements formatted for use by MyBatis or Spring.
-The most common use case is to generate statements, and a matching set of parameters, that can be directly used
-by MyBatis.  The library will also generate statements and parameter objects that are compatible with Spring JDBC
-templates.
+The library also contains extensions for Kotlin that enable an idiomatic Kotlin DSL for SQL.
 
-The library works by implementing an SQL-like DSL that creates an object containing a full SQL statement and any
-parameters required for that statement.  The SQL statement object can be used directly by MyBatis as a parameter to a mapper method.
+The library will generate full DELETE, INSERT, SELECT, and UPDATE statements. The DSL implementd by the
+library is very similar to native SQL but it includes many functions that allow for very dynamic SQL statements.
+For example, a typical search can be coded with a query like this (the following code is Kotlin, but Java code is very similar):
 
-The library also contains extensions for Kotlin that enable an idiomatic Kotlin DSL.
+```kotlin
+   fun search(id: String?, firstName: String?, lastName: String?) =
+        select(Customer.id, Customer.firstName, Customer.lastName).from(Customer) {
+            where(Customer.active, isEqualTo(true))
+            and(Customer.id, isEqualToWhenPresent(id).then{ it?.padStart(5, '0') })
+            and(Customer.firstName, isLikeCaseInsensitiveWhenPresent(firstName).then{ "%" + it.trim() + "%" })
+            and(Customer.lastName, isLikeCaseInsensitiveWhenPresent(lastName).then{ "%" + it.trim() + "%" })
+            orderBy(Customer.lastName, Customer.firstName)
+            limit(500)
+        }
+```
 
-See the following pages for further information:
+This query does quite a lot...
+
+1. It is a search with three search criteria - any combination of search criteria can be used
+1. Only records with an active status will be returned
+1. If `id` is specified, it will be padded to length 5 with '0' at the beginning of the string
+1. If `firstName` is specified, it will be used in a case insensitive search and SQL wildcards will be appended
+1. If `lastName` is specified, it will be used in a case insensitive search and SQL wildcards will be appended
+1. The query results are limited to 500 rows
+
+Using the dynamic SQL features of the library eliminates a lot of code that would be required for checking nulls, adding wild cards, etc. This query clearly expresses the intent of the search in just a few lines.
+
+See the following pages for detailed information:
 
 | Page | Comments|
 |------|---------|
