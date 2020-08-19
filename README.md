@@ -14,7 +14,7 @@ with support for rendering SQL formatted properly for MyBatis3 and Spring's Name
 
 The library also contains extensions for Kotlin that enable an idiomatic Kotlin DSL for SQL.
 
-The library will generate full DELETE, INSERT, SELECT, and UPDATE statements. The DSL implementd by the
+The library will generate full DELETE, INSERT, SELECT, and UPDATE statements. The DSL implemented by the
 library is very similar to native SQL but it includes many functions that allow for very dynamic SQL statements.
 For example, a typical search can be coded with a query like this (the following code is Kotlin, but Java code is very similar):
 
@@ -37,8 +37,8 @@ This query does quite a lot...
 1. It is a search with three search criteria - any combination of search criteria can be used
 1. Only records with an active status will be returned
 1. If `id` is specified, it will be padded to length 5 with '0' at the beginning of the string
-1. If `firstName` is specified, it will be used in a case insensitive search and SQL wildcards will be appended
-1. If `lastName` is specified, it will be used in a case insensitive search and SQL wildcards will be appended
+1. If `firstName` is specified, it will be used in a case-insensitive search and SQL wildcards will be appended
+1. If `lastName` is specified, it will be used in a case-insensitive search and SQL wildcards will be appended
 1. The query results are limited to 500 rows
 
 Using the dynamic SQL features of the library eliminates a lot of code that would be required for checking nulls, adding wild cards, etc. This query clearly expresses the intent of the search in just a few lines.
