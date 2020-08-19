@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../testapidocs/org/mybatis/dynamic/sql/select/SelectStatementTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2019 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
@@ -37,14 +37,14 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategies;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="SelectStatementTest" href="../../../../../org/mybatis/dynamic/sql/select/SelectStatementTest.html#SelectStatementTest">SelectStatementTest</a> {
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">class</strong> <a name="SelectStatementTest" href="../../../../../org/mybatis/dynamic/sql/select/SelectStatementTest.html#SelectStatementTest">SelectStatementTest</a> {
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>      
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlTable table = SqlTable.of(<span class="jxr_string">"foo"</span>);
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;Date&gt; column1 = table.column(<span class="jxr_string">"column1"</span>, JDBCType.DATE);
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;Integer&gt; column2 = table.column(<span class="jxr_string">"column2"</span>, JDBCType.INTEGER);
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlTable table = SqlTable.of(<span class="jxr_string">"foo"</span>);
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;Date&gt; column1 = table.column(<span class="jxr_string">"column1"</span>, JDBCType.DATE);
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;Integer&gt; column2 = table.column(<span class="jxr_string">"column2"</span>, JDBCType.INTEGER);
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      @Test
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSimpleCriteria() {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">void</strong> testSimpleCriteria() {
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>          Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
@@ -63,15 +63,15 @@
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>          assertAll(
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>                  () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p1"</span>)).isEqualTo(d),
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p2"</span>)).isEqualTo(33),
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p3"</span>)).isEqualTo(4),
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p4"</span>)).isEqualTo(3)
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p1"</span>, d),
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p2"</span>, 33),
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p3"</span>, 4),
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p4"</span>, 3)
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          );
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>      }
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      @Test
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testComplexCriteria() {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">void</strong> testComplexCriteria() {
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
@@ -96,18 +96,18 @@
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          assertAll(
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>                  () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p1"</span>)).isEqualTo(d),
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p2"</span>)).isEqualTo(4),
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p3"</span>)).isEqualTo(3),
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p4"</span>)).isEqualTo(4),
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p5"</span>)).isEqualTo(6),
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p6"</span>)).isEqualTo(3),
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>                  () -&gt; assertThat(parameters.get(<span class="jxr_string">"p7"</span>)).isEqualTo(d)
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p1"</span>, d),
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p2"</span>, 4),
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p3"</span>, 3),
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p4"</span>, 4),
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p5"</span>, 6),
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p6"</span>, 3),
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p7"</span>, d)
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          );
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>      }
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> 
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>     @Test
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testOrderBySingleColumnAscending() {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">void</strong> testOrderBySingleColumnAscending() {
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
@@ -126,12 +126,12 @@
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> 
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         assertAll(
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>                 () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>                 () -&gt; assertThat(parameters.get(<span class="jxr_string">"p1"</span>)).isEqualTo(d)
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>                 () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p1"</span>, d)
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>         );
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     }
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> 
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>     @Test
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testOrderBySingleColumnDescending() {
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">void</strong> testOrderBySingleColumnDescending() {
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> 
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
@@ -150,12 +150,12 @@
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> 
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>         assertAll(
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>                 () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>                 () -&gt; assertThat(parameters.get(<span class="jxr_string">"p1"</span>)).isEqualTo(d)
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>                 () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p1"</span>, d)
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         );
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>     }
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> 
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>     @Test
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testOrderByMultipleColumns() {
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">void</strong> testOrderByMultipleColumns() {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> 
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
@@ -174,12 +174,12 @@
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> 
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>         assertAll(
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>                 () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>                 () -&gt; assertThat(parameters.get(<span class="jxr_string">"p1"</span>)).isEqualTo(d)
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>                 () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p1"</span>, d)
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>         );
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>     }
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> 
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>     @Test
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDistinct() {
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>     <strong class="jxr_keyword">void</strong> testDistinct() {
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         SelectStatementProvider selectStatement = selectDistinct(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
@@ -198,12 +198,12 @@
 <a class="jxr_linenumber" name="L190" href="#L190">190</a> 
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         assertAll(
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>                 () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>                 () -&gt; assertThat(parameters.get(<span class="jxr_string">"p1"</span>)).isEqualTo(d)
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>                 () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p1"</span>, d)
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>         );
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>     }
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> 
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>     @Test
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCount() {
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>     <strong class="jxr_keyword">void</strong> testCount() {
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L200" href="#L200">200</a> 
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>         SelectStatementProvider selectStatement = select(count())
@@ -220,12 +220,12 @@
 <a class="jxr_linenumber" name="L212" href="#L212">212</a> 
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>         assertAll(
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>                 () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>                 () -&gt; assertThat(parameters.get(<span class="jxr_string">"p1"</span>)).isEqualTo(d)
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>                 () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p1"</span>, d)
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>         );
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>     }
 <a class="jxr_linenumber" name="L218" href="#L218">218</a> 
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>     @Test
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testNoWhere() {
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>     <strong class="jxr_keyword">void</strong> testNoWhere() {
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>         SelectStatementProvider selectStatement = select(count())
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>                 .from(table, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>                 .build()
@@ -238,12 +238,12 @@
 <a class="jxr_linenumber" name="L230" href="#L230">230</a> 
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>         assertAll(
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>                 () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>                 () -&gt; assertThat(parameters.size()).isEqualTo(0)
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>                 () -&gt; assertThat(parameters).isEmpty()
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>         );
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>     }
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>     
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>     @Test
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testGroupBySingleColumn() {
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>     <strong class="jxr_keyword">void</strong> testGroupBySingleColumn() {
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>         Date d = <strong class="jxr_keyword">new</strong> Date();
 <a class="jxr_linenumber" name="L240" href="#L240">240</a> 
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>         SelectStatementProvider selectStatement = select(column1.as(<span class="jxr_string">"A_COLUMN1"</span>), column2)
@@ -262,12 +262,12 @@
 <a class="jxr_linenumber" name="L254" href="#L254">254</a> 
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>         assertAll(
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>                 () -&gt; assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>                 () -&gt; assertThat(parameters.get(<span class="jxr_string">"p1"</span>)).isEqualTo(d)
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>                 () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p1"</span>, d)
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>         );
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>     }
 <a class="jxr_linenumber" name="L260" href="#L260">260</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

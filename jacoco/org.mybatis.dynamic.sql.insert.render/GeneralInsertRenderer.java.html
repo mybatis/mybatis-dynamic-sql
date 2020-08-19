@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeneralInsertRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert.render</a> &gt; <span class="el_source">GeneralInsertRenderer.java</span></div><h1>GeneralInsertRenderer.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2020 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.insert.render;
+
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+
+public class GeneralInsertRenderer {
+
+    private final GeneralInsertModel model;
+    private final RenderingStrategy renderingStrategy;
+    
+<span class="fc" id="L35">    private GeneralInsertRenderer(Builder builder) {</span>
+<span class="fc" id="L36">        model = Objects.requireNonNull(builder.model);</span>
+<span class="fc" id="L37">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L38">    }</span>
+    
+    public GeneralInsertStatementProvider render() {
+<span class="fc" id="L41">        GeneralInsertValuePhraseVisitor visitor = new GeneralInsertValuePhraseVisitor(renderingStrategy);</span>
+<span class="fc" id="L42">        List&lt;Optional&lt;FieldAndValueAndParameters&gt;&gt; fieldsAndValues = model.mapColumnMappings(m -&gt; m.accept(visitor))</span>
+<span class="fc" id="L43">                .collect(Collectors.toList());</span>
+        
+<span class="fc" id="L45">        return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(fieldsAndValues))</span>
+<span class="fc" id="L46">                .withParameters(calculateParameters(fieldsAndValues))</span>
+<span class="fc" id="L47">                .build();</span>
+    }
+
+    private String calculateInsertStatement(List&lt;Optional&lt;FieldAndValueAndParameters&gt;&gt; fieldsAndValues) {
+<span class="fc" id="L51">        return &quot;insert into&quot; //$NON-NLS-1$</span>
+<span class="fc" id="L52">                + spaceBefore(model.table().tableNameAtRuntime())</span>
+<span class="fc" id="L53">                + spaceBefore(calculateColumnsPhrase(fieldsAndValues))</span>
+<span class="fc" id="L54">                + spaceBefore(calculateValuesPhrase(fieldsAndValues));</span>
+    }
+
+    private String calculateColumnsPhrase(List&lt;Optional&lt;FieldAndValueAndParameters&gt;&gt; fieldsAndValues) {
+<span class="fc" id="L58">        return fieldsAndValues.stream()</span>
+<span class="fc" id="L59">                .filter(Optional::isPresent)</span>
+<span class="fc" id="L60">                .map(Optional::get)</span>
+<span class="fc" id="L61">                .map(FieldAndValueAndParameters::fieldName)</span>
+<span class="fc" id="L62">                .collect(Collectors.joining(&quot;, &quot;, &quot;(&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+    }
+
+    private String calculateValuesPhrase(List&lt;Optional&lt;FieldAndValueAndParameters&gt;&gt; fieldsAndValues) {
+<span class="fc" id="L66">        return fieldsAndValues.stream()</span>
+<span class="fc" id="L67">                .filter(Optional::isPresent)</span>
+<span class="fc" id="L68">                .map(Optional::get)</span>
+<span class="fc" id="L69">                .map(FieldAndValueAndParameters::valuePhrase)</span>
+<span class="fc" id="L70">                .collect(Collectors.joining(&quot;, &quot;, &quot;values (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+    }
+    
+    private Map&lt;String, Object&gt; calculateParameters(List&lt;Optional&lt;FieldAndValueAndParameters&gt;&gt; fieldsAndValues) {
+<span class="fc" id="L74">        return fieldsAndValues.stream()</span>
+<span class="fc" id="L75">                .filter(Optional::isPresent)</span>
+<span class="fc" id="L76">                .map(Optional::get)</span>
+<span class="fc" id="L77">                .map(FieldAndValueAndParameters::parameters)</span>
+<span class="fc" id="L78">                .collect(HashMap::new, HashMap::putAll, HashMap::putAll);</span>
+    }
+
+    public static Builder withInsertModel(GeneralInsertModel model) {
+<span class="fc" id="L82">        return new Builder().withInsertModel(model);</span>
+    }
+    
+<span class="fc" id="L85">    public static class Builder {</span>
+        private GeneralInsertModel model;
+        private RenderingStrategy renderingStrategy;
+        
+        public Builder withInsertModel(GeneralInsertModel model) {
+<span class="fc" id="L90">            this.model = model;</span>
+<span class="fc" id="L91">            return this;</span>
+        }
+        
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L95">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L96">            return this;</span>
+        }
+        
+        public GeneralInsertRenderer build() {
+<span class="fc" id="L100">            return new GeneralInsertRenderer(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

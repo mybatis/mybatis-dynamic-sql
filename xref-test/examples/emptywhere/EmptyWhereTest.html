@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../testapidocs/examples/emptywhere/EmptyWhereTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2019 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
@@ -44,10 +44,10 @@
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.WhereDSL;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="EmptyWhereTest" href="../../examples/emptywhere/EmptyWhereTest.html#EmptyWhereTest">EmptyWhereTest</a> {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">class</strong> <a name="EmptyWhereTest" href="../../examples/emptywhere/EmptyWhereTest.html#EmptyWhereTest">EmptyWhereTest</a> {
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      @Test
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteThreeConditions() {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">void</strong> testDeleteThreeConditions() {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>          String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          
@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      }
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      @Test
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteTwoConditions() {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">void</strong> testDeleteTwoConditions() {
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          
@@ -88,7 +88,7 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      }
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      @Test
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteFirstNameNull() {
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">void</strong> testDeleteFirstNameNull() {
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          
@@ -107,7 +107,7 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>      }
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> 
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>     @Test
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteLastNameNull() {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">void</strong> testDeleteLastNameNull() {
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         
@@ -126,7 +126,7 @@
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>     }
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> 
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>     @Test
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteAllNull() {
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>     <strong class="jxr_keyword">void</strong> testDeleteAllNull() {
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>         String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         
@@ -144,7 +144,7 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>     }
 <a class="jxr_linenumber" name="L137" href="#L137">137</a> 
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>     @Test
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectThreeConditions() {
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">void</strong> testSelectThreeConditions() {
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         
@@ -167,7 +167,7 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     }
 <a class="jxr_linenumber" name="L160" href="#L160">160</a> 
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     @Test
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectTwoConditions() {
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">void</strong> testSelectTwoConditions() {
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         
@@ -189,7 +189,7 @@
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>     }
 <a class="jxr_linenumber" name="L182" href="#L182">182</a> 
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>     @Test
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectFirstNameNull() {
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>     <strong class="jxr_keyword">void</strong> testSelectFirstNameNull() {
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>         String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>         
@@ -210,7 +210,7 @@
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>     }
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> 
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>     @Test
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectLastNameNull() {
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>     <strong class="jxr_keyword">void</strong> testSelectLastNameNull() {
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>         
@@ -231,7 +231,7 @@
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>     }
 <a class="jxr_linenumber" name="L224" href="#L224">224</a> 
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>     @Test
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectAllNull() {
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>     <strong class="jxr_keyword">void</strong> testSelectAllNull() {
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>         String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L228" href="#L228">228</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>         
@@ -251,7 +251,7 @@
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>     }
 <a class="jxr_linenumber" name="L244" href="#L244">244</a> 
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>     @Test
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testJoinThreeConditions() {
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>     <strong class="jxr_keyword">void</strong> testJoinThreeConditions() {
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>         
@@ -275,7 +275,7 @@
 <a class="jxr_linenumber" name="L267" href="#L267">267</a>     }
 <a class="jxr_linenumber" name="L268" href="#L268">268</a> 
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>     @Test
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testJoinTwoConditions() {
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>     <strong class="jxr_keyword">void</strong> testJoinTwoConditions() {
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L273" href="#L273">273</a>         
@@ -298,7 +298,7 @@
 <a class="jxr_linenumber" name="L290" href="#L290">290</a>     }
 <a class="jxr_linenumber" name="L291" href="#L291">291</a> 
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>     @Test
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testJoinFirstNameNull() {
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>     <strong class="jxr_keyword">void</strong> testJoinFirstNameNull() {
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>         String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>         
@@ -320,7 +320,7 @@
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>     }
 <a class="jxr_linenumber" name="L313" href="#L313">313</a> 
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>     @Test
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testJoinLastNameNull() {
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>     <strong class="jxr_keyword">void</strong> testJoinLastNameNull() {
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>         
@@ -342,7 +342,7 @@
 <a class="jxr_linenumber" name="L334" href="#L334">334</a>     }
 <a class="jxr_linenumber" name="L335" href="#L335">335</a> 
 <a class="jxr_linenumber" name="L336" href="#L336">336</a>     @Test
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testJoinAllNull() {
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>     <strong class="jxr_keyword">void</strong> testJoinAllNull() {
 <a class="jxr_linenumber" name="L338" href="#L338">338</a>         String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L339" href="#L339">339</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L340" href="#L340">340</a>         
@@ -363,7 +363,7 @@
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>     }
 <a class="jxr_linenumber" name="L356" href="#L356">356</a> 
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>     @Test
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateThreeConditions() {
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>     <strong class="jxr_keyword">void</strong> testUpdateThreeConditions() {
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>         
@@ -386,7 +386,7 @@
 <a class="jxr_linenumber" name="L378" href="#L378">378</a>     }
 <a class="jxr_linenumber" name="L379" href="#L379">379</a> 
 <a class="jxr_linenumber" name="L380" href="#L380">380</a>     @Test
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateTwoConditions() {
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>     <strong class="jxr_keyword">void</strong> testUpdateTwoConditions() {
 <a class="jxr_linenumber" name="L382" href="#L382">382</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L383" href="#L383">383</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L384" href="#L384">384</a>         
@@ -408,7 +408,7 @@
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>     }
 <a class="jxr_linenumber" name="L401" href="#L401">401</a> 
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>     @Test
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateFirstNameNull() {
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>     <strong class="jxr_keyword">void</strong> testUpdateFirstNameNull() {
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>         String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>         
@@ -427,7 +427,7 @@
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>     }
 <a class="jxr_linenumber" name="L420" href="#L420">420</a> 
 <a class="jxr_linenumber" name="L421" href="#L421">421</a>     @Test
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateLastNameNull() {
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>     <strong class="jxr_keyword">void</strong> testUpdateLastNameNull() {
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>         
@@ -448,7 +448,7 @@
 <a class="jxr_linenumber" name="L440" href="#L440">440</a>     }
 <a class="jxr_linenumber" name="L441" href="#L441">441</a> 
 <a class="jxr_linenumber" name="L442" href="#L442">442</a>     @Test
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateAllNull() {
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>     <strong class="jxr_keyword">void</strong> testUpdateAllNull() {
 <a class="jxr_linenumber" name="L444" href="#L444">444</a>         String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L445" href="#L445">445</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L446" href="#L446">446</a>         
@@ -468,7 +468,7 @@
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>     }
 <a class="jxr_linenumber" name="L461" href="#L461">461</a> 
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>     @Test
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testWhereThreeConditions() {
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>     <strong class="jxr_keyword">void</strong> testWhereThreeConditions() {
 <a class="jxr_linenumber" name="L464" href="#L464">464</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L465" href="#L465">465</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L466" href="#L466">466</a>         
@@ -487,7 +487,7 @@
 <a class="jxr_linenumber" name="L479" href="#L479">479</a>     }
 <a class="jxr_linenumber" name="L480" href="#L480">480</a> 
 <a class="jxr_linenumber" name="L481" href="#L481">481</a>     @Test
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testWhereTwoConditions() {
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>     <strong class="jxr_keyword">void</strong> testWhereTwoConditions() {
 <a class="jxr_linenumber" name="L483" href="#L483">483</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L484" href="#L484">484</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L485" href="#L485">485</a>         
@@ -505,7 +505,7 @@
 <a class="jxr_linenumber" name="L497" href="#L497">497</a>     }
 <a class="jxr_linenumber" name="L498" href="#L498">498</a> 
 <a class="jxr_linenumber" name="L499" href="#L499">499</a>     @Test
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testWhereFirstNameNull() {
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>     <strong class="jxr_keyword">void</strong> testWhereFirstNameNull() {
 <a class="jxr_linenumber" name="L501" href="#L501">501</a>         String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L502" href="#L502">502</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L503" href="#L503">503</a>         
@@ -522,7 +522,7 @@
 <a class="jxr_linenumber" name="L514" href="#L514">514</a>     }
 <a class="jxr_linenumber" name="L515" href="#L515">515</a> 
 <a class="jxr_linenumber" name="L516" href="#L516">516</a>     @Test
-<a class="jxr_linenumber" name="L517" href="#L517">517</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testWhereLastNameNull() {
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>     <strong class="jxr_keyword">void</strong> testWhereLastNameNull() {
 <a class="jxr_linenumber" name="L518" href="#L518">518</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L519" href="#L519">519</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>         
@@ -539,7 +539,7 @@
 <a class="jxr_linenumber" name="L531" href="#L531">531</a>     }
 <a class="jxr_linenumber" name="L532" href="#L532">532</a> 
 <a class="jxr_linenumber" name="L533" href="#L533">533</a>     @Test
-<a class="jxr_linenumber" name="L534" href="#L534">534</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testWhereAllNull() {
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>     <strong class="jxr_keyword">void</strong> testWhereAllNull() {
 <a class="jxr_linenumber" name="L535" href="#L535">535</a>         String fName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>         String lName = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L537" href="#L537">537</a>         
@@ -555,6 +555,6 @@
 <a class="jxr_linenumber" name="L547" href="#L547">547</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

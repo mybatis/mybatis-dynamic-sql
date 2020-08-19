@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/select/render/JoinRenderer.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2017 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
@@ -36,8 +36,8 @@
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.join.JoinSpecification;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="JoinRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/JoinRenderer.html#JoinRenderer">JoinRenderer</a> {
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">private</strong> <a name="JoinModel" href="../../../../../../org/mybatis/dynamic/sql/select/join/JoinModel.html#JoinModel">JoinModel</a> joinModel;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">private</strong> <a name="QueryExpressionModel" href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html#QueryExpressionModel">QueryExpressionModel</a> queryExpression;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="JoinModel" href="../../../../../../org/mybatis/dynamic/sql/select/join/JoinModel.html#JoinModel">JoinModel</a> joinModel;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="QueryExpressionModel" href="../../../../../../org/mybatis/dynamic/sql/select/QueryExpressionModel.html#QueryExpressionModel">QueryExpressionModel</a> queryExpression;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>      
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">private</strong> <a name="JoinRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/JoinRenderer.html#JoinRenderer">JoinRenderer</a>(Builder builder) {
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          joinModel = Objects.requireNonNull(builder.joinModel);
@@ -97,6 +97,6 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

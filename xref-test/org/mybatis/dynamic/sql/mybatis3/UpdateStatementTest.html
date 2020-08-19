@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../testapidocs/org/mybatis/dynamic/sql/mybatis3/UpdateStatementTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2019 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategies;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="UpdateStatementTest" href="../../../../../org/mybatis/dynamic/sql/mybatis3/UpdateStatementTest.html#UpdateStatementTest">UpdateStatementTest</a> {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">class</strong> <a name="UpdateStatementTest" href="../../../../../org/mybatis/dynamic/sql/mybatis3/UpdateStatementTest.html#UpdateStatementTest">UpdateStatementTest</a> {
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlTable foo = SqlTable.of(<span class="jxr_string">"foo"</span>);
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;Integer&gt; id = foo.column(<span class="jxr_string">"id"</span>, JDBCType.INTEGER);
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;String&gt; firstName = foo.column(<span class="jxr_string">"firstName"</span>, JDBCType.VARCHAR);
@@ -43,7 +43,7 @@
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;String&gt; occupation = foo.column(<span class="jxr_string">"occupation"</span>, JDBCType.VARCHAR);
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      @Test
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateParameter() {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">void</strong> testUpdateParameter() {
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>          UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>                  .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>                  .set(lastName).equalTo(<span class="jxr_string">"jones"</span>)
@@ -58,14 +58,14 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>                  + <span class="jxr_string">"where id = #{parameters.p3,jdbcType=INTEGER}"</span>;
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>                  
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>          assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          assertThat(updateStatement.getParameters().size()).isEqualTo(3);
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          assertThat(updateStatement.getParameters().get(<span class="jxr_string">"p1"</span>)).isEqualTo(<span class="jxr_string">"fred"</span>);
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>          assertThat(updateStatement.getParameters().get(<span class="jxr_string">"p2"</span>)).isEqualTo(<span class="jxr_string">"jones"</span>);
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>          assertThat(updateStatement.getParameters().get(<span class="jxr_string">"p3"</span>)).isEqualTo(3);
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          assertThat(updateStatement.getParameters()).hasSize(3);
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p1"</span>, <span class="jxr_string">"fred"</span>);
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p2"</span>, <span class="jxr_string">"jones"</span>);
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p3"</span>, 3);
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      }
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      @Test
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateParameterStartWithNull() {
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">void</strong> testUpdateParameterStartWithNull() {
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          UpdateStatementProvider updateStatement = update(foo)
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>                  .set(occupation).equalToNull()
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>                  .set(firstName).equalTo(<span class="jxr_string">"fred"</span>)
@@ -82,15 +82,15 @@
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>                  + <span class="jxr_string">"and firstName = #{parameters.p4,jdbcType=VARCHAR}"</span>;
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>                  
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedSetClause);
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          assertThat(updateStatement.getParameters().size()).isEqualTo(4);
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>          assertThat(updateStatement.getParameters().get(<span class="jxr_string">"p1"</span>)).isEqualTo(<span class="jxr_string">"fred"</span>);
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          assertThat(updateStatement.getParameters().get(<span class="jxr_string">"p2"</span>)).isEqualTo(<span class="jxr_string">"jones"</span>);
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          assertThat(updateStatement.getParameters().get(<span class="jxr_string">"p3"</span>)).isEqualTo(3);
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          assertThat(updateStatement.getParameters().get(<span class="jxr_string">"p4"</span>)).isEqualTo(<span class="jxr_string">"barney"</span>);
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>          assertThat(updateStatement.getParameters()).hasSize(4);
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p1"</span>, <span class="jxr_string">"fred"</span>);
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p2"</span>, <span class="jxr_string">"jones"</span>);
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p3"</span>, 3);
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p4"</span>, <span class="jxr_string">"barney"</span>);
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      }
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

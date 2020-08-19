@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractTypeConvertingFunction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.function</a> &gt; <span class="el_source">AbstractTypeConvertingFunction.java</span></div><h1>AbstractTypeConvertingFunction.java</h1><pre class="source lang-java linenums">/**
+ *    Copyright 2016-2020 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select.function;
+
+import java.util.Objects;
+import java.util.Optional;
+
+import org.mybatis.dynamic.sql.BindableColumn;
+
+/**
+ * Represents a function that can change the underlying type. For example, converting a binary field for a base64
+ * string, or an integer to a string, etc.
+ * 
+ * &lt;p&gt;Thanks to @endink for the idea.
+ * 
+ * @author Jeff Butler
+ *
+ * @param &lt;T&gt; The type of the underlying column. For example, if a function converts a VARCHAR to an INT, then the
+ *     underlying type will be a String 
+ * @param &lt;R&gt; The type of the column after the conversion. For example, if a function converts a VARCHAR to an INT, then
+ *     the converted type will be Integer
+ * @param &lt;U&gt; the specific subtype that implements the function
+ */
+public abstract class AbstractTypeConvertingFunction&lt;T, R, U extends AbstractTypeConvertingFunction&lt;T, R, U&gt;&gt;
+        implements BindableColumn&lt;R&gt; {
+    protected final BindableColumn&lt;T&gt; column;
+    protected String alias;
+
+<span class="fc" id="L42">    protected AbstractTypeConvertingFunction(BindableColumn&lt;T&gt; column) {</span>
+<span class="fc" id="L43">        this.column = Objects.requireNonNull(column);</span>
+<span class="fc" id="L44">    }</span>
+    
+    @Override
+    public Optional&lt;String&gt; alias() {
+<span class="fc" id="L48">        return Optional.ofNullable(alias);</span>
+    }
+
+    @Override
+    public U as(String alias) {
+<span class="fc" id="L53">        U newThing = copy();</span>
+<span class="fc" id="L54">        newThing.alias = alias;</span>
+<span class="fc" id="L55">        return newThing;</span>
+    }
+
+    protected abstract U copy();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MultiRowValuePhraseVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert.render</a> &gt; <span class="el_source">MultiRowValuePhraseVisitor.java</span></div><h1>MultiRowValuePhraseVisitor.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,28 +15,19 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import java.util.function.Function;
-
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.PropertyMapping;
 
-public class MultiRowValuePhraseVisitor extends ValuePhraseVisitor {
+public class MultiRowValuePhraseVisitor extends AbstractMultiRowValuePhraseVisitor {
 
-    public MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L27">        super(renderingStrategy);</span>
-<span class="fc" id="L28">    }</span>
+    public MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
+<span class="fc" id="L24">        super(renderingStrategy, prefix);</span>
+<span class="fc" id="L25">    }</span>
 
     @Override
-    public FieldAndValue visit(PropertyMapping mapping) {
-<span class="fc" id="L32">        return FieldAndValue.withFieldName(mapping.mapColumn(SqlColumn::name))</span>
-<span class="fc" id="L33">                .withValuePhrase(mapping.mapColumn(toMultiRowJdbcPlaceholder(mapping.property())))</span>
-<span class="fc" id="L34">                .build();</span>
-    }
-
-    private Function&lt;SqlColumn&lt;?&gt;, String&gt; toMultiRowJdbcPlaceholder(String parameterName) {
-<span class="fc" id="L38">        return column -&gt; renderingStrategy.getFormattedJdbcPlaceholder(column, &quot;records[%s]&quot;, //$NON-NLS-1$</span>
-                parameterName);
+    String calculateJdbcPlaceholder(SqlColumn&lt;?&gt; column, String parameterName) {
+<span class="fc" id="L29">        return column.renderingStrategy().orElse(renderingStrategy)</span>
+<span class="fc" id="L30">                .getMultiRowFormattedJdbcPlaceholder(column, prefix, parameterName);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

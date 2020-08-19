@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractMultipleColumnArithmeticFunction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.function</a> &gt; <span class="el_source">AbstractMultipleColumnArithmeticFunction.java</span></div><h1>AbstractMultipleColumnArithmeticFunction.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2018 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -26,33 +26,41 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
+/**
+ * Represents a function with multiple numeric columns.
+ * 
+ * @deprecated in favor of {@link OperatorFunction}.
+ * 
+ * @author Jeff Butler
+ */
+@Deprecated
 public abstract class AbstractMultipleColumnArithmeticFunction&lt;T extends Number,
         U extends AbstractMultipleColumnArithmeticFunction&lt;T, U&gt;&gt;
-        extends AbstractFunction&lt;T, AbstractMultipleColumnArithmeticFunction&lt;T,U&gt;&gt; {
-    
-    protected BasicColumn secondColumn;
-<span class="fc" id="L34">    protected List&lt;BasicColumn&gt; subsequentColumns = new ArrayList&lt;&gt;();</span>
-    
+        extends AbstractFunction&lt;T, AbstractMultipleColumnArithmeticFunction&lt;T, U&gt;&gt; {
+
+    protected final BasicColumn secondColumn;
+<span class="fc" id="L42">    protected final List&lt;BasicColumn&gt; subsequentColumns = new ArrayList&lt;&gt;();</span>
+
     protected AbstractMultipleColumnArithmeticFunction(BindableColumn&lt;T&gt; firstColumn, BasicColumn secondColumn,
             List&lt;BasicColumn&gt; subsequentColumns) {
-<span class="fc" id="L38">        super(firstColumn);</span>
-<span class="fc" id="L39">        this.secondColumn = Objects.requireNonNull(secondColumn);</span>
-<span class="fc" id="L40">        this.subsequentColumns.addAll(subsequentColumns);</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L46">        super(firstColumn);</span>
+<span class="fc" id="L47">        this.secondColumn = Objects.requireNonNull(secondColumn);</span>
+<span class="fc" id="L48">        this.subsequentColumns.addAll(subsequentColumns);</span>
+<span class="fc" id="L49">    }</span>
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        // note - the cast below is added for a type inference bug in the Java9 compiler.
-<span class="fc" id="L46">        return Stream.of(Stream.of((BasicColumn) column), Stream.of(secondColumn), subsequentColumns.stream())</span>
-<span class="fc" id="L47">                .flatMap(Function.identity())</span>
-<span class="fc" id="L48">                .map(column -&gt; column.renderWithTableAlias(tableAliasCalculator))</span>
-<span class="fc" id="L49">                .collect(Collectors.joining(padOperator(), &quot;(&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$</span>
+        // note - the cast below is added for a type inference bug in the Java9
+        // compiler.
+<span class="fc" id="L55">        return Stream.of(Stream.of((BasicColumn) column), Stream.of(secondColumn), subsequentColumns.stream())</span>
+<span class="fc" id="L56">                .flatMap(Function.identity()).map(column -&gt; column.renderWithTableAlias(tableAliasCalculator))</span>
+<span class="fc" id="L57">                .collect(Collectors.joining(padOperator(), &quot;(&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$</span>
     }
-    
+
     private String padOperator() {
-<span class="fc" id="L53">        return &quot; &quot; + operator() + &quot; &quot;; //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L61">        return &quot; &quot; + operator() + &quot; &quot;; //$NON-NLS-1$ //$NON-NLS-2$</span>
     }
 
     protected abstract String operator();
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

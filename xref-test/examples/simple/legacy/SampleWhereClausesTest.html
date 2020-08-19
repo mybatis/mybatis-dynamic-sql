@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../testapidocs/examples/simple/legacy/SampleWhereClausesTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2019 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
@@ -31,10 +31,10 @@
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategy;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="SampleWhereClausesTest" href="../../../examples/simple/legacy/SampleWhereClausesTest.html#SampleWhereClausesTest">SampleWhereClausesTest</a> {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">class</strong> <a name="SampleWhereClausesTest" href="../../../examples/simple/legacy/SampleWhereClausesTest.html#SampleWhereClausesTest">SampleWhereClausesTest</a> {
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      @Test
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> simpleClause1() {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">void</strong> simpleClause1() {
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>          SelectStatementProvider selectStatement = select(count())
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>                  .from(person)
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>                  .where(id, isEqualTo(3))
@@ -46,7 +46,7 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      @Test
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> simpleClause2() {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">void</strong> simpleClause2() {
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          SelectStatementProvider selectStatement = select(count())
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>                  .from(person, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>                  .where(id, isNull())
@@ -57,7 +57,7 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      }
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      @Test
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> betweenClause() {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">void</strong> betweenClause() {
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          SelectStatementProvider selectStatement = select(count())
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>                  .from(person, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>                  .where(id, isBetween(1).and(4))
@@ -69,7 +69,7 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      }
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>      @Test
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> complexClause() {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">void</strong> complexClause() {
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          SelectStatementProvider selectStatement = select(count())
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>                  .from(person, <span class="jxr_string">"a"</span>)
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>                  .where(id, isGreaterThan(2))
@@ -83,6 +83,6 @@
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

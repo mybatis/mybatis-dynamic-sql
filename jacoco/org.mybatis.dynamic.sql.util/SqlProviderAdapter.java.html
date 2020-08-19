@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
@@ -28,30 +29,34 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
  * @author Jeff Butler
  *
  */
-<span class="fc" id="L31">public class SqlProviderAdapter {</span>
+<span class="fc" id="L32">public class SqlProviderAdapter {</span>
 
     public String delete(DeleteStatementProvider deleteStatement) {
-<span class="fc" id="L34">        return deleteStatement.getDeleteStatement();</span>
+<span class="fc" id="L35">        return deleteStatement.getDeleteStatement();</span>
+    }
+    
+    public String generalInsert(GeneralInsertStatementProvider insertStatement) {
+<span class="fc" id="L39">        return insertStatement.getInsertStatement();</span>
     }
     
     public String insert(InsertStatementProvider&lt;?&gt; insertStatement) {
-<span class="fc" id="L38">        return insertStatement.getInsertStatement();</span>
+<span class="fc" id="L43">        return insertStatement.getInsertStatement();</span>
     }
     
     public String insertMultiple(MultiRowInsertStatementProvider&lt;?&gt; insertStatement) {
-<span class="fc" id="L42">        return insertStatement.getInsertStatement();</span>
+<span class="fc" id="L47">        return insertStatement.getInsertStatement();</span>
     }
     
     public String insertSelect(InsertSelectStatementProvider insertStatement) {
-<span class="fc" id="L46">        return insertStatement.getInsertStatement();</span>
+<span class="fc" id="L51">        return insertStatement.getInsertStatement();</span>
     }
     
     public String select(SelectStatementProvider selectStatement) {
-<span class="fc" id="L50">        return selectStatement.getSelectStatement();</span>
+<span class="fc" id="L55">        return selectStatement.getSelectStatement();</span>
     }
 
     public String update(UpdateStatementProvider updateStatement) {
-<span class="fc" id="L54">        return updateStatement.getUpdateStatement();</span>
+<span class="fc" id="L59">        return updateStatement.getUpdateStatement();</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

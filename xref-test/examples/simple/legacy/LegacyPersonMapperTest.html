@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../testapidocs/examples/simple/legacy/LegacyPersonMapperTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2019 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
@@ -52,7 +52,7 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> examples.simple.LastName;
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> examples.simple.PersonRecord;
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="LegacyPersonMapperTest" href="../../../examples/simple/legacy/LegacyPersonMapperTest.html#LegacyPersonMapperTest">LegacyPersonMapperTest</a> {
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">class</strong> <a name="LegacyPersonMapperTest" href="../../../examples/simple/legacy/LegacyPersonMapperTest.html#LegacyPersonMapperTest">LegacyPersonMapperTest</a> {
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String JDBC_URL = <span class="jxr_string">"jdbc:hsqldb:mem:aname"</span>;
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String JDBC_DRIVER = <span class="jxr_string">"org.hsqldb.jdbcDriver"</span>; 
@@ -60,7 +60,7 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">private</strong> SqlSessionFactory sqlSessionFactory;
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      @BeforeEach
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setup() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">void</strong> setup() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>          Class.forName(JDBC_DRIVER);
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>          InputStream is = getClass().getResourceAsStream(<span class="jxr_string">"/examples/simple/CreateSimpleDB.sql"</span>);
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>          <strong class="jxr_keyword">try</strong> (Connection connection = DriverManager.getConnection(JDBC_URL, <span class="jxr_string">"sa"</span>, <span class="jxr_string">""</span>)) {
@@ -77,7 +77,7 @@
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      @Test
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectByExample() {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">void</strong> testSelectByExample() {
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>              <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>              
@@ -87,12 +87,12 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>                      .build()
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>                      .execute();
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>              
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              assertThat(rows.size()).isEqualTo(3);
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>              assertThat(rows).hasSize(3);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          }
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      @Test
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectByExampleWithRowbounds() {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">void</strong> testSelectByExampleWithRowbounds() {
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>              <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>              RowBounds rowBounds = <strong class="jxr_keyword">new</strong> RowBounds(2, 2);
@@ -103,12 +103,12 @@
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>                      .build()
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                      .execute();
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>              
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>              assertThat(rows.size()).isEqualTo(1);
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>              assertThat(rows).hasSize(1);
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>          }
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>     }
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> 
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     @Test
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectDistinctByExample() {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">void</strong> testSelectDistinctByExample() {
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>             
@@ -118,12 +118,12 @@
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>                     .build()
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                     .execute();
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>             
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>             assertThat(rows.size()).isEqualTo(5);
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>             assertThat(rows).hasSize(5);
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>         }
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>     }
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>     
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>     @Test
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectDistinctByExampleWithRowbounds() {
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>     <strong class="jxr_keyword">void</strong> testSelectDistinctByExampleWithRowbounds() {
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>             RowBounds rowBounds = <strong class="jxr_keyword">new</strong> RowBounds(2, 2);
@@ -134,12 +134,12 @@
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>                     .build()
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>                     .execute();
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>             
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>             assertThat(rows.size()).isEqualTo(2);
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>             assertThat(rows).hasSize(2);
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         }
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>     }
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>     
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     @Test
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSelectByExampleWithTypeHandler() {
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">void</strong> testSelectByExampleWithTypeHandler() {
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>             
@@ -150,7 +150,7 @@
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                     .execute();
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>             
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             assertAll(
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>                     () -&gt; assertThat(rows.size()).isEqualTo(2),
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>                     () -&gt; assertThat(rows).hasSize(2),
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>                     () -&gt; assertThat(rows.get(0).getId()).isEqualTo(3),
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>                     () -&gt; assertThat(rows.get(1).getId()).isEqualTo(6)
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>             );
@@ -158,7 +158,7 @@
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>     }
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> 
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     @Test
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testFirstNameIn() {
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">void</strong> testFirstNameIn() {
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>             
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>                     .execute();
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>             
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>             assertAll(
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>                     () -&gt; assertThat(rows.size()).isEqualTo(2),
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>                     () -&gt; assertThat(rows).hasSize(2),
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>                     () -&gt; assertThat(rows.get(0).getLastName().getName()).isEqualTo(<span class="jxr_string">"Flintstone"</span>),
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>                     () -&gt; assertThat(rows.get(1).getLastName().getName()).isEqualTo(<span class="jxr_string">"Rubble"</span>)
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>             );
@@ -176,7 +176,7 @@
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>     }
 <a class="jxr_linenumber" name="L169" href="#L169">169</a> 
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>     @Test
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteByExample() {
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>     <strong class="jxr_keyword">void</strong> testDeleteByExample() {
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>             <strong class="jxr_keyword">int</strong> rows = mapper.deleteByExample()
@@ -188,7 +188,7 @@
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>     }
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>     
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>     @Test
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteByPrimaryKey() {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>     <strong class="jxr_keyword">void</strong> testDeleteByPrimaryKey() {
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>             <strong class="jxr_keyword">int</strong> rows = mapper.deleteByPrimaryKey(2);
@@ -198,7 +198,7 @@
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>     }
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>     
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>     @Test
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testInsert() {
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>     <strong class="jxr_keyword">void</strong> testInsert() {
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>             <a name="PersonRecord" href="../../../examples/simple/PersonRec<a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>sonRecord">PersonRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>();
@@ -216,7 +216,7 @@
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>     }
 <a class="jxr_linenumber" name="L209" href="#L209">209</a> 
 <a class="jxr_linenumber" name="L210" href="#L210">210</a>     @Test
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testInsertSelective() {
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>     <strong class="jxr_keyword">void</strong> testInsertSelective() {
 <a class="jxr_linenumber" name="L212" href="#L212">212</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>             <a name="PersonRecord" href="../../../examples/simple/PersonRec<a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>sonRecord">PersonRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>();
@@ -233,7 +233,7 @@
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>     }
 <a class="jxr_linenumber" name="L226" href="#L226">226</a> 
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>     @Test
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateByPrimaryKey() {
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>     <strong class="jxr_keyword">void</strong> testUpdateByPrimaryKey() {
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>             <a name="PersonRecord" href="../../../examples/simple/PersonRec<a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>sonRecord">PersonRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>();
@@ -258,7 +258,7 @@
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>     }
 <a class="jxr_linenumber" name="L251" href="#L251">251</a> 
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>     @Test
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateByPrimaryKeySelective() {
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>     <strong class="jxr_keyword">void</strong> testUpdateByPrimaryKeySelective() {
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>             <a name="PersonRecord" href="../../../examples/simple/PersonRec<a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>sonRecord">PersonRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>();
@@ -286,7 +286,7 @@
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>     }
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> 
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>     @Test
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateWithNulls() {
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>     <strong class="jxr_keyword">void</strong> testUpdateWithNulls() {
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>             <a name="PersonRecord" href="../../../examples/simple/PersonRec<a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>sonRecord">PersonRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>();
@@ -314,14 +314,14 @@
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>             <a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> newRecord = mapper.selectByPrimaryKey(100);
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>             assertAll(
 <a class="jxr_linenumber" name="L308" href="#L308">308</a>                     () -&gt; assertThat(newRecord.getOccupation()).isNull(),
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>                     () -&gt; assertThat(newRecord.getEmployed()).isEqualTo(false),
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>                     () -&gt; assertThat(newRecord.getEmployed()).isFalse(),
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>                     () -&gt; assertThat(newRecord.getFirstName()).isEqualTo(<span class="jxr_string">"Joe"</span>)
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>             );
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>         }
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>     }
 <a class="jxr_linenumber" name="L314" href="#L314">314</a> 
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>     @Test
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateByExample() {
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">void</strong> testUpdateByExample() {
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>             <a name="PersonRecord" href="../../../examples/simple/PersonRec<a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>sonRecord">PersonRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a>();
@@ -351,7 +351,7 @@
 <a class="jxr_linenumber" name="L343" href="#L343">343</a>     }
 <a class="jxr_linenumber" name="L344" href="#L344">344</a> 
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>     @Test
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCountByExample() {
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>     <strong class="jxr_keyword">void</strong> testCountByExample() {
 <a class="jxr_linenumber" name="L347" href="#L347">347</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L348" href="#L348">348</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>             <strong class="jxr_keyword">long</strong> rows = mapper.countByExample()
@@ -364,7 +364,7 @@
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>     }
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>     
 <a class="jxr_linenumber" name="L358" href="#L358">358</a>     @Test
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testTypeHandledLike() {
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>     <strong class="jxr_keyword">void</strong> testTypeHandledLike() {
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L362" href="#L362">362</a>             
@@ -374,13 +374,13 @@
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>                     .build()
 <a class="jxr_linenumber" name="L367" href="#L367">367</a>                     .execute();
 <a class="jxr_linenumber" name="L368" href="#L368">368</a>             
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>             assertThat(rows.size()).isEqualTo(3);
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>             assertThat(rows).hasSize(3);
 <a class="jxr_linenumber" name="L370" href="#L370">370</a>             assertThat(rows.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
 <a class="jxr_linenumber" name="L371" href="#L371">371</a>         }
 <a class="jxr_linenumber" name="L372" href="#L372">372</a>     }
 <a class="jxr_linenumber" name="L373" href="#L373">373</a>     
 <a class="jxr_linenumber" name="L374" href="#L374">374</a>     @Test
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testTypeHandledNotLike() {
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>     <strong class="jxr_keyword">void</strong> testTypeHandledNotLike() {
 <a class="jxr_linenumber" name="L376" href="#L376">376</a>         <strong class="jxr_keyword">try</strong> (SqlSession session = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L377" href="#L377">377</a>             <a name="LegacyPersonMapper" href="../../../examples/simple/legacy/LegacyPersonMapper.html#LegacyPersonMapper">LegacyPersonMapper</a> mapper = session.getMapper(LegacyPersonMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L378" href="#L378">378</a>             
@@ -390,13 +390,13 @@
 <a class="jxr_linenumber" name="L382" href="#L382">382</a>                     .build()
 <a class="jxr_linenumber" name="L383" href="#L383">383</a>                     .execute();
 <a class="jxr_linenumber" name="L384" href="#L384">384</a>             
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>             assertThat(rows.size()).isEqualTo(3);
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>             assertThat(rows).hasSize(3);
 <a class="jxr_linenumber" name="L386" href="#L386">386</a>             assertThat(rows.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Barney"</span>);
 <a class="jxr_linenumber" name="L387" href="#L387">387</a>         }
 <a class="jxr_linenumber" name="L388" href="#L388">388</a>     }
 <a class="jxr_linenumber" name="L389" href="#L389">389</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2019 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

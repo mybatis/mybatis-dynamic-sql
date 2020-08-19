@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhereClauseProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.render</a> &gt; <span class="el_source">WhereClauseProvider.java</span></div><h1>WhereClauseProvider.java</h1><pre class="source lang-java linenums">/**
- *    Copyright 2016-2017 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class WhereClauseProvider {
-    private String whereClause;
-    private Map&lt;String, Object&gt; parameters;
+    private final String whereClause;
+    private final Map&lt;String, Object&gt; parameters;
 
 <span class="fc" id="L27">    private WhereClauseProvider(Builder builder) {</span>
 <span class="fc" id="L28">        whereClause = Objects.requireNonNull(builder.whereClause);</span>
@@ -43,7 +43,7 @@ public class WhereClauseProvider {
     
 <span class="fc" id="L44">    public static class Builder {</span>
         private String whereClause;
-<span class="fc" id="L46">        private Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L46">        private final Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
 
         public Builder withWhereClause(String whereClause) {
 <span class="fc" id="L49">            this.whereClause = whereClause;</span>
@@ -60,4 +60,4 @@ public class WhereClauseProvider {
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
