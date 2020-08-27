@@ -16,14 +16,17 @@
 package org.mybatis.dynamic.sql.select;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -34,6 +37,7 @@ class SelectStatementTest {
     static final SqlTable table = SqlTable.of("foo");
     static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
     static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
+    static final SqlColumn<String> column3 = table.column("column3", JDBCType.VARCHAR);
 
     @Test
     void testSimpleCriteria() {
@@ -255,6 +259,58 @@ class SelectStatementTest {
         assertAll(
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
                 () -> assertThat(parameters).containsEntry("p1", d)
+        );
+    }
+
+    @Test
+    void testInCaseInsensitiveEmptyList() {
+        SelectModel selectModel = select(column1, column3)
+                .from(table, "a")
+                .where(column3, isInCaseInsensitive(Collections.emptyList())
+                        .withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred")))
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
+        );
+    }
+
+    @Test
+    void testInCaseInsensitiveWhenPresentEmptyList() {
+        SelectModel selectModel = select(column1, column3)
+                .from(table, "a")
+                .where(column3, isInCaseInsensitiveWhenPresent(Collections.emptyList())
+                        .withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred")))
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
+        );
+    }
+
+    @Test
+    void testNotInCaseInsensitiveEmptyList() {
+        SelectModel selectModel = select(column1, column3)
+                .from(table, "a")
+                .where(column3, isNotInCaseInsensitive(Collections.emptyList())
+                        .withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred")))
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
+        );
+    }
+
+    @Test
+    void testNotInCaseInsensitiveWhenPresentEmptyList() {
+        SelectModel selectModel = select(column1, column3)
+                .from(table, "a")
+                .where(column3, isNotInCaseInsensitiveWhenPresent(Collections.emptyList())
+                        .withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred")))
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
         );
     }
 }
