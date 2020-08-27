@@ -124,22 +124,20 @@ The library supplies several specializations of optional conditions to be used i
 ### Optionality with the "In" Conditions
 Optionality with the "in" and "not in" conditions is a bit more complex than the other types of conditions. The first thing to know is that no "in" or "not in" condition will render if the list of values is empty. For example, there will never be rendered SQL like `where name in ()`. So optionality of the "in" conditions is more about optionality of the *values* of the condition. The library comes with functions that will filter out null values, and will upper case String values to enable case insensitive queries. There are extension points to add additional filtering and mapping if you so desire.
 
-We think it is a good thing that the library will not render invalid SQL. Normally an "in" condition will be dropped from rendering if the list of values is empty - either through filtering or from the creation of the list. But there is some danger with this stance. Because the condition could be dropped from the rendered SQL, more rows could be impacted than expected if the list ends up empty for whatever reason. Our recommended solution is to make sure that you validate list values - especially if they are coming from direct user input. Another option is to force the conditions to render even if they are empty - which will cause a database error in most cases. If you want to force "in" conditions to render even if they are empty, you will need to create your own condition and configure it to render when empty. This is easily done by subclassing one of the existing conditions. For example:
+We think it is a good thing that the library will not render invalid SQL. An "in" condition will always be dropped from rendering if the list of values is empty. But there is some danger with this stance. Because the condition could be dropped from the rendered SQL, more rows could be impacted than expected if the list ends up empty for whatever reason. Our recommended solution is to make sure that you validate list values - especially if they are coming from direct user input. Another option is to take some action when the list is empty. This can be especially helpful when you are applying filters to the value list or using one of the built in "when present" conditions. In that case, it is possible that the list of values could end up empty after a validation check.
+
+The "In" conditions support a callback that will be invoked when the value list is empty and just before the statement is rendered. You could use the callback to create a condition that will throw an exception when the list is empty. For example:
 
 ```java
-    public class IsInRequired<T> extends IsIn<T> {
-        protected IsInRequired(Collection<T> values) {
-            super(values);
-            forceRenderingWhenEmpty(); // calling this method will force the condition to render even if the values list is empty
-        }
-        
-        public static <T> IsInRequired<T> isIn(Collection<T> values) {
-            return new IsInRequired<>(values);
-        }
+    private static <T> IsIn<T> isInRequired(Collection<T> values) {
+        return IsIn.of(values).withListEmptyCallback(() -> { throw new RuntimeException("In values cannot be empty"); } );
+    }
+
+    // Alternatively, there is a convenience method in the Callback interface
+    private static <T> IsIn<T> isInRequired(Collection<T> values) {
+        return IsIn.of(values).withListEmptyCallback(Callback.exceptionThrowingCallback("In values cannot be empty"));
     }
 ```
-
-Note that we do not supply conditions like this as a part of the standard library because we believe that forcing the library to render invalid SQL is an extreme measure and should be undertaken with care.
 
 The following table shows the different supplied In conditions and how they will render for different sets of inputs. The table assumes the following types of input:
 
@@ -201,4 +199,4 @@ Then the condition could be used in a query as follows:
                     .render(RenderingStrategies.MYBATIS3);
 ```
 
-You can apply value stream operations to the conditions `IsIn`, `IsInCaseInsensitive`, `IsNotIn`, and `IsNotInCaseInsensitive`. With the case-insensitive conditions, the library will automatically convert non-null strings to upper case after any value stream operation you specify.
+You can apply value stream operations to the conditions `IsIn` and `IsNotIn`. The built in conditions `IsInCaseInsensitive`, `IsInCaseInsensitiveWhenPresent`, `IsNotInCaseInsensitive`, and `IsNotInCaseInsensitiveWhenPresent` do not support additional value stream operations as they already implement a value stream operation as part of the condition. 
