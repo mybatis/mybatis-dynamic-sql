@@ -27,10 +27,12 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -57,6 +59,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
+import org.mybatis.dynamic.sql.where.condition.IsNotIn;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 class AnimalDataTest {
@@ -570,6 +573,47 @@ class AnimalDataTest {
     }
 
     @Test
+    void testInConditionWithEventuallyEmptyList() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, isIn(null, 22, null).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(selectStatement.getSelectStatement())
+                    .isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData");
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertThat(animals).hasSize(65);
+        }
+    }
+
+    @Test
+    void testInConditionWithEventuallyEmptyListForceRendering() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+            List<Integer> inValues = new ArrayList<>();
+            inValues.add(null);
+            inValues.add(22);
+            inValues.add(null);
+
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, IsInRequired.isIn(inValues).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(selectStatement.getSelectStatement())
+                    .isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in ()");
+
+            assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> mapper.selectMany(selectStatement));
+        }
+    }
+
+    @Test
     void testInConditionWithEmptyList() {
         assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
                 select(id, animalName, bodyWeight, brainWeight)
@@ -650,6 +694,54 @@ class AnimalDataTest {
         }
     }
 
+    @Test
+    void testNotInConditionWithEventuallyEmptyList() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, isNotIn(null, 22, null).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(selectStatement.getSelectStatement())
+                    .isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData");
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertThat(animals).hasSize(65);
+        }
+    }
+
+    @Test
+    void testNotInConditionWithEventuallyEmptyListForceRendering() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, IsNotInRequired.isNotIn(null, 22, null)
+                            .then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(selectStatement.getSelectStatement())
+                    .isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in ()");
+
+            assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> mapper.selectMany(selectStatement));
+        }
+    }
+
+    public static class IsNotInRequired<T> extends IsNotIn<T> {
+        protected IsNotInRequired(Collection<T> values) {
+            super(values);
+            forceRenderingWhenEmpty();
+        }
+
+        @SafeVarargs
+        public static <T> IsNotInRequired<T> isNotIn(T...values) {
+            return new IsNotInRequired<>(Arrays.asList(values));
+        }
+    }
     @Test
     void testLikeCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {

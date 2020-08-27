@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,21 +23,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
-import org.mybatis.dynamic.sql.Callback;
 
-public class IsIn<T> extends AbstractListValueCondition<T, IsIn<T>> {
+public class IsIn<T> extends AbstractListValueCondition<T> {
+
+    protected IsIn(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer) {
+        super(values, valueStreamTransformer);
+    }
 
     protected IsIn(Collection<T> values) {
         super(values);
-    }
-
-    protected IsIn(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer, Callback callback) {
-        super(values, valueStreamTransformer, callback);
-    }
-
-    @Override
-    public IsIn<T> withListEmptyCallback(Callback callback) {
-        return new IsIn<>(values, valueStreamTransformer, callback);
     }
 
     @Override
@@ -57,7 +51,9 @@ public class IsIn<T> extends AbstractListValueCondition<T, IsIn<T>> {
      * @return new condition with the specified transformer
      */
     public IsIn<T> then(UnaryOperator<Stream<T>> valueStreamTransformer) {
-        return new IsIn<>(values, valueStreamTransformer, callback);
+        IsIn<T> answer = new IsIn<>(values, valueStreamTransformer);
+        answer.renderWhenEmpty = renderWhenEmpty;
+        return answer;
     }
 
     public static <T> IsIn<T> of(Collection<T> values) {

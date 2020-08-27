@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,8 +25,12 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
 
+    protected IsNotInCaseInsensitive(Collection<String> values) {
+        super(values, s -> s.map(StringUtilities::safelyUpperCase));
+    }
+
     protected IsNotInCaseInsensitive(Collection<String> values, UnaryOperator<Stream<String>> valueStreamTransformer) {
-        super(values, valueStreamTransformer);
+        super(values, StringUtilities.upperCaseAfter(valueStreamTransformer));
     }
 
     @Override
@@ -36,7 +40,23 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
                         Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
+    /**
+     * This method allows you to modify the condition's values before they are placed into the parameter map.
+     * For example, you could filter nulls, or trim strings, etc. This process will run before final rendering of SQL.
+     * If you filter values out of the stream, then final condition will not reference those values. If you filter all
+     * values out of the stream, then the condition will not render.
+     * 
+     * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
+     *     the values are placed in the parameter map
+     * @return new condition with the specified transformer
+     */
+    public IsNotInCaseInsensitive then(UnaryOperator<Stream<String>> valueStreamTransformer) {
+        IsNotInCaseInsensitive answer = new IsNotInCaseInsensitive(values, valueStreamTransformer);
+        answer.renderWhenEmpty = renderWhenEmpty;
+        return answer;
+    }
+
     public static IsNotInCaseInsensitive of(Collection<String> values) {
-        return new IsNotInCaseInsensitive(values, s -> s.map(StringUtilities::safelyUpperCase));
+        return new IsNotInCaseInsensitive(values);
     }
 }
