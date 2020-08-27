@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -592,25 +593,18 @@ class AnimalDataTest {
 
     @Test
     void testInConditionWithEventuallyEmptyListForceRendering() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+        List<Integer> inValues = new ArrayList<>();
+        inValues.add(null);
+        inValues.add(22);
+        inValues.add(null);
 
-            List<Integer> inValues = new ArrayList<>();
-            inValues.add(null);
-            inValues.add(22);
-            inValues.add(null);
-
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(id, IsInRequired.isIn(inValues).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            assertThat(selectStatement.getSelectStatement())
-                    .isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in ()");
-
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> mapper.selectMany(selectStatement));
-        }
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                select(id, animalName, bodyWeight, brainWeight)
+                .from(animalData)
+                .where(id, isInRequired(inValues).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                .build()
+                .render(RenderingStrategies.MYBATIS3)
+        );
     }
 
     @Test
@@ -624,10 +618,8 @@ class AnimalDataTest {
         );
     }
 
-    public static <T> IsIn<T> isInRequired(Collection<T> values) {
-        throw new RuntimeException("fred");
-        // TODO...
-//        return IsIn.of(values).withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred"));
+    private static <T> IsIn<T> isInRequired(Collection<T> values) {
+        return IsIn.of(values).withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred"));
     }
 
     @Test
@@ -714,34 +706,20 @@ class AnimalDataTest {
 
     @Test
     void testNotInConditionWithEventuallyEmptyListForceRendering() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(id, IsNotInRequired.isNotIn(null, 22, null)
-                            .then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            assertThat(selectStatement.getSelectStatement())
-                    .isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in ()");
-
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> mapper.selectMany(selectStatement));
-        }
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                select(id, animalName, bodyWeight, brainWeight)
+                .from(animalData)
+                .where(id, isNotInRequired(null, 22, null)
+                        .then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                .build()
+                .render(RenderingStrategies.MYBATIS3));
     }
 
-    public static class IsNotInRequired<T> extends IsNotIn<T> {
-        protected IsNotInRequired(Collection<T> values) {
-            super(values);
-            forceRenderingWhenEmpty();
-        }
-
-        @SafeVarargs
-        public static <T> IsNotInRequired<T> isNotIn(T...values) {
-            return new IsNotInRequired<>(Arrays.asList(values));
-        }
+    @SafeVarargs
+    private static <T> IsNotIn<T> isNotInRequired(T...values) {
+        return IsNotIn.of(Arrays.asList(values)).withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred"));
     }
+
     @Test
     void testLikeCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {

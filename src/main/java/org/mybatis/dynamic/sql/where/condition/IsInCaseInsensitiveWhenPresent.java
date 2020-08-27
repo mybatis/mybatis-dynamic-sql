@@ -1,5 +1,5 @@
 /**
- *    Copyright 2016-2019 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,13 +15,12 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
-import org.mybatis.dynamic.sql.Callback;
-import org.mybatis.dynamic.sql.util.StringUtilities;
-
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+import org.mybatis.dynamic.sql.Callback;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsInCaseInsensitiveWhenPresent extends IsInCaseInsensitive {
 
@@ -29,8 +28,8 @@ public class IsInCaseInsensitiveWhenPresent extends IsInCaseInsensitive {
         super(values, s -> s.filter(Objects::nonNull).map(StringUtilities::safelyUpperCase));
     }
 
-    protected IsInCaseInsensitiveWhenPresent(Collection<String> values, UnaryOperator<Stream<String>> valueStreamTransformer,
-                                             Callback callback) {
+    protected IsInCaseInsensitiveWhenPresent(Collection<String> values,
+            UnaryOperator<Stream<String>> valueStreamTransformer, Callback callback) {
         super(values, valueStreamTransformer, callback);
     }
 
