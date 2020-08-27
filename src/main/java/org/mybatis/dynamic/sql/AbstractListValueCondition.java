@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
@@ -32,12 +32,13 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     }
 
     protected AbstractListValueCondition(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer) {
-        this.values = new ArrayList<>(Objects.requireNonNull(values));
         this.valueStreamTransformer = Objects.requireNonNull(valueStreamTransformer);
+        this.values = valueStreamTransformer.apply(Objects.requireNonNull(values).stream())
+            .collect(Collectors.toList());
     }
     
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
-        return valueStreamTransformer.apply(values.stream()).map(mapper);
+        return values.stream().map(mapper);
     }
     
     @Override
