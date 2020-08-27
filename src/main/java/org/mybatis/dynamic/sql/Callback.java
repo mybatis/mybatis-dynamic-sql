@@ -15,16 +15,20 @@
  */
 package org.mybatis.dynamic.sql;
 
-public interface ConditionVisitor<T, R> {
-    R visit(AbstractListValueCondition<T, ?> condition);
+import java.util.function.Function;
 
-    R visit(AbstractNoValueCondition<T> condition);
+@FunctionalInterface
+public interface Callback {
+    void call();
 
-    R visit(AbstractSingleValueCondition<T> condition);
+    static Callback exceptionThrowingCallback(String message) {
+        return exceptionThrowingCallback(message, RuntimeException::new);
+    }
 
-    R visit(AbstractTwoValueCondition<T> condition);
-
-    R visit(AbstractSubselectCondition<T> condition);
-
-    R visit(AbstractColumnComparisonCondition<T> condition);
+    static Callback exceptionThrowingCallback(String message,
+            Function<String, ? extends RuntimeException> exceptionBuilder) {
+        return () -> {
+            throw exceptionBuilder.apply(message);
+        };
+    }
 }

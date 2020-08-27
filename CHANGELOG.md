@@ -2,6 +2,18 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
+## Release 1.2.1 - Unreleased
+
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.2.1+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.2.1+)
+
+### Fixed
+
+- Fixed a bug where the In conditions could render incorrectly in certain circumstances. ([#239](https://github.com/mybatis/mybatis-dynamic-sql/issues/239))
+
+### Added
+
+- Added a callback capability to the "In" conditions that will be called before rendering when the conditions are empty. Also, removed the option that forced the library to render invalid SQL in that case. ([#241](https://github.com/mybatis/mybatis-dynamic-sql/pull/241))
+
 ## Release 1.2.0 - August 19, 2020
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.2.0+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.2.0+)
@@ -14,7 +26,7 @@ This release includes a significant refactoring of the classes in the "org.mybat
 
 With this release, we deprecated several insert methods because they were inconsistently named or awkward. All deprecated methods have documented direct replacements.
 
-All deprecated code will be removed in the next release.
+All deprecated code will be removed in the next minor release.
 
 ### Added
 
