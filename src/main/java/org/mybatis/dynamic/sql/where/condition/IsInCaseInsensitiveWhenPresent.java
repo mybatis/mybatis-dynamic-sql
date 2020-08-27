@@ -15,16 +15,21 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import org.mybatis.dynamic.sql.util.StringUtilities;
+
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 public class IsInCaseInsensitiveWhenPresent extends IsInCaseInsensitive {
 
-    protected IsInCaseInsensitiveWhenPresent(Collection<String> values) {
-        super(values, s -> s.filter(Objects::nonNull));
+    protected IsInCaseInsensitiveWhenPresent(Collection<String> values, UnaryOperator<Stream<String>> valueStreamTransformer) {
+        super(values, valueStreamTransformer);
     }
 
     public static IsInCaseInsensitiveWhenPresent of(Collection<String> values) {
-        return new IsInCaseInsensitiveWhenPresent(values);
+        return new IsInCaseInsensitiveWhenPresent(values,
+                s -> s.filter(Objects::nonNull).map(StringUtilities::safelyUpperCase));
     }
 }
