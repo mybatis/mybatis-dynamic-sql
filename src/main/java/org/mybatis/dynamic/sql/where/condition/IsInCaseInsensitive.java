@@ -21,12 +21,23 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
+import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
+public class IsInCaseInsensitive extends AbstractListValueCondition<String, IsInCaseInsensitive> {
 
     protected IsInCaseInsensitive(Collection<String> values, UnaryOperator<Stream<String>> valueStreamTransformer) {
         super(values, valueStreamTransformer);
+    }
+
+    protected IsInCaseInsensitive(Collection<String> values, UnaryOperator<Stream<String>> valueStreamTransformer,
+                                  Callback callback) {
+        super(values, valueStreamTransformer, callback);
+    }
+
+    @Override
+    public IsInCaseInsensitive withListEmptyCallback(Callback callback) {
+        return new IsInCaseInsensitive(values, valueStreamTransformer, callback);
     }
 
     @Override

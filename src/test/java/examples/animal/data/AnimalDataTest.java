@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -45,6 +44,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
@@ -571,30 +571,21 @@ class AnimalDataTest {
 
     @Test
     void testInConditionWithEmptyList() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(id, IsInRequired.isIn(Collections.emptyList()))
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(() -> mapper.selectMany(selectStatement));
-        }
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                select(id, animalName, bodyWeight, brainWeight)
+                        .from(animalData)
+                        .where(id, isInRequired(Collections.emptyList()))
+                        .build()
+                        .render(RenderingStrategies.MYBATIS3)
+        );
     }
 
-    public static class IsInRequired<T> extends IsIn<T> {
-        protected IsInRequired(Collection<T> values) {
-            super(values);
-            forceRenderingWhenEmpty();
-        }
-        
-        public static <T> IsInRequired<T> isIn(Collection<T> values) {
-            return new IsInRequired<>(values);
-        }
+    public static <T> IsIn<T> isInRequired(Collection<T> values) {
+        throw new RuntimeException("fred");
+        // TODO...
+//        return IsIn.of(values).withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred"));
     }
-    
+
     @Test
     void testInCaseSensitiveCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {

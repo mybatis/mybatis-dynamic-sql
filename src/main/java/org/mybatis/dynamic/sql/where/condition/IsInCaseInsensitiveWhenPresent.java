@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 import java.util.Collection;
@@ -24,12 +25,21 @@ import java.util.stream.Stream;
 
 public class IsInCaseInsensitiveWhenPresent extends IsInCaseInsensitive {
 
-    protected IsInCaseInsensitiveWhenPresent(Collection<String> values, UnaryOperator<Stream<String>> valueStreamTransformer) {
-        super(values, valueStreamTransformer);
+    protected IsInCaseInsensitiveWhenPresent(Collection<String> values) {
+        super(values, s -> s.filter(Objects::nonNull).map(StringUtilities::safelyUpperCase));
+    }
+
+    protected IsInCaseInsensitiveWhenPresent(Collection<String> values, UnaryOperator<Stream<String>> valueStreamTransformer,
+                                             Callback callback) {
+        super(values, valueStreamTransformer, callback);
+    }
+
+    @Override
+    public IsInCaseInsensitiveWhenPresent withListEmptyCallback(Callback callback) {
+        return new IsInCaseInsensitiveWhenPresent(values, valueStreamTransformer, callback);
     }
 
     public static IsInCaseInsensitiveWhenPresent of(Collection<String> values) {
-        return new IsInCaseInsensitiveWhenPresent(values,
-                s -> s.filter(Objects::nonNull).map(StringUtilities::safelyUpperCase));
+        return new IsInCaseInsensitiveWhenPresent(values);
     }
 }

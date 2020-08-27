@@ -22,18 +22,24 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
+public abstract class AbstractListValueCondition<T, S extends AbstractListValueCondition<T, S>> implements VisitableCondition<T> {
     protected final Collection<T> values;
     protected final UnaryOperator<Stream<T>> valueStreamTransformer;
-    protected boolean renderWhenEmpty = false;
+    protected final Callback callback;
 
     protected AbstractListValueCondition(Collection<T> values) {
-        this(values, UnaryOperator.identity());
+        this(values, UnaryOperator.identity(), () -> {});
     }
 
     protected AbstractListValueCondition(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer) {
+        this(values, valueStreamTransformer, () -> {});
+    }
+
+    protected AbstractListValueCondition(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer,
+            Callback callback) {
         this.values = new ArrayList<>(Objects.requireNonNull(values));
         this.valueStreamTransformer = Objects.requireNonNull(valueStreamTransformer);
+        this.callback = Objects.requireNonNull(callback);
     }
     
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
@@ -42,20 +48,19 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     
     @Override
     public boolean shouldRender() {
-        return !values.isEmpty() || renderWhenEmpty;
+        if (values.isEmpty()) {
+            callback.call();
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    /**
-     * Use with caution - this could cause the library to render invalid SQL like "where column in ()".
-     */
-    protected void forceRenderingWhenEmpty() {
-        renderWhenEmpty = true;
-    }
-    
     @Override
     public <R> R accept(ConditionVisitor<T, R> visitor) {
         return visitor.visit(this);
     }
 
+    public abstract S withListEmptyCallback(Callback callback);
     public abstract String renderCondition(String columnName, Stream<String> placeholders);
 }
