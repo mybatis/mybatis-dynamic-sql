@@ -267,7 +267,7 @@ class SelectStatementTest {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isInCaseInsensitive(Collections.emptyList())
-                        .withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred")))
+                        .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
@@ -280,7 +280,7 @@ class SelectStatementTest {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isInCaseInsensitiveWhenPresent(Collections.emptyList())
-                        .withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred")))
+                        .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
@@ -293,7 +293,7 @@ class SelectStatementTest {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isNotInCaseInsensitive(Collections.emptyList())
-                        .withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred")))
+                        .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
@@ -306,7 +306,7 @@ class SelectStatementTest {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isNotInCaseInsensitiveWhenPresent(Collections.emptyList())
-                        .withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred")))
+                        .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->

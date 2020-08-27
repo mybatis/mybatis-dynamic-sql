@@ -621,7 +621,7 @@ class AnimalDataTest {
     }
 
     private static <T> IsIn<T> isInRequired(Collection<T> values) {
-        return IsIn.of(values).withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred"));
+        return IsIn.of(values).withListEmptyCallback(Callback.exceptionThrowingCallback("Fred"));
     }
 
     @Test
@@ -721,7 +721,7 @@ class AnimalDataTest {
 
     @SafeVarargs
     private static <T> IsNotIn<T> isNotInRequired(T...values) {
-        return IsNotIn.of(Arrays.asList(values)).withListEmptyCallback(Callback.runtimeExceptionThrowingCallback("Fred"));
+        return IsNotIn.of(Arrays.asList(values)).withListEmptyCallback(Callback.exceptionThrowingCallback("Fred"));
     }
 
     @Test

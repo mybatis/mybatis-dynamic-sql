@@ -21,7 +21,7 @@ import java.util.function.Function;
 public interface Callback {
     void call();
 
-    static Callback runtimeExceptionThrowingCallback(String message) {
+    static Callback exceptionThrowingCallback(String message) {
         return exceptionThrowingCallback(message, RuntimeException::new);
     }
 
