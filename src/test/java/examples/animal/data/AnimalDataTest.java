@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -56,6 +55,7 @@ import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
@@ -598,23 +598,25 @@ class AnimalDataTest {
         inValues.add(22);
         inValues.add(null);
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
-                select(id, animalName, bodyWeight, brainWeight)
+        SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
                 .where(id, isInRequired(inValues).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
-                .build()
-                .render(RenderingStrategies.MYBATIS3)
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
         );
     }
 
     @Test
     void testInConditionWithEmptyList() {
+        SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
+                .from(animalData)
+                .where(id, isInRequired(Collections.emptyList()))
+                .build();
+
         assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
-                select(id, animalName, bodyWeight, brainWeight)
-                        .from(animalData)
-                        .where(id, isInRequired(Collections.emptyList()))
-                        .build()
-                        .render(RenderingStrategies.MYBATIS3)
+                selectModel.render(RenderingStrategies.MYBATIS3)
         );
     }
 
@@ -706,13 +708,15 @@ class AnimalDataTest {
 
     @Test
     void testNotInConditionWithEventuallyEmptyListForceRendering() {
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
-                select(id, animalName, bodyWeight, brainWeight)
+        SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
                 .where(id, isNotInRequired(null, 22, null)
                         .then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
-                .build()
-                .render(RenderingStrategies.MYBATIS3));
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
+        );
     }
 
     @SafeVarargs
