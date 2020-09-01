@@ -151,6 +151,16 @@
           <sourceDirectories>src/main/java,src/main/kotlin</sourceDirectories>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <mapping>
+            <java>SLASHSTAR_STYLE</java>
+            <kt>SLASHSTAR_STYLE</kt>
+          </mapping>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
