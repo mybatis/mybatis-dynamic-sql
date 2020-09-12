@@ -24,7 +24,4 @@ interface JoinMapper {
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
     @ResultMap("SimpleJoinResult")
     fun selectMany(selectStatement: SelectStatementProvider): List<OrderMaster>
-
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    fun generalSelect(selectStatement: SelectStatementProvider): List<Map<String, Any>>
 }

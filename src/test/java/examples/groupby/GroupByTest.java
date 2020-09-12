@@ -40,6 +40,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
 
 class GroupByTest {
 
@@ -61,14 +62,14 @@ class GroupByTest {
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
-        config.addMapper(GroupByMapper.class);
+        config.addMapper(GeneralMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
     
     @Test
     void testBasicGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(gender, count())
                     .from(person)
@@ -79,7 +80,7 @@ class GroupByTest {
             String expected = "select gender, count(*) from Person group by gender";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("GENDER", "Male");
@@ -94,7 +95,7 @@ class GroupByTest {
     @Test
     void testBasicGroupByWithAggregateAlias() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(gender, count().as("count"))
                     .from(person)
@@ -105,7 +106,7 @@ class GroupByTest {
             String expected = "select gender, count(*) as count from Person group by gender";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("GENDER", "Male");
@@ -120,7 +121,7 @@ class GroupByTest {
     @Test
     void testGroupByAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, streetAddress, count().as("count"))
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
@@ -133,7 +134,7 @@ class GroupByTest {
                     " group by p.last_name, a.street_address";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Flintstone");
@@ -150,7 +151,7 @@ class GroupByTest {
     @Test
     void testUnionAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
@@ -169,7 +170,7 @@ class GroupByTest {
                     " order by last_name, first_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(10);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Flintstone");
@@ -186,7 +187,7 @@ class GroupByTest {
     @Test
     void testUnionAllAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
@@ -205,7 +206,7 @@ class GroupByTest {
                     " order by last_name, first_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(10);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Flintstone");
@@ -222,7 +223,7 @@ class GroupByTest {
     @Test
     void testUnionAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(stringConstant("Gender"), gender.as("value"), count().as("count"))
                     .from(person)
@@ -239,7 +240,7 @@ class GroupByTest {
                     " select 'Last Name', last_name as value, count(*) as count from Person group by last_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(4);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("C1", "Gender   ");
@@ -266,7 +267,7 @@ class GroupByTest {
     @Test
     void testUnionAllAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(stringConstant("Gender"), gender.as("value"), count().as("count"))
                     .from(person)
@@ -283,7 +284,7 @@ class GroupByTest {
                     " select 'Last Name', last_name as value, count(*) as count from Person group by last_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(4);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("C1", "Gender   ");
@@ -310,7 +311,7 @@ class GroupByTest {
     @Test
     void testBasicGroupByOrderByWithAggregateAlias() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(gender, count().as("count"))
                     .from(person)
@@ -322,7 +323,7 @@ class GroupByTest {
             String expected = "select gender, count(*) as count from Person group by gender order by gender";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("GENDER", "Female");
@@ -337,7 +338,7 @@ class GroupByTest {
     @Test
     void testBasicGroupByOrderByWithCalculatedColumnAndTableAlias() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
                     .from(person, "a")
@@ -349,7 +350,7 @@ class GroupByTest {
             String expected = "select substring(a.gender, 1, 1) as ShortGender, avg(a.age) as AverageAge from Person a group by substring(a.gender, 1, 1) order by ShortGender DESC";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("SHORTGENDER", "M");
@@ -364,7 +365,7 @@ class GroupByTest {
     @Test
     void testGroupByAfterWhere() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person, "a")
@@ -376,7 +377,7 @@ class GroupByTest {
             String expected = "select a.last_name, count(*) as count from Person a where a.gender = #{parameters.p1,jdbcType=VARCHAR} group by a.last_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Flintstone");
@@ -391,7 +392,7 @@ class GroupByTest {
     @Test
     void testLimitAndOffsetAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -404,7 +405,7 @@ class GroupByTest {
             String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters.p1} offset #{parameters.p2}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Rubble");
@@ -415,7 +416,7 @@ class GroupByTest {
     @Test
     void testLimitOnlyAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -427,7 +428,7 @@ class GroupByTest {
             String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters.p1}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Flintstone");
@@ -438,7 +439,7 @@ class GroupByTest {
     @Test
     void testOffsetOnlyAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -450,7 +451,7 @@ class GroupByTest {
             String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters.p1} rows";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Rubble");
@@ -461,7 +462,7 @@ class GroupByTest {
     @Test
     void testOffsetAndFetchFirstAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -474,7 +475,7 @@ class GroupByTest {
             String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters.p1} rows fetch first #{parameters.p2} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Rubble");
@@ -485,7 +486,7 @@ class GroupByTest {
     @Test
     void testFetchFirstOnlyAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -497,7 +498,7 @@ class GroupByTest {
             String expected = "select last_name, count(*) as count from Person group by last_name fetch first #{parameters.p1} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Flintstone");
@@ -508,7 +509,7 @@ class GroupByTest {
     @Test
     void testCountDistinct() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GroupByMapper mapper = session.getMapper(GroupByMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
         
             SelectStatementProvider selectStatement = select(countDistinct(lastName).as("count"))
                     .from(person)
@@ -518,7 +519,7 @@ class GroupByTest {
             String expected = "select count(distinct last_name) as count from Person";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("COUNT", 2L);

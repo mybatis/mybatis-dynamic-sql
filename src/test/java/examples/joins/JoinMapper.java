@@ -16,7 +16,6 @@
 package examples.joins;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
@@ -29,9 +28,6 @@ public interface JoinMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("SimpleJoinResult")
     List<OrderMaster> selectMany(SelectStatementProvider selectStatement);
-    
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    List<Map<String, Object>> generalSelect(SelectStatementProvider selectStatement);
     
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results ({

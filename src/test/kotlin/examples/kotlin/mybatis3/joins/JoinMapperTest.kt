@@ -31,6 +31,7 @@ import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.from
+import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
@@ -50,6 +51,7 @@ class JoinMapperTest {
         val environment = Environment("test", JdbcTransactionFactory(), ds)
         val config = Configuration(environment)
         config.addMapper(JoinMapper::class.java)
+        config.addMapper(GeneralMapper::class.java)
         return SqlSessionFactoryBuilder().build(config).openSession()
     }
 
@@ -159,7 +161,7 @@ class JoinMapperTest {
     @Test
     fun testFullJoinWithAliases() {
         newSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
+            val mapper = session.getMapper(GeneralMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
                     ItemMaster.description).from(OrderMaster, "om") {
@@ -179,7 +181,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(6)
 
@@ -205,7 +207,7 @@ class JoinMapperTest {
     @Test
     fun testFullJoinWithoutAliases() {
         newSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
+            val mapper = session.getMapper(GeneralMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
                     ItemMaster.description).from(OrderMaster, "om") {
@@ -225,7 +227,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(6)
 
@@ -251,7 +253,7 @@ class JoinMapperTest {
     @Test
     fun testLeftJoinWithAliases() {
         newSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
+            val mapper = session.getMapper(GeneralMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
                     ItemMaster.description).from(OrderMaster, "om") {
@@ -271,7 +273,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(5)
 
@@ -292,7 +294,7 @@ class JoinMapperTest {
     @Test
     fun testLeftJoinWithoutAliases() {
         newSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
+            val mapper = session.getMapper(GeneralMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
                     ItemMaster.description).from(OrderMaster, "om") {
@@ -312,7 +314,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(5)
 
@@ -333,7 +335,7 @@ class JoinMapperTest {
     @Test
     fun testRightJoinWithAliases() {
         newSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
+            val mapper = session.getMapper(GeneralMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
                     ItemMaster.description).from(OrderMaster, "om") {
@@ -353,7 +355,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(5)
 
@@ -374,7 +376,7 @@ class JoinMapperTest {
     @Test
     fun testRightJoinWithoutAliases() {
         newSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
+            val mapper = session.getMapper(GeneralMapper::class.java)
 
             val selectStatement = select(OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId,
                     ItemMaster.description).from(OrderMaster, "om") {
@@ -394,7 +396,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(5)
 
