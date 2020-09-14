@@ -36,7 +36,7 @@
     <junit.jupiter.version>5.7.0</junit.jupiter.version>
     <junit.platform.version>1.7.0</junit.platform.version>
     <spring.batch.version>4.2.4.RELEASE</spring.batch.version>
-    <clirr.comparisonVersion>1.1.0</clirr.comparisonVersion>
+    <clirr.comparisonVersion>1.2.0</clirr.comparisonVersion>
     <module.name>org.mybatis.dynamic.sql</module.name>
     <kotlin.version>1.4.10</kotlin.version>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
