@@ -45,6 +45,7 @@
     <jacoco.version>0.8.5</jacoco.version>
     <kotlin.code.style>official</kotlin.code.style>
     <test.containers.version>1.14.3</test.containers.version>
+    <osgi.export>org.mybatis.dynamic.sql.*;version=${project.version};-noimport:=true</osgi.export>
   </properties>
 
   <build>
