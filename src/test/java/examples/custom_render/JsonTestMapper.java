@@ -16,7 +16,6 @@
 package examples.custom_render;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.DeleteProvider;
@@ -33,11 +32,9 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
 
-public interface JsonTestMapper {
-    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
-    List<Map<String, Object>> generalSelect(SelectStatementProvider selectStatement);
-
+public interface JsonTestMapper extends GeneralMapper {
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @Results(id = "JsonTestResult", value = {
             @Result(column = "id", property = "id", id = true),

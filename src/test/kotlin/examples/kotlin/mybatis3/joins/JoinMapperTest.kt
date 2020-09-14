@@ -179,26 +179,39 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            data class OrderDetail (val itemId: Int?, val orderId: Int?, val quantity: Int?, val description: String?)
+
+            val rows = mapper.selectMany(selectStatement) {
+                OrderDetail(
+                    it["ITEM_ID"] as Int?,
+                    it["ORDER_ID"] as Int?,
+                    it["QUANTITY"] as Int?,
+                    it["DESCRIPTION"] as String?
+                )
+            }
 
             assertThat(rows).hasSize(6)
 
-            assertThat(rows[0]).containsExactly(
-                entry("DESCRIPTION", "Catcher Glove"),
-                entry("ITEM_ID", 55)
-            )
+            with(rows[0]) {
+                assertThat(itemId).isEqualTo(55)
+                assertThat(orderId).isNull()
+                assertThat(quantity).isNull()
+                assertThat(description).isEqualTo("Catcher Glove")
+            }
 
-            assertThat(rows[3]).containsExactly(
-                entry("ORDER_ID", 2),
-                entry("QUANTITY", 6)
-            )
+            with(rows[3]) {
+                assertThat(itemId).isNull()
+                assertThat(orderId).isEqualTo(2)
+                assertThat(quantity).isEqualTo(6)
+                assertThat(description).isNull()
+            }
 
-            assertThat(rows[5]).containsExactly(
-                entry("ORDER_ID", 2),
-                entry("QUANTITY", 1),
-                entry("DESCRIPTION", "Outfield Glove"),
-                entry("ITEM_ID", 44)
-            )
+            with(rows[5]) {
+                assertThat(itemId).isEqualTo(44)
+                assertThat(orderId).isEqualTo(2)
+                assertThat(quantity).isEqualTo(1)
+                assertThat(description).isEqualTo("Outfield Glove")
+            }
         }
     }
 
@@ -225,7 +238,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(6)
 
@@ -271,7 +284,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(5)
 
@@ -312,7 +325,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(5)
 
@@ -353,7 +366,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(5)
 
@@ -394,7 +407,7 @@ class JoinMapperTest {
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
-            val rows = mapper.generalSelect(selectStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
 
             assertThat(rows).hasSize(5)
 

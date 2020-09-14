@@ -50,6 +50,7 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -57,7 +58,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class CustomRenderingTest {
 
     @Container
-    private static PgContainer postgres = new PgContainer("examples/custom_render/dbInit.sql");
+    private static final PgContainer postgres = new PgContainer("examples/custom_render/dbInit.sql");
     
     private static SqlSessionFactory sqlSessionFactory;
 
@@ -68,6 +69,7 @@ class CustomRenderingTest {
                 postgres.getUnpooledDataSource());
         configuration.setEnvironment(environment);
         configuration.addMapper(JsonTestMapper.class);
+        configuration.addMapper(GeneralMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     }
 
@@ -321,8 +323,10 @@ class CustomRenderingTest {
             
             Optional<JsonTestRecord> record = mapper.selectOne(selectStatement);
             
-            assertThat(record).hasValueSatisfying( c ->
-                c.getInfo().equals("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"));
+            assertThat(record).hasValueSatisfying( r ->
+                assertThat(r.getInfo())
+                        .isEqualTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}")
+            );
         }
     }
     
@@ -364,7 +368,7 @@ class CustomRenderingTest {
             
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 
-            List<Map<String, Object>> records = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
             assertThat(records).hasSize(1);
             assertThat(records.get(0)).containsEntry("firstname", "Wilma");
         }

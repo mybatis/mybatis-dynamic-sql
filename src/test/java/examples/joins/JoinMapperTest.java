@@ -43,6 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
 
 class JoinMapperTest {
 
@@ -65,6 +66,7 @@ class JoinMapperTest {
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(JoinMapper.class);
+        config.addMapper(GeneralMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
     
@@ -385,7 +387,7 @@ class JoinMapperTest {
     @Test
     void testRightJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderLine, "ol")
@@ -399,7 +401,7 @@ class JoinMapperTest {
                     + " order by item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
@@ -419,7 +421,7 @@ class JoinMapperTest {
     @Test
     void testRightJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -435,7 +437,7 @@ class JoinMapperTest {
                     + " order by order_id, item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(0);
@@ -455,7 +457,7 @@ class JoinMapperTest {
     @Test
     void testRightJoin3() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -471,7 +473,7 @@ class JoinMapperTest {
                     + " order by order_id, item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(0);
@@ -491,7 +493,7 @@ class JoinMapperTest {
     @Test
     void testRightJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster)
@@ -507,7 +509,7 @@ class JoinMapperTest {
                     + " order by order_id, item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(0);
@@ -527,7 +529,7 @@ class JoinMapperTest {
     @Test
     void testLeftJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -541,7 +543,7 @@ class JoinMapperTest {
                     + " order by item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
@@ -561,7 +563,7 @@ class JoinMapperTest {
     @Test
     void testLeftJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -577,7 +579,7 @@ class JoinMapperTest {
                     + " order by order_id, item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
@@ -597,7 +599,7 @@ class JoinMapperTest {
     @Test
     void testLeftJoin3() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -613,7 +615,7 @@ class JoinMapperTest {
                     + " order by order_id, item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
@@ -633,7 +635,7 @@ class JoinMapperTest {
     @Test
     void testLeftJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster)
@@ -649,7 +651,7 @@ class JoinMapperTest {
                     + " order by order_id, item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(5);
             Map<String, Object> row = rows.get(2);
@@ -669,7 +671,7 @@ class JoinMapperTest {
     @Test
     void testFullJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
                     .from(itemMaster, "im")
@@ -683,7 +685,7 @@ class JoinMapperTest {
                     + " order by im_itemid";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(6);
             Map<String, Object> row = rows.get(0);
@@ -710,7 +712,7 @@ class JoinMapperTest {
     @Test
     void testFullJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -726,7 +728,7 @@ class JoinMapperTest {
                     + " order by order_id, item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(6);
             Map<String, Object> row = rows.get(0);
@@ -752,7 +754,7 @@ class JoinMapperTest {
     @Test
     void testFullJoin3() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -768,7 +770,7 @@ class JoinMapperTest {
                     + " order by order_id, item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(6);
             Map<String, Object> row = rows.get(0);
@@ -794,7 +796,7 @@ class JoinMapperTest {
     @Test
     void testFullJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster)
@@ -810,7 +812,7 @@ class JoinMapperTest {
                     + " order by order_id, item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(6);
             Map<String, Object> row = rows.get(0);
@@ -864,7 +866,7 @@ class JoinMapperTest {
     @Test
     void testLimitAndOffsetAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -879,7 +881,7 @@ class JoinMapperTest {
                     + " limit #{parameters.p1} offset #{parameters.p2}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
@@ -899,7 +901,7 @@ class JoinMapperTest {
     @Test
     void testLimitOnlyAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -913,7 +915,7 @@ class JoinMapperTest {
                     + " limit #{parameters.p1}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
 
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
@@ -933,7 +935,7 @@ class JoinMapperTest {
     @Test
     void testOffsetOnlyAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -947,7 +949,7 @@ class JoinMapperTest {
                     + " offset #{parameters.p1} rows";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(3);
             Map<String, Object> row = rows.get(0);
@@ -967,7 +969,7 @@ class JoinMapperTest {
     @Test
     void testOffsetAndFetchFirstAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -982,7 +984,7 @@ class JoinMapperTest {
                     + " offset #{parameters.p1} rows fetch first #{parameters.p2} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
@@ -1002,7 +1004,7 @@ class JoinMapperTest {
     @Test
     void testFetchFirstOnlyAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            JoinMapper mapper = session.getMapper(JoinMapper.class);
+            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
             
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -1016,7 +1018,7 @@ class JoinMapperTest {
                     + " fetch first #{parameters.p1} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatment);
             
-            List<Map<String, Object>> rows = mapper.generalSelect(selectStatement);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
