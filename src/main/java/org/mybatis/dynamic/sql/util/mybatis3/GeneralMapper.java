@@ -30,17 +30,19 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
  * This is a general purpose MyBatis mapper. It allows you to execute select statements without having to
  * write a custom {@link org.apache.ibatis.annotations.ResultMap} for each statement.
  *
- * <p>This mapper contains two types of methods:
+ * <p>This mapper contains three types of methods:
  * <ul>
- *     <li>selectOneMappedRow, selectOne, selectManyMappedRows, and selectMany can be used to process result sets with
- *     any number of columns. The row values are processed by MyBatis and returned in a Map. A function can
- *     be applied to the Map to create custom objects if desired</li>
- *     <li>The other methods are for result sets with a single column. There are functions for many different
- *     data types (Integer, Long, String, etc.) and functions that return a single value, and Optional value,
- *     or a List of values</li>
+ *   <li>The selectOneMappedRow and selectManyMappedRows methods allow you to use select statements with
+ *     any number of columns. MyBatis will process the rows and return a Map of values, or a List of Maps.</li>
+ *   <li>The selectOne and selectMany methods also allow you to use select statements with any number of columns.
+ *   These methods also allow you to specify a function that will transform a Map of row values into a specific
+ *   object.</li>
+ *   <li>The other methods are for result sets with a single column. There are functions for many
+ *   data types (Integer, Long, String, etc.) There are also functions that return a single value, and Optional value,
+ *   or a List of values.</li>
  * </ul>
  *
- * <p>This mapper can be injected as-is into a MyBatis configuration, or it can be extended with existing mappers.</p>
+ * <p>This mapper can be injected as-is into a MyBatis configuration, or it can be extended with existing mappers.
  *
  * @author Jeff Butler
  */
