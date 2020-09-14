@@ -16,7 +16,6 @@
 package examples.animal.data;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -50,15 +49,6 @@ public interface AnimalDataMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("AnimalDataResult")
     AnimalData selectOne(SelectStatementProvider selectStatement);
-    
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    List<Map<String, Object>> generalSelect(SelectStatementProvider selectStatement);
-
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    Long selectALong(SelectStatementProvider selectStatement);
-    
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    Double selectADouble(SelectStatementProvider selectStatement);
     
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
