@@ -110,6 +110,9 @@ public interface SqlBuilder {
 
     /**
      * Renders as select count(distinct column) from table...
+     *
+     * @param column the column to count
+     * @return the next step in the DSL
      */
     static CountDSL.FromGatherer<SelectModel> countDistinctColumn(BasicColumn column) {
         return CountDSL.countDistinct(column);
@@ -117,6 +120,9 @@ public interface SqlBuilder {
     
     /**
      * Renders as select count(column) from table...
+     *
+     * @param column the column to count
+     * @return the next step in the DSL
      */
     static CountDSL.FromGatherer<SelectModel> countColumn(BasicColumn column) {
         return CountDSL.count(column);
@@ -124,6 +130,9 @@ public interface SqlBuilder {
     
     /**
      * Renders as select count(*) from table...
+     *
+     * @param table the table to count
+     * @return the next step in the DSL
      */
     static CountDSL<SelectModel> countFrom(SqlTable table) {
         return CountDSL.countFrom(table);
