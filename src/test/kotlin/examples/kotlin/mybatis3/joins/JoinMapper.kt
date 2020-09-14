@@ -19,8 +19,9 @@ import org.apache.ibatis.annotations.ResultMap
 import org.apache.ibatis.annotations.SelectProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
+import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper
 
-interface JoinMapper {
+interface JoinMapper : GeneralMapper {
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
     @ResultMap("SimpleJoinResult")
     fun selectMany(selectStatement: SelectStatementProvider): List<OrderMaster>
