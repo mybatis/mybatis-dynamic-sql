@@ -15,27 +15,18 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import java.sql.JDBCType;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Count implements BindableColumn<Long> {
+public class Count extends AbstractCount<Count> {
 
     private final BasicColumn column;
-    private final String alias;
-
-    private Count(BasicColumn column) {
-        this.column = Objects.requireNonNull(column);
-        alias = null;
-    }
 
     private Count(BasicColumn column, String alias) {
+        super(alias);
         this.column = Objects.requireNonNull(column);
-        this.alias = alias;
     }
 
     @Override
@@ -44,21 +35,11 @@ public class Count implements BindableColumn<Long> {
     }
 
     @Override
-    public Optional<String> alias() {
-        return Optional.ofNullable(alias);
-    }
-
-    @Override
-    public Count as(String alias) {
+    protected Count copyWithAlias(String alias) {
         return new Count(column, alias);
     }
 
-    @Override
-    public Optional<JDBCType> jdbcType() {
-        return Optional.of(JDBCType.BIGINT);
-    }
-
     public static Count of(BasicColumn column) {
-        return new Count(column);
+        return new Count(column, null);
     }
 }
