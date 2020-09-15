@@ -15,25 +15,27 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 
-public class Max extends AbstractAggregate<Max> {
+public class Max<T> extends AbstractUniTypeFunction<T, Max<T>> {
 
-    private Max(BasicColumn column) {
+    private Max(BindableColumn<T> column) {
         super(column);
     }
-    
+
     @Override
-    protected String render(String columnName) {
-        return "max(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "max(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
-    protected Max copy() {
-        return new Max(column);
+    protected Max<T> copy() {
+        return new Max<>(column);
     }
     
-    public static Max of(BasicColumn column) {
-        return new Max(column);
+    public static <T> Max<T> of(BindableColumn<T> column) {
+        return new Max<>(column);
     }
 }

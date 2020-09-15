@@ -15,25 +15,27 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 
-public class Avg extends AbstractAggregate<Avg> {
+public class Avg<T> extends AbstractUniTypeFunction<T, Avg<T>> {
 
-    private Avg(BasicColumn column) {
+    private Avg(BindableColumn<T> column) {
         super(column);
     }
-    
+
     @Override
-    protected String render(String columnName) {
-        return "avg(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "avg(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
-    protected Avg copy() {
-        return new Avg(column);
+    protected Avg<T> copy() {
+        return new Avg<>(column);
     }
     
-    public static Avg of(BasicColumn column) {
-        return new Avg(column);
+    public static <T> Avg<T> of(BindableColumn<T> column) {
+        return new Avg<>(column);
     }
 }

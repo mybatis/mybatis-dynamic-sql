@@ -15,27 +15,32 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import java.util.Optional;
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 
-public class Min<T> extends AbstractUniTypeFunction<T, Min<T>> {
+/**
+ * Count functions are implemented differently than the other aggregates. This is primarily to preserve
+ * backwards compatibility. Count functions are configured as BindableColumns of type Long
+ * as it is assumed that the count functions always return a number.
+ *
+ * @param <T> the subtype of this class
+ */
+public abstract class AbstractCount<T extends AbstractCount<T>> implements BindableColumn<Long> {
+    private final String alias;
 
-    private Min(BindableColumn<T> column) {
-        super(column);
+    protected AbstractCount(String alias) {
+        this.alias = alias;
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "min(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public Optional<String> alias() {
+        return Optional.ofNullable(alias);
     }
 
     @Override
-    protected Min<T> copy() {
-        return new Min<>(column);
+    public T as(String alias) {
+        return copyWithAlias(alias);
     }
-    
-    public static <T> Min<T> of(BindableColumn<T> column) {
-        return new Min<>(column);
-    }
+
+    protected abstract T copyWithAlias(String alias);
 }

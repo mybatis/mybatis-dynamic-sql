@@ -15,25 +15,31 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import java.util.Objects;
+
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Count extends AbstractAggregate<Count> {
-    
-    private Count(BasicColumn column) {
-        super(column);
-    }
-    
-    @Override
-    protected String render(String columnName) {
-        return "count(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+public class Count extends AbstractCount<Count> {
+
+    private final BasicColumn column;
+
+    private Count(BasicColumn column, String alias) {
+        super(alias);
+        this.column = Objects.requireNonNull(column);
     }
 
     @Override
-    protected Count copy() {
-        return new Count(column);
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "count(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
+    @Override
+    protected Count copyWithAlias(String alias) {
+        return new Count(column, alias);
+    }
+
     public static Count of(BasicColumn column) {
-        return new Count(column);
+        return new Count(column, null);
     }
 }

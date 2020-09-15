@@ -331,19 +331,19 @@ public interface SqlBuilder {
         return CountDistinct.of(column);
     }
     
-    static Max max(BasicColumn column) {
+    static <T> Max<T> max(BindableColumn<T> column) {
         return Max.of(column);
     }
     
-    static Min min(BasicColumn column) {
+    static <T> Min<T> min(BindableColumn<T> column) {
         return Min.of(column);
     }
 
-    static Avg avg(BasicColumn column) {
+    static <T> Avg<T> avg(BindableColumn<T> column) {
         return Avg.of(column);
     }
 
-    static Sum sum(BasicColumn column) {
+    static <T> Sum<T> sum(BindableColumn<T> column) {
         return Sum.of(column);
     }
 

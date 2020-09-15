@@ -30,6 +30,7 @@ public class NamesTableDynamicSqlSupport {
             super("NamesTable");
         }
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
-        public final SqlColumn<String[]> names = column("names", JDBCType.ARRAY);
+        public final SqlColumn<String[]> names = column("names", JDBCType.ARRAY,
+                "examples.array.StringArrayTypeHandler");
     }
 }

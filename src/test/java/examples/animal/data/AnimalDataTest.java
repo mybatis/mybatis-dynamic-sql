@@ -1826,6 +1826,25 @@ class AnimalDataTest {
     }
 
     @Test
+    void testDeprecatedAvg() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+
+            SelectStatementProvider selectStatement = select(DeprecatedAverage.of(brainWeight).as("average"))
+                    .from(animalData, "a")
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            Double average = mapper.selectOneDouble(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select avg(a.brain_weight) as average from AnimalData a"),
+                    () -> assertThat(average).isEqualTo(1852.69, within(.01))
+            );
+        }
+    }
+
+    @Test
     void testSum() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);

@@ -23,11 +23,15 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 /**
  * This class is the base class for aggregate functions.
- * 
+ *
+ * @deprecated  in favor of {@link org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction} as there is
+ *     virtually no difference between an aggregate and a function
+ *
  * @author Jeff Butler
  *
  * @param <T> the subclass type
  */
+@Deprecated
 public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implements BasicColumn {
     protected final BasicColumn column;
     protected String alias;

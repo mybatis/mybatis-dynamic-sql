@@ -13,29 +13,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.aggregate;
+package examples.animal.data;
 
-import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.select.aggregate.AbstractAggregate;
 
-public class Min<T> extends AbstractUniTypeFunction<T, Min<T>> {
-
-    private Min(BindableColumn<T> column) {
+public class DeprecatedAverage extends AbstractAggregate<DeprecatedAverage> {
+    private DeprecatedAverage(BasicColumn column) {
         super(column);
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "min(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    protected String render(String columnName) {
+        return "avg(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
-    protected Min<T> copy() {
-        return new Min<>(column);
+    protected DeprecatedAverage copy() {
+        return new DeprecatedAverage(column);
     }
-    
-    public static <T> Min<T> of(BindableColumn<T> column) {
-        return new Min<>(column);
+
+    public static DeprecatedAverage of(BasicColumn column) {
+        return new DeprecatedAverage(column);
     }
 }
