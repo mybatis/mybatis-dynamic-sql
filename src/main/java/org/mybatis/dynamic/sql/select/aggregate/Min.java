@@ -15,25 +15,27 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 
-public class Min extends AbstractAggregate<Min> {
+public class Min<T> extends AbstractUniTypeFunction<T, Min<T>> {
 
-    private Min(BasicColumn column) {
+    private Min(BindableColumn<T> column) {
         super(column);
     }
-    
+
     @Override
-    protected String render(String columnName) {
-        return "min(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "min(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$;
     }
 
     @Override
-    protected Min copy() {
-        return new Min(column);
+    protected Min<T> copy() {
+        return new Min<>(column);
     }
     
-    public static Min of(BasicColumn column) {
-        return new Min(column);
+    public static <T> Min<T> of(BindableColumn<T> column) {
+        return new Min<>(column);
     }
 }

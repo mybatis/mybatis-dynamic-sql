@@ -15,25 +15,27 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
-import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 
-public class Sum extends AbstractAggregate<Sum> {
+public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
 
-    private Sum(BasicColumn column) {
+    private Sum(BindableColumn<T> column) {
         super(column);
     }
-    
+
     @Override
-    protected String render(String columnName) {
-        return "sum(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "sum(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$;
     }
 
     @Override
-    protected Sum copy() {
-        return new Sum(column);
+    protected Sum<T> copy() {
+        return new Sum<>(column);
     }
     
-    public static Sum of(BasicColumn column) {
-        return new Sum(column);
+    public static <T> Sum<T> of(BindableColumn<T> column) {
+        return new Sum<>(column);
     }
 }
