@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class StringArrayTypeHandler extends BaseTypeHandler<String[]> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, String[] parameter, JdbcType jdbcType) throws SQLException {
-        Array array = ps.getConnection().createArrayOf("CHAR", parameter);
+        Array array = ps.getConnection().createArrayOf("VARCHAR", parameter);
         ps.setArray(i, array);
         array.free();
     }
