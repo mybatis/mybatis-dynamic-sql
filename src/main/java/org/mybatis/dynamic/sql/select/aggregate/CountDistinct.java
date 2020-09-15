@@ -15,24 +15,49 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import java.sql.JDBCType;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class CountDistinct extends AbstractAggregate<CountDistinct> {
-    
+public class CountDistinct implements BindableColumn<Long> {
+
+    private final BasicColumn column;
+    private final String alias;
+
     private CountDistinct(BasicColumn column) {
-        super(column);
+        this.column = Objects.requireNonNull(column);
+        alias = null;
     }
-    
-    @Override
-    protected String render(String columnName) {
-        return "count(distinct " + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+
+    private CountDistinct(BasicColumn column, String alias) {
+        this.column = Objects.requireNonNull(column);
+        this.alias = alias;
     }
 
     @Override
-    protected CountDistinct copy() {
-        return new CountDistinct(column);
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "count(distinct " + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
+    @Override
+    public Optional<String> alias() {
+        return Optional.ofNullable(alias);
+    }
+
+    @Override
+    public CountDistinct as(String alias) {
+        return new CountDistinct(column, alias);
+    }
+
+    @Override
+    public Optional<JDBCType> jdbcType() {
+        return Optional.of(JDBCType.BIGINT);
+    }
+
     public static CountDistinct of(BasicColumn column) {
         return new CountDistinct(column);
     }

@@ -15,24 +15,29 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import java.sql.JDBCType;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 /**
  * CountAll seems like the other aggregates, but it is special because there is no column.
  * Rather than dealing with a useless and confusing abstraction, we simply implement
- * BasicColumn directly.
+ * BindableColumn directly.
  *  
  * @author Jeff Butler
  */
-public class CountAll implements BasicColumn {
+public class CountAll implements BindableColumn<Long> {
     
-    private String alias;
+    private final String alias;
 
     public CountAll() {
-        super();
+        alias = null;
+    }
+
+    private CountAll(String alias) {
+        this.alias = alias;
     }
 
     @Override
@@ -47,8 +52,11 @@ public class CountAll implements BasicColumn {
 
     @Override
     public CountAll as(String alias) {
-        CountAll copy = new CountAll();
-        copy.alias = alias;
-        return copy;
+        return new CountAll(alias);
+    }
+
+    @Override
+    public Optional<JDBCType> jdbcType() {
+        return Optional.of(JDBCType.BIGINT);
     }
 }

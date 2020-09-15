@@ -15,24 +15,49 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import java.sql.JDBCType;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Count extends AbstractAggregate<Count> {
-    
+public class Count implements BindableColumn<Long> {
+
+    private final BasicColumn column;
+    private final String alias;
+
     private Count(BasicColumn column) {
-        super(column);
+        this.column = Objects.requireNonNull(column);
+        alias = null;
     }
-    
-    @Override
-    protected String render(String columnName) {
-        return "count(" + columnName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+
+    private Count(BasicColumn column, String alias) {
+        this.column = Objects.requireNonNull(column);
+        this.alias = alias;
     }
 
     @Override
-    protected Count copy() {
-        return new Count(column);
+    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        return "count(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
+    @Override
+    public Optional<String> alias() {
+        return Optional.ofNullable(alias);
+    }
+
+    @Override
+    public Count as(String alias) {
+        return new Count(column, alias);
+    }
+
+    @Override
+    public Optional<JDBCType> jdbcType() {
+        return Optional.of(JDBCType.BIGINT);
+    }
+
     public static Count of(BasicColumn column) {
         return new Count(column);
     }
