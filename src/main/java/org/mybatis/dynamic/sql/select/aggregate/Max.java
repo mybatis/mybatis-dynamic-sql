@@ -27,12 +27,12 @@ public class Max<T> extends AbstractUniTypeFunction<T, Max<T>> {
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "max(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$;
+        return "max(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     protected Max<T> copy() {
-        return new Max<T>(column);
+        return new Max<>(column);
     }
     
     public static <T> Max<T> of(BindableColumn<T> column) {

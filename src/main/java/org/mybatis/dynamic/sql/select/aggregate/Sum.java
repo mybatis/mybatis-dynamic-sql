@@ -27,7 +27,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "sum(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$;
+        return "sum(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
