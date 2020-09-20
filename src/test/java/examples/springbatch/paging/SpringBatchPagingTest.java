@@ -66,11 +66,11 @@ class SpringBatchPagingTest {
                 .mapToInt(this::getRowCount)
                 .sum();
     }
-    
+
     private int getRowCount(ExecutionContext executionContext) {
         return executionContext.getInt("row_count", 0);
     }
-    
+
     private int numberOfChunks(JobExecution jobExecution) {
         return jobExecution.getStepExecutions().stream()
                 .map(StepExecution::getExecutionContext)
@@ -81,7 +81,7 @@ class SpringBatchPagingTest {
     private int getChunkCount(ExecutionContext executionContext) {
         return executionContext.getInt("chunk_count", 0);
     }
-    
+
     private long upperCaseRowCount() throws Exception {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);

@@ -38,7 +38,7 @@ class CriterionRendererTest {
     void testAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-        
+
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
         SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
@@ -52,7 +52,7 @@ class CriterionRendererTest {
                 .render()
                 .get()
                 .fragmentAndParametersWithConnector();
-        
+
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters()).containsExactly(entry("p1", 3));
     }
@@ -66,10 +66,10 @@ class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        
+
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
-        
+
         FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
@@ -78,7 +78,7 @@ class CriterionRendererTest {
                 .render()
                 .get()
                 .fragmentAndParametersWithConnector();
-        
+
         assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters()).containsExactly(entry("p1", 3));
     }

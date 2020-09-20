@@ -40,7 +40,7 @@ public interface PersonMapper {
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
     @Options(useGeneratedKeys = true, keyProperty = "record.id")
     int insert(InsertStatementProvider<PersonRecord> insertStatement);
-    
+
     @Insert({
         "${insertStatement}"
     })
@@ -50,7 +50,7 @@ public interface PersonMapper {
     default int insertMultiple(MultiRowInsertStatementProvider<PersonRecord> multiRowInsertStatement) {
         return insertMultiple(multiRowInsertStatement.getInsertStatement(), multiRowInsertStatement.getRecords());
     }
-    
+
     @SelectProvider(type = SqlProviderAdapter.class, method="select")
     List<PersonRecord> selectMany(SelectStatementProvider selectStatement);
 

@@ -24,7 +24,7 @@
     </encoder>
   </appender>
 
-<!-- example of logging a single mapper method... 
+<!-- example of logging a single mapper method...
   <logger name="examples.animal.data.AnimalDataMapper.insertSelect" level="debug" />
  -->
 

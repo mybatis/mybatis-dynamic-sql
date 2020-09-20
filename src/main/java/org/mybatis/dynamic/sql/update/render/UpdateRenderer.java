@@ -37,19 +37,19 @@ public class UpdateRenderer {
     private final UpdateModel updateModel;
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence = new AtomicInteger(1);
-    
+
     private UpdateRenderer(Builder builder) {
         updateModel = Objects.requireNonNull(builder.updateModel);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
-    
+
     public UpdateStatementProvider render() {
         SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy);
 
         List<Optional<FragmentAndParameters>> fragmentsAndParameters =
                 updateModel.mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
-        
+
         return updateModel.whereModel()
                 .flatMap(this::renderWhereClause)
                 .map(wc -> renderWithWhereClause(fragmentsAndParameters, wc))
@@ -70,13 +70,13 @@ public class UpdateRenderer {
         return calculateUpdateStatement(fragmentsAndParameters)
                 + spaceBefore(whereClause.getWhereClause());
     }
-    
+
     private String calculateUpdateStatement(List<Optional<FragmentAndParameters>> fragmentsAndParameters) {
         return "update" //$NON-NLS-1$
                 + spaceBefore(updateModel.table().tableNameAtRuntime())
                 + spaceBefore(calculateSetPhrase(fragmentsAndParameters));
     }
-    
+
     private UpdateStatementProvider renderWithoutWhereClause(
             List<Optional<FragmentAndParameters>> fragmentsAndParameters) {
         return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(fragmentsAndParameters))
@@ -99,7 +99,7 @@ public class UpdateRenderer {
                 .map(FragmentAndParameters::parameters)
                 .collect(HashMap::new, HashMap::putAll, HashMap::putAll);
     }
-    
+
     private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
@@ -112,7 +112,7 @@ public class UpdateRenderer {
     public static Builder withUpdateModel(UpdateModel updateModel) {
         return new Builder().withUpdateModel(updateModel);
     }
-    
+
     public static class Builder {
         private UpdateModel updateModel;
         private RenderingStrategy renderingStrategy;
@@ -121,12 +121,12 @@ public class UpdateRenderer {
             this.updateModel = updateModel;
             return this;
         }
-        
+
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
-        
+
         public UpdateRenderer build() {
             return new UpdateRenderer(this);
         }

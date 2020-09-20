@@ -33,13 +33,13 @@ class Issue100StartAfterJoinTest {
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
-        
+
         builder.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
-                
+
         SelectStatementProvider selectStatement = builder.build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expected = "select student.id, student.name, student.idcard" 
+
+        String expected = "select student.id, student.name, student.idcard"
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -51,17 +51,17 @@ class Issue100StartAfterJoinTest {
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
-        
+
         SelectDSL<SelectModel> selectModel = builder.orderBy(StudentDynamicSqlSupport.id);
-                
+
         SelectStatementProvider selectStatement = builder.build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expected = "select student.id, student.name, student.idcard" 
+
+        String expected = "select student.id, student.name, student.idcard"
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " order by id";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        
+
         selectStatement = selectModel.build().render(RenderingStrategies.MYBATIS3);
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -72,13 +72,13 @@ class Issue100StartAfterJoinTest {
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
-        
+
         builder.limit(3);
 
         SelectStatementProvider selectStatement = builder.build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expected = "select student.id, student.name, student.idcard" 
+
+        String expected = "select student.id, student.name, student.idcard"
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " limit #{parameters.p1}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
@@ -90,7 +90,7 @@ class Issue100StartAfterJoinTest {
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
-        
+
         builder.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .limit(3)
@@ -98,8 +98,8 @@ class Issue100StartAfterJoinTest {
 
         SelectStatementProvider selectStatement = builder.build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expected = "select student.id, student.name, student.idcard" 
+
+        String expected = "select student.id, student.name, student.idcard"
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
@@ -114,15 +114,15 @@ class Issue100StartAfterJoinTest {
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
-        
+
         builder.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .offset(2);
 
         SelectStatementProvider selectStatement = builder.build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expected = "select student.id, student.name, student.idcard" 
+
+        String expected = "select student.id, student.name, student.idcard"
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
@@ -136,7 +136,7 @@ class Issue100StartAfterJoinTest {
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
-        
+
         builder.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .offset(2)
@@ -144,8 +144,8 @@ class Issue100StartAfterJoinTest {
 
         SelectStatementProvider selectStatement = builder.build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expected = "select student.id, student.name, student.idcard" 
+
+        String expected = "select student.id, student.name, student.idcard"
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"
@@ -160,15 +160,15 @@ class Issue100StartAfterJoinTest {
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
-        
+
         builder.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .fetchFirst(3).rowsOnly();
 
         SelectStatementProvider selectStatement = builder.build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expected = "select student.id, student.name, student.idcard" 
+
+        String expected = "select student.id, student.name, student.idcard"
                 + " from student join student_reg on student.id = student_reg.studentId"
                 + " where student.idcard = #{parameters.p1}"
                 + " order by id"

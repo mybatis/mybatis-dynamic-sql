@@ -26,23 +26,23 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 
 public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     private final List<SqlCriterion<?>> criteria = new ArrayList<>();
-    
+
     protected AbstractWhereDSL() {
         super();
     }
-    
+
     @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition) {
         addCriterion(column, condition);
         return getThis();
     }
-    
+
     @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
         addCriterion(column, condition, Arrays.asList(subCriteria));
         return getThis();
     }
-    
+
     @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
         addCriterion(column, condition, subCriteria);
@@ -60,44 +60,44 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         addCriterion("and", column, condition); //$NON-NLS-1$
         return getThis();
     }
-    
+
     @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
         addCriterion("and", column, condition, Arrays.asList(subCriteria)); //$NON-NLS-1$
         return getThis();
     }
-    
+
     @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
         addCriterion("and", column, condition, subCriteria); //$NON-NLS-1$
         return getThis();
     }
-    
+
     @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition) {
         addCriterion("or", column, condition); //$NON-NLS-1$
         return getThis();
     }
-    
+
     @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
         addCriterion("or", column, condition, Arrays.asList(subCriteria)); //$NON-NLS-1$
         return getThis();
     }
-    
+
     @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
         addCriterion("or", column, condition, subCriteria); //$NON-NLS-1$
         return getThis();
     }
-    
+
     private <S> void addCriterion(BindableColumn<S> column, VisitableCondition<S> condition) {
         SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         criteria.add(criterion);
     }
-    
+
     private <S> void addCriterion(String connector, BindableColumn<S> column, VisitableCondition<S> condition) {
         SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
                 .withConnector(connector)
@@ -105,7 +105,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
                 .build();
         criteria.add(criterion);
     }
-    
+
     private <S> void addCriterion(BindableColumn<S> column, VisitableCondition<S> condition,
             List<SqlCriterion<?>> subCriteria) {
         SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
@@ -114,7 +114,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
                 .build();
         criteria.add(criterion);
     }
-    
+
     private <S> void addCriterion(String connector, BindableColumn<S> column, VisitableCondition<S> condition,
             List<SqlCriterion<?>> subCriteria) {
         SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
@@ -124,12 +124,12 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
                 .build();
         criteria.add(criterion);
     }
-    
+
     protected WhereModel internalBuild() {
         return WhereModel.of(criteria);
     }
-    
+
     protected abstract WhereModel buildWhereModel();
-    
+
     protected abstract T getThis();
 }

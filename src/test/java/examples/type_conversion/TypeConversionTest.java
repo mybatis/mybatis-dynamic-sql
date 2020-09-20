@@ -46,9 +46,9 @@ class TypeConversionTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
-    
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -58,19 +58,19 @@ class TypeConversionTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(MyFilesMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testFunctionInSelect() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             MyFilesMapper mapper = session.getMapper(MyFilesMapper.class);
-            
+
             Random random = new Random();
             byte[] randomBlob = new byte[1024];
             random.nextBytes(randomBlob);
@@ -80,10 +80,10 @@ class TypeConversionTest {
                     .set(fileContents).toValue(randomBlob)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             int rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
-            
+
             SelectStatementProvider selectStatement = select(fileId, fileContents)
                     .from(myfiles)
                     .where(fileId, isEqualTo(1))
@@ -102,9 +102,9 @@ class TypeConversionTest {
             String expected = "select file_id, TO_BASE64(file_contents) as checksum from MyFiles "
                     + "where file_id = #{parameters.p1,jdbcType=INTEGER}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             row = mapper.generalSelect(selectStatement);
-            
+
             String base64 = Base64.getEncoder().encodeToString(randomBlob);
             assertThat(row).contains(entry("FILE_ID", 1), entry("CHECKSUM", base64));
         }
@@ -114,7 +114,7 @@ class TypeConversionTest {
     void testFunctionInWhere() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             MyFilesMapper mapper = session.getMapper(MyFilesMapper.class);
-            
+
             Random random = new Random();
             byte[] randomBlob = new byte[1024];
             random.nextBytes(randomBlob);
@@ -124,10 +124,10 @@ class TypeConversionTest {
                     .set(fileContents).toValue(randomBlob)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             int rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
-            
+
             SelectStatementProvider selectStatement = select(fileId, fileContents)
                     .from(myfiles)
                     .where(fileId, isEqualTo(1))
@@ -143,13 +143,13 @@ class TypeConversionTest {
                     .where(toBase64(fileContents), isEqualTo(base64))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select file_id, file_contents from MyFiles "
                     + "where TO_BASE64(file_contents) = #{parameters.p1,jdbcType=VARCHAR}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             row = mapper.generalSelect(selectStatement);
-            
+
             assertThat(row).contains(entry("FILE_ID", 1), entry("FILE_CONTENTS", randomBlob));
         }
     }

@@ -38,7 +38,7 @@ class InsertStatementTest {
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
-        
+
         InsertStatementProvider<?> insertStatement = insert(record)
                 .into(foo)
                 .map(id).toProperty("id")
@@ -60,7 +60,7 @@ class InsertStatementTest {
         TestRecord record = new TestRecord();
         record.setLastName("jones");
         record.setOccupation("dino driver");
-        
+
         InsertStatementProvider<?> insertStatement = insert(record)
                 .into(foo)
                 .map(id).toPropertyWhenPresent("id", record::getId)

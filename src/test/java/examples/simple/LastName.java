@@ -25,7 +25,7 @@ public class LastName {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public static LastName of(String name) {
         LastName lastName = new LastName();
         lastName.setName(name);

@@ -32,7 +32,7 @@ class WhereModelTest {
     void testThatParameterNameCarriesToSubCriteria() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> id = table.column("id", JDBCType.INTEGER);
-        
+
         WhereClauseProvider wc = where(id, isEqualTo(3), or(id, isEqualTo(4)))
                 .build()
                 .render(RenderingStrategies.MYBATIS3, "myName");

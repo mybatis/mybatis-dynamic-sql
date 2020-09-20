@@ -43,18 +43,18 @@ public interface GeneratedAlwaysAnnotatedMapper {
         @Result(property="fullName", column="full_name")
     })
     List<GeneratedAlwaysRecord> selectMany(SelectStatementProvider selectStatement);
-    
+
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("gaResults")
     GeneratedAlwaysRecord selectByPrimaryKey(SelectStatementProvider selectStatement);
-    
+
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @Options(useGeneratedKeys=true, keyProperty="record.fullName")
     int insert(InsertStatementProvider<GeneratedAlwaysRecord> insertStatement);
-    
+
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
-    
+
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert);
 

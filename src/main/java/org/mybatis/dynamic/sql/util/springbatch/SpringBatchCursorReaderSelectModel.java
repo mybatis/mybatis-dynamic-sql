@@ -19,9 +19,9 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class SpringBatchCursorReaderSelectModel {
-    
+
     private final SelectModel selectModel;
-    
+
     public SpringBatchCursorReaderSelectModel(SelectModel selectModel) {
         this.selectModel = selectModel;
     }

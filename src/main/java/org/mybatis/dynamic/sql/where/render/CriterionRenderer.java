@@ -52,7 +52,7 @@ public class CriterionRenderer<T> {
     private final RenderingStrategy renderingStrategy;
     private final TableAliasCalculator tableAliasCalculator;
     private final String parameterName;
-    
+
     private CriterionRenderer(Builder<T> builder) {
         sqlCriterion = Objects.requireNonNull(builder.sqlCriterion);
         sequence = Objects.requireNonNull(builder.sequence);
@@ -60,7 +60,7 @@ public class CriterionRenderer<T> {
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
         parameterName = builder.parameterName;
     }
-    
+
     public Optional<RenderedCriterion> render() {
         RenderedCriterion rc;
         if (sqlCriterion.condition().shouldRender()) {
@@ -97,7 +97,7 @@ public class CriterionRenderer<T> {
                 .build()
                 .render();
     }
-    
+
     private RenderedCriterion renderWithoutInitialCondition(List<RenderedCriterion> subCriteria) {
         if (subCriteria.isEmpty()) {
             return null;
@@ -155,29 +155,29 @@ public class CriterionRenderer<T> {
     public static <T> Builder<T> withCriterion(SqlCriterion<T> sqlCriterion) {
         return new Builder<T>().withCriterion(sqlCriterion);
     }
-    
+
     public static class Builder<T> {
         private SqlCriterion<T> sqlCriterion;
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator;
         private String parameterName;
-        
+
         public Builder<T> withCriterion(SqlCriterion<T> sqlCriterion) {
             this.sqlCriterion = sqlCriterion;
             return this;
         }
-        
+
         public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
             return this;
         }
-        
+
         public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
-        
+
         public Builder<T> withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
             this.tableAliasCalculator = tableAliasCalculator;
             return this;
@@ -187,7 +187,7 @@ public class CriterionRenderer<T> {
             this.parameterName = parameterName;
             return this;
         }
-        
+
         public CriterionRenderer<T> build() {
             return new CriterionRenderer<>(this);
         }

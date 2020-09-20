@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 
 public class Divide<T extends Number> extends OperatorFunction<T> {
-    
+
     private Divide(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
         super("/", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$

@@ -43,7 +43,7 @@ class UpdateStatementTest {
                 .where(id, isEqualTo(3), or(id, isEqualTo(4)), or(id, isEqualTo(5)))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
                 + "where (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER})";
 
@@ -67,10 +67,10 @@ class UpdateStatementTest {
                 .where(id, isEqualTo(3), or(id, isEqualTo(4), or(id, isEqualTo(5))))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
                 + "where (id = #{parameters.p3,jdbcType=INTEGER} or (id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER}))";
-                
+
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
                 () -> assertThat(updateStatement.getParameters()).hasSize(5),
@@ -81,7 +81,7 @@ class UpdateStatementTest {
                 () -> assertThat(updateStatement.getParameters()).containsEntry("p5", 5)
         );
     }
-    
+
     @Test
     void testUpdateParameterStartWithNull() {
         UpdateStatementProvider updateStatement = update(foo)
@@ -92,10 +92,10 @@ class UpdateStatementTest {
                 .and(firstName, isEqualTo("barney"))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "update foo set occupation = null, firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR} "
                 + "where id = #{parameters.p3,jdbcType=INTEGER} and firstName = #{parameters.p4,jdbcType=VARCHAR}";
-        
+
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
                 () -> assertThat(updateStatement.getParameters()).hasSize(4),
@@ -105,7 +105,7 @@ class UpdateStatementTest {
                 () -> assertThat(updateStatement.getParameters()).containsEntry("p4", "barney")
         );
     }
-    
+
     @Test
     void testUpdateParameterStartWithConstant() {
         UpdateStatementProvider updateStatement = update(foo)
@@ -117,10 +117,10 @@ class UpdateStatementTest {
                 .and(firstName, isEqualTo("barney"))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "update foo set occupation = 'Y', firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, id = 4 "
                 + "where id = #{parameters.p3,jdbcType=INTEGER} and firstName = #{parameters.p4,jdbcType=VARCHAR}";
-        
+
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
                 () -> assertThat(updateStatement.getParameters()).hasSize(4),
@@ -130,7 +130,7 @@ class UpdateStatementTest {
                 () -> assertThat(updateStatement.getParameters()).containsEntry("p4", "barney")
         );
     }
-    
+
     @Test
     void testFullUpdateStatement() {
         UpdateStatementProvider updateStatement = update(foo)
@@ -140,11 +140,11 @@ class UpdateStatementTest {
                 .where(id, isEqualTo(3))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expectedStatement = "update foo " 
+
+        String expectedStatement = "update foo "
                 + "set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
                 + "where id = #{parameters.p3,jdbcType=INTEGER}";
-                
+
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
                 () -> assertThat(updateStatement.getParameters()).hasSize(3),
@@ -162,10 +162,10 @@ class UpdateStatementTest {
                 .set(occupation).equalToNull()
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expectedStatement = "update foo " 
+
+        String expectedStatement = "update foo "
                 + "set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null";
-                
+
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
                 () -> assertThat(updateStatement.getParameters()).hasSize(2),
@@ -173,7 +173,7 @@ class UpdateStatementTest {
                 () -> assertThat(updateStatement.getParameters()).containsEntry("p2", "jones")
         );
     }
-    
+
     @Test
     void testUpdateStatementArithmeticOperation() {
         UpdateStatementProvider updateStatement = update(foo)
@@ -183,13 +183,13 @@ class UpdateStatementTest {
                 .set(id).equalTo(divide(id, constant("4")))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expectedStatement = "update foo " 
+
+        String expectedStatement = "update foo "
                 + "set id = (id + 1), "
                 + "id = (id - 2), "
                 + "id = (id * 3), "
                 + "id = (id / 4)";
-                
+
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
                 () -> assertThat(updateStatement.getParameters()).isEmpty()
@@ -204,8 +204,8 @@ class UpdateStatementTest {
                 .where(id, isEqualTo(3))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
-        String expectedStatement = "update foo " 
+
+        String expectedStatement = "update foo "
                 + "set lastName = #{parameters.p1,jdbcType=VARCHAR}, firstName = (select firstName from foo where id = #{parameters.p2,jdbcType=INTEGER}) "
                 + "where id = #{parameters.p3,jdbcType=INTEGER}";
 

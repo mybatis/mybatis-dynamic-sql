@@ -42,12 +42,12 @@ import org.junit.jupiter.api.Test;
  *
  */
 class BindingTest {
-    
+
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
-    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
-    
+    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -57,33 +57,33 @@ class BindingTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(AnimalDataMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testBindInSelectList() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             Connection connection = sqlSession.getConnection();
-            
+
             PreparedStatement ps = connection.prepareStatement("select brain_weight + ? as calc from AnimalData where id = ?");
             ps.setDouble(1, 1.0);
             ps.setInt(2, 1);
-            
+
             ResultSet rs = ps.executeQuery();
             double calculatedWeight = 0.0;
             if (rs.next()) {
                 calculatedWeight = rs.getDouble("CALC");
             }
-            
+
             rs.close();
             ps.close();
-            
+
             assertThat(calculatedWeight).isEqualTo(1.005);
         } catch (SQLException e) {
             fail("SQL Exception", e);
@@ -97,21 +97,21 @@ class BindingTest {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             Connection connection = sqlSession.getConnection();
-            
+
             PreparedStatement ps = connection.prepareStatement("select brain_weight from AnimalData where brain_weight + ? > ? and id = ?");
             ps.setDouble(1, 1.0);
             ps.setDouble(2, 1.0);
             ps.setInt(3, 1);
-            
+
             ResultSet rs = ps.executeQuery();
             double calculatedWeight = 0.0;
             if (rs.next()) {
                 calculatedWeight = rs.getDouble("BRAIN_WEIGHT");
             }
-            
+
             rs.close();
             ps.close();
-            
+
             assertThat(calculatedWeight).isEqualTo(.005);
         } catch (SQLException e) {
             fail("SQL Exception", e);

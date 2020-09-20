@@ -50,7 +50,7 @@ class ColumnMappingVisitorTest {
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
     }
-    
+
     @Test
     void testThatGeneralInsertVisitorErrorsForPropertyWhenPresentMapping() {
         TestTable table = new TestTable();
@@ -59,7 +59,7 @@ class ColumnMappingVisitorTest {
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
     }
-    
+
     @Test
     void testThatInsertVisitorErrorsForColumnToColumnMapping() {
         TestTable table = new TestTable();
@@ -149,7 +149,7 @@ class ColumnMappingVisitorTest {
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
     }
-    
+
     @Test
     void testThatUpdateVisitorErrorsForPropertyWhenPresentMapping() {
         TestTable table = new TestTable();
@@ -158,7 +158,7 @@ class ColumnMappingVisitorTest {
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
     }
-    
+
     private static class TestTable extends SqlTable {
         public SqlColumn<Integer> id;
         public SqlColumn<String> description;
@@ -250,7 +250,7 @@ class ColumnMappingVisitorTest {
         public <R> String visit(ValueWhenPresentMapping<R> mapping) {
             return "Value When Present Mapping";
         }
-        
+
         @Override
         public String visit(SelectMapping mapping) {
             return "Select Mapping";
@@ -261,7 +261,7 @@ class ColumnMappingVisitorTest {
             return "Column to Column Mapping";
         }
     }
-    
+
     private static class MultiRowInsertVisitor extends MultiRowInsertMappingVisitor<String> {
 
         @Override
@@ -283,6 +283,6 @@ class ColumnMappingVisitorTest {
         public String visit(PropertyMapping mapping) {
             return "Property Mapping";
         }
-        
+
     }
 }

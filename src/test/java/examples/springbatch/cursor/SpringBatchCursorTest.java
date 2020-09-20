@@ -65,11 +65,11 @@ class SpringBatchCursorTest {
                 .mapToInt(this::getRowCount)
                 .sum();
     }
-    
+
     private int getRowCount(ExecutionContext executionContext) {
         return executionContext.getInt("row_count", 0);
     }
-    
+
     private long upperCaseRowCount() throws Exception {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);

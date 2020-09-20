@@ -28,7 +28,7 @@ public class IsLessThanColumn<T> extends AbstractColumnComparisonCondition<T> {
     protected String renderCondition(String leftColumn, String rightColumn) {
         return leftColumn + " < " + rightColumn; //$NON-NLS-1$
     }
-    
+
     public static <T> IsLessThanColumn<T> of(BasicColumn column) {
         return new IsLessThanColumn<>(column);
     }

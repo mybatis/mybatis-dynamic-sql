@@ -31,55 +31,55 @@ public class InsertSelectRenderer {
 
     private final InsertSelectModel model;
     private final RenderingStrategy renderingStrategy;
-    
+
     private InsertSelectRenderer(Builder builder) {
         model = Objects.requireNonNull(builder.model);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
-    
+
     public InsertSelectStatementProvider render() {
         SelectStatementProvider selectStatement = model.selectModel().render(renderingStrategy);
-        
+
         return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(selectStatement))
                 .withParameters(selectStatement.getParameters())
                 .build();
     }
-    
+
     private String calculateInsertStatement(SelectStatementProvider selectStatement) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(calculateColumnsPhrase())
                 + spaceBefore(selectStatement.getSelectStatement());
     }
-    
+
     private Optional<String> calculateColumnsPhrase() {
         return model.columnList()
                 .map(this::calculateColumnsPhrase);
     }
-    
+
     private String calculateColumnsPhrase(InsertColumnListModel columnList) {
         return columnList.mapColumns(SqlColumn::name)
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
-    
+
     public static Builder withInsertSelectModel(InsertSelectModel model) {
         return new Builder().withInsertSelectModel(model);
     }
-    
+
     public static class Builder {
         private InsertSelectModel model;
         private RenderingStrategy renderingStrategy;
-        
+
         public Builder withInsertSelectModel(InsertSelectModel model) {
             this.model = model;
             return this;
         }
-        
+
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
-        
+
         public InsertSelectRenderer build() {
             return new InsertSelectRenderer(this);
         }

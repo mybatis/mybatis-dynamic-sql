@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class SubSelectTest {
-    
+
     static final SqlTable table = SqlTable.of("foo");
     static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
     static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
@@ -44,7 +44,7 @@ class SubSelectTest {
                 .and(column1, isLessThan(d))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                 + "from foo a "
                 + "where a.column2 in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER}) "
@@ -67,7 +67,7 @@ class SubSelectTest {
                 .and(column1, isLessThan(d))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                 + "from foo a "
                 + "where a.column2 not in (select column2 from foo where column2 = #{parameters.p1,jdbcType=INTEGER})"

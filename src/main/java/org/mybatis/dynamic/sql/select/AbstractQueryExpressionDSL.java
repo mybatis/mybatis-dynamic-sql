@@ -31,75 +31,75 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressionDSL<T, R>, R> 
+public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressionDSL<T, R>, R>
         implements Buildable<R> {
 
     private final List<JoinSpecification.Builder> joinSpecificationBuilders = new ArrayList<>();
     protected final Map<SqlTable, String> tableAliases = new HashMap<>();
     private final SqlTable table;
-    
+
     protected AbstractQueryExpressionDSL(SqlTable table) {
         this.table = Objects.requireNonNull(table);
     }
-    
+
     public SqlTable table() {
         return table;
     }
-    
+
     public T join(SqlTable joinTable, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.INNER, Arrays.asList(andJoinCriteria));
         return getThis();
     }
-    
+
     public T join(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
         tableAliases.put(joinTable, tableAlias);
         return join(joinTable, onJoinCriterion, andJoinCriteria);
     }
-    
+
     public T join(SqlTable joinTable, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.INNER, andJoinCriteria);
         return getThis();
     }
-    
+
     public T join(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
         tableAliases.put(joinTable, tableAlias);
         return join(joinTable, onJoinCriterion, andJoinCriteria);
     }
-    
+
     public T leftJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.LEFT, Arrays.asList(andJoinCriteria));
         return getThis();
     }
-    
+
     public T leftJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
         tableAliases.put(joinTable, tableAlias);
         return leftJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
-    
+
     public T leftJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.LEFT, andJoinCriteria);
         return getThis();
     }
-    
+
     public T leftJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
         tableAliases.put(joinTable, tableAlias);
         return leftJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
-    
+
     public T rightJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.RIGHT, Arrays.asList(andJoinCriteria));
         return getThis();
     }
-    
+
     public T rightJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
         tableAliases.put(joinTable, tableAlias);
@@ -111,7 +111,7 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.RIGHT, andJoinCriteria);
         return getThis();
     }
-    
+
     public T rightJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
         tableAliases.put(joinTable, tableAlias);
@@ -123,7 +123,7 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.FULL, Arrays.asList(andJoinCriteria));
         return getThis();
     }
-    
+
     public T fullJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
         tableAliases.put(joinTable, tableAlias);
@@ -135,7 +135,7 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.FULL, andJoinCriteria);
         return getThis();
     }
-    
+
     public T fullJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
         tableAliases.put(joinTable, tableAlias);
@@ -150,20 +150,20 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
                 .withJoinCriterion(onJoinCriterion)
                 .withJoinCriteria(andJoinCriteria));
     }
-    
+
     protected void addJoinSpecificationBuilder(JoinSpecification.Builder builder) {
         joinSpecificationBuilders.add(builder);
     }
-    
+
     protected Optional<JoinModel> buildJoinModel() {
         if (joinSpecificationBuilders.isEmpty()) {
             return Optional.empty();
         }
-        
+
         return Optional.of(JoinModel.of(joinSpecificationBuilders.stream()
                 .map(JoinSpecification.Builder::build)
                 .collect(Collectors.toList())));
     }
-    
+
     protected abstract T getThis();
 }

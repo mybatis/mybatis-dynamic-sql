@@ -23,7 +23,7 @@ public abstract class AbstractTwoValueCondition<T> implements VisitableCondition
     protected final Supplier<T> valueSupplier1;
     protected final Supplier<T> valueSupplier2;
     private final BiPredicate<T, T> predicate;
-    
+
     protected AbstractTwoValueCondition(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2) {
         this.valueSupplier1 = Objects.requireNonNull(valueSupplier1);
         this.valueSupplier2 = Objects.requireNonNull(valueSupplier2);
@@ -44,12 +44,12 @@ public abstract class AbstractTwoValueCondition<T> implements VisitableCondition
     public T value2() {
         return valueSupplier2.get();
     }
-    
+
     @Override
     public boolean shouldRender() {
         return predicate.test(value1(), value2());
     }
-    
+
     @Override
     public <R> R accept(ConditionVisitor<T,R> visitor) {
         return visitor.visit(this);

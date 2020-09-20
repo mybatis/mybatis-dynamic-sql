@@ -21,12 +21,12 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 public class SelectMapping extends AbstractColumnMapping {
 
     private final SelectModel selectModel;
-    
+
     private SelectMapping(SqlColumn<?> column, Buildable<SelectModel> selectModelBuilder) {
         super(column);
         selectModel = selectModelBuilder.build();
     }
-    
+
     public SelectModel selectModel() {
         return selectModel;
     }

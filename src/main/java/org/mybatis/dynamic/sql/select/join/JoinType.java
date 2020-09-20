@@ -22,17 +22,17 @@ public enum JoinType {
     LEFT("left"), //$NON-NLS-1$
     RIGHT("right"), //$NON-NLS-1$
     FULL("full"); //$NON-NLS-1$
-    
+
     private final String shortType;
-    
+
     JoinType() {
         shortType = null;
     }
-    
+
     JoinType(String shortType) {
         this.shortType = shortType;
     }
-    
+
     public Optional<String> shortType() {
         return Optional.ofNullable(shortType);
     }

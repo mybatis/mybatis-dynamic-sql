@@ -26,11 +26,11 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
     protected IsGreaterThan(Supplier<T> valueSupplier) {
         super(valueSupplier);
     }
-    
+
     protected IsGreaterThan(Supplier<T> valueSupplier, Predicate<T> predicate) {
         super(valueSupplier, predicate);
     }
-    
+
     @Override
     public String renderCondition(String columnName, String placeholder) {
         return columnName + " > " + placeholder; //$NON-NLS-1$
@@ -39,7 +39,7 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
     public static <T> IsGreaterThan<T> of(Supplier<T> valueSupplier) {
         return new IsGreaterThan<>(valueSupplier);
     }
-    
+
     public IsGreaterThan<T> when(Predicate<T> predicate) {
         return new IsGreaterThan<>(valueSupplier, predicate);
     }

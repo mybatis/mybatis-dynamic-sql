@@ -45,7 +45,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 /**
  * Utility functions for building MyBatis3 mappers.
- * 
+ *
  * @author Jeff Butler
  *
  */
@@ -101,7 +101,7 @@ public class MyBatis3Utils {
             SqlTable table, DeleteDSLCompleter completer) {
         return mapper.applyAsInt(deleteFrom(table, completer));
     }
-    
+
     public static <R> InsertStatementProvider<R> insert(R record, SqlTable table,
             UnaryOperator<InsertDSL<R>> completer) {
         return completer.apply(SqlBuilder.insert(record).into(table))
@@ -109,11 +109,11 @@ public class MyBatis3Utils {
                 .render(RenderingStrategies.MYBATIS3);
     }
 
-    public static <R> int insert(ToIntFunction<InsertStatementProvider<R>> mapper, R record, 
+    public static <R> int insert(ToIntFunction<InsertStatementProvider<R>> mapper, R record,
             SqlTable table, UnaryOperator<InsertDSL<R>> completer) {
         return mapper.applyAsInt(insert(record, table, completer));
     }
-    
+
     public static GeneralInsertStatementProvider generalInsert(SqlTable table,
             UnaryOperator<GeneralInsertDSL> completer) {
         return completer.apply(GeneralInsertDSL.insertInto(table))
@@ -125,7 +125,7 @@ public class MyBatis3Utils {
             SqlTable table, UnaryOperator<GeneralInsertDSL> completer) {
         return mapper.applyAsInt(generalInsert(table, completer));
     }
-    
+
     public static <R> MultiRowInsertStatementProvider<R> insertMultiple(Collection<R> records, SqlTable table,
             UnaryOperator<MultiRowInsertDSL<R>> completer) {
         return completer.apply(SqlBuilder.insertMultiple(records).into(table))

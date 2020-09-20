@@ -29,9 +29,9 @@ class RenderedCriterionTest {
                 .withConnector("and")
                 .withFragmentAndParameters(FragmentAndParameters.withFragment("col1 = :p1").build())
                 .build();
-        
+
         FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
-        
+
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("and col1 = :p1"),
                 () -> assertThat(fp.parameters()).isEmpty()

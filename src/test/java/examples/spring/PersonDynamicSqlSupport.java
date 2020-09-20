@@ -30,7 +30,7 @@ public final class PersonDynamicSqlSupport {
     public static final SqlColumn<Boolean> employed = person.employed;
     public static final SqlColumn<String> occupation = person.occupation;
     public static final SqlColumn<Integer> addressId = person.addressId;
-    
+
     public static final class Person extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);

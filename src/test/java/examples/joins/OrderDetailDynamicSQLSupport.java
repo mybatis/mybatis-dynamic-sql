@@ -26,7 +26,7 @@ public final class OrderDetailDynamicSQLSupport {
     public static final SqlColumn<Integer> lineNumber = orderDetail.lineNumber;
     public static final SqlColumn<String> description = orderDetail.description;
     public static final SqlColumn<Integer> quantity = orderDetail.quantity;
-    
+
     public static final class OrderDetail extends SqlTable {
         public final SqlColumn<Integer> orderId = column("order_id", JDBCType.INTEGER);
         public final SqlColumn<Integer> lineNumber = column("line_number", JDBCType.INTEGER);

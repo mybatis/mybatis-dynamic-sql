@@ -34,21 +34,21 @@ public class UpdateModel {
     private final SqlTable table;
     private final WhereModel whereModel;
     private final List<AbstractColumnMapping> columnMappings;
-    
+
     private UpdateModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
         whereModel = builder.whereModel;
         columnMappings = Objects.requireNonNull(builder.columnMappings);
     }
-    
+
     public SqlTable table() {
         return table;
     }
-    
+
     public Optional<WhereModel> whereModel() {
         return Optional.ofNullable(whereModel);
     }
-    
+
     public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
         return columnMappings.stream().map(mapper);
     }
@@ -60,31 +60,31 @@ public class UpdateModel {
                 .build()
                 .render();
     }
-    
+
     public static Builder withTable(SqlTable table) {
         return new Builder().withTable(table);
     }
-    
+
     public static class Builder {
         private SqlTable table;
         private WhereModel whereModel;
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
-        
+
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
-        
+
         public Builder withColumnMappings(List<AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }
-        
+
         public Builder withWhereModel(WhereModel whereModel) {
             this.whereModel = whereModel;
             return this;
         }
-        
+
         public UpdateModel build() {
             return new UpdateModel(this);
         }

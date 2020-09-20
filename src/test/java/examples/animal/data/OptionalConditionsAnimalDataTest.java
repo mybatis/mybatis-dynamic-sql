@@ -40,13 +40,13 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class OptionalConditionsAnimalDataTest {
-    
+
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
     private static final Integer NULL_INTEGER = null;
-    
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -56,14 +56,14 @@ class OptionalConditionsAnimalDataTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(AnimalDataMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testAllIgnored() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -83,7 +83,7 @@ class OptionalConditionsAnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testIgnoredBetweenRendered() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {

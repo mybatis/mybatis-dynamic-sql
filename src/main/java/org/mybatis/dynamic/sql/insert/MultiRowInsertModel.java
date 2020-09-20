@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 public class MultiRowInsertModel<T> extends AbstractMultiRowInsertModel<T> {
-    
+
     private MultiRowInsertModel(Builder<T> builder) {
         super(builder);
     }
@@ -35,11 +35,11 @@ public class MultiRowInsertModel<T> extends AbstractMultiRowInsertModel<T> {
                 .build()
                 .render();
     }
-    
+
     public static <T> Builder<T> withRecords(Collection<T> records) {
         return new Builder<T>().withRecords(records);
     }
-    
+
     public static class Builder<T> extends AbstractBuilder<T, Builder<T>> {
         @Override
         protected Builder<T> getThis() {

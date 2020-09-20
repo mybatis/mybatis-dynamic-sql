@@ -52,7 +52,7 @@ class ReusableWhereTest {
     void testCount() {
         Buildable<SelectModel> countStatement = countFrom(person)
                 .applyWhere(commonWhere);
-        
+
         long rows = template.count(countStatement);
         assertThat(rows).isEqualTo(3);
     }
@@ -63,7 +63,7 @@ class ReusableWhereTest {
                 .applyWhere(commonWhere);
 
         long rows = template.delete(deleteStatement);
-                
+
         assertThat(rows).isEqualTo(3);
     }
 
@@ -72,7 +72,7 @@ class ReusableWhereTest {
         Buildable<SelectModel> selectStatement = select(person.allColumns())
                 .from(person)
                 .applyWhere(commonWhere);
-        
+
         List<PersonRecord> rows = template.selectList(selectStatement, PersonTemplateTest.personRowMapper);
 
         assertThat(rows).hasSize(3);
@@ -83,7 +83,7 @@ class ReusableWhereTest {
         Buildable<UpdateModel> updateStatement = update(person)
                 .set(occupation).equalToStringConstant("worker")
                 .applyWhere(commonWhere);
-        
+
         int rows = template.update(updateStatement);
 
         assertThat(rows).isEqualTo(3);

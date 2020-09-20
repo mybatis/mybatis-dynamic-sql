@@ -55,10 +55,10 @@ public interface JsonTestMapper extends GeneralMapper {
 
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
     int insert(InsertStatementProvider<JsonTestRecord> insertStatement);
-    
+
     @InsertProvider(type = SqlProviderAdapter.class, method = "generalInsert")
     int generalInsert(GeneralInsertStatementProvider insertStatement);
-    
+
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<JsonTestRecord> insertStatement);
 }

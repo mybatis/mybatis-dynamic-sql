@@ -51,17 +51,17 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
- * 
+ *
  * Note: this is the canonical mapper with the new style methods
- * and represents the desired output for MyBatis Generator 
+ * and represents the desired output for MyBatis Generator
  *
  */
 @Mapper
 public interface PersonMapper {
-    
+
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
-    
+
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
 
@@ -85,17 +85,17 @@ public interface PersonMapper {
             @Result(column="address_id", property="addressId", jdbcType=JdbcType.INTEGER)
     })
     List<PersonRecord> selectMany(SelectStatementProvider selectStatement);
-    
+
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("PersonResult")
     Optional<PersonRecord> selectOne(SelectStatementProvider selectStatement);
-    
+
     BasicColumn[] selectList =
             BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId);
-        
+
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
-    
+
     default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.countFrom(this::count, person, completer);
     }
@@ -111,7 +111,7 @@ public interface PersonMapper {
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, person, completer);
     }
-    
+
     default int deleteByPrimaryKey(Integer id_) {
         return delete(c ->
             c.where(id, isEqualTo(id_))
@@ -121,9 +121,9 @@ public interface PersonMapper {
     default int generalInsert(UnaryOperator<GeneralInsertDSL> completer) {
         return MyBatis3Utils.generalInsert(this::generalInsert, person, completer);
     }
-    
+
     default int insert(PersonRecord record) {
-        return MyBatis3Utils.insert(this::insert, record, person, c -> 
+        return MyBatis3Utils.insert(this::insert, record, person, c ->
             c.map(id).toProperty("id")
             .map(firstName).toProperty("firstName")
             .map(lastName).toProperty("lastName")
@@ -151,7 +151,7 @@ public interface PersonMapper {
     }
 
     default int insertSelective(PersonRecord record) {
-        return MyBatis3Utils.insert(this::insert, record, person, c -> 
+        return MyBatis3Utils.insert(this::insert, record, person, c ->
             c.map(id).toPropertyWhenPresent("id", record::getId)
             .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
             .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
@@ -161,21 +161,21 @@ public interface PersonMapper {
             .map(addressId).toPropertyWhenPresent("addressId", record::getAddressId)
         );
     }
-    
+
     default Optional<PersonRecord> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, person, completer);
     }
-    
+
     default List<PersonRecord> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, person, completer);
     }
-    
+
     default List<PersonRecord> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, person, completer);
     }
-    
+
     default Optional<PersonRecord> selectByPrimaryKey(Integer id_) {
-        return selectOne(c -> 
+        return selectOne(c ->
             c.where(id, isEqualTo(id_))
         );
     }
@@ -183,7 +183,7 @@ public interface PersonMapper {
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, person, completer);
     }
-    
+
     static UpdateDSL<UpdateModel> updateAllColumns(PersonRecord record,
             UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalTo(record::getId)
@@ -194,7 +194,7 @@ public interface PersonMapper {
                 .set(occupation).equalTo(record::getOccupation)
                 .set(addressId).equalTo(record::getAddressId);
     }
-    
+
     static UpdateDSL<UpdateModel> updateSelectiveColumns(PersonRecord record,
             UpdateDSL<UpdateModel> dsl) {
         return dsl.set(id).equalToWhenPresent(record::getId)
@@ -205,7 +205,7 @@ public interface PersonMapper {
                 .set(occupation).equalToWhenPresent(record::getOccupation)
                 .set(addressId).equalToWhenPresent(record::getAddressId);
     }
-    
+
     default int updateByPrimaryKey(PersonRecord record) {
         return update(c ->
             c.set(firstName).equalTo(record::getFirstName)

@@ -31,17 +31,17 @@ public class GeneralInsertRenderer {
 
     private final GeneralInsertModel model;
     private final RenderingStrategy renderingStrategy;
-    
+
     private GeneralInsertRenderer(Builder builder) {
         model = Objects.requireNonNull(builder.model);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
-    
+
     public GeneralInsertStatementProvider render() {
         GeneralInsertValuePhraseVisitor visitor = new GeneralInsertValuePhraseVisitor(renderingStrategy);
         List<Optional<FieldAndValueAndParameters>> fieldsAndValues = model.mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
-        
+
         return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(fieldsAndValues))
                 .withParameters(calculateParameters(fieldsAndValues))
                 .build();
@@ -69,7 +69,7 @@ public class GeneralInsertRenderer {
                 .map(FieldAndValueAndParameters::valuePhrase)
                 .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
-    
+
     private Map<String, Object> calculateParameters(List<Optional<FieldAndValueAndParameters>> fieldsAndValues) {
         return fieldsAndValues.stream()
                 .filter(Optional::isPresent)
@@ -81,21 +81,21 @@ public class GeneralInsertRenderer {
     public static Builder withInsertModel(GeneralInsertModel model) {
         return new Builder().withInsertModel(model);
     }
-    
+
     public static class Builder {
         private GeneralInsertModel model;
         private RenderingStrategy renderingStrategy;
-        
+
         public Builder withInsertModel(GeneralInsertModel model) {
             this.model = model;
             return this;
         }
-        
+
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
-        
+
         public GeneralInsertRenderer build() {
             return new GeneralInsertRenderer(this);
         }

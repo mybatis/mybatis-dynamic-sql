@@ -71,7 +71,7 @@ class SchemaSupplierTest {
             User user = new User();
             user.setId(1);
             user.setName("Fred");
-            
+
             assertThrows(PersistenceException.class, () -> mapper.insert(user));
         }
     }
@@ -84,7 +84,7 @@ class SchemaSupplierTest {
             UserMapper mapper = session.getMapper(UserMapper.class);
 
             insertFlintstones(mapper);
-            
+
             List<User> records = mapper.select(SelectDSLCompleter.allRows());
             assertThat(records).hasSize(2);
         }
@@ -97,14 +97,14 @@ class SchemaSupplierTest {
 
             System.setProperty(SchemaSupplier.schema_property, "schema1");
             insertFlintstones(mapper);
-            
+
             List<User> records = mapper.select(SelectDSLCompleter.allRows());
             assertThat(records.size()).isEqualTo(2);
 
-            
+
             System.setProperty(SchemaSupplier.schema_property, "schema2");
             insertRubbles(mapper);
-            
+
             records = mapper.select(SelectDSLCompleter.allRows());
             assertThat(records).hasSize(3);
         }

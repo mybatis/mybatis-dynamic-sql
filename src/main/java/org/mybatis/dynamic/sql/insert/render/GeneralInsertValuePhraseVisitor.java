@@ -29,10 +29,10 @@ import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor<Optional<FieldAndValueAndParameters>> {
-    
+
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence = new AtomicInteger(1);
-    
+
     public GeneralInsertValuePhraseVisitor(RenderingStrategy renderingStrategy) {
         this.renderingStrategy = renderingStrategy;
     }
@@ -57,7 +57,7 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .buildOptional();
     }
-    
+
     @Override
     public <T> Optional<FieldAndValueAndParameters> visit(ValueMapping<T> mapping) {
         return buildValueFragment(mapping, mapping.value());
@@ -67,23 +67,23 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     public <T> Optional<FieldAndValueAndParameters> visit(ValueWhenPresentMapping<T> mapping) {
         return mapping.value().flatMap(v -> buildValueFragment(mapping, v));
     }
-    
+
     private Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping mapping,
             Object value) {
         return buildFragment(mapping, value);
     }
-    
+
     private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
 
         String jdbcPlaceholder = mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapKey));
-        
+
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(jdbcPlaceholder)
                 .withParameter(mapKey, value)
                 .buildOptional();
     }
-    
+
     private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
         return column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);

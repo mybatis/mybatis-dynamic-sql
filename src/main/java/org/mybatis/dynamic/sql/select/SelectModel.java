@@ -37,15 +37,15 @@ public class SelectModel {
         orderByModel = builder.orderByModel;
         pagingModel = builder.pagingModel;
     }
-    
+
     public <R> Stream<R> mapQueryExpressions(Function<QueryExpressionModel, R> mapper) {
         return queryExpressions.stream().map(mapper);
     }
-    
+
     public Optional<OrderByModel> orderByModel() {
         return Optional.ofNullable(orderByModel);
     }
-    
+
     public Optional<PagingModel> pagingModel() {
         return Optional.ofNullable(pagingModel);
     }
@@ -57,26 +57,26 @@ public class SelectModel {
                 .build()
                 .render();
     }
-    
+
     public static Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
         return new Builder().withQueryExpressions(queryExpressions);
     }
-    
+
     public static class Builder {
         private final List<QueryExpressionModel> queryExpressions = new ArrayList<>();
         private OrderByModel orderByModel;
         private PagingModel pagingModel;
-        
+
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpressions.add(queryExpression);
             return this;
         }
-        
+
         public Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
             this.queryExpressions.addAll(queryExpressions);
             return this;
         }
-        
+
         public Builder withOrderByModel(OrderByModel orderByModel) {
             this.orderByModel = orderByModel;
             return this;
@@ -86,7 +86,7 @@ public class SelectModel {
             this.pagingModel = pagingModel;
             return this;
         }
-        
+
         public SelectModel build() {
             return new SelectModel(this);
         }

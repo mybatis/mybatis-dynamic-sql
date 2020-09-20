@@ -35,11 +35,11 @@ public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
     public String renderCondition(String columnName, String placeholder) {
         return columnName + " not like " + placeholder; //$NON-NLS-1$
     }
-    
+
     public static <T> IsNotLike<T> of(Supplier<T> valueSupplier) {
         return new IsNotLike<>(valueSupplier);
     }
-    
+
     public IsNotLike<T> when(Predicate<T> predicate) {
         return new IsNotLike<>(valueSupplier, predicate);
     }

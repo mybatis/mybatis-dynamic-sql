@@ -35,11 +35,11 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
     public String renderCondition(String columnName, String placeholder) {
         return columnName + " <> " + placeholder; //$NON-NLS-1$
     }
-    
+
     public static <T> IsNotEqualTo<T> of(Supplier<T> valueSupplier) {
         return new IsNotEqualTo<>(valueSupplier);
     }
-    
+
     public IsNotEqualTo<T> when(Predicate<T> predicate) {
         return new IsNotEqualTo<>(valueSupplier, predicate);
     }

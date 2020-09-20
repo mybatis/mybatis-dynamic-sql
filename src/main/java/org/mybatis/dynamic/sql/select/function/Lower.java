@@ -19,11 +19,11 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public class Lower extends AbstractUniTypeFunction<String, Lower> {
-    
+
     private Lower(BindableColumn<String> column) {
         super(column);
     }
-    
+
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return "lower(" //$NON-NLS-1$

@@ -46,7 +46,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     private final List<BasicColumn> selectList;
     private final QueryExpressionWhereBuilder whereBuilder = new QueryExpressionWhereBuilder();
     private GroupByModel groupByModel;
-    
+
     QueryExpressionDSL(FromGatherer<R> fromGatherer) {
         super(fromGatherer.table);
         connector = fromGatherer.connector;
@@ -54,12 +54,12 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         isDistinct = fromGatherer.isDistinct;
         selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
     }
-    
+
     QueryExpressionDSL(FromGatherer<R> fromGatherer, String tableAlias) {
         this(fromGatherer);
         tableAliases.put(fromGatherer.table, tableAlias);
     }
-    
+
     public QueryExpressionWhereBuilder where() {
         return whereBuilder;
     }
@@ -83,7 +83,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public JoinSpecificationStarter join(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.INNER);
     }
-    
+
     public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return join(joinTable);
@@ -92,7 +92,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.LEFT);
     }
-    
+
     public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return leftJoin(joinTable);
@@ -101,7 +101,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);
     }
-    
+
     public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return rightJoin(joinTable);
@@ -110,7 +110,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.FULL);
     }
-    
+
     public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return fullJoin(joinTable);
@@ -119,12 +119,12 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public GroupByFinisher groupBy(BasicColumn...columns) {
         return groupBy(Arrays.asList(columns));
     }
-    
+
     public GroupByFinisher groupBy(Collection<BasicColumn> columns) {
         groupByModel = GroupByModel.of(columns);
         return new GroupByFinisher();
     }
-    
+
     public SelectDSL<R> orderBy(SortSpecification...columns) {
         return orderBy(Arrays.asList(columns));
     }
@@ -153,7 +153,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
                 .withGroupByModel(groupByModel)
                 .build();
     }
-    
+
     public SelectDSL<R>.LimitFinisher limit(long limit) {
         return selectDSL.limit(limit);
     }
@@ -165,26 +165,26 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
         return selectDSL.fetchFirst(fetchFirstRows);
     }
-    
+
     @Override
     protected QueryExpressionDSL<R> getThis() {
         return this;
     }
-    
+
     public static class FromGatherer<R> {
         private final String connector;
         private final List<BasicColumn> selectList;
         private final SelectDSL<R> selectDSL;
         private final boolean isDistinct;
         private SqlTable table;
-        
+
         public FromGatherer(Builder<R> builder) {
             this.connector = builder.connector;
             this.selectList = Objects.requireNonNull(builder.selectList);
             this.selectDSL = Objects.requireNonNull(builder.selectDSL);
             this.isDistinct = builder.isDistinct;
         }
-        
+
         public QueryExpressionDSL<R> from(SqlTable table) {
             this.table = table;
             return selectDSL.newQueryExpression(this);
@@ -194,13 +194,13 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             this.table = table;
             return selectDSL.newQueryExpression(this, tableAlias);
         }
-        
+
         public static class Builder<R> {
             private String connector;
             private final List<BasicColumn> selectList = new ArrayList<>();
             private SelectDSL<R> selectDSL;
             private boolean isDistinct;
-            
+
             public Builder<R> withConnector(String connector) {
                 this.connector = connector;
                 return this;
@@ -215,18 +215,18 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
                 this.selectDSL = selectDSL;
                 return this;
             }
-            
+
             public Builder<R> isDistinct() {
                 this.isDistinct = true;
                 return this;
             }
-            
+
             public FromGatherer<R> build() {
                 return new FromGatherer<>(this);
             }
         }
     }
-    
+
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<R> {
         private QueryExpressionWhereBuilder() {
@@ -243,29 +243,29 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         public SelectDSL<R> orderBy(SortSpecification...columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
-        
+
         public GroupByFinisher groupBy(BasicColumn...columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
-        
+
         public SelectDSL<R>.LimitFinisher limit(long limit) {
             return QueryExpressionDSL.this.limit(limit);
         }
-        
+
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
             return QueryExpressionDSL.this.offset(offset);
         }
-        
+
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
-        
+
         @NotNull
         @Override
         public R build() {
             return QueryExpressionDSL.this.build();
         }
-        
+
         @Override
         protected QueryExpressionWhereBuilder getThis() {
             return this;
@@ -276,11 +276,11 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return super.internalBuild();
         }
     }
-    
+
     public class JoinSpecificationStarter {
         private final SqlTable joinTable;
         private final JoinType joinType;
-        
+
         public JoinSpecificationStarter(SqlTable joinTable, JoinType joinType) {
             this.joinTable = joinTable;
             this.joinType = joinType;
@@ -298,7 +298,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
 
     public class JoinSpecificationFinisher implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
-        
+
         public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
                 JoinCondition joinCondition, JoinType joinType) {
             JoinCriterion joinCriterion = new JoinCriterion.Builder()
@@ -321,7 +321,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
                     .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
                     .build();
-            
+
             joinSpecificationBuilder = JoinSpecification.withJoinTable(table)
                     .withJoinType(joinType)
                     .withJoinCriterion(onJoinCriterion)
@@ -329,17 +329,17 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
 
             addJoinSpecificationBuilder(joinSpecificationBuilder);
         }
-        
+
         @NotNull
         @Override
         public R build() {
             return QueryExpressionDSL.this.build();
         }
-        
+
         public QueryExpressionWhereBuilder where() {
             return QueryExpressionDSL.this.where();
         }
-        
+
         public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
                 SqlCriterion<?>...subCriteria) {
             return QueryExpressionDSL.this.where(column, condition, subCriteria);
@@ -348,7 +348,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
             return QueryExpressionDSL.this.applyWhere(whereApplier);
         }
-        
+
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
             JoinCriterion joinCriterion = new JoinCriterion.Builder()
                     .withConnector("and") //$NON-NLS-1$
@@ -362,7 +362,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         public JoinSpecificationStarter join(SqlTable joinTable) {
             return QueryExpressionDSL.this.join(joinTable);
         }
-        
+
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.join(joinTable, tableAlias);
         }
@@ -370,7 +370,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
             return QueryExpressionDSL.this.leftJoin(joinTable);
         }
-        
+
         public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);
         }
@@ -378,7 +378,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
             return QueryExpressionDSL.this.rightJoin(joinTable);
         }
-        
+
         public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);
         }
@@ -386,7 +386,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
             return QueryExpressionDSL.this.fullJoin(joinTable);
         }
-        
+
         public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);
         }
@@ -394,7 +394,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         public GroupByFinisher groupBy(BasicColumn...columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
-        
+
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();
         }
@@ -419,7 +419,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
     }
-    
+
     public class GroupByFinisher implements Buildable<R> {
         public SelectDSL<R> orderBy(SortSpecification...columns) {
             return QueryExpressionDSL.this.orderBy(columns);
@@ -430,15 +430,15 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         public R build() {
             return QueryExpressionDSL.this.build();
         }
-        
+
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();
         }
-        
+
         public UnionBuilder unionAll() {
             return QueryExpressionDSL.this.unionAll();
         }
-        
+
         public SelectDSL<R>.LimitFinisher limit(long limit) {
             return QueryExpressionDSL.this.limit(limit);
         }
@@ -451,14 +451,14 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
     }
-    
+
     public class UnionBuilder {
         protected final String connector;
-        
+
         public UnionBuilder(String connector) {
             this.connector = connector;
         }
-        
+
         public FromGatherer<R> select(BasicColumn...selectList) {
             return select(Arrays.asList(selectList));
         }

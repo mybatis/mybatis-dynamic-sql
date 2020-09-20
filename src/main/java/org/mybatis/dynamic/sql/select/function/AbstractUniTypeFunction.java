@@ -22,10 +22,10 @@ import org.mybatis.dynamic.sql.BindableColumn;
 
 /**
  * Represents a function that does not change the underlying data type.
- * 
+ *
  * @author Jeff Butler
  *
- * @param <T> The type of the underlying column 
+ * @param <T> The type of the underlying column
  * @param <U> the specific subtype that implements the function
  */
 public abstract class AbstractUniTypeFunction<T, U extends AbstractUniTypeFunction<T, U>>
@@ -34,7 +34,7 @@ public abstract class AbstractUniTypeFunction<T, U extends AbstractUniTypeFuncti
     protected AbstractUniTypeFunction(BindableColumn<T> column) {
         super(column);
     }
-    
+
     @Override
     public Optional<JDBCType> jdbcType() {
         return column.jdbcType();

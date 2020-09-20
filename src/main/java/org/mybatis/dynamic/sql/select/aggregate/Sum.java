@@ -34,7 +34,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     protected Sum<T> copy() {
         return new Sum<>(column);
     }
-    
+
     public static <T> Sum<T> of(BindableColumn<T> column) {
         return new Sum<>(column);
     }

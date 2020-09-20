@@ -25,7 +25,7 @@ public final class PersonDynamicSqlSupport {
     public static final SqlColumn<Integer> id = person.id;
     public static final SqlColumn<String> firstName = person.firstName;
     public static final SqlColumn<String> lastName = person.lastName;
-    
+
     public static final class Person extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);

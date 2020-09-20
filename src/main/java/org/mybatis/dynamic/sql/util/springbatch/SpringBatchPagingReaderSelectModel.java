@@ -22,9 +22,9 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class SpringBatchPagingReaderSelectModel {
-    
+
     private final SelectModel selectModel;
-    
+
     public SpringBatchPagingReaderSelectModel(SelectModel selectModel) {
         this.selectModel = selectModel;
     }
@@ -38,10 +38,10 @@ public class SpringBatchPagingReaderSelectModel {
     public static class LimitAndOffsetDecorator implements SelectStatementProvider {
         private final Map<String, Object> parameters = new HashMap<>();
         private final String selectStatement;
-        
+
         public LimitAndOffsetDecorator(SelectStatementProvider delegate) {
             parameters.putAll(delegate.getParameters());
-            
+
             selectStatement = delegate.getSelectStatement()
                     + " LIMIT #{_pagesize} OFFSET #{_skiprows}"; //$NON-NLS-1$
         }

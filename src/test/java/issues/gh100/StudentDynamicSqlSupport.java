@@ -28,7 +28,7 @@ public class StudentDynamicSqlSupport {
         public final SqlColumn<String> id = column("id");
         public final SqlColumn<String> name = column("name");
         public final SqlColumn<String> idcard = column("idcard");
-        
+
         public Student() {
             super("student");
         }

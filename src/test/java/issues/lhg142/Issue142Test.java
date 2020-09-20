@@ -37,7 +37,7 @@ class Issue142Test {
                 )).orderBy(sortColumn("mutime").descending(), sortColumn("mctime").descending())
                 .limit(page.getSize()).offset(0L).build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select id, update_time as mutime, create_time as mctime from my_mark" +
                 " where id <= (select id from my_mark order by update_time DESC, create_time DESC limit #{parameters.p1} offset #{parameters.p2})" +
                 " order by mutime DESC, mctime DESC limit #{parameters.p3} offset #{parameters.p4}";

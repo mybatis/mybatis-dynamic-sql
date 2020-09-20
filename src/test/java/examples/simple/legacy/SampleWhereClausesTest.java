@@ -32,11 +32,11 @@ class SampleWhereClausesTest {
                 .where(id, isEqualTo(3))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
-        
+
         assertThat(selectStatement.getSelectStatement())
                 .isEqualTo("select count(*) from Person where id = #{parameters.p1,jdbcType=INTEGER}");
     }
-    
+
     @Test
     void simpleClause2() {
         SelectStatementProvider selectStatement = select(count())
@@ -44,10 +44,10 @@ class SampleWhereClausesTest {
                 .where(id, isNull())
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(*) from Person a where a.id is null");
     }
-    
+
     @Test
     void betweenClause() {
         SelectStatementProvider selectStatement = select(count())
@@ -55,7 +55,7 @@ class SampleWhereClausesTest {
                 .where(id, isBetween(1).and(4))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
-        
+
         assertThat(selectStatement.getSelectStatement())
             .isEqualTo("select count(*) from Person a where a.id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}");
     }
@@ -68,7 +68,7 @@ class SampleWhereClausesTest {
                 .or(occupation, isNull(), and(id, isLessThan(6)))
                 .build()
                 .render(RenderingStrategy.MYBATIS3);
-        
+
         assertThat(selectStatement.getSelectStatement())
             .isEqualTo("select count(*) from Person a where a.id > #{parameters.p1,jdbcType=INTEGER} or (a.occupation is null and a.id < #{parameters.p2,jdbcType=INTEGER})");
     }

@@ -50,7 +50,7 @@ class SelectStatementTest {
                 "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
 
         Map<String, Object> parameters = selectStatement.getParameters();
-        
+
         assertAll(
                 () -> assertThat(parameters).containsEntry("p1", d),
                 () -> assertThat(parameters).containsEntry("p2", 4),
@@ -71,16 +71,16 @@ class SelectStatementTest {
                 .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
 
         String expected = "select a.column1, a.column2 "
-                + "from foo a " 
+                + "from foo a "
                 + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
                 + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
                 + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
                 + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})"
                 + " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
-        
+
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(
@@ -131,7 +131,7 @@ class SelectStatementTest {
                 .and(column2, isLessThan(3), or(column1, isEqualTo(d), and(column2, isEqualTo(88))))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
 
         String expected = "select a.column1, a.column2 "
                 + "from foo a "
@@ -140,7 +140,7 @@ class SelectStatementTest {
                 + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
                 + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and (a.column2 = #{parameters.p5,jdbcType=INTEGER} or a.column2 = #{parameters.p6,jdbcType=INTEGER}))"
                 + " and (a.column2 < #{parameters.p7,jdbcType=INTEGER} or (a.column1 = #{parameters.p8,jdbcType=DATE} and a.column2 = #{parameters.p9,jdbcType=INTEGER}))";
-        
+
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(

@@ -54,12 +54,12 @@ public class RenderedCriterion {
             this.connector = connector;
             return this;
         }
-        
+
         public Builder withFragmentAndParameters(FragmentAndParameters fragmentAndParameters) {
             this.fragmentAndParameters = fragmentAndParameters;
             return this;
         }
-        
+
         public RenderedCriterion build() {
             return new RenderedCriterion(this);
         }

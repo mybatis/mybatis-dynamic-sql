@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 public abstract class RenderingStrategy {
     /**
      * Rendering strategy for MyBatis3.
-     * 
+     *
      * @deprecated use {@link RenderingStrategies#MYBATIS3} instead
      */
     @Deprecated
@@ -31,7 +31,7 @@ public abstract class RenderingStrategy {
 
     /**
      * Rendering strategy for Spring JDBC Template Named Parameters.
-     * 
+     *
      * @deprecated use {@link RenderingStrategies#SPRING_NAMED_PARAMETER} instead
      */
     @Deprecated
@@ -39,11 +39,11 @@ public abstract class RenderingStrategy {
     public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();
 
     public static final String DEFAULT_PARAMETER_PREFIX = "parameters"; //$NON-NLS-1$
-    
+
     public static String formatParameterMapKey(AtomicInteger sequence) {
         return "p" + sequence.getAndIncrement(); //$NON-NLS-1$
     }
-    
+
     public abstract String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName);
 
     public abstract String getFormattedJdbcPlaceholder(String prefix, String parameterName);

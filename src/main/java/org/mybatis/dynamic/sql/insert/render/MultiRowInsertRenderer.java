@@ -29,12 +29,12 @@ public class MultiRowInsertRenderer<T> {
 
     private final MultiRowInsertModel<T> model;
     private final RenderingStrategy renderingStrategy;
-    
+
     private MultiRowInsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
-    
+
     public MultiRowInsertStatementProvider<T> render() {
         // the prefix is a generic format that will be resolved below with String.format(...)
         MultiRowValuePhraseVisitor visitor =
@@ -42,31 +42,31 @@ public class MultiRowInsertRenderer<T> {
         List<FieldAndValue> fieldsAndValues = model
                 .mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
-        
+
         return new DefaultMultiRowInsertStatementProvider.Builder<T>().withRecords(model.records())
                 .withInsertStatement(calculateInsertStatement(fieldsAndValues))
                 .build();
     }
-    
+
     private String calculateInsertStatement(List<FieldAndValue> fieldsAndValues) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(calculateColumnsPhrase(fieldsAndValues))
                 + spaceBefore(calculateMultiRowInsertValuesPhrase(fieldsAndValues, model.recordCount()));
     }
-    
+
     private String calculateColumnsPhrase(List<FieldAndValue> fieldsAndValues) {
         return fieldsAndValues.stream()
                 .map(FieldAndValue::fieldName)
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
-    
+
     private String calculateMultiRowInsertValuesPhrase(List<FieldAndValue> fieldsAndValues, int rowCount) {
         return IntStream.range(0, rowCount)
                 .mapToObj(i -> toSingleRowOfValues(fieldsAndValues, i))
                 .collect(Collectors.joining(", ", "values ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
-    
+
     private String toSingleRowOfValues(List<FieldAndValue> fieldsAndValues, int row) {
         return fieldsAndValues.stream()
                 .map(FieldAndValue::valuePhrase)
@@ -77,21 +77,21 @@ public class MultiRowInsertRenderer<T> {
     public static <T> Builder<T> withMultiRowInsertModel(MultiRowInsertModel<T> model) {
         return new Builder<T>().withMultiRowInsertModel(model);
     }
-    
+
     public static class Builder<T> {
         private MultiRowInsertModel<T> model;
         private RenderingStrategy renderingStrategy;
-        
+
         public Builder<T> withMultiRowInsertModel(MultiRowInsertModel<T> model) {
             this.model = model;
             return this;
         }
-        
+
         public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
-        
+
         public MultiRowInsertRenderer<T> build() {
             return new MultiRowInsertRenderer<>(this);
         }

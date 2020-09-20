@@ -19,6 +19,6 @@ import java.util.Map;
 
 public interface DeleteStatementProvider {
     Map<String, Object> getParameters();
-    
+
     String getDeleteStatement();
 }

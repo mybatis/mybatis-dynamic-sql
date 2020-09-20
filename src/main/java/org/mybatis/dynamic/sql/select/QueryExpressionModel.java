@@ -54,23 +54,23 @@ public class QueryExpressionModel {
         whereModel = builder.whereModel;
         groupByModel = builder.groupByModel;
     }
-    
+
     public Optional<String> connector() {
         return Optional.ofNullable(connector);
     }
-    
+
     public boolean isDistinct() {
         return isDistinct;
     }
-    
+
     public <R> Stream<R> mapColumns(Function<BasicColumn, R> mapper) {
         return selectList.stream().map(mapper);
     }
-    
+
     public SqlTable table() {
         return table;
     }
-    
+
     public TableAliasCalculator tableAliasCalculator() {
         return tableAliasCalculator;
     }
@@ -78,24 +78,24 @@ public class QueryExpressionModel {
     public Optional<WhereModel> whereModel() {
         return Optional.ofNullable(whereModel);
     }
-    
+
     public Optional<JoinModel> joinModel() {
         return Optional.ofNullable(joinModel);
     }
-    
+
     public Optional<GroupByModel> groupByModel() {
         return Optional.ofNullable(groupByModel);
     }
-    
+
     public String calculateTableNameIncludingAlias(SqlTable table) {
         return table.tableNameAtRuntime()
                 + spaceBefore(tableAliasCalculator.aliasForTable(table));
     }
-    
+
     public static Builder withSelectList(List<BasicColumn> columnList) {
         return new Builder().withSelectList(columnList);
     }
-    
+
     public static class Builder {
         private String connector;
         private boolean isDistinct;
@@ -105,17 +105,17 @@ public class QueryExpressionModel {
         private WhereModel whereModel;
         private JoinModel joinModel;
         private GroupByModel groupByModel;
-        
+
         public Builder withConnector(String connector) {
             this.connector = connector;
             return this;
         }
-        
+
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
-        
+
         public Builder isDistinct(boolean isDistinct) {
             this.isDistinct = isDistinct;
             return this;
@@ -135,7 +135,7 @@ public class QueryExpressionModel {
             this.tableAliases.putAll(tableAliases);
             return this;
         }
-        
+
         public Builder withWhereModel(WhereModel whereModel) {
             this.whereModel = whereModel;
             return this;
@@ -145,12 +145,12 @@ public class QueryExpressionModel {
             this.joinModel = joinModel;
             return this;
         }
-        
+
         public Builder withGroupByModel(GroupByModel groupByModel) {
             this.groupByModel = groupByModel;
             return this;
         }
-        
+
         public QueryExpressionModel build() {
             return new QueryExpressionModel(this);
         }

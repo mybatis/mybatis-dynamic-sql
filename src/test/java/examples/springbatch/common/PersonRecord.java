@@ -23,12 +23,12 @@ public class PersonRecord {
     public PersonRecord() {
         super();
     }
-    
+
     public PersonRecord(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
-    
+
     public Integer getId() {
         return id;
     }

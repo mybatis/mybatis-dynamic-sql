@@ -32,7 +32,7 @@ public class InsertModel<T> {
     private final SqlTable table;
     private final T record;
     private final List<AbstractColumnMapping> columnMappings;
-    
+
     private InsertModel(Builder<T> builder) {
         table = Objects.requireNonNull(builder.table);
         record = Objects.requireNonNull(builder.record);
@@ -42,11 +42,11 @@ public class InsertModel<T> {
     public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
         return columnMappings.stream().map(mapper);
     }
-    
+
     public T record() {
         return record;
     }
-    
+
     public SqlTable table() {
         return table;
     }
@@ -58,31 +58,31 @@ public class InsertModel<T> {
                 .build()
                 .render();
     }
-    
+
     public static <T> Builder<T> withRecord(T record) {
         return new Builder<T>().withRecord(record);
     }
-    
+
     public static class Builder<T> {
         private SqlTable table;
         private T record;
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
-        
+
         public Builder<T> withTable(SqlTable table) {
             this.table = table;
             return this;
         }
-        
+
         public Builder<T> withRecord(T record) {
             this.record = record;
             return this;
         }
-        
+
         public Builder<T> withColumnMappings(List<AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }
-        
+
         public InsertModel<T> build() {
             return new InsertModel<>(this);
         }

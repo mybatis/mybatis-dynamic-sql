@@ -46,9 +46,9 @@ class GroupByTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
-    
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -58,28 +58,28 @@ class GroupByTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(GeneralMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testBasicGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(gender, count())
                     .from(person)
                     .groupBy(gender)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select gender, count(*) from Person group by gender";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
@@ -96,16 +96,16 @@ class GroupByTest {
     void testBasicGroupByWithAggregateAlias() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(gender, count().as("count"))
                     .from(person)
                     .groupBy(gender)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select gender, count(*) as count from Person group by gender";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
@@ -122,18 +122,18 @@ class GroupByTest {
     void testGroupByAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(lastName, streetAddress, count().as("count"))
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
                     .groupBy(lastName, streetAddress)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select p.last_name, a.street_address, count(*) as count" +
                     " from Person p join Address a on p.address_id = a.address_id" +
                     " group by p.last_name, a.street_address";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
@@ -152,7 +152,7 @@ class GroupByTest {
     void testUnionAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
                     .union()
@@ -161,7 +161,7 @@ class GroupByTest {
                     .orderBy(lastName, firstName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select p.last_name, p.first_name, a.street_address" +
                     " from Person p join Address a on p.address_id = a.address_id" +
                     " union" +
@@ -169,7 +169,7 @@ class GroupByTest {
                     " from Person2 p join Address a on p.address_id = a.address_id" +
                     " order by last_name, first_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(10);
             Map<String, Object> row = rows.get(0);
@@ -188,7 +188,7 @@ class GroupByTest {
     void testUnionAllAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
                     .unionAll()
@@ -197,7 +197,7 @@ class GroupByTest {
                     .orderBy(lastName, firstName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select p.last_name, p.first_name, a.street_address" +
                     " from Person p join Address a on p.address_id = a.address_id" +
                     " union all" +
@@ -205,7 +205,7 @@ class GroupByTest {
                     " from Person2 p join Address a on p.address_id = a.address_id" +
                     " order by last_name, first_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(10);
             Map<String, Object> row = rows.get(0);
@@ -224,7 +224,7 @@ class GroupByTest {
     void testUnionAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(stringConstant("Gender"), gender.as("value"), count().as("count"))
                     .from(person)
                     .groupBy(gender)
@@ -234,12 +234,12 @@ class GroupByTest {
                     .groupBy(lastName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select 'Gender', gender as value, count(*) as count from Person group by gender" +
                     " union" +
                     " select 'Last Name', last_name as value, count(*) as count from Person group by last_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(4);
             Map<String, Object> row = rows.get(0);
@@ -268,7 +268,7 @@ class GroupByTest {
     void testUnionAllAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(stringConstant("Gender"), gender.as("value"), count().as("count"))
                     .from(person)
                     .groupBy(gender)
@@ -278,12 +278,12 @@ class GroupByTest {
                     .groupBy(lastName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select 'Gender', gender as value, count(*) as count from Person group by gender" +
                     " union all" +
                     " select 'Last Name', last_name as value, count(*) as count from Person group by last_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(4);
             Map<String, Object> row = rows.get(0);
@@ -312,17 +312,17 @@ class GroupByTest {
     void testBasicGroupByOrderByWithAggregateAlias() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(gender, count().as("count"))
                     .from(person)
                     .groupBy(gender)
                     .orderBy(gender)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select gender, count(*) as count from Person group by gender order by gender";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
@@ -339,17 +339,17 @@ class GroupByTest {
     void testBasicGroupByOrderByWithCalculatedColumnAndTableAlias() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
                     .from(person, "a")
                     .groupBy(substring(gender, 1, 1))
                     .orderBy(sortColumn("ShortGender").descending())
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select substring(a.gender, 1, 1) as ShortGender, avg(a.age) as AverageAge from Person a group by substring(a.gender, 1, 1) order by ShortGender DESC";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
@@ -366,17 +366,17 @@ class GroupByTest {
     void testGroupByAfterWhere() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person, "a")
                     .where(gender, isEqualTo("Male"))
                     .groupBy(lastName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select a.last_name, count(*) as count from Person a where a.gender = #{parameters.p1,jdbcType=VARCHAR} group by a.last_name";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
             Map<String, Object> row = rows.get(0);
@@ -393,7 +393,7 @@ class GroupByTest {
     void testLimitAndOffsetAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
                     .groupBy(lastName)
@@ -401,10 +401,10 @@ class GroupByTest {
                     .offset(1)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters.p1} offset #{parameters.p2}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
@@ -417,17 +417,17 @@ class GroupByTest {
     void testLimitOnlyAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
                     .groupBy(lastName)
                     .limit(1)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select last_name, count(*) as count from Person group by last_name limit #{parameters.p1}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
@@ -440,17 +440,17 @@ class GroupByTest {
     void testOffsetOnlyAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
                     .groupBy(lastName)
                     .offset(1)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters.p1} rows";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
@@ -463,7 +463,7 @@ class GroupByTest {
     void testOffsetAndFetchFirstAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
                     .groupBy(lastName)
@@ -471,10 +471,10 @@ class GroupByTest {
                     .fetchFirst(1).rowsOnly()
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select last_name, count(*) as count from Person group by last_name offset #{parameters.p1} rows fetch first #{parameters.p2} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
@@ -487,17 +487,17 @@ class GroupByTest {
     void testFetchFirstOnlyAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
                     .groupBy(lastName)
                     .fetchFirst(1).rowsOnly()
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select last_name, count(*) as count from Person group by last_name fetch first #{parameters.p1} rows only";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
@@ -510,15 +510,15 @@ class GroupByTest {
     void testCountDistinct() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = session.getMapper(GeneralMapper.class);
-        
+
             SelectStatementProvider selectStatement = select(countDistinct(lastName).as("count"))
                     .from(person)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select count(distinct last_name) as count from Person";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);

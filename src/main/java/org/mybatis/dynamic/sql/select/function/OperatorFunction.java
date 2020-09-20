@@ -28,11 +28,11 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public class OperatorFunction<T> extends AbstractUniTypeFunction<T, OperatorFunction<T>> {
-    
+
     protected final BasicColumn secondColumn;
     protected final List<BasicColumn> subsequentColumns = new ArrayList<>();
     private final String operator;
-    
+
     protected OperatorFunction(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
         super(firstColumn);

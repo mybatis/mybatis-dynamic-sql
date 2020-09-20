@@ -37,7 +37,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
  *
  * default long count(CountDSLCompleter completer) {
  *     return MyBatis3Utils.count(this::count, person, completer);
- * } 
+ * }
  * </pre>
  *
  * <p>And then call the simplified default method like this:
@@ -64,10 +64,10 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @FunctionalInterface
 public interface CountDSLCompleter extends
         Function<CountDSL<SelectModel>, Buildable<SelectModel>> {
-    
+
     /**
      * Returns a completer that can be used to count every row in a table.
-     * 
+     *
      * @return the completer that will count every row in a table
      */
     static CountDSLCompleter allRows() {

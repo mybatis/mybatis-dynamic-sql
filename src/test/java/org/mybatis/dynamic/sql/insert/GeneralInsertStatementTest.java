@@ -33,7 +33,7 @@ class GeneralInsertStatementTest {
     private static final SqlColumn<String> firstName = foo.column("first_name", JDBCType.VARCHAR);
     private static final SqlColumn<String> lastName = foo.column("last_name", JDBCType.VARCHAR);
     private static final SqlColumn<String> occupation = foo.column("occupation", JDBCType.VARCHAR);
-    
+
     @Test
     void testFullInsertStatementBuilder() {
 
@@ -43,11 +43,11 @@ class GeneralInsertStatementTest {
                 .set(occupation).toValue("dino driver")
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expectedStatement = "insert into foo "
                 + "(id, first_name, occupation) "
                 + "values (#{parameters.p1,jdbcType=INTEGER}, #{parameters.p2,jdbcType=VARCHAR}, #{parameters.p3,jdbcType=VARCHAR})";
-        
+
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expectedStatement);
     }
 
@@ -82,14 +82,14 @@ class GeneralInsertStatementTest {
                 + "values (3, #{parameters.p1,jdbcType=VARCHAR}, #{parameters.p2,jdbcType=VARCHAR}, 'Y')";
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
     }
-    
+
     @Test
     void testSelectiveInsertStatementBuilder() {
         Integer myId = null;
         String myFirstName = null;
         String myLastName = "jones";
         String myOccupation = "dino driver";
-        
+
         GeneralInsertStatementProvider insertStatement = insertInto(foo)
                 .set(id).toValueWhenPresent(() -> myId)
                 .set(firstName).toValueWhenPresent(myFirstName)

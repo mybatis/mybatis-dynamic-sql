@@ -31,7 +31,7 @@
     <alt>MyBatis logo</alt>
     <href>http://www.mybatis.org/</href>
   </bannerRight>
-  
+
   <body>
     <menu name="User's Guide">
       <item href="docs/introduction.html" name="Introduction" />
@@ -58,7 +58,7 @@
       <item href="docs/codingStandards.html" name="Coding Standards" />
       <item href="docs/motivation.html" name="Motivation" />
     </menu>
-    
+
     <menu ref="reports"/>
   </body>
 </project>

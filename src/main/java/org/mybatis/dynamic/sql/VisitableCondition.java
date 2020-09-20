@@ -22,7 +22,7 @@ public interface VisitableCondition<T> {
     /**
      * Subclasses can override this to inform the renderer if the condition should not be included
      * in the rendered SQL.  For example, IsEqualWhenPresent will not render if the value is null.
-     * 
+     *
      * @return true if the condition should render.
      */
     default boolean shouldRender() {

@@ -51,20 +51,20 @@ public class UpdateDSL<R> implements Buildable<R> {
     private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     private final SqlTable table;
     private final UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();
-    
+
     private UpdateDSL(SqlTable table, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
-    
+
     public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
         return new SetClauseFinisher<>(column);
     }
-    
+
     public UpdateWhereBuilder where() {
         return whereBuilder;
     }
-    
+
     public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
         whereBuilder.where(column, condition, subCriteria);
@@ -78,7 +78,7 @@ public class UpdateDSL<R> implements Buildable<R> {
     /**
      * WARNING! Calling this method could result in an update statement that updates
      * all rows in a table.
-     * 
+     *
      * @return the update model
      */
     @NotNull
@@ -90,18 +90,18 @@ public class UpdateDSL<R> implements Buildable<R> {
                 .build();
         return adapterFunction.apply(updateModel);
     }
-    
+
     public static <R> UpdateDSL<R> update(Function<UpdateModel, R> adapterFunction, SqlTable table) {
         return new UpdateDSL<>(table, adapterFunction);
     }
-    
+
     public static UpdateDSL<UpdateModel> update(SqlTable table) {
         return update(Function.identity(), table);
     }
-    
+
     /**
      * Executes an update using a MyBatis3 mapper method.
-     * 
+     *
      * @deprecated in favor of {@link MyBatis3Utils#update(ToIntFunction, SqlTable, UpdateDSLCompleter)}. This
      *     method will be removed without direct replacement in a future version.
      * @param <T> return value from an update method - typically Integer
@@ -114,15 +114,15 @@ public class UpdateDSL<R> implements Buildable<R> {
             Function<UpdateStatementProvider, T> mapperMethod, SqlTable table) {
         return update(updateModel -> MyBatis3UpdateModelAdapter.of(updateModel, mapperMethod), table);
     }
-    
+
     public class SetClauseFinisher<T> {
-        
+
         private final SqlColumn<T> column;
-        
+
         public SetClauseFinisher(SqlColumn<T> column) {
             this.column = column;
         }
-        
+
         public UpdateDSL<R> equalToNull() {
             columnMappings.add(NullMapping.of(column));
             return UpdateDSL.this;
@@ -132,12 +132,12 @@ public class UpdateDSL<R> implements Buildable<R> {
             columnMappings.add(ConstantMapping.of(column, constant));
             return UpdateDSL.this;
         }
-        
+
         public UpdateDSL<R> equalToStringConstant(String constant) {
             columnMappings.add(StringConstantMapping.of(column, constant));
             return UpdateDSL.this;
         }
-        
+
         public UpdateDSL<R> equalTo(T value) {
             return equalTo(() -> value);
         }
@@ -168,17 +168,17 @@ public class UpdateDSL<R> implements Buildable<R> {
     }
 
     public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> implements Buildable<R> {
-        
+
         public UpdateWhereBuilder() {
             super();
         }
-        
+
         @NotNull
         @Override
         public R build() {
             return UpdateDSL.this.build();
         }
-        
+
         @Override
         protected UpdateWhereBuilder getThis() {
             return this;

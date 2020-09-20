@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.MyBatis3RenderingStrategy;
 
 /**
- * This rendering strategy should be used for MyBatis3 statements using one of the 
+ * This rendering strategy should be used for MyBatis3 statements using one of the
  * Spring batch readers supplied by mybatis-spring integration (http://www.mybatis.org/spring/).
  * Those readers are MyBatisPagingItemReader and MyBatisCursorItemReader.
  *

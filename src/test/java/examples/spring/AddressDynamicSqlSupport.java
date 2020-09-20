@@ -26,7 +26,7 @@ public final class AddressDynamicSqlSupport {
     public static final SqlColumn<String> streetAddress = address.streetAddress;
     public static final SqlColumn<String> city = address.city;
     public static final SqlColumn<String> state = address.state;
-    
+
     public static final class Address extends SqlTable {
         public final SqlColumn<Integer> id = column("address_id", JDBCType.INTEGER);
         public final SqlColumn<String> streetAddress = column("street_address", JDBCType.VARCHAR);

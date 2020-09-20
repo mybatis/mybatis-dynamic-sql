@@ -28,36 +28,36 @@ public class BatchInsertRenderer<T> {
 
     private final BatchInsertModel<T> model;
     private final RenderingStrategy renderingStrategy;
-    
+
     private BatchInsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
-    
+
     public BatchInsert<T> render() {
         BatchValuePhraseVisitor visitor = new BatchValuePhraseVisitor(renderingStrategy, "record"); //$NON-NLS-1$)
         List<FieldAndValue> fieldsAndValues = model
                 .mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
-        
+
         return BatchInsert.withRecords(model.records())
                 .withInsertStatement(calculateInsertStatement(fieldsAndValues))
                 .build();
     }
-    
+
     private String calculateInsertStatement(List<FieldAndValue> fieldsAndValues) {
         return "insert into" //$NON-NLS-1$
                 + spaceBefore(model.table().tableNameAtRuntime())
                 + spaceBefore(calculateColumnsPhrase(fieldsAndValues))
                 + spaceBefore(calculateValuesPhrase(fieldsAndValues));
     }
-    
+
     private String calculateColumnsPhrase(List<FieldAndValue> fieldsAndValues) {
         return fieldsAndValues.stream()
                 .map(FieldAndValue::fieldName)
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
-    
+
     private String calculateValuesPhrase(List<FieldAndValue> fieldsAndValues) {
         return fieldsAndValues.stream()
                 .map(FieldAndValue::valuePhrase)
@@ -67,21 +67,21 @@ public class BatchInsertRenderer<T> {
     public static <T> Builder<T> withBatchInsertModel(BatchInsertModel<T> model) {
         return new Builder<T>().withBatchInsertModel(model);
     }
-    
+
     public static class Builder<T> {
         private BatchInsertModel<T> model;
         private RenderingStrategy renderingStrategy;
-        
+
         public Builder<T> withBatchInsertModel(BatchInsertModel<T> model) {
             this.model = model;
             return this;
         }
-        
+
         public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
-        
+
         public BatchInsertRenderer<T> build() {
             return new BatchInsertRenderer<>(this);
         }
