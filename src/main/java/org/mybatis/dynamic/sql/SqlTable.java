@@ -19,6 +19,7 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+
 import org.jetbrains.annotations.NotNull;
 
 public class SqlTable {

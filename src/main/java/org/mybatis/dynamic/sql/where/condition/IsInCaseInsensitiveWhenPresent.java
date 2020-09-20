@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+
 import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 

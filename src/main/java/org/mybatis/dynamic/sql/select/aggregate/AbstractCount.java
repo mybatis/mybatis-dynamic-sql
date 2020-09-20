@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.aggregate;
 
 import java.util.Optional;
+
 import org.mybatis.dynamic.sql.BindableColumn;
 
 /**
