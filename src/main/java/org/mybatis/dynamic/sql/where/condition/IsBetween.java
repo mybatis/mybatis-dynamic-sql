@@ -26,11 +26,11 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
     protected IsBetween(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2) {
         super(valueSupplier1, valueSupplier2);
     }
-    
+
     protected IsBetween(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2, BiPredicate<T, T> predicate) {
         super(valueSupplier1, valueSupplier2, predicate);
     }
-    
+
     @Override
     public String renderCondition(String columnName, String placeholder1, String placeholder2) {
         return columnName + " between " + placeholder1 + " and " + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$
@@ -40,13 +40,13 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
         private Builder(Supplier<T> valueSupplier1) {
             super(valueSupplier1);
         }
-        
+
         @Override
         protected IsBetween<T> build() {
             return new IsBetween<>(valueSupplier1, valueSupplier2);
         }
     }
-    
+
     public static <T> Builder<T> isBetween(Supplier<T> valueSupplier1) {
         return new Builder<>(valueSupplier1);
     }

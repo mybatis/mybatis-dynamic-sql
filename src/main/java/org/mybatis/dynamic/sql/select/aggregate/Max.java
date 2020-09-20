@@ -34,7 +34,7 @@ public class Max<T> extends AbstractUniTypeFunction<T, Max<T>> {
     protected Max<T> copy() {
         return new Max<>(column);
     }
-    
+
     public static <T> Max<T> of(BindableColumn<T> column) {
         return new Max<>(column);
     }

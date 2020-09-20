@@ -47,10 +47,10 @@ import examples.generated.always.PersonRecord;
 class PersonMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
-    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
-    
+    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -60,51 +60,51 @@ class PersonMapperTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(PersonMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testInsertSelectWithOneRecord() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             PersonRecord record = new PersonRecord();
             record.setFirstName("Fred");
             record.setLastName("Flintstone");
-            
+
             InsertStatementProvider<PersonRecord> insertStatement = SqlBuilder.insert(record)
                     .into(person)
                     .map(firstName).toProperty("firstName")
                     .map(lastName).toProperty("lastName")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             int rows = mapper.insert(insertStatement);
-            
+
             assertThat(rows).isEqualTo(1);
             assertThat(record.getId()).isEqualTo(22);
-            
+
             InsertSelectStatementProvider insertSelectStatement = SqlBuilder.insertInto(person)
                     .withColumnList(firstName, lastName)
                     .withSelectStatement(SqlBuilder.select(firstName, lastName).from(person))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             rows = mapper.insertSelect(insertSelectStatement);
             assertThat(rows).isEqualTo(1);
             assertThat(insertSelectStatement.getParameters()).containsEntry("id", 23);
-            
+
             SelectStatementProvider selectStatement = SqlBuilder.select(id, firstName, lastName)
                     .from(person)
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<PersonRecord> records = mapper.selectMany(selectStatement);
             assertThat(records).hasSize(2);
             assertThat(records.get(0).getId()).isEqualTo(22);
@@ -116,49 +116,49 @@ class PersonMapperTest {
     void testInsertSelectWithMultipleRecords() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             PersonRecord record1 = new PersonRecord();
             record1.setFirstName("Fred");
             record1.setLastName("Flintstone");
-            
+
             PersonRecord record2 = new PersonRecord();
             record2.setFirstName("Barney");
             record2.setLastName("Rubble");
-            
+
             MultiRowInsertStatementProvider<PersonRecord> insertStatement = SqlBuilder.insertMultiple(record1, record2)
                     .into(person)
                     .map(firstName).toProperty("firstName")
                     .map(lastName).toProperty("lastName")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             int rows = mapper.insertMultiple(insertStatement);
-            
+
             assertThat(rows).isEqualTo(2);
             assertThat(record1.getId()).isEqualTo(22);
             assertThat(record2.getId()).isEqualTo(23);
-            
+
             InsertSelectStatementProvider insertSelectStatement = SqlBuilder.insertInto(person)
                     .withColumnList(firstName, lastName)
                     .withSelectStatement(SqlBuilder.select(firstName, lastName).from(person))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             insertSelectStatement.getParameters().put("keys", new ArrayList<GeneratedKey>());
-            
+
             GeneratedKeyList keys = new GeneratedKeyList(5);
-            
+
             rows = mapper.insertSelect(insertSelectStatement, keys);
             assertThat(rows).isEqualTo(2);
             assertThat(keys.get(0).getKey()).isEqualTo(24);
             assertThat(keys.get(1).getKey()).isEqualTo(25);
-            
+
             SelectStatementProvider selectStatement = SqlBuilder.select(id, firstName, lastName)
                     .from(person)
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<PersonRecord> records = mapper.selectMany(selectStatement);
             assertThat(records).hasSize(4);
             assertThat(records.get(0).getId()).isEqualTo(22);

@@ -46,13 +46,13 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Predicates;
 
 class OptionalConditionsWithPredicatesAnimalDataTest {
-    
+
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
     private static final Integer NULL_INTEGER = null;
-    
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -62,14 +62,14 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(AnimalDataMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testAllIgnored() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -89,7 +89,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testIgnoredBetweenRendered() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -494,7 +494,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testValueStreamTransformerWithCustomCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -513,7 +513,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testIsInCaseInsensitiveWhenWithNoValues() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {

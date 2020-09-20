@@ -22,13 +22,13 @@ public class Substring extends AbstractUniTypeFunction<String, Substring> {
 
     private final int offset;
     private final int length;
-    
+
     private Substring(BindableColumn<String> column, int offset, int length) {
         super(column);
         this.offset = offset;
         this.length = length;
     }
-    
+
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return "substring(" //$NON-NLS-1$
@@ -39,12 +39,12 @@ public class Substring extends AbstractUniTypeFunction<String, Substring> {
                 + length
                 + ")"; //$NON-NLS-1$
     }
-    
+
     @Override
     protected Substring copy() {
         return new Substring(column, offset, length);
     }
-    
+
     public static Substring of(BindableColumn<String> column, int offset, int length) {
         return new Substring(column, offset, length);
     }

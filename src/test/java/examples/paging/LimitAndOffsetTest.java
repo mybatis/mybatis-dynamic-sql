@@ -38,12 +38,12 @@ import org.junit.jupiter.api.Test;
 import examples.animal.data.AnimalData;
 
 class LimitAndOffsetTest {
-    
+
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
-    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
-    
+    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -53,24 +53,24 @@ class LimitAndOffsetTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(LimitAndOffsetMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testLimitandOffset() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             LimitAndOffsetMapper mapper = sqlSession.getMapper(LimitAndOffsetMapper.class);
-            
+
             List<AnimalData> rows = mapper.selectByExampleWithLimitAndOffset(5, 3)
                     .orderBy(id)
                     .build()
                     .execute();
-            
+
             assertThat(rows).hasSize(5);
             assertThat(rows.get(0).getId()).isEqualTo(4);
         }

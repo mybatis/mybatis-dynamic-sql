@@ -54,13 +54,13 @@ import examples.springbatch.mapper.PersonMapper;
 @ComponentScan("examples.springbatch.common")
 @MapperScan("examples.springbatch.mapper")
 public class BulkInsertConfiguration {
-    
+
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
-    
+
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
-    
+
     @Bean
     public DataSource dataSource() {
         return new EmbeddedDatabaseBuilder()
@@ -70,14 +70,14 @@ public class BulkInsertConfiguration {
                 .addScript("classpath:/examples/springbatch/schema.sql")
                 .build();
     }
-    
+
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         return sessionFactory.getObject();
     }
-    
+
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
@@ -87,7 +87,7 @@ public class BulkInsertConfiguration {
     public MyBatisBatchItemWriter<PersonRecord> writer(SqlSessionFactory sqlSessionFactory) {
         MyBatisBatchItemWriter<PersonRecord> writer = new MyBatisBatchItemWriter<>();
         writer.setSqlSessionFactory(sqlSessionFactory);
-        
+
         writer.setItemToParameterConverter(record -> InsertDSL.insert(record)
                     .into(PersonDynamicSqlSupport.person)
                     .map(firstName).toProperty("firstName")
@@ -95,11 +95,11 @@ public class BulkInsertConfiguration {
                     .map(forPagingTest).toStringConstant("false")
                     .build()
                     .render(RenderingStrategies.MYBATIS3));
-        
+
         writer.setStatementId(PersonMapper.class.getName() + ".insert");
         return writer;
     }
-    
+
     @Bean
     public Step step1(ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
         return stepBuilderFactory.get("step1")

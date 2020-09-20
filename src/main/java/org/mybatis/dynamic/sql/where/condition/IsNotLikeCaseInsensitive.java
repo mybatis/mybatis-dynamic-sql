@@ -26,16 +26,16 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
     protected IsNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
         super(valueSupplier);
     }
-    
+
     protected IsNotLikeCaseInsensitive(Supplier<String> valueSupplier, Predicate<String> predicate) {
         super(valueSupplier, predicate);
     }
-    
+
     @Override
     public String renderCondition(String columnName, String placeholder) {
         return "upper(" + columnName + ") not like " + placeholder; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     @Override
     public String value() {
         return StringUtilities.safelyUpperCase(super.value());
@@ -44,7 +44,7 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
     public static IsNotLikeCaseInsensitive of(Supplier<String> valueSupplier) {
         return new IsNotLikeCaseInsensitive(valueSupplier);
     }
-    
+
     public IsNotLikeCaseInsensitive when(Predicate<String> predicate) {
         return new IsNotLikeCaseInsensitive(valueSupplier, predicate);
     }

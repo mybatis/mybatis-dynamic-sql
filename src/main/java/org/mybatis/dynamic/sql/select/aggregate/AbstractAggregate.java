@@ -49,7 +49,7 @@ public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implemen
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return render(column.renderWithTableAlias(tableAliasCalculator));
     }
-    
+
     @Override
     public T as(String alias) {
         T copy = copy();
@@ -58,10 +58,10 @@ public abstract class AbstractAggregate<T extends AbstractAggregate<T>> implemen
     }
 
     protected abstract T copy();
-    
+
     /**
      * Calculate the rendered string for the select list.
-     * 
+     *
      * @param columnName the calculated column name.  It will have the table alias already applied
      *     if applicable.
      * @return the rendered string for the select list

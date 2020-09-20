@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 public class JoinModel {
     private final List<JoinSpecification> joinSpecifications = new ArrayList<>();
-    
+
     private JoinModel(List<JoinSpecification> joinSpecifications) {
         this.joinSpecifications.addAll(joinSpecifications);
     }
@@ -30,7 +30,7 @@ public class JoinModel {
     public <R> Stream<R> mapJoinSpecifications(Function<JoinSpecification, R> mapper) {
         return joinSpecifications.stream().map(mapper);
     }
-    
+
     public static JoinModel of(List<JoinSpecification> joinSpecifications) {
         return new JoinModel(joinSpecifications);
     }

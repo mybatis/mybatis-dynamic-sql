@@ -20,14 +20,14 @@ package org.mybatis.dynamic.sql;
  * during statement rendering and before the parameter is placed into the parameter map. This can be used
  * to somewhat mimic the function of a MyBatis type handler for runtimes such as Spring that don't have
  * a corresponding concept.
- * 
+ *
  * <p>Since Spring does not have the concept of type handlers, it is a best practice to only use
  * Java data types that have a clear correlation to SQL data types (for example Java String correlates
  * automatically with VARCHAR). Using a parameter type converter will allow you to use data types in your
  * model classes that would otherwise be difficult to use with Spring.
  *
  * <p>A parameter type converter is associated with a SqlColumn.
- * 
+ *
  * <p>This interface is based on Spring's general Converter interface and is intentionally compatible with it.
  * Existing converters may be reused if they are marked with this additional interface.
  *
@@ -40,7 +40,7 @@ package org.mybatis.dynamic.sql;
  *     <li>Parameters in an update statement (for the Value and ValueWhenPresent mappings)</li>
  *     <li>Parameters in a where clause in any statement (for conditions that accept a value or multiple values)</li>
  * </ul>
- * 
+ *
  * @param <S> Source Type
  * @param <T> Target Type
  *

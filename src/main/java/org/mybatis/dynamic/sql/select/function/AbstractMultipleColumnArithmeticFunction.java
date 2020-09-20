@@ -28,9 +28,9 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 /**
  * Represents a function with multiple numeric columns.
- * 
+ *
  * @deprecated in favor of {@link OperatorFunction}.
- * 
+ *
  * @author Jeff Butler
  */
 @Deprecated

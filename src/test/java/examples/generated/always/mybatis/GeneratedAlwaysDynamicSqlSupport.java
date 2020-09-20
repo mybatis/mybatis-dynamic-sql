@@ -39,7 +39,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
     public static final SqlColumn<String> lastName = generatedAlways.lastName;
     public static final SqlColumn<Integer> age = generatedAlways.age;
     public static final SqlColumn<String> fullName = generatedAlways.fullName;
-    
+
     public static final class GeneratedAlways extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
@@ -51,7 +51,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
             super("GeneratedAlways");
         }
     }
-    
+
     public static InsertStatementProvider<GeneratedAlwaysRecord> buildInsert(GeneratedAlwaysRecord record) {
         return insert(record)
                 .into(generatedAlways)
@@ -71,7 +71,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
     }
-    
+
     public static UpdateStatementProvider buildUpdateByPrimaryKeyStatement(GeneratedAlwaysRecord record) {
         return update(generatedAlways)
                 .set(firstName).equalTo(record.getFirstName())
@@ -103,12 +103,12 @@ public final class GeneratedAlwaysDynamicSqlSupport {
                 .set(firstName).equalToWhenPresent(record::getFirstName)
                 .set(lastName).equalToWhenPresent(record::getLastName);
     }
-    
+
     public static QueryExpressionDSL<SelectModel> selectByExample() {
         return select(id.as("A_ID"), firstName, lastName, fullName)
                 .from(generatedAlways, "a");
     }
-    
+
     public static SelectStatementProvider selectByPrimaryKey(int id_) {
         return select(id.as("A_ID"), firstName, lastName, fullName)
                 .from(generatedAlways)

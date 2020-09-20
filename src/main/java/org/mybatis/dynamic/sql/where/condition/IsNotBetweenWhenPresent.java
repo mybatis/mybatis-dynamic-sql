@@ -25,18 +25,18 @@ public class IsNotBetweenWhenPresent<T> extends IsNotBetween<T> {
     protected IsNotBetweenWhenPresent(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2) {
         super(valueSupplier1, valueSupplier2, Predicates.bothPresent());
     }
-    
+
     public static class Builder<T> extends AndGatherer<T, IsNotBetweenWhenPresent<T>> {
         private Builder(Supplier<T> valueSupplier1) {
             super(valueSupplier1);
         }
-        
+
         @Override
         protected IsNotBetweenWhenPresent<T> build() {
             return new IsNotBetweenWhenPresent<>(valueSupplier1, valueSupplier2);
         }
     }
-    
+
     public static <T> Builder<T> isNotBetweenWhenPresent(Supplier<T> valueSupplier) {
         return new Builder<>(valueSupplier);
     }

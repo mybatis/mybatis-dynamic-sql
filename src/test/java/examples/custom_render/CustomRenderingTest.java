@@ -59,7 +59,7 @@ class CustomRenderingTest {
 
     @Container
     private static final PgContainer postgres = new PgContainer("examples/custom_render/dbInit.sql");
-    
+
     private static SqlSessionFactory sqlSessionFactory;
 
     @BeforeAll
@@ -77,13 +77,13 @@ class CustomRenderingTest {
     void resetDatabase() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
-            
+
             DeleteStatementProvider deleteStatement = deleteFrom(jsonTest).build().render(RenderingStrategies.MYBATIS3);
-            
+
             mapper.delete(deleteStatement);
         }
     }
-    
+
     @Test
     void testInsertRecord() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -93,23 +93,23 @@ class CustomRenderingTest {
             record.setId(1);
             record.setDescription("Fred");
             record.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
-            
+
             InsertStatementProvider<JsonTestRecord> insertStatement = insert(record).into(jsonTest)
                     .map(id).toProperty("id")
                     .map(description).toProperty("description")
                     .map(info).toProperty("info")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "insert into JsonTest (id, description, info) "
                     + "values (#{record.id,jdbcType=INTEGER}, #{record.description,jdbcType=VARCHAR}, "
                     + "#{record.info,jdbcType=VARCHAR}::json)";
-            
+
             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
 
             int rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
-            
+
             record = new JsonTestRecord();
             record.setId(2);
             record.setDescription("Wilma");
@@ -124,13 +124,13 @@ class CustomRenderingTest {
 
             rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
-            
+
             SelectStatementProvider selectStatement = select(id, description, info)
                     .from(jsonTest)
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<JsonTestRecord> records = mapper.selectMany(selectStatement);
             assertThat(records).hasSize(2);
             assertThat(records.get(0).getInfo()).isEqualTo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
@@ -149,16 +149,16 @@ class CustomRenderingTest {
                     .set(info).toValue("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "insert into JsonTest (id, description, info) "
                     + "values (#{parameters.p1,jdbcType=INTEGER}, #{parameters.p2,jdbcType=VARCHAR}, "
                     + "#{parameters.p3,jdbcType=VARCHAR}::json)";
-            
+
             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
 
             int rows = mapper.generalInsert(insertStatement);
             assertThat(rows).isEqualTo(1);
-            
+
             insertStatement = insertInto(jsonTest)
                     .set(id).toValue(2)
                     .set(description).toValue("Wilma")
@@ -168,13 +168,13 @@ class CustomRenderingTest {
 
             rows = mapper.generalInsert(insertStatement);
             assertThat(rows).isEqualTo(1);
-            
+
             SelectStatementProvider selectStatement = select(id, description, info)
                     .from(jsonTest)
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<JsonTestRecord> records = mapper.selectMany(selectStatement);
             assertThat(records).hasSize(2);
             assertThat(records.get(0).getInfo()).isEqualTo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
@@ -196,7 +196,7 @@ class CustomRenderingTest {
             record2.setId(2);
             record2.setDescription("Wilma");
             record2.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
-            
+
             MultiRowInsertStatementProvider<JsonTestRecord> insertStatement = insertMultiple(record1, record2)
                     .into(jsonTest)
                     .map(id).toProperty("id")
@@ -210,18 +210,18 @@ class CustomRenderingTest {
                     + "#{records[0].info,jdbcType=VARCHAR}::json), "
                     + "(#{records[1].id,jdbcType=INTEGER}, #{records[1].description,jdbcType=VARCHAR}, "
                     + "#{records[1].info,jdbcType=VARCHAR}::json)";
-            
+
             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
 
             int rows = mapper.insertMultiple(insertStatement);
             assertThat(rows).isEqualTo(2);
-            
+
             SelectStatementProvider selectStatement = select(id, description, info)
                     .from(jsonTest)
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<JsonTestRecord> records = mapper.selectMany(selectStatement);
             assertThat(records).hasSize(2);
             assertThat(records.get(0).getInfo()).isEqualTo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
@@ -260,22 +260,22 @@ class CustomRenderingTest {
                     .where(id, isEqualTo(2))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-                    
+
             String expected = "update JsonTest "
                     + "set info = #{parameters.p1,jdbcType=VARCHAR}::json "
                     + "where id = #{parameters.p2,jdbcType=INTEGER}";
-            
+
             assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
 
             rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(1);
-            
+
             SelectStatementProvider selectStatement = select(id, description, info)
                     .from(jsonTest)
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<JsonTestRecord> records = mapper.selectMany(selectStatement);
             assertThat(records).hasSize(2);
             assertThat(records.get(0).getInfo()).isEqualTo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
@@ -308,28 +308,28 @@ class CustomRenderingTest {
 
             int rows = mapper.insertMultiple(insertStatement);
             assertThat(rows).isEqualTo(2);
-            
+
             SelectStatementProvider selectStatement = select(id, description, info)
                     .from(jsonTest)
                     .where(dereference(info, "age"), isEqualTo("25"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select id, description, info "
                     + "from JsonTest "
                     + "where info->>'age' = #{parameters.p1,jdbcType=VARCHAR}";
-            
+
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-            
+
             Optional<JsonTestRecord> record = mapper.selectOne(selectStatement);
-            
+
             assertThat(record).hasValueSatisfying( r ->
                 assertThat(r.getInfo())
                         .isEqualTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}")
             );
         }
     }
-    
+
     @Test
     void testDefererence2() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -355,17 +355,17 @@ class CustomRenderingTest {
 
             int rows = mapper.insertMultiple(insertStatement);
             assertThat(rows).isEqualTo(2);
-            
+
             SelectStatementProvider selectStatement = select(dereference(info, "firstName").as("firstname"))
                     .from(jsonTest)
                     .where(dereference(info, "age"), isEqualTo("25"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select info->>'firstName' as firstname "
                     + "from JsonTest "
                     + "where info->>'age' = #{parameters.p1,jdbcType=VARCHAR}";
-            
+
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 
             List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
@@ -373,7 +373,7 @@ class CustomRenderingTest {
             assertThat(records.get(0)).containsEntry("firstname", "Wilma");
         }
     }
-    
+
     private <T> SqlColumn<String> dereference(SqlColumn<T> column, String attribute) {
         return SqlColumn.of(column.name() + "->>'" + attribute + "'", column.table(), JDBCType.VARCHAR);
     }

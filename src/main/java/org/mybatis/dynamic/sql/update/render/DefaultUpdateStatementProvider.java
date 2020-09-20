@@ -37,25 +37,25 @@ public class DefaultUpdateStatementProvider implements UpdateStatementProvider {
     public String getUpdateStatement() {
         return updateStatement;
     }
-    
+
     public static Builder withUpdateStatement(String updateStatement) {
         return new Builder().withUpdateStatement(updateStatement);
     }
-    
+
     public static class Builder {
         private String updateStatement;
         private final Map<String, Object> parameters = new HashMap<>();
-        
+
         public Builder withUpdateStatement(String updateStatement) {
             this.updateStatement = updateStatement;
             return this;
         }
-        
+
         public Builder withParameters(Map<String, Object> parameters) {
             this.parameters.putAll(parameters);
             return this;
         }
-        
+
         public DefaultUpdateStatementProvider build() {
             return new DefaultUpdateStatementProvider(this);
         }

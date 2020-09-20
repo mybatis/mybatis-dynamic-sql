@@ -37,13 +37,13 @@ public class MyBatis3RenderingStrategy extends RenderingStrategy {
                 + renderTypeHandler(column)
                 + "}"; //$NON-NLS-1$
     }
-    
+
     private String renderTypeHandler(BindableColumn<?> column) {
         return column.typeHandler()
                 .map(th -> ",typeHandler=" + th) //$NON-NLS-1$
                 .orElse(""); //$NON-NLS-1$
     }
-    
+
     private String renderJdbcType(BindableColumn<?> column) {
         return column.jdbcType()
                 .map(jt -> ",jdbcType=" + jt.getName()) //$NON-NLS-1$

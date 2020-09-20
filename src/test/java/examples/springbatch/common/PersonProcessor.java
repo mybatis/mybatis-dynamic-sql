@@ -25,13 +25,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PersonProcessor implements ItemProcessor<PersonRecord, PersonRecord> {
-    
+
     private ExecutionContext executionContext;
 
     @Override
     public PersonRecord process(PersonRecord person) throws Exception {
         incrementRowCount();
-        
+
         PersonRecord transformed = new PersonRecord();
         transformed.setId(person.getId());
         transformed.setFirstName(person.getFirstName().toUpperCase());
@@ -43,7 +43,7 @@ public class PersonProcessor implements ItemProcessor<PersonRecord, PersonRecord
     public void beforeStep(StepExecution stepExecution) {
         executionContext = stepExecution.getExecutionContext();
     }
-    
+
     @BeforeChunk
     public void beforeChunk(ChunkContext chunkContext) {
         incrementChunkCount();

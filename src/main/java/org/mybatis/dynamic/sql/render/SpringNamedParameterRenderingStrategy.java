@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.render;
 import org.mybatis.dynamic.sql.BindableColumn;
 
 public class SpringNamedParameterRenderingStrategy extends RenderingStrategy {
-    
+
     @Override
     public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
         return getFormattedJdbcPlaceholder(prefix, parameterName);

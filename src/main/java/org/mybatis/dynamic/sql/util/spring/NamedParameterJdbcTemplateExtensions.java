@@ -46,7 +46,7 @@ import org.springframework.jdbc.support.KeyHolder;
 
 public class NamedParameterJdbcTemplateExtensions {
     private final NamedParameterJdbcTemplate template;
-    
+
     public NamedParameterJdbcTemplateExtensions(NamedParameterJdbcTemplate template) {
         this.template = Objects.requireNonNull(template);
     }
@@ -54,15 +54,15 @@ public class NamedParameterJdbcTemplateExtensions {
     public long count(Buildable<SelectModel> countStatement) {
         return count(countStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
-    
+
     public long count(SelectStatementProvider countStatement) {
         return template.queryForObject(countStatement.getSelectStatement(), countStatement.getParameters(), Long.class);
     }
-    
+
     public int delete(Buildable<DeleteModel> deleteStatement) {
         return delete(deleteStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
-    
+
     public int delete(DeleteStatementProvider deleteStatement) {
         return template.update(deleteStatement.getDeleteStatement(), deleteStatement.getParameters());
     }
@@ -70,7 +70,7 @@ public class NamedParameterJdbcTemplateExtensions {
     public int generalInsert(Buildable<GeneralInsertModel> insertStatement) {
         return generalInsert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
-    
+
     public int generalInsert(GeneralInsertStatementProvider insertStatement) {
         return template.update(insertStatement.getInsertStatement(), insertStatement.getParameters());
     }
@@ -78,7 +78,7 @@ public class NamedParameterJdbcTemplateExtensions {
     public int generalInsert(Buildable<GeneralInsertModel> insertStatement, KeyHolder keyHolder) {
         return generalInsert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), keyHolder);
     }
-    
+
     public int generalInsert(GeneralInsertStatementProvider insertStatement, KeyHolder keyHolder) {
         return template.update(insertStatement.getInsertStatement(),
                 new MapSqlParameterSource(insertStatement.getParameters()), keyHolder);
@@ -140,7 +140,7 @@ public class NamedParameterJdbcTemplateExtensions {
     public <T> Optional<T> selectOne(Buildable<SelectModel> selectStatement, RowMapper<T> rowMapper) {
         return selectOne(selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), rowMapper);
     }
-    
+
     public <T> Optional<T> selectOne(SelectStatementProvider selectStatement, RowMapper<T> rowMapper) {
         T result;
         try {
@@ -149,14 +149,14 @@ public class NamedParameterJdbcTemplateExtensions {
         } catch (EmptyResultDataAccessException e) {
             result = null;
         }
-        
+
         return Optional.ofNullable(result);
     }
-    
+
     public int update(Buildable<UpdateModel> updateStatement) {
         return update(updateStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));
     }
-    
+
     public int update(UpdateStatementProvider updateStatement) {
         return template.update(updateStatement.getUpdateStatement(), updateStatement.getParameters());
     }

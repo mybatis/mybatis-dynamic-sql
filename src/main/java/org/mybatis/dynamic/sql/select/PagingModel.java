@@ -41,7 +41,7 @@ public class PagingModel {
     public Optional<Long> fetchFirstRows() {
         return Optional.ofNullable(fetchFirstRows);
     }
-    
+
     public static class Builder {
         private Long limit;
         private Long offset;
@@ -51,17 +51,17 @@ public class PagingModel {
             this.limit = limit;
             return this;
         }
-        
+
         public Builder withOffset(Long offset) {
             this.offset = offset;
             return this;
         }
-        
+
         public Builder withFetchFirstRows(Long fetchFirstRows) {
             this.fetchFirstRows = fetchFirstRows;
             return this;
         }
-        
+
         public PagingModel build() {
             return new PagingModel(this);
         }

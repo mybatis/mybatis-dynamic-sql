@@ -47,10 +47,10 @@ import examples.simple.PersonRecord;
 class LegacyPersonMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
-    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
-    
+    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -60,25 +60,25 @@ class LegacyPersonMapperTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(LegacyPersonMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testSelectByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.selectByExample()
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
                     .execute();
-            
+
             assertThat(rows).hasSize(3);
         }
     }
@@ -88,13 +88,13 @@ class LegacyPersonMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             RowBounds rowBounds = new RowBounds(2, 2);
-            
+
             List<PersonRecord> rows = mapper.selectByExample(rowBounds)
                     .where(id, isEqualTo(1))
                     .or(occupation, isNull())
                     .build()
                     .execute();
-            
+
             assertThat(rows).hasSize(1);
         }
     }
@@ -103,44 +103,44 @@ class LegacyPersonMapperTest {
     void testSelectDistinctByExample() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.selectDistinctByExample()
                     .where(id, isGreaterThan(1))
                     .or(occupation, isNull())
                     .build()
                     .execute();
-            
+
             assertThat(rows).hasSize(5);
         }
     }
-    
+
     @Test
     void testSelectDistinctByExampleWithRowbounds() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             RowBounds rowBounds = new RowBounds(2, 2);
-            
+
             List<PersonRecord> rows = mapper.selectDistinctByExample(rowBounds)
                     .where(id, isGreaterThan(1))
                     .or(occupation, isNull())
                     .build()
                     .execute();
-            
+
             assertThat(rows).hasSize(2);
         }
     }
-    
+
     @Test
     void testSelectByExampleWithTypeHandler() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.selectByExample()
                     .where(employed, isEqualTo(false))
                     .orderBy(id)
                     .build()
                     .execute();
-            
+
             assertAll(
                     () -> assertThat(rows).hasSize(2),
                     () -> assertThat(rows.get(0).getId()).isEqualTo(3),
@@ -153,12 +153,12 @@ class LegacyPersonMapperTest {
     void testFirstNameIn() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.selectByExample()
                     .where(firstName, isIn("Fred", "Barney"))
                     .build()
                     .execute();
-            
+
             assertAll(
                     () -> assertThat(rows).hasSize(2),
                     () -> assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone"),
@@ -178,17 +178,17 @@ class LegacyPersonMapperTest {
             assertThat(rows).isEqualTo(2);
         }
     }
-    
+
     @Test
     void testDeleteByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
             int rows = mapper.deleteByPrimaryKey(2);
-            
+
             assertThat(rows).isEqualTo(1);
         }
     }
-    
+
     @Test
     void testInsert() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
@@ -201,7 +201,7 @@ class LegacyPersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
         }
@@ -218,7 +218,7 @@ class LegacyPersonMapperTest {
             record.setBirthDate(new Date());
             record.setEmployed(false);
             record.setAddressId(1);
-            
+
             int rows = mapper.insertSelective(record);
             assertThat(rows).isEqualTo(1);
         }
@@ -236,14 +236,14 @@ class LegacyPersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
-            
+
             record.setOccupation("Programmer");
             rows = mapper.updateByPrimaryKey(record);
             assertThat(rows).isEqualTo(1);
-            
+
             PersonRecord newRecord = mapper.selectByPrimaryKey(100);
             assertThat(newRecord.getOccupation()).isEqualTo("Programmer");
         }
@@ -261,7 +261,7 @@ class LegacyPersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
 
@@ -289,7 +289,7 @@ class LegacyPersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
 
@@ -324,7 +324,7 @@ class LegacyPersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
 
@@ -350,38 +350,38 @@ class LegacyPersonMapperTest {
                     .where(occupation, isNull())
                     .build()
                     .execute();
-            
+
             assertThat(rows).isEqualTo(2L);
         }
     }
-    
+
     @Test
     void testTypeHandledLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.selectByExample()
                     .where(lastName, isLike(LastName.of("Fl%")))
                     .orderBy(id)
                     .build()
                     .execute();
-            
+
             assertThat(rows).hasSize(3);
             assertThat(rows.get(0).getFirstName()).isEqualTo("Fred");
         }
     }
-    
+
     @Test
     void testTypeHandledNotLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             LegacyPersonMapper mapper = session.getMapper(LegacyPersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.selectByExample()
                     .where(lastName, isNotLike(LastName.of("Fl%")))
                     .orderBy(id)
                     .build()
                     .execute();
-            
+
             assertThat(rows).hasSize(3);
             assertThat(rows.get(0).getFirstName()).isEqualTo("Barney");
         }

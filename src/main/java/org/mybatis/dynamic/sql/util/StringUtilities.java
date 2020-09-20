@@ -27,7 +27,7 @@ public interface StringUtilities {
     static String spaceAfter(String in) {
         return in + " "; //$NON-NLS-1$
     }
-    
+
     static String spaceBefore(Optional<String> in) {
         return in.map(StringUtilities::spaceBefore)
                 .orElse(""); //$NON-NLS-1$
@@ -36,7 +36,7 @@ public interface StringUtilities {
     static String spaceBefore(String in) {
         return " " + in; //$NON-NLS-1$
     }
-    
+
     static String safelyUpperCase(String s) {
         return s == null ? null : s.toUpperCase();
     }

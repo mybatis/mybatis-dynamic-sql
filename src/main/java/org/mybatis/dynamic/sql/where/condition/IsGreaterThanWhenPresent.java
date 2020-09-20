@@ -24,7 +24,7 @@ public class IsGreaterThanWhenPresent<T> extends IsGreaterThan<T> {
     protected IsGreaterThanWhenPresent(Supplier<T> valueSupplier) {
         super(valueSupplier, Objects::nonNull);
     }
-    
+
     public static <T> IsGreaterThanWhenPresent<T> of(Supplier<T> valueSupplier) {
         return new IsGreaterThanWhenPresent<>(valueSupplier);
     }

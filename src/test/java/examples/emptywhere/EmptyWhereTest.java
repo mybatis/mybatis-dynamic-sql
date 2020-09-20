@@ -42,20 +42,20 @@ class EmptyWhereTest {
     void testDeleteThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
                 .where(id, isEqualTo(3));
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "delete from person"
                 + " where id = #{parameters.p1}"
                 + " and first_name = #{parameters.p2}"
                 + " and last_name = #{parameters.p3}";
-        
+
         assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expected);
     }
 
@@ -63,19 +63,19 @@ class EmptyWhereTest {
     void testDeleteTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.or(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "delete from person"
                 + " where first_name = #{parameters.p1}"
                 + " or last_name = #{parameters.p2}";
-        
+
         assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expected);
     }
 
@@ -83,18 +83,18 @@ class EmptyWhereTest {
     void testDeleteFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
-        
+
         DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "delete from person"
                 + " where last_name = #{parameters.p1}";
-        
+
         assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expected);
     }
 
@@ -102,18 +102,18 @@ class EmptyWhereTest {
     void testDeleteLastNameNull() {
         String fName = "Fred";
         String lName = null;
-        
+
         DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "delete from person"
                 + " where first_name = #{parameters.p1}";
-        
+
         assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expected);
     }
 
@@ -121,17 +121,17 @@ class EmptyWhereTest {
     void testDeleteAllNull() {
         String fName = null;
         String lName = null;
-        
+
         DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "delete from person";
-        
+
         assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expected);
     }
 
@@ -139,22 +139,22 @@ class EmptyWhereTest {
     void testSelectThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
                 .where(id, isEqualTo(3));
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select id, first_name, last_name"
                 + " from person"
                 + " where id = #{parameters.p1}"
                 + " and first_name = #{parameters.p2}"
                 + " and last_name = #{parameters.p3}";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -162,21 +162,21 @@ class EmptyWhereTest {
     void testSelectTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(person.allColumns())
                 .from(person)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select *"
                 + " from person"
                 + " where first_name = #{parameters.p1}"
                 + " and last_name = #{parameters.p2}";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -184,20 +184,20 @@ class EmptyWhereTest {
     void testSelectFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select id, first_name, last_name"
                 + " from person"
                 + " where last_name = #{parameters.p1}";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -205,20 +205,20 @@ class EmptyWhereTest {
     void testSelectLastNameNull() {
         String fName = "Fred";
         String lName = null;
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select id, first_name, last_name"
                 + " from person"
                 + " where first_name = #{parameters.p1}";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -226,19 +226,19 @@ class EmptyWhereTest {
     void testSelectAllNull() {
         String fName = null;
         String lName = null;
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select id, first_name, last_name"
                 + " from person";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -246,23 +246,23 @@ class EmptyWhereTest {
     void testJoinThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName, orderDate)
                 .from(person).join(order).on(person.id, equalTo(order.personId))
                 .where(id, isEqualTo(3));
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
                 + " join order on person.id = order.person_id"
                 + " where person.id = #{parameters.p1}"
                 + " and person.first_name = #{parameters.p2}"
                 + " and person.last_name = #{parameters.p3}";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -270,22 +270,22 @@ class EmptyWhereTest {
     void testJoinTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName, orderDate)
                 .from(person).join(order).on(person.id, equalTo(order.personId))
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
                 + " join order on person.id = order.person_id"
                 + " where person.first_name = #{parameters.p1}"
                 + " and person.last_name = #{parameters.p2}";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -293,21 +293,21 @@ class EmptyWhereTest {
     void testJoinFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName, orderDate)
                 .from(person).join(order).on(person.id, equalTo(order.personId))
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
                 + " join order on person.id = order.person_id"
                 + " where person.last_name = #{parameters.p1}";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -315,21 +315,21 @@ class EmptyWhereTest {
     void testJoinLastNameNull() {
         String fName = "Fred";
         String lName = null;
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName, orderDate)
                 .from(person).join(order).on(person.id, equalTo(order.personId))
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
                 + " join order on person.id = order.person_id"
                 + " where person.first_name = #{parameters.p1}";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -337,20 +337,20 @@ class EmptyWhereTest {
     void testJoinAllNull() {
         String fName = null;
         String lName = null;
-        
+
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName, orderDate)
                 .from(person).join(order).on(person.id, equalTo(order.personId))
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
                 + " join order on person.id = order.person_id";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
@@ -358,22 +358,22 @@ class EmptyWhereTest {
     void testUpdateThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         UpdateDSL<UpdateModel>.UpdateWhereBuilder builder = update(person)
                 .set(id).equalTo(3)
                 .where(id, isEqualTo(3));
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "update person"
                 + " set id = #{parameters.p1}"
                 + " where id = #{parameters.p2}"
                 + " and first_name = #{parameters.p3}"
                 + " and last_name = #{parameters.p4}";
-        
+
         assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
     }
 
@@ -381,21 +381,21 @@ class EmptyWhereTest {
     void testUpdateTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         UpdateDSL<UpdateModel>.UpdateWhereBuilder builder = update(person)
                 .set(id).equalTo(3)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "update person"
                 + " set id = #{parameters.p1}"
                 + " where first_name = #{parameters.p2}"
                 + " and last_name = #{parameters.p3}";
-        
+
         assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
     }
 
@@ -403,18 +403,18 @@ class EmptyWhereTest {
     void testUpdateFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
-        
+
         DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "delete from person"
                 + " where last_name = #{parameters.p1}";
-        
+
         assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expected);
     }
 
@@ -422,20 +422,20 @@ class EmptyWhereTest {
     void testUpdateLastNameNull() {
         String fName = "Fred";
         String lName = null;
-        
+
         UpdateDSL<UpdateModel>.UpdateWhereBuilder builder = update(person)
                 .set(id).equalTo(3)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "update person"
                 + " set id = #{parameters.p1}"
                 + " where first_name = #{parameters.p2}";
-        
+
         assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
     }
 
@@ -443,19 +443,19 @@ class EmptyWhereTest {
     void testUpdateAllNull() {
         String fName = null;
         String lName = null;
-        
+
         UpdateDSL<UpdateModel>.UpdateWhereBuilder builder = update(person)
                 .set(id).equalTo(3)
                 .where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "update person"
                 + " set id = #{parameters.p1}";
-        
+
         assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
     }
 
@@ -463,18 +463,18 @@ class EmptyWhereTest {
     void testWhereThreeConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         WhereDSL builder = where(id, isEqualTo(3));
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "where id = #{parameters.p1}"
                 + " and first_name = #{parameters.p2}"
                 + " and last_name = #{parameters.p3}";
-        
+
         assertThat(whereClause.getWhereClause()).isEqualTo(expected);
     }
 
@@ -482,17 +482,17 @@ class EmptyWhereTest {
     void testWhereTwoConditions() {
         String fName = "Fred";
         String lName = "Flintstone";
-        
+
         WhereDSL builder = where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "where first_name = #{parameters.p1}"
                 + " and last_name = #{parameters.p2}";
-        
+
         assertThat(whereClause.getWhereClause()).isEqualTo(expected);
     }
 
@@ -500,16 +500,16 @@ class EmptyWhereTest {
     void testWhereFirstNameNull() {
         String fName = null;
         String lName = "Flintstone";
-        
+
         WhereDSL builder = where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "where last_name = #{parameters.p1}";
-        
+
         assertThat(whereClause.getWhereClause()).isEqualTo(expected);
     }
 
@@ -517,16 +517,16 @@ class EmptyWhereTest {
     void testWhereLastNameNull() {
         String fName = "Fred";
         String lName = null;
-        
+
         WhereDSL builder = where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "where first_name = #{parameters.p1}";
-        
+
         assertThat(whereClause.getWhereClause()).isEqualTo(expected);
     }
 
@@ -534,14 +534,14 @@ class EmptyWhereTest {
     void testWhereAllNull() {
         String fName = null;
         String lName = null;
-        
+
         WhereDSL builder = where();
-        
+
         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
         builder.and(lastName, isEqualTo(lName).when(Objects::nonNull));
-        
+
         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
-        
+
         assertThat(whereClause.getWhereClause()).isEmpty();
     }
 }

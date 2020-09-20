@@ -25,13 +25,13 @@ public class ValueMapping<T> extends AbstractColumnMapping {
     private final Supplier<T> valueSupplier;
     // keep a reference to the column so we don't lose the type
     private final SqlColumn<T> localColumn;
-    
+
     private ValueMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
         super(column);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
         localColumn = Objects.requireNonNull(column);
     }
-    
+
     public Object value() {
         return localColumn.convertParameterType(valueSupplier.get());
     }

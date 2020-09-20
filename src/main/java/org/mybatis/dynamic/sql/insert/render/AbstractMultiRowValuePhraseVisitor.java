@@ -53,7 +53,7 @@ public abstract class AbstractMultiRowValuePhraseVisitor extends MultiRowInsertM
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .build();
     }
-    
+
     @Override
     public FieldAndValue visit(PropertyMapping mapping) {
         return FieldAndValue.withFieldName(mapping.columnName())

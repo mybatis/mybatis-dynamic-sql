@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 public class IsNotEqualToWithSubselect<T> extends AbstractSubselectCondition<T> {
-    
+
     protected IsNotEqualToWithSubselect(Buildable<SelectModel> selectModelBuilder) {
         super(selectModelBuilder);
     }

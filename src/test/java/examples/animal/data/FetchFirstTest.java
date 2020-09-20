@@ -42,10 +42,10 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 class FetchFirstTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
-    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
-    
+    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -55,7 +55,7 @@ class FetchFirstTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
@@ -72,10 +72,10 @@ class FetchFirstTest {
                     .fetchFirst(3).rowsOnly()
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
-        
+
             assertAll(
                     () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(23),
@@ -94,10 +94,10 @@ class FetchFirstTest {
                     .fetchFirst(3).rowsOnly()
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
-        
+
             assertAll(
                     () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(1),
@@ -118,10 +118,10 @@ class FetchFirstTest {
                     .fetchFirst(3).rowsOnly()
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
-        
+
             assertAll(
                     () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(45),
@@ -141,10 +141,10 @@ class FetchFirstTest {
                     .fetchFirst(3).rowsOnly()
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
-        
+
             assertAll(
                     () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(1),
@@ -164,10 +164,10 @@ class FetchFirstTest {
                     .fetchFirst(3).rowsOnly()
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
-        
+
             assertAll(
                     () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(23),
@@ -187,10 +187,10 @@ class FetchFirstTest {
                     .fetchFirst(3).rowsOnly()
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-        
+
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = mapper.selectMany(selectStatement);
-        
+
             assertAll(
                     () -> assertThat(records).hasSize(3),
                     () -> assertThat(records.get(0).getId()).isEqualTo(1),

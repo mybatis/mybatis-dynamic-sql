@@ -28,7 +28,7 @@ public interface JoinMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("SimpleJoinResult")
     List<OrderMaster> selectMany(SelectStatementProvider selectStatement);
-    
+
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results ({
         @Result(column="user_id", property="userId"),

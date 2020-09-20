@@ -43,12 +43,12 @@ class UpdateStatementTest {
                 .where(id, isEqualTo(3))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.p2,jdbcType=VARCHAR}, "
                 + "occupation = null "
                 + "where id = #{parameters.p3,jdbcType=INTEGER}";
-                
+
         assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
         assertThat(updateStatement.getParameters()).hasSize(3);
         assertThat(updateStatement.getParameters()).containsEntry("p1", "fred");
@@ -66,13 +66,13 @@ class UpdateStatementTest {
                 .and(firstName, isEqualTo("barney"))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expectedSetClause = "update foo set occupation = null, "
                 + "firstName = #{parameters.p1,jdbcType=VARCHAR}, "
                 + "lastName = #{parameters.p2,jdbcType=VARCHAR} "
                 + "where id = #{parameters.p3,jdbcType=INTEGER} "
                 + "and firstName = #{parameters.p4,jdbcType=VARCHAR}";
-                
+
         assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedSetClause);
         assertThat(updateStatement.getParameters()).hasSize(4);
         assertThat(updateStatement.getParameters()).containsEntry("p1", "fred");

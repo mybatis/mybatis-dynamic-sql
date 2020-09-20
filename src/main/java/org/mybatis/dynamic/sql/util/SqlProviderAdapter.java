@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 /**
  * Adapter for use with MyBatis SQL provider annotations.
- * 
+ *
  * @author Jeff Butler
  *
  */
@@ -34,23 +34,23 @@ public class SqlProviderAdapter {
     public String delete(DeleteStatementProvider deleteStatement) {
         return deleteStatement.getDeleteStatement();
     }
-    
+
     public String generalInsert(GeneralInsertStatementProvider insertStatement) {
         return insertStatement.getInsertStatement();
     }
-    
+
     public String insert(InsertStatementProvider<?> insertStatement) {
         return insertStatement.getInsertStatement();
     }
-    
+
     public String insertMultiple(MultiRowInsertStatementProvider<?> insertStatement) {
         return insertStatement.getInsertStatement();
     }
-    
+
     public String insertSelect(InsertSelectStatementProvider insertStatement) {
         return insertStatement.getInsertStatement();
     }
-    
+
     public String select(SelectStatementProvider selectStatement) {
         return selectStatement.getSelectStatement();
     }

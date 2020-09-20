@@ -24,7 +24,7 @@ public class IsLikeCaseInsensitiveWhenPresent extends IsLikeCaseInsensitive {
     protected IsLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
         super(valueSupplier, Objects::nonNull);
     }
-    
+
     public static IsLikeCaseInsensitiveWhenPresent of(Supplier<String> valueSupplier) {
         return new IsLikeCaseInsensitiveWhenPresent(valueSupplier);
     }

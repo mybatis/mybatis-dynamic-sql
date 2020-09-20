@@ -35,83 +35,83 @@ class ComplexQueryTest {
     @Test
     void testId() {
         SelectStatementProvider selectStatement = search(2, null, null);
-        
+
         String expected = "select person_id, first_name, last_name"
                 + " from Person"
                 + " where person_id = #{parameters.p1}"
                 + " order by last_name, first_name"
                 + " fetch first #{parameters.p2} rows only";
-                
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
         assertThat(selectStatement.getParameters()).containsEntry("p2", 50L);
     }
-    
+
     @Test
     void testFirstNameOnly() {
         SelectStatementProvider selectStatement = search(null, "fred", null);
-        
+
         String expected = "select person_id, first_name, last_name"
                 + " from Person"
                 + " where first_name like #{parameters.p1}"
                 + " order by last_name, first_name"
                 + " fetch first #{parameters.p2} rows only";
-                
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(selectStatement.getParameters()).containsEntry("p1", "%fred%");
         assertThat(selectStatement.getParameters()).containsEntry("p2", 50L);
     }
-    
+
     @Test
     void testLastNameOnly() {
         SelectStatementProvider selectStatement = search(null, null, "flintstone");
-        
+
         String expected = "select person_id, first_name, last_name"
                 + " from Person"
                 + " where last_name like #{parameters.p1}"
                 + " order by last_name, first_name"
                 + " fetch first #{parameters.p2} rows only";
-                
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(selectStatement.getParameters()).containsEntry("p1", "%flintstone%");
         assertThat(selectStatement.getParameters()).containsEntry("p2", 50L);
     }
-    
+
     @Test
     void testBothNames() {
         SelectStatementProvider selectStatement = search(null, "fred", "flintstone");
-        
+
         String expected = "select person_id, first_name, last_name"
                 + " from Person"
                 + " where first_name like #{parameters.p1}"
                 + " and last_name like #{parameters.p2}"
                 + " order by last_name, first_name"
                 + " fetch first #{parameters.p3} rows only";
-                
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(selectStatement.getParameters()).containsEntry("p1", "%fred%");
         assertThat(selectStatement.getParameters()).containsEntry("p2", "%flintstone%");
         assertThat(selectStatement.getParameters()).containsEntry("p3", 50L);
     }
-    
+
     @Test
     void testAllNull() {
         SelectStatementProvider selectStatement = search(null, null, null);
-        
+
         String expected = "select person_id, first_name, last_name"
                 + " from Person"
                 + " order by last_name, first_name"
                 + " fetch first #{parameters.p1} rows only";
-                
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(selectStatement.getParameters()).containsEntry("p1", 50L);
     }
-    
+
     SelectStatementProvider search(Integer targetId, String fName, String lName) {
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
                 .where();
-        
+
         if (targetId != null) {
             builder
                 .and(id, isEqualTo(targetId));
@@ -124,10 +124,10 @@ class ComplexQueryTest {
         builder
             .orderBy(lastName, firstName)
             .fetchFirst(50).rowsOnly();
-        
+
         return builder.build().render(RenderingStrategies.MYBATIS3);
     }
-    
+
     String addWildcards(String s) {
         return "%" + s + "%";
     }

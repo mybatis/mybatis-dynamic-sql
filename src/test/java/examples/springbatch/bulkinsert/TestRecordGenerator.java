@@ -20,9 +20,9 @@ import org.springframework.batch.item.ItemReader;
 import examples.springbatch.common.PersonRecord;
 
 public class TestRecordGenerator implements ItemReader<PersonRecord> {
-    
+
     private int index = 0;
-    
+
     private static PersonRecord[] testRecords = {
             new PersonRecord("Fred", "Flintstone"),
             new PersonRecord("Wilma", "Flintstone"),
@@ -40,7 +40,7 @@ public class TestRecordGenerator implements ItemReader<PersonRecord> {
             return null;
         }
     }
-    
+
     public static int recordCount() {
         return testRecords.length;
     }

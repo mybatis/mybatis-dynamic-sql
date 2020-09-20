@@ -38,25 +38,25 @@ public class DefaultGeneralInsertStatementProvider
     public String getInsertStatement() {
         return insertStatement;
     }
-    
+
     public static Builder withInsertStatement(String insertStatement) {
         return new Builder().withInsertStatement(insertStatement);
     }
-    
+
     public static class Builder {
         private String insertStatement;
         private final Map<String, Object> parameters = new HashMap<>();
-        
+
         public Builder withInsertStatement(String insertStatement) {
             this.insertStatement = insertStatement;
             return this;
         }
-        
+
         public Builder withParameters(Map<String, Object> parameters) {
             this.parameters.putAll(parameters);
             return this;
         }
-        
+
         public DefaultGeneralInsertStatementProvider build() {
             return new DefaultGeneralInsertStatementProvider(this);
         }

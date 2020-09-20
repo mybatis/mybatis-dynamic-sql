@@ -117,7 +117,7 @@ public interface SqlBuilder {
     static CountDSL.FromGatherer<SelectModel> countDistinctColumn(BasicColumn column) {
         return CountDSL.countDistinct(column);
     }
-    
+
     /**
      * Renders as select count(column) from table...
      *
@@ -127,7 +127,7 @@ public interface SqlBuilder {
     static CountDSL.FromGatherer<SelectModel> countColumn(BasicColumn column) {
         return CountDSL.count(column);
     }
-    
+
     /**
      * Renders as select count(*) from table...
      *
@@ -137,7 +137,7 @@ public interface SqlBuilder {
     static CountDSL<SelectModel> countFrom(SqlTable table) {
         return CountDSL.countFrom(table);
     }
-    
+
     static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
         return DeleteDSL.deleteFrom(table);
     }
@@ -200,7 +200,7 @@ public interface SqlBuilder {
      * Insert multiple records in a single statement. The model object is structured as a single insert statement with
      * multiple values clauses. This statement is suitable for use with a small number of records. It is not suitable
      * for large bulk inserts as it is possible to exceed the limit of parameter markers in a prepared statement.
-     * 
+     *
      * <p>For large bulk inserts, see {@link SqlBuilder#insertBatch(Object[])}
      *
      * @param records records to insert
@@ -226,27 +226,27 @@ public interface SqlBuilder {
     static <T> MultiRowInsertDSL.IntoGatherer<T> insertMultiple(Collection<T> records) {
         return MultiRowInsertDSL.insert(records);
     }
-    
+
     static InsertIntoNextStep insertInto(SqlTable table) {
         return new InsertIntoNextStep(table);
     }
-    
+
     static FromGatherer<SelectModel> select(BasicColumn...selectList) {
         return SelectDSL.select(selectList);
     }
-    
+
     static FromGatherer<SelectModel> select(Collection<BasicColumn> selectList) {
         return SelectDSL.select(selectList);
     }
-    
+
     static FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
         return SelectDSL.selectDistinct(selectList);
     }
-    
+
     static FromGatherer<SelectModel> selectDistinct(Collection<BasicColumn> selectList) {
         return SelectDSL.selectDistinct(selectList);
     }
-    
+
     static UpdateDSL<UpdateModel> update(SqlTable table) {
         return UpdateDSL.update(table);
     }
@@ -254,16 +254,16 @@ public interface SqlBuilder {
     static WhereDSL where() {
         return WhereDSL.where();
     }
-    
+
     static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition) {
         return WhereDSL.where().where(column, condition);
     }
-    
+
     static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>... subCriteria) {
         return WhereDSL.where().where(column, condition, subCriteria);
     }
-    
+
     // where condition connectors
     static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition) {
         return SqlCriterion.withColumn(column)
@@ -305,7 +305,7 @@ public interface SqlBuilder {
                 .withJoinCondition(joinCondition)
                 .build();
     }
-    
+
     static JoinCriterion on(BasicColumn joinColumn, JoinCondition joinCondition) {
         return new JoinCriterion.Builder()
                 .withConnector("on") //$NON-NLS-1$
@@ -313,7 +313,7 @@ public interface SqlBuilder {
                 .withJoinCondition(joinCondition)
                 .build();
     }
-    
+
     static EqualTo equalTo(BasicColumn column) {
         return new EqualTo(column);
     }
@@ -322,19 +322,19 @@ public interface SqlBuilder {
     static CountAll count() {
         return new CountAll();
     }
-    
+
     static Count count(BasicColumn column) {
         return Count.of(column);
     }
-    
+
     static CountDistinct countDistinct(BasicColumn column) {
         return CountDistinct.of(column);
     }
-    
+
     static <T> Max<T> max(BindableColumn<T> column) {
         return Max.of(column);
     }
-    
+
     static <T> Min<T> min(BindableColumn<T> column) {
         return Min.of(column);
     }
@@ -351,54 +351,54 @@ public interface SqlBuilder {
     static <T> Constant<T> constant(String constant) {
         return Constant.of(constant);
     }
-    
+
     static StringConstant stringConstant(String constant) {
         return StringConstant.of(constant);
     }
-    
+
     // functions
     static <T extends Number> Add<T> add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Add.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
-    
+
     static <T extends Number> Divide<T> divide(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Divide.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
-    
+
     static <T extends Number> Multiply<T> multiply(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Multiply.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
-    
+
     static <T extends Number> Subtract<T> subtract(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Subtract.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
-    
+
     static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Concatenate.concatenate(firstColumn, secondColumn, subsequentColumns);
     }
-    
+
     static <T> OperatorFunction<T> applyOperator(String operator, BindableColumn<T> firstColumn,
             BasicColumn secondColumn, BasicColumn... subsequentColumns) {
         return OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns);
     }
-    
+
     static Lower lower(BindableColumn<String> column) {
         return Lower.of(column);
     }
-    
+
     static Substring substring(BindableColumn<String> column, int offset, int length) {
         return Substring.of(column, offset, length);
     }
-    
+
     static Upper upper(BindableColumn<String> column) {
         return Upper.of(column);
     }
-    
+
     // conditions for all data types
     static <T> IsNull<T> isNull() {
         return new IsNull<>();
@@ -419,7 +419,7 @@ public interface SqlBuilder {
     static <T> IsEqualToWithSubselect<T> isEqualTo(Buildable<SelectModel> selectModelBuilder) {
         return IsEqualToWithSubselect.of(selectModelBuilder);
     }
-    
+
     static <T> IsEqualToColumn<T> isEqualTo(BasicColumn column) {
         return IsEqualToColumn.of(column);
     }
@@ -431,7 +431,7 @@ public interface SqlBuilder {
     static <T> IsEqualToWhenPresent<T> isEqualToWhenPresent(Supplier<T> valueSupplier) {
         return IsEqualToWhenPresent.of(valueSupplier);
     }
-    
+
     static <T> IsNotEqualTo<T> isNotEqualTo(T value) {
         return isNotEqualTo(() -> value);
     }
@@ -455,19 +455,19 @@ public interface SqlBuilder {
     static <T> IsNotEqualToWhenPresent<T> isNotEqualToWhenPresent(Supplier<T> valueSupplier) {
         return IsNotEqualToWhenPresent.of(valueSupplier);
     }
-    
+
     static <T> IsGreaterThan<T> isGreaterThan(T value) {
         return isGreaterThan(() -> value);
     }
-    
+
     static <T> IsGreaterThan<T> isGreaterThan(Supplier<T> valueSupplier) {
         return IsGreaterThan.of(valueSupplier);
     }
-    
+
     static <T> IsGreaterThanWithSubselect<T> isGreaterThan(Buildable<SelectModel> selectModelBuilder) {
         return IsGreaterThanWithSubselect.of(selectModelBuilder);
     }
-    
+
     static <T> IsGreaterThanColumn<T> isGreaterThan(BasicColumn column) {
         return IsGreaterThanColumn.of(column);
     }
@@ -475,24 +475,24 @@ public interface SqlBuilder {
     static <T> IsGreaterThanWhenPresent<T> isGreaterThanWhenPresent(T value) {
         return isGreaterThanWhenPresent(() -> value);
     }
-    
+
     static <T> IsGreaterThanWhenPresent<T> isGreaterThanWhenPresent(Supplier<T> valueSupplier) {
         return IsGreaterThanWhenPresent.of(valueSupplier);
     }
-    
+
     static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(T value) {
         return isGreaterThanOrEqualTo(() -> value);
     }
-    
+
     static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(Supplier<T> valueSupplier) {
         return IsGreaterThanOrEqualTo.of(valueSupplier);
     }
-    
+
     static <T> IsGreaterThanOrEqualToWithSubselect<T> isGreaterThanOrEqualTo(
             Buildable<SelectModel> selectModelBuilder) {
         return IsGreaterThanOrEqualToWithSubselect.of(selectModelBuilder);
     }
-    
+
     static <T> IsGreaterThanOrEqualToColumn<T> isGreaterThanOrEqualTo(BasicColumn column) {
         return IsGreaterThanOrEqualToColumn.of(column);
     }
@@ -500,23 +500,23 @@ public interface SqlBuilder {
     static <T> IsGreaterThanOrEqualToWhenPresent<T> isGreaterThanOrEqualToWhenPresent(T value) {
         return isGreaterThanOrEqualToWhenPresent(() -> value);
     }
-    
+
     static <T> IsGreaterThanOrEqualToWhenPresent<T> isGreaterThanOrEqualToWhenPresent(Supplier<T> valueSupplier) {
         return IsGreaterThanOrEqualToWhenPresent.of(valueSupplier);
     }
-    
+
     static <T> IsLessThan<T> isLessThan(T value) {
         return isLessThan(() -> value);
     }
-    
+
     static <T> IsLessThan<T> isLessThan(Supplier<T> valueSupplier) {
         return IsLessThan.of(valueSupplier);
     }
-    
+
     static <T> IsLessThanWithSubselect<T> isLessThan(Buildable<SelectModel> selectModelBuilder) {
         return IsLessThanWithSubselect.of(selectModelBuilder);
     }
-    
+
     static <T> IsLessThanColumn<T> isLessThan(BasicColumn column) {
         return IsLessThanColumn.of(column);
     }
@@ -524,23 +524,23 @@ public interface SqlBuilder {
     static <T> IsLessThanWhenPresent<T> isLessThanWhenPresent(T value) {
         return isLessThanWhenPresent(() -> value);
     }
-    
+
     static <T> IsLessThanWhenPresent<T> isLessThanWhenPresent(Supplier<T> valueSupplier) {
         return IsLessThanWhenPresent.of(valueSupplier);
     }
-    
+
     static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(T value) {
         return isLessThanOrEqualTo(() -> value);
     }
-    
+
     static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(Supplier<T> valueSupplier) {
         return IsLessThanOrEqualTo.of(valueSupplier);
     }
-    
+
     static <T> IsLessThanOrEqualToWithSubselect<T> isLessThanOrEqualTo(Buildable<SelectModel> selectModelBuilder) {
         return IsLessThanOrEqualToWithSubselect.of(selectModelBuilder);
     }
-    
+
     static <T> IsLessThanOrEqualToColumn<T> isLessThanOrEqualTo(BasicColumn column) {
         return IsLessThanOrEqualToColumn.of(column);
     }
@@ -548,11 +548,11 @@ public interface SqlBuilder {
     static <T> IsLessThanOrEqualToWhenPresent<T> isLessThanOrEqualToWhenPresent(T value) {
         return isLessThanOrEqualToWhenPresent(() -> value);
     }
-    
+
     static <T> IsLessThanOrEqualToWhenPresent<T> isLessThanOrEqualToWhenPresent(Supplier<T> valueSupplier) {
         return IsLessThanOrEqualToWhenPresent.of(valueSupplier);
     }
-    
+
     @SafeVarargs
     static <T> IsIn<T> isIn(T...values) {
         return isIn(Arrays.asList(values));
@@ -561,7 +561,7 @@ public interface SqlBuilder {
     static <T> IsIn<T> isIn(Collection<T> values) {
         return IsIn.of(values);
     }
-    
+
     static <T> IsInWithSubselect<T> isIn(Buildable<SelectModel> selectModelBuilder) {
         return IsInWithSubselect.of(selectModelBuilder);
     }
@@ -574,16 +574,16 @@ public interface SqlBuilder {
     static <T> IsInWhenPresent<T> isInWhenPresent(Collection<T> values) {
         return IsInWhenPresent.of(values);
     }
-    
+
     @SafeVarargs
     static <T> IsNotIn<T> isNotIn(T...values) {
         return isNotIn(Arrays.asList(values));
     }
-    
+
     static <T> IsNotIn<T> isNotIn(Collection<T> values) {
         return IsNotIn.of(values);
     }
-    
+
     static <T> IsNotInWithSubselect<T> isNotIn(Buildable<SelectModel> selectModelBuilder) {
         return IsNotInWithSubselect.of(selectModelBuilder);
     }
@@ -596,27 +596,27 @@ public interface SqlBuilder {
     static <T> IsNotInWhenPresent<T> isNotInWhenPresent(Collection<T> values) {
         return IsNotInWhenPresent.of(values);
     }
-    
+
     static <T> IsBetween.Builder<T> isBetween(T value1) {
         return isBetween(() -> value1);
     }
-    
+
     static <T> IsBetween.Builder<T> isBetween(Supplier<T> valueSupplier1) {
         return IsBetween.isBetween(valueSupplier1);
     }
-    
+
     static <T> IsBetweenWhenPresent.Builder<T> isBetweenWhenPresent(T value1) {
         return isBetweenWhenPresent(() -> value1);
     }
-    
+
     static <T> IsBetweenWhenPresent.Builder<T> isBetweenWhenPresent(Supplier<T> valueSupplier1) {
         return IsBetweenWhenPresent.isBetweenWhenPresent(valueSupplier1);
     }
-    
+
     static <T> IsNotBetween.Builder<T> isNotBetween(T value1) {
         return isNotBetween(() -> value1);
     }
-    
+
     static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<T> valueSupplier1) {
         return IsNotBetween.isNotBetween(valueSupplier1);
     }
@@ -624,40 +624,40 @@ public interface SqlBuilder {
     static <T> IsNotBetweenWhenPresent.Builder<T> isNotBetweenWhenPresent(T value1) {
         return isNotBetweenWhenPresent(() -> value1);
     }
-    
+
     static <T> IsNotBetweenWhenPresent.Builder<T> isNotBetweenWhenPresent(Supplier<T> valueSupplier1) {
         return IsNotBetweenWhenPresent.isNotBetweenWhenPresent(valueSupplier1);
     }
-    
+
     // for string columns, but generic for columns with type handlers
     static <T> IsLike<T> isLike(T value) {
         return isLike(() -> value);
     }
-    
+
     static <T> IsLike<T> isLike(Supplier<T> valueSupplier) {
         return IsLike.of(valueSupplier);
     }
-    
+
     static <T> IsLikeWhenPresent<T> isLikeWhenPresent(T value) {
         return isLikeWhenPresent(() -> value);
     }
-    
+
     static <T> IsLikeWhenPresent<T> isLikeWhenPresent(Supplier<T> valueSupplier) {
         return IsLikeWhenPresent.of(valueSupplier);
     }
-    
+
     static <T> IsNotLike<T> isNotLike(T value) {
         return isNotLike(() -> value);
     }
-    
+
     static <T> IsNotLike<T> isNotLike(Supplier<T> valueSupplier) {
         return IsNotLike.of(valueSupplier);
     }
-    
+
     static <T> IsNotLikeWhenPresent<T> isNotLikeWhenPresent(T value) {
         return isNotLikeWhenPresent(() -> value);
     }
-    
+
     static <T> IsNotLikeWhenPresent<T> isNotLikeWhenPresent(Supplier<T> valueSupplier) {
         return IsNotLikeWhenPresent.of(valueSupplier);
     }
@@ -675,19 +675,19 @@ public interface SqlBuilder {
     static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
         return isLikeCaseInsensitive(() -> value);
     }
-    
+
     static IsLikeCaseInsensitive isLikeCaseInsensitive(Supplier<String> valueSupplier) {
         return IsLikeCaseInsensitive.of(valueSupplier);
     }
-    
+
     static IsLikeCaseInsensitiveWhenPresent isLikeCaseInsensitiveWhenPresent(String value) {
         return isLikeCaseInsensitiveWhenPresent(() -> value);
     }
-    
+
     static IsLikeCaseInsensitiveWhenPresent isLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
         return IsLikeCaseInsensitiveWhenPresent.of(valueSupplier);
     }
-    
+
     static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
         return isNotLikeCaseInsensitive(() -> value);
     }
@@ -699,11 +699,11 @@ public interface SqlBuilder {
     static IsNotLikeCaseInsensitiveWhenPresent isNotLikeCaseInsensitiveWhenPresent(String value) {
         return isNotLikeCaseInsensitiveWhenPresent(() -> value);
     }
-    
+
     static IsNotLikeCaseInsensitiveWhenPresent isNotLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
         return IsNotLikeCaseInsensitiveWhenPresent.of(valueSupplier);
     }
-    
+
     static IsInCaseInsensitive isInCaseInsensitive(String...values) {
         return isInCaseInsensitive(Arrays.asList(values));
     }
@@ -723,11 +723,11 @@ public interface SqlBuilder {
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
         return isNotInCaseInsensitive(Arrays.asList(values));
     }
-    
+
     static IsNotInCaseInsensitive isNotInCaseInsensitive(Collection<String> values) {
         return IsNotInCaseInsensitive.of(values);
     }
-    
+
     static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(String...values) {
         return isNotInCaseInsensitiveWhenPresent(Arrays.asList(values));
     }

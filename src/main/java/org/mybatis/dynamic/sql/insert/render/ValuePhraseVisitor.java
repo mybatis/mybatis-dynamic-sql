@@ -27,9 +27,9 @@ import org.mybatis.dynamic.sql.util.PropertyWhenPresentMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndValue>> {
-    
+
     protected final RenderingStrategy renderingStrategy;
-    
+
     public ValuePhraseVisitor(RenderingStrategy renderingStrategy) {
         this.renderingStrategy = renderingStrategy;
     }
@@ -54,14 +54,14 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .buildOptional();
     }
-    
+
     @Override
     public Optional<FieldAndValue> visit(PropertyMapping mapping) {
         return FieldAndValue.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapping.property())))
                 .buildOptional();
     }
-    
+
     @Override
     public Optional<FieldAndValue> visit(PropertyWhenPresentMapping mapping) {
         if (mapping.shouldRender()) {

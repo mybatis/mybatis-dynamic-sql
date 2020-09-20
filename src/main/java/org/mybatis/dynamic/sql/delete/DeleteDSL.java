@@ -36,16 +36,16 @@ public class DeleteDSL<R> implements Buildable<R> {
     private final Function<DeleteModel, R> adapterFunction;
     private final SqlTable table;
     private final DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();
-    
+
     private DeleteDSL(SqlTable table, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
-    
+
     public DeleteWhereBuilder where() {
         return whereBuilder;
     }
-    
+
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion<?>...subCriteria) {
         whereBuilder.where(column, condition, subCriteria);
@@ -59,7 +59,7 @@ public class DeleteDSL<R> implements Buildable<R> {
     /**
      * WARNING! Calling this method could result in an delete statement that deletes
      * all rows in a table.
-     * 
+     *
      * @return the model class
      */
     @NotNull
@@ -70,18 +70,18 @@ public class DeleteDSL<R> implements Buildable<R> {
                 .build();
         return adapterFunction.apply(deleteModel);
     }
-    
+
     public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table) {
         return new DeleteDSL<>(table, adapterFunction);
     }
-    
+
     public static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
         return deleteFrom(Function.identity(), table);
     }
-    
+
     /**
      * Delete record(s) by executing a MyBatis3 mapper method.
-     * 
+     *
      * @deprecated in favor of {@link MyBatis3Utils#deleteFrom(ToIntFunction, SqlTable, DeleteDSLCompleter)}.
      *     This method will be removed without direct replacement in a future version
      * @param <T> return value from a delete method - typically Integer
@@ -94,9 +94,9 @@ public class DeleteDSL<R> implements Buildable<R> {
             Function<DeleteStatementProvider, T> mapperMethod, SqlTable table) {
         return deleteFrom(deleteModel -> MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);
     }
-    
+
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> implements Buildable<R> {
-        
+
         private DeleteWhereBuilder() {
             super();
         }
@@ -106,7 +106,7 @@ public class DeleteDSL<R> implements Buildable<R> {
         public R build() {
             return DeleteDSL.this.build();
         }
-        
+
         @Override
         protected DeleteWhereBuilder getThis() {
             return this;

@@ -45,17 +45,17 @@ public interface AnimalDataMapper {
         @Result(column="body_weight", property="bodyWeight")
     })
     List<AnimalData> selectMany(SelectStatementProvider selectStatement);
-    
+
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("AnimalDataResult")
     AnimalData selectOne(SelectStatementProvider selectStatement);
-    
+
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
 
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
-    
+
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<AnimalData> insertStatement);
 
@@ -64,7 +64,7 @@ public interface AnimalDataMapper {
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insertSelect")
     int insertSelect(InsertSelectStatementProvider insertSelectStatement);
-    
+
     @Select({
         "select id, animal_name, brain_weight, body_weight",
         "from AnimalData",

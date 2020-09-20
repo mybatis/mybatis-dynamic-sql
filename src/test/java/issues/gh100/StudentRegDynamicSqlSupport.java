@@ -28,7 +28,7 @@ public class StudentRegDynamicSqlSupport {
         public final SqlColumn<String> studentid = column("studentId");
         public final SqlColumn<String> examnumber = column("examnumber");
         public final SqlColumn<String> regcode = column("regcode");
-        
+
         public StudentReg() {
             super("student_reg");
         }

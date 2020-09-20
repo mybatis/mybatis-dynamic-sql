@@ -43,11 +43,11 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
             .collect(Collectors.toList());
         this.emptyCallback = Objects.requireNonNull(emptyCallback);
     }
-    
+
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
         return values.stream().map(mapper);
     }
-    
+
     @Override
     public boolean shouldRender() {
         if (values.isEmpty()) {

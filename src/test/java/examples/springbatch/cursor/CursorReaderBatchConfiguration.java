@@ -56,13 +56,13 @@ import examples.springbatch.mapper.PersonMapper;
 @ComponentScan("examples.springbatch.common")
 @MapperScan("examples.springbatch.mapper")
 public class CursorReaderBatchConfiguration {
-    
+
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
-    
+
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
-    
+
     @Bean
     public DataSource dataSource() {
         return new EmbeddedDatabaseBuilder()
@@ -73,14 +73,14 @@ public class CursorReaderBatchConfiguration {
                 .addScript("classpath:/examples/springbatch/data.sql")
                 .build();
     }
-    
+
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         return sessionFactory.getObject();
     }
-    
+
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
@@ -93,14 +93,14 @@ public class CursorReaderBatchConfiguration {
                 .where(lastName, isEqualTo("flintstone"))
                 .build()
                 .render();
-        
+
         MyBatisCursorItemReader<PersonRecord> reader = new MyBatisCursorItemReader<>();
         reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
         reader.setSqlSessionFactory(sqlSessionFactory);
         reader.setParameterValues(SpringBatchUtility.toParameterValues(selectStatement));
         return reader;
     }
-    
+
     @Bean
     public MyBatisBatchItemWriter<PersonRecord> writer(SqlSessionFactory sqlSessionFactory,
             Converter<PersonRecord, UpdateStatementProvider> convertor) {
@@ -110,7 +110,7 @@ public class CursorReaderBatchConfiguration {
         writer.setStatementId(PersonMapper.class.getName() + ".update");
         return writer;
     }
-    
+
     @Bean
     public Step step1(ItemReader<PersonRecord> reader, ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
         return stepBuilderFactory.get("step1")

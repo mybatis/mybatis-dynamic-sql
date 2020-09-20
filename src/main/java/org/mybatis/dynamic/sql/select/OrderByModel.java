@@ -25,15 +25,15 @@ import org.mybatis.dynamic.sql.SortSpecification;
 
 public class OrderByModel {
     private final List<SortSpecification> columns = new ArrayList<>();
-    
+
     private OrderByModel(Collection<SortSpecification> columns) {
         this.columns.addAll(columns);
     }
-    
+
     public <R> Stream<R> mapColumns(Function<SortSpecification, R> mapper) {
         return columns.stream().map(mapper);
     }
-    
+
     public static OrderByModel of(Collection<SortSpecification> columns) {
         return new OrderByModel(columns);
     }

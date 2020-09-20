@@ -48,7 +48,7 @@ public interface UserMapper {
     default List<User> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, BasicColumn.columnList(id, name), user, completer);
     }
-    
+
     default int insert(User record) {
         return insert(SqlBuilder.insert(record)
                 .into(user)

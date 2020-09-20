@@ -38,7 +38,7 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
     private GeneralInsertDSL(SqlTable table) {
         this.table = Objects.requireNonNull(table);
     }
-    
+
     public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
         return new SetClauseFinisher<>(column);
     }
@@ -51,19 +51,19 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
                 .withInsertMappings(insertMappings)
                 .build();
     }
-    
+
     public static GeneralInsertDSL insertInto(SqlTable table) {
         return new GeneralInsertDSL(table);
     }
-    
+
     public class SetClauseFinisher<T> {
-        
+
         private final SqlColumn<T> column;
-        
+
         public SetClauseFinisher(SqlColumn<T> column) {
             this.column = column;
         }
-        
+
         public GeneralInsertDSL toNull() {
             insertMappings.add(NullMapping.of(column));
             return GeneralInsertDSL.this;
@@ -73,12 +73,12 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
             insertMappings.add(ConstantMapping.of(column, constant));
             return GeneralInsertDSL.this;
         }
-        
+
         public GeneralInsertDSL toStringConstant(String constant) {
             insertMappings.add(StringConstantMapping.of(column, constant));
             return GeneralInsertDSL.this;
         }
-        
+
         public GeneralInsertDSL toValue(T value) {
             return toValue(() -> value);
         }

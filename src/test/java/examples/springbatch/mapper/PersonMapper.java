@@ -48,7 +48,7 @@ public interface PersonMapper {
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
-    
+
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<PersonRecord> insertStatement);
 }

@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 public class IsLessThanOrEqualToWithSubselect<T> extends AbstractSubselectCondition<T> {
-    
+
     protected IsLessThanOrEqualToWithSubselect(Buildable<SelectModel> selectModelBuilder) {
         super(selectModelBuilder);
     }

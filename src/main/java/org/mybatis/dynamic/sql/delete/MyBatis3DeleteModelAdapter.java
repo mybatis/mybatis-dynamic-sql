@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
  *
  * @deprecated in favor of {@link DeleteDSLCompleter}. This class will be removed without replacement in a
  *     future version
- * 
+ *
  * @author Jeff Butler
  *
  */
@@ -35,20 +35,20 @@ public class MyBatis3DeleteModelAdapter<R> {
 
     private final DeleteModel deleteModel;
     private final Function<DeleteStatementProvider, R> mapperMethod;
-    
+
     private MyBatis3DeleteModelAdapter(DeleteModel deleteModel, Function<DeleteStatementProvider, R> mapperMethod) {
         this.deleteModel = Objects.requireNonNull(deleteModel);
         this.mapperMethod = Objects.requireNonNull(mapperMethod);
     }
-    
+
     public R execute() {
         return mapperMethod.apply(deleteStatement());
     }
-    
+
     private DeleteStatementProvider deleteStatement() {
         return deleteModel.render(RenderingStrategy.MYBATIS3);
     }
-    
+
     public static <R> MyBatis3DeleteModelAdapter<R> of(DeleteModel deleteModel,
             Function<DeleteStatementProvider, R> mapperMethod) {
         return new MyBatis3DeleteModelAdapter<>(deleteModel, mapperMethod);

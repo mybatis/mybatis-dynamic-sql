@@ -53,7 +53,7 @@ import examples.generated.always.GeneratedAlwaysRecord;
 
 class SpringTest {
     private NamedParameterJdbcTemplate template;
-    
+
     @BeforeEach
     void setup() {
         EmbeddedDatabase db = new EmbeddedDatabaseBuilder()
@@ -63,7 +63,7 @@ class SpringTest {
                 .build();
         template = new NamedParameterJdbcTemplate(db);
     }
-    
+
     @Test
     void testRender() {
         SelectStatementProvider selectStatement = select(id.as("A_ID"), firstName, lastName, fullName)
@@ -72,15 +72,15 @@ class SpringTest {
                 .orderBy(id.descending())
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
         String expected = "select a.id as A_ID, a.first_name, a.last_name, a.full_name "
                 + "from GeneratedAlways a "
                 + "where a.id > :p1 "
                 + "order by id DESC";
-        
+
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
-    
+
     @Test
     void testSelect() {
         SelectStatementProvider selectStatement = select(id, firstName, lastName, fullName)
@@ -89,9 +89,9 @@ class SpringTest {
                 .orderBy(id.descending())
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
         SqlParameterSource namedParameters = new MapSqlParameterSource(selectStatement.getParameters());
-        
+
         List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), namedParameters,
                 (rs, rowNum) -> {
                     GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -101,16 +101,16 @@ class SpringTest {
                     record.setFullName(rs.getString(4));
                     return record;
                 });
-        
+
         assertThat(records).hasSize(3);
         assertThat(records.get(0).getId()).isEqualTo(6);
         assertThat(records.get(0).getFirstName()).isEqualTo("Bamm Bamm");
         assertThat(records.get(0).getLastName()).isEqualTo("Rubble");
         assertThat(records.get(0).getFullName()).isEqualTo("Bamm Bamm Rubble");
-        
+
         assertThat(records.get(1).getId()).isEqualTo(5);
         assertThat(records.get(2).getId()).isEqualTo(4);
-        
+
     }
 
     @Test
@@ -119,21 +119,21 @@ class SpringTest {
                 .where(id,  isLessThan(3))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
         SqlParameterSource parameterSource = new MapSqlParameterSource(deleteStatement.getParameters());
-        
+
         int rows = template.update(deleteStatement.getDeleteStatement(), parameterSource);
-        
+
         assertThat(rows).isEqualTo(2);
     }
-    
+
     @Test
     void testInsert() {
         GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
         record.setId(100);
         record.setFirstName("Bob");
         record.setLastName("Jones");
-        
+
         InsertStatementProvider<GeneratedAlwaysRecord> insertStatement = insert(record)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
@@ -141,13 +141,13 @@ class SpringTest {
                 .map(lastName).toProperty("lastName")
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement.getRecord());
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        
+
         int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
         String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
-        
+
         assertThat(rows).isEqualTo(1);
         assertThat(generatedKey).isEqualTo("Bob Jones");
     }
@@ -158,20 +158,20 @@ class SpringTest {
         record.setId(100);
         record.setFirstName("Bob");
         record.setLastName("Jones");
-        
+
         Buildable<InsertModel<GeneratedAlwaysRecord>> insertStatement = insert(record)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName");
-       
+
         NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
-        
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        
+
         int rows = extensions.insert(insertStatement, keyHolder);
         String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
-        
+
         assertThat(rows).isEqualTo(1);
         assertThat(generatedKey).isEqualTo("Bob Jones");
     }
@@ -234,7 +234,7 @@ class SpringTest {
         record.setFirstName("Bob");
         record.setLastName("Jones");
         records.add(record);
-        
+
         record = new GeneratedAlwaysRecord();
         record.setId(101);
         record.setFirstName("Jim");
@@ -242,7 +242,7 @@ class SpringTest {
         records.add(record);
 
         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records);
-        
+
         BatchInsert<GeneratedAlwaysRecord> batchInsert = insertBatch(records)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
@@ -250,9 +250,9 @@ class SpringTest {
                 .map(lastName).toProperty("lastName")
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
         int[] updateCounts = template.batchUpdate(batchInsert.getInsertStatementSQL(), batch);
-        
+
         assertThat(updateCounts).hasSize(2);
         assertThat(updateCounts[0]).isEqualTo(1);
         assertThat(updateCounts[1]).isEqualTo(1);
@@ -268,7 +268,7 @@ class SpringTest {
         record.setFirstName("Bob");
         record.setLastName("Jones");
         records.add(record);
-        
+
         record = new GeneratedAlwaysRecord();
         record.setId(101);
         record.setFirstName("Jim");
@@ -280,9 +280,9 @@ class SpringTest {
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName");
-        
+
         int[] updateCounts = extensions.insertBatch(insertStatement);
-        
+
         assertThat(updateCounts).hasSize(2);
         assertThat(updateCounts[0]).isEqualTo(1);
         assertThat(updateCounts[1]).isEqualTo(1);
@@ -299,18 +299,18 @@ class SpringTest {
         record.setFirstName("Bob");
         record.setLastName("Jones");
         records.add(record);
-        
+
         record = new GeneratedAlwaysRecord();
         record.setId(101);
         record.setFirstName("Jim");
         record.setLastName("Smith");
         records.add(record);
-        
+
         Buildable<MultiRowInsertModel<GeneratedAlwaysRecord>> insertStatement = insertMultiple(records).into(generatedAlways)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName");
-        
+
         int rows = extensions.insertMultiple(insertStatement, keyHolder);
 
         assertThat(rows).isEqualTo(2);
@@ -325,11 +325,11 @@ class SpringTest {
                 .where(id,  isIn(1, 5, 22))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
         SqlParameterSource parameterSource = new MapSqlParameterSource(updateStatement.getParameters());
-        
+
         int rows = template.update(updateStatement.getUpdateStatement(), parameterSource);
-        
+
         assertThat(rows).isEqualTo(2);
     }
 }

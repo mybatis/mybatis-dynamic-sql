@@ -23,21 +23,21 @@ import org.mybatis.dynamic.sql.BindableColumn;
 
 /**
  * Represents a database function.
- * 
+ *
  * @deprecated in favor of {@link AbstractUniTypeFunction}
- * 
+ *
  * @author Jeff Butler
  */
 @Deprecated
 public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>> implements BindableColumn<T> {
-    
+
     protected final BindableColumn<T> column;
     protected String alias;
 
     protected AbstractFunction(BindableColumn<T> column) {
         this.column = Objects.requireNonNull(column);
     }
-    
+
     @Override
     public Optional<String> alias() {
         return Optional.ofNullable(alias);
@@ -59,6 +59,6 @@ public abstract class AbstractFunction<T, U extends AbstractFunction<T, U>> impl
     public Optional<String> typeHandler() {
         return column.typeHandler();
     }
-    
+
     protected abstract U copy();
 }

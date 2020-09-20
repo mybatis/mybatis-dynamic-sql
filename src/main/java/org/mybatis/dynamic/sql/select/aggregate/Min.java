@@ -34,7 +34,7 @@ public class Min<T> extends AbstractUniTypeFunction<T, Min<T>> {
     protected Min<T> copy() {
         return new Min<>(column);
     }
-    
+
     public static <T> Min<T> of(BindableColumn<T> column) {
         return new Min<>(column);
     }

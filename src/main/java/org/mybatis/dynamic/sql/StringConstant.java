@@ -24,7 +24,7 @@ public class StringConstant implements BindableColumn<String> {
 
     private String alias;
     private final String value;
-    
+
     private StringConstant(String value) {
         this.value = Objects.requireNonNull(value);
     }
@@ -45,7 +45,7 @@ public class StringConstant implements BindableColumn<String> {
         copy.alias = alias;
         return copy;
     }
-    
+
     public static StringConstant of(String value) {
         return new StringConstant(value);
     }

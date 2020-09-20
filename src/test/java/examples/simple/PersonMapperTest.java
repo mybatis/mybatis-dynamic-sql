@@ -46,10 +46,10 @@ import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 class PersonMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
-    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
-    
+    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -59,7 +59,7 @@ class PersonMapperTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
@@ -67,16 +67,16 @@ class PersonMapperTest {
         config.addMapper(PersonWithAddressMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testSelect() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.select(c ->
                     c.where(id, isEqualTo(1))
                     .or(occupation, isNull()));
-            
+
             assertThat(rows).hasSize(3);
         }
     }
@@ -85,9 +85,9 @@ class PersonMapperTest {
     void testSelectAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.select(SelectDSLCompleter.allRows());
-            
+
             assertThat(rows).hasSize(6);
             assertThat(rows.get(0).getId()).isEqualTo(1);
             assertThat(rows.get(5).getId()).isEqualTo(6);
@@ -98,10 +98,10 @@ class PersonMapperTest {
     void testSelectAllOrdered() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper
                     .select(SelectDSLCompleter.allRowsOrderedBy(lastName.descending(), firstName.descending()));
-            
+
             assertThat(rows).hasSize(6);
             assertThat(rows.get(0).getId()).isEqualTo(5);
             assertThat(rows.get(5).getId()).isEqualTo(1);
@@ -112,24 +112,24 @@ class PersonMapperTest {
     void testSelectDistinct() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.selectDistinct(c ->
                     c.where(id, isGreaterThan(1))
                     .or(occupation, isNull()));
-            
+
             assertThat(rows).hasSize(5);
         }
     }
-    
+
     @Test
     void testSelectWithTypeHandler() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.select(c ->
                     c.where(employed, isEqualTo(false))
                     .orderBy(id));
-            
+
             assertAll(
                     () -> assertThat(rows).hasSize(2),
                     () -> assertThat(rows.get(0).getId()).isEqualTo(3),
@@ -142,7 +142,7 @@ class PersonMapperTest {
     void testSelectByPrimaryKeyWithMissingRecord() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             Optional<PersonRecord> record = mapper.selectByPrimaryKey(300);
             assertThat(record).isNotPresent();
         }
@@ -152,10 +152,10 @@ class PersonMapperTest {
     void testFirstNameIn() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.select(c ->
                     c.where(firstName, isIn("Fred", "Barney")));
-            
+
             assertAll(
                     () -> assertThat(rows).hasSize(2),
                     () -> assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone"),
@@ -173,27 +173,27 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(2);
         }
     }
-    
+
     @Test
     void testDeleteAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             int rows = mapper.delete(DeleteDSLCompleter.allRows());
-                    
+
             assertThat(rows).isEqualTo(6);
         }
     }
-    
+
     @Test
     void testDeleteByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             int rows = mapper.deleteByPrimaryKey(2);
-            
+
             assertThat(rows).isEqualTo(1);
         }
     }
-    
+
     @Test
     void testInsert() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
@@ -206,7 +206,7 @@ class PersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
         }
@@ -225,7 +225,7 @@ class PersonMapperTest {
                 .set(occupation).toValue("Developer")
                 .set(addressId).toValue(1)
             );
-            
+
             assertThat(rows).isEqualTo(1);
         }
     }
@@ -234,9 +234,9 @@ class PersonMapperTest {
     void testInsertMultiple() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             List<PersonRecord> records = new ArrayList<>();
-            
+
             PersonRecord record = new PersonRecord();
             record.setId(100);
             record.setFirstName("Joe");
@@ -246,7 +246,7 @@ class PersonMapperTest {
             record.setOccupation("Developer");
             record.setAddressId(1);
             records.add(record);
-            
+
             record = new PersonRecord();
             record.setId(101);
             record.setFirstName("Sarah");
@@ -256,7 +256,7 @@ class PersonMapperTest {
             record.setOccupation("Architect");
             record.setAddressId(2);
             records.add(record);
-            
+
             int rows = mapper.insertMultiple(records);
             assertThat(rows).isEqualTo(2);
         }
@@ -273,7 +273,7 @@ class PersonMapperTest {
             record.setBirthDate(new Date());
             record.setEmployed(false);
             record.setAddressId(1);
-            
+
             int rows = mapper.insertSelective(record);
             assertThat(rows).isEqualTo(1);
         }
@@ -291,14 +291,14 @@ class PersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
-            
+
             record.setOccupation("Programmer");
             rows = mapper.updateByPrimaryKey(record);
             assertThat(rows).isEqualTo(1);
-            
+
             Optional<PersonRecord> newRecord = mapper.selectByPrimaryKey(100);
             assertThat(newRecord).isPresent();
             assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
@@ -317,7 +317,7 @@ class PersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
 
@@ -346,12 +346,12 @@ class PersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
 
             record.setOccupation("Programmer");
-            
+
             rows = mapper.update(c ->
                 PersonMapper.updateAllColumns(record, c)
                 .where(id, isEqualTo(100))
@@ -377,10 +377,10 @@ class PersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
-            
+
             rows = mapper.update(c ->
                 c.set(occupation).equalTo("Programmer")
                 .where(id, isEqualTo(100)));
@@ -405,10 +405,10 @@ class PersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
-            
+
             PersonRecord updateRecord = new PersonRecord();
             updateRecord.setOccupation("Programmer");
             rows = mapper.update(c ->
@@ -434,10 +434,10 @@ class PersonMapperTest {
             record.setEmployed(true);
             record.setOccupation("Developer");
             record.setAddressId(1);
-            
+
             int rows = mapper.insert(record);
             assertThat(rows).isEqualTo(1);
-            
+
             PersonRecord updateRecord = new PersonRecord();
             updateRecord.setOccupation("Programmer");
             rows = mapper.update(c ->
@@ -458,64 +458,64 @@ class PersonMapperTest {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             long rows = mapper.count(c ->
                     c.where(occupation, isNull()));
-            
+
             assertThat(rows).isEqualTo(2L);
         }
     }
-    
+
     @Test
     void testCountAll() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             long rows = mapper.count(CountDSLCompleter.allRows());
-            
+
             assertThat(rows).isEqualTo(6L);
         }
     }
-    
+
     @Test
     void testCountLastName() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             long rows = mapper.count(lastName, CountDSLCompleter.allRows());
-            
+
             assertThat(rows).isEqualTo(6L);
         }
     }
-    
+
     @Test
     void testCountDistinctLastName() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             long rows = mapper.countDistinct(lastName, CountDSLCompleter.allRows());
-            
+
             assertThat(rows).isEqualTo(2L);
         }
     }
-    
+
     @Test
     void testTypeHandledLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
+
             List<PersonRecord> rows = mapper.select(c ->
                     c.where(lastName, isLike(LastName.of("Fl%")))
                     .orderBy(id));
-            
+
             assertThat(rows).hasSize(3);
             assertThat(rows.get(0).getFirstName()).isEqualTo("Fred");
         }
     }
-    
+
     @Test
     void testTypeHandledNotLike() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
-            
-            List<PersonRecord> rows = mapper.select(c -> 
+
+            List<PersonRecord> rows = mapper.select(c ->
                     c.where(lastName, isNotLike(LastName.of("Fl%")))
                     .orderBy(id));
-            
+
             assertThat(rows).hasSize(3);
             assertThat(rows.get(0).getFirstName()).isEqualTo("Barney");
         }
@@ -528,7 +528,7 @@ class PersonMapperTest {
             List<PersonWithAddress> records = mapper.select(
                     SelectDSLCompleter.allRowsOrderedBy(id)
             );
-            
+
             assertThat(records).hasSize(6);
             assertThat(records.get(0).getId()).isEqualTo(1);
             assertThat(records.get(0).getEmployed()).isTrue();
@@ -548,7 +548,7 @@ class PersonMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
             List<PersonWithAddress> records = mapper.select(c -> c.where(id, isEqualTo(1)));
-            
+
             assertThat(records).hasSize(1);
             assertThat(records.get(0).getId()).isEqualTo(1);
             assertThat(records.get(0).getEmployed()).isTrue();
@@ -568,7 +568,7 @@ class PersonMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
             Optional<PersonWithAddress> record = mapper.selectByPrimaryKey(1);
-            
+
             assertThat(record).hasValueSatisfying(r -> {
                 assertThat(r.getId()).isEqualTo(1);
                 assertThat(r.getEmployed()).isTrue();
@@ -589,7 +589,7 @@ class PersonMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
             Optional<PersonWithAddress> record = mapper.selectByPrimaryKey(55);
-            
+
             assertThat(record).isEmpty();
         }
     }
@@ -599,7 +599,7 @@ class PersonMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
             long count = mapper.count(c -> c.where(person.id, isEqualTo(55)));
-            
+
             assertThat(count).isZero();
         }
     }
@@ -609,7 +609,7 @@ class PersonMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
             long count = mapper.count(c -> c.where(person.id, isEqualTo(55), or(person.id, isEqualTo(1))));
-            
+
             assertThat(count).isEqualTo(1);
         }
     }

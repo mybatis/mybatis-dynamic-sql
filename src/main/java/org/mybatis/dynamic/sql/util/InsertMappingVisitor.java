@@ -20,7 +20,7 @@ public abstract class InsertMappingVisitor<R> implements ColumnMappingVisitor<R>
     public final <T> R visit(ValueMapping<T> mapping) {
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
     public final <T> R visit(ValueWhenPresentMapping<T> mapping) {
         throw new UnsupportedOperationException();

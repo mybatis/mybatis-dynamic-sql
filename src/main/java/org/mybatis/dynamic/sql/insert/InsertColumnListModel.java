@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
 
 public class InsertColumnListModel {
     private final List<SqlColumn<?>> columns = new ArrayList<>();
-    
+
     private InsertColumnListModel(List<SqlColumn<?>> columns) {
         this.columns.addAll(columns);
     }
@@ -32,7 +32,7 @@ public class InsertColumnListModel {
     public <R> Stream<R> mapColumns(Function<SqlColumn<?>, R> mapper) {
         return columns.stream().map(mapper);
     }
-    
+
     public static InsertColumnListModel of(List<SqlColumn<?>> columns) {
         return new InsertColumnListModel(columns);
     }

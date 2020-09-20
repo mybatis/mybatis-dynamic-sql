@@ -24,7 +24,7 @@ public final class GeneratedAlwaysDynamicSqlSupport {
     public static final SqlColumn<String> firstName = generatedAlways.firstName;
     public static final SqlColumn<String> lastName = generatedAlways.lastName;
     public static final SqlColumn<String> fullName = generatedAlways.fullName;
-    
+
     public static final class GeneratedAlways extends SqlTable {
         public final SqlColumn<Integer> id = column("id");
         public final SqlColumn<String> firstName = column("first_name");

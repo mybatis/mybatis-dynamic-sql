@@ -65,12 +65,12 @@ import org.mybatis.dynamic.sql.where.condition.IsNotIn;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 class AnimalDataTest {
-    
+
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
-    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver"; 
-    
+    private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
+
     private SqlSessionFactory sqlSessionFactory;
-    
+
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
@@ -80,7 +80,7 @@ class AnimalDataTest {
             sr.setLogWriter(null);
             sr.runScript(new InputStreamReader(is));
         }
-        
+
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
@@ -88,7 +88,7 @@ class AnimalDataTest {
         config.addMapper(GeneralMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
-    
+
     @Test
     void testSelectAllRows() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -121,7 +121,7 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testSelectAllRowsAllColumns() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -140,7 +140,7 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testSelectAllRowsAllColumnsWithOrder() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -158,7 +158,7 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testSelectAllRowsAllColumnsWithOrderAndAlias() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
@@ -176,18 +176,18 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testSelectRowsLessThan20() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(20))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertThat(animals).hasSize(19);
         }
@@ -197,7 +197,7 @@ class AnimalDataTest {
     void testSelectRowsBetween30And40() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isBetween(30).and(40))
@@ -213,7 +213,7 @@ class AnimalDataTest {
     void testSelectRowsNotBetween() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotBetween(10).and(60))
@@ -229,42 +229,42 @@ class AnimalDataTest {
     void testSelectRowsNotBetweenWithStandaloneWhereClause() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             WhereClauseProvider whereClause = where(id, isNotBetween(10).and(60))
                     .or(id, isIn(25, 27))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> animals = mapper.selectByExample(whereClause);
             assertThat(animals).hasSize(16);
         }
     }
-    
+
     @Test
     void testComplexConditionWithStandaloneWhereAndTableAlias() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             WhereClauseProvider whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
                     .build()
                     .render(RenderingStrategies.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
-            
+
             assertThat(whereClause.getWhereClause()).isEqualTo("where (a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight > #{parameters.p2,jdbcType=DOUBLE})");
 
             List<AnimalData> animals = mapper.selectByExampleWithAlias(whereClause);
             assertThat(animals).hasSize(59);
         }
     }
-    
+
     @Test
     void testSelectRowsNotBetweenWithStandaloneWhereClauseLimitAndOffset() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             WhereClauseProvider whereClause = where(id, isLessThan(60))
                     .build()
                     .render(RenderingStrategies.MYBATIS3, "whereClauseProvider");
-            
+
             List<AnimalData> animals = mapper.selectByExampleWithLimitAndOffset(whereClause, 5, 15);
             assertAll(
                     () -> assertThat(animals).hasSize(5),
@@ -272,16 +272,16 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testSelectRowsNotBetweenWithStandaloneWhereClauseAliasLimitAndOffset() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             WhereClauseProvider whereClause = where(id, isLessThan(60))
                     .build()
                     .render(RenderingStrategies.MYBATIS3, TableAliasCalculator.of(animalData, "b"),  "whereClauseProvider");
-            
+
             List<AnimalData> animals = mapper.selectByExampleWithAliasLimitAndOffset(whereClause, 3, 24);
             assertAll(
                     () -> assertThat(animals).hasSize(3),
@@ -289,12 +289,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testUnionSelectWithWhere() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(20))
@@ -304,7 +304,7 @@ class AnimalDataTest {
                     .where(id, isGreaterThan(40))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select id, animal_name, body_weight, brain_weight "
                     + "from AnimalData "
                     + "where id < #{parameters.p1,jdbcType=INTEGER} "
@@ -328,7 +328,7 @@ class AnimalDataTest {
     void testUnionSelectWithoutWhere() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .union()
@@ -337,7 +337,7 @@ class AnimalDataTest {
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select id, animal_name, body_weight, brain_weight "
                     + "from AnimalData "
                     + "union "
@@ -353,12 +353,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testUnionAllSelectWithoutWhere() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .unionAll()
@@ -367,7 +367,7 @@ class AnimalDataTest {
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select id, animal_name, body_weight, brain_weight "
                     + "from AnimalData "
                     + "union all "
@@ -383,12 +383,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testUnionSelectWithTableAliases() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(id, isLessThan(20))
@@ -399,7 +399,7 @@ class AnimalDataTest {
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select a.id, a.animal_name, a.body_weight, a.brain_weight "
                     + "from AnimalData a "
                     + "where a.id < #{parameters.p1,jdbcType=INTEGER} "
@@ -425,7 +425,7 @@ class AnimalDataTest {
     void testUnionAllSelectWithTableAliases() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(id, isLessThan(20))
@@ -436,7 +436,7 @@ class AnimalDataTest {
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select a.id, a.animal_name, a.body_weight, a.brain_weight "
                     + "from AnimalData a "
                     + "where a.id < #{parameters.p1,jdbcType=INTEGER} "
@@ -462,7 +462,7 @@ class AnimalDataTest {
     void testUnionSelectWithTableAndColumnAliases() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id.as("animalId"), animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(id, isLessThan(20))
@@ -473,7 +473,7 @@ class AnimalDataTest {
                     .orderBy(sortColumn("animalId"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "select a.id as animalId, a.animal_name, a.body_weight, a.brain_weight "
                     + "from AnimalData a "
                     + "where a.id < #{parameters.p1,jdbcType=INTEGER} "
@@ -499,7 +499,7 @@ class AnimalDataTest {
     void testIsEqualCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isEqualTo(5))
@@ -515,7 +515,7 @@ class AnimalDataTest {
     void testIsNotEqualCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotEqualTo(5))
@@ -526,12 +526,12 @@ class AnimalDataTest {
             assertThat(animals).hasSize(64);
         }
     }
-    
+
     @Test
     void testIsGreaterThanOrEqualToCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isGreaterThanOrEqualTo(60))
@@ -542,12 +542,12 @@ class AnimalDataTest {
             assertThat(animals).hasSize(6);
         }
     }
-    
+
     @Test
     void testIsLessThanOrEqualToCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThanOrEqualTo(10))
@@ -558,12 +558,12 @@ class AnimalDataTest {
             assertThat(animals).hasSize(10);
         }
     }
-    
+
     @Test
     void testInCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(5, 8, 10))
@@ -630,7 +630,7 @@ class AnimalDataTest {
     void testInCaseSensitiveCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isInCaseInsensitive("yellow-bellied marmot", "verbet", null))
@@ -641,12 +641,12 @@ class AnimalDataTest {
             assertThat(animals).hasSize(2);
         }
     }
-    
+
     @Test
     void testNotInCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotIn(5, 8, 10))
@@ -662,7 +662,7 @@ class AnimalDataTest {
     void testNotInCaseSensitiveCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotInCaseInsensitive("yellow-bellied marmot", "verbet"))
@@ -678,7 +678,7 @@ class AnimalDataTest {
     void testNotInCaseSensitiveConditionWithNull() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotInCaseInsensitive((String)null))
@@ -730,7 +730,7 @@ class AnimalDataTest {
     void testLikeCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isLike("%squirrel"))
@@ -746,7 +746,7 @@ class AnimalDataTest {
     void testLikeCaseInsensitive() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isLikeCaseInsensitive("%squirrel"))
@@ -762,12 +762,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testLikeLowerCase() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, lower(animalName).as("AnimalName"), bodyWeight, brainWeight)
                     .from(animalData)
                     .where(lower(animalName), isLike("%squirrel"))
@@ -788,7 +788,7 @@ class AnimalDataTest {
     void testLikeUpperCase() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, upper(animalName).as("animalname"), bodyWeight, brainWeight)
                     .from(animalData)
                     .where(upper(animalName), isLike("%SQUIRREL"))
@@ -809,7 +809,7 @@ class AnimalDataTest {
     void testNumericConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, constant("3").as("some_number"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -819,7 +819,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, 3 as some_number "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -839,7 +839,7 @@ class AnimalDataTest {
     void testStringConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, stringConstant("fred").as("some_string"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -849,7 +849,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, 'fred' as some_string "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -869,7 +869,7 @@ class AnimalDataTest {
     void testDeprecatedAdd() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, DeprecatedAdd.of(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(DeprecatedAdd.of(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -879,9 +879,9 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight + a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
-            
+
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
                     () -> assertThat(animals).hasSize(3),
@@ -894,12 +894,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testAdd() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, add(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -909,9 +909,9 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight + a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
-            
+
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
                     () -> assertThat(animals).hasSize(3),
@@ -924,12 +924,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testAddConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, add(bodyWeight, constant("22"), constant("33")).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -939,7 +939,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight + 22 + 33) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -954,12 +954,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testAddConstantWithConstantFirst() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, add(constant("22"), bodyWeight, constant("33")).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -969,7 +969,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (22 + a.body_weight + 33) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -984,12 +984,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testConcatenate() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, concatenate(animalName, stringConstant(" - The Legend")).as("display_name"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -999,9 +999,9 @@ class AnimalDataTest {
             String expected = "select a.id, (a.animal_name || ' - The Legend') as display_name "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
-            
+
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
                     () -> assertThat(animals).hasSize(3),
@@ -1011,12 +1011,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testConcatenateConstantFirst() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, concatenate(stringConstant("Name: "), animalName).as("display_name"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -1026,9 +1026,9 @@ class AnimalDataTest {
             String expected = "select a.id, ('Name: ' || a.animal_name) as display_name "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
-            
+
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
                     () -> assertThat(animals).hasSize(3),
@@ -1038,12 +1038,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testDivide() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, divide(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -1053,9 +1053,9 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight / a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
-            
+
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
                     () -> assertThat(animals).hasSize(3),
@@ -1068,12 +1068,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testDivideConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, divide(bodyWeight, constant("10.0")).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -1083,7 +1083,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight / 10.0) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -1098,12 +1098,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testMultiply() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, multiply(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -1113,7 +1113,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight * a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -1128,12 +1128,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testMultiplyConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, multiply(bodyWeight, constant("2.0")).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -1143,7 +1143,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight * 2.0) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -1158,12 +1158,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testSubtract() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, subtract(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -1173,7 +1173,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight - a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -1188,12 +1188,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testSubtractConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, subtract(bodyWeight, constant("5.5")).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -1203,7 +1203,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight - 5.5) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -1218,12 +1218,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testGeneralOperator() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, applyOperator("-", bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -1233,7 +1233,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, (a.body_weight - a.brain_weight) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -1248,12 +1248,12 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testComplexExpression() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, add(multiply(bodyWeight, constant("5.5")), subtract(brainWeight, constant("2"))).as("calculated_weight"))
                     .from(animalData, "a")
                     .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
@@ -1263,7 +1263,7 @@ class AnimalDataTest {
             String expected = "select a.id, a.animal_name, ((a.body_weight * 5.5) + (a.brain_weight - 2)) as calculated_weight "
                     + "from AnimalData a "
                     + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-            
+
             List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
 
             assertAll(
@@ -1283,7 +1283,7 @@ class AnimalDataTest {
     void testNotLikeCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotLike("%squirrel"))
@@ -1299,7 +1299,7 @@ class AnimalDataTest {
     void testNotLikeCaseInsensistveCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotLikeCaseInsensitive("%squirrel"))
@@ -1315,7 +1315,7 @@ class AnimalDataTest {
     void testDeleteThreeRows() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             DeleteStatementProvider deleteStatement = deleteFrom(animalData)
                     .where(id, isIn(5, 8, 10))
                     .build()
@@ -1325,12 +1325,12 @@ class AnimalDataTest {
             assertThat(rowCount).isEqualTo(3);
         }
     }
-    
+
     @Test
     void testComplexDelete() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             DeleteStatementProvider deleteStatement = deleteFrom(animalData)
                     .where(id, isLessThan(10))
                     .or(id, isGreaterThan(60))
@@ -1341,12 +1341,12 @@ class AnimalDataTest {
             assertThat(rowCount).isEqualTo(14);
         }
     }
-    
+
     @Test
     void testIsNullCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNull())
@@ -1362,7 +1362,7 @@ class AnimalDataTest {
     void testIsNotNullCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotNull())
@@ -1378,7 +1378,7 @@ class AnimalDataTest {
     void testComplexCondition() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(1, 5, 7))
@@ -1400,7 +1400,7 @@ class AnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             AnimalData record = new AnimalData();
             record.setBodyWeight(2.6);
-            
+
             UpdateStatementProvider updateStatement = update(animalData)
                     .set(bodyWeight).equalTo(record.getBodyWeight())
                     .set(animalName).equalToNull()
@@ -1425,7 +1425,7 @@ class AnimalDataTest {
             record.setAnimalName("Old Shep");
             record.setBodyWeight(22.5);
             record.setBrainWeight(1.2);
-            
+
             InsertStatementProvider<AnimalData> insertStatement = insert(record)
                     .into(animalData)
                     .map(id).toProperty("id")
@@ -1434,7 +1434,7 @@ class AnimalDataTest {
                     .map(brainWeight).toProperty("brainWeight")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             int rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
         }
@@ -1449,7 +1449,7 @@ class AnimalDataTest {
             record.setAnimalName("Old Shep");
             record.setBodyWeight(22.5);
             record.setBrainWeight(1.2);
-            
+
             InsertStatementProvider<AnimalData> insertStatement = insert(record)
                     .into(animalData)
                     .map(id).toProperty("id")
@@ -1458,12 +1458,12 @@ class AnimalDataTest {
                     .map(brainWeight).toProperty("brainWeight")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             int rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
         }
     }
-    
+
     @Test
     void testBulkInsert() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
@@ -1474,13 +1474,13 @@ class AnimalDataTest {
             record.setAnimalName("Old Shep");
             record.setBodyWeight(22.5);
             records.add(record);
-            
+
             record = new AnimalData();
             record.setId(101);
             record.setAnimalName("Old Dan");
             record.setBodyWeight(22.5);
             records.add(record);
-            
+
             BatchInsert<AnimalData> batchInsert = insertBatch(records)
                     .into(animalData)
                     .map(id).toProperty("id")
@@ -1489,10 +1489,10 @@ class AnimalDataTest {
                     .map(brainWeight).toConstant("1.2")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             batchInsert.insertStatements().forEach(mapper::insert);
             sqlSession.commit();
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(100, 101))
@@ -1513,7 +1513,7 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testBulkInsert2() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
@@ -1524,13 +1524,13 @@ class AnimalDataTest {
             record.setAnimalName("Old Shep");
             record.setBodyWeight(22.5);
             records.add(record);
-            
+
             record = new AnimalData();
             record.setId(101);
             record.setAnimalName("Old Dan");
             record.setBodyWeight(22.5);
             records.add(record);
-            
+
             BatchInsert<AnimalData> batchInsert = insertBatch(records)
                     .into(animalData)
                     .map(id).toProperty("id")
@@ -1539,10 +1539,10 @@ class AnimalDataTest {
                     .map(brainWeight).toConstant("1.2")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             batchInsert.insertStatements().forEach(mapper::insert);
             sqlSession.commit();
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(100, 101))
@@ -1551,7 +1551,7 @@ class AnimalDataTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            
+
             assertAll(
                     () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(100),
@@ -1568,7 +1568,7 @@ class AnimalDataTest {
     void testOrderByAndDistinct() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = selectDistinct(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(10))
@@ -1576,9 +1576,9 @@ class AnimalDataTest {
                     .orderBy(id.descending(), animalName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> rows = mapper.selectMany(selectStatement);
-            
+
             assertAll(
                     () -> assertThat(rows).hasSize(14),
                     () -> assertThat(rows.get(0).getId()).isEqualTo(65)
@@ -1590,7 +1590,7 @@ class AnimalDataTest {
     void testOrderByWithFullClause() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isLessThan(10))
@@ -1598,26 +1598,26 @@ class AnimalDataTest {
                     .orderBy(id.descending())
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> rows = mapper.selectMany(selectStatement);
-            
+
             assertAll(
                     () -> assertThat(rows).hasSize(14),
                     () -> assertThat(rows.get(0).getId()).isEqualTo(65)
             );
         }
     }
-    
+
     @Test
     void testCount() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(count().as("total"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             Long count = mapper.selectOneLong(selectStatement);
 
             assertAll(
@@ -1631,12 +1631,12 @@ class AnimalDataTest {
     void testCountField() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(count(brainWeight).as("total"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             Long count = mapper.selectOneLong(selectStatement);
 
             assertAll(
@@ -1645,17 +1645,17 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testCountNoAlias() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(count())
                     .from(animalData)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             Long count = mapper.selectOneLong(selectStatement);
 
             assertAll(
@@ -1669,12 +1669,12 @@ class AnimalDataTest {
     void testMax() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(max(brainWeight).as("total"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             Double max = mapper.selectOneDouble(selectStatement);
 
             assertAll(
@@ -1688,12 +1688,12 @@ class AnimalDataTest {
     void testMaxNoAlias() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(max(brainWeight))
                     .from(animalData)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             Double max = mapper.selectOneDouble(selectStatement);
 
             assertAll(
@@ -1707,13 +1707,13 @@ class AnimalDataTest {
     void testMaxSubselect() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isEqualTo(select(max(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> records = mapper.selectMany(selectStatement);
 
             assertAll(
@@ -1728,12 +1728,12 @@ class AnimalDataTest {
     void testMin() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(min(brainWeight).as("total"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             Double min = mapper.selectOneDouble(selectStatement);
 
             assertAll(
@@ -1747,12 +1747,12 @@ class AnimalDataTest {
     void testMinNoAlias() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(min(brainWeight))
                     .from(animalData)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             Double min = mapper.selectOneDouble(selectStatement);
 
             assertAll(
@@ -1766,14 +1766,14 @@ class AnimalDataTest {
     void testMinSubselect() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isNotEqualTo(select(min(brainWeight)).from(animalData, "b")))
                     .orderBy(animalName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> records = mapper.selectMany(selectStatement);
 
             assertAll(
@@ -1788,14 +1788,14 @@ class AnimalDataTest {
     void testMinSubselectNoAlias() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(brainWeight, isNotEqualTo(select(min(brainWeight)).from(animalData)))
                     .orderBy(animalName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> records = mapper.selectMany(selectStatement);
 
             assertAll(
@@ -1810,12 +1810,12 @@ class AnimalDataTest {
     void testAvg() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(avg(brainWeight).as("average"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             Double average = mapper.selectOneDouble(selectStatement);
 
             assertAll(
@@ -1848,12 +1848,12 @@ class AnimalDataTest {
     void testSum() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(sum(brainWeight).as("total"))
                     .from(animalData)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             Double total = mapper.selectOneDouble(selectStatement);
 
             assertAll(
@@ -1867,13 +1867,13 @@ class AnimalDataTest {
     void testLessThanSubselect() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isLessThan(select(max(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> records = mapper.selectMany(selectStatement);
 
             assertAll(
@@ -1887,13 +1887,13 @@ class AnimalDataTest {
     void testLessThanOrEqualToSubselect() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isLessThanOrEqualTo(select(max(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> records = mapper.selectMany(selectStatement);
 
             assertAll(
@@ -1907,13 +1907,13 @@ class AnimalDataTest {
     void testGreaterThanSubselect() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isGreaterThan(select(min(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> records = mapper.selectMany(selectStatement);
 
             assertAll(
@@ -1927,13 +1927,13 @@ class AnimalDataTest {
     void testGreaterThanOrEqualToSubselect() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData, "a")
                     .where(brainWeight, isGreaterThanOrEqualTo(select(min(brainWeight)).from(animalData, "b")))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             List<AnimalData> records = mapper.selectMany(selectStatement);
 
             assertAll(
@@ -1942,24 +1942,24 @@ class AnimalDataTest {
             );
         }
     }
-    
+
     @Test
     void testInsertSelectWithColumnList() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             SqlTable animalDataCopy = SqlTable.of("AnimalDataCopy");
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             InsertSelectStatementProvider insertSelectStatement = insertInto(animalDataCopy)
                     .withColumnList(id, animalName, bodyWeight, brainWeight)
                     .withSelectStatement(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(22)))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "insert into AnimalDataCopy (id, animal_name, body_weight, brain_weight) "
                     + "select id, animal_name, body_weight, brain_weight "
                     + "from AnimalData "
                     + "where id < #{parameters.p1,jdbcType=INTEGER}";
-            
+
             int rows = mapper.insertSelect(insertSelectStatement);
 
             assertAll(
@@ -1976,12 +1976,12 @@ class AnimalDataTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             SqlTable animalDataCopy = SqlTable.of("AnimalDataCopy");
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             InsertSelectStatementProvider insertSelectStatement = insertInto(animalDataCopy)
                     .withSelectStatement(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(33)))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "insert into AnimalDataCopy "
                     + "select id, animal_name, body_weight, brain_weight "
                     + "from AnimalData "
@@ -2001,7 +2001,7 @@ class AnimalDataTest {
     void testGeneralInsert() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             GeneralInsertStatementProvider insertStatement = insertInto(animalData)
                     .set(id).toValue(101)
                     .set(animalName).toStringConstant("Fred")
@@ -2009,15 +2009,15 @@ class AnimalDataTest {
                     .set(bodyWeight).toValue(4.5)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "insert into AnimalData (id, animal_name, brain_weight, body_weight) "
                     + "values (#{parameters.p1,jdbcType=INTEGER}, 'Fred', 2.2, #{parameters.p2,jdbcType=DOUBLE})";
-            
+
             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
             assertThat(insertStatement.getParameters()).hasSize(2);
             assertThat(insertStatement.getParameters()).containsEntry("p1", 101);
             assertThat(insertStatement.getParameters()).containsEntry("p2", 4.5);
-            
+
             int rows = mapper.generalInsert(insertStatement);
             assertThat(rows).isEqualTo(1);
         }
@@ -2027,13 +2027,13 @@ class AnimalDataTest {
     void testUpdateWithSelect() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             UpdateStatementProvider updateStatement = update(animalData)
                     .set(brainWeight).equalTo(select(avg(brainWeight)).from(animalData).where(brainWeight, isGreaterThan(22.0)))
                     .where(brainWeight, isLessThan(1.0))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "update AnimalData "
                     + "set brain_weight = (select avg(brain_weight) from AnimalData where brain_weight > #{parameters.p1,jdbcType=DOUBLE}) "
                     + "where brain_weight < #{parameters.p2,jdbcType=DOUBLE}";
@@ -2053,14 +2053,14 @@ class AnimalDataTest {
     void testUpdateWithAddAndSubtract() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             UpdateStatementProvider updateStatement = update(animalData)
                     .set(brainWeight).equalTo(add(brainWeight, constant("2")))
                     .set(bodyWeight).equalTo(subtract(bodyWeight, constant("3")))
                     .where(id, isEqualTo(1))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "update AnimalData "
                     + "set brain_weight = (brain_weight + 2), body_weight = (body_weight - 3) "
                     + "where id = #{parameters.p1,jdbcType=INTEGER}";
@@ -2071,13 +2071,13 @@ class AnimalDataTest {
 
             int rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(1);
-            
+
             AnimalData record = MyBatis3Utils.selectOne(mapper::selectOne,
                     BasicColumn.columnList(id, bodyWeight, brainWeight),
                     animalData,
                     c -> c.where(id, isEqualTo(1))
             );
-            
+
             assertThat(record.getBodyWeight()).isEqualTo(-2.86);
             assertThat(record.getBrainWeight()).isEqualTo(2.005);
         }
@@ -2087,14 +2087,14 @@ class AnimalDataTest {
     void testUpdateWithMultiplyAndDivide() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            
+
             UpdateStatementProvider updateStatement = update(animalData)
                     .set(brainWeight).equalTo(divide(brainWeight, constant("2")))
                     .set(bodyWeight).equalTo(multiply(bodyWeight, constant("3")))
                     .where(id, isEqualTo(1))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            
+
             String expected = "update AnimalData "
                     + "set brain_weight = (brain_weight / 2), body_weight = (body_weight * 3) "
                     + "where id = #{parameters.p1,jdbcType=INTEGER}";
@@ -2104,13 +2104,13 @@ class AnimalDataTest {
 
             int rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(1);
-            
+
             AnimalData record = MyBatis3Utils.selectOne(mapper::selectOne,
                     BasicColumn.columnList(id, bodyWeight, brainWeight),
                     animalData,
                     c -> c.where(id, isEqualTo(1))
             );
-            
+
             assertThat(record.getBodyWeight()).isEqualTo(0.42, within(.001));
             assertThat(record.getBrainWeight()).isEqualTo(.0025);
         }

@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
-    
+
     protected final String name;
     protected final SqlTable table;
     protected final JDBCType jdbcType;
@@ -51,15 +51,15 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         renderingStrategy = sqlColumn.renderingStrategy;
         parameterTypeConverter = sqlColumn.parameterTypeConverter;
     }
-    
+
     public String name() {
         return name;
     }
-    
+
     public SqlTable table() {
         return table;
     }
-    
+
     @Override
     public Optional<JDBCType> jdbcType() {
         return Optional.ofNullable(jdbcType);
@@ -69,48 +69,48 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     public Optional<String> alias() {
         return Optional.ofNullable(alias);
     }
-    
+
     @Override
     public Optional<String> typeHandler() {
         return Optional.ofNullable(typeHandler);
     }
-    
+
     @Override
     public Object convertParameterType(T value) {
         return parameterTypeConverter == null ? value : parameterTypeConverter.convert(value);
     }
-    
+
     @Override
     public SortSpecification descending() {
         SqlColumn<T> column = new SqlColumn<>(this);
         column.isDescending = true;
         return column;
     }
-    
+
     @Override
     public SqlColumn<T> as(String alias) {
         SqlColumn<T> column = new SqlColumn<>(this);
         column.alias = alias;
         return column;
     }
-    
+
     @Override
     public boolean isDescending() {
         return isDescending;
     }
-    
+
     @Override
     public String aliasOrName() {
         return alias().orElse(name);
     }
-    
+
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         return tableAliasCalculator.aliasForColumn(table)
                 .map(this::applyTableAlias)
                 .orElseGet(this::name);
     }
-    
+
     @Override
     public Optional<RenderingStrategy> renderingStrategy() {
         return Optional.ofNullable(renderingStrategy);
@@ -154,50 +154,50 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     private String applyTableAlias(String tableAlias) {
         return tableAlias + "." + name(); //$NON-NLS-1$
     }
-    
+
     public static <T> SqlColumn<T> of(String name, SqlTable table) {
         return SqlColumn.withName(name)
                 .withTable(table)
                 .build();
     }
-    
+
     public static <T> SqlColumn<T> of(String name, SqlTable table, JDBCType jdbcType) {
         return SqlColumn.withName(name)
                 .withTable(table)
                 .withJdbcType(jdbcType)
                 .build();
     }
-    
+
     public static Builder withName(String name) {
         return new Builder().withName(name);
     }
-    
+
     public static class Builder {
         private SqlTable table;
         private String name;
         private JDBCType jdbcType;
         private String typeHandler;
-        
+
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
-        
+
         public Builder withName(String name) {
             this.name = name;
             return this;
         }
-        
+
         public Builder withJdbcType(JDBCType jdbcType) {
             this.jdbcType = jdbcType;
             return this;
         }
-        
+
         public Builder withTypeHandler(String typeHandler) {
             this.typeHandler = typeHandler;
             return this;
         }
-        
+
         public <T> SqlColumn<T> build() {
             return new SqlColumn<>(this);
         }

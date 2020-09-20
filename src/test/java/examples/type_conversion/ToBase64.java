@@ -49,7 +49,7 @@ public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToB
     protected ToBase64 copy() {
         return new ToBase64(column);
     }
-    
+
     public static ToBase64 toBase64(BindableColumn<byte[]> column) {
         return new ToBase64(column);
     }

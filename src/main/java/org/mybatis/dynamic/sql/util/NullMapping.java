@@ -21,7 +21,7 @@ public class NullMapping extends AbstractColumnMapping {
     private NullMapping(SqlColumn<?> column) {
         super(column);
     }
-    
+
     public static NullMapping of(SqlColumn<?> column) {
         return new NullMapping(column);
     }

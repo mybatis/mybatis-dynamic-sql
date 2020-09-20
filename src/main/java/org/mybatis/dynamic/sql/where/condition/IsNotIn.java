@@ -56,7 +56,7 @@ public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
      * For example, you could filter nulls, or trim strings, etc. This process will run before final rendering of SQL.
      * If you filter values out of the stream, then final condition will not reference those values. If you filter all
      * values out of the stream, then the condition will not render.
-     * 
+     *
      * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
      *     the values are placed in the parameter map
      * @return new condition with the specified transformer

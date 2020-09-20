@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class SelectStatementTest {
-    
+
     static final SqlTable table = SqlTable.of("foo");
     static final SqlColumn<Date> column1 = table.column("column1", JDBCType.DATE);
     static final SqlColumn<Integer> column2 = table.column("column2", JDBCType.INTEGER);
@@ -79,7 +79,7 @@ class SelectStatementTest {
                 .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        
+
         String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
                 + "from foo a "
                 + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
@@ -141,7 +141,7 @@ class SelectStatementTest {
                 + "from foo a "
                 + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
                 + "order by column2 DESC";
-        
+
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(
@@ -165,7 +165,7 @@ class SelectStatementTest {
                 + "from foo a "
                 + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
                 + "order by column2 DESC, column1";
-        
+
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(
@@ -189,7 +189,7 @@ class SelectStatementTest {
                 + "from foo a "
                 + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
                 + "order by column2 DESC, column1";
-        
+
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(
@@ -211,7 +211,7 @@ class SelectStatementTest {
         String expectedFullStatement = "select count(*) "
                 + "from foo a "
                 + "where a.column1 = #{parameters.p1,jdbcType=DATE}";
-        
+
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(
@@ -229,7 +229,7 @@ class SelectStatementTest {
 
         String expectedFullStatement = "select count(*) "
                 + "from foo a";
-        
+
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(
@@ -237,7 +237,7 @@ class SelectStatementTest {
                 () -> assertThat(parameters).isEmpty()
         );
     }
-    
+
     @Test
     void testGroupBySingleColumn() {
         Date d = new Date();
@@ -253,7 +253,7 @@ class SelectStatementTest {
                 + "from foo a "
                 + "where a.column1 = #{parameters.p1,jdbcType=DATE} "
                 + "group by a.column2";
-        
+
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(

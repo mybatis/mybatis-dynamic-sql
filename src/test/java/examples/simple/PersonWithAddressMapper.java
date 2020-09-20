@@ -46,13 +46,13 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
- * 
- * This is a mapper that shows coding a join 
+ *
+ * This is a mapper that shows coding a join
  *
  */
 @Mapper
 public interface PersonWithAddressMapper {
-    
+
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="PersonWithAddressResult", value= {
             @Result(column="A_ID", property="id", jdbcType=JdbcType.INTEGER, id=true),
@@ -67,36 +67,36 @@ public interface PersonWithAddressMapper {
             @Result(column="state", property="address.state", jdbcType=JdbcType.CHAR)
     })
     List<PersonWithAddress> selectMany(SelectStatementProvider selectStatement);
-    
+
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("PersonWithAddressResult")
     Optional<PersonWithAddress> selectOne(SelectStatementProvider selectStatement);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
-    
+
     BasicColumn[] selectList =
             BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, address.id,
                     address.streetAddress, address.city, address.state);
-    
+
     default Optional<PersonWithAddress> selectOne(SelectDSLCompleter completer) {
         QueryExpressionDSL<SelectModel> start = SqlBuilder.select(selectList).from(person)
                 .join(address, on(person.addressId, equalTo(address.id)));
         return MyBatis3Utils.selectOne(this::selectOne, start, completer);
     }
-    
+
     default List<PersonWithAddress> select(SelectDSLCompleter completer) {
         QueryExpressionDSL<SelectModel> start = SqlBuilder.select(selectList).from(person)
                 .join(address, on(person.addressId, equalTo(address.id)));
         return MyBatis3Utils.selectList(this::selectMany, start, completer);
     }
-    
+
     default Optional<PersonWithAddress> selectByPrimaryKey(Integer id_) {
-        return selectOne(c -> 
+        return selectOne(c ->
             c.where(id, isEqualTo(id_))
         );
     }
-    
+
     default long count(CountDSLCompleter completer) {
         CountDSL<SelectModel> start = countFrom(person)
                 .join(address, on(person.addressId, equalTo(address.id)));

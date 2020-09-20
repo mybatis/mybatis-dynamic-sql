@@ -39,26 +39,26 @@ public class QueryExpressionRenderer {
     private final QueryExpressionModel queryExpression;
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence;
-    
+
     private QueryExpressionRenderer(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         sequence = Objects.requireNonNull(builder.sequence);
     }
-    
+
     public FragmentAndParameters render() {
         return queryExpression.whereModel()
                 .flatMap(this::renderWhereClause)
                 .map(this::renderWithWhereClause)
                 .orElseGet(this::renderWithoutWhereClause);
     }
-    
+
     private FragmentAndParameters renderWithWhereClause(WhereClauseProvider whereClause) {
         return FragmentAndParameters.withFragment(calculateQueryExpression(whereClause))
                 .withParameters(whereClause.getParameters())
                 .build();
     }
-    
+
     private FragmentAndParameters renderWithoutWhereClause() {
         return FragmentAndParameters.withFragment(calculateQueryExpression())
                 .build();
@@ -84,7 +84,7 @@ public class QueryExpressionRenderer {
                 + calculateTableName(queryExpression.table())
                 + spaceBefore(queryExpression.joinModel().map(this::renderJoin));
     }
-    
+
     private String calculateColumnList() {
         return queryExpression.mapColumns(this::applyTableAndColumnAlias)
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
@@ -93,18 +93,18 @@ public class QueryExpressionRenderer {
     private String calculateTableName(SqlTable table) {
         return queryExpression.calculateTableNameIncludingAlias(table);
     }
-    
+
     private String applyTableAndColumnAlias(BasicColumn selectListItem) {
         return selectListItem.renderWithTableAndColumnAlias(queryExpression.tableAliasCalculator());
     }
-    
+
     private String renderJoin(JoinModel joinModel) {
         return JoinRenderer.withJoinModel(joinModel)
                 .withQueryExpression(queryExpression)
                 .build()
                 .render();
     }
-    
+
     private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
@@ -118,35 +118,35 @@ public class QueryExpressionRenderer {
         return groupByModel.mapColumns(this::applyTableAlias)
                 .collect(CustomCollectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
-    
+
     private String applyTableAlias(BasicColumn column) {
         return column.renderWithTableAlias(queryExpression.tableAliasCalculator());
     }
-    
+
     public static Builder withQueryExpression(QueryExpressionModel model) {
         return new Builder().withQueryExpression(model);
     }
-    
+
     public static class Builder {
         private QueryExpressionModel queryExpression;
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
-        
+
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpression = queryExpression;
             return this;
         }
-        
+
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
-        
+
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
             return this;
         }
-        
+
         public QueryExpressionRenderer build() {
             return new QueryExpressionRenderer(this);
         }

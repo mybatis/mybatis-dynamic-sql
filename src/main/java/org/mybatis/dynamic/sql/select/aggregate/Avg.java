@@ -34,7 +34,7 @@ public class Avg<T> extends AbstractUniTypeFunction<T, Avg<T>> {
     protected Avg<T> copy() {
         return new Avg<>(column);
     }
-    
+
     public static <T> Avg<T> of(BindableColumn<T> column) {
         return new Avg<>(column);
     }

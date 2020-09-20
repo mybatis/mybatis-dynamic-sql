@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public class Upper extends AbstractUniTypeFunction<String, Upper> {
-    
+
     private Upper(BindableColumn<String> column) {
         super(column);
     }

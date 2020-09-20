@@ -39,7 +39,7 @@ class CriterionRendererTest {
     void testAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-        
+
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
         SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
                 .withCondition(condition)
@@ -53,7 +53,7 @@ class CriterionRendererTest {
                 .render()
                 .get()
                 .fragmentAndParametersWithConnector();
-        
+
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
                 () -> assertThat(fp.parameters()).hasSize(1)
@@ -79,7 +79,7 @@ class CriterionRendererTest {
                 .render()
                 .get()
                 .fragmentAndParametersWithConnector();
-        
+
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}"),
                 () -> assertThat(fp.parameters()).hasSize(1)
@@ -107,7 +107,7 @@ class CriterionRendererTest {
                 .render()
                 .get()
                 .fragmentAndParametersWithConnector();
-        
+
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"),
                 () -> assertThat(fp.parameters()).hasSize(1)
@@ -125,7 +125,7 @@ class CriterionRendererTest {
         AtomicInteger sequence = new AtomicInteger(1);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
-        
+
         FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
@@ -134,7 +134,7 @@ class CriterionRendererTest {
                 .render()
                 .get()
                 .fragmentAndParametersWithConnector();
-        
+
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"),
                 () -> assertThat(fp.parameters()).hasSize(1)

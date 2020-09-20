@@ -55,13 +55,13 @@ import examples.springbatch.mapper.PersonMapper;
 @ComponentScan("examples.springbatch.common")
 @MapperScan("examples.springbatch.mapper")
 public class PagingReaderBatchConfiguration {
-    
+
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
-    
+
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
-    
+
     @Bean
     public DataSource dataSource() {
         return new EmbeddedDatabaseBuilder()
@@ -72,7 +72,7 @@ public class PagingReaderBatchConfiguration {
                 .addScript("classpath:/examples/springbatch/data.sql")
                 .build();
     }
-    
+
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
@@ -93,7 +93,7 @@ public class PagingReaderBatchConfiguration {
                 .orderBy(id)
                 .build()
                 .render();
-        
+
         MyBatisPagingItemReader<PersonRecord> reader = new MyBatisPagingItemReader<>();
         reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
         reader.setSqlSessionFactory(sqlSessionFactory);
@@ -101,7 +101,7 @@ public class PagingReaderBatchConfiguration {
         reader.setPageSize(7);
         return reader;
     }
-    
+
     @Bean
     public MyBatisBatchItemWriter<PersonRecord> writer(SqlSessionFactory sqlSessionFactory,
             Converter<PersonRecord, UpdateStatementProvider> convertor) {
@@ -111,7 +111,7 @@ public class PagingReaderBatchConfiguration {
         writer.setStatementId(PersonMapper.class.getName() + ".update");
         return writer;
     }
-    
+
     @Bean
     public Step step1(ItemReader<PersonRecord> reader, ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
         return stepBuilderFactory.get("step1")
