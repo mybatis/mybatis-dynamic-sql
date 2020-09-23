@@ -22,11 +22,16 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public class Constant<T> implements BindableColumn<T> {
 
-    private String alias;
+    private final String alias;
     private final String value;
 
     private Constant(String value) {
+        this(value, null);
+    }
+
+    private Constant(String value, String alias) {
         this.value = Objects.requireNonNull(value);
+        this.alias = alias;
     }
 
     @Override
@@ -41,9 +46,7 @@ public class Constant<T> implements BindableColumn<T> {
 
     @Override
     public Constant<T> as(String alias) {
-        Constant<T> copy = new Constant<>(value);
-        copy.alias = alias;
-        return copy;
+        return new Constant<>(value, alias);
     }
 
     public static <T> Constant<T> of(String value) {

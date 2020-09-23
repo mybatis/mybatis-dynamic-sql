@@ -23,6 +23,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import java.sql.JDBCType;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -263,6 +264,20 @@ class SelectStatementTest {
     }
 
     @Test
+    void testInWhenPresentEmptyList() {
+        List<String> emptyList = Collections.emptyList();
+        SelectModel selectModel = select(column1, column3)
+                .from(table, "a")
+                .where(column3, isInWhenPresent(emptyList)
+                        .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
+        );
+    }
+
+    @Test
     void testInCaseInsensitiveEmptyList() {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
@@ -280,6 +295,20 @@ class SelectStatementTest {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isInCaseInsensitiveWhenPresent(Collections.emptyList())
+                        .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
+        );
+    }
+
+    @Test
+    void testNotInWhenPresentEmptyList() {
+        List<String> emptyList = Collections.emptyList();
+        SelectModel selectModel = select(column1, column3)
+                .from(table, "a")
+                .where(column3, isNotInWhenPresent(emptyList)
                         .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 

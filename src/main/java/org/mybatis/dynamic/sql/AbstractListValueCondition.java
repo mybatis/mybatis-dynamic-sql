@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
@@ -28,20 +29,11 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
     protected final UnaryOperator<Stream<T>> valueStreamTransformer;
     protected final Callback emptyCallback;
 
-    protected AbstractListValueCondition(Collection<T> values) {
-        this(values, UnaryOperator.identity(), () -> { });
-    }
-
-    protected AbstractListValueCondition(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer) {
-        this(values, valueStreamTransformer, () -> { });
-    }
-
-    protected AbstractListValueCondition(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer,
-            Callback emptyCallback) {
-        this.valueStreamTransformer = Objects.requireNonNull(valueStreamTransformer);
-        this.values = valueStreamTransformer.apply(Objects.requireNonNull(values).stream())
+    protected AbstractListValueCondition(AbstractListConditionBuilder<T, ?> builder) {
+        this.valueStreamTransformer = Objects.requireNonNull(builder.valueStreamTransformer);
+        this.values = valueStreamTransformer.apply(builder.values.stream())
             .collect(Collectors.toList());
-        this.emptyCallback = Objects.requireNonNull(emptyCallback);
+        this.emptyCallback = Objects.requireNonNull(builder.emptyCallback);
     }
 
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
@@ -66,4 +58,27 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
     public abstract S withListEmptyCallback(Callback callback);
 
     public abstract String renderCondition(String columnName, Stream<String> placeholders);
+
+    public abstract static class AbstractListConditionBuilder<T, S extends AbstractListConditionBuilder<T,S>> {
+        protected Collection<T> values = new ArrayList<>();
+        protected UnaryOperator<Stream<T>> valueStreamTransformer = UnaryOperator.identity();
+        protected Callback emptyCallback = () -> { };
+
+        public S withValues(Collection<T> values) {
+            this.values.addAll(values);
+            return getThis();
+        }
+
+        public S withValueStreamTransformer(UnaryOperator<Stream<T>> valueStreamTransformer) {
+            this.valueStreamTransformer = valueStreamTransformer;
+            return getThis();
+        }
+
+        public S withEmptyCallback(Callback emptyCallback) {
+            this.emptyCallback = emptyCallback;
+            return getThis();
+        }
+
+        protected abstract S getThis();
+    }
 }

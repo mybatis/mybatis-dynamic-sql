@@ -161,42 +161,44 @@ If none of these options meet your needs, there is an extension point where you 
 The extension point for modifying the value list is the method `then(UnaryOperator<Stream<T>>)`. This method accepts a `UnaryOperator<Stream<T>>` in which you can specify map and/or filter operations for the value stream. For example, suppose you wanted to code an "in" condition that accepted a list of strings, but you want to filter out any null or blank string, and you want to trim all strings. This can be accomplished with code like this:
 
 ```java
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, isIn("  Mouse", "  ", null, "", "Musk shrew  ")
-                            .then(s -> s.filter(Objects::nonNull)
-                                    .map(String::trim)
-                                    .filter(st -> !st.isEmpty())))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
+    SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+            .from(animalData)
+            .where(animalName, isIn("  Mouse", "  ", null, "", "Musk shrew  ")
+                    .then(s -> s.filter(Objects::nonNull)
+                            .map(String::trim)
+                            .filter(st -> !st.isEmpty())))
+            .orderBy(id)
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
 ```
 
-This code is a bit cumbersome, so if this is a common use case you could write a specialization of the `IsIn` condition as follows:
+This code is a bit cumbersome, so if this is a common use case you could build a specialization of the `IsIn` condition as follows:
 
 ```java
-public class MyInCondition extends IsIn<String> {
-    protected MyInCondition(List<String> values) {
-        super(values, s -> s.filter(Objects::nonNull)
-                .map(String::trim)
-                .filter(st -> !st.isEmpty()));
+    public class MyInCondition {
+        public static IsIn<String> isIn(String...values) {
+            return new IsIn.Builder<String>()
+                    .withValues(Arrays.asList(values))
+                    .withValueStreamTransformer(s -> s.filter(Objects::nonNull)
+                            .map(String::trim)
+                            .filter(st -> !st.isEmpty()))
+                    .build();
+        }
     }
-
-    public static MyInCondition isIn(String...values) {
-        return new MyInCondition(Arrays.asList(values));
-    }
-}
 ```
 
 Then the condition could be used in a query as follows:
 
 ```java
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, MyInCondition.isIn("  Mouse", "  ", null, "", "Musk shrew  "))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
+    SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+            .from(animalData)
+            .where(animalName, MyInCondition.isIn("  Mouse", "  ", null, "", "Musk shrew  "))
+            .orderBy(id)
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
 ```
 
-You can apply value stream operations to the conditions `IsIn` and `IsNotIn`. The built in conditions `IsInCaseInsensitive`, `IsInCaseInsensitiveWhenPresent`, `IsNotInCaseInsensitive`, and `IsNotInCaseInsensitiveWhenPresent` do not support additional value stream operations as they already implement a value stream operation as part of the condition. 
+You can apply value stream operations to the conditions `IsIn` and `IsNotIn`. The built in conditions
+`IsInCaseInsensitive`, `IsInCaseInsensitiveWhenPresent`, `IsInWhenPresent`, `IsNotInCaseInsensitive`,
+`IsNotInCaseInsensitiveWhenPresent`, and `IsNotInWhenPresent` do not support additional value stream operations as they
+already implement a value stream operation as part of the condition. 

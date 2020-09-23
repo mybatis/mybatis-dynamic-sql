@@ -89,7 +89,8 @@ class CriterionRendererTest {
     @Test
     void testTypeHandler() {
         SqlTable table = SqlTable.of("foo");
-        SqlColumn<Date> column = SqlColumn.withName("id")
+        SqlColumn<Date> column = new SqlColumn.Builder<Date>()
+                .withName("id")
                 .withTable(table)
                 .withJdbcType(JDBCType.DATE)
                 .withTypeHandler("foo.Bar")
