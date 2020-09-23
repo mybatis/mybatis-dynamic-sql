@@ -14,6 +14,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 
 - Added a callback capability to the "In" conditions that will be called before rendering when the conditions are empty. Also, removed the option that forced the library to render invalid SQL in that case. ([#241](https://github.com/mybatis/mybatis-dynamic-sql/pull/241))
 - Added a utility mapper for MyBatis that allows you to run any select query without having to predefine a result mapping. ([#255](https://github.com/mybatis/mybatis-dynamic-sql/pull/255))
+- Added utility mappers for MyBatis that allow you to run generic CRUD operations. ([#263](https://github.com/mybatis/mybatis-dynamic-sql/pull/263))
 
 ## Release 1.2.0 - August 19, 2020
 
