@@ -15,16 +15,53 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
+
 import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class IsNotInWhenPresent<T> extends IsNotIn<T> {
+import org.mybatis.dynamic.sql.AbstractListValueCondition;
+import org.mybatis.dynamic.sql.Callback;
 
-    protected IsNotInWhenPresent(Collection<T> values) {
-        super(values, s -> s.filter(Objects::nonNull));
+public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T, IsNotInWhenPresent<T>> {
+
+    protected IsNotInWhenPresent(Builder<T> builder) {
+        super(builder);
+    }
+
+    @Override
+    public String renderCondition(String columnName, Stream<String> placeholders) {
+        return spaceAfter(columnName)
+                + placeholders.collect(
+                Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    @Override
+    public IsNotInWhenPresent<T> withListEmptyCallback(Callback callback) {
+        return new Builder<T>()
+                .withValues(values)
+                .withValueStreamTransformer(valueStreamTransformer)
+                .withEmptyCallback(callback)
+                .build();
     }
 
     public static <T> IsNotInWhenPresent<T> of(Collection<T> values) {
-        return new IsNotInWhenPresent<>(values);
+        return new Builder<T>()
+                .withValues(values)
+                .withValueStreamTransformer(s -> s.filter(Objects::nonNull))
+                .build();
+    }
+
+    public static class Builder<T> extends AbstractListConditionBuilder<T, Builder<T>> {
+        @Override
+        protected Builder<T> getThis() {
+            return this;
+        }
+
+        protected IsNotInWhenPresent<T> build() {
+            return new IsNotInWhenPresent<>(this);
+        }
     }
 }

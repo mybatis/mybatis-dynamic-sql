@@ -28,28 +28,21 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected final String name;
     protected final SqlTable table;
     protected final JDBCType jdbcType;
-    protected boolean isDescending = false;
-    protected String alias;
-    protected String typeHandler;
-    protected RenderingStrategy renderingStrategy;
-    protected ParameterTypeConverter<T, ?> parameterTypeConverter;
+    protected final boolean isDescending;
+    protected final String alias;
+    protected final String typeHandler;
+    protected final RenderingStrategy renderingStrategy;
+    protected final ParameterTypeConverter<T, ?> parameterTypeConverter;
 
-    private SqlColumn(Builder builder) {
+    private SqlColumn(Builder<T> builder) {
         name = Objects.requireNonNull(builder.name);
-        jdbcType = builder.jdbcType;
         table = Objects.requireNonNull(builder.table);
+        jdbcType = builder.jdbcType;
+        isDescending = builder.isDescending;
+        alias = builder.alias;
         typeHandler = builder.typeHandler;
-    }
-
-    protected SqlColumn(SqlColumn<T> sqlColumn) {
-        name = sqlColumn.name;
-        table = sqlColumn.table;
-        jdbcType = sqlColumn.jdbcType;
-        isDescending = sqlColumn.isDescending;
-        alias = sqlColumn.alias;
-        typeHandler = sqlColumn.typeHandler;
-        renderingStrategy = sqlColumn.renderingStrategy;
-        parameterTypeConverter = sqlColumn.parameterTypeConverter;
+        renderingStrategy = builder.renderingStrategy;
+        parameterTypeConverter = builder.parameterTypeConverter;
     }
 
     public String name() {
@@ -82,16 +75,14 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     @Override
     public SortSpecification descending() {
-        SqlColumn<T> column = new SqlColumn<>(this);
-        column.isDescending = true;
-        return column;
+        Builder<T> b = copy();
+        return b.withDescending(true).build();
     }
 
     @Override
     public SqlColumn<T> as(String alias) {
-        SqlColumn<T> column = new SqlColumn<>(this);
-        column.alias = alias;
-        return column;
+        Builder<T> b = copy();
+        return b.withAlias(alias).build();
     }
 
     @Override
@@ -118,23 +109,20 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     @NotNull
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
-        SqlColumn<S> column = copy();
-        column.typeHandler = typeHandler;
-        return column;
+        Builder<S> b = copy();
+        return b.withTypeHandler(typeHandler).build();
     }
 
     @NotNull
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
-        SqlColumn<S> column = copy();
-        column.renderingStrategy = renderingStrategy;
-        return column;
+        Builder<S> b = copy();
+        return b.withRenderingStrategy(renderingStrategy).build();
     }
 
     @NotNull
     public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
-        SqlColumn<S> column = copy();
-        column.parameterTypeConverter = parameterTypeConverter;
-        return column;
+        Builder<S> b = copy();
+        return b.withParameterTypeConverter(parameterTypeConverter).build();
     }
 
     /**
@@ -147,8 +135,16 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return a new SqlColumn of type S (S is the same as T)
      */
     @SuppressWarnings("unchecked")
-    private <S> SqlColumn<S> copy() {
-        return new SqlColumn<>((SqlColumn<S>) this);
+    private <S> Builder<S> copy() {
+        return new Builder<S>()
+                .withName(this.name)
+                .withTable(this.table)
+                .withJdbcType(this.jdbcType)
+                .withDescending(this.isDescending)
+                .withAlias(this.alias)
+                .withTypeHandler(this.typeHandler)
+                .withRenderingStrategy((this.renderingStrategy))
+                .withParameterTypeConverter((ParameterTypeConverter<S, ?>) this.parameterTypeConverter);
     }
 
     private String applyTableAlias(String tableAlias) {
@@ -156,49 +152,69 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     public static <T> SqlColumn<T> of(String name, SqlTable table) {
-        return SqlColumn.withName(name)
+        return new Builder<T>().withName(name)
                 .withTable(table)
                 .build();
     }
 
     public static <T> SqlColumn<T> of(String name, SqlTable table, JDBCType jdbcType) {
-        return SqlColumn.withName(name)
+        return new Builder<T>().withName(name)
                 .withTable(table)
                 .withJdbcType(jdbcType)
                 .build();
     }
 
-    public static Builder withName(String name) {
-        return new Builder().withName(name);
-    }
+    public static class Builder<T> {
+        protected String name;
+        protected SqlTable table;
+        protected JDBCType jdbcType;
+        protected boolean isDescending = false;
+        protected String alias;
+        protected String typeHandler;
+        protected RenderingStrategy renderingStrategy;
+        protected ParameterTypeConverter<T, ?> parameterTypeConverter;
 
-    public static class Builder {
-        private SqlTable table;
-        private String name;
-        private JDBCType jdbcType;
-        private String typeHandler;
-
-        public Builder withTable(SqlTable table) {
-            this.table = table;
-            return this;
-        }
-
-        public Builder withName(String name) {
+        public Builder<T> withName(String name) {
             this.name = name;
             return this;
         }
 
-        public Builder withJdbcType(JDBCType jdbcType) {
+        public Builder<T> withTable(SqlTable table) {
+            this.table = table;
+            return this;
+        }
+
+        public Builder<T> withJdbcType(JDBCType jdbcType) {
             this.jdbcType = jdbcType;
             return this;
         }
 
-        public Builder withTypeHandler(String typeHandler) {
+        public Builder<T> withDescending(boolean isDescending) {
+            this.isDescending = isDescending;
+            return this;
+        }
+
+        public Builder<T> withAlias(String alias) {
+            this.alias = alias;
+            return this;
+        }
+
+        public Builder<T> withTypeHandler(String typeHandler) {
             this.typeHandler = typeHandler;
             return this;
         }
 
-        public <T> SqlColumn<T> build() {
+        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+
+        public Builder<T> withParameterTypeConverter(ParameterTypeConverter<T, ?> parameterTypeConverter) {
+            this.parameterTypeConverter = parameterTypeConverter;
+            return this;
+        }
+
+        public SqlColumn<T> build() {
             return new SqlColumn<>(this);
         }
     }

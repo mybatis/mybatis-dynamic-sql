@@ -27,16 +27,8 @@ import org.mybatis.dynamic.sql.Callback;
 
 public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
 
-    protected IsNotIn(Collection<T> values) {
-        super(values);
-    }
-
-    protected IsNotIn(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer) {
-        super(values, valueStreamTransformer);
-    }
-
-    protected IsNotIn(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer, Callback emptyCallback) {
-        super(values, valueStreamTransformer, emptyCallback);
+    protected IsNotIn(Builder<T> builder) {
+        super(builder);
     }
 
     @Override
@@ -48,7 +40,11 @@ public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
 
     @Override
     public IsNotIn<T> withListEmptyCallback(Callback callback) {
-        return new IsNotIn<>(values, valueStreamTransformer, callback);
+        return new Builder<T>()
+                .withValues(values)
+                .withValueStreamTransformer(valueStreamTransformer)
+                .withEmptyCallback(callback)
+                .build();
     }
 
     /**
@@ -62,10 +58,27 @@ public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
      * @return new condition with the specified transformer
      */
     public IsNotIn<T> then(UnaryOperator<Stream<T>> valueStreamTransformer) {
-        return new IsNotIn<>(values, valueStreamTransformer, emptyCallback);
+        return new Builder<T>()
+                .withValues(values)
+                .withValueStreamTransformer(valueStreamTransformer)
+                .withEmptyCallback(emptyCallback)
+                .build();
     }
 
     public static <T> IsNotIn<T> of(Collection<T> values) {
-        return new IsNotIn<>(values);
+        return new Builder<T>()
+                .withValues(values)
+                .build();
+    }
+
+    public static class Builder<T> extends AbstractListConditionBuilder<T, Builder<T>> {
+        @Override
+        protected Builder<T> getThis() {
+            return this;
+        }
+
+        public IsNotIn<T> build() {
+            return new IsNotIn<>(this);
+        }
     }
 }

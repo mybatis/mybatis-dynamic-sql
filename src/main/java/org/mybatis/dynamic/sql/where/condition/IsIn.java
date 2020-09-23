@@ -27,16 +27,8 @@ import org.mybatis.dynamic.sql.Callback;
 
 public class IsIn<T> extends AbstractListValueCondition<T, IsIn<T>> {
 
-    protected IsIn(Collection<T> values) {
-        super(values);
-    }
-
-    protected IsIn(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer) {
-        super(values, valueStreamTransformer);
-    }
-
-    protected IsIn(Collection<T> values, UnaryOperator<Stream<T>> valueStreamTransformer, Callback emptyCallback) {
-        super(values, valueStreamTransformer, emptyCallback);
+    protected IsIn(Builder<T> builder) {
+        super(builder);
     }
 
     @Override
@@ -47,7 +39,11 @@ public class IsIn<T> extends AbstractListValueCondition<T, IsIn<T>> {
 
     @Override
     public IsIn<T> withListEmptyCallback(Callback callback) {
-        return new IsIn<>(values, valueStreamTransformer, callback);
+        return new Builder<T>()
+                .withValues(values)
+                .withValueStreamTransformer(valueStreamTransformer)
+                .withEmptyCallback(callback)
+                .build();
     }
 
     /**
@@ -61,10 +57,25 @@ public class IsIn<T> extends AbstractListValueCondition<T, IsIn<T>> {
      * @return new condition with the specified transformer
      */
     public IsIn<T> then(UnaryOperator<Stream<T>> valueStreamTransformer) {
-        return new IsIn<>(values, valueStreamTransformer, emptyCallback);
+        return new Builder<T>()
+                .withValues(values)
+                .withValueStreamTransformer(valueStreamTransformer)
+                .withEmptyCallback(emptyCallback)
+                .build();
     }
 
     public static <T> IsIn<T> of(Collection<T> values) {
-        return new IsIn<>(values);
+        return new Builder<T>().withValues(values).build();
+    }
+
+    public static class Builder<T> extends AbstractListConditionBuilder<T, Builder<T>> {
+        @Override
+        protected Builder<T> getThis() {
+            return this;
+        }
+
+        public IsIn<T> build() {
+            return new IsIn<>(this);
+        }
     }
 }

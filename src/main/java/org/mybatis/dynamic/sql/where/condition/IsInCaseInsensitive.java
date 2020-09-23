@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.Collection;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,17 +25,8 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsInCaseInsensitive extends AbstractListValueCondition<String, IsInCaseInsensitive> {
 
-    protected IsInCaseInsensitive(Collection<String> values) {
-        super(values, s -> s.map(StringUtilities::safelyUpperCase));
-    }
-
-    protected IsInCaseInsensitive(Collection<String> values, UnaryOperator<Stream<String>> valueStreamTransformer) {
-        super(values, valueStreamTransformer);
-    }
-
-    protected IsInCaseInsensitive(Collection<String> values, UnaryOperator<Stream<String>> valueStreamTransformer,
-            Callback emptyCallback) {
-        super(values, valueStreamTransformer, emptyCallback);
+    protected  IsInCaseInsensitive(Builder builder) {
+        super(builder);
     }
 
     @Override
@@ -47,10 +37,28 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String, IsIn
 
     @Override
     public IsInCaseInsensitive withListEmptyCallback(Callback callback) {
-        return new IsInCaseInsensitive(values, valueStreamTransformer, callback);
+        return new Builder()
+                .withValues(values)
+                .withValueStreamTransformer(valueStreamTransformer)
+                .withEmptyCallback(callback)
+                .build();
     }
 
     public static IsInCaseInsensitive of(Collection<String> values) {
-        return new IsInCaseInsensitive(values);
+        return new Builder()
+                .withValues(values)
+                .withValueStreamTransformer(s -> s.map(StringUtilities::safelyUpperCase))
+                .build();
+    }
+
+    public static class Builder extends AbstractListConditionBuilder<String, Builder> {
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
+
+        protected IsInCaseInsensitive build() {
+            return new IsInCaseInsensitive(this);
+        }
     }
 }

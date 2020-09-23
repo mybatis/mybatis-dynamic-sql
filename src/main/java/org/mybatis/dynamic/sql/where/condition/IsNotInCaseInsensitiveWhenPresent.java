@@ -17,29 +17,51 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsNotInCaseInsensitiveWhenPresent extends IsNotInCaseInsensitive {
+public class IsNotInCaseInsensitiveWhenPresent
+        extends AbstractListValueCondition<String, IsNotInCaseInsensitiveWhenPresent> {
 
-    protected IsNotInCaseInsensitiveWhenPresent(Collection<String> values) {
-        super(values, s -> s.filter(Objects::nonNull).map(StringUtilities::safelyUpperCase));
+    protected IsNotInCaseInsensitiveWhenPresent(Builder builder) {
+        super(builder);
     }
 
-    protected IsNotInCaseInsensitiveWhenPresent(Collection<String> values,
-            UnaryOperator<Stream<String>> valueStreamTransformer, Callback callback) {
-        super(values, valueStreamTransformer, callback);
+    @Override
+    public String renderCondition(String columnName, Stream<String> placeholders) {
+        return "upper(" + columnName + ") " + //$NON-NLS-1$ //$NON-NLS-2$
+                placeholders.collect(
+                        Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override
     public IsNotInCaseInsensitiveWhenPresent withListEmptyCallback(Callback callback) {
-        return new IsNotInCaseInsensitiveWhenPresent(values, valueStreamTransformer, callback);
+        return new Builder()
+                .withValues(values)
+                .withValueStreamTransformer(valueStreamTransformer)
+                .withEmptyCallback(callback)
+                .build();
     }
 
     public static IsNotInCaseInsensitiveWhenPresent of(Collection<String> values) {
-        return new IsNotInCaseInsensitiveWhenPresent(values);
+        return new Builder()
+                .withValues(values)
+                .withValueStreamTransformer(s -> s.filter(Objects::nonNull).map(StringUtilities::safelyUpperCase))
+                .build();
+    }
+
+    public static class Builder extends AbstractListConditionBuilder<String, Builder> {
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
+
+        public IsNotInCaseInsensitiveWhenPresent build() {
+            return new IsNotInCaseInsensitiveWhenPresent(this);
+        }
     }
 }
