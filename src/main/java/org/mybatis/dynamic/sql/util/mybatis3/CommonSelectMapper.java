@@ -27,8 +27,8 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 /**
- * This is a general purpose MyBatis mapper. It allows you to execute select statements without having to
- * write a custom {@link org.apache.ibatis.annotations.ResultMap} for each statement.
+ * This is a general purpose MyBatis mapper for select statements. It allows you to execute select statements without
+ * having to write a custom {@link org.apache.ibatis.annotations.ResultMap} for each statement.
  *
  * <p>This mapper contains three types of methods:
  * <ul>
