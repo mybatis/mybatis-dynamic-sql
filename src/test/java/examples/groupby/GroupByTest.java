@@ -40,7 +40,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 class GroupByTest {
 
@@ -62,14 +62,14 @@ class GroupByTest {
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
-        config.addMapper(GeneralMapper.class);
+        config.addMapper(CommonSelectMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
 
     @Test
     void testBasicGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(gender, count())
                     .from(person)
@@ -95,7 +95,7 @@ class GroupByTest {
     @Test
     void testBasicGroupByWithAggregateAlias() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(gender, count().as("count"))
                     .from(person)
@@ -121,7 +121,7 @@ class GroupByTest {
     @Test
     void testGroupByAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, streetAddress, count().as("count"))
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
@@ -151,7 +151,7 @@ class GroupByTest {
     @Test
     void testUnionAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
@@ -187,7 +187,7 @@ class GroupByTest {
     @Test
     void testUnionAllAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
                     .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
@@ -223,7 +223,7 @@ class GroupByTest {
     @Test
     void testUnionAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(stringConstant("Gender"), gender.as("value"), count().as("count"))
                     .from(person)
@@ -267,7 +267,7 @@ class GroupByTest {
     @Test
     void testUnionAllAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(stringConstant("Gender"), gender.as("value"), count().as("count"))
                     .from(person)
@@ -311,7 +311,7 @@ class GroupByTest {
     @Test
     void testBasicGroupByOrderByWithAggregateAlias() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(gender, count().as("count"))
                     .from(person)
@@ -338,7 +338,7 @@ class GroupByTest {
     @Test
     void testBasicGroupByOrderByWithCalculatedColumnAndTableAlias() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
                     .from(person, "a")
@@ -365,7 +365,7 @@ class GroupByTest {
     @Test
     void testGroupByAfterWhere() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person, "a")
@@ -392,7 +392,7 @@ class GroupByTest {
     @Test
     void testLimitAndOffsetAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -416,7 +416,7 @@ class GroupByTest {
     @Test
     void testLimitOnlyAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -439,7 +439,7 @@ class GroupByTest {
     @Test
     void testOffsetOnlyAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -462,7 +462,7 @@ class GroupByTest {
     @Test
     void testOffsetAndFetchFirstAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -486,7 +486,7 @@ class GroupByTest {
     @Test
     void testFetchFirstOnlyAfterGroupBy() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, count().as("count"))
                     .from(person)
@@ -509,7 +509,7 @@ class GroupByTest {
     @Test
     void testCountDistinct() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(countDistinct(lastName).as("count"))
                     .from(person)

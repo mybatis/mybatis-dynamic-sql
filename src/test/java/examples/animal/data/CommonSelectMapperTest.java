@@ -42,9 +42,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
-class GeneralMapperTest {
+class CommonSelectMapperTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
@@ -64,7 +64,7 @@ class GeneralMapperTest {
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
-        config.addMapper(GeneralMapper.class);
+        config.addMapper(CommonSelectMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
 
@@ -80,7 +80,7 @@ class GeneralMapperTest {
     @Test
     void testGeneralSelectOne() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -96,7 +96,7 @@ class GeneralMapperTest {
     @Test
     void testGeneralSelectOneWithRowMapper() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -115,7 +115,7 @@ class GeneralMapperTest {
     @Test
     void testGeneralSelectMany() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName)
                     .from(animalData)
                     .where(id, isIn(1, 2))
@@ -136,7 +136,7 @@ class GeneralMapperTest {
     @Test
     void testGeneralSelectManyWithRowMapper() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(1, 2))
@@ -161,7 +161,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOneBigDecimal() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(bodyWeight)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -177,7 +177,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalBigDecimalPresent() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(bodyWeight)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -193,7 +193,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalBigDecimalMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(bodyWeight)
                     .from(animalData)
                     .where(id, isEqualTo(1000))
@@ -209,7 +209,7 @@ class GeneralMapperTest {
     @Test
     void testSelectManyBigDecimals() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(bodyWeight)
                     .from(animalData)
                     .where(id, isIn(1, 2))
@@ -228,7 +228,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOneDouble() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(bodyWeight)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -244,7 +244,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalDoublePresent() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(bodyWeight)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -260,7 +260,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalDoubleMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(bodyWeight)
                     .from(animalData)
                     .where(id, isEqualTo(1000))
@@ -276,7 +276,7 @@ class GeneralMapperTest {
     @Test
     void testSelectManyDoubles() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(bodyWeight)
                     .from(animalData)
                     .where(id, isIn(1, 2))
@@ -295,7 +295,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOneInteger() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -311,7 +311,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalIntegerPresent() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -327,7 +327,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalIntegerMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id)
                     .from(animalData)
                     .where(id, isEqualTo(1000))
@@ -343,7 +343,7 @@ class GeneralMapperTest {
     @Test
     void testSelectManyIntegers() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id)
                     .from(animalData)
                     .where(id, isIn(1, 2))
@@ -362,7 +362,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOneLong() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -378,7 +378,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalLongPresent() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -394,7 +394,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalLongMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id)
                     .from(animalData)
                     .where(id, isEqualTo(1000))
@@ -410,7 +410,7 @@ class GeneralMapperTest {
     @Test
     void testSelectManyLongs() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(id)
                     .from(animalData)
                     .where(id, isIn(1, 2))
@@ -429,7 +429,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOneString() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(animalName)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -445,7 +445,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalStringPresent() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(animalName)
                     .from(animalData)
                     .where(id, isEqualTo(1))
@@ -461,7 +461,7 @@ class GeneralMapperTest {
     @Test
     void testSelectOptionalStringMissing() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(animalName)
                     .from(animalData)
                     .where(id, isEqualTo(1000))
@@ -477,7 +477,7 @@ class GeneralMapperTest {
     @Test
     void testSelectManyStrings() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(animalName)
                     .from(animalData)
                     .where(id, isIn(1, 2))

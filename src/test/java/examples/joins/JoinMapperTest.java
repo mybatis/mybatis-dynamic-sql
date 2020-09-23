@@ -43,7 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 class JoinMapperTest {
 
@@ -66,7 +66,7 @@ class JoinMapperTest {
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(JoinMapper.class);
-        config.addMapper(GeneralMapper.class);
+        config.addMapper(CommonSelectMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
 
@@ -387,7 +387,7 @@ class JoinMapperTest {
     @Test
     void testRightJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderLine, "ol")
@@ -421,7 +421,7 @@ class JoinMapperTest {
     @Test
     void testRightJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -457,7 +457,7 @@ class JoinMapperTest {
     @Test
     void testRightJoin3() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -493,7 +493,7 @@ class JoinMapperTest {
     @Test
     void testRightJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster)
@@ -529,7 +529,7 @@ class JoinMapperTest {
     @Test
     void testLeftJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -563,7 +563,7 @@ class JoinMapperTest {
     @Test
     void testLeftJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -599,7 +599,7 @@ class JoinMapperTest {
     @Test
     void testLeftJoin3() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -635,7 +635,7 @@ class JoinMapperTest {
     @Test
     void testLeftJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster)
@@ -671,7 +671,7 @@ class JoinMapperTest {
     @Test
     void testFullJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
                     .from(itemMaster, "im")
@@ -712,7 +712,7 @@ class JoinMapperTest {
     @Test
     void testFullJoin2() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -754,7 +754,7 @@ class JoinMapperTest {
     @Test
     void testFullJoin3() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
@@ -796,7 +796,7 @@ class JoinMapperTest {
     @Test
     void testFullJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster)
@@ -866,7 +866,7 @@ class JoinMapperTest {
     @Test
     void testLimitAndOffsetAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -901,7 +901,7 @@ class JoinMapperTest {
     @Test
     void testLimitOnlyAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -935,7 +935,7 @@ class JoinMapperTest {
     @Test
     void testOffsetOnlyAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -969,7 +969,7 @@ class JoinMapperTest {
     @Test
     void testOffsetAndFetchFirstAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
@@ -1004,7 +1004,7 @@ class JoinMapperTest {
     @Test
     void testFetchFirstOnlyAfterJoin() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = session.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")

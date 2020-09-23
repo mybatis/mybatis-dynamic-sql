@@ -32,9 +32,9 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
-public interface JsonTestMapper extends GeneralMapper {
+public interface JsonTestMapper extends CommonSelectMapper {
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @Results(id = "JsonTestResult", value = {
             @Result(column = "id", property = "id", id = true),

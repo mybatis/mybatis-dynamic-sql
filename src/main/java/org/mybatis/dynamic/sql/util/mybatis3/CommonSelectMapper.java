@@ -27,8 +27,8 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 /**
- * This is a general purpose MyBatis mapper. It allows you to execute select statements without having to
- * write a custom {@link org.apache.ibatis.annotations.ResultMap} for each statement.
+ * This is a general purpose MyBatis mapper for select statements. It allows you to execute select statements without
+ * having to write a custom {@link org.apache.ibatis.annotations.ResultMap} for each statement.
  *
  * <p>This mapper contains three types of methods:
  * <ul>
@@ -46,7 +46,7 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
  *
  * @author Jeff Butler
  */
-public interface GeneralMapper {
+public interface CommonSelectMapper {
     /**
      * Select a single row as a Map of values. The row may have any number of columns.
      * The Map key will be the column name as returned from the
@@ -67,7 +67,7 @@ public interface GeneralMapper {
      * the row values into a Map, and then a row mapper can retrieve values from the Map and use them
      * to construct a custom object.
      *
-     * <p>See {@link GeneralMapper#selectOneMappedRow(SelectStatementProvider)} for details about
+     * <p>See {@link CommonSelectMapper#selectOneMappedRow(SelectStatementProvider)} for details about
      * how MyBatis will construct the Map of values.
      *
      * @param selectStatement the select statement
