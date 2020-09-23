@@ -25,16 +25,16 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 import examples.generated.always.GeneratedAlwaysRecord;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
 
-public interface GeneratedAlwaysAnnotatedMapper {
+public interface GeneratedAlwaysAnnotatedMapper extends CommonInsertMapper<GeneratedAlwaysRecord>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="gaResults", value={
         @Result(property="id", column="id", id=true),
@@ -48,23 +48,16 @@ public interface GeneratedAlwaysAnnotatedMapper {
     @ResultMap("gaResults")
     GeneratedAlwaysRecord selectByPrimaryKey(SelectStatementProvider selectStatement);
 
+    @Override
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     @Options(useGeneratedKeys=true, keyProperty="record.fullName")
     int insert(InsertStatementProvider<GeneratedAlwaysRecord> insertStatement);
-
-    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
-    int update(UpdateStatementProvider updateStatement);
-
-    @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
-    int insertMultiple(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert);
 
     // This is kludgy. Currently MyBatis does not support nested lists in parameter objects
     // when returning generated keys.
     // So we need to do this silliness and decompose the multi row insert into its component parts
     // for the actual MyBatis call
-    @Insert({
-        "${insertStatement}"
-    })
+    @Insert("${insertStatement}")
     @Options(useGeneratedKeys=true, keyProperty="records.fullName")
     int insertMultipleWithGeneratedKeys(@Param("insertStatement") String statement, @Param("records") List<GeneratedAlwaysRecord> records);
 

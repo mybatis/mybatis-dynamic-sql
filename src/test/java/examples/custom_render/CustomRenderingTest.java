@@ -50,7 +50,7 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -69,7 +69,7 @@ class CustomRenderingTest {
                 postgres.getUnpooledDataSource());
         configuration.setEnvironment(environment);
         configuration.addMapper(JsonTestMapper.class);
-        configuration.addMapper(GeneralMapper.class);
+        configuration.addMapper(CommonSelectMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
     }
 

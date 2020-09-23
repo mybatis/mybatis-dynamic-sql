@@ -10,7 +10,7 @@ MyBatis is very good at mapping result sets to objects - this is one of its prim
 that you predefine the mappings for every possibility. This presents a challenge if you want very dynamic column lists
 in a query. This library provides a generalized MyBatis mapper that can assist with that problem.
 
-The general mapper is `org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper`. This mapper can be injected into a MyBatis configuration
+The general mapper is `org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper`. This mapper can be injected into a MyBatis configuration
 as is, or it can be extended by an existing mapper. If you are using MyBatis Spring support and auto scanning for mappers,
 you can create an extension in your application's mapper package as follows:
 
@@ -18,10 +18,10 @@ you can create an extension in your application's mapper package as follows:
 package foo.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 @Mapper
-public interface MyGeneralMapper extends GeneralMapper {
+public interface MyGeneralMapper extends CommonSelectMapper {
 }
 ```
 
@@ -45,11 +45,11 @@ import java.util.List;
 import java.util.Map;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 public class MyService {
     public List<Map<String,Object>> generalSearch() {
-        GeneralMapper mapper = getGeneralMapper(); // not shown
+        CommonSelectMapper mapper = getGeneralMapper(); // not shown
 
         SelectStatementProvider selectStatement = select(id, description)
             .from(foo)
@@ -76,11 +76,11 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import java.util.List;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 public class MyService {
     public List<TableCode> generalSearch() {
-        GeneralMapper mapper = getGeneralMapper(); // not shown
+        CommonSelectMapper mapper = getGeneralMapper(); // not shown
 
         SelectStatementProvider selectStatement = select(id, description)
             .from(foo)
@@ -108,11 +108,11 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 public class MyService {
     public Long getCount() {
-        GeneralMapper mapper = getGeneralMapper(); // not shown
+        CommonSelectMapper mapper = getGeneralMapper(); // not shown
 
         SelectStatementProvider selectStatement = countFrom(foo)
             .where(description. isLike("%bar%"))

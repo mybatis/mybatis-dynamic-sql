@@ -58,7 +58,7 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.mybatis.dynamic.sql.util.mybatis3.GeneralMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
 import org.mybatis.dynamic.sql.where.condition.IsNotIn;
@@ -85,7 +85,7 @@ class AnimalDataTest {
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(AnimalDataMapper.class);
-        config.addMapper(GeneralMapper.class);
+        config.addMapper(CommonSelectMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
 
@@ -125,7 +125,7 @@ class AnimalDataTest {
     @Test
     void testSelectAllRowsAllColumns() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             SelectStatementProvider selectStatement = select(animalData.allColumns())
                     .from(animalData)
                     .orderBy(id.descending())
@@ -766,7 +766,7 @@ class AnimalDataTest {
     @Test
     void testLikeLowerCase() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, lower(animalName).as("AnimalName"), bodyWeight, brainWeight)
                     .from(animalData)
@@ -787,7 +787,7 @@ class AnimalDataTest {
     @Test
     void testLikeUpperCase() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, upper(animalName).as("animalname"), bodyWeight, brainWeight)
                     .from(animalData)
@@ -808,7 +808,7 @@ class AnimalDataTest {
     @Test
     void testNumericConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, constant("3").as("some_number"))
                     .from(animalData, "a")
@@ -838,7 +838,7 @@ class AnimalDataTest {
     @Test
     void testStringConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, stringConstant("fred").as("some_string"))
                     .from(animalData, "a")
@@ -868,7 +868,7 @@ class AnimalDataTest {
     @Test
     void testDeprecatedAdd() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, DeprecatedAdd.of(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
@@ -898,7 +898,7 @@ class AnimalDataTest {
     @Test
     void testAdd() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, add(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
@@ -928,7 +928,7 @@ class AnimalDataTest {
     @Test
     void testAddConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, add(bodyWeight, constant("22"), constant("33")).as("calculated_weight"))
                     .from(animalData, "a")
@@ -958,7 +958,7 @@ class AnimalDataTest {
     @Test
     void testAddConstantWithConstantFirst() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, add(constant("22"), bodyWeight, constant("33")).as("calculated_weight"))
                     .from(animalData, "a")
@@ -988,7 +988,7 @@ class AnimalDataTest {
     @Test
     void testConcatenate() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, concatenate(animalName, stringConstant(" - The Legend")).as("display_name"))
                     .from(animalData, "a")
@@ -1015,7 +1015,7 @@ class AnimalDataTest {
     @Test
     void testConcatenateConstantFirst() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, concatenate(stringConstant("Name: "), animalName).as("display_name"))
                     .from(animalData, "a")
@@ -1042,7 +1042,7 @@ class AnimalDataTest {
     @Test
     void testDivide() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, divide(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
@@ -1072,7 +1072,7 @@ class AnimalDataTest {
     @Test
     void testDivideConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, divide(bodyWeight, constant("10.0")).as("calculated_weight"))
                     .from(animalData, "a")
@@ -1102,7 +1102,7 @@ class AnimalDataTest {
     @Test
     void testMultiply() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, multiply(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
@@ -1132,7 +1132,7 @@ class AnimalDataTest {
     @Test
     void testMultiplyConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, multiply(bodyWeight, constant("2.0")).as("calculated_weight"))
                     .from(animalData, "a")
@@ -1162,7 +1162,7 @@ class AnimalDataTest {
     @Test
     void testSubtract() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, subtract(bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
@@ -1192,7 +1192,7 @@ class AnimalDataTest {
     @Test
     void testSubtractConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, subtract(bodyWeight, constant("5.5")).as("calculated_weight"))
                     .from(animalData, "a")
@@ -1222,7 +1222,7 @@ class AnimalDataTest {
     @Test
     void testGeneralOperator() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, applyOperator("-", bodyWeight, brainWeight).as("calculated_weight"))
                     .from(animalData, "a")
@@ -1252,7 +1252,7 @@ class AnimalDataTest {
     @Test
     void testComplexExpression() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(id, animalName, add(multiply(bodyWeight, constant("5.5")), subtract(brainWeight, constant("2"))).as("calculated_weight"))
                     .from(animalData, "a")
@@ -1611,7 +1611,7 @@ class AnimalDataTest {
     @Test
     void testCount() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(count().as("total"))
                     .from(animalData, "a")
@@ -1630,7 +1630,7 @@ class AnimalDataTest {
     @Test
     void testCountField() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(count(brainWeight).as("total"))
                     .from(animalData, "a")
@@ -1649,7 +1649,7 @@ class AnimalDataTest {
     @Test
     void testCountNoAlias() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(count())
                     .from(animalData)
@@ -1668,7 +1668,7 @@ class AnimalDataTest {
     @Test
     void testMax() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(max(brainWeight).as("total"))
                     .from(animalData, "a")
@@ -1687,7 +1687,7 @@ class AnimalDataTest {
     @Test
     void testMaxNoAlias() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(max(brainWeight))
                     .from(animalData)
@@ -1727,7 +1727,7 @@ class AnimalDataTest {
     @Test
     void testMin() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(min(brainWeight).as("total"))
                     .from(animalData, "a")
@@ -1746,7 +1746,7 @@ class AnimalDataTest {
     @Test
     void testMinNoAlias() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(min(brainWeight))
                     .from(animalData)
@@ -1809,7 +1809,7 @@ class AnimalDataTest {
     @Test
     void testAvg() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(avg(brainWeight).as("average"))
                     .from(animalData, "a")
@@ -1828,7 +1828,7 @@ class AnimalDataTest {
     @Test
     void testDeprecatedAvg() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(DeprecatedAverage.of(brainWeight).as("average"))
                     .from(animalData, "a")
@@ -1847,7 +1847,7 @@ class AnimalDataTest {
     @Test
     void testSum() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            GeneralMapper mapper = sqlSession.getMapper(GeneralMapper.class);
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(sum(brainWeight).as("total"))
                     .from(animalData)

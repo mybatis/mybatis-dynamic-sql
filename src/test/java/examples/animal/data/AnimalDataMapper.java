@@ -17,25 +17,20 @@ package examples.animal.data;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
-public interface AnimalDataMapper {
+public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper<AnimalData>, CommonUpdateMapper {
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="AnimalDataResult", value={
@@ -49,21 +44,6 @@ public interface AnimalDataMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("AnimalDataResult")
     AnimalData selectOne(SelectStatementProvider selectStatement);
-
-    @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
-    int delete(DeleteStatementProvider deleteStatement);
-
-    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
-    int update(UpdateStatementProvider updateStatement);
-
-    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
-    int insert(InsertStatementProvider<AnimalData> insertStatement);
-
-    @InsertProvider(type=SqlProviderAdapter.class, method="generalInsert")
-    int generalInsert(GeneralInsertStatementProvider insertStatement);
-
-    @InsertProvider(type=SqlProviderAdapter.class, method="insertSelect")
-    int insertSelect(InsertSelectStatementProvider insertSelectStatement);
 
     @Select({
         "select id, animal_name, brain_weight, body_weight",
