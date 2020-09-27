@@ -26,8 +26,12 @@ import org.mybatis.dynamic.sql.BindableColumn;
  *
  * @param <T> the subtype of this class
  */
-public abstract class AbstractCount<T extends AbstractCount<T>> implements BindableColumn<Long> {
+public abstract class AbstractCount implements BindableColumn<Long> {
     private final String alias;
+
+    protected AbstractCount() {
+        this(null);
+    }
 
     protected AbstractCount(String alias) {
         this.alias = alias;
@@ -37,11 +41,4 @@ public abstract class AbstractCount<T extends AbstractCount<T>> implements Binda
     public Optional<String> alias() {
         return Optional.ofNullable(alias);
     }
-
-    @Override
-    public T as(String alias) {
-        return copyWithAlias(alias);
-    }
-
-    protected abstract T copyWithAlias(String alias);
 }

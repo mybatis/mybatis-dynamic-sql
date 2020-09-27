@@ -20,9 +20,13 @@ import java.util.Objects;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Count extends AbstractCount<Count> {
+public class Count extends AbstractCount {
 
     private final BasicColumn column;
+
+    private Count(BasicColumn column) {
+        this.column = Objects.requireNonNull(column);
+    }
 
     private Count(BasicColumn column, String alias) {
         super(alias);
@@ -35,11 +39,11 @@ public class Count extends AbstractCount<Count> {
     }
 
     @Override
-    protected Count copyWithAlias(String alias) {
+    public Count as(String alias) {
         return new Count(column, alias);
     }
 
     public static Count of(BasicColumn column) {
-        return new Count(column, null);
+        return new Count(column);
     }
 }
