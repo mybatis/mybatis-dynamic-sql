@@ -1,3 +1,4 @@
+module:org.mybatis.dynamic.sql
 org.mybatis.dynamic.sql
 org.mybatis.dynamic.sql.delete
 org.mybatis.dynamic.sql.delete.render

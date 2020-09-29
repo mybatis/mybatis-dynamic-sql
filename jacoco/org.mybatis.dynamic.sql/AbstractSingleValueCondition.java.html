@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractSingleValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractSingleValueCondition.java</span></div><h1>AbstractSingleValueCondition.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractSingleValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractSingleValueCondition.java</span></div><h1>AbstractSingleValueCondition.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -22,31 +22,31 @@ import java.util.function.Supplier;
 public abstract class AbstractSingleValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {
     protected final Supplier&lt;T&gt; valueSupplier;
     private final Predicate&lt;T&gt; predicate;
-    
+
 <span class="fc" id="L26">    protected AbstractSingleValueCondition(Supplier&lt;T&gt; valueSupplier) {</span>
 <span class="fc" id="L27">        this.valueSupplier = Objects.requireNonNull(valueSupplier);</span>
 <span class="fc" id="L28">        predicate = v -&gt; true;</span>
 <span class="fc" id="L29">    }</span>
-    
+
 <span class="fc" id="L31">    protected AbstractSingleValueCondition(Supplier&lt;T&gt; valueSupplier, Predicate&lt;T&gt; predicate) {</span>
 <span class="fc" id="L32">        this.valueSupplier = Objects.requireNonNull(valueSupplier);</span>
 <span class="fc" id="L33">        this.predicate = Objects.requireNonNull(predicate);</span>
 <span class="fc" id="L34">    }</span>
-    
+
     public T value() {
 <span class="fc" id="L37">        return valueSupplier.get();</span>
     }
-    
+
     @Override
     public boolean shouldRender() {
 <span class="fc" id="L42">        return predicate.test(value());</span>
     }
-    
+
     @Override
     public &lt;R&gt; R accept(ConditionVisitor&lt;T,R&gt; visitor) {
 <span class="fc" id="L47">        return visitor.visit(this);</span>
     }
-    
+
     public abstract String renderCondition(String columnName, String placeholder);
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

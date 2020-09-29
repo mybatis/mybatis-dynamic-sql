@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SqlTable.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">SqlTable.java</span></div><h1>SqlTable.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SqlTable.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">SqlTable.java</span></div><h1>SqlTable.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -19,91 +19,92 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+
 import org.jetbrains.annotations.NotNull;
 
 public class SqlTable {
-    
+
     private final Supplier&lt;String&gt; nameSupplier;
 
-<span class="fc" id="L28">    protected SqlTable(String tableName) {</span>
-<span class="fc" id="L29">        Objects.requireNonNull(tableName);</span>
-        
-<span class="fc" id="L31">        this.nameSupplier = () -&gt; tableName;</span>
-<span class="fc" id="L32">    }</span>
+<span class="fc" id="L29">    protected SqlTable(String tableName) {</span>
+<span class="fc" id="L30">        Objects.requireNonNull(tableName);</span>
 
-<span class="fc" id="L34">    protected SqlTable(Supplier&lt;String&gt; tableNameSupplier) {</span>
-<span class="fc" id="L35">        Objects.requireNonNull(tableNameSupplier);</span>
-        
-<span class="fc" id="L37">        this.nameSupplier = tableNameSupplier;</span>
-<span class="fc" id="L38">    }</span>
+<span class="fc" id="L32">        this.nameSupplier = () -&gt; tableName;</span>
+<span class="fc" id="L33">    }</span>
+
+<span class="fc" id="L35">    protected SqlTable(Supplier&lt;String&gt; tableNameSupplier) {</span>
+<span class="fc" id="L36">        Objects.requireNonNull(tableNameSupplier);</span>
+
+<span class="fc" id="L38">        this.nameSupplier = tableNameSupplier;</span>
+<span class="fc" id="L39">    }</span>
 
     protected SqlTable(Supplier&lt;Optional&lt;String&gt;&gt; schemaSupplier, String tableName) {
-<span class="fc" id="L41">        this(Optional::empty, schemaSupplier, tableName);</span>
-<span class="fc" id="L42">    }</span>
-    
+<span class="fc" id="L42">        this(Optional::empty, schemaSupplier, tableName);</span>
+<span class="fc" id="L43">    }</span>
+
     protected SqlTable(Supplier&lt;Optional&lt;String&gt;&gt; catalogSupplier, Supplier&lt;Optional&lt;String&gt;&gt; schemaSupplier,
-<span class="fc" id="L45">            String tableName) {</span>
-<span class="fc" id="L46">        Objects.requireNonNull(catalogSupplier);</span>
-<span class="fc" id="L47">        Objects.requireNonNull(schemaSupplier);</span>
-<span class="fc" id="L48">        Objects.requireNonNull(tableName);</span>
-        
-<span class="fc" id="L50">        this.nameSupplier = () -&gt; compose(catalogSupplier, schemaSupplier, tableName);</span>
-<span class="fc" id="L51">    }</span>
-    
+<span class="fc" id="L46">            String tableName) {</span>
+<span class="fc" id="L47">        Objects.requireNonNull(catalogSupplier);</span>
+<span class="fc" id="L48">        Objects.requireNonNull(schemaSupplier);</span>
+<span class="fc" id="L49">        Objects.requireNonNull(tableName);</span>
+
+<span class="fc" id="L51">        this.nameSupplier = () -&gt; compose(catalogSupplier, schemaSupplier, tableName);</span>
+<span class="fc" id="L52">    }</span>
+
     private String compose(Supplier&lt;Optional&lt;String&gt;&gt; catalogSupplier, Supplier&lt;Optional&lt;String&gt;&gt; schemaSupplier,
             String tableName) {
-<span class="fc" id="L55">        return catalogSupplier.get().map(c -&gt; compose(c, schemaSupplier, tableName))</span>
-<span class="fc" id="L56">                .orElseGet(() -&gt; compose(schemaSupplier, tableName));</span>
+<span class="fc" id="L56">        return catalogSupplier.get().map(c -&gt; compose(c, schemaSupplier, tableName))</span>
+<span class="fc" id="L57">                .orElseGet(() -&gt; compose(schemaSupplier, tableName));</span>
     }
-    
+
     private String compose(String catalog, Supplier&lt;Optional&lt;String&gt;&gt; schemaSupplier, String tableName) {
-<span class="fc" id="L60">        return schemaSupplier.get().map(s -&gt; composeCatalogSchemaAndAndTable(catalog, s, tableName))</span>
-<span class="fc" id="L61">                .orElseGet(() -&gt; composeCatalogAndTable(catalog, tableName));</span>
+<span class="fc" id="L61">        return schemaSupplier.get().map(s -&gt; composeCatalogSchemaAndAndTable(catalog, s, tableName))</span>
+<span class="fc" id="L62">                .orElseGet(() -&gt; composeCatalogAndTable(catalog, tableName));</span>
     }
 
     private String compose(Supplier&lt;Optional&lt;String&gt;&gt; schemaSupplier, String tableName) {
-<span class="fc" id="L65">        return schemaSupplier.get().map(s -&gt; composeSchemaAndTable(s, tableName))</span>
-<span class="fc" id="L66">                .orElse(tableName);</span>
+<span class="fc" id="L66">        return schemaSupplier.get().map(s -&gt; composeSchemaAndTable(s, tableName))</span>
+<span class="fc" id="L67">                .orElse(tableName);</span>
     }
-    
+
     private String composeCatalogAndTable(String catalog, String tableName) {
-<span class="fc" id="L70">        return catalog + &quot;..&quot; + tableName; //$NON-NLS-1$</span>
+<span class="fc" id="L71">        return catalog + &quot;..&quot; + tableName; //$NON-NLS-1$</span>
     }
 
     private String composeSchemaAndTable(String schema, String tableName) {
-<span class="fc" id="L74">        return schema + &quot;.&quot; + tableName; //$NON-NLS-1$</span>
+<span class="fc" id="L75">        return schema + &quot;.&quot; + tableName; //$NON-NLS-1$</span>
     }
 
     private String composeCatalogSchemaAndAndTable(String catalog, String schema, String tableName) {
-<span class="fc" id="L78">        return catalog + &quot;.&quot; + schema + &quot;.&quot; + tableName; //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L79">        return catalog + &quot;.&quot; + schema + &quot;.&quot; + tableName; //$NON-NLS-1$ //$NON-NLS-2$</span>
     }
-    
+
     public String tableNameAtRuntime() {
-<span class="fc" id="L82">        return nameSupplier.get();</span>
+<span class="fc" id="L83">        return nameSupplier.get();</span>
     }
-    
+
     public BasicColumn allColumns() {
-<span class="fc" id="L86">        return SqlColumn.of(&quot;*&quot;, this); //$NON-NLS-1$</span>
+<span class="fc" id="L87">        return SqlColumn.of(&quot;*&quot;, this); //$NON-NLS-1$</span>
     }
 
     @NotNull
     public &lt;T&gt; SqlColumn&lt;T&gt; column(String name) {
-<span class="fc" id="L91">        return SqlColumn.of(name, this);</span>
+<span class="fc" id="L92">        return SqlColumn.of(name, this);</span>
     }
 
     @NotNull
     public &lt;T&gt; SqlColumn&lt;T&gt; column(String name, JDBCType jdbcType) {
-<span class="fc" id="L96">        return SqlColumn.of(name, this, jdbcType);</span>
+<span class="fc" id="L97">        return SqlColumn.of(name, this, jdbcType);</span>
     }
 
     @NotNull
     public &lt;T&gt; SqlColumn&lt;T&gt; column(String name, JDBCType jdbcType, String typeHandler) {
-<span class="fc" id="L101">        SqlColumn&lt;T&gt; column = SqlColumn.of(name, this, jdbcType);</span>
-<span class="fc" id="L102">        return column.withTypeHandler(typeHandler);</span>
+<span class="fc" id="L102">        SqlColumn&lt;T&gt; column = SqlColumn.of(name, this, jdbcType);</span>
+<span class="fc" id="L103">        return column.withTypeHandler(typeHandler);</span>
     }
-    
+
     public static SqlTable of(String name) {
-<span class="fc" id="L106">        return new SqlTable(name);</span>
+<span class="fc" id="L107">        return new SqlTable(name);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

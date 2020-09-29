@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">QueryExpressionDSL.java</span></div><h1>QueryExpressionDSL.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">QueryExpressionDSL.java</span></div><h1>QueryExpressionDSL.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -46,7 +46,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
     private final List&lt;BasicColumn&gt; selectList;
 <span class="fc" id="L47">    private final QueryExpressionWhereBuilder whereBuilder = new QueryExpressionWhereBuilder();</span>
     private GroupByModel groupByModel;
-    
+
     QueryExpressionDSL(FromGatherer&lt;R&gt; fromGatherer) {
 <span class="fc" id="L51">        super(fromGatherer.table);</span>
 <span class="fc" id="L52">        connector = fromGatherer.connector;</span>
@@ -54,12 +54,12 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 <span class="fc" id="L54">        isDistinct = fromGatherer.isDistinct;</span>
 <span class="fc" id="L55">        selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);</span>
 <span class="fc" id="L56">    }</span>
-    
+
     QueryExpressionDSL(FromGatherer&lt;R&gt; fromGatherer, String tableAlias) {
 <span class="fc" id="L59">        this(fromGatherer);</span>
 <span class="fc" id="L60">        tableAliases.put(fromGatherer.table, tableAlias);</span>
 <span class="fc" id="L61">    }</span>
-    
+
     public QueryExpressionWhereBuilder where() {
 <span class="fc" id="L64">        return whereBuilder;</span>
     }
@@ -83,7 +83,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
     public JoinSpecificationStarter join(SqlTable joinTable) {
 <span class="fc" id="L84">        return new JoinSpecificationStarter(joinTable, JoinType.INNER);</span>
     }
-    
+
     public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
 <span class="fc" id="L88">        tableAliases.put(joinTable, tableAlias);</span>
 <span class="fc" id="L89">        return join(joinTable);</span>
@@ -92,7 +92,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
     public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
 <span class="fc" id="L93">        return new JoinSpecificationStarter(joinTable, JoinType.LEFT);</span>
     }
-    
+
     public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
 <span class="fc" id="L97">        tableAliases.put(joinTable, tableAlias);</span>
 <span class="fc" id="L98">        return leftJoin(joinTable);</span>
@@ -101,7 +101,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
     public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
 <span class="fc" id="L102">        return new JoinSpecificationStarter(joinTable, JoinType.RIGHT);</span>
     }
-    
+
     public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
 <span class="fc" id="L106">        tableAliases.put(joinTable, tableAlias);</span>
 <span class="fc" id="L107">        return rightJoin(joinTable);</span>
@@ -110,7 +110,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
     public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
 <span class="fc" id="L111">        return new JoinSpecificationStarter(joinTable, JoinType.FULL);</span>
     }
-    
+
     public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
 <span class="fc" id="L115">        tableAliases.put(joinTable, tableAlias);</span>
 <span class="fc" id="L116">        return fullJoin(joinTable);</span>
@@ -119,12 +119,12 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
     public GroupByFinisher groupBy(BasicColumn...columns) {
 <span class="fc" id="L120">        return groupBy(Arrays.asList(columns));</span>
     }
-    
+
     public GroupByFinisher groupBy(Collection&lt;BasicColumn&gt; columns) {
 <span class="fc" id="L124">        groupByModel = GroupByModel.of(columns);</span>
 <span class="fc" id="L125">        return new GroupByFinisher();</span>
     }
-    
+
     public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
 <span class="fc" id="L129">        return orderBy(Arrays.asList(columns));</span>
     }
@@ -153,7 +153,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 <span class="fc" id="L153">                .withGroupByModel(groupByModel)</span>
 <span class="fc" id="L154">                .build();</span>
     }
-    
+
     public SelectDSL&lt;R&gt;.LimitFinisher limit(long limit) {
 <span class="fc" id="L158">        return selectDSL.limit(limit);</span>
     }
@@ -165,26 +165,26 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
     public SelectDSL&lt;R&gt;.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
 <span class="fc" id="L166">        return selectDSL.fetchFirst(fetchFirstRows);</span>
     }
-    
+
     @Override
     protected QueryExpressionDSL&lt;R&gt; getThis() {
 <span class="fc" id="L171">        return this;</span>
     }
-    
+
     public static class FromGatherer&lt;R&gt; {
         private final String connector;
         private final List&lt;BasicColumn&gt; selectList;
         private final SelectDSL&lt;R&gt; selectDSL;
         private final boolean isDistinct;
         private SqlTable table;
-        
+
 <span class="fc" id="L181">        public FromGatherer(Builder&lt;R&gt; builder) {</span>
 <span class="fc" id="L182">            this.connector = builder.connector;</span>
 <span class="fc" id="L183">            this.selectList = Objects.requireNonNull(builder.selectList);</span>
 <span class="fc" id="L184">            this.selectDSL = Objects.requireNonNull(builder.selectDSL);</span>
 <span class="fc" id="L185">            this.isDistinct = builder.isDistinct;</span>
 <span class="fc" id="L186">        }</span>
-        
+
         public QueryExpressionDSL&lt;R&gt; from(SqlTable table) {
 <span class="fc" id="L189">            this.table = table;</span>
 <span class="fc" id="L190">            return selectDSL.newQueryExpression(this);</span>
@@ -194,13 +194,13 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 <span class="fc" id="L194">            this.table = table;</span>
 <span class="fc" id="L195">            return selectDSL.newQueryExpression(this, tableAlias);</span>
         }
-        
+
 <span class="fc" id="L198">        public static class Builder&lt;R&gt; {</span>
             private String connector;
 <span class="fc" id="L200">            private final List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
             private SelectDSL&lt;R&gt; selectDSL;
             private boolean isDistinct;
-            
+
             public Builder&lt;R&gt; withConnector(String connector) {
 <span class="fc" id="L205">                this.connector = connector;</span>
 <span class="fc" id="L206">                return this;</span>
@@ -215,18 +215,18 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 <span class="fc" id="L215">                this.selectDSL = selectDSL;</span>
 <span class="fc" id="L216">                return this;</span>
             }
-            
+
             public Builder&lt;R&gt; isDistinct() {
 <span class="fc" id="L220">                this.isDistinct = true;</span>
 <span class="fc" id="L221">                return this;</span>
             }
-            
+
             public FromGatherer&lt;R&gt; build() {
 <span class="fc" id="L225">                return new FromGatherer&lt;&gt;(this);</span>
             }
         }
     }
-    
+
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL&lt;QueryExpressionWhereBuilder&gt;
             implements Buildable&lt;R&gt; {
 <span class="fc" id="L232">        private QueryExpressionWhereBuilder() {</span>
@@ -243,29 +243,29 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
         public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
 <span class="fc" id="L244">            return QueryExpressionDSL.this.orderBy(columns);</span>
         }
-        
+
         public GroupByFinisher groupBy(BasicColumn...columns) {
 <span class="fc" id="L248">            return QueryExpressionDSL.this.groupBy(columns);</span>
         }
-        
+
         public SelectDSL&lt;R&gt;.LimitFinisher limit(long limit) {
 <span class="fc" id="L252">            return QueryExpressionDSL.this.limit(limit);</span>
         }
-        
+
         public SelectDSL&lt;R&gt;.OffsetFirstFinisher offset(long offset) {
 <span class="fc" id="L256">            return QueryExpressionDSL.this.offset(offset);</span>
         }
-        
+
         public SelectDSL&lt;R&gt;.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
 <span class="fc" id="L260">            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);</span>
         }
-        
+
         @NotNull
         @Override
         public R build() {
 <span class="fc" id="L266">            return QueryExpressionDSL.this.build();</span>
         }
-        
+
         @Override
         protected QueryExpressionWhereBuilder getThis() {
 <span class="fc" id="L271">            return this;</span>
@@ -276,11 +276,11 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 <span class="fc" id="L276">            return super.internalBuild();</span>
         }
     }
-    
+
     public class JoinSpecificationStarter {
         private final SqlTable joinTable;
         private final JoinType joinType;
-        
+
 <span class="fc" id="L284">        public JoinSpecificationStarter(SqlTable joinTable, JoinType joinType) {</span>
 <span class="fc" id="L285">            this.joinTable = joinTable;</span>
 <span class="fc" id="L286">            this.joinType = joinType;</span>
@@ -298,7 +298,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 
     public class JoinSpecificationFinisher implements Buildable&lt;R&gt; {
         private final JoinSpecification.Builder joinSpecificationBuilder;
-        
+
         public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
 <span class="fc" id="L303">                JoinCondition joinCondition, JoinType joinType) {</span>
 <span class="fc" id="L304">            JoinCriterion joinCriterion = new JoinCriterion.Builder()</span>
@@ -321,7 +321,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 <span class="fc" id="L321">                    .withJoinColumn(joinColumn)</span>
 <span class="fc" id="L322">                    .withJoinCondition(joinCondition)</span>
 <span class="fc" id="L323">                    .build();</span>
-            
+
 <span class="fc" id="L325">            joinSpecificationBuilder = JoinSpecification.withJoinTable(table)</span>
 <span class="fc" id="L326">                    .withJoinType(joinType)</span>
 <span class="fc" id="L327">                    .withJoinCriterion(onJoinCriterion)</span>
@@ -329,17 +329,17 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 
 <span class="fc" id="L330">            addJoinSpecificationBuilder(joinSpecificationBuilder);</span>
 <span class="fc" id="L331">        }</span>
-        
+
         @NotNull
         @Override
         public R build() {
 <span class="fc" id="L336">            return QueryExpressionDSL.this.build();</span>
         }
-        
+
         public QueryExpressionWhereBuilder where() {
 <span class="fc" id="L340">            return QueryExpressionDSL.this.where();</span>
         }
-        
+
         public &lt;T&gt; QueryExpressionWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
                 SqlCriterion&lt;?&gt;...subCriteria) {
 <span class="fc" id="L345">            return QueryExpressionDSL.this.where(column, condition, subCriteria);</span>
@@ -348,7 +348,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
         public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
 <span class="fc" id="L349">            return QueryExpressionDSL.this.applyWhere(whereApplier);</span>
         }
-        
+
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
 <span class="fc" id="L353">            JoinCriterion joinCriterion = new JoinCriterion.Builder()</span>
 <span class="fc" id="L354">                    .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
@@ -362,7 +362,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
         public JoinSpecificationStarter join(SqlTable joinTable) {
 <span class="fc" id="L363">            return QueryExpressionDSL.this.join(joinTable);</span>
         }
-        
+
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
 <span class="fc" id="L367">            return QueryExpressionDSL.this.join(joinTable, tableAlias);</span>
         }
@@ -370,7 +370,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
         public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
 <span class="fc" id="L371">            return QueryExpressionDSL.this.leftJoin(joinTable);</span>
         }
-        
+
         public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
 <span class="fc" id="L375">            return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);</span>
         }
@@ -378,7 +378,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
         public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
 <span class="fc" id="L379">            return QueryExpressionDSL.this.rightJoin(joinTable);</span>
         }
-        
+
         public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
 <span class="fc" id="L383">            return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);</span>
         }
@@ -386,7 +386,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
         public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
 <span class="fc" id="L387">            return QueryExpressionDSL.this.fullJoin(joinTable);</span>
         }
-        
+
         public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
 <span class="fc" id="L391">            return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);</span>
         }
@@ -394,7 +394,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
         public GroupByFinisher groupBy(BasicColumn...columns) {
 <span class="fc" id="L395">            return QueryExpressionDSL.this.groupBy(columns);</span>
         }
-        
+
         public UnionBuilder union() {
 <span class="fc" id="L399">            return QueryExpressionDSL.this.union();</span>
         }
@@ -419,7 +419,7 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 <span class="fc" id="L419">            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);</span>
         }
     }
-    
+
 <span class="fc" id="L423">    public class GroupByFinisher implements Buildable&lt;R&gt; {</span>
         public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
 <span class="fc" id="L425">            return QueryExpressionDSL.this.orderBy(columns);</span>
@@ -430,15 +430,15 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
         public R build() {
 <span class="fc" id="L431">            return QueryExpressionDSL.this.build();</span>
         }
-        
+
         public UnionBuilder union() {
 <span class="fc" id="L435">            return QueryExpressionDSL.this.union();</span>
         }
-        
+
         public UnionBuilder unionAll() {
 <span class="fc" id="L439">            return QueryExpressionDSL.this.unionAll();</span>
         }
-        
+
         public SelectDSL&lt;R&gt;.LimitFinisher limit(long limit) {
 <span class="fc" id="L443">            return QueryExpressionDSL.this.limit(limit);</span>
         }
@@ -451,14 +451,14 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
 <span class="fc" id="L451">            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);</span>
         }
     }
-    
+
     public class UnionBuilder {
         protected final String connector;
-        
+
 <span class="fc" id="L458">        public UnionBuilder(String connector) {</span>
 <span class="fc" id="L459">            this.connector = connector;</span>
 <span class="fc" id="L460">        }</span>
-        
+
         public FromGatherer&lt;R&gt; select(BasicColumn...selectList) {
 <span class="fc" id="L463">            return select(Arrays.asList(selectList));</span>
         }
@@ -485,4 +485,4 @@ public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;Q
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhereConditionVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.render</a> &gt; <span class="el_source">WhereConditionVisitor.java</span></div><h1>WhereConditionVisitor.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhereConditionVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.render</a> &gt; <span class="el_source">WhereConditionVisitor.java</span></div><h1>WhereConditionVisitor.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -34,13 +34,13 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, FragmentAndParameters&gt; {
-    
+
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence;
     private final BindableColumn&lt;T&gt; column;
     private final TableAliasCalculator tableAliasCalculator;
     private final String parameterPrefix;
-    
+
 <span class="fc" id="L44">    private WhereConditionVisitor(Builder&lt;T&gt; builder) {</span>
 <span class="fc" id="L45">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
 <span class="fc" id="L46">        sequence = Objects.requireNonNull(builder.sequence);</span>
@@ -50,10 +50,10 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Fr
 <span class="fc" id="L50">    }</span>
 
     @Override
-    public FragmentAndParameters visit(AbstractListValueCondition&lt;T&gt; condition) {
+    public FragmentAndParameters visit(AbstractListValueCondition&lt;T, ?&gt; condition) {
 <span class="fc" id="L54">        FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters)</span>
 <span class="fc" id="L55">                .collect(FragmentCollector.collect());</span>
-        
+
 <span class="fc" id="L57">        return FragmentAndParameters.withFragment(condition.renderCondition(columnName(), fc.fragments()))</span>
 <span class="fc" id="L58">                .withParameters(fc.parameters())</span>
 <span class="fc" id="L59">                .build();</span>
@@ -83,13 +83,13 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Fr
 <span class="fc" id="L83">        String fragment = condition.renderCondition(columnName(),</span>
 <span class="fc" id="L84">                getFormattedJdbcPlaceholder(mapKey1),</span>
 <span class="fc" id="L85">                getFormattedJdbcPlaceholder(mapKey2));</span>
-                
+
 <span class="fc" id="L87">        return FragmentAndParameters.withFragment(fragment)</span>
 <span class="fc" id="L88">                .withParameter(mapKey1, convertValue(condition.value1()))</span>
 <span class="fc" id="L89">                .withParameter(mapKey2, convertValue(condition.value2()))</span>
 <span class="fc" id="L90">                .build();</span>
     }
-    
+
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition&lt;T&gt; condition) {
@@ -98,20 +98,20 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Fr
 <span class="fc" id="L98">                .withSequence(sequence)</span>
 <span class="fc" id="L99">                .build()</span>
 <span class="fc" id="L100">                .render();</span>
-        
+
 <span class="fc" id="L102">        String fragment = condition.renderCondition(columnName(), selectStatement.getSelectStatement());</span>
-        
+
 <span class="fc" id="L104">        return FragmentAndParameters.withFragment(fragment)</span>
 <span class="fc" id="L105">                .withParameters(selectStatement.getParameters())</span>
 <span class="fc" id="L106">                .build();</span>
     }
-    
+
     @Override
     public FragmentAndParameters visit(AbstractColumnComparisonCondition&lt;T&gt; condition) {
 <span class="fc" id="L111">        String fragment = condition.renderCondition(columnName(), tableAliasCalculator);</span>
 <span class="fc" id="L112">        return FragmentAndParameters.withFragment(fragment).build();</span>
     }
-    
+
     private Object convertValue(T value) {
 <span class="fc" id="L116">        return column.convertParameterType(value);</span>
     }
@@ -123,42 +123,42 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Fr
 <span class="fc" id="L123">                .withParameter(mapKey, convertValue(value))</span>
 <span class="fc" id="L124">                .build();</span>
     }
-    
+
     private String getFormattedJdbcPlaceholder(String mapKey) {
 <span class="fc" id="L128">        return column.renderingStrategy().orElse(renderingStrategy)</span>
-<span class="fc" id="L129">                .getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);        </span>
+<span class="fc" id="L129">                .getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);</span>
     }
-    
+
     private String columnName() {
 <span class="fc" id="L133">        return column.renderWithTableAlias(tableAliasCalculator);</span>
     }
-    
+
     public static &lt;T&gt; Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
 <span class="fc" id="L137">        return new Builder&lt;T&gt;().withColumn(column);</span>
     }
-    
+
 <span class="fc" id="L140">    public static class Builder&lt;T&gt; {</span>
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
         private BindableColumn&lt;T&gt; column;
         private TableAliasCalculator tableAliasCalculator;
 <span class="fc" id="L145">        private String parameterPrefix = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;</span>
-        
+
         public Builder&lt;T&gt; withSequence(AtomicInteger sequence) {
 <span class="fc" id="L148">            this.sequence = sequence;</span>
 <span class="fc" id="L149">            return this;</span>
         }
-        
+
         public Builder&lt;T&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
 <span class="fc" id="L153">            this.renderingStrategy = renderingStrategy;</span>
 <span class="fc" id="L154">            return this;</span>
         }
-        
+
         public Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
 <span class="fc" id="L158">            this.column = column;</span>
 <span class="fc" id="L159">            return this;</span>
         }
-        
+
         public Builder&lt;T&gt; withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
 <span class="fc" id="L163">            this.tableAliasCalculator = tableAliasCalculator;</span>
 <span class="fc" id="L164">            return this;</span>
@@ -170,10 +170,10 @@ public class WhereConditionVisitor&lt;T&gt; implements ConditionVisitor&lt;T, Fr
             }
 <span class="fc" id="L171">            return this;</span>
         }
-        
+
         public WhereConditionVisitor&lt;T&gt; build() {
 <span class="fc" id="L175">            return new WhereConditionVisitor&lt;&gt;(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

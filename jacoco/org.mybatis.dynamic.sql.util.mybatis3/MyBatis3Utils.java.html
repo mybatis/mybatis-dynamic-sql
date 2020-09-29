@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyBatis3Utils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.mybatis3</a> &gt; <span class="el_source">MyBatis3Utils.java</span></div><h1>MyBatis3Utils.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyBatis3Utils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.mybatis3</a> &gt; <span class="el_source">MyBatis3Utils.java</span></div><h1>MyBatis3Utils.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -45,7 +45,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 /**
  * Utility functions for building MyBatis3 mappers.
- * 
+ *
  * @author Jeff Butler
  *
  */
@@ -101,7 +101,7 @@ public class MyBatis3Utils {
             SqlTable table, DeleteDSLCompleter completer) {
 <span class="fc" id="L102">        return mapper.applyAsInt(deleteFrom(table, completer));</span>
     }
-    
+
     public static &lt;R&gt; InsertStatementProvider&lt;R&gt; insert(R record, SqlTable table,
             UnaryOperator&lt;InsertDSL&lt;R&gt;&gt; completer) {
 <span class="fc" id="L107">        return completer.apply(SqlBuilder.insert(record).into(table))</span>
@@ -109,11 +109,11 @@ public class MyBatis3Utils {
 <span class="fc" id="L109">                .render(RenderingStrategies.MYBATIS3);</span>
     }
 
-    public static &lt;R&gt; int insert(ToIntFunction&lt;InsertStatementProvider&lt;R&gt;&gt; mapper, R record, 
+    public static &lt;R&gt; int insert(ToIntFunction&lt;InsertStatementProvider&lt;R&gt;&gt; mapper, R record,
             SqlTable table, UnaryOperator&lt;InsertDSL&lt;R&gt;&gt; completer) {
 <span class="fc" id="L114">        return mapper.applyAsInt(insert(record, table, completer));</span>
     }
-    
+
     public static GeneralInsertStatementProvider generalInsert(SqlTable table,
             UnaryOperator&lt;GeneralInsertDSL&gt; completer) {
 <span class="fc" id="L119">        return completer.apply(GeneralInsertDSL.insertInto(table))</span>
@@ -125,7 +125,7 @@ public class MyBatis3Utils {
             SqlTable table, UnaryOperator&lt;GeneralInsertDSL&gt; completer) {
 <span class="fc" id="L126">        return mapper.applyAsInt(generalInsert(table, completer));</span>
     }
-    
+
     public static &lt;R&gt; MultiRowInsertStatementProvider&lt;R&gt; insertMultiple(Collection&lt;R&gt; records, SqlTable table,
             UnaryOperator&lt;MultiRowInsertDSL&lt;R&gt;&gt; completer) {
 <span class="fc" id="L131">        return completer.apply(SqlBuilder.insertMultiple(records).into(table))</span>
@@ -191,4 +191,4 @@ public class MyBatis3Utils {
 <span class="fc" id="L191">        return mapper.applyAsInt(update(table, completer));</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

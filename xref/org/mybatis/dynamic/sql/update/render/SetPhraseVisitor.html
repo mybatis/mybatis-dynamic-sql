@@ -6,21 +6,21 @@
 </head>
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/update/render/SetPhraseVisitor.html">View Javadoc</a></div><pre>
-<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
-<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
-<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
-<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> *    You may obtain a copy of the License at</em>
-<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *    Unless required by applicable law or agreed to in writing, software</em>
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> *    See the License for the specific language governing permissions and</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> *    limitations under the License.</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2020 the original author or authors.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> *    You may obtain a copy of the License at</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *    Unless required by applicable law or agreed to in writing, software</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment"> *    See the License for the specific language governing permissions and</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_comment"> *    limitations under the License.</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">package</strong> org.mybatis.dynamic.sql.update.render;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
@@ -44,10 +44,10 @@
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="SetPhraseVisitor" href="../../../../../../org/mybatis/dynamic/sql/update/render/SetPhraseVisitor.html#SetPhraseVisitor">SetPhraseVisitor</a> <strong class="jxr_keyword">extends</strong> UpdateMappingVisitor&lt;Optional&lt;FragmentAndParameters&gt;&gt; {
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicInteger sequence;
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="RenderingStrategy" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html#RenderingStrategy">RenderingStrategy</a> renderingStrategy;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">public</strong> <a name="SetPhraseVisitor" href="../../../../../../org/mybatis/dynamic/sql/update/render/SetPhraseVisitor.html#SetPhraseVisitor">SetPhraseVisitor</a>(AtomicInteger sequence, <a name="RenderingStrategy" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html#RenderingStrategy">RenderingStrategy</a> renderingStrategy) {
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>          <strong class="jxr_keyword">this</strong>.sequence = Objects.requireNonNull(sequence);
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          <strong class="jxr_keyword">this</strong>.renderingStrategy = Objects.requireNonNull(renderingStrategy);
@@ -72,11 +72,11 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>                  + <span class="jxr_string">" = '"</span> <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>                  + mapping.constant()
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>                  + <span class="jxr_string">"'"</span>; <em class="jxr_comment">//$NON-NLS-1$</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">return</strong> FragmentAndParameters.withFragment(fragment)
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>                  .buildOptional();
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>      @Override
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">public</strong> &lt;T&gt; Optional&lt;FragmentAndParameters&gt; visit(ValueMapping&lt;T&gt; mapping) {
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">return</strong> buildFragment(mapping, mapping.value());
@@ -86,7 +86,7 @@
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      <strong class="jxr_keyword">public</strong> &lt;T&gt; Optional&lt;FragmentAndParameters&gt; visit(ValueWhenPresentMapping&lt;T&gt; mapping) {
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>          <strong class="jxr_keyword">return</strong> mapping.value().flatMap(v -&gt; buildFragment(mapping, v));
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      }
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      @Override
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">public</strong> Optional&lt;FragmentAndParameters&gt; visit(<a name="SelectMapping" href="../../../../../../org/mybatis/dynamic/sql/util/SelectMapping.html#SelectMapping">SelectMapping</a> mapping) {
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          <a name="SelectStatementProvider" href="../../../../../../org/mybatis/dynamic/sql/select/render/SelectStatementProvider.html#SelectStatementProvider">SelectStatementProvider</a> selectStatement = SelectRenderer.withSelectModel(mapping.selectModel())
@@ -94,12 +94,12 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>                  .withSequence(sequence)
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>                  .build()
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>                  .render();
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          String fragment = mapping.columnName()
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>                  + <span class="jxr_string">" = ("</span> <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>                  + selectStatement.getSelectStatement()
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                  + <span class="jxr_string">")"</span>; <em class="jxr_comment">//$NON-NLS-1$</em>
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>          
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          <strong class="jxr_keyword">return</strong> FragmentAndParameters.withFragment(fragment)
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                  .withParameters(selectStatement.getParameters())
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>                  .buildOptional();
@@ -110,7 +110,7 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         String setPhrase = mapping.columnName()
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>                 + <span class="jxr_string">" = "</span>  <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>                 + mapping.rightColumn().renderWithTableAlias(TableAliasCalculator.empty());
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>         
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         <strong class="jxr_keyword">return</strong> FragmentAndParameters.withFragment(setPhrase)
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>                 .buildOptional();
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     }
@@ -122,12 +122,12 @@
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>         String setPhrase = mapping.columnName()
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>                 + <span class="jxr_string">" = "</span>  <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>                 + jdbcPlaceholder;
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>         
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> 
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>         <strong class="jxr_keyword">return</strong> FragmentAndParameters.withFragment(setPhrase)
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                 .withParameter(mapKey, value)
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .buildOptional();
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>     }
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>     
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     <strong class="jxr_keyword">private</strong> String calculateJdbcPlaceholder(SqlColumn&lt;?&gt; column, String parameterName) {
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         <strong class="jxr_keyword">return</strong> column.renderingStrategy().orElse(renderingStrategy)
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>                 .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
@@ -135,6 +135,6 @@
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractTwoValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractTwoValueCondition.java</span></div><h1>AbstractTwoValueCondition.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractTwoValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractTwoValueCondition.java</span></div><h1>AbstractTwoValueCondition.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -23,7 +23,7 @@ public abstract class AbstractTwoValueCondition&lt;T&gt; implements VisitableCon
     protected final Supplier&lt;T&gt; valueSupplier1;
     protected final Supplier&lt;T&gt; valueSupplier2;
     private final BiPredicate&lt;T, T&gt; predicate;
-    
+
 <span class="fc" id="L27">    protected AbstractTwoValueCondition(Supplier&lt;T&gt; valueSupplier1, Supplier&lt;T&gt; valueSupplier2) {</span>
 <span class="fc" id="L28">        this.valueSupplier1 = Objects.requireNonNull(valueSupplier1);</span>
 <span class="fc" id="L29">        this.valueSupplier2 = Objects.requireNonNull(valueSupplier2);</span>
@@ -44,12 +44,12 @@ public abstract class AbstractTwoValueCondition&lt;T&gt; implements VisitableCon
     public T value2() {
 <span class="fc" id="L45">        return valueSupplier2.get();</span>
     }
-    
+
     @Override
     public boolean shouldRender() {
 <span class="fc" id="L50">        return predicate.test(value1(), value2());</span>
     }
-    
+
     @Override
     public &lt;R&gt; R accept(ConditionVisitor&lt;T,R&gt; visitor) {
 <span class="fc" id="L55">        return visitor.visit(this);</span>
@@ -57,4 +57,4 @@ public abstract class AbstractTwoValueCondition&lt;T&gt; implements VisitableCon
 
     public abstract String renderCondition(String columnName, String placeholder1, String placeholder2);
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

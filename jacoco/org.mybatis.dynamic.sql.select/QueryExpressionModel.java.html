@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">QueryExpressionModel.java</span></div><h1>QueryExpressionModel.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">QueryExpressionModel.java</span></div><h1>QueryExpressionModel.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -54,23 +54,23 @@ public class QueryExpressionModel {
 <span class="fc" id="L54">        whereModel = builder.whereModel;</span>
 <span class="fc" id="L55">        groupByModel = builder.groupByModel;</span>
 <span class="fc" id="L56">    }</span>
-    
+
     public Optional&lt;String&gt; connector() {
 <span class="fc" id="L59">        return Optional.ofNullable(connector);</span>
     }
-    
+
     public boolean isDistinct() {
 <span class="fc" id="L63">        return isDistinct;</span>
     }
-    
+
     public &lt;R&gt; Stream&lt;R&gt; mapColumns(Function&lt;BasicColumn, R&gt; mapper) {
 <span class="fc" id="L67">        return selectList.stream().map(mapper);</span>
     }
-    
+
     public SqlTable table() {
 <span class="fc" id="L71">        return table;</span>
     }
-    
+
     public TableAliasCalculator tableAliasCalculator() {
 <span class="fc" id="L75">        return tableAliasCalculator;</span>
     }
@@ -78,24 +78,24 @@ public class QueryExpressionModel {
     public Optional&lt;WhereModel&gt; whereModel() {
 <span class="fc" id="L79">        return Optional.ofNullable(whereModel);</span>
     }
-    
+
     public Optional&lt;JoinModel&gt; joinModel() {
 <span class="fc" id="L83">        return Optional.ofNullable(joinModel);</span>
     }
-    
+
     public Optional&lt;GroupByModel&gt; groupByModel() {
 <span class="fc" id="L87">        return Optional.ofNullable(groupByModel);</span>
     }
-    
+
     public String calculateTableNameIncludingAlias(SqlTable table) {
 <span class="fc" id="L91">        return table.tableNameAtRuntime()</span>
 <span class="fc" id="L92">                + spaceBefore(tableAliasCalculator.aliasForTable(table));</span>
     }
-    
+
     public static Builder withSelectList(List&lt;BasicColumn&gt; columnList) {
 <span class="fc" id="L96">        return new Builder().withSelectList(columnList);</span>
     }
-    
+
 <span class="fc" id="L99">    public static class Builder {</span>
         private String connector;
         private boolean isDistinct;
@@ -105,17 +105,17 @@ public class QueryExpressionModel {
         private WhereModel whereModel;
         private JoinModel joinModel;
         private GroupByModel groupByModel;
-        
+
         public Builder withConnector(String connector) {
 <span class="fc" id="L110">            this.connector = connector;</span>
 <span class="fc" id="L111">            return this;</span>
         }
-        
+
         public Builder withTable(SqlTable table) {
 <span class="fc" id="L115">            this.table = table;</span>
 <span class="fc" id="L116">            return this;</span>
         }
-        
+
         public Builder isDistinct(boolean isDistinct) {
 <span class="fc" id="L120">            this.isDistinct = isDistinct;</span>
 <span class="fc" id="L121">            return this;</span>
@@ -135,7 +135,7 @@ public class QueryExpressionModel {
 <span class="fc" id="L135">            this.tableAliases.putAll(tableAliases);</span>
 <span class="fc" id="L136">            return this;</span>
         }
-        
+
         public Builder withWhereModel(WhereModel whereModel) {
 <span class="fc" id="L140">            this.whereModel = whereModel;</span>
 <span class="fc" id="L141">            return this;</span>
@@ -145,15 +145,15 @@ public class QueryExpressionModel {
 <span class="fc" id="L145">            this.joinModel = joinModel;</span>
 <span class="fc" id="L146">            return this;</span>
         }
-        
+
         public Builder withGroupByModel(GroupByModel groupByModel) {
 <span class="fc" id="L150">            this.groupByModel = groupByModel;</span>
 <span class="fc" id="L151">            return this;</span>
         }
-        
+
         public QueryExpressionModel build() {
 <span class="fc" id="L155">            return new QueryExpressionModel(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

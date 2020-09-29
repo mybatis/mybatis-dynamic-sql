@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProviderBuilderFunctions.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin.mybatis3</a> &gt; <span class="el_source">ProviderBuilderFunctions.kt</span></div><h1>ProviderBuilderFunctions.kt</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2020 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.util.kotlin.mybatis3
+
+import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
+import org.mybatis.dynamic.sql.insert.InsertDSL
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+import org.mybatis.dynamic.sql.render.RenderingStrategies
+import org.mybatis.dynamic.sql.select.CountDSL
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL
+import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
+import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
+import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinDeleteBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinQueryBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
+import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+
+fun countFrom(table: SqlTable, completer: CountCompleter) =
+<span class="fc" id="L40">    completer(KotlinCountBuilder(SqlBuilder.countFrom(table))).build().render(RenderingStrategies.MYBATIS3)</span>
+
+fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
+<span class="fc" id="L43">    completer(KotlinDeleteBuilder(SqlBuilder.deleteFrom(table))).build().render(RenderingStrategies.MYBATIS3)</span>
+
+fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
+<span class="fc" id="L46">    completer(GeneralInsertDSL.insertInto(table)).build().render(RenderingStrategies.MYBATIS3)</span>
+
+fun &lt;T&gt; InsertDSL.IntoGatherer&lt;T&gt;.into(table: SqlTable, completer: InsertCompleter&lt;T&gt;) =
+<span class="fc" id="L49">    completer(into(table)).build().render(RenderingStrategies.MYBATIS3)</span>
+
+fun &lt;T&gt; MultiRowInsertDSL.IntoGatherer&lt;T&gt;.into(table: SqlTable, completer: MultiRowInsertCompleter&lt;T&gt;) =
+<span class="fc" id="L52">    completer(into(table)).build().render(RenderingStrategies.MYBATIS3)</span>
+
+fun CountDSL.FromGatherer&lt;SelectModel&gt;.from(table: SqlTable, completer: CountCompleter) =
+<span class="fc" id="L55">    completer(KotlinCountBuilder(from(table))).build().render(RenderingStrategies.MYBATIS3)</span>
+
+fun QueryExpressionDSL.FromGatherer&lt;SelectModel&gt;.from(table: SqlTable, completer: SelectCompleter) =
+<span class="fc" id="L58">    completer(KotlinQueryBuilder(from(table))).build().render(RenderingStrategies.MYBATIS3)</span>
+
+fun QueryExpressionDSL.FromGatherer&lt;SelectModel&gt;.from(table: SqlTable, alias: String, completer: SelectCompleter) =
+<span class="fc" id="L61">    completer(KotlinQueryBuilder(from(table, alias))).build().render(RenderingStrategies.MYBATIS3)</span>
+
+fun select(start: QueryExpressionDSL&lt;SelectModel&gt;, completer: SelectCompleter) =
+<span class="fc" id="L64">    completer(KotlinQueryBuilder(start)).build().render(RenderingStrategies.MYBATIS3)</span>
+
+fun update(table: SqlTable, completer: UpdateCompleter) =
+<span class="fc" id="L67">    completer(KotlinUpdateBuilder(SqlBuilder.update(table))).build().render(RenderingStrategies.MYBATIS3)</span>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

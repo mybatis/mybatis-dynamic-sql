@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyBatis3UpdateModelAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update</a> &gt; <span class="el_source">MyBatis3UpdateModelAdapter.java</span></div><h1>MyBatis3UpdateModelAdapter.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyBatis3UpdateModelAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update</a> &gt; <span class="el_source">MyBatis3UpdateModelAdapter.java</span></div><h1>MyBatis3UpdateModelAdapter.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 /**
  * This adapter will render the underlying update model for MyBatis3, and then call a MyBatis mapper method.
- * 
+ *
  * @deprecated in favor of {@link UpdateDSLCompleter}. This class will be removed without direct
  *     replacement in a future version.
  * @author Jeff Butler
@@ -34,23 +34,23 @@ public class MyBatis3UpdateModelAdapter&lt;R&gt; {
 
     private final UpdateModel updateModel;
     private final Function&lt;UpdateStatementProvider, R&gt; mapperMethod;
-    
+
 <span class="fc" id="L38">    private MyBatis3UpdateModelAdapter(UpdateModel updateModel, Function&lt;UpdateStatementProvider, R&gt; mapperMethod) {</span>
 <span class="fc" id="L39">        this.updateModel = Objects.requireNonNull(updateModel);</span>
 <span class="fc" id="L40">        this.mapperMethod = Objects.requireNonNull(mapperMethod);</span>
 <span class="fc" id="L41">    }</span>
-    
+
     public R execute() {
 <span class="fc" id="L44">        return mapperMethod.apply(updateStatement());</span>
     }
-    
+
     private UpdateStatementProvider updateStatement() {
 <span class="fc" id="L48">        return updateModel.render(RenderingStrategy.MYBATIS3);</span>
     }
-    
+
     public static &lt;R&gt; MyBatis3UpdateModelAdapter&lt;R&gt; of(UpdateModel updateModel,
             Function&lt;UpdateStatementProvider, R&gt; mapperMethod) {
 <span class="fc" id="L53">        return new MyBatis3UpdateModelAdapter&lt;&gt;(updateModel, mapperMethod);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">SelectDSL.java</span></div><h1>SelectDSL.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">SelectDSL.java</span></div><h1>SelectDSL.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * Implements a SQL DSL for building select statements.
- * 
+ *
  * @author Jeff Butler
  *
  * @param &lt;R&gt; the type of model produced by this builder, typically SelectModel
@@ -46,7 +46,7 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
     private Long limit;
     private Long offset;
     private Long fetchFirstRows;
-    
+
 <span class="fc" id="L50">    private SelectDSL(Function&lt;SelectModel, R&gt; adapterFunction) {</span>
 <span class="fc" id="L51">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
 <span class="fc" id="L52">    }</span>
@@ -54,16 +54,16 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
     public static QueryExpressionDSL.FromGatherer&lt;SelectModel&gt; select(BasicColumn...selectList) {
 <span class="fc" id="L55">        return select(Arrays.asList(selectList));</span>
     }
-    
+
     public static QueryExpressionDSL.FromGatherer&lt;SelectModel&gt; select(Collection&lt;BasicColumn&gt; selectList) {
 <span class="fc" id="L59">        return select(Function.identity(), selectList);</span>
     }
-    
+
     public static &lt;R&gt; QueryExpressionDSL.FromGatherer&lt;R&gt; select(Function&lt;SelectModel, R&gt; adapterFunction,
             BasicColumn...selectList) {
 <span class="fc" id="L64">        return select(adapterFunction, Arrays.asList(selectList));</span>
     }
-    
+
     public static &lt;R&gt; QueryExpressionDSL.FromGatherer&lt;R&gt; select(Function&lt;SelectModel, R&gt; adapterFunction,
             Collection&lt;BasicColumn&gt; selectList) {
 <span class="fc" id="L69">        return new FromGatherer.Builder&lt;R&gt;()</span>
@@ -71,20 +71,20 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 <span class="fc" id="L71">                .withSelectDSL(new SelectDSL&lt;&gt;(adapterFunction))</span>
 <span class="fc" id="L72">                .build();</span>
     }
-    
+
     public static QueryExpressionDSL.FromGatherer&lt;SelectModel&gt; selectDistinct(BasicColumn...selectList) {
 <span class="fc" id="L76">        return selectDistinct(Arrays.asList(selectList));</span>
     }
-    
+
     public static QueryExpressionDSL.FromGatherer&lt;SelectModel&gt; selectDistinct(Collection&lt;BasicColumn&gt; selectList) {
 <span class="fc" id="L80">        return selectDistinct(Function.identity(), selectList);</span>
     }
-    
+
     public static &lt;R&gt; QueryExpressionDSL.FromGatherer&lt;R&gt; selectDistinct(Function&lt;SelectModel, R&gt; adapterFunction,
             BasicColumn...selectList) {
 <span class="fc" id="L85">        return selectDistinct(adapterFunction, Arrays.asList(selectList));</span>
     }
-    
+
     public static &lt;R&gt; QueryExpressionDSL.FromGatherer&lt;R&gt; selectDistinct(Function&lt;SelectModel, R&gt; adapterFunction,
             Collection&lt;BasicColumn&gt; selectList) {
 <span class="fc" id="L90">        return new FromGatherer.Builder&lt;R&gt;()</span>
@@ -93,10 +93,10 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 <span class="fc" id="L93">                .isDistinct()</span>
 <span class="fc" id="L94">                .build();</span>
     }
-    
+
     /**
      * Select records by executing a MyBatis3 Mapper.
-     * 
+     *
      * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
      *     This method will be removed without direct replacement in a future version
      * @param &lt;T&gt; the return type from a MyBatis mapper - typically a List or a single record
@@ -109,10 +109,10 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
             Function&lt;SelectStatementProvider, T&gt; mapperMethod, BasicColumn...selectList) {
 <span class="fc" id="L110">        return select(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);</span>
     }
-    
+
     /**
      * Select records by executing a MyBatis3 Mapper.
-     * 
+     *
      * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
      *     This method will be removed without direct replacement in a future version
      * @param &lt;T&gt; the return type from a MyBatis mapper - typically a List or a single record
@@ -126,23 +126,23 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 <span class="fc" id="L126">        return selectDistinct(selectModel -&gt; MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),</span>
                 selectList);
     }
-    
+
     QueryExpressionDSL&lt;R&gt; newQueryExpression(FromGatherer&lt;R&gt; fromGatherer) {
 <span class="fc" id="L131">        QueryExpressionDSL&lt;R&gt; queryExpression = new QueryExpressionDSL&lt;&gt;(fromGatherer);</span>
 <span class="fc" id="L132">        queryExpressions.add(queryExpression);</span>
 <span class="fc" id="L133">        return queryExpression;</span>
     }
-    
+
     QueryExpressionDSL&lt;R&gt; newQueryExpression(FromGatherer&lt;R&gt; fromGatherer, String tableAlias) {
 <span class="fc" id="L137">        QueryExpressionDSL&lt;R&gt; queryExpression = new QueryExpressionDSL&lt;&gt;(fromGatherer, tableAlias);</span>
 <span class="fc" id="L138">        queryExpressions.add(queryExpression);</span>
 <span class="fc" id="L139">        return queryExpression;</span>
     }
-    
+
     void orderBy(Collection&lt;SortSpecification&gt; columns) {
 <span class="fc" id="L143">        orderByModel = OrderByModel.of(columns);</span>
 <span class="fc" id="L144">    }</span>
-    
+
     public LimitFinisher limit(long limit) {
 <span class="fc" id="L147">        this.limit = limit;</span>
 <span class="fc" id="L148">        return new LimitFinisher();</span>
@@ -167,13 +167,13 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 <span class="fc" id="L167">                .build();</span>
 <span class="fc" id="L168">        return adapterFunction.apply(selectModel);</span>
     }
-    
+
     private List&lt;QueryExpressionModel&gt; buildModels() {
 <span class="fc" id="L172">        return queryExpressions.stream()</span>
 <span class="fc" id="L173">                .map(QueryExpressionDSL::buildModel)</span>
 <span class="fc" id="L174">                .collect(Collectors.toList());</span>
     }
-    
+
     private PagingModel buildPagingModel() {
 <span class="fc" id="L178">        return new PagingModel.Builder()</span>
 <span class="fc" id="L179">                .withLimit(limit)</span>
@@ -181,13 +181,13 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 <span class="fc" id="L181">                .withFetchFirstRows(fetchFirstRows)</span>
 <span class="fc" id="L182">                .build();</span>
     }
-    
+
 <span class="fc" id="L185">    public class LimitFinisher implements Buildable&lt;R&gt; {</span>
         public OffsetFinisher offset(long offset) {
 <span class="fc" id="L187">            SelectDSL.this.offset = offset;</span>
 <span class="fc" id="L188">            return new OffsetFinisher();</span>
         }
-        
+
         @NotNull
         @Override
         public R build() {
@@ -208,20 +208,20 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 <span class="fc" id="L208">            SelectDSL.this.fetchFirstRows = fetchFirstRows;</span>
 <span class="fc" id="L209">            return new FetchFirstFinisher();</span>
         }
-        
+
         @NotNull
         @Override
         public R build() {
 <span class="fc" id="L215">            return SelectDSL.this.build();</span>
         }
     }
-    
+
 <span class="fc" id="L219">    public class FetchFirstFinisher {</span>
         public RowsOnlyFinisher rowsOnly() {
 <span class="fc" id="L221">            return new RowsOnlyFinisher();</span>
         }
     }
-    
+
 <span class="fc" id="L225">    public class RowsOnlyFinisher implements Buildable&lt;R&gt; {</span>
         @NotNull
         @Override
@@ -230,4 +230,4 @@ public class SelectDSL&lt;R&gt; implements Buildable&lt;R&gt; {
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

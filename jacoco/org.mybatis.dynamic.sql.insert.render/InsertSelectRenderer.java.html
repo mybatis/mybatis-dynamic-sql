@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertSelectRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert.render</a> &gt; <span class="el_source">InsertSelectRenderer.java</span></div><h1>InsertSelectRenderer.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertSelectRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert.render</a> &gt; <span class="el_source">InsertSelectRenderer.java</span></div><h1>InsertSelectRenderer.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -31,58 +31,58 @@ public class InsertSelectRenderer {
 
     private final InsertSelectModel model;
     private final RenderingStrategy renderingStrategy;
-    
+
 <span class="fc" id="L35">    private InsertSelectRenderer(Builder builder) {</span>
 <span class="fc" id="L36">        model = Objects.requireNonNull(builder.model);</span>
 <span class="fc" id="L37">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
 <span class="fc" id="L38">    }</span>
-    
+
     public InsertSelectStatementProvider render() {
 <span class="fc" id="L41">        SelectStatementProvider selectStatement = model.selectModel().render(renderingStrategy);</span>
-        
+
 <span class="fc" id="L43">        return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(selectStatement))</span>
 <span class="fc" id="L44">                .withParameters(selectStatement.getParameters())</span>
 <span class="fc" id="L45">                .build();</span>
     }
-    
+
     private String calculateInsertStatement(SelectStatementProvider selectStatement) {
 <span class="fc" id="L49">        return &quot;insert into&quot; //$NON-NLS-1$</span>
 <span class="fc" id="L50">                + spaceBefore(model.table().tableNameAtRuntime())</span>
 <span class="fc" id="L51">                + spaceBefore(calculateColumnsPhrase())</span>
 <span class="fc" id="L52">                + spaceBefore(selectStatement.getSelectStatement());</span>
     }
-    
+
     private Optional&lt;String&gt; calculateColumnsPhrase() {
 <span class="fc" id="L56">        return model.columnList()</span>
 <span class="fc" id="L57">                .map(this::calculateColumnsPhrase);</span>
     }
-    
+
     private String calculateColumnsPhrase(InsertColumnListModel columnList) {
 <span class="fc" id="L61">        return columnList.mapColumns(SqlColumn::name)</span>
 <span class="fc" id="L62">                .collect(Collectors.joining(&quot;, &quot;, &quot;(&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
-    
+
     public static Builder withInsertSelectModel(InsertSelectModel model) {
 <span class="fc" id="L66">        return new Builder().withInsertSelectModel(model);</span>
     }
-    
+
 <span class="fc" id="L69">    public static class Builder {</span>
         private InsertSelectModel model;
         private RenderingStrategy renderingStrategy;
-        
+
         public Builder withInsertSelectModel(InsertSelectModel model) {
 <span class="fc" id="L74">            this.model = model;</span>
 <span class="fc" id="L75">            return this;</span>
         }
-        
+
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
 <span class="fc" id="L79">            this.renderingStrategy = renderingStrategy;</span>
 <span class="fc" id="L80">            return this;</span>
         }
-        
+
         public InsertSelectRenderer build() {
 <span class="fc" id="L84">            return new InsertSelectRenderer(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

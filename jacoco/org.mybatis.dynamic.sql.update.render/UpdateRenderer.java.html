@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update.render</a> &gt; <span class="el_source">UpdateRenderer.java</span></div><h1>UpdateRenderer.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update.render</a> &gt; <span class="el_source">UpdateRenderer.java</span></div><h1>UpdateRenderer.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -37,19 +37,19 @@ public class UpdateRenderer {
     private final UpdateModel updateModel;
     private final RenderingStrategy renderingStrategy;
 <span class="fc" id="L39">    private final AtomicInteger sequence = new AtomicInteger(1);</span>
-    
+
 <span class="fc" id="L41">    private UpdateRenderer(Builder builder) {</span>
 <span class="fc" id="L42">        updateModel = Objects.requireNonNull(builder.updateModel);</span>
 <span class="fc" id="L43">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
 <span class="fc" id="L44">    }</span>
-    
+
     public UpdateStatementProvider render() {
 <span class="fc" id="L47">        SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy);</span>
 
 <span class="fc" id="L49">        List&lt;Optional&lt;FragmentAndParameters&gt;&gt; fragmentsAndParameters =</span>
 <span class="fc" id="L50">                updateModel.mapColumnMappings(m -&gt; m.accept(visitor))</span>
 <span class="fc" id="L51">                .collect(Collectors.toList());</span>
-        
+
 <span class="fc" id="L53">        return updateModel.whereModel()</span>
 <span class="fc" id="L54">                .flatMap(this::renderWhereClause)</span>
 <span class="fc" id="L55">                .map(wc -&gt; renderWithWhereClause(fragmentsAndParameters, wc))</span>
@@ -70,13 +70,13 @@ public class UpdateRenderer {
 <span class="fc" id="L70">        return calculateUpdateStatement(fragmentsAndParameters)</span>
 <span class="fc" id="L71">                + spaceBefore(whereClause.getWhereClause());</span>
     }
-    
+
     private String calculateUpdateStatement(List&lt;Optional&lt;FragmentAndParameters&gt;&gt; fragmentsAndParameters) {
 <span class="fc" id="L75">        return &quot;update&quot; //$NON-NLS-1$</span>
 <span class="fc" id="L76">                + spaceBefore(updateModel.table().tableNameAtRuntime())</span>
 <span class="fc" id="L77">                + spaceBefore(calculateSetPhrase(fragmentsAndParameters));</span>
     }
-    
+
     private UpdateStatementProvider renderWithoutWhereClause(
             List&lt;Optional&lt;FragmentAndParameters&gt;&gt; fragmentsAndParameters) {
 <span class="fc" id="L82">        return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(fragmentsAndParameters))</span>
@@ -99,7 +99,7 @@ public class UpdateRenderer {
 <span class="fc" id="L99">                .map(FragmentAndParameters::parameters)</span>
 <span class="fc" id="L100">                .collect(HashMap::new, HashMap::putAll, HashMap::putAll);</span>
     }
-    
+
     private Optional&lt;WhereClauseProvider&gt; renderWhereClause(WhereModel whereModel) {
 <span class="fc" id="L104">        return WhereRenderer.withWhereModel(whereModel)</span>
 <span class="fc" id="L105">                .withRenderingStrategy(renderingStrategy)</span>
@@ -112,7 +112,7 @@ public class UpdateRenderer {
     public static Builder withUpdateModel(UpdateModel updateModel) {
 <span class="fc" id="L113">        return new Builder().withUpdateModel(updateModel);</span>
     }
-    
+
 <span class="fc" id="L116">    public static class Builder {</span>
         private UpdateModel updateModel;
         private RenderingStrategy renderingStrategy;
@@ -121,15 +121,15 @@ public class UpdateRenderer {
 <span class="fc" id="L121">            this.updateModel = updateModel;</span>
 <span class="fc" id="L122">            return this;</span>
         }
-        
+
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
 <span class="fc" id="L126">            this.renderingStrategy = renderingStrategy;</span>
 <span class="fc" id="L127">            return this;</span>
         }
-        
+
         public UpdateRenderer build() {
 <span class="fc" id="L131">            return new UpdateRenderer(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

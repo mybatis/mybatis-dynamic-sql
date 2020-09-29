@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyBatis3DeleteModelAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.delete</a> &gt; <span class="el_source">MyBatis3DeleteModelAdapter.java</span></div><h1>MyBatis3DeleteModelAdapter.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyBatis3DeleteModelAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.delete</a> &gt; <span class="el_source">MyBatis3DeleteModelAdapter.java</span></div><h1>MyBatis3DeleteModelAdapter.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
  *
  * @deprecated in favor of {@link DeleteDSLCompleter}. This class will be removed without replacement in a
  *     future version
- * 
+ *
  * @author Jeff Butler
  *
  */
@@ -35,23 +35,23 @@ public class MyBatis3DeleteModelAdapter&lt;R&gt; {
 
     private final DeleteModel deleteModel;
     private final Function&lt;DeleteStatementProvider, R&gt; mapperMethod;
-    
+
 <span class="fc" id="L39">    private MyBatis3DeleteModelAdapter(DeleteModel deleteModel, Function&lt;DeleteStatementProvider, R&gt; mapperMethod) {</span>
 <span class="fc" id="L40">        this.deleteModel = Objects.requireNonNull(deleteModel);</span>
 <span class="fc" id="L41">        this.mapperMethod = Objects.requireNonNull(mapperMethod);</span>
 <span class="fc" id="L42">    }</span>
-    
+
     public R execute() {
 <span class="fc" id="L45">        return mapperMethod.apply(deleteStatement());</span>
     }
-    
+
     private DeleteStatementProvider deleteStatement() {
 <span class="fc" id="L49">        return deleteModel.render(RenderingStrategy.MYBATIS3);</span>
     }
-    
+
     public static &lt;R&gt; MyBatis3DeleteModelAdapter&lt;R&gt; of(DeleteModel deleteModel,
             Function&lt;DeleteStatementProvider, R&gt; mapperMethod) {
 <span class="fc" id="L54">        return new MyBatis3DeleteModelAdapter&lt;&gt;(deleteModel, mapperMethod);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

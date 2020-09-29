@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeleteDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.delete</a> &gt; <span class="el_source">DeleteDSL.java</span></div><h1>DeleteDSL.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeleteDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.delete</a> &gt; <span class="el_source">DeleteDSL.java</span></div><h1>DeleteDSL.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -36,16 +36,16 @@ public class DeleteDSL&lt;R&gt; implements Buildable&lt;R&gt; {
     private final Function&lt;DeleteModel, R&gt; adapterFunction;
     private final SqlTable table;
 <span class="fc" id="L38">    private final DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();</span>
-    
+
 <span class="fc" id="L40">    private DeleteDSL(SqlTable table, Function&lt;DeleteModel, R&gt; adapterFunction) {</span>
 <span class="fc" id="L41">        this.table = Objects.requireNonNull(table);</span>
 <span class="fc" id="L42">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
 <span class="fc" id="L43">    }</span>
-    
+
     public DeleteWhereBuilder where() {
 <span class="fc" id="L46">        return whereBuilder;</span>
     }
-    
+
     public &lt;T&gt; DeleteWhereBuilder where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
             SqlCriterion&lt;?&gt;...subCriteria) {
 <span class="fc" id="L51">        whereBuilder.where(column, condition, subCriteria);</span>
@@ -59,7 +59,7 @@ public class DeleteDSL&lt;R&gt; implements Buildable&lt;R&gt; {
     /**
      * WARNING! Calling this method could result in an delete statement that deletes
      * all rows in a table.
-     * 
+     *
      * @return the model class
      */
     @NotNull
@@ -70,18 +70,18 @@ public class DeleteDSL&lt;R&gt; implements Buildable&lt;R&gt; {
 <span class="fc" id="L70">                .build();</span>
 <span class="fc" id="L71">        return adapterFunction.apply(deleteModel);</span>
     }
-    
+
     public static &lt;R&gt; DeleteDSL&lt;R&gt; deleteFrom(Function&lt;DeleteModel, R&gt; adapterFunction, SqlTable table) {
 <span class="fc" id="L75">        return new DeleteDSL&lt;&gt;(table, adapterFunction);</span>
     }
-    
+
     public static DeleteDSL&lt;DeleteModel&gt; deleteFrom(SqlTable table) {
 <span class="fc" id="L79">        return deleteFrom(Function.identity(), table);</span>
     }
-    
+
     /**
      * Delete record(s) by executing a MyBatis3 mapper method.
-     * 
+     *
      * @deprecated in favor of {@link MyBatis3Utils#deleteFrom(ToIntFunction, SqlTable, DeleteDSLCompleter)}.
      *     This method will be removed without direct replacement in a future version
      * @param &lt;T&gt; return value from a delete method - typically Integer
@@ -94,9 +94,9 @@ public class DeleteDSL&lt;R&gt; implements Buildable&lt;R&gt; {
             Function&lt;DeleteStatementProvider, T&gt; mapperMethod, SqlTable table) {
 <span class="fc" id="L95">        return deleteFrom(deleteModel -&gt; MyBatis3DeleteModelAdapter.of(deleteModel, mapperMethod), table);</span>
     }
-    
+
     public class DeleteWhereBuilder extends AbstractWhereDSL&lt;DeleteWhereBuilder&gt; implements Buildable&lt;R&gt; {
-        
+
 <span class="fc" id="L100">        private DeleteWhereBuilder() {</span>
 <span class="fc" id="L101">            super();</span>
 <span class="fc" id="L102">        }</span>
@@ -106,7 +106,7 @@ public class DeleteDSL&lt;R&gt; implements Buildable&lt;R&gt; {
         public R build() {
 <span class="fc" id="L107">            return DeleteDSL.this.build();</span>
         }
-        
+
         @Override
         protected DeleteWhereBuilder getThis() {
 <span class="fc" id="L112">            return this;</span>
@@ -118,4 +118,4 @@ public class DeleteDSL&lt;R&gt; implements Buildable&lt;R&gt; {
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

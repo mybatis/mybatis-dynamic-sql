@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhereModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where</a> &gt; <span class="el_source">WhereModel.java</span></div><h1>WhereModel.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhereModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where</a> &gt; <span class="el_source">WhereModel.java</span></div><h1>WhereModel.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -30,20 +30,20 @@ import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 public class WhereModel {
 <span class="fc" id="L31">    private static final WhereClauseProvider EMPTY_WHERE_CLAUSE =</span>
 <span class="fc" id="L32">            new WhereClauseProvider.Builder().withWhereClause(&quot;&quot;).build(); //$NON-NLS-1$</span>
-    
+
 <span class="fc" id="L34">    private final List&lt;SqlCriterion&lt;?&gt;&gt; criteria = new ArrayList&lt;&gt;();</span>
-    
+
 <span class="fc" id="L36">    private WhereModel(List&lt;SqlCriterion&lt;?&gt;&gt; criteria) {</span>
 <span class="fc" id="L37">        this.criteria.addAll(criteria);</span>
 <span class="fc" id="L38">    }</span>
-    
+
     public &lt;R&gt; Stream&lt;R&gt; mapCriteria(Function&lt;SqlCriterion&lt;?&gt;, R&gt; mapper) {
 <span class="fc" id="L41">        return criteria.stream().map(mapper);</span>
     }
 
     /**
      * Renders a where clause without table aliases.
-     * 
+     *
      * @param renderingStrategy rendering strategy
      * @return rendered where clause
      */
@@ -56,7 +56,7 @@ public class WhereModel {
 <span class="fc" id="L56">                .render()</span>
 <span class="fc" id="L57">                .orElse(EMPTY_WHERE_CLAUSE);</span>
     }
-    
+
     public WhereClauseProvider render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator) {
 <span class="fc" id="L62">        return WhereRenderer.withWhereModel(this)</span>
@@ -67,7 +67,7 @@ public class WhereModel {
 <span class="fc" id="L67">                .render()</span>
 <span class="fc" id="L68">                .orElse(EMPTY_WHERE_CLAUSE);</span>
     }
-    
+
     public WhereClauseProvider render(RenderingStrategy renderingStrategy,
             String parameterName) {
 <span class="fc" id="L73">        return WhereRenderer.withWhereModel(this)</span>
@@ -79,7 +79,7 @@ public class WhereModel {
 <span class="fc" id="L79">                .render()</span>
 <span class="fc" id="L80">                .orElse(EMPTY_WHERE_CLAUSE);</span>
     }
-    
+
     public WhereClauseProvider render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator, String parameterName) {
 <span class="fc" id="L85">        return WhereRenderer.withWhereModel(this)</span>
@@ -91,9 +91,9 @@ public class WhereModel {
 <span class="fc" id="L91">                .render()</span>
 <span class="fc" id="L92">                .orElse(EMPTY_WHERE_CLAUSE);</span>
     }
-    
+
     public static WhereModel of(List&lt;SqlCriterion&lt;?&gt;&gt; criteria) {
 <span class="fc" id="L96">        return new WhereModel(criteria);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

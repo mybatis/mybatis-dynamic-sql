@@ -6,21 +6,21 @@
 </head>
 <body>
 <div id="overview"><a href="../../../../../../testapidocs/org/mybatis/dynamic/sql/update/UpdateStatementTest.html">View Javadoc</a></div><pre>
-<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
-<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
-<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
-<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> *    You may obtain a copy of the License at</em>
-<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *    Unless required by applicable law or agreed to in writing, software</em>
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> *    See the License for the specific language governing permissions and</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> *    limitations under the License.</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2020 the original author or authors.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> *    You may obtain a copy of the License at</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *    Unless required by applicable law or agreed to in writing, software</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment"> *    See the License for the specific language governing permissions and</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_comment"> *    limitations under the License.</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">package</strong> org.mybatis.dynamic.sql.update;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.assertj.core.api.Assertions.assertThat;
@@ -51,7 +51,7 @@
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>                  .where(id, isEqualTo(3), or(id, isEqualTo(4)), or(id, isEqualTo(5)))
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>                  .build()
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>                  .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          String expected = <span class="jxr_string">"update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "</span>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>                  + <span class="jxr_string">"where (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER})"</span>;
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
@@ -75,10 +75,10 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>                  .where(id, isEqualTo(3), or(id, isEqualTo(4), or(id, isEqualTo(5))))
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>                  .build()
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>                  .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          String expected = <span class="jxr_string">"update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "</span>
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                  + <span class="jxr_string">"where (id = #{parameters.p3,jdbcType=INTEGER} or (id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER}))"</span>;
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          assertAll(
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>                  () -&gt; assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>                  () -&gt; assertThat(updateStatement.getParameters()).hasSize(5),
@@ -89,7 +89,7 @@
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>                  () -&gt; assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p5"</span>, 5)
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          );
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      }
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>      
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      @Test
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">void</strong> testUpdateParameterStartWithNull() {
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          UpdateStatementProvider updateStatement = update(foo)
@@ -100,10 +100,10 @@
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>                  .and(firstName, isEqualTo(<span class="jxr_string">"barney"</span>))
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                  .build()
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>                  .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>          
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          String expected = <span class="jxr_string">"update foo set occupation = null, firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR} "</span>
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>                  + <span class="jxr_string">"where id = #{parameters.p3,jdbcType=INTEGER} and firstName = #{parameters.p4,jdbcType=VARCHAR}"</span>;
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>          
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>          assertAll(
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>                 () -&gt; assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>                 () -&gt; assertThat(updateStatement.getParameters()).hasSize(4),
@@ -113,7 +113,7 @@
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>                 () -&gt; assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p4"</span>, <span class="jxr_string">"barney"</span>)
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         );
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>     }
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>     
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>     @Test
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>     <strong class="jxr_keyword">void</strong> testUpdateParameterStartWithConstant() {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         UpdateStatementProvider updateStatement = update(foo)
@@ -125,10 +125,10 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>                 .and(firstName, isEqualTo(<span class="jxr_string">"barney"</span>))
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>                 .build()
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>         
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> 
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         String expected = <span class="jxr_string">"update foo set occupation = 'Y', firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, id = 4 "</span>
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>                 + <span class="jxr_string">"where id = #{parameters.p3,jdbcType=INTEGER} and firstName = #{parameters.p4,jdbcType=VARCHAR}"</span>;
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>         
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> 
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         assertAll(
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>                 () -&gt; assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>                 () -&gt; assertThat(updateStatement.getParameters()).hasSize(4),
@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>                 () -&gt; assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p4"</span>, <span class="jxr_string">"barney"</span>)
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         );
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>     }
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>     
+<a class="jxr_linenumber" name="L133" href="#L133">133</a> 
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>     @Test
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     <strong class="jxr_keyword">void</strong> testFullUpdateStatement() {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         UpdateStatementProvider updateStatement = update(foo)
@@ -148,11 +148,11 @@
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                 .where(id, isEqualTo(3))
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                 .build()
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>         
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>         String expectedStatement = <span class="jxr_string">"update foo "</span> 
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> 
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         String expectedStatement = <span class="jxr_string">"update foo "</span>
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>                 + <span class="jxr_string">"set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "</span>
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>                 + <span class="jxr_string">"where id = #{parameters.p3,jdbcType=INTEGER}"</span>;
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>                 
+<a class="jxr_linenumber" name="L147" href="#L147">147</a> 
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>         assertAll(
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>                 () -&gt; assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>                 () -&gt; assertThat(updateStatement.getParameters()).hasSize(3),
@@ -170,10 +170,10 @@
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>                 .set(occupation).equalToNull()
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>                 .build()
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>         
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>         String expectedStatement = <span class="jxr_string">"update foo "</span> 
+<a class="jxr_linenumber" name="L165" href="#L165">165</a> 
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>         String expectedStatement = <span class="jxr_string">"update foo "</span>
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>                 + <span class="jxr_string">"set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null"</span>;
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>                 
+<a class="jxr_linenumber" name="L168" href="#L168">168</a> 
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>         assertAll(
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>                 () -&gt; assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>                 () -&gt; assertThat(updateStatement.getParameters()).hasSize(2),
@@ -181,7 +181,7 @@
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>                 () -&gt; assertThat(updateStatement.getParameters()).containsEntry(<span class="jxr_string">"p2"</span>, <span class="jxr_string">"jones"</span>)
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>         );
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>     }
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>     
+<a class="jxr_linenumber" name="L176" href="#L176">176</a> 
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>     @Test
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>     <strong class="jxr_keyword">void</strong> testUpdateStatementArithmeticOperation() {
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         UpdateStatementProvider updateStatement = update(foo)
@@ -191,13 +191,13 @@
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>                 .set(id).equalTo(divide(id, constant(<span class="jxr_string">"4"</span>)))
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>                 .build()
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>         
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>         String expectedStatement = <span class="jxr_string">"update foo "</span> 
+<a class="jxr_linenumber" name="L186" href="#L186">186</a> 
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>         String expectedStatement = <span class="jxr_string">"update foo "</span>
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>                 + <span class="jxr_string">"set id = (id + 1), "</span>
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>                 + <span class="jxr_string">"id = (id - 2), "</span>
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>                 + <span class="jxr_string">"id = (id * 3), "</span>
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>                 + <span class="jxr_string">"id = (id / 4)"</span>;
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>                 
+<a class="jxr_linenumber" name="L192" href="#L192">192</a> 
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>         assertAll(
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>                 () -&gt; assertThat(updateStatement.getUpdateStatement()).isEqualTo(expectedStatement),
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>                 () -&gt; assertThat(updateStatement.getParameters()).isEmpty()
@@ -212,8 +212,8 @@
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>                 .where(id, isEqualTo(3))
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>                 .build()
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>         
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>         String expectedStatement = <span class="jxr_string">"update foo "</span> 
+<a class="jxr_linenumber" name="L207" href="#L207">207</a> 
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>         String expectedStatement = <span class="jxr_string">"update foo "</span>
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>                 + <span class="jxr_string">"set lastName = #{parameters.p1,jdbcType=VARCHAR}, firstName = (select firstName from foo where id = #{parameters.p2,jdbcType=INTEGER}) "</span>
 <a class="jxr_linenumber" name="L210" href="#L210">210</a>                 + <span class="jxr_string">"where id = #{parameters.p3,jdbcType=INTEGER}"</span>;
 <a class="jxr_linenumber" name="L211" href="#L211">211</a> 
@@ -229,6 +229,6 @@
 <a class="jxr_linenumber" name="L221" href="#L221">221</a> 
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

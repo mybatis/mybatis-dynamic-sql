@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedParameterJdbcTemplateExtensions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.spring</a> &gt; <span class="el_source">NamedParameterJdbcTemplateExtensions.java</span></div><h1>NamedParameterJdbcTemplateExtensions.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedParameterJdbcTemplateExtensions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.spring</a> &gt; <span class="el_source">NamedParameterJdbcTemplateExtensions.java</span></div><h1>NamedParameterJdbcTemplateExtensions.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -46,7 +46,7 @@ import org.springframework.jdbc.support.KeyHolder;
 
 public class NamedParameterJdbcTemplateExtensions {
     private final NamedParameterJdbcTemplate template;
-    
+
 <span class="fc" id="L50">    public NamedParameterJdbcTemplateExtensions(NamedParameterJdbcTemplate template) {</span>
 <span class="fc" id="L51">        this.template = Objects.requireNonNull(template);</span>
 <span class="fc" id="L52">    }</span>
@@ -54,15 +54,15 @@ public class NamedParameterJdbcTemplateExtensions {
     public long count(Buildable&lt;SelectModel&gt; countStatement) {
 <span class="fc" id="L55">        return count(countStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));</span>
     }
-    
+
     public long count(SelectStatementProvider countStatement) {
 <span class="fc" id="L59">        return template.queryForObject(countStatement.getSelectStatement(), countStatement.getParameters(), Long.class);</span>
     }
-    
+
     public int delete(Buildable&lt;DeleteModel&gt; deleteStatement) {
 <span class="fc" id="L63">        return delete(deleteStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));</span>
     }
-    
+
     public int delete(DeleteStatementProvider deleteStatement) {
 <span class="fc" id="L67">        return template.update(deleteStatement.getDeleteStatement(), deleteStatement.getParameters());</span>
     }
@@ -70,7 +70,7 @@ public class NamedParameterJdbcTemplateExtensions {
     public int generalInsert(Buildable&lt;GeneralInsertModel&gt; insertStatement) {
 <span class="fc" id="L71">        return generalInsert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));</span>
     }
-    
+
     public int generalInsert(GeneralInsertStatementProvider insertStatement) {
 <span class="fc" id="L75">        return template.update(insertStatement.getInsertStatement(), insertStatement.getParameters());</span>
     }
@@ -78,7 +78,7 @@ public class NamedParameterJdbcTemplateExtensions {
     public int generalInsert(Buildable&lt;GeneralInsertModel&gt; insertStatement, KeyHolder keyHolder) {
 <span class="fc" id="L79">        return generalInsert(insertStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), keyHolder);</span>
     }
-    
+
     public int generalInsert(GeneralInsertStatementProvider insertStatement, KeyHolder keyHolder) {
 <span class="fc" id="L83">        return template.update(insertStatement.getInsertStatement(),</span>
 <span class="fc" id="L84">                new MapSqlParameterSource(insertStatement.getParameters()), keyHolder);</span>
@@ -140,7 +140,7 @@ public class NamedParameterJdbcTemplateExtensions {
     public &lt;T&gt; Optional&lt;T&gt; selectOne(Buildable&lt;SelectModel&gt; selectStatement, RowMapper&lt;T&gt; rowMapper) {
 <span class="fc" id="L141">        return selectOne(selectStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER), rowMapper);</span>
     }
-    
+
     public &lt;T&gt; Optional&lt;T&gt; selectOne(SelectStatementProvider selectStatement, RowMapper&lt;T&gt; rowMapper) {
         T result;
         try {
@@ -149,16 +149,16 @@ public class NamedParameterJdbcTemplateExtensions {
 <span class="fc" id="L149">        } catch (EmptyResultDataAccessException e) {</span>
 <span class="fc" id="L150">            result = null;</span>
 <span class="fc" id="L151">        }</span>
-        
+
 <span class="fc" id="L153">        return Optional.ofNullable(result);</span>
     }
-    
+
     public int update(Buildable&lt;UpdateModel&gt; updateStatement) {
 <span class="fc" id="L157">        return update(updateStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER));</span>
     }
-    
+
     public int update(UpdateStatementProvider updateStatement) {
 <span class="fc" id="L161">        return template.update(updateStatement.getUpdateStatement(), updateStatement.getParameters());</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

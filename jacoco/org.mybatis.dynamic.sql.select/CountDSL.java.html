@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CountDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">CountDSL.java</span></div><h1>CountDSL.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CountDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">CountDSL.java</span></div><h1>CountDSL.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -44,13 +44,13 @@ public class CountDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;CountDSL&lt
     private final Function&lt;SelectModel, R&gt; adapterFunction;
 <span class="fc" id="L45">    private final CountWhereBuilder whereBuilder = new CountWhereBuilder();</span>
     private final BasicColumn countColumn;
-    
+
     private CountDSL(BasicColumn countColumn, SqlTable table, Function&lt;SelectModel, R&gt; adapterFunction) {
 <span class="fc" id="L49">        super(table);</span>
 <span class="fc" id="L50">        this.countColumn = Objects.requireNonNull(countColumn);</span>
 <span class="fc" id="L51">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
 <span class="fc" id="L52">    }</span>
-    
+
     public CountWhereBuilder where() {
 <span class="fc" id="L55">        return whereBuilder;</span>
     }
@@ -77,57 +77,57 @@ public class CountDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;CountDSL&lt
 <span class="fc" id="L77">                .withTable(table())</span>
 <span class="fc" id="L78">                .withTableAliases(tableAliases)</span>
 <span class="fc" id="L79">                .withWhereModel(whereBuilder.buildWhereModel());</span>
-        
+
 <span class="fc" id="L81">        buildJoinModel().ifPresent(b::withJoinModel);</span>
-        
+
 <span class="fc" id="L83">        return new SelectModel.Builder()</span>
 <span class="fc" id="L84">                .withQueryExpression(b.build())</span>
 <span class="fc" id="L85">                .build();</span>
     }
-    
+
     public static CountDSL&lt;SelectModel&gt; countFrom(SqlTable table) {
 <span class="fc" id="L89">        return countFrom(Function.identity(), table);</span>
     }
-    
+
     public static &lt;R&gt; CountDSL&lt;R&gt; countFrom(Function&lt;SelectModel, R&gt; adapterFunction, SqlTable table) {
 <span class="fc" id="L93">        return new CountDSL&lt;&gt;(SqlBuilder.count(), table, adapterFunction);</span>
     }
-    
+
     public static FromGatherer&lt;SelectModel&gt; count(BasicColumn column) {
 <span class="fc" id="L97">        return count(Function.identity(), column);</span>
     }
-    
+
     public static &lt;R&gt; FromGatherer&lt;R&gt; count(Function&lt;SelectModel, R&gt; adapterFunction, BasicColumn column) {
 <span class="fc" id="L101">        return new FromGatherer&lt;&gt;(adapterFunction, SqlBuilder.count(column));</span>
     }
-    
+
     public static FromGatherer&lt;SelectModel&gt; countDistinct(BasicColumn column) {
 <span class="fc" id="L105">        return countDistinct(Function.identity(), column);</span>
     }
-    
+
     public static &lt;R&gt; FromGatherer&lt;R&gt; countDistinct(Function&lt;SelectModel, R&gt; adapterFunction, BasicColumn column) {
 <span class="fc" id="L109">        return new FromGatherer&lt;&gt;(adapterFunction, SqlBuilder.countDistinct(column));</span>
     }
-    
+
     @Override
     protected CountDSL&lt;R&gt; getThis() {
 <span class="fc" id="L114">        return this;</span>
     }
-    
+
     public static class FromGatherer&lt;R&gt; {
         private final BasicColumn column;
         private final Function&lt;SelectModel, R&gt; adapterFunction;
-        
+
 <span class="fc" id="L121">        public FromGatherer(Function&lt;SelectModel, R&gt; adapterFunction, BasicColumn column) {</span>
 <span class="fc" id="L122">            this.adapterFunction = adapterFunction;</span>
 <span class="fc" id="L123">            this.column = column;</span>
 <span class="fc" id="L124">        }</span>
-        
+
         public CountDSL&lt;R&gt; from(SqlTable table) {
 <span class="fc" id="L127">            return new CountDSL&lt;&gt;(column, table, adapterFunction);</span>
         }
     }
-    
+
     public class CountWhereBuilder extends AbstractWhereDSL&lt;CountWhereBuilder&gt;
             implements Buildable&lt;R&gt; {
 <span class="fc" id="L133">        private &lt;T&gt; CountWhereBuilder() {}</span>
@@ -137,7 +137,7 @@ public class CountDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;CountDSL&lt
         public R build() {
 <span class="fc" id="L138">            return CountDSL.this.build();</span>
         }
-        
+
         @Override
         protected CountWhereBuilder getThis() {
 <span class="fc" id="L143">            return this;</span>
@@ -149,4 +149,4 @@ public class CountDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;CountDSL&lt
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

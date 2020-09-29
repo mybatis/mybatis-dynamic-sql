@@ -6,21 +6,21 @@
 </head>
 <body>
 <div id="overview"><a href="../../../../../../testapidocs/org/mybatis/dynamic/sql/mybatis3/SelectStatementTest.html">View Javadoc</a></div><pre>
-<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
-<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
-<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
-<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> *    You may obtain a copy of the License at</em>
-<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *    Unless required by applicable law or agreed to in writing, software</em>
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> *    See the License for the specific language governing permissions and</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> *    limitations under the License.</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2020 the original author or authors.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> *    You may obtain a copy of the License at</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *    Unless required by applicable law or agreed to in writing, software</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment"> *    See the License for the specific language governing permissions and</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_comment"> *    limitations under the License.</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">package</strong> org.mybatis.dynamic.sql.mybatis3;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +58,7 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>                  <span class="jxr_string">"select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 &lt; #{parameters.p3,jdbcType=INTEGER}"</span>);
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>          Map&lt;String, Object&gt; parameters = selectStatement.getParameters();
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          assertAll(
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p1"</span>, d),
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>                  () -&gt; assertThat(parameters).containsEntry(<span class="jxr_string">"p2"</span>, 4),
@@ -79,16 +79,16 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>                  .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .build()
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          String expected = <span class="jxr_string">"select a.column1, a.column2 "</span>
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>                  + <span class="jxr_string">"from foo a "</span> 
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                  + <span class="jxr_string">"from foo a "</span>
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>                  + <span class="jxr_string">"where a.column1 = #{parameters.p1,jdbcType=DATE}"</span>
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>                  + <span class="jxr_string">" or a.column2 = #{parameters.p2,jdbcType=INTEGER}"</span>
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>                  + <span class="jxr_string">" and a.column2 &lt; #{parameters.p3,jdbcType=INTEGER}"</span>
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>                  + <span class="jxr_string">" or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})"</span>
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>                  + <span class="jxr_string">" and (a.column2 &lt; #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})"</span>;
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          Map&lt;String, Object&gt; parameters = selectStatement.getParameters();
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          assertAll(
@@ -139,7 +139,7 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>                 .and(column2, isLessThan(3), or(column1, isEqualTo(d), and(column2, isEqualTo(88))))
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>                 .build()
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         
+<a class="jxr_linenumber" name="L134" href="#L134">134</a> 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a> 
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         String expected = <span class="jxr_string">"select a.column1, a.column2 "</span>
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>                 + <span class="jxr_string">"from foo a "</span>
@@ -148,7 +148,7 @@
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                 + <span class="jxr_string">" and a.column2 &lt; #{parameters.p3,jdbcType=INTEGER}"</span>
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                 + <span class="jxr_string">" or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and (a.column2 = #{parameters.p5,jdbcType=INTEGER} or a.column2 = #{parameters.p6,jdbcType=INTEGER}))"</span>
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                 + <span class="jxr_string">" and (a.column2 &lt; #{parameters.p7,jdbcType=INTEGER} or (a.column1 = #{parameters.p8,jdbcType=DATE} and a.column2 = #{parameters.p9,jdbcType=INTEGER}))"</span>;
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>         
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> 
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         Map&lt;String, Object&gt; parameters = selectStatement.getParameters();
 <a class="jxr_linenumber" name="L145" href="#L145">145</a> 
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         assertAll(
@@ -167,6 +167,6 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

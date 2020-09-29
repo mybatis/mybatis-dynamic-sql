@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultDeleteStatementProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.delete.render</a> &gt; <span class="el_source">DefaultDeleteStatementProvider.java</span></div><h1>DefaultDeleteStatementProvider.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultDeleteStatementProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.delete.render</a> &gt; <span class="el_source">DefaultDeleteStatementProvider.java</span></div><h1>DefaultDeleteStatementProvider.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -22,17 +22,17 @@ import java.util.Objects;
 public class DefaultDeleteStatementProvider implements DeleteStatementProvider {
     private final String deleteStatement;
     private final Map&lt;String, Object&gt; parameters;
-    
+
 <span class="fc" id="L26">    private DefaultDeleteStatementProvider(Builder builder) {</span>
 <span class="fc" id="L27">        deleteStatement = Objects.requireNonNull(builder.deleteStatement);</span>
 <span class="fc" id="L28">        parameters = Objects.requireNonNull(builder.parameters);</span>
 <span class="fc" id="L29">    }</span>
-    
+
     @Override
     public Map&lt;String, Object&gt; getParameters() {
 <span class="fc" id="L33">        return parameters;</span>
     }
-    
+
     @Override
     public String getDeleteStatement() {
 <span class="fc" id="L38">        return deleteStatement;</span>
@@ -41,24 +41,24 @@ public class DefaultDeleteStatementProvider implements DeleteStatementProvider {
     public static Builder withDeleteStatement(String deleteStatement) {
 <span class="fc" id="L42">        return new Builder().withDeleteStatement(deleteStatement);</span>
     }
-    
+
 <span class="fc" id="L45">    public static class Builder {</span>
         private String deleteStatement;
 <span class="fc" id="L47">        private final Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
-        
+
         public Builder withDeleteStatement(String deleteStatement) {
 <span class="fc" id="L50">            this.deleteStatement = deleteStatement;</span>
 <span class="fc" id="L51">            return this;</span>
         }
-        
+
         public Builder withParameters(Map&lt;String, Object&gt; parameters) {
 <span class="fc" id="L55">            this.parameters.putAll(parameters);</span>
 <span class="fc" id="L56">            return this;</span>
         }
-        
+
         public DefaultDeleteStatementProvider build() {
 <span class="fc" id="L60">            return new DefaultDeleteStatementProvider(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

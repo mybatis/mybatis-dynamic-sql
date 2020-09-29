@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BatchInsertDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert</a> &gt; <span class="el_source">BatchInsertDSL.java</span></div><h1>BatchInsertDSL.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BatchInsertDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert</a> &gt; <span class="el_source">BatchInsertDSL.java</span></div><h1>BatchInsertDSL.java</h1><pre class="source lang-java linenums">/*
  *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -35,16 +35,16 @@ public class BatchInsertDSL&lt;T&gt; implements Buildable&lt;BatchInsertModel&lt
     private final Collection&lt;T&gt; records;
     private final SqlTable table;
 <span class="fc" id="L37">    private final List&lt;AbstractColumnMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
-    
+
 <span class="fc" id="L39">    private BatchInsertDSL(Collection&lt;T&gt; records, SqlTable table) {</span>
 <span class="fc" id="L40">        this.records = records;</span>
 <span class="fc" id="L41">        this.table = table;</span>
 <span class="fc" id="L42">    }</span>
-    
+
     public &lt;F&gt; ColumnMappingFinisher&lt;F&gt; map(SqlColumn&lt;F&gt; column) {
 <span class="fc" id="L45">        return new ColumnMappingFinisher&lt;&gt;(column);</span>
     }
-    
+
     @NotNull
     @Override
     public BatchInsertModel&lt;T&gt; build() {
@@ -58,14 +58,14 @@ public class BatchInsertDSL&lt;T&gt; implements Buildable&lt;BatchInsertModel&lt
     public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(T...records) {
 <span class="fc" id="L59">        return BatchInsertDSL.insert(Arrays.asList(records));</span>
     }
-    
+
     public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(Collection&lt;T&gt; records) {
 <span class="fc" id="L63">        return new IntoGatherer&lt;&gt;(records);</span>
     }
-    
+
     public static class IntoGatherer&lt;T&gt; {
         private final Collection&lt;T&gt; records;
-        
+
 <span class="fc" id="L69">        private IntoGatherer(Collection&lt;T&gt; records) {</span>
 <span class="fc" id="L70">            this.records = records;</span>
 <span class="fc" id="L71">        }</span>
@@ -74,33 +74,33 @@ public class BatchInsertDSL&lt;T&gt; implements Buildable&lt;BatchInsertModel&lt
 <span class="fc" id="L74">            return new BatchInsertDSL&lt;&gt;(records, table);</span>
         }
     }
-    
+
     public class ColumnMappingFinisher&lt;F&gt; {
         private final SqlColumn&lt;F&gt; column;
-            
+
 <span class="fc" id="L81">        public ColumnMappingFinisher(SqlColumn&lt;F&gt; column) {</span>
 <span class="fc" id="L82">            this.column = column;</span>
 <span class="fc" id="L83">        }</span>
-            
+
         public BatchInsertDSL&lt;T&gt; toProperty(String property) {
 <span class="fc" id="L86">            columnMappings.add(PropertyMapping.of(column, property));</span>
 <span class="fc" id="L87">            return BatchInsertDSL.this;</span>
         }
-            
+
         public BatchInsertDSL&lt;T&gt; toNull() {
 <span class="fc" id="L91">            columnMappings.add(NullMapping.of(column));</span>
 <span class="fc" id="L92">            return BatchInsertDSL.this;</span>
         }
-            
+
         public BatchInsertDSL&lt;T&gt; toConstant(String constant) {
 <span class="fc" id="L96">            columnMappings.add(ConstantMapping.of(column, constant));</span>
 <span class="fc" id="L97">            return BatchInsertDSL.this;</span>
         }
-            
+
         public BatchInsertDSL&lt;T&gt; toStringConstant(String constant) {
 <span class="fc" id="L101">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
 <span class="fc" id="L102">            return BatchInsertDSL.this;</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

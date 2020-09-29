@@ -6,21 +6,21 @@
 </head>
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/update/render/UpdateRenderer.html">View Javadoc</a></div><pre>
-<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> *    Copyright 2016-2020 the original author or authors.</em>
-<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
-<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *    you may not use this file except in compliance with the License.</em>
-<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> *    You may obtain a copy of the License at</em>
-<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *    Unless required by applicable law or agreed to in writing, software</em>
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> *    See the License for the specific language governing permissions and</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> *    limitations under the License.</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2020 the original author or authors.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> *    You may obtain a copy of the License at</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *    Unless required by applicable law or agreed to in writing, software</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment"> *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment"> *    See the License for the specific language governing permissions and</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_comment"> *    limitations under the License.</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">package</strong> org.mybatis.dynamic.sql.update.render;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
@@ -45,19 +45,19 @@
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="UpdateModel" href="../../../../../../org/mybatis/dynamic/sql/update/UpdateModel.html#UpdateModel">UpdateModel</a> updateModel;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="RenderingStrategy" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html#RenderingStrategy">RenderingStrategy</a> renderingStrategy;
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicInteger sequence = <strong class="jxr_keyword">new</strong> AtomicInteger(1);
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">private</strong> <a name="UpdateRenderer" href="../../../../../../org/mybatis/dynamic/sql/update/render/UpdateRenderer.html#UpdateRenderer">UpdateRenderer</a>(Builder builder) {
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          updateModel = Objects.requireNonNull(builder.updateModel);
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>      }
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>      
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">public</strong> <a name="UpdateStatementProvider" href="../../../../../../org/mybatis/dynamic/sql/update/render/UpdateStatementProvider.html#UpdateStatementProvider">UpdateStatementProvider</a> render() {
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          <a name="SetPhraseVisitor" href="../../../../../../org/mybatis/dynam<a name="SetPhraseVisitor" href="../../../../../../org/mybatis/dynamic/sql/update/render/SetPhraseVisitor.html#SetPhraseVisitor">SetPhraseVisitor</a>nder/SetPhraseVisitor.html#SetPhraseVisitor">SetPhraseVisitor</a> visitor = <strong class="jxr_keyword">new</strong> <a name="SetPhraseVisitor" href="../../../../../../org/mybatis/dynamic/sql/update/render/SetPhraseVisitor.html#SetPhraseVisitor">SetPhraseVisitor</a>(sequence, renderingStrategy);
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          List&lt;Optional&lt;FragmentAndParameters&gt;&gt; fragmentsAndParameters =
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>                  updateModel.mapColumnMappings(m -&gt; m.accept(visitor))
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>                  .collect(Collectors.toList());
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">return</strong> updateModel.whereModel()
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>                  .flatMap(<strong class="jxr_keyword">this</strong>::renderWhereClause)
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>                  .map(wc -&gt; renderWithWhereClause(fragmentsAndParameters, wc))
@@ -78,13 +78,13 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">return</strong> calculateUpdateStatement(fragmentsAndParameters)
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>                  + spaceBefore(whereClause.getWhereClause());
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>      }
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">private</strong> String calculateUpdateStatement(List&lt;Optional&lt;FragmentAndParameters&gt;&gt; fragmentsAndParameters) {
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          <strong class="jxr_keyword">return</strong> <span class="jxr_string">"update"</span> <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>                  + spaceBefore(updateModel.table().tableNameAtRuntime())
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>                  + spaceBefore(calculateSetPhrase(fragmentsAndParameters));
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      }
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>      
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">private</strong> <a name="UpdateStatementProvider" href="../../../../../../org/mybatis/dynamic/sql/update/render/UpdateStatementProvider.html#UpdateStatementProvider">UpdateStatementProvider</a> renderWithoutWhereClause(
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>              List&lt;Optional&lt;FragmentAndParameters&gt;&gt; fragmentsAndParameters) {
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          <strong class="jxr_keyword">return</strong> DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(fragmentsAndParameters))
@@ -107,7 +107,7 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>                  .map(FragmentAndParameters::parameters)
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>                 .collect(HashMap::<strong class="jxr_keyword">new</strong>, HashMap::putAll, HashMap::putAll);
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     
+<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">private</strong> Optional&lt;WhereClauseProvider&gt; renderWhereClause(<a name="WhereModel" href="../../../../../../org/mybatis/dynamic/sql/where/WhereModel.html#WhereModel">WhereModel</a> whereModel) {
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         <strong class="jxr_keyword">return</strong> WhereRenderer.withWhereModel(whereModel)
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>                 .withRenderingStrategy(renderingStrategy)
@@ -120,7 +120,7 @@
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Builder withUpdateModel(<a name="UpdateModel" href="../../../../../../org/mybatis/dynamic/sql/update/UpdateModel.html#UpdateModel">UpdateModel</a> updateModel) {
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Builder().withUpdateModel(updateModel);
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>     }
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> 
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Builder {
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         <strong class="jxr_keyword">private</strong> <a name="UpdateModel" href="../../../../../../org/mybatis/dynamic/sql/update/UpdateModel.html#UpdateModel">UpdateModel</a> updateModel;
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>         <strong class="jxr_keyword">private</strong> <a name="RenderingStrategy" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html#RenderingStrategy">RenderingStrategy</a> renderingStrategy;
@@ -129,12 +129,12 @@
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>             <strong class="jxr_keyword">this</strong>.updateModel = updateModel;
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>         }
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>         
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         <strong class="jxr_keyword">public</strong> Builder withRenderingStrategy(<a name="RenderingStrategy" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingStrategy.html#RenderingStrategy">RenderingStrategy</a> renderingStrategy) {
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>             <strong class="jxr_keyword">this</strong>.renderingStrategy = renderingStrategy;
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         }
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>         
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> 
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         <strong class="jxr_keyword">public</strong> <a name="UpdateRenderer" href="../../../../../../org/mybatis/dynamic/sql/update/render/UpdateRenderer.html#UpdateRenderer">UpdateRenderer</a> build() {
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="UpdateRenderer" href="../../../../../../org/mybatis/dynamic/sql/update/render/UpdateRenderer.html#UpdateRenderer">UpdateRenderer</a>(<strong class="jxr_keyword">this</strong>);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         }
@@ -142,6 +142,6 @@
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="http://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>
