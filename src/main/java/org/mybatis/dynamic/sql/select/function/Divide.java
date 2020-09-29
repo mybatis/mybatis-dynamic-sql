@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -30,6 +31,11 @@ public class Divide<T extends Number> extends OperatorFunction<T> {
     @Override
     protected Divide<T> copy() {
         return new Divide<>(column, secondColumn, subsequentColumns);
+    }
+
+    public static <T extends Number> Divide<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+                                                  BasicColumn... subsequentColumns) {
+        return of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
 
     public static <T extends Number> Divide<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,

@@ -23,11 +23,13 @@ import org.mybatis.dynamic.sql.BindableColumn;
  * Count functions are implemented differently than the other aggregates. This is primarily to preserve
  * backwards compatibility. Count functions are configured as BindableColumns of type Long
  * as it is assumed that the count functions always return a number.
- *
- * @param <T> the subtype of this class
  */
-public abstract class AbstractCount<T extends AbstractCount<T>> implements BindableColumn<Long> {
+public abstract class AbstractCount implements BindableColumn<Long> {
     private final String alias;
+
+    protected AbstractCount() {
+        this(null);
+    }
 
     protected AbstractCount(String alias) {
         this.alias = alias;
@@ -37,11 +39,4 @@ public abstract class AbstractCount<T extends AbstractCount<T>> implements Binda
     public Optional<String> alias() {
         return Optional.ofNullable(alias);
     }
-
-    @Override
-    public T as(String alias) {
-        return copyWithAlias(alias);
-    }
-
-    protected abstract T copyWithAlias(String alias);
 }

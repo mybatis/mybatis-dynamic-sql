@@ -359,22 +359,22 @@ public interface SqlBuilder {
     // functions
     static <T extends Number> Add<T> add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
-        return Add.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+        return Add.of(firstColumn, secondColumn, subsequentColumns);
     }
 
     static <T extends Number> Divide<T> divide(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
-        return Divide.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+        return Divide.of(firstColumn, secondColumn, subsequentColumns);
     }
 
     static <T extends Number> Multiply<T> multiply(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
-        return Multiply.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+        return Multiply.of(firstColumn, secondColumn, subsequentColumns);
     }
 
     static <T extends Number> Subtract<T> subtract(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
-        return Subtract.of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+        return Subtract.of(firstColumn, secondColumn, subsequentColumns);
     }
 
     static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
@@ -555,7 +555,7 @@ public interface SqlBuilder {
 
     @SafeVarargs
     static <T> IsIn<T> isIn(T...values) {
-        return isIn(Arrays.asList(values));
+        return IsIn.of(values);
     }
 
     static <T> IsIn<T> isIn(Collection<T> values) {
@@ -568,7 +568,7 @@ public interface SqlBuilder {
 
     @SafeVarargs
     static <T> IsInWhenPresent<T> isInWhenPresent(T...values) {
-        return isInWhenPresent(Arrays.asList(values));
+        return IsInWhenPresent.of(values);
     }
 
     static <T> IsInWhenPresent<T> isInWhenPresent(Collection<T> values) {
@@ -577,7 +577,7 @@ public interface SqlBuilder {
 
     @SafeVarargs
     static <T> IsNotIn<T> isNotIn(T...values) {
-        return isNotIn(Arrays.asList(values));
+        return IsNotIn.of(values);
     }
 
     static <T> IsNotIn<T> isNotIn(Collection<T> values) {
@@ -590,7 +590,7 @@ public interface SqlBuilder {
 
     @SafeVarargs
     static <T> IsNotInWhenPresent<T> isNotInWhenPresent(T...values) {
-        return isNotInWhenPresent(Arrays.asList(values));
+        return IsNotInWhenPresent.of(values);
     }
 
     static <T> IsNotInWhenPresent<T> isNotInWhenPresent(Collection<T> values) {
@@ -705,7 +705,7 @@ public interface SqlBuilder {
     }
 
     static IsInCaseInsensitive isInCaseInsensitive(String...values) {
-        return isInCaseInsensitive(Arrays.asList(values));
+        return IsInCaseInsensitive.of(values);
     }
 
     static IsInCaseInsensitive isInCaseInsensitive(Collection<String> values) {
@@ -713,7 +713,7 @@ public interface SqlBuilder {
     }
 
     static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(String...values) {
-        return isInCaseInsensitiveWhenPresent(Arrays.asList(values));
+        return IsInCaseInsensitiveWhenPresent.of(values);
     }
 
     static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(Collection<String> values) {
@@ -721,7 +721,7 @@ public interface SqlBuilder {
     }
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
-        return isNotInCaseInsensitive(Arrays.asList(values));
+        return IsNotInCaseInsensitive.of(values);
     }
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(Collection<String> values) {
@@ -729,7 +729,7 @@ public interface SqlBuilder {
     }
 
     static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(String...values) {
-        return isNotInCaseInsensitiveWhenPresent(Arrays.asList(values));
+        return IsNotInCaseInsensitiveWhenPresent.of(values);
     }
 
     static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(Collection<String> values) {

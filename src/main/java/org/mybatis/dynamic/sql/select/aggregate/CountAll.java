@@ -17,10 +17,10 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class CountAll extends AbstractCount<CountAll> {
+public class CountAll extends AbstractCount {
 
     public CountAll() {
-        super(null);
+        super();
     }
 
     private CountAll(String alias) {
@@ -33,7 +33,7 @@ public class CountAll extends AbstractCount<CountAll> {
     }
 
     @Override
-    protected CountAll copyWithAlias(String alias) {
+    public CountAll as(String alias) {
         return new CountAll(alias);
     }
 }
