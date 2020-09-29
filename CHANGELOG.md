@@ -2,7 +2,7 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
-## Release 1.2.1 - Unreleased
+## Release 1.2.1 - September 29, 2020
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.2.1+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.2.1+)
 
@@ -40,11 +40,11 @@ All deprecated code will be removed in the next minor release.
 - Added support for union queries in Kotlin ([#187](https://github.com/mybatis/mybatis-dynamic-sql/issues/187))
 - Added the ability to write "in" conditions that will render even if empty ([#228](https://github.com/mybatis/mybatis-dynamic-sql/issues/228))
 - Many enhancements for Spring including:
-  - Fixed a bug where multi-row insert statements did not render properly for Spring  ([#224](https://github.com/mybatis/mybatis-dynamic-sql/issues/224))
-  - Added support for a parameter type converter for use cases where the Java type of a column does not match the database column type  ([#131](https://github.com/mybatis/mybatis-dynamic-sql/issues/131))
+  - Fixed a bug where multi-row insert statements did not render properly for Spring ([#224](https://github.com/mybatis/mybatis-dynamic-sql/issues/224))
+  - Added support for a parameter type converter for use cases where the Java type of a column does not match the database column type ([#131](https://github.com/mybatis/mybatis-dynamic-sql/issues/131))
   - Added a utility class which simplifies the use of the named parameter JDBC template for Java code - `org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions`
   - Added support for general inserts, multi-row inserts, batch inserts in the Kotlin DSL for Spring ([#225](https://github.com/mybatis/mybatis-dynamic-sql/issues/225))
-  - Added support for generated keys in the Kotlin DSL for Spring  ([#226](https://github.com/mybatis/mybatis-dynamic-sql/issues/226))
+  - Added support for generated keys in the Kotlin DSL for Spring ([#226](https://github.com/mybatis/mybatis-dynamic-sql/issues/226))
 
 ## Release 1.1.4 - November 23, 2019
 
@@ -70,7 +70,6 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 - Utility classes and a new canonical pattern for MyBatis Generator (CRUD) mappers ([#118](https://github.com/mybatis/mybatis-dynamic-sql/issues/118)) ([#125](https://github.com/mybatis/mybatis-dynamic-sql/pull/125)) ([#128](https://github.com/mybatis/mybatis-dynamic-sql/pull/128))
 - Kotlin Extensions and Kotlin DSL ([#133](https://github.com/mybatis/mybatis-dynamic-sql/pull/133)) ([#139](https://github.com/mybatis/mybatis-dynamic-sql/pull/139))
 
-
 ## Release 1.1.2 - July 5, 2019
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.2+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.2+)
@@ -84,7 +83,6 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 - Add the ability to modify values on any condition before they are placed in the parameter map ([#105](https://github.com/mybatis/mybatis-dynamic-sql/issues/105))
 - Add the ability to call `where()` with no parameters. This aids in constructing very dynamic queries ([#107](https://github.com/mybatis/mybatis-dynamic-sql/issues/107))
 
-
 ## Release 1.1.1 - April 7, 2019
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.1+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.1.1+)
@@ -94,13 +92,12 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 - Limit and offset support in the select statement
 - Utilities for Spring Batch
 - All conditions now support conditional rendering with lambdas
-- Select * support
+- Select \* support
 - Union all support
 
 ### Bugs Fixed
 
 - Fixed self joins
-
 
 ## Release 1.1.0 - April 24, 2018
 
