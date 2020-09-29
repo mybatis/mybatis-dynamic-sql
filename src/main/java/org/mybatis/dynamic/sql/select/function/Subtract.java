@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -33,7 +34,12 @@ public class Subtract<T extends Number> extends OperatorFunction<T> {
     }
 
     public static <T extends Number> Subtract<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
-            List<BasicColumn> subsequentColumns) {
+            BasicColumn... subsequentColumns) {
+        return of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+    }
+
+    public static <T extends Number> Subtract<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+                                                    List<BasicColumn> subsequentColumns) {
         return new Subtract<>(firstColumn, secondColumn, subsequentColumns);
     }
 }

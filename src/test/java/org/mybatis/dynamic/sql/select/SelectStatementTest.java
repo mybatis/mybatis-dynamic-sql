@@ -264,6 +264,34 @@ class SelectStatementTest {
     }
 
     @Test
+    void testInEmptyList() {
+        List<String> emptyList = Collections.emptyList();
+        SelectModel selectModel = select(column1, column3)
+                .from(table, "a")
+                .where(column3, isIn(emptyList)
+                        .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
+        );
+    }
+
+    @Test
+    void testNotInEmptyList() {
+        List<String> emptyList = Collections.emptyList();
+        SelectModel selectModel = select(column1, column3)
+                .from(table, "a")
+                .where(column3, isNotIn(emptyList)
+                        .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
+                .build();
+
+        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+                selectModel.render(RenderingStrategies.MYBATIS3)
+        );
+    }
+
+    @Test
     void testInWhenPresentEmptyList() {
         List<String> emptyList = Collections.emptyList();
         SelectModel selectModel = select(column1, column3)

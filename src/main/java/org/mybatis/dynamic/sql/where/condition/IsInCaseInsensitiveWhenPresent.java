@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -43,6 +44,10 @@ public class IsInCaseInsensitiveWhenPresent extends AbstractListValueCondition<S
                 .withValueStreamTransformer(valueStreamTransformer)
                 .withEmptyCallback(callback)
                 .build();
+    }
+
+    public static IsInCaseInsensitiveWhenPresent of(String... values) {
+        return of(Arrays.asList(values));
     }
 
     public static IsInCaseInsensitiveWhenPresent of(Collection<String> values) {

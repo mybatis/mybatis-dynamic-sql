@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -45,6 +46,10 @@ public class IsNotInCaseInsensitiveWhenPresent
                 .withValueStreamTransformer(valueStreamTransformer)
                 .withEmptyCallback(callback)
                 .build();
+    }
+
+    public static IsNotInCaseInsensitiveWhenPresent of(String... values) {
+        return of(Arrays.asList(values));
     }
 
     public static IsNotInCaseInsensitiveWhenPresent of(Collection<String> values) {

@@ -23,8 +23,6 @@ import org.mybatis.dynamic.sql.BindableColumn;
  * Count functions are implemented differently than the other aggregates. This is primarily to preserve
  * backwards compatibility. Count functions are configured as BindableColumns of type Long
  * as it is assumed that the count functions always return a number.
- *
- * @param <T> the subtype of this class
  */
 public abstract class AbstractCount implements BindableColumn<Long> {
     private final String alias;

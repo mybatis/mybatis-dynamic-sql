@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -52,6 +53,11 @@ public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T, IsNotIn
                 .withValues(values)
                 .withValueStreamTransformer(s -> s.filter(Objects::nonNull))
                 .build();
+    }
+
+    @SafeVarargs
+    public static <T> IsNotInWhenPresent<T> of(T... values) {
+        return of(Arrays.asList(values));
     }
 
     public static class Builder<T> extends AbstractListConditionBuilder<T, Builder<T>> {
