@@ -27,9 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * Implements a SQL DSL for building select statements.
@@ -73,7 +71,7 @@ public class SelectDSL<R> implements Buildable<R> {
     }
 
     public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
-        return selectDistinct(Arrays.asList(selectList));
+        return selectDistinct(Function.identity(), selectList);
     }
 
     public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(Collection<BasicColumn> selectList) {
@@ -92,39 +90,6 @@ public class SelectDSL<R> implements Buildable<R> {
                 .withSelectDSL(new SelectDSL<>(adapterFunction))
                 .isDistinct()
                 .build();
-    }
-
-    /**
-     * Select records by executing a MyBatis3 Mapper.
-     *
-     * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
-     *     This method will be removed without direct replacement in a future version
-     * @param <T> the return type from a MyBatis mapper - typically a List or a single record
-     * @param mapperMethod MyBatis3 mapper method that performs the select
-     * @param selectList the column list to select
-     * @return the partially created query
-     */
-    @Deprecated
-    public static <T> QueryExpressionDSL.FromGatherer<MyBatis3SelectModelAdapter<T>> selectWithMapper(
-            Function<SelectStatementProvider, T> mapperMethod, BasicColumn...selectList) {
-        return select(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod), selectList);
-    }
-
-    /**
-     * Select records by executing a MyBatis3 Mapper.
-     *
-     * @deprecated in favor of various select methods in {@link MyBatis3Utils}.
-     *     This method will be removed without direct replacement in a future version
-     * @param <T> the return type from a MyBatis mapper - typically a List or a single record
-     * @param mapperMethod MyBatis3 mapper method that performs the select
-     * @param selectList the column list to select
-     * @return the partially created query
-     */
-    @Deprecated
-    public static <T> QueryExpressionDSL.FromGatherer<MyBatis3SelectModelAdapter<T>> selectDistinctWithMapper(
-            Function<SelectStatementProvider, T> mapperMethod, BasicColumn...selectList) {
-        return selectDistinct(selectModel -> MyBatis3SelectModelAdapter.of(selectModel, mapperMethod),
-                selectList);
     }
 
     QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer) {

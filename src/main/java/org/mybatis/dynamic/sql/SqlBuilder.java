@@ -152,33 +152,6 @@ public interface SqlBuilder {
      * @param records records to insert
      * @param <T> the type of record to insert
      * @return the next step in the DSL
-     * @deprecated Use {@link SqlBuilder#insertBatch(Object[])} instead
-     */
-    @Deprecated
-    @SafeVarargs
-    static <T> BatchInsertDSL.IntoGatherer<T> insert(T...records) {
-        return insertBatch(records);
-    }
-
-    /**
-     * Insert a Batch of records. The model object is structured to support bulk inserts with JDBC batch support.
-     *
-     * @param records records to insert
-     * @param <T> the type of record to insert
-     * @return the next step in the DSL
-     * @deprecated Use {@link SqlBuilder#insertBatch(Collection)} instead
-     */
-    @Deprecated
-    static <T> BatchInsertDSL.IntoGatherer<T> insert(Collection<T> records) {
-        return insertBatch(records);
-    }
-
-    /**
-     * Insert a Batch of records. The model object is structured to support bulk inserts with JDBC batch support.
-     *
-     * @param records records to insert
-     * @param <T> the type of record to insert
-     * @return the next step in the DSL
      */
     @SafeVarargs
     static <T> BatchInsertDSL.IntoGatherer<T> insertBatch(T...records) {

@@ -130,7 +130,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
 
     public class CountWhereBuilder extends AbstractWhereDSL<CountWhereBuilder>
             implements Buildable<R> {
-        private <T> CountWhereBuilder() {}
+        private CountWhereBuilder() {}
 
         @NotNull
         @Override
