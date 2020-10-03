@@ -840,10 +840,13 @@ class JoinMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
 
+            // create second table instance for self-join
+            UserDynamicSQLSupport.User user2 = new UserDynamicSQLSupport.User();
+
             // get Bamm Bamm's parent - should be Barney
-            SelectStatementProvider selectStatement = select(user1.userId, user1.userName, user1.parentId)
-                    .from(user1, "u1")
-                    .join(user2, "u2").on(user1.userId, equalTo(user2.parentId))
+            SelectStatementProvider selectStatement = select(user.userId, user.userName, user.parentId)
+                    .from(user, "u1")
+                    .join(user2, "u2").on(user.userId, equalTo(user2.parentId))
                     .where(user2.userId, isEqualTo(4))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
