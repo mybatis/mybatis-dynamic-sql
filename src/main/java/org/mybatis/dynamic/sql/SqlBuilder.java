@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
+import org.mybatis.dynamic.sql.select.ColumnSortSpecification;
 import org.mybatis.dynamic.sql.select.CountDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
@@ -737,8 +738,35 @@ public interface SqlBuilder {
     }
 
     // order by support
+
+    /**
+     * Creates a sort specification based on a String. This is useful when a column has been
+     * aliased in the select list. For example:
+     *
+     * <pre>
+     *     select(foo.as("bar"))
+     *     .from(baz)
+     *     .orderBy(sortColumn("bar"))
+     * </pre>
+     *
+     * @param name the string to use as a sort specification
+     * @return a sort specification
+     */
     static SortSpecification sortColumn(String name) {
         return SimpleSortSpecification.of(name);
+    }
+
+    /**
+     * Creates a sort specification based on a column and a table alias. This can be useful in a join
+     * where the desired sort order is based on a column not in the select list. This will likely
+     * fail in union queries depending on database support.
+     *
+     * @param tableAlias the table alias
+     * @param column the column
+     * @return a sort specification
+     */
+    static SortSpecification sortColumn(String tableAlias, SqlColumn<?> column) {
+        return new ColumnSortSpecification(tableAlias, column);
     }
 
     class InsertIntoNextStep {
