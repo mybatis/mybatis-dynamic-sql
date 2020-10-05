@@ -74,7 +74,7 @@ public class SelectRenderer {
     }
 
     private String calculateOrderByPhrase(SortSpecification column) {
-        String phrase = column.aliasOrName();
+        String phrase = column.orderByName();
         if (column.isDescending()) {
             phrase = phrase + " DESC"; //$NON-NLS-1$
         }

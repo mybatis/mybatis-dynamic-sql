@@ -31,8 +31,7 @@ public class SimpleSortSpecification implements SortSpecification {
     private final boolean isDescending;
 
     private SimpleSortSpecification(String name) {
-        this.name = Objects.requireNonNull(name);
-        this.isDescending = false;
+        this(name, false);
     }
 
     private SimpleSortSpecification(String name, boolean isDescending) {
@@ -46,7 +45,7 @@ public class SimpleSortSpecification implements SortSpecification {
     }
 
     @Override
-    public String aliasOrName() {
+    public String orderByName() {
         return name;
     }
 
