@@ -176,13 +176,22 @@ The XML element should look like this:
 ## Notes on Order By
 
 Order by phrases can be difficult to calculate when there are aliased columns, aliased tables, unions, and joins.
-This library has taken a simple approach - the library will either write the column alias or the column
-name into the order by phrase.  For the order by phrase, the table alias (if there is one) will be ignored.
+This library has taken a relatively simple approach:
+
+1. When specifying an SqlColumn in an ORDER BY phrase the library will either write the column alias or the column
+name into the ORDER BY phrase.  For the ORDER BY phrase, the table alias (if there is one) will be ignored. Use this pattern
+when the ORDER BY column is a member of the select list. For example `orderBy(foo)`. If the column has an alias, then
+it is easist to use the "arbitrary string" method with the column alias as shown below.
+1. It is also possible to explicitly specify a table alias for a column in an ORDER BY phrase. Use this pattern when
+there is a join, and the ORDER BY column is in two or more tables, and the ORDER BY column is not in the select
+list. For example `orderBy(sortColumn("t1", foo))`.
+1. If none of the above use cases meet your needs, then you can specify an arbitrary String to write into the rendered ORDER BY
+phrase (see below for an example).  
 
 In our testing, this caused an issue in only one case.  When there is an outer join and the select list contains
 both the left and right join column.  In that case, the workaround is to supply a column alias for both columns.
 
-When using a column function (lower, upper, etc.), then is is customary to give the calculated column an alias so you will have a predictable result set.  In cases like this there will not be a column to use for an alias.  The library supports arbitrary values in an ORDER BY expression like this:
+When using a column function (lower, upper, etc.), then it is customary to give the calculated column an alias so you will have a predictable result set.  In cases like this there will not be a column to use for an alias.  The library supports arbitrary values in an ORDER BY expression like this:
 
 ```java
     SelectStatementProvider selectStatement = select(substring(gender, 1, 1).as("ShortGender"), avg(age).as("AverageAge"))
