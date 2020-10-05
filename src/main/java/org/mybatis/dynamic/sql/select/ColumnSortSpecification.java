@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.Objects;
+
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlColumn;
-
-import java.util.Objects;
 
 public class ColumnSortSpecification implements SortSpecification {
     private final String tableAlias;
