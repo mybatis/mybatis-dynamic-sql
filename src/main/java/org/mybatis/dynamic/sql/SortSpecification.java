@@ -31,11 +31,12 @@ public interface SortSpecification {
     SortSpecification descending();
 
     /**
-     * Return the column alias or column name.
+     * Return the phrase that should be written into a rendered order by clause. This should
+     * NOT include the "DESC" word for descending sort specifications.
      *
-     * @return the column alias if one has been specified by the user, or else the column name
+     * @return the order by phrase
      */
-    String aliasOrName();
+    String orderByName();
 
     /**
      * Return true if the sort order is descending.

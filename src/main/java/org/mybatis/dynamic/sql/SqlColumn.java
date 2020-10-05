@@ -91,7 +91,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     @Override
-    public String aliasOrName() {
+    public String orderByName() {
         return alias().orElse(name);
     }
 

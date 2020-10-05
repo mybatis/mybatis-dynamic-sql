@@ -794,6 +794,84 @@ class JoinMapperTest {
     }
 
     @Test
+    void testFullJoin4() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.description)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
+                    .fullJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
+                    .orderBy(orderLine.orderId, sortColumn("im", itemMaster.itemId))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select ol.order_id, ol.quantity, im.description"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
+                    + " full join ItemMaster im on ol.item_id = im.item_id"
+                    + " order by order_id, im.item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(6);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+
+            row = rows.get(3);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+
+            row = rows.get(5);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+        }
+    }
+
+    @Test
+    void testFullJoin5() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.description)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
+                    .fullJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
+                    .orderBy(orderLine.orderId, sortColumn("im", itemMaster.itemId).descending())
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select ol.order_id, ol.quantity, im.description"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
+                    + " full join ItemMaster im on ol.item_id = im.item_id"
+                    + " order by order_id, im.item_id DESC";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(6);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+
+            row = rows.get(3);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+
+            row = rows.get(5);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+        }
+    }
+
+    @Test
     void testFullJoinNoAliases() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);

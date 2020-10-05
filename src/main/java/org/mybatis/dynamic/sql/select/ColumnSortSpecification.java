@@ -18,43 +18,35 @@ package org.mybatis.dynamic.sql.select;
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlColumn;
 
-/**
- * This class is used for an order by phrase where there is no suitable column name
- * to use (for example a calculated column or an aggregate column).
- *
- * @author Jeff Butler
- */
-public class SimpleSortSpecification implements SortSpecification {
-
-    private final String name;
+public class ColumnSortSpecification implements SortSpecification {
+    private final String tableAlias;
+    private final SqlColumn<?> column;
     private final boolean isDescending;
 
-    private SimpleSortSpecification(String name) {
-        this(name, false);
+    public ColumnSortSpecification(String tableAlias, SqlColumn<?> column) {
+        this(tableAlias, column, false);
     }
 
-    private SimpleSortSpecification(String name, boolean isDescending) {
-        this.name = Objects.requireNonNull(name);
+    private ColumnSortSpecification(String tableAlias, SqlColumn<?> column, boolean isDescending) {
+        this.tableAlias = Objects.requireNonNull(tableAlias);
+        this.column = Objects.requireNonNull(column);
         this.isDescending = isDescending;
     }
 
     @Override
     public SortSpecification descending() {
-        return new SimpleSortSpecification(name, true);
+        return new ColumnSortSpecification(tableAlias, column, true);
     }
 
     @Override
     public String orderByName() {
-        return name;
+        return tableAlias + "." + column.name(); //$NON-NLS-1$
     }
 
     @Override
     public boolean isDescending() {
         return isDescending;
-    }
-
-    public static SimpleSortSpecification of(String name) {
-        return new SimpleSortSpecification(name);
     }
 }
