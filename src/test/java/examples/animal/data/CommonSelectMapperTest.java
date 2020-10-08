@@ -81,15 +81,15 @@ class CommonSelectMapperTest {
     void testGeneralSelectOne() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
-            SelectStatementProvider selectStatement = select(id, animalName)
+            SelectStatementProvider selectStatement = select(id.asCamelCase(), animalName.asCamelCase())
                     .from(animalData)
                     .where(id, isEqualTo(1))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             Map<String, Object> row = mapper.selectOneMappedRow(selectStatement);
 
-            assertThat(row).containsEntry("ID", 1);
-            assertThat(row).containsEntry("ANIMAL_NAME", "Lesser short-tailed shrew");
+            assertThat(row).containsEntry("id", 1);
+            assertThat(row).containsEntry("animalName", "Lesser short-tailed shrew");
         }
     }
 

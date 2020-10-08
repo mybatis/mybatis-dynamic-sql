@@ -40,4 +40,28 @@ public interface StringUtilities {
     static String safelyUpperCase(String s) {
         return s == null ? null : s.toUpperCase();
     }
+
+    static String toCamelCase(String inputString) {
+        StringBuilder sb = new StringBuilder();
+
+        boolean nextUpperCase = false;
+
+        for (int i = 0; i < inputString.length(); i++) {
+            char c = inputString.charAt(i);
+            if (Character.isLetterOrDigit(c)) {
+                if (nextUpperCase) {
+                    sb.append(Character.toUpperCase(c));
+                    nextUpperCase = false;
+                } else {
+                    sb.append(Character.toLowerCase(c));
+                }
+            } else {
+                if (sb.length() > 0) {
+                    nextUpperCase = true;
+                }
+            }
+        }
+
+        return sb.toString();
+    }
 }

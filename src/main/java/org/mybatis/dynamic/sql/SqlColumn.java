@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
@@ -83,6 +84,22 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     public SqlColumn<T> as(String alias) {
         Builder<T> b = copy();
         return b.withAlias(alias).build();
+    }
+
+    /**
+     * Set an alias with a camel cased string based on the column name. The can be useful for queries using
+     * the {@link org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper} where the columns are placed into
+     * a map based on the column name returned from the database.
+     *
+     * <p>A camel case string is mixed case, and most databases do not support unquoted mixed case strings
+     * as identifiers. Therefore the generated alias will be surrounded by double quotes thereby making it a
+     * quoted identifier. Most databases will respect quoted mixed case identifiers.
+     *
+     * @return a new column aliased with a camel case version of the column name
+     */
+    public SqlColumn<T> asCamelCase() {
+        Builder<T> b = copy();
+        return b.withAlias("\"" + StringUtilities.toCamelCase(name) + "\"").build(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
