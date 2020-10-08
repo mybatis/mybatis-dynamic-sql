@@ -83,13 +83,6 @@ fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvid
 fun <T> NamedParameterJdbcTemplate.insert(record: T) =
     SingleRowInsertHelper(record, this)
 
-@Deprecated(
-    message = "Deprecated for being awkward and inconsistent",
-    replaceWith = ReplaceWith("insert(record).into(table, completer)")
-)
-fun <T> NamedParameterJdbcTemplate.insert(record: T, table: SqlTable, completer: InsertCompleter<T>) =
-    insert(SqlBuilder.insert(record).into(table, completer))
-
 // general insert
 fun NamedParameterJdbcTemplate.generalInsert(insertStatement: GeneralInsertStatementProvider) =
     update(insertStatement.insertStatement, insertStatement.parameters)

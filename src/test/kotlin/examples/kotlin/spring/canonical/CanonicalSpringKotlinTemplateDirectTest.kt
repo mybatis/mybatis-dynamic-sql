@@ -162,23 +162,6 @@ class CanonicalSpringKotlinTemplateDirectTest {
     }
 
     @Test
-    fun testDeprecatedInsert() {
-        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-
-        val rows = template.insert(record, Person) {
-            map(id).toProperty("id")
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastNameAsString")
-            map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employedAsString")
-            map(occupation).toPropertyWhenPresent("occupation", record::occupation)
-            map(addressId).toProperty("addressId")
-        }
-
-        assertThat(rows).isEqualTo(1)
-    }
-
-    @Test
     fun testInsert() {
         val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 

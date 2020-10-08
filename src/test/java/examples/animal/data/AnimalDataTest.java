@@ -866,36 +866,6 @@ class AnimalDataTest {
     }
 
     @Test
-    void testDeprecatedAdd() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
-
-            SelectStatementProvider selectStatement = select(id, animalName, DeprecatedAdd.of(bodyWeight, brainWeight).as("calculated_weight"))
-                    .from(animalData, "a")
-                    .where(DeprecatedAdd.of(bodyWeight, brainWeight), isGreaterThan(10000.0))
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            String expected = "select a.id, a.animal_name, (a.body_weight + a.brain_weight) as calculated_weight "
-                    + "from AnimalData a "
-                    + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
-
-            List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
-
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-                    () -> assertThat(animals).hasSize(3),
-                    () -> assertThat(animals.get(0)).containsEntry("ANIMAL_NAME", "African elephant"),
-                    () -> assertThat(animals.get(0)).containsEntry("CALCULATED_WEIGHT", 12366.0),
-                    () -> assertThat(animals.get(1)).containsEntry("ANIMAL_NAME", "Dipliodocus"),
-                    () -> assertThat(animals.get(1)).containsEntry("CALCULATED_WEIGHT", 11750.0),
-                    () -> assertThat(animals.get(2)).containsEntry("ANIMAL_NAME", "Brachiosaurus"),
-                    () -> assertThat(animals.get(2)).containsEntry("CALCULATED_WEIGHT", 87154.5)
-            );
-        }
-    }
-
-    @Test
     void testAdd() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
@@ -1812,25 +1782,6 @@ class AnimalDataTest {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(avg(brainWeight).as("average"))
-                    .from(animalData, "a")
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            Double average = mapper.selectOneDouble(selectStatement);
-
-            assertAll(
-                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select avg(a.brain_weight) as average from AnimalData a"),
-                    () -> assertThat(average).isEqualTo(1852.69, within(.01))
-            );
-        }
-    }
-
-    @Test
-    void testDeprecatedAvg() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
-
-            SelectStatementProvider selectStatement = select(DeprecatedAverage.of(brainWeight).as("average"))
                     .from(animalData, "a")
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
