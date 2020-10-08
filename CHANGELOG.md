@@ -7,6 +7,7 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 ### Added
 
 - Added a new sort specification that is useful in selects with joins ([#269](https://github.com/mybatis/mybatis-dynamic-sql/pull/269))
+- Added the capability to generate a camel cased alias for a column ([#272](https://github.com/mybatis/mybatis-dynamic-sql/issues/272))
 
 ## Release 1.2.1 - September 29, 2020
 
