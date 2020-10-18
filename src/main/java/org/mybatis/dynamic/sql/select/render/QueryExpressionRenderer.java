@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
@@ -39,11 +39,15 @@ public class QueryExpressionRenderer {
     private final QueryExpressionModel queryExpression;
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence;
+    private final TableExpressionRenderer tableExpressionRenderer;
 
     private QueryExpressionRenderer(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         sequence = Objects.requireNonNull(builder.sequence);
+        tableExpressionRenderer = new TableExpressionRenderer.Builder()
+                .withTableAliasCalculator(queryExpression.tableAliasCalculator())
+                .build();
     }
 
     public FragmentAndParameters render() {
@@ -90,8 +94,8 @@ public class QueryExpressionRenderer {
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
-    private String calculateTableName(SqlTable table) {
-        return queryExpression.calculateTableNameIncludingAlias(table);
+    private String calculateTableName(TableExpression table) {
+        return table.accept(tableExpressionRenderer);
     }
 
     private String applyTableAndColumnAlias(BasicColumn selectListItem) {
@@ -101,6 +105,7 @@ public class QueryExpressionRenderer {
     private String renderJoin(JoinModel joinModel) {
         return JoinRenderer.withJoinModel(joinModel)
                 .withQueryExpression(queryExpression)
+                .withTableExpressionRenderer(tableExpressionRenderer)
                 .build()
                 .render();
     }

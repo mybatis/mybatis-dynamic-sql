@@ -1,0 +1,59 @@
+/*
+ *    Copyright 2016-2020 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select.render;
+
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
+import java.util.Objects;
+
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpressionVisitor;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.SelectModel;
+
+public class TableExpressionRenderer implements TableExpressionVisitor<String> {
+    private final TableAliasCalculator tableAliasCalculator;
+
+    private TableExpressionRenderer(Builder builder) {
+        this.tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
+    }
+
+    @Override
+    public String visit(SqlTable table) {
+        return tableAliasCalculator.aliasForTable(table)
+                .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
+                .orElseGet(table::tableNameAtRuntime);
+    }
+
+    @Override
+    public String visit(SelectModel selectModel) {
+        // TODO
+        return null;
+    }
+
+    public static class Builder {
+        private TableAliasCalculator tableAliasCalculator;
+
+        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+            this.tableAliasCalculator = tableAliasCalculator;
+            return this;
+        }
+
+        public TableExpressionRenderer build() {
+            return new TableExpressionRenderer(this);
+        }
+    }
+}

@@ -30,10 +30,12 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 public class JoinRenderer {
     private final JoinModel joinModel;
     private final QueryExpressionModel queryExpression;
+    private final TableExpressionRenderer tableExpressionRenderer;
 
     private JoinRenderer(Builder builder) {
         joinModel = Objects.requireNonNull(builder.joinModel);
         queryExpression = Objects.requireNonNull(builder.queryExpression);
+        tableExpressionRenderer = Objects.requireNonNull(builder.tableExpressionRenderer);
     }
 
     public String render() {
@@ -44,7 +46,7 @@ public class JoinRenderer {
     private String toRenderedString(JoinSpecification joinSpecification) {
         return spaceAfter(joinSpecification.joinType().shortType())
                 + "join" //$NON-NLS-1$
-                + spaceBefore(queryExpression.calculateTableNameIncludingAlias(joinSpecification.table()))
+                + spaceBefore(joinSpecification.table().accept(tableExpressionRenderer))
                 + spaceBefore(renderConditions(joinSpecification));
     }
 
@@ -71,6 +73,7 @@ public class JoinRenderer {
     public static class Builder {
         private JoinModel joinModel;
         private QueryExpressionModel queryExpression;
+        private TableExpressionRenderer tableExpressionRenderer;
 
         public Builder withJoinModel(JoinModel joinModel) {
             this.joinModel = joinModel;
@@ -79,6 +82,11 @@ public class JoinRenderer {
 
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpression = queryExpression;
+            return this;
+        }
+
+        public Builder withTableExpressionRenderer(TableExpressionRenderer tableExpressionRenderer) {
+            this.tableExpressionRenderer = tableExpressionRenderer;
             return this;
         }
 
