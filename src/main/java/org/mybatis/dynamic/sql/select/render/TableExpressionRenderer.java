@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpressionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.SubQuery;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class TableExpressionRenderer implements TableExpressionVisitor<FragmentAndParameters> {
@@ -48,19 +48,27 @@ public class TableExpressionRenderer implements TableExpressionVisitor<FragmentA
     }
 
     @Override
-    public FragmentAndParameters visit(SelectModel selectModel) {
+    public FragmentAndParameters visit(SubQuery subQuery) {
         SelectStatementProvider selectStatement = new SelectRenderer.Builder()
-                .withSelectModel(selectModel)
+                .withSelectModel(subQuery.selectModel())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
                 .build()
                 .render();
 
-        return FragmentAndParameters.withFragment(
-                    "(" + selectStatement.getSelectStatement() + ")" //$NON-NLS-1$ //$NON-NLS-2$
-                )
+        String fragment = "(" + selectStatement.getSelectStatement() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+
+        fragment = applyAlias(fragment, subQuery);
+
+        return FragmentAndParameters.withFragment(fragment)
                 .withParameters(selectStatement.getParameters())
                 .build();
+    }
+
+    private String applyAlias(String fragment, SubQuery subQuery) {
+        return subQuery.alias()
+                .map(a -> fragment + spaceBefore(a))
+                .orElse(fragment);
     }
 
     public static class Builder {

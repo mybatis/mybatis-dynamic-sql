@@ -160,7 +160,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .withDescending(this.isDescending)
                 .withAlias(this.alias)
                 .withTypeHandler(this.typeHandler)
-                .withRenderingStrategy((this.renderingStrategy))
+                .withRenderingStrategy(this.renderingStrategy)
                 .withParameterTypeConverter((ParameterTypeConverter<S, ?>) this.parameterTypeConverter);
     }
 

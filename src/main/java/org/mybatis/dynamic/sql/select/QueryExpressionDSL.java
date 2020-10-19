@@ -22,7 +22,13 @@ import java.util.List;
 import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.*;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -180,7 +186,11 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         }
 
         public QueryExpressionDSL<R> from(Buildable<SelectModel> select) {
-            return selectDSL.newQueryExpression(this, select.build());
+            return selectDSL.newQueryExpression(this, buildSubQuery(select));
+        }
+
+        public QueryExpressionDSL<R> from(Buildable<SelectModel> select, String tableAlias) {
+            return selectDSL.newQueryExpression(this, buildSubQuery(select, tableAlias));
         }
 
         public QueryExpressionDSL<R> from(SqlTable table) {
@@ -189,6 +199,19 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
 
         public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
             return selectDSL.newQueryExpression(this, table, tableAlias);
+        }
+
+        private SubQuery buildSubQuery(Buildable<SelectModel> selectModel) {
+            return new SubQuery.Builder()
+                    .withSelectModel(selectModel.build())
+                    .build();
+        }
+
+        private SubQuery buildSubQuery(Buildable<SelectModel> selectModel, String alias) {
+            return new SubQuery.Builder()
+                    .withSelectModel(selectModel.build())
+                    .withAlias(alias)
+                    .build();
         }
 
         public static class Builder<R> {

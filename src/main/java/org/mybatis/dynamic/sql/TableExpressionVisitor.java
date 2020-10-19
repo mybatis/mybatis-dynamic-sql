@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql;
 
-import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.SubQuery;
 
 public interface TableExpressionVisitor<R> {
     R visit(SqlTable table);
 
-    R visit(SelectModel selectModel);
+    R visit(SubQuery subQuery);
 }

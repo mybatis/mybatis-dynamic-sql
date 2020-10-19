@@ -23,13 +23,11 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.TableExpression;
-import org.mybatis.dynamic.sql.TableExpressionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-public class SelectModel implements TableExpression {
+public class SelectModel {
     private final List<QueryExpressionModel> queryExpressions;
     private final OrderByModel orderByModel;
     private final PagingModel pagingModel;
@@ -58,11 +56,6 @@ public class SelectModel implements TableExpression {
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
-    }
-
-    @Override
-    public <R> R accept(TableExpressionVisitor<R> visitor) {
-        return visitor.visit(this);
     }
 
     public static Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
