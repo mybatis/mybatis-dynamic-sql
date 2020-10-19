@@ -47,6 +47,8 @@ public class QueryExpressionRenderer {
         sequence = Objects.requireNonNull(builder.sequence);
         tableExpressionRenderer = new TableExpressionRenderer.Builder()
                 .withTableAliasCalculator(queryExpression.tableAliasCalculator())
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(sequence)
                 .build();
     }
 
@@ -58,35 +60,49 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters renderWithWhereClause(WhereClauseProvider whereClause) {
-        return FragmentAndParameters.withFragment(calculateQueryExpression(whereClause))
+        // TODO - Delete?
+        return calculateQueryExpression(whereClause);
+    }
+
+    private FragmentAndParameters renderWithoutWhereClause() {
+        // TODO - Delete?
+        return calculateQueryExpression();
+    }
+
+    private FragmentAndParameters calculateQueryExpression() {
+        FragmentAndParameters start = calculateQueryExpressionStart();
+
+        return FragmentAndParameters.withFragment(start.fragment()
+                + spaceBefore(queryExpression.groupByModel().map(this::renderGroupBy)))
+                .withParameters(start.parameters())
+                .build();
+    }
+
+    private FragmentAndParameters calculateQueryExpression(WhereClauseProvider whereClause) {
+        FragmentAndParameters start = calculateQueryExpressionStart();
+
+        return FragmentAndParameters.withFragment(start.fragment()
+                + spaceBefore(whereClause.getWhereClause())
+                + spaceBefore(queryExpression.groupByModel().map(this::renderGroupBy)))
+                .withParameters(start.parameters())
                 .withParameters(whereClause.getParameters())
                 .build();
     }
 
-    private FragmentAndParameters renderWithoutWhereClause() {
-        return FragmentAndParameters.withFragment(calculateQueryExpression())
-                .build();
-    }
+    private FragmentAndParameters calculateQueryExpressionStart() {
+        FragmentAndParameters renderedTable = renderTableExpression(queryExpression.table());
 
-    private String calculateQueryExpression() {
-        return calculateQueryExpressionStart()
-                + spaceBefore(queryExpression.groupByModel().map(this::renderGroupBy));
-    }
-
-    private String calculateQueryExpression(WhereClauseProvider whereClause) {
-        return calculateQueryExpressionStart()
-                + spaceBefore(whereClause.getWhereClause())
-                + spaceBefore(queryExpression.groupByModel().map(this::renderGroupBy));
-    }
-
-    private String calculateQueryExpressionStart() {
-        return spaceAfter(queryExpression.connector())
+        String start = spaceAfter(queryExpression.connector())
                 + "select " //$NON-NLS-1$
                 + (queryExpression.isDistinct() ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + calculateColumnList()
                 + " from " //$NON-NLS-1$
-                + calculateTableName(queryExpression.table())
+                + renderedTable.fragment()
                 + spaceBefore(queryExpression.joinModel().map(this::renderJoin));
+
+        return FragmentAndParameters.withFragment(start)
+                .withParameters(renderedTable.parameters())
+                .build();
     }
 
     private String calculateColumnList() {
@@ -94,7 +110,7 @@ public class QueryExpressionRenderer {
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
-    private String calculateTableName(TableExpression table) {
+    private FragmentAndParameters renderTableExpression(TableExpression table) {
         return table.accept(tableExpressionRenderer);
     }
 

@@ -44,9 +44,10 @@ public class JoinRenderer {
     }
 
     private String toRenderedString(JoinSpecification joinSpecification) {
+        // TODO - this doesn't handle sub-query parameters properly
         return spaceAfter(joinSpecification.joinType().shortType())
                 + "join" //$NON-NLS-1$
-                + spaceBefore(joinSpecification.table().accept(tableExpressionRenderer))
+                + spaceBefore(joinSpecification.table().accept(tableExpressionRenderer).fragment())
                 + spaceBefore(renderConditions(joinSpecification));
     }
 
