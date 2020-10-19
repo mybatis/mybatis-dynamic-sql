@@ -53,52 +53,22 @@ public class QueryExpressionRenderer {
     }
 
     public FragmentAndParameters render() {
-        return queryExpression.whereModel()
-                .flatMap(this::renderWhereClause)
-                .map(this::renderWithWhereClause)
-                .orElseGet(this::renderWithoutWhereClause);
-    }
-
-    private FragmentAndParameters renderWithWhereClause(WhereClauseProvider whereClause) {
-        // TODO - Delete?
-        return calculateQueryExpression(whereClause);
-    }
-
-    private FragmentAndParameters renderWithoutWhereClause() {
-        // TODO - Delete?
-        return calculateQueryExpression();
-    }
-
-    private FragmentAndParameters calculateQueryExpression() {
-        FragmentAndParameters start = calculateQueryExpressionStart();
-
-        return FragmentAndParameters.withFragment(start.fragment()
-                + spaceBefore(queryExpression.groupByModel().map(this::renderGroupBy)))
-                .withParameters(start.parameters())
-                .build();
-    }
-
-    private FragmentAndParameters calculateQueryExpression(WhereClauseProvider whereClause) {
-        FragmentAndParameters start = calculateQueryExpressionStart();
-
-        return FragmentAndParameters.withFragment(start.fragment()
-                + spaceBefore(whereClause.getWhereClause())
-                + spaceBefore(queryExpression.groupByModel().map(this::renderGroupBy)))
-                .withParameters(start.parameters())
-                .withParameters(whereClause.getParameters())
-                .build();
+        FragmentAndParameters answer = calculateQueryExpressionStart();
+        answer = addJoinClause(answer);
+        answer = addWhereClause(answer);
+        answer = addGroupByClause(answer);
+        return answer;
     }
 
     private FragmentAndParameters calculateQueryExpressionStart() {
-        FragmentAndParameters renderedTable = renderTableExpression(queryExpression.table());
-
         String start = spaceAfter(queryExpression.connector())
                 + "select " //$NON-NLS-1$
                 + (queryExpression.isDistinct() ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + calculateColumnList()
-                + " from " //$NON-NLS-1$
-                + renderedTable.fragment()
-                + spaceBefore(queryExpression.joinModel().map(this::renderJoin));
+                + " from "; //$NON-NLS-1$
+
+        FragmentAndParameters renderedTable = renderTableExpression(queryExpression.table());
+        start += renderedTable.fragment();
 
         return FragmentAndParameters.withFragment(start)
                 .withParameters(renderedTable.parameters())
@@ -110,12 +80,19 @@ public class QueryExpressionRenderer {
                 .collect(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
+    private String applyTableAndColumnAlias(BasicColumn selectListItem) {
+        return selectListItem.renderWithTableAndColumnAlias(queryExpression.tableAliasCalculator());
+    }
+
     private FragmentAndParameters renderTableExpression(TableExpression table) {
         return table.accept(tableExpressionRenderer);
     }
 
-    private String applyTableAndColumnAlias(BasicColumn selectListItem) {
-        return selectListItem.renderWithTableAndColumnAlias(queryExpression.tableAliasCalculator());
+    private FragmentAndParameters addJoinClause(FragmentAndParameters partial) {
+        return queryExpression.joinModel()
+                .map(this::renderJoin)
+                .map(s -> partial.add(spaceBefore(s)))
+                .orElse(partial);
     }
 
     private String renderJoin(JoinModel joinModel) {
@@ -126,6 +103,13 @@ public class QueryExpressionRenderer {
                 .render();
     }
 
+    private FragmentAndParameters addWhereClause(FragmentAndParameters partial) {
+        return queryExpression.whereModel()
+                .flatMap(this::renderWhereClause)
+                .map(wc -> partial.add(spaceBefore(wc.getWhereClause()), wc.getParameters()))
+                .orElse(partial);
+    }
+
     private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
@@ -133,6 +117,13 @@ public class QueryExpressionRenderer {
                 .withSequence(sequence)
                 .build()
                 .render();
+    }
+
+    private FragmentAndParameters addGroupByClause(FragmentAndParameters partial) {
+        return queryExpression.groupByModel()
+                .map(this::renderGroupBy)
+                .map(s -> partial.add(spaceBefore(s)))
+                .orElse(partial);
     }
 
     private String renderGroupBy(GroupByModel groupByModel) {
