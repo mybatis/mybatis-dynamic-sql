@@ -26,6 +26,8 @@ import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class JoinRenderer {
     private final JoinModel joinModel;
@@ -38,17 +40,26 @@ public class JoinRenderer {
         tableExpressionRenderer = Objects.requireNonNull(builder.tableExpressionRenderer);
     }
 
-    public String render() {
-        return joinModel.mapJoinSpecifications(this::toRenderedString)
-                .collect(Collectors.joining(" ")); //$NON-NLS-1$
+    public FragmentAndParameters render() {
+        FragmentCollector fc = joinModel.mapJoinSpecifications(this::renderJoinSpecification)
+                .collect(FragmentCollector.collect());
+
+        return FragmentAndParameters.withFragment(fc.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+                .withParameters(fc.parameters())
+                .build();
     }
 
-    private String toRenderedString(JoinSpecification joinSpecification) {
-        // TODO - this doesn't handle sub-query parameters properly
-        return spaceAfter(joinSpecification.joinType().shortType())
+    private FragmentAndParameters renderJoinSpecification(JoinSpecification joinSpecification) {
+        FragmentAndParameters renderedTable = joinSpecification.table().accept(tableExpressionRenderer);
+
+        String fragment = spaceAfter(joinSpecification.joinType().shortType())
                 + "join" //$NON-NLS-1$
-                + spaceBefore(joinSpecification.table().accept(tableExpressionRenderer).fragment())
+                + spaceBefore(renderedTable.fragment())
                 + spaceBefore(renderConditions(joinSpecification));
+
+        return FragmentAndParameters.withFragment(fragment)
+                .withParameters(renderedTable.parameters())
+                .build();
     }
 
     private String renderConditions(JoinSpecification joinSpecification) {

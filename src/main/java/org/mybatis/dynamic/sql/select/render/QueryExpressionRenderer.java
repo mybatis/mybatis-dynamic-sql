@@ -91,11 +91,11 @@ public class QueryExpressionRenderer {
     private FragmentAndParameters addJoinClause(FragmentAndParameters partial) {
         return queryExpression.joinModel()
                 .map(this::renderJoin)
-                .map(s -> partial.add(spaceBefore(s)))
+                .map(fp -> partial.add(spaceBefore(fp.fragment()), fp.parameters()))
                 .orElse(partial);
     }
 
-    private String renderJoin(JoinModel joinModel) {
+    private FragmentAndParameters renderJoin(JoinModel joinModel) {
         return JoinRenderer.withJoinModel(joinModel)
                 .withQueryExpression(queryExpression)
                 .withTableExpressionRenderer(tableExpressionRenderer)

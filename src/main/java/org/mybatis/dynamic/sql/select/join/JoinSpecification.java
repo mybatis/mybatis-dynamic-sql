@@ -21,11 +21,11 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 
 public class JoinSpecification {
 
-    private final SqlTable table;
+    private final TableExpression table;
     private final List<JoinCriterion> joinCriteria;
     private final JoinType joinType;
 
@@ -35,7 +35,7 @@ public class JoinSpecification {
         joinType = Objects.requireNonNull(builder.joinType);
     }
 
-    public SqlTable table() {
+    public TableExpression table() {
         return table;
     }
 
@@ -47,16 +47,16 @@ public class JoinSpecification {
         return joinType;
     }
 
-    public static Builder withJoinTable(SqlTable table) {
+    public static Builder withJoinTable(TableExpression table) {
         return new Builder().withJoinTable(table);
     }
 
     public static class Builder {
-        private SqlTable table;
+        private TableExpression table;
         private final List<JoinCriterion> joinCriteria = new ArrayList<>();
         private JoinType joinType;
 
-        public Builder withJoinTable(SqlTable table) {
+        public Builder withJoinTable(TableExpression table) {
             this.table = table;
             return this;
         }
