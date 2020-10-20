@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -34,6 +36,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.DerivedColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
@@ -65,46 +68,78 @@ class SubQueryTest {
     void testBasicSubQuery() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
-            SelectStatementProvider selectStatement = select(count())
+            DerivedColumn<Integer> rowNum = DerivedColumn.of("rownum()");
+            DerivedColumn<String> outerAnimalName = DerivedColumn.from(animalName);
+
+            SelectStatementProvider selectStatement = select(outerAnimalName, rowNum)
                     .from(
-                            select(animalData.allColumns())
-                            .from(animalData)
-                            .where(id, isLessThan(22))
+                            select(id, animalName)
+                                    .from(animalData)
+                                    .where(id, isLessThan(22))
+                                    .orderBy(animalName.descending())
                     )
+                    .where(rowNum, isLessThan(5))
+                    .and(outerAnimalName, isLike("%a%"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
+
             assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select count(*) " +
-                            "from (select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER})"
+                    "select animal_name, rownum() " +
+                            "from (select id, animal_name " +
+                            "from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} " +
+                            "order by animal_name DESC) " +
+                            "where rownum() < #{parameters.p2} and animal_name like #{parameters.p3,jdbcType=VARCHAR}"
             );
             assertThat(selectStatement.getParameters()).containsEntry("p1", 22);
+            assertThat(selectStatement.getParameters()).containsEntry("p2", 5);
+            assertThat(selectStatement.getParameters()).containsEntry("p3", "%a%");
 
-            int rows = mapper.selectOneInteger(selectStatement);
-            assertThat(rows).isEqualTo(21);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+            assertThat(rows).hasSize(4);
+
+            assertThat(rows.get(2)).containsEntry("ANIMAL_NAME", "Chinchilla");
+            assertThat(rows.get(2)).containsEntry("ROWNUM", 3);
         }
     }
 
     @Test
-    void testBasicSubQueryWithAlias() {
+    void testBasicSubQueryWithAliases() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
-            SelectStatementProvider selectStatement = select(count())
+            DerivedColumn<Integer> rowNum = DerivedColumn.of("rownum()");
+            DerivedColumn<String> outerAnimalName = DerivedColumn.from(animalName, "b");
+            DerivedColumn<Integer> animalId = DerivedColumn.of("animalId", "b");
+
+            SelectStatementProvider selectStatement = select(outerAnimalName.asCamelCase(), animalId, rowNum)
                     .from(
-                            select(animalData.allColumns())
-                                    .from(animalData)
-                                    .where(id, isLessThan(22)),
-                            "a"
+                            select(id.as("animalId"), animalName)
+                                    .from(animalData, "a")
+                                    .where(id, isLessThan(22))
+                                    .orderBy(animalName.descending()),
+                            "b"
                     )
+                    .where(rowNum, isLessThan(5))
+                    .and(outerAnimalName, isLike("%a%"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
+
             assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select count(*) " +
-                            "from (select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER}) a"
+                    "select b.animal_name as \"animalName\", b.animalId, rownum() " +
+                            "from (select a.id as animalId, a.animal_name " +
+                            "from AnimalData a where a.id < #{parameters.p1,jdbcType=INTEGER} " +
+                            "order by animal_name DESC) b " +
+                            "where rownum() < #{parameters.p2} and b.animal_name like #{parameters.p3,jdbcType=VARCHAR}"
             );
             assertThat(selectStatement.getParameters()).containsEntry("p1", 22);
+            assertThat(selectStatement.getParameters()).containsEntry("p2", 5);
+            assertThat(selectStatement.getParameters()).containsEntry("p3", "%a%");
 
-            int rows = mapper.selectOneInteger(selectStatement);
-            assertThat(rows).isEqualTo(21);
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+            assertThat(rows).hasSize(4);
+
+            assertThat(rows.get(2)).containsEntry("animalName", "Chinchilla");
+            assertThat(rows.get(2)).containsEntry("ANIMALID", 14);
+            assertThat(rows.get(2)).containsEntry("ROWNUM", 3);
         }
     }
 }
