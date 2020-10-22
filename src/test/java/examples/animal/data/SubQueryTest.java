@@ -69,9 +69,8 @@ class SubQueryTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             DerivedColumn<Integer> rowNum = DerivedColumn.of("rownum()");
-            DerivedColumn<String> outerAnimalName = DerivedColumn.from(animalName);
 
-            SelectStatementProvider selectStatement = select(outerAnimalName, rowNum)
+            SelectStatementProvider selectStatement = select(animalName, rowNum)
                     .from(
                             select(id, animalName)
                                     .from(animalData)
@@ -79,7 +78,7 @@ class SubQueryTest {
                                     .orderBy(animalName.descending())
                     )
                     .where(rowNum, isLessThan(5))
-                    .and(outerAnimalName, isLike("%a%"))
+                    .and(animalName, isLike("%a%"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -107,7 +106,7 @@ class SubQueryTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             DerivedColumn<Integer> rowNum = DerivedColumn.of("rownum()");
-            DerivedColumn<String> outerAnimalName = DerivedColumn.from(animalName, "b");
+            DerivedColumn<String> outerAnimalName = qualify(animalName, "b");
             DerivedColumn<Integer> animalId = DerivedColumn.of("animalId", "b");
 
             SelectStatementProvider selectStatement = select(outerAnimalName.asCamelCase(), animalId, rowNum)

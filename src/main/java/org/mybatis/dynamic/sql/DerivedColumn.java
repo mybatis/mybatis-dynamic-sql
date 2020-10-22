@@ -95,15 +95,7 @@ public class DerivedColumn<T> implements BindableColumn<T> {
                 .build();
     }
 
-    public static <T> DerivedColumn<T> from(SqlColumn<T> column) {
-        return new Builder<T>()
-                .withName(column.name())
-                .withTypeHandler(column.typeHandler().orElse(null))
-                .withJdbcType(column.jdbcType().orElse(null))
-                .build();
-    }
-
-    public static <T> DerivedColumn<T> from(SqlColumn<T> column, String tableAlias) {
+    public static <T> DerivedColumn<T> qualify(SqlColumn<T> column, String tableAlias) {
         return new Builder<T>()
                 .withName(column.name())
                 .withTableAlias(tableAlias)
