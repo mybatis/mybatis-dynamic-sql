@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin.spring
 
+import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
@@ -23,7 +24,6 @@ import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CountDSL
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinDeleteBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinQueryBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
@@ -61,11 +61,30 @@ fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: Multi
 fun CountDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: CountCompleter) =
     completer(KotlinCountBuilder(from(table))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: SelectCompleter) =
-    completer(KotlinQueryBuilder(from(table))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun select(
+    vararg columnList: BasicColumn,
+    complete: SelectCompleter
+) =
+    complete(org.mybatis.dynamic.sql.util.kotlin.select(columnList.asList())).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, alias: String, completer: SelectCompleter) =
-    completer(KotlinQueryBuilder(from(table, alias))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun select(
+    columnList: List<BasicColumn>,
+    complete: SelectCompleter
+) =
+    complete(org.mybatis.dynamic.sql.util.kotlin.select(columnList)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
+fun select(
+    selectBuilder: KotlinSelectBuilder,
+    complete: SelectCompleter
+) =
+    complete(selectBuilder).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
+fun selectDistinct(
+    selectBuilder: KotlinSelectBuilder,
+    complete: SelectCompleter
+) =
+    complete(selectBuilder).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
     completer(KotlinUpdateBuilder(SqlBuilder.update(table))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+

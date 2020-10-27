@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
+import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
@@ -113,20 +114,33 @@ fun <T> NamedParameterJdbcTemplate.insertMultiple(
 fun NamedParameterJdbcTemplate.withKeyHolder(keyHolder: KeyHolder, build: KeyHolderHelper.() -> Int) =
     build(KeyHolderHelper(keyHolder, this))
 
-fun NamedParameterJdbcTemplate.select(vararg selectList: BasicColumn) = select(selectList.toList())
+fun NamedParameterJdbcTemplate.select(vararg selectList: BasicColumn, completer: SelectCompleter) =
+    select(selectList.toList(), completer)
 
-fun NamedParameterJdbcTemplate.select(selectList: List<BasicColumn>) =
-    SelectListFromGatherer(selectList, this)
+fun NamedParameterJdbcTemplate.select(selectList: List<BasicColumn>, completer: SelectCompleter) =
+    SelectListMapperGatherer(
+        org.mybatis.dynamic.sql.util.kotlin.select(selectList, completer)
+            .build()
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER), this)
 
-fun NamedParameterJdbcTemplate.selectDistinct(vararg selectList: BasicColumn) = selectDistinct(selectList.toList())
 
-fun NamedParameterJdbcTemplate.selectDistinct(selectList: List<BasicColumn>) =
-    SelectDistinctFromGatherer(selectList, this)
+fun NamedParameterJdbcTemplate.selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
+    selectDistinct(selectList.toList(), completer)
 
-fun NamedParameterJdbcTemplate.selectOne(vararg selectList: BasicColumn) = selectOne(selectList.toList())
+fun NamedParameterJdbcTemplate.selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
+    SelectListMapperGatherer(
+        org.mybatis.dynamic.sql.util.kotlin.selectDistinct(selectList, completer)
+            .build()
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER), this)
 
-fun NamedParameterJdbcTemplate.selectOne(selectList: List<BasicColumn>) =
-    SelectOneFromGatherer(selectList, this)
+fun NamedParameterJdbcTemplate.selectOne(vararg selectList: BasicColumn, completer: SelectCompleter) =
+    selectOne(selectList.toList(), completer)
+
+fun NamedParameterJdbcTemplate.selectOne(selectList: List<BasicColumn>, completer: SelectCompleter) =
+    SelectOneMapperGatherer(
+        org.mybatis.dynamic.sql.util.kotlin.select(selectList, completer)
+            .build()
+            .render(RenderingStrategies.SPRING_NAMED_PARAMETER), this)
 
 fun <T> NamedParameterJdbcTemplate.selectList(
     selectStatement: SelectStatementProvider,
@@ -167,39 +181,6 @@ class CountDistinctFromGatherer(
 }
 
 // support classes for select DSL
-class SelectListFromGatherer(
-    private val selectList: List<BasicColumn>,
-    private val template: NamedParameterJdbcTemplate
-) {
-    fun from(table: SqlTable, completer: SelectCompleter) =
-        SelectListMapperGatherer(SqlBuilder.select(selectList).from(table, completer), template)
-
-    fun from(table: SqlTable, alias: String, completer: SelectCompleter) =
-        SelectListMapperGatherer(SqlBuilder.select(selectList).from(table, alias, completer), template)
-}
-
-class SelectDistinctFromGatherer(
-    private val selectList: List<BasicColumn>,
-    private val template: NamedParameterJdbcTemplate
-) {
-    fun from(table: SqlTable, completer: SelectCompleter) =
-        SelectListMapperGatherer(SqlBuilder.selectDistinct(selectList).from(table, completer), template)
-
-    fun from(table: SqlTable, alias: String, completer: SelectCompleter) =
-        SelectListMapperGatherer(SqlBuilder.selectDistinct(selectList).from(table, alias, completer), template)
-}
-
-class SelectOneFromGatherer(
-    private val selectList: List<BasicColumn>,
-    private val template: NamedParameterJdbcTemplate
-) {
-    fun from(table: SqlTable, completer: SelectCompleter) =
-        SelectOneMapperGatherer(SqlBuilder.select(selectList).from(table, completer), template)
-
-    fun from(table: SqlTable, alias: String, completer: SelectCompleter) =
-        SelectOneMapperGatherer(SqlBuilder.select(selectList).from(table, alias, completer), template)
-}
-
 class SelectListMapperGatherer(
     private val selectStatement: SelectStatementProvider,
     private val template: NamedParameterJdbcTemplate

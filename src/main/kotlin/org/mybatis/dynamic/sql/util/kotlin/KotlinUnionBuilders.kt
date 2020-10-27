@@ -16,40 +16,20 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 
 @MyBatisDslMarker
 class KotlinUnionBuilder(private val unionBuilder: QueryExpressionDSL<SelectModel>.UnionBuilder) {
-    fun select(vararg selectList: BasicColumn) =
-        select(selectList.toList())
+    fun select(vararg selectList: BasicColumn, completer: SelectCompleter) =
+        select(selectList.toList(), completer)
 
-    fun select(selectList: List<BasicColumn>) =
-        KotlinUnionFromGatherer(unionBuilder.select(selectList))
+    fun select(selectList: List<BasicColumn>, completer: SelectCompleter) =
+        completer(KotlinSelectBuilder(unionBuilder.select(selectList)))
 
-    fun selectDistinct(vararg selectList: BasicColumn) =
-        selectDistinct(selectList.toList())
+    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
+        selectDistinct(selectList.toList(), completer)
 
-    fun selectDistinct(selectList: List<BasicColumn>) =
-        KotlinUnionFromGatherer(unionBuilder.selectDistinct(selectList))
-}
-
-class KotlinUnionFromGatherer(private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>) {
-    fun from(table: SqlTable, enhance: KotlinUnionQueryBuilder.() -> Unit) =
-        enhance(KotlinUnionQueryBuilder(fromGatherer.from(table)))
-
-    fun from(table: SqlTable, alias: String, enhance: KotlinUnionQueryBuilder.() -> Unit) =
-        enhance(KotlinUnionQueryBuilder(fromGatherer.from(table, alias)))
-}
-
-class KotlinUnionQueryBuilder(private val unionDsl: QueryExpressionDSL<SelectModel>) :
-    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>,
-            QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder,
-            KotlinUnionQueryBuilder>(unionDsl) {
-    fun allRows() = this
-
-    override fun self() = this
-
-    override fun getWhere(): QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder = unionDsl.where()
+    fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
+        completer(KotlinSelectBuilder(unionBuilder.selectDistinct(selectList)))
 }

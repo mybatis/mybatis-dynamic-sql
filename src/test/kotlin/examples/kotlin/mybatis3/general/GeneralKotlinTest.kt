@@ -39,25 +39,17 @@ import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.count
-import org.mybatis.dynamic.sql.SqlBuilder.equalTo
-import org.mybatis.dynamic.sql.SqlBuilder.insert
-import org.mybatis.dynamic.sql.SqlBuilder.insertMultiple
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
-import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
-import org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.isNotNull
-import org.mybatis.dynamic.sql.SqlBuilder.select
+import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.from
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.into
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 import java.io.InputStreamReader
 import java.sql.DriverManager
 import java.util.*
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 @Suppress("MaxLineLength")
 class GeneralKotlinTest {
@@ -338,7 +330,8 @@ class GeneralKotlinTest {
             val selectStatement = select(
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
                 addressId
-            ).from(Person) {
+            ) {
+                from(Person)
                 where(id, isLessThan(4)) {
                     and(occupation, isNotNull())
                 }
@@ -370,15 +363,15 @@ class GeneralKotlinTest {
             val selectStatement = select(
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
                 Address.id, Address.streetAddress, Address.city, Address.state
-            )
-                .from(Person) {
-                    join(Address) {
-                        on(addressId, equalTo(Address.id))
-                    }
-                    where(id, isLessThan(4))
-                    orderBy(id)
-                    limit(3)
+            ) {
+                from(Person)
+                join(Address) {
+                    on(addressId, equalTo(Address.id))
                 }
+                where(id, isLessThan(4))
+                orderBy(id)
+                limit(3)
+            }
 
             val rows = mapper.selectMany(selectStatement)
 
@@ -406,18 +399,18 @@ class GeneralKotlinTest {
             val selectStatement = select(
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
                 Address.id, Address.streetAddress, Address.city, Address.state
-            )
-                .from(Person) {
-                    join(Address) {
-                        on(addressId, equalTo(Address.id))
-                    }
-                    where(id, isLessThan(5))
-                    and(id, isLessThan(4)) {
-                        and(id, isLessThan(3)) {
-                            and(id, isLessThan(2))
-                        }
+            ) {
+                from(Person)
+                join(Address) {
+                    on(addressId, equalTo(Address.id))
+                }
+                where(id, isLessThan(5))
+                and(id, isLessThan(4)) {
+                    and(id, isLessThan(3)) {
+                        and(id, isLessThan(2))
                     }
                 }
+            }
 
             val rows = mapper.selectMany(selectStatement)
 
@@ -445,7 +438,8 @@ class GeneralKotlinTest {
             val selectStatement = select(
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
                 Address.id, Address.streetAddress, Address.city, Address.state
-            ).from(Person) {
+            ) {
+                from(Person)
                 join(Address) {
                     on(addressId, equalTo(Address.id))
                 }
@@ -485,7 +479,8 @@ class GeneralKotlinTest {
             val selectStatement = select(
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
                 addressId
-            ).from(Person) {
+            ) {
+                from(Person)
                 where(id, isLessThan(5))
                 and(id, isLessThan(4)) {
                     and(id, isLessThan(3)) {
@@ -528,7 +523,8 @@ class GeneralKotlinTest {
             val selectStatement = select(
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
                 addressId
-            ).from(Person) {
+            ) {
+                from(Person)
                 where(id, isEqualTo(5))
                 or(id, isEqualTo(4)) {
                     or(id, isEqualTo(3)) {
@@ -559,6 +555,27 @@ class GeneralKotlinTest {
                 assertThat(employed).isTrue()
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
                 assertThat(addressId).isEqualTo(2)
+            }
+        }
+    }
+
+    @Test
+    fun testRawSelectWithoutFrom() {
+        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java)
+            .describedAs("You must specify a \"from\" clause before any other clauses")
+            .isThrownBy {
+            val selectStatement = select(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                addressId
+            ) {
+                where(id, isEqualTo(5))
+                or(id, isEqualTo(4)) {
+                    or(id, isEqualTo(3)) {
+                        or(id, isEqualTo(2))
+                    }
+                }
+                orderBy(id)
+                limit(3)
             }
         }
     }
@@ -597,7 +614,7 @@ class GeneralKotlinTest {
                 allRows()
                 orderBy(id)
                 offset(2)
-                fetchFirst(3).rowsOnly()
+                fetchFirst(3)
             }
 
             assertThat(rows).hasSize(3)
@@ -616,12 +633,12 @@ class GeneralKotlinTest {
     @Test
     fun testRawSelectWithGroupBy() {
 
-        val ss = select(lastName, count())
-            .from(Person) {
-                where(firstName, isNotEqualTo("Bamm Bamm"))
-                groupBy(lastName)
-                orderBy(lastName)
-            }
+        val ss = select(lastName, count()) {
+            from(Person)
+            where(firstName, isNotEqualTo("Bamm Bamm"))
+            groupBy(lastName)
+            orderBy(lastName)
+        }
 
         val expected = "select last_name, count(*) from Person " +
                 "where first_name <> #{parameters.p1,jdbcType=VARCHAR} " +

@@ -23,8 +23,6 @@ import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL
-import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
@@ -34,6 +32,8 @@ import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.select
+import org.mybatis.dynamic.sql.util.kotlin.selectDistinct
 
 fun count(mapper: (SelectStatementProvider) -> Long, column: BasicColumn, table: SqlTable, completer: CountCompleter) =
     mapper(SqlBuilder.countColumn(column).from(table, completer))
@@ -72,7 +72,8 @@ fun <T> selectDistinct(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(SqlBuilder.selectDistinct(selectList).from(table, completer))
+    // TODO - awkward
+    mapper(select(selectDistinct(selectList) {from(table)}, completer))
 
 fun <T> selectList(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -80,14 +81,9 @@ fun <T> selectList(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(SqlBuilder.select(selectList).from(table, completer))
+    // TODO - awkward
+    mapper(select(select(selectList){from(table)}, completer))
 
-fun <T> selectList(
-    mapper: (SelectStatementProvider) -> List<T>,
-    start: QueryExpressionDSL<SelectModel>,
-    completer: SelectCompleter
-) =
-    mapper(select(start, completer))
 
 fun <T> selectOne(
     mapper: (SelectStatementProvider) -> T?,
@@ -95,14 +91,8 @@ fun <T> selectOne(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(SqlBuilder.select(selectList).from(table, completer))
-
-fun <T> selectOne(
-    mapper: (SelectStatementProvider) -> T?,
-    start: QueryExpressionDSL<SelectModel>,
-    completer: SelectCompleter
-) =
-    mapper(select(start, completer))
+    // TODO - awkward
+    mapper(select(select(selectList) {from(table)}, completer))
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter) =
     mapper(update(table, completer))

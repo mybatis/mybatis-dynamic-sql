@@ -288,22 +288,20 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectAll() {
-        val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-            .from(Person) {
-                allRows()
-                orderBy(id)
-            }.withRowMapper(personRowMapper)
+        val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            orderBy(id)
+        }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(6)
     }
 
     @Test
     fun testSelectAllWithSelectStar() {
-        val rows = template.select(Person.allColumns())
-            .from(Person) {
-                allRows()
-                orderBy(id)
-            }.withRowMapper(personRowMapper)
+        val rows = template.select(Person.allColumns()) {
+            from(Person)
+            orderBy(id)
+        }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(6)
     }
@@ -311,15 +309,15 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelect() {
         val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-            .from(Person) {
-                where(id, isLessThan(4)) {
-                    and(occupation, isNotNull())
-                }
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isLessThan(4)) {
                 and(occupation, isNotNull())
-                orderBy(id)
-                limit(3)
-            }.withRowMapper(personRowMapper)
+            }
+            and(occupation, isNotNull())
+            orderBy(id)
+            limit(3)
+        }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(2)
         with(rows[0]) {
@@ -336,22 +334,22 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectWithUnion() {
         val rows = template.select(
-            id, firstName, lastName, birthDate, employed, occupation, addressId)
-            .from(Person) {
-                where(id, isEqualTo(1))
-                union {
-                    select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-                        .from(Person) {
-                            where(id, isEqualTo(2))
-                        }
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isEqualTo(1))
+            union {
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(Person)
+                    where(id, isEqualTo(2))
                 }
-                union {
-                    select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-                        .from(Person) {
-                            where(id, isEqualTo(2))
-                        }
-                }
-            }.withRowMapper(personRowMapper)
+            }
+            union {
+                    select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                        from(Person)
+                        where(id, isEqualTo(2))
+                    }
+            }
+        }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(2)
         with(rows[0]) {
@@ -368,22 +366,22 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectWithUnionAll() {
         val rows = template.select(
-            id, firstName, lastName, birthDate, employed, occupation, addressId)
-            .from(Person) {
-                where(id, isEqualTo(1))
-                union {
-                    select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-                        .from(Person) {
-                            where(id, isEqualTo(2))
-                        }
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isEqualTo(1))
+            union {
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(Person)
+                    where(id, isEqualTo(2))
                 }
-                unionAll {
-                    select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-                        .from(Person) {
-                            where(id, isEqualTo(2))
-                        }
+            }
+            unionAll {
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(Person)
+                    where(id, isEqualTo(2))
                 }
-            }.withRowMapper(personRowMapper)
+            }
+        }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(3)
         with(rows[0]) {
@@ -400,10 +398,10 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectByPrimaryKey() {
         val record = template.selectOne(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-            .from(Person) {
-                where(id, isEqualTo(1))
-            }.withRowMapper(personRowMapper)
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isEqualTo(1))
+        }.withRowMapper(personRowMapper)
 
         with(record!!) {
             assertThat(id).isEqualTo(1)
@@ -418,36 +416,36 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectOneWithAlias() {
-        val name = template.selectOne(firstName)
-            .from(Person, "p") {
-                where(id, isEqualTo(1))
-            }.withRowMapper { rs, _ ->
-                rs.getString(1)
-            }
+        val name = template.selectOne(firstName) {
+            from(Person, "p")
+            where(id, isEqualTo(1))
+        }.withRowMapper { rs, _ ->
+            rs.getString(1)
+        }
 
         assertThat(name).isEqualTo("Fred")
     }
 
     @Test
     fun testSelectDistinct() {
-        val rows = template.selectDistinct(lastName)
-            .from(Person) {
-                orderBy(lastName)
-            }.withRowMapper { rs, _ ->
-                rs.getString(1)
-            }
+        val rows = template.selectDistinct(lastName) {
+            from(Person)
+            orderBy(lastName)
+        }.withRowMapper { rs, _ ->
+            rs.getString(1)
+        }
 
         assertThat(rows).hasSize(2)
     }
 
     @Test
     fun testSelectDistinctWithAlias() {
-        val rows = template.selectDistinct(lastName)
-            .from(Person, "p") {
-                orderBy(lastName)
-            }.withRowMapper { rs, _ ->
-                rs.getString(1)
-            }
+        val rows = template.selectDistinct(lastName) {
+            from(Person, "p")
+            orderBy(lastName)
+        }.withRowMapper { rs, _ ->
+            rs.getString(1)
+        }
 
         assertThat(rows).hasSize(2)
     }
@@ -456,15 +454,15 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testSelectWithJoin() {
         val rows = template.select(
                 id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            Address.id, Address.streetAddress, Address.city, Address.state)
-            .from(Person, "p") {
-                join(Address, "a") {
-                    on(addressId, equalTo(Address.id))
-                }
-                where(id, isLessThan(4))
-                orderBy(id)
-                limit(3)
-            }.withRowMapper(personWithAddressRowMapper)
+            Address.id, Address.streetAddress, Address.city, Address.state) {
+            from(Person, "p")
+            join(Address, "a") {
+                on(addressId, equalTo(Address.id))
+            }
+            where(id, isLessThan(4))
+            orderBy(id)
+            limit(3)
+        }.withRowMapper(personWithAddressRowMapper)
 
 
         assertThat(rows).hasSize(3)
@@ -485,17 +483,17 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectWithComplexWhere1() {
         val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-            .from(Person) {
-                where(id, isLessThan(5))
-                and(id, isLessThan(4)) {
-                    and(id, isLessThan(3)) {
-                        and(id, isLessThan(2))
-                    }
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isLessThan(5))
+            and(id, isLessThan(4)) {
+                and(id, isLessThan(3)) {
+                    and(id, isLessThan(2))
                 }
-                orderBy(id)
-                limit(3)
-            }.withRowMapper(personRowMapper)
+            }
+            orderBy(id)
+            limit(3)
+        }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(1)
         with(rows[0]) {
@@ -512,17 +510,17 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectWithComplexWhere2() {
         val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
-            .from(Person) {
-                where(id, isEqualTo(5))
-                or(id, isEqualTo(4)) {
-                    or(id, isEqualTo(3)) {
-                        or(id, isEqualTo(2))
-                    }
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isEqualTo(5))
+            or(id, isEqualTo(4)) {
+                or(id, isEqualTo(3)) {
+                    or(id, isEqualTo(2))
                 }
-                orderBy(id)
-                limit(3)
-            }.withRowMapper(personRowMapper)
+            }
+            orderBy(id)
+            limit(3)
+        }.withRowMapper(personRowMapper)
 
         assertThat(rows).hasSize(3)
         with(rows[2]) {
