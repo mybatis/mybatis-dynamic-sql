@@ -32,8 +32,6 @@ import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
-import org.mybatis.dynamic.sql.util.kotlin.select
-import org.mybatis.dynamic.sql.util.kotlin.selectDistinct
 
 fun count(mapper: (SelectStatementProvider) -> Long, column: BasicColumn, table: SqlTable, completer: CountCompleter) =
     mapper(SqlBuilder.countColumn(column).from(table, completer))
@@ -72,8 +70,7 @@ fun <T> selectDistinct(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    // TODO - awkward
-    mapper(select(selectDistinct(selectList) {from(table)}, completer))
+    mapper(selectDistinct(selectList, table, completer))
 
 fun <T> selectList(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -81,8 +78,7 @@ fun <T> selectList(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    // TODO - awkward
-    mapper(select(select(selectList){from(table)}, completer))
+    mapper(select(selectList, table, completer))
 
 
 fun <T> selectOne(
@@ -91,8 +87,7 @@ fun <T> selectOne(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    // TODO - awkward
-    mapper(select(select(selectList) {from(table)}, completer))
+    mapper(select(selectList, table, completer))
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter) =
     mapper(update(table, completer))
