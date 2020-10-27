@@ -25,6 +25,7 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastNam
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.select
+import org.mybatis.dynamic.sql.util.kotlin.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.completeAndRender
 
@@ -44,6 +45,17 @@ fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAdd
 
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
     val start = select(columnList) {
+        from(Person, "p")
+        fullJoin(Address) {
+            on(Person.addressId, equalTo(Address.id))
+        }
+    }
+
+    return selectMany(completeAndRender(start, completer))
+}
+
+fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> {
+    val start = selectDistinct(columnList) {
         from(Person, "p")
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))

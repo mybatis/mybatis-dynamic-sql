@@ -62,28 +62,28 @@ fun CountDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: CountCom
     completer(KotlinCountBuilder(from(table))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun select(
-    vararg columnList: BasicColumn,
-    complete: SelectCompleter
+    vararg selectList: BasicColumn,
+    completer: SelectCompleter
 ) =
-    complete(org.mybatis.dynamic.sql.util.kotlin.select(columnList.asList())).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    select(selectList.asList(), completer)
 
 fun select(
-    columnList: List<BasicColumn>,
-    complete: SelectCompleter
+    selectList: List<BasicColumn>,
+    completer: SelectCompleter
 ) =
-    complete(org.mybatis.dynamic.sql.util.kotlin.select(columnList)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
-
-fun select(
-    selectBuilder: KotlinSelectBuilder,
-    complete: SelectCompleter
-) =
-    complete(selectBuilder).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    completeAndRender(KotlinSelectBuilder(SqlBuilder.select(selectList)), completer)
 
 fun selectDistinct(
-    selectBuilder: KotlinSelectBuilder,
-    complete: SelectCompleter
+    selectList: List<BasicColumn>,
+    completer: SelectCompleter
 ) =
-    complete(selectBuilder).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    completeAndRender(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)), completer)
+
+fun completeAndRender(
+    builder: KotlinSelectBuilder,
+    completer: SelectCompleter
+) =
+    completer(builder).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
     completer(KotlinUpdateBuilder(SqlBuilder.update(table))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)

@@ -25,7 +25,6 @@ import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
-import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
@@ -118,29 +117,21 @@ fun NamedParameterJdbcTemplate.select(vararg selectList: BasicColumn, completer:
     select(selectList.toList(), completer)
 
 fun NamedParameterJdbcTemplate.select(selectList: List<BasicColumn>, completer: SelectCompleter) =
-    SelectListMapperGatherer(
-        org.mybatis.dynamic.sql.util.kotlin.select(selectList, completer)
-            .build()
-            .render(RenderingStrategies.SPRING_NAMED_PARAMETER), this)
-
+    SelectListMapperGatherer(org.mybatis.dynamic.sql.util.kotlin.spring.select(selectList, completer), this)
 
 fun NamedParameterJdbcTemplate.selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
     selectDistinct(selectList.toList(), completer)
 
 fun NamedParameterJdbcTemplate.selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
     SelectListMapperGatherer(
-        org.mybatis.dynamic.sql.util.kotlin.selectDistinct(selectList, completer)
-            .build()
-            .render(RenderingStrategies.SPRING_NAMED_PARAMETER), this)
+        org.mybatis.dynamic.sql.util.kotlin.spring.selectDistinct(selectList, completer), this)
 
 fun NamedParameterJdbcTemplate.selectOne(vararg selectList: BasicColumn, completer: SelectCompleter) =
     selectOne(selectList.toList(), completer)
 
 fun NamedParameterJdbcTemplate.selectOne(selectList: List<BasicColumn>, completer: SelectCompleter) =
     SelectOneMapperGatherer(
-        org.mybatis.dynamic.sql.util.kotlin.select(selectList, completer)
-            .build()
-            .render(RenderingStrategies.SPRING_NAMED_PARAMETER), this)
+        org.mybatis.dynamic.sql.util.kotlin.spring.select(selectList, completer), this)
 
 fun <T> NamedParameterJdbcTemplate.selectList(
     selectStatement: SelectStatementProvider,

@@ -25,18 +25,9 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 
 typealias SelectCompleter = KotlinSelectBuilder.() -> KotlinSelectBuilder
 
-fun select(vararg basicColumns: BasicColumn) = select(basicColumns.asList())
-
-fun select(basicColumns: List<BasicColumn>) = KotlinSelectBuilder(SqlBuilder.select(basicColumns))
-
-fun select(vararg basicColumns: BasicColumn, complete: SelectCompleter) =
-    complete(KotlinSelectBuilder(SqlBuilder.select(basicColumns.asList())))
-
+// convenience methods for building partials
 fun select(basicColumns: List<BasicColumn>, complete: SelectCompleter) =
     complete(KotlinSelectBuilder(SqlBuilder.select(basicColumns)))
-
-fun selectDistinct(vararg basicColumns: BasicColumn, complete: SelectCompleter) =
-    complete(KotlinSelectBuilder(SqlBuilder.selectDistinct(basicColumns.asList())))
 
 fun selectDistinct(basicColumns: List<BasicColumn>, complete: SelectCompleter) =
     complete(KotlinSelectBuilder(SqlBuilder.selectDistinct(basicColumns)))

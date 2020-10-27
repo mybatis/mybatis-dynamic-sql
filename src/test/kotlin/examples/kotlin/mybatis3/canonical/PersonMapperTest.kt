@@ -587,6 +587,31 @@ class PersonMapperTest {
     }
 
     @Test
+    fun testJoinDistinct() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonWithAddressMapper::class.java)
+
+            val records = mapper.selectDistinct {
+                where(id, isEqualTo(1))
+            }
+
+            assertThat(records).hasSize(1)
+            with(records[0]) {
+                assertThat(id).isEqualTo(1)
+                assertThat(employed).isTrue()
+                assertThat(firstName).isEqualTo("Fred")
+                assertThat(lastName).isEqualTo(LastName("Flintstone"))
+                assertThat(occupation).isEqualTo("Brontosaurus Operator")
+                assertThat(birthDate).isNotNull()
+                assertThat(address?.id).isEqualTo(1)
+                assertThat(address?.streetAddress).isEqualTo("123 Main Street")
+                assertThat(address?.city).isEqualTo("Bedrock")
+                assertThat(address?.state).isEqualTo("IN")
+            }
+        }
+    }
+
+    @Test
     fun testJoinPrimaryKey() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
