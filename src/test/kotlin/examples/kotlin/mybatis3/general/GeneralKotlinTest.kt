@@ -564,19 +564,16 @@ class GeneralKotlinTest {
         assertThatExceptionOfType(UninitializedPropertyAccessException::class.java)
             .describedAs("You must specify a \"from\" clause before any other clauses")
             .isThrownBy {
-            val selectStatement = select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                addressId
-            ) {
-                where(id, isEqualTo(5))
-                or(id, isEqualTo(4)) {
-                    or(id, isEqualTo(3)) {
-                        or(id, isEqualTo(2))
+                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                    where(id, isEqualTo(5))
+                    or(id, isEqualTo(4)) {
+                        or(id, isEqualTo(3)) {
+                            or(id, isEqualTo(2))
+                        }
                     }
+                    orderBy(id)
+                    limit(3)
                 }
-                orderBy(id)
-                limit(3)
-            }
         }
     }
 
