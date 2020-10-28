@@ -25,10 +25,10 @@ import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
-import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.CountColumnCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
@@ -48,11 +48,11 @@ import java.sql.ResultSet
 fun NamedParameterJdbcTemplate.count(selectStatement: SelectStatementProvider) =
     queryForObject(selectStatement.selectStatement, selectStatement.parameters, Long::class.java)!!
 
-fun NamedParameterJdbcTemplate.count(column: BasicColumn) =
-    CountFromGatherer(column, this)
+fun NamedParameterJdbcTemplate.count(column: BasicColumn, completer: CountColumnCompleter) =
+    count(org.mybatis.dynamic.sql.util.kotlin.spring.count(column, completer))
 
-fun NamedParameterJdbcTemplate.countDistinct(column: BasicColumn) =
-    CountDistinctFromGatherer(column, this)
+fun NamedParameterJdbcTemplate.countDistinct(column: BasicColumn, completer: CountColumnCompleter) =
+    count(org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct(column, completer))
 
 fun NamedParameterJdbcTemplate.countFrom(table: SqlTable, completer: CountCompleter) =
     count(org.mybatis.dynamic.sql.util.kotlin.spring.countFrom(table, completer))
@@ -153,23 +153,6 @@ fun NamedParameterJdbcTemplate.update(updateStatement: UpdateStatementProvider) 
 
 fun NamedParameterJdbcTemplate.update(table: SqlTable, completer: UpdateCompleter) =
     update(org.mybatis.dynamic.sql.util.kotlin.spring.update(table, completer))
-
-// support classes for count DSL
-class CountFromGatherer(
-    private val column: BasicColumn,
-    private val template: NamedParameterJdbcTemplate
-) {
-    fun from(table: SqlTable, completer: CountCompleter) =
-        template.count(CountDSL.count(column).from(table, completer))
-}
-
-class CountDistinctFromGatherer(
-    private val column: BasicColumn,
-    private val template: NamedParameterJdbcTemplate
-) {
-    fun from(table: SqlTable, completer: CountCompleter) =
-        template.count(CountDSL.countDistinct(column).from(table, completer))
-}
 
 // support classes for select DSL
 class SelectListMapperGatherer(

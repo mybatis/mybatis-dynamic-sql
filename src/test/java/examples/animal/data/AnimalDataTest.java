@@ -605,9 +605,9 @@ class AnimalDataTest {
                 .where(id, isInRequired(inValues).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     @Test
@@ -617,9 +617,9 @@ class AnimalDataTest {
                 .where(id, isInRequired(Collections.emptyList()))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     private static <T> IsIn<T> isInRequired(Collection<T> values) {
@@ -716,9 +716,9 @@ class AnimalDataTest {
                         .then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     @SafeVarargs

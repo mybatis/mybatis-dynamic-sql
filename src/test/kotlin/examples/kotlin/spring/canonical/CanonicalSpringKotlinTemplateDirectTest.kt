@@ -71,8 +71,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testCountLastName() {
-        val rows = template.count(lastName).from(Person) {
-            allRows()
+        val rows = template.count(lastName) {
+            from(Person)
         }
 
         assertThat(rows).isEqualTo(6)
@@ -80,8 +80,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testCountDistinctLastName() {
-        val rows = template.countDistinct(lastName).from(Person) {
-            allRows()
+        val rows = template.countDistinct(lastName) {
+            from(Person)
         }
 
         assertThat(rows).isEqualTo(2)

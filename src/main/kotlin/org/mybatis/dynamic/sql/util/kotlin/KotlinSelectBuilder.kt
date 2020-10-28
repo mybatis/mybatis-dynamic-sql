@@ -25,9 +25,15 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 
 typealias SelectCompleter = KotlinSelectBuilder.() -> KotlinSelectBuilder
 
-// convenience methods for building partials
+// convenience methods for building partials and sub-queries
+fun select(vararg basicColumns: BasicColumn, complete: SelectCompleter) =
+    select(basicColumns.asList(), complete)
+
 fun select(basicColumns: List<BasicColumn>, complete: SelectCompleter) =
     complete(KotlinSelectBuilder(SqlBuilder.select(basicColumns)))
+
+fun selectDistinct(vararg basicColumns: BasicColumn, complete: SelectCompleter) =
+    selectDistinct(basicColumns.asList(), complete)
 
 fun selectDistinct(basicColumns: List<BasicColumn>, complete: SelectCompleter) =
     complete(KotlinSelectBuilder(SqlBuilder.selectDistinct(basicColumns)))
@@ -93,7 +99,8 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
         try {
             return dsl
         } catch (e: UninitializedPropertyAccessException) {
-            throw UninitializedPropertyAccessException("You must specify a \"from\" clause before any other clauses")
+            throw UninitializedPropertyAccessException(
+                "You must specify a \"from\" clause before any other clauses in a select statement", e)
         }
     }
 }

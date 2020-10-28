@@ -49,6 +49,7 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 import java.io.InputStreamReader
 import java.sql.DriverManager
 import java.util.*
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 @Suppress("MaxLineLength")
@@ -561,20 +562,32 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawSelectWithoutFrom() {
-        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java)
-            .describedAs("You must specify a \"from\" clause before any other clauses")
-            .isThrownBy {
-                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    where(id, isEqualTo(5))
-                    or(id, isEqualTo(4)) {
-                        or(id, isEqualTo(3)) {
-                            or(id, isEqualTo(2))
-                        }
+        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
+            select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                where(id, isEqualTo(5))
+                or(id, isEqualTo(4)) {
+                    or(id, isEqualTo(3)) {
+                        or(id, isEqualTo(2))
                     }
-                    orderBy(id)
-                    limit(3)
                 }
-        }
+                orderBy(id)
+                limit(3)
+            }
+        }.withMessage("You must specify a \"from\" clause before any other clauses in a select statement")
+    }
+
+    @Test
+    fun testRawCountWithoutFrom() {
+        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
+            count(id) {
+                where(id, isEqualTo(5))
+                or(id, isEqualTo(4)) {
+                    or(id, isEqualTo(3)) {
+                        or(id, isEqualTo(2))
+                    }
+                }
+            }
+        }.withMessage("You must specify a \"from\" clause before any other clauses in a count statement")
     }
 
     @Test

@@ -272,9 +272,9 @@ class SelectStatementTest {
                         .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     @Test
@@ -286,9 +286,9 @@ class SelectStatementTest {
                         .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     @Test
@@ -300,9 +300,9 @@ class SelectStatementTest {
                         .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     @Test
@@ -313,9 +313,9 @@ class SelectStatementTest {
                         .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     @Test
@@ -326,9 +326,9 @@ class SelectStatementTest {
                         .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     @Test
@@ -340,9 +340,9 @@ class SelectStatementTest {
                         .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     @Test
@@ -353,9 +353,9 @@ class SelectStatementTest {
                         .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 
     @Test
@@ -366,8 +366,8 @@ class SelectStatementTest {
                         .withListEmptyCallback(Callback.exceptionThrowingCallback("Fred")))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).describedAs("Fred").isThrownBy(() ->
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        ).withMessage("Fred");
     }
 }
