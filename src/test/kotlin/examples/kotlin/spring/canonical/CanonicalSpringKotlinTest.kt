@@ -83,9 +83,9 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCountLastName() {
-        val countStatement = countColumn(lastName).from(Person) {
-            allRows()
-        }
+        val countStatement = count(lastName) {
+                from(Person)
+            }
 
         assertThat(countStatement.selectStatement).isEqualTo("select count(last_name) from Person")
 
@@ -96,8 +96,8 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCountDistinctLastName() {
-        val countStatement = countDistinctColumn(lastName).from(Person) {
-            allRows()
+        val countStatement = countDistinct(lastName) {
+            from(Person)
         }
 
         assertThat(countStatement.selectStatement).isEqualTo("select count(distinct last_name) from Person")
