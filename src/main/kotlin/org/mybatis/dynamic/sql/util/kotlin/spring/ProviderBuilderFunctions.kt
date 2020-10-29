@@ -70,20 +70,19 @@ fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertComplet
 fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
     completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun select(start: KotlinSelectBuilder, completer: SelectCompleter) =
-    completer(start).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
-
 fun select(vararg columns: BasicColumn, completer: SelectCompleter) =
     select(columns.asList(), completer)
 
 fun select(columns: List<BasicColumn>, completer: SelectCompleter) =
-    select(KotlinSelectBuilder(SqlBuilder.select(columns)), completer)
+    completer(KotlinSelectBuilder(SqlBuilder.select(columns)))
+        .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter) =
     selectDistinct(columns.asList(), completer)
 
 fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter) =
-    select(KotlinSelectBuilder(SqlBuilder.selectDistinct(columns)), completer)
+    completer(KotlinSelectBuilder(SqlBuilder.selectDistinct(columns)))
+        .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
     completer(KotlinUpdateBuilder(SqlBuilder.update(table)))
