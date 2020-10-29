@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
@@ -70,7 +71,7 @@ fun <T> selectDistinct(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(selectDistinct(selectList, table, completer))
+    mapper(select(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).from(table), completer))
 
 fun <T> selectList(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -78,7 +79,14 @@ fun <T> selectList(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(select(selectList, table, completer))
+    mapper(select(KotlinSelectBuilder(SqlBuilder.select(selectList)).from(table), completer))
+
+fun <T> selectList(
+    mapper: (SelectStatementProvider) -> List<T>,
+    start: KotlinSelectBuilder,
+    completer: SelectCompleter
+) =
+    mapper(select(start, completer))
 
 fun <T> selectOne(
     mapper: (SelectStatementProvider) -> T?,
@@ -86,7 +94,14 @@ fun <T> selectOne(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(select(selectList, table, completer))
+    mapper(select(KotlinSelectBuilder(SqlBuilder.select(selectList)).from(table), completer))
+
+fun <T> selectOne(
+    mapper: (SelectStatementProvider) -> T?,
+    start: KotlinSelectBuilder,
+    completer: SelectCompleter
+) =
+    mapper(select(start, completer))
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter) =
     mapper(update(table, completer))

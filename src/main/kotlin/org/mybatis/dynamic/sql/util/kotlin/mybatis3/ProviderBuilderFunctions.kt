@@ -13,7 +13,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-@file:Suppress("TooManyFunctions")
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn
@@ -42,11 +41,6 @@ import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 fun count(column: BasicColumn, completer: CountColumnCompleter) =
     completer(KotlinCountColumnBuilder(SqlBuilder.countColumn(column))).build().render(RenderingStrategies.MYBATIS3)
 
-fun countDistinct(column: BasicColumn, completer: CountColumnCompleter) =
-    completer(KotlinCountColumnBuilder(SqlBuilder.countDistinctColumn(column)))
-        .build()
-        .render(RenderingStrategies.MYBATIS3)
-
 fun countFrom(table: SqlTable, completer: CountCompleter) =
     completer(KotlinCountBuilder(SqlBuilder.countFrom(table))).build().render(RenderingStrategies.MYBATIS3)
 
@@ -65,37 +59,20 @@ fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: Multi
 fun CountDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: CountCompleter) =
     completer(KotlinCountBuilder(from(table))).build().render(RenderingStrategies.MYBATIS3)
 
-fun select(
-    vararg selectList: BasicColumn,
-    completer: SelectCompleter
-) =
-    select(selectList.asList(), completer)
+fun select(start: KotlinSelectBuilder, completer: SelectCompleter) =
+    completer(start).build().render(RenderingStrategies.MYBATIS3)
 
-fun select(
-    selectList: List<BasicColumn>,
-    completer: SelectCompleter
-) =
-    completeAndRender(KotlinSelectBuilder(SqlBuilder.select(selectList)), completer)
+fun select(vararg columns: BasicColumn, completer: SelectCompleter) =
+    select(columns.asList(), completer)
 
-fun select(
-    selectList: List<BasicColumn>,
-    table: SqlTable,
-    completer: SelectCompleter
-) =
-    completeAndRender(KotlinSelectBuilder(SqlBuilder.select(selectList)).from(table), completer)
+fun select(columns: List<BasicColumn>, completer: SelectCompleter) =
+    select(KotlinSelectBuilder(SqlBuilder.select(columns)), completer)
 
-fun selectDistinct(
-    selectList: List<BasicColumn>,
-    table: SqlTable,
-    completer: SelectCompleter
-) =
-    completeAndRender(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).from(table), completer)
+fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter) =
+    selectDistinct(columns.asList(), completer)
 
-fun completeAndRender(
-    builder: KotlinSelectBuilder,
-    completer: SelectCompleter
-) =
-    completer(builder).build().render(RenderingStrategies.MYBATIS3)
+fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter) =
+    select(KotlinSelectBuilder(SqlBuilder.selectDistinct(columns)), completer)
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
     completer(KotlinUpdateBuilder(SqlBuilder.update(table))).build().render(RenderingStrategies.MYBATIS3)

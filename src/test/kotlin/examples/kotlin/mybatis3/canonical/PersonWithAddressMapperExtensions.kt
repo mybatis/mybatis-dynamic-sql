@@ -27,7 +27,8 @@ import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.util.kotlin.select
 import org.mybatis.dynamic.sql.util.kotlin.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.completeAndRender
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
 
 private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
     Address.streetAddress, Address.city, Address.state)
@@ -40,7 +41,7 @@ fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAdd
         }
     }
 
-    return selectOne(completeAndRender(start, completer))
+    return selectOne(this::selectOne, start, completer)
 }
 
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
@@ -51,7 +52,7 @@ fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithA
         }
     }
 
-    return selectMany(completeAndRender(start, completer))
+    return selectList(this::selectMany, start, completer)
 }
 
 fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> {
@@ -62,7 +63,7 @@ fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<Per
         }
     }
 
-    return selectMany(completeAndRender(start, completer))
+    return selectList(this::selectMany, start, completer)
 }
 
 fun PersonWithAddressMapper.selectByPrimaryKey(id_: Int) =
