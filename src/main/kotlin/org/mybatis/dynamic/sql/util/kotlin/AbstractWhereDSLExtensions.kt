@@ -22,7 +22,9 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 typealias WhereApplier = AbstractWhereDSL<*>.() -> Unit
 
 fun <T, M : AbstractWhereDSL<M>> AbstractWhereDSL<M>.where(
-    column: BindableColumn<T>, condition: VisitableCondition<T>, collect: CriteriaReceiver
+    column: BindableColumn<T>,
+    condition: VisitableCondition<T>,
+    collect: CriteriaReceiver
 ) =
     where(column, condition, collect(CriteriaCollector()).criteria)
 

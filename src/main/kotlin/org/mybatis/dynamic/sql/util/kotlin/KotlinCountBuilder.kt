@@ -38,7 +38,8 @@ class KotlinCountBuilder(private val dsl: CountDSL<SelectModel>) :
 }
 
 class KotlinCountColumnBuilder(private val fromGatherer: CountDSL.FromGatherer<SelectModel>) :
-    KotlinBaseJoiningBuilder<CountDSL<SelectModel>, CountDSL<SelectModel>.CountWhereBuilder, KotlinCountColumnBuilder>(),
+    KotlinBaseJoiningBuilder<CountDSL<SelectModel>,
+            CountDSL<SelectModel>.CountWhereBuilder, KotlinCountColumnBuilder>(),
     Buildable<SelectModel> {
 
     private lateinit var dsl: CountDSL<SelectModel>
@@ -54,12 +55,13 @@ class KotlinCountColumnBuilder(private val fromGatherer: CountDSL.FromGatherer<S
 
     override fun self() = this
 
-    override fun getDsl() : CountDSL<SelectModel> {
+    override fun getDsl(): CountDSL<SelectModel> {
         try {
             return dsl
         } catch (e: UninitializedPropertyAccessException) {
             throw UninitializedPropertyAccessException(
-                "You must specify a \"from\" clause before any other clauses in a count statement", e)
+                "You must specify a \"from\" clause before any other clauses in a count statement", e
+            )
         }
     }
 }

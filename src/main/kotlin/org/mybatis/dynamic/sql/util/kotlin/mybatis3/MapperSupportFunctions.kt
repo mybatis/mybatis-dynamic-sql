@@ -80,7 +80,6 @@ fun <T> selectList(
 ) =
     mapper(select(selectList, table, completer))
 
-
 fun <T> selectOne(
     mapper: (SelectStatementProvider) -> T?,
     selectList: List<BasicColumn>,

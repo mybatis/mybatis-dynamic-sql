@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 annotation class MyBatisDslMarker
 
 @MyBatisDslMarker
+@Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<W, B>> {
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applySelf {

@@ -194,7 +194,8 @@ class BatchInsertHelper<T>(private val records: List<T>, private val template: N
 
 @MyBatisDslMarker
 class MultiRowInsertHelper<T>(
-    private val records: List<T>, private val template: NamedParameterJdbcTemplate,
+    private val records: List<T>,
+    private val template: NamedParameterJdbcTemplate,
     private val keyHolder: KeyHolder? = null
 ) {
     fun into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
@@ -205,7 +206,8 @@ class MultiRowInsertHelper<T>(
 
 @MyBatisDslMarker
 class SingleRowInsertHelper<T>(
-    private val record: T, private val template: NamedParameterJdbcTemplate,
+    private val record: T,
+    private val template: NamedParameterJdbcTemplate,
     private val keyHolder: KeyHolder? = null
 ) {
     fun into(table: SqlTable, completer: InsertCompleter<T>) =

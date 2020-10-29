@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@file:Suppress("TooManyFunctions")
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn
@@ -42,7 +43,9 @@ fun count(column: BasicColumn, completer: CountColumnCompleter) =
     completer(KotlinCountColumnBuilder(SqlBuilder.countColumn(column))).build().render(RenderingStrategies.MYBATIS3)
 
 fun countDistinct(column: BasicColumn, completer: CountColumnCompleter) =
-    completer(KotlinCountColumnBuilder(SqlBuilder.countDistinctColumn(column))).build().render(RenderingStrategies.MYBATIS3)
+    completer(KotlinCountColumnBuilder(SqlBuilder.countDistinctColumn(column)))
+        .build()
+        .render(RenderingStrategies.MYBATIS3)
 
 fun countFrom(table: SqlTable, completer: CountCompleter) =
     completer(KotlinCountBuilder(SqlBuilder.countFrom(table))).build().render(RenderingStrategies.MYBATIS3)
@@ -96,4 +99,3 @@ fun completeAndRender(
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
     completer(KotlinUpdateBuilder(SqlBuilder.update(table))).build().render(RenderingStrategies.MYBATIS3)
-

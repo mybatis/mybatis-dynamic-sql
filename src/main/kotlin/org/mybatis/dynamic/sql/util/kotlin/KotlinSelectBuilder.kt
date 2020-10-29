@@ -40,7 +40,9 @@ fun selectDistinct(basicColumns: List<BasicColumn>, complete: SelectCompleter) =
 
 @Suppress("TooManyFunctions")
 class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>) :
-    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder , KotlinSelectBuilder>(), Buildable<SelectModel> {
+    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>,
+            QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder,
+            KotlinSelectBuilder>(), Buildable<SelectModel> {
 
     private lateinit var dsl: QueryExpressionDSL<SelectModel>
 
@@ -95,7 +97,7 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
 
     override fun getWhere(): QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder = getDsl().where()
 
-    override fun getDsl() : QueryExpressionDSL<SelectModel> {
+    override fun getDsl(): QueryExpressionDSL<SelectModel> {
         try {
             return dsl
         } catch (e: UninitializedPropertyAccessException) {

@@ -225,7 +225,8 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testInsert() {
 
-        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true,
+            "Developer", 1)
 
         val insertStatement = insert(record).into(Person) {
             map(id).toProperty("id")
@@ -237,7 +238,8 @@ class CanonicalSpringKotlinTest {
             map(addressId).toProperty("addressId")
         }
 
-        val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
+        val expected =
+            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
                 " values" +
                 " (:id, :firstName," +
                 " :lastNameAsString," +
@@ -264,13 +266,15 @@ class CanonicalSpringKotlinTest {
             set(addressId).toValue(1)
         }
 
-        val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
+        val expected =
+            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
                 " values (:p1, :p2, :p3, :p4, :p5, :p6, :p7)"
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
         val rows = template.generalInsert(insertStatement)
-        val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+        val record = template.selectOne(
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isEqualTo(100))
         }.withRowMapper(personRowMapper)
@@ -304,10 +308,10 @@ class CanonicalSpringKotlinTest {
 
         assertThat(insertStatement.insertStatement).isEqualTo(
             "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
-                    "values (:records[0].id, :records[0].firstName, :records[0].lastNameAsString, " +
-                    ":records[0].birthDate, :records[0].employedAsString, :records[0].occupation, :records[0].addressId), " +
-                    "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
-                    ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, :records[1].addressId)"
+            "values (:records[0].id, :records[0].firstName, :records[0].lastNameAsString, " +
+            ":records[0].birthDate, :records[0].employedAsString, :records[0].occupation, :records[0].addressId), " +
+            "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
+            ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, :records[1].addressId)"
         )
 
         val rows = template.insertMultiple(insertStatement)
@@ -665,17 +669,18 @@ class CanonicalSpringKotlinTest {
             orderBy(sortColumn("A_ID"))
         }
 
-        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
-                "from Person " +
-                "where id = :p1 " +
-                "union " +
-                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
-                "from Person " +
-                "where id = :p2 " +
-                "union all " +
-                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
-                "from Person p " +
-                "order by A_ID"
+        val expected =
+            "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+            "from Person " +
+            "where id = :p1 " +
+            "union " +
+            "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+            "from Person " +
+            "where id = :p2 " +
+            "union all " +
+            "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
+            "from Person p " +
+            "order by A_ID"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -725,7 +730,6 @@ class CanonicalSpringKotlinTest {
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
         val rows = template.selectList(selectStatement, personWithAddressRowMapper)
-
 
         with(rows[0]) {
             assertThat(id).isEqualTo(1)

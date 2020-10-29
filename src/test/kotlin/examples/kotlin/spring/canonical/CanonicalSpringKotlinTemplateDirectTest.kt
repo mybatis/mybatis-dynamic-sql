@@ -464,7 +464,6 @@ class CanonicalSpringKotlinTemplateDirectTest {
             limit(3)
         }.withRowMapper(personWithAddressRowMapper)
 
-
         assertThat(rows).hasSize(3)
         with(rows[0]) {
             assertThat(id).isEqualTo(1)

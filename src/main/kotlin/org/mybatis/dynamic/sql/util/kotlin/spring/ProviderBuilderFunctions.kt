@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@file:Suppress("TooManyFunctions")
 package org.mybatis.dynamic.sql.util.kotlin.spring
 
 import org.mybatis.dynamic.sql.BasicColumn
@@ -41,10 +42,14 @@ import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
 fun count(column: BasicColumn, completer: CountColumnCompleter) =
-    completer(KotlinCountColumnBuilder(SqlBuilder.countColumn(column))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    completer(KotlinCountColumnBuilder(SqlBuilder.countColumn(column)))
+        .build()
+        .render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun countDistinct(column: BasicColumn, completer: CountColumnCompleter) =
-    completer(KotlinCountColumnBuilder(SqlBuilder.countDistinctColumn(column))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    completer(KotlinCountColumnBuilder(SqlBuilder.countDistinctColumn(column)))
+        .build()
+        .render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun countFrom(table: SqlTable, completer: CountCompleter) =
     completer(KotlinCountBuilder(SqlBuilder.countFrom(table))).build()
@@ -95,4 +100,3 @@ fun completeAndRender(
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
     completer(KotlinUpdateBuilder(SqlBuilder.update(table))).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
-
