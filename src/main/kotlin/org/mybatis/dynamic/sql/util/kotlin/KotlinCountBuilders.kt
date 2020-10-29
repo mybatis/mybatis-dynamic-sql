@@ -28,9 +28,9 @@ class KotlinCountBuilder(private val dsl: CountDSL<SelectModel>) :
     KotlinBaseJoiningBuilder<CountDSL<SelectModel>, CountDSL<SelectModel>.CountWhereBuilder, KotlinCountBuilder>(),
     Buildable<SelectModel> {
 
-    override fun build(): SelectModel = dsl.build()
+    override fun build(): SelectModel = getDsl().build()
 
-    override fun getWhere(): CountDSL<SelectModel>.CountWhereBuilder = dsl.where()
+    override fun getWhere(): CountDSL<SelectModel>.CountWhereBuilder = getDsl().where()
 
     override fun self() = this
 

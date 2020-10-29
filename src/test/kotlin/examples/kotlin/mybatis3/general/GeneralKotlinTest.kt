@@ -50,7 +50,9 @@ import java.io.InputStreamReader
 import java.sql.DriverManager
 import java.util.*
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 
 @Suppress("MaxLineLength", "LargeClass")
 class GeneralKotlinTest {
@@ -106,6 +108,48 @@ class GeneralKotlinTest {
             val rows = mapper.count(countStatement)
 
             assertThat(rows).isEqualTo(6)
+        }
+    }
+
+    @Test
+    fun testRawCountColumn() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val countStatement = count(lastName) {
+                from(Person)
+                where(id, isLessThan(4))
+            }
+
+            assertThat(countStatement.selectStatement).isEqualTo(
+                "select count(last_name) from Person" +
+                        " where id < #{parameters.p1,jdbcType=INTEGER}"
+            )
+
+            val rows = mapper.count(countStatement)
+
+            assertThat(rows).isEqualTo(3)
+        }
+    }
+
+    @Test
+    fun testRawCountDistinctColumn() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val countStatement = countDistinct(lastName) {
+                from(Person)
+                where(id, isLessThan(4))
+            }
+
+            assertThat(countStatement.selectStatement).isEqualTo(
+                "select count(distinct last_name) from Person" +
+                        " where id < #{parameters.p1,jdbcType=INTEGER}"
+            )
+
+            val rows = mapper.count(countStatement)
+
+            assertThat(rows).isEqualTo(1)
         }
     }
 
@@ -324,6 +368,39 @@ class GeneralKotlinTest {
             val rows = mapper.insertMultiple(insertStatement)
 
             assertThat(rows).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun testRawSelectDistinct() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val selectStatement = selectDistinct(
+                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                addressId
+            ) {
+                from(Person)
+                where(id, isLessThan(4)) {
+                    and(occupation, isNotNull())
+                }
+                and(occupation, isNotNull())
+                orderBy(id)
+                limit(3)
+            }
+
+            val rows = mapper.selectMany(selectStatement)
+
+            assertThat(rows).hasSize(2)
+            with(rows[0]) {
+                assertThat(id).isEqualTo(1)
+                assertThat(firstName).isEqualTo("Fred")
+                assertThat(lastName?.name).isEqualTo("Flintstone")
+                assertThat(birthDate).isNotNull()
+                assertThat(employed).isTrue()
+                assertThat(occupation).isEqualTo("Brontosaurus Operator")
+                assertThat(addressId).isEqualTo(1)
+            }
         }
     }
 

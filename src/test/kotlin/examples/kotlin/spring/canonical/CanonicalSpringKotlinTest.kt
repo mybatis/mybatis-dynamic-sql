@@ -421,6 +421,21 @@ class CanonicalSpringKotlinTest {
     }
 
     @Test
+    fun testRawSelectDistinct() {
+        val selectStatement = selectDistinct(lastName) {
+            from(Person)
+        }
+
+        val rows = template.selectList(selectStatement) { rs, _ ->
+            rs.getString(1)
+        }
+
+        assertThat(rows).hasSize(2)
+        assertThat(rows[0]).isEqualTo("Flintstone")
+        assertThat(rows[1]).isEqualTo("Rubble")
+    }
+
+    @Test
     fun testRawSelectWithMissingRecord() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,

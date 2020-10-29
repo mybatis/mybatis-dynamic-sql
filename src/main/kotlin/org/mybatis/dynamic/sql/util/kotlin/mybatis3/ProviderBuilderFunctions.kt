@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@file:Suppress("TooManyFunctions")
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn
@@ -48,8 +49,7 @@ fun count(start: KotlinCountBuilder, completer: CountCompleter) =
     completer(start).build().render(RenderingStrategies.MYBATIS3)
 
 fun countFrom(table: SqlTable, completer: CountCompleter) =
-    completer(KotlinCountBuilder(SqlBuilder.countFrom(table)))
-        .build().render(RenderingStrategies.MYBATIS3)
+    count(KotlinCountBuilder(SqlBuilder.countFrom(table)), completer)
 
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
     completer(KotlinDeleteBuilder(SqlBuilder.deleteFrom(table)))
