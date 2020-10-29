@@ -41,6 +41,9 @@ import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 fun count(column: BasicColumn, completer: CountColumnCompleter) =
     completer(KotlinCountColumnBuilder(SqlBuilder.countColumn(column))).build().render(RenderingStrategies.MYBATIS3)
 
+fun count(start: KotlinCountBuilder, completer: CountCompleter) =
+    completer(start).build().render(RenderingStrategies.MYBATIS3)
+
 fun countFrom(table: SqlTable, completer: CountCompleter) =
     completer(KotlinCountBuilder(SqlBuilder.countFrom(table))).build().render(RenderingStrategies.MYBATIS3)
 
@@ -55,9 +58,6 @@ fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertComplet
 
 fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
     completer(into(table)).build().render(RenderingStrategies.MYBATIS3)
-
-fun CountDSL.FromGatherer<SelectModel>.from(table: SqlTable, completer: CountCompleter) =
-    completer(KotlinCountBuilder(from(table))).build().render(RenderingStrategies.MYBATIS3)
 
 fun select(start: KotlinSelectBuilder, completer: SelectCompleter) =
     completer(start).build().render(RenderingStrategies.MYBATIS3)
