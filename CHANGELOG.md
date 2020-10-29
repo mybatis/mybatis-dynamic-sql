@@ -4,6 +4,33 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 ## Release 1.3.0 - Unreleased
 
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.3.0+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.3.0+)
+
+### Breaking Change for Kotlin
+
+In this release the Kotlin support for `select` and `count` statements has been refactored. This will not impact code
+created by MyBatis generator. It will have an impact on Spring users as well as MyBatis users that coded joins or
+other queries directly in Kotlin. The difference is that the `from` clause has been moved inside the lambda for select
+and count statements.
+
+Previously, code looked like this:
+```kotlin
+   val selectStatement = select(foo).from(bar) {
+       where(id, isLessThan(3))
+   }
+```
+  
+The new code looks like this:
+```kotlin
+   val selectStatement = select(foo) {
+       from(bar)
+       where(id, isLessThan(3))
+   }
+```
+  
+This change makes the Kotlin DSL a bit more consistent and also makes it easier to implement sub-query support in the
+Kotlin DSL.
+
 ### Added
 
 - Added a new sort specification that is useful in selects with joins ([#269](https://github.com/mybatis/mybatis-dynamic-sql/pull/269))
