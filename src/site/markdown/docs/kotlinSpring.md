@@ -73,17 +73,15 @@ The DSL for count methods looks like this:
     }
 
     // count(column)
-    val countStatement = countColumn(lastName).from(Person) {  // countStatement is a SelectStatementProvider
-        allRows()
+    val countStatement = count(lastName) {  // countStatement is a SelectStatementProvider
+        from(Person)
     }
 
     // count(distinct column)
-    val countStatement = countDistinctColumn(lastName).from(Person) {  // countStatement is a SelectStatementProvider
-        allRows()
+    val countStatement = countDistinct(lastName) {  // countStatement is a SelectStatementProvider
+        from(Person)
     }
 ```
-
-Note the somewhat awkward method names `countColumn`, and `countDistinctColumn`. The methods are named this way to avoid a name collision with other methods in the `SqlBuilder`. This awkwardness can be avoided by using the one-step method shown below.
 
 These methods create a `SelectStatementProvider` that can be executed with an extension method for `NamedParameterJdbcTemplate` like this:
 
@@ -99,16 +97,18 @@ This is the two-step execution process. This can be combined into a single step 
         where(id, isLessThan(4))
     }
 
-    val rows = template.count(lastName).from(Person) {
+    val rows = template.count(lastName) {
+        from(Person)
         where(id, isLessThan(4))
     }
 
-    val rows = template.countDistinct(lastName).from(Person) {
+    val rows = template.countDistinct(lastName) {
+        from(Person)
         where(id, isLessThan(4))
     }
 ```
 
-There is also an extension method that can be used to count all rows in a table:
+There is also a method that can be used to count all rows in a table:
 
 ```kotlin
     val rows = template.countFrom(Person) {
@@ -143,7 +143,7 @@ This is the two-step execution process. This can be combined into a single step 
     }
 ```
 
-There is also an extension method that can be used to count all rows in a table:
+There is also a method that can be used to count all rows in a table:
 
 ```kotlin
     val rows = template.deleteFrom(Person) {
@@ -404,7 +404,8 @@ The DSL for select methods looks like this:
 
 ```kotlin
     val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,  // selectStatement is a SelectStatementProvider
-        addressId).from(Person) {
+        addressId) {
+        from(Person)
         where(id, isLessThan(5))
         and(id, isLessThan(4)) {
             and(id, isLessThan(3)) {
@@ -437,8 +438,8 @@ Note that you must provide a row mapper to tell Spring JDBC how to create result
 This is the two-step execution process. This can be combined into a single step with code like the following:
 
 ```kotlin
-    val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-        .from(Person) {
+    val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
             where(id, isLessThan(4)) {
                 and(occupation, isNotNull())
             }
@@ -461,8 +462,8 @@ This is the two-step execution process. This can be combined into a single step 
 There are similar methods for selecting a single row, or executing a select distinct query. For example, you could implement a "select by primary key" method using code like this:
 
 ```kotlin
-    val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId)
-        .from(Person) {
+    val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
             where(id, isEqualTo(key))
         }.withRowMapper { rs, _ ->
             PersonRecord().apply {
@@ -479,12 +480,12 @@ There are similar methods for selecting a single row, or executing a select dist
 
 In this case, the data type for `record` would be `PersonRecord?` - a nullable value. 
 
-There is also an extension method that can be used to select all rows in a table:
+There is also an optional method that can be used to select all rows in a table:
 
 ```kotlin
-    val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-        .from(Person) {
-            allRows()
+    val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            allRows()  // allRows() is optional - the query works the same with or without it 
             orderBy(id)
         }.withRowMapper { rs, _ ->
             PersonRecord().apply {

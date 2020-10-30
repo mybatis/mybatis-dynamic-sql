@@ -113,7 +113,7 @@ val rows = mapper.count {
 }
 ```
 
-There is also an extension method that can be used to count all rows in a table:
+There is also a method that can be used to count all rows in a table:
 
 ```kotlin
 val rows = mapper.count { allRows() }
@@ -385,11 +385,12 @@ val rows = mapper.update {
 ```
 ## Join Support
 
-There are extension functions that support building a reusable select method based on a join. In this way, you can create the start of the select statement (the column list and join specifications) and allow the user to supply where clauses and other parts of a select statement. For example, you could code a mapper extension method like this:
+There are functions that support building a reusable select method based on a join. In this way, you can create the start of the select statement (the column list and join specifications) and allow the user to supply where clauses and other parts of a select statement. For example, you could code a mapper extension method like this:
 
 ```kotlin
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
-    val start = select(columnList).from(Person, "p") {
+    val start = select(columnList) {
+        from(Person, "p")        
         join(Address, "a") {
             on(Person.addressId, equalTo(Address.id))
         }
