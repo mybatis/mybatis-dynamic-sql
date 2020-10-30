@@ -24,8 +24,6 @@ typealias DeleteCompleter = KotlinDeleteBuilder.() -> Buildable<DeleteModel>
 class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
         KotlinBaseBuilder<DeleteDSL<DeleteModel>.DeleteWhereBuilder, KotlinDeleteBuilder>(), Buildable<DeleteModel> {
 
-    fun allRows() = this
-
     override fun build(): DeleteModel = dsl.build()
 
     override fun getWhere(): DeleteDSL<DeleteModel>.DeleteWhereBuilder = dsl.where()

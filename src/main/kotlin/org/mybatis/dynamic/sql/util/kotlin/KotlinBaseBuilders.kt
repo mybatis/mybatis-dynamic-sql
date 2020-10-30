@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 annotation class MyBatisDslMarker
 
 @MyBatisDslMarker
+@Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<W, B>> {
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applySelf {
@@ -63,6 +64,8 @@ abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<
             getWhere().or(column, condition, collect)
         }
 
+    fun allRows() = self()
+
     protected fun applySelf(block: B.() -> Unit): B =
         self().apply { block() }
 
@@ -72,46 +75,47 @@ abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<
 }
 
 abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, SelectModel>, W : AbstractWhereDSL<W>,
-        B : KotlinBaseJoiningBuilder<T, W, B>>
-    (private val dsl: AbstractQueryExpressionDSL<T, SelectModel>) : KotlinBaseBuilder<W, B>() {
+        B : KotlinBaseJoiningBuilder<T, W, B>> : KotlinBaseBuilder<W, B>() {
 
     fun join(table: SqlTable, receiver: JoinReceiver): B =
         applySelf {
-            dsl.join(table, receiver)
+            getDsl().join(table, receiver)
         }
 
     fun join(table: SqlTable, alias: String, receiver: JoinReceiver): B =
         applySelf {
-            dsl.join(table, alias, receiver)
+            getDsl().join(table, alias, receiver)
         }
 
     fun fullJoin(table: SqlTable, receiver: JoinReceiver): B =
         applySelf {
-            dsl.fullJoin(table, receiver)
+            getDsl().fullJoin(table, receiver)
         }
 
     fun fullJoin(table: SqlTable, alias: String, receiver: JoinReceiver): B =
         applySelf {
-            dsl.fullJoin(table, alias, receiver)
+            getDsl().fullJoin(table, alias, receiver)
         }
 
     fun leftJoin(table: SqlTable, receiver: JoinReceiver): B =
         applySelf {
-            dsl.leftJoin(table, receiver)
+            getDsl().leftJoin(table, receiver)
         }
 
     fun leftJoin(table: SqlTable, alias: String, receiver: JoinReceiver): B =
         applySelf {
-            dsl.leftJoin(table, alias, receiver)
+            getDsl().leftJoin(table, alias, receiver)
         }
 
     fun rightJoin(table: SqlTable, receiver: JoinReceiver): B =
         applySelf {
-            dsl.rightJoin(table, receiver)
+            getDsl().rightJoin(table, receiver)
         }
 
     fun rightJoin(table: SqlTable, alias: String, receiver: JoinReceiver): B =
         applySelf {
-            dsl.rightJoin(table, alias, receiver)
+            getDsl().rightJoin(table, alias, receiver)
         }
+
+    protected abstract fun getDsl(): AbstractQueryExpressionDSL<T, SelectModel>
 }

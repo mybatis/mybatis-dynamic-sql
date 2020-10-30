@@ -57,7 +57,7 @@ class ReusableWhereTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                applyWhere (commonWhere)
+                applyWhere(commonWhere)
             }
 
             assertThat(rows).isEqualTo(3)
@@ -70,7 +70,7 @@ class ReusableWhereTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.delete {
-                applyWhere (commonWhere)
+                applyWhere(commonWhere)
             }
 
             assertThat(rows).isEqualTo(3)
@@ -83,7 +83,7 @@ class ReusableWhereTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                applyWhere (commonWhere)
+                applyWhere(commonWhere)
                 orderBy(id)
             }
 
@@ -98,7 +98,7 @@ class ReusableWhereTest {
 
             val rows = mapper.update {
                 set(occupation).equalToStringConstant("worker")
-                applyWhere (commonWhere)
+                applyWhere(commonWhere)
             }
 
             assertThat(rows).isEqualTo(3)

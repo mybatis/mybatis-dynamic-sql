@@ -83,9 +83,9 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCountLastName() {
-        val countStatement = countColumn(lastName).from(Person) {
-            allRows()
-        }
+        val countStatement = count(lastName) {
+                from(Person)
+            }
 
         assertThat(countStatement.selectStatement).isEqualTo("select count(last_name) from Person")
 
@@ -96,8 +96,8 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCountDistinctLastName() {
-        val countStatement = countDistinctColumn(lastName).from(Person) {
-            allRows()
+        val countStatement = countDistinct(lastName) {
+            from(Person)
         }
 
         assertThat(countStatement.selectStatement).isEqualTo("select count(distinct last_name) from Person")
@@ -225,7 +225,8 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testInsert() {
 
-        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true,
+            "Developer", 1)
 
         val insertStatement = insert(record).into(Person) {
             map(id).toProperty("id")
@@ -237,7 +238,8 @@ class CanonicalSpringKotlinTest {
             map(addressId).toProperty("addressId")
         }
 
-        val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
+        val expected =
+            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
                 " values" +
                 " (:id, :firstName," +
                 " :lastNameAsString," +
@@ -264,16 +266,18 @@ class CanonicalSpringKotlinTest {
             set(addressId).toValue(1)
         }
 
-        val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
+        val expected =
+            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
                 " values (:p1, :p2, :p3, :p4, :p5, :p6, :p7)"
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
         val rows = template.generalInsert(insertStatement)
-        val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId)
-            .from(Person) {
-                where(id, isEqualTo(100))
-            }.withRowMapper(personRowMapper)
+        val record = template.selectOne(
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isEqualTo(100))
+        }.withRowMapper(personRowMapper)
 
         assertThat(rows).isEqualTo(1)
         with(record!!) {
@@ -304,10 +308,10 @@ class CanonicalSpringKotlinTest {
 
         assertThat(insertStatement.insertStatement).isEqualTo(
             "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
-                    "values (:records[0].id, :records[0].firstName, :records[0].lastNameAsString, " +
-                    ":records[0].birthDate, :records[0].employedAsString, :records[0].occupation, :records[0].addressId), " +
-                    "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
-                    ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, :records[1].addressId)"
+            "values (:records[0].id, :records[0].firstName, :records[0].lastNameAsString, " +
+            ":records[0].birthDate, :records[0].employedAsString, :records[0].occupation, :records[0].addressId), " +
+            "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
+            ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, :records[1].addressId)"
         )
 
         val rows = template.insertMultiple(insertStatement)
@@ -392,8 +396,8 @@ class CanonicalSpringKotlinTest {
     fun testRawSelect() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId
-        ).from(Person) {
+            addressId) {
+            from(Person)
             where(id, isLessThan(4)) {
                 and(occupation, isNotNull())
             }
@@ -417,11 +421,26 @@ class CanonicalSpringKotlinTest {
     }
 
     @Test
+    fun testRawSelectDistinct() {
+        val selectStatement = selectDistinct(lastName) {
+            from(Person)
+        }
+
+        val rows = template.selectList(selectStatement) { rs, _ ->
+            rs.getString(1)
+        }
+
+        assertThat(rows).hasSize(2)
+        assertThat(rows[0]).isEqualTo("Flintstone")
+        assertThat(rows[1]).isEqualTo("Rubble")
+    }
+
+    @Test
     fun testRawSelectWithMissingRecord() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId
-        ).from(Person) {
+            addressId) {
+            from(Person)
             where(id, isEqualTo(300))
         }
 
@@ -434,8 +453,8 @@ class CanonicalSpringKotlinTest {
     fun testRawSelectByPrimaryKey() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId
-        ).from(Person) {
+            addressId) {
+            from(Person)
             where(id, isEqualTo(1))
         }
 
@@ -456,38 +475,38 @@ class CanonicalSpringKotlinTest {
     fun testRawSelectWithUnion() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId
-        ).from(Person) {
+            addressId) {
+            from(Person)
             where(id, isEqualTo(1))
             union {
                 select(
                     id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                    addressId
-                ).from(Person) {
+                    addressId) {
+                    from(Person)
                     where(id, isEqualTo(2))
                 }
             }
             union {
                 select(
                     id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                    addressId
-                ).from(Person) {
+                    addressId) {
+                    from(Person)
                     where(id, isEqualTo(3))
                 }
             }
         }
 
         val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
-            "from Person " +
-            "where id = :p1 " +
-            "union " +
-            "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
-            "from Person " +
-            "where id = :p2 " +
-            "union " +
-            "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
-            "from Person " +
-            "where id = :p3"
+                "from Person " +
+                "where id = :p1 " +
+                "union " +
+                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person " +
+                "where id = :p2 " +
+                "union " +
+                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person " +
+                "where id = :p3"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -519,22 +538,20 @@ class CanonicalSpringKotlinTest {
     fun testRawSelectWithUnionAndAlias() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId
-        ).from(Person) {
+            addressId) {
+            from(Person)
             where(id, isEqualTo(1))
             union {
-                select(
-                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                    addressId
-                ).from(Person) {
+                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId) {
+                    from(Person)
                     where(id, isEqualTo(2))
                 }
             }
             union {
-                select(
-                    id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                    addressId
-                ).from(Person, "p") {
+                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                    addressId) {
+                    from(Person, "p")
                     where(id, isEqualTo(3))
                 }
             }
@@ -582,22 +599,22 @@ class CanonicalSpringKotlinTest {
     fun testRawSelectWithUnionAndDistinct() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId
-        ).from(Person) {
+            addressId) {
+            from(Person)
             where(id, isEqualTo(1))
             union {
                 select(
                     id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                    addressId
-                ).from(Person) {
+                    addressId) {
+                    from(Person)
                     where(id, isEqualTo(2))
                 }
             }
             union {
                 selectDistinct(
                     id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                    addressId
-                ).from(Person, "p") {
+                    addressId) {
+                    from(Person, "p")
                     where(id, isEqualTo(3))
                 }
             }
@@ -645,39 +662,40 @@ class CanonicalSpringKotlinTest {
     fun testRawSelectWithUnionAllAndDistinct() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId
-        ).from(Person) {
+            addressId) {
+            from(Person)
             where(id, isEqualTo(1))
             union {
                 select(
                     id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                    addressId
-                ).from(Person) {
+                    addressId) {
+                    from(Person)
                     where(id, isEqualTo(2))
                 }
             }
             unionAll {
                 selectDistinct(
                     id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-                    addressId
-                ).from(Person, "p") {
+                    addressId) {
+                    from(Person, "p")
                     allRows()
                 }
             }
             orderBy(sortColumn("A_ID"))
         }
 
-        val expected = "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
-                "from Person " +
-                "where id = :p1 " +
-                "union " +
-                "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
-                "from Person " +
-                "where id = :p2 " +
-                "union all " +
-                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
-                "from Person p " +
-                "order by A_ID"
+        val expected =
+            "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+            "from Person " +
+            "where id = :p1 " +
+            "union " +
+            "select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+            "from Person " +
+            "where id = :p2 " +
+            "union all " +
+            "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
+            "from Person p " +
+            "order by A_ID"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
@@ -709,16 +727,15 @@ class CanonicalSpringKotlinTest {
     fun testRawSelectWithJoin() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            Address.id, Address.streetAddress, Address.city, Address.state
-        )
-            .from(Person, "p") {
-                join(Address, "a") {
-                    on(addressId, equalTo(Address.id))
-                }
-                where(id, isLessThan(4))
-                orderBy(id)
-                limit(3)
+            Address.id, Address.streetAddress, Address.city, Address.state) {
+            from(Person, "p")
+            join(Address, "a") {
+                on(addressId, equalTo(Address.id))
             }
+            where(id, isLessThan(4))
+            orderBy(id)
+            limit(3)
+        }
 
         val expected = "select p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed," +
                 " p.occupation, a.address_id, a.street_address, a.city, a.state" +
@@ -728,7 +745,6 @@ class CanonicalSpringKotlinTest {
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
 
         val rows = template.selectList(selectStatement, personWithAddressRowMapper)
-
 
         with(rows[0]) {
             assertThat(id).isEqualTo(1)
@@ -748,8 +764,8 @@ class CanonicalSpringKotlinTest {
     fun testRawSelectWithComplexWhere1() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId
-        ).from(Person) {
+            addressId) {
+            from(Person)
             where(id, isLessThan(5))
             and(id, isLessThan(4)) {
                 and(id, isLessThan(3)) {
@@ -787,8 +803,8 @@ class CanonicalSpringKotlinTest {
     fun testRawSelectWithComplexWhere2() {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            addressId
-        ).from(Person) {
+            addressId) {
+            from(Person)
             where(id, isEqualTo(5))
             or(id, isEqualTo(4)) {
                 or(id, isEqualTo(3)) {
@@ -952,8 +968,8 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
 
         val selectStatement = select(
-            id, firstName, lastName, birthDate, employed, occupation, addressId
-        ).from(Person) {
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
             where(id, isEqualTo(record::id))
         }
 
@@ -988,8 +1004,8 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
 
         val selectStatement = select(
-            id, firstName, lastName, birthDate, employed, occupation, addressId
-        ).from(Person) {
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
             where(id, isEqualTo(record::id))
         }
 

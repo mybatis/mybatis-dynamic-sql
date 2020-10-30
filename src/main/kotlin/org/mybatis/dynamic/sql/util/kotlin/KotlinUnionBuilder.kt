@@ -15,20 +15,21 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 
-typealias QueryExpressionEnhancer = QueryExpressionDSL<SelectModel>.() -> QueryExpressionDSL<SelectModel>
+@MyBatisDslMarker
+class KotlinUnionBuilder(private val unionBuilder: QueryExpressionDSL<SelectModel>.UnionBuilder) {
+    fun select(vararg selectList: BasicColumn, completer: SelectCompleter) =
+        select(selectList.toList(), completer)
 
-// These functions are intended for use in a Join mapper where a join is setup before the remainder
-// of the query is completed
-fun QueryExpressionDSL.FromGatherer<SelectModel>.from(table: SqlTable, enhancer: QueryExpressionEnhancer) =
-    enhancer(from(table))
+    fun select(selectList: List<BasicColumn>, completer: SelectCompleter) =
+        completer(KotlinSelectBuilder(unionBuilder.select(selectList)))
 
-fun QueryExpressionDSL.FromGatherer<SelectModel>.from(
-    table: SqlTable,
-    alias: String,
-    enhancer: QueryExpressionEnhancer
-) =
-    enhancer(from(table, alias))
+    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
+        selectDistinct(selectList.toList(), completer)
+
+    fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
+        completer(KotlinSelectBuilder(unionBuilder.selectDistinct(selectList)))
+}
