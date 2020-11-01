@@ -17,36 +17,18 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
-import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.util.Buildable
 
 @MyBatisDslMarker
 class KotlinSubQueryBuilder {
-    var alias: String? = null
-    lateinit var subQuery: Buildable<SelectModel>
-
     fun select(vararg selectList: BasicColumn, completer: SelectCompleter) =
-        apply {
-            select(selectList.toList(), completer)
-        }
+        select(selectList.toList(), completer)
 
     fun select(selectList: List<BasicColumn>, completer: SelectCompleter) =
-        apply {
-            subQuery = completer(KotlinSelectBuilder(SqlBuilder.select(selectList)))
-        }
+        completer(KotlinSelectBuilder(SqlBuilder.select(selectList)))
 
     fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
-        apply {
-            selectDistinct(selectList.toList(), completer)
-        }
+        selectDistinct(selectList.toList(), completer)
 
     fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
-        apply {
-            subQuery = completer(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)))
-        }
-
-    fun withAlias(alias: String) =
-        apply {
-            this.alias = alias
-        }
+        completer(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)))
 }
