@@ -56,14 +56,11 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
             dsl = fromGatherer.from(table, alias)
         }
 
-    fun from(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>) =
+    fun from(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
         apply {
-            dsl = fromGatherer.from(subQuery(KotlinSubQueryBuilder()))
-        }
-
-    fun from(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>, alias: String) =
-        apply {
-            dsl = fromGatherer.from(subQuery(KotlinSubQueryBuilder()), alias)
+            val builder = subQuery(KotlinSubQueryBuilder())
+            val subSelect = builder.subQuery
+            dsl = builder.alias?.let { fromGatherer.from(subSelect, it) } ?: fromGatherer.from(subSelect)
         }
 
     fun groupBy(vararg columns: BasicColumn) =

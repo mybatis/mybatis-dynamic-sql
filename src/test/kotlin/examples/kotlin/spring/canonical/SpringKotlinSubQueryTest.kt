@@ -116,16 +116,16 @@ class SpringKotlinSubQueryTest {
         val outerFirstName = qualify(firstName, "b")
         val personId = DerivedColumn.of<Int>("personId", "b")
 
-        // TODO - this seems a little awkward
         val selectStatement =
             select(outerFirstName.asCamelCase(), personId, rowNum) {
-                from ({
+                from {
                     select(id.`as`("personId"), firstName) {
                         from(Person, "a")
                         where(id, isLessThan(22))
                         orderBy(firstName.descending())
                     }
-                }, "b")
+                    withAlias("b")
+                }
                 where(rowNum, isLessThan(5))
                 and(outerFirstName, isLike("%a%"))
             }
