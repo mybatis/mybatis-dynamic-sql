@@ -17,26 +17,12 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SortSpecification
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 
 typealias SelectCompleter = KotlinSelectBuilder.() -> KotlinSelectBuilder
-
-// convenience methods for building partials and sub-queries
-fun select(vararg basicColumns: BasicColumn, complete: SelectCompleter) =
-    select(basicColumns.asList(), complete)
-
-fun select(basicColumns: List<BasicColumn>, complete: SelectCompleter) =
-    complete(KotlinSelectBuilder(SqlBuilder.select(basicColumns)))
-
-fun selectDistinct(vararg basicColumns: BasicColumn, complete: SelectCompleter) =
-    selectDistinct(basicColumns.asList(), complete)
-
-fun selectDistinct(basicColumns: List<BasicColumn>, complete: SelectCompleter) =
-    complete(KotlinSelectBuilder(SqlBuilder.selectDistinct(basicColumns)))
 
 @Suppress("TooManyFunctions")
 class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>) :
