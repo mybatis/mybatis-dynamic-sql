@@ -113,7 +113,7 @@ class SpringKotlinSubQueryTest {
     @Test
     fun testBasicSubQueryWithAliases() {
         val rowNum = DerivedColumn.of<Int>("rownum()")
-        val outerFirstName = qualify(firstName, "b")
+        val outerFirstName = firstName.qualifiedWith("b")
         val personId = DerivedColumn.of<Int>("personId", "b")
 
         val selectStatement =

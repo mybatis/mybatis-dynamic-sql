@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  * A derived column is a column that is not directly related to a table. This is primarily
  * used for supporting sub-queries. The main difference in this class and {@link SqlColumn} is
  * that this class does not have a related {@link SqlTable} and therefore ignores any table
- * alias set in a query. If a table alias is required it can be set directly in the
+ * qualifier set in a query. If a table qualifier is required it can be set directly in the
  * builder for this class.
  *
  * @param <T> The Java type that corresponds to this column - not used except for compiler type checking
@@ -34,14 +34,14 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  */
 public class DerivedColumn<T> implements BindableColumn<T> {
     private final String name;
-    private final String tableAlias;
+    private final String tableQualifier;
     private final String columnAlias;
     private final JDBCType jdbcType;
     private final String typeHandler;
 
     protected DerivedColumn(Builder<T> builder) {
         this.name = Objects.requireNonNull(builder.name);
-        this.tableAlias = builder.tableAlias;
+        this.tableQualifier = builder.tableQualifier;
         this.columnAlias = builder.columnAlias;
         this.jdbcType = builder.jdbcType;
         this.typeHandler = builder.typeHandler;
@@ -64,7 +64,7 @@ public class DerivedColumn<T> implements BindableColumn<T> {
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return tableAlias == null ? name : tableAlias + "." + name; //$NON-NLS-1$
+        return tableQualifier == null ? name : tableQualifier + "." + name; //$NON-NLS-1$
     }
 
     @Override
@@ -74,7 +74,7 @@ public class DerivedColumn<T> implements BindableColumn<T> {
                 .withColumnAlias(columnAlias)
                 .withJdbcType(jdbcType)
                 .withTypeHandler(typeHandler)
-                .withTableAlias(tableAlias)
+                .withTableQualifier(tableQualifier)
                 .build();
     }
 
@@ -88,25 +88,16 @@ public class DerivedColumn<T> implements BindableColumn<T> {
                 .build();
     }
 
-    public static <T> DerivedColumn<T> of(String name, String tableAlias) {
+    public static <T> DerivedColumn<T> of(String name, String tableQualifier) {
         return new Builder<T>()
                 .withName(name)
-                .withTableAlias(tableAlias)
-                .build();
-    }
-
-    public static <T> DerivedColumn<T> qualify(SqlColumn<T> column, String tableAlias) {
-        return new Builder<T>()
-                .withName(column.name())
-                .withTableAlias(tableAlias)
-                .withTypeHandler(column.typeHandler().orElse(null))
-                .withJdbcType(column.jdbcType().orElse(null))
+                .withTableQualifier(tableQualifier)
                 .build();
     }
 
     public static class Builder<T> {
         private String name;
-        private String tableAlias;
+        private String tableQualifier;
         private String columnAlias;
         private JDBCType jdbcType;
         private String typeHandler;
@@ -116,8 +107,8 @@ public class DerivedColumn<T> implements BindableColumn<T> {
             return this;
         }
 
-        public Builder<T> withTableAlias(String tableAlias) {
-            this.tableAlias = tableAlias;
+        public Builder<T> withTableQualifier(String tableQualifier) {
+            this.tableQualifier = tableQualifier;
             return this;
         }
 

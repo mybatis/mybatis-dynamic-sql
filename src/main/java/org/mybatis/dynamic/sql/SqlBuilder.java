@@ -288,19 +288,6 @@ public interface SqlBuilder {
                 .build();
     }
 
-    /**
-     * Apply a table qualifier to a column when the automatic qualifier isn't appropriate.
-     * Most commonly used in sub-queries.
-     *
-     * @param column the column to qualify
-     * @param tableAlias to table alias to apply as a qualifier
-     * @param <T> the Java type of the column
-     * @return the qualified column
-     */
-    static <T> DerivedColumn<T> qualify(SqlColumn<T> column, String tableAlias) {
-        return DerivedColumn.qualify(column, tableAlias);
-    }
-
     static EqualTo equalTo(BasicColumn column) {
         return new EqualTo(column);
     }

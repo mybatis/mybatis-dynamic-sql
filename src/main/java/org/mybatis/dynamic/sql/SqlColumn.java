@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql;
 import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -34,6 +35,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected final String typeHandler;
     protected final RenderingStrategy renderingStrategy;
     protected final ParameterTypeConverter<T, ?> parameterTypeConverter;
+    protected final BiFunction<TableAliasCalculator, SqlTable, Optional<String>> tableQualifierFunction;
 
     private SqlColumn(Builder<T> builder) {
         name = Objects.requireNonNull(builder.name);
@@ -44,6 +46,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         typeHandler = builder.typeHandler;
         renderingStrategy = builder.renderingStrategy;
         parameterTypeConverter = builder.parameterTypeConverter;
+        tableQualifierFunction = Objects.requireNonNull(builder.tableQualifierFunction);
     }
 
     public String name() {
@@ -87,6 +90,19 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     /**
+     * Override the calculated table qualifier if there is one. This is useful for sub-queries
+     * where the calculated table qualifier may not be correct in all cases.
+     *
+     * @param tableQualifier the table qualifier to apply to the rendered column name
+     * @return a new column that will be rendered with the specified table qualifier
+     */
+    public SqlColumn<T> qualifiedWith(String tableQualifier) {
+        Builder<T> b = copy();
+        b.withTableQualifierFunction((tac, t) -> Optional.of(tableQualifier));
+        return b.build();
+    }
+
+    /**
      * Set an alias with a camel cased string based on the column name. The can be useful for queries using
      * the {@link org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper} where the columns are placed into
      * a map based on the column name returned from the database.
@@ -114,7 +130,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return tableAliasCalculator.aliasForColumn(table)
+        return tableQualifierFunction.apply(tableAliasCalculator, table)
                 .map(this::applyTableAlias)
                 .orElseGet(this::name);
     }
@@ -161,7 +177,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .withAlias(this.alias)
                 .withTypeHandler(this.typeHandler)
                 .withRenderingStrategy(this.renderingStrategy)
-                .withParameterTypeConverter((ParameterTypeConverter<S, ?>) this.parameterTypeConverter);
+                .withParameterTypeConverter((ParameterTypeConverter<S, ?>) this.parameterTypeConverter)
+                .withTableQualifierFunction(this.tableQualifierFunction);
     }
 
     private String applyTableAlias(String tableAlias) {
@@ -190,6 +207,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         protected String typeHandler;
         protected RenderingStrategy renderingStrategy;
         protected ParameterTypeConverter<T, ?> parameterTypeConverter;
+        protected BiFunction<TableAliasCalculator, SqlTable, Optional<String>> tableQualifierFunction =
+                TableAliasCalculator::aliasForColumn;
 
         public Builder<T> withName(String name) {
             this.name = name;
@@ -228,6 +247,12 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
         public Builder<T> withParameterTypeConverter(ParameterTypeConverter<T, ?> parameterTypeConverter) {
             this.parameterTypeConverter = parameterTypeConverter;
+            return this;
+        }
+
+        private Builder<T> withTableQualifierFunction(
+                BiFunction<TableAliasCalculator, SqlTable, Optional<String>> tableQualifierFunction) {
+            this.tableQualifierFunction = tableQualifierFunction;
             return this;
         }
 

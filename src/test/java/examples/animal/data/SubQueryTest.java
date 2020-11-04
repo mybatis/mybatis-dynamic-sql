@@ -37,6 +37,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.DerivedColumn;
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
@@ -106,7 +107,7 @@ class SubQueryTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
             DerivedColumn<Integer> rowNum = DerivedColumn.of("rownum()");
-            DerivedColumn<String> outerAnimalName = qualify(animalName, "b");
+            SqlColumn<String> outerAnimalName = animalName.qualifiedWith("b");
             DerivedColumn<Integer> animalId = DerivedColumn.of("animalId", "b");
 
             SelectStatementProvider selectStatement = select(outerAnimalName.asCamelCase(), animalId, rowNum)
