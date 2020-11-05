@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 
 /**
  * A derived column is a column that is not directly related to a table. This is primarily
@@ -76,10 +75,6 @@ public class DerivedColumn<T> implements BindableColumn<T> {
                 .withTypeHandler(typeHandler)
                 .withTableQualifier(tableQualifier)
                 .build();
-    }
-
-    public DerivedColumn<T> asCamelCase() {
-        return as("\"" + StringUtilities.toCamelCase(name) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public static <T> DerivedColumn<T> of(String name) {

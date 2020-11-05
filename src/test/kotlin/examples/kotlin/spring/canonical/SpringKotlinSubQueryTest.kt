@@ -112,7 +112,7 @@ class SpringKotlinSubQueryTest {
 
     @Test
     fun testBasicSubQueryWithAliases() {
-        val rowNum = DerivedColumn.of<Int>("rownum()")
+        val rowNum = DerivedColumn.of<Int>("rownum()").`as`("myRows")
         val outerFirstName = firstName.qualifiedWith("b")
         val personId = DerivedColumn.of<Int>("personId", "b")
 
@@ -130,7 +130,7 @@ class SpringKotlinSubQueryTest {
             }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
-            "select b.first_name as \"firstName\", b.personId, rownum() " +
+            "select b.first_name as \"firstName\", b.personId, rownum() as myRows " +
                     "from (select a.id as personId, a.first_name " +
                     "from Person a where a.id < :p1 " +
                     "order by first_name DESC) b " +
@@ -143,9 +143,9 @@ class SpringKotlinSubQueryTest {
 
         val rows = template.selectList(selectStatement) { rs, _ ->
             mapOf(
-                Pair("firstName", rs.getString(1)),
-                Pair("PERSONID", rs.getInt(2)),
-                Pair("ROWNUM", rs.getInt(3))
+                Pair("firstName", rs.getString("firstName")),
+                Pair("PERSONID", rs.getInt("PERSONID")),
+                Pair("ROWNUM", rs.getInt("MYROWS"))
             )
         }
 
