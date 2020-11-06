@@ -38,6 +38,19 @@ public class FragmentAndParameters {
         return parameters;
     }
 
+    public FragmentAndParameters add(String newFragment) {
+        return withFragment(fragment + newFragment)
+                .withParameters(parameters)
+                .build();
+    }
+
+    public FragmentAndParameters add(String newFragment, Map<String, Object> newParameters) {
+        return withFragment(fragment + newFragment)
+                .withParameters(parameters)
+                .withParameters(newParameters)
+                .build();
+    }
+
     public static Builder withFragment(String fragment) {
         return new Builder().withFragment(fragment);
     }

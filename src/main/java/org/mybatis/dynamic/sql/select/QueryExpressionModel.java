@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +26,7 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -37,7 +36,7 @@ public class QueryExpressionModel {
     private final String connector;
     private final boolean isDistinct;
     private final List<BasicColumn> selectList;
-    private final SqlTable table;
+    private final TableExpression table;
     private final JoinModel joinModel;
     private final TableAliasCalculator tableAliasCalculator;
     private final WhereModel whereModel;
@@ -67,7 +66,7 @@ public class QueryExpressionModel {
         return selectList.stream().map(mapper);
     }
 
-    public SqlTable table() {
+    public TableExpression table() {
         return table;
     }
 
@@ -87,11 +86,6 @@ public class QueryExpressionModel {
         return Optional.ofNullable(groupByModel);
     }
 
-    public String calculateTableNameIncludingAlias(SqlTable table) {
-        return table.tableNameAtRuntime()
-                + spaceBefore(tableAliasCalculator.aliasForTable(table));
-    }
-
     public static Builder withSelectList(List<BasicColumn> columnList) {
         return new Builder().withSelectList(columnList);
     }
@@ -100,7 +94,7 @@ public class QueryExpressionModel {
         private String connector;
         private boolean isDistinct;
         private final List<BasicColumn> selectList = new ArrayList<>();
-        private SqlTable table;
+        private TableExpression table;
         private final Map<SqlTable, String> tableAliases = new HashMap<>();
         private WhereModel whereModel;
         private JoinModel joinModel;
@@ -111,7 +105,7 @@ public class QueryExpressionModel {
             return this;
         }
 
-        public Builder withTable(SqlTable table) {
+        public Builder withTable(TableExpression table) {
             this.table = table;
             return this;
         }

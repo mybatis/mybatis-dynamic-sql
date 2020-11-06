@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 
-public class SqlTable {
+public class SqlTable implements TableExpression {
 
     private final Supplier<String> nameSupplier;
 
@@ -101,6 +101,11 @@ public class SqlTable {
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType, String typeHandler) {
         SqlColumn<T> column = SqlColumn.of(name, this, jdbcType);
         return column.withTypeHandler(typeHandler);
+    }
+
+    @Override
+    public <R> R accept(TableExpressionVisitor<R> visitor) {
+        return visitor.visit(this);
     }
 
     public static SqlTable of(String name) {

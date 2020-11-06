@@ -61,7 +61,11 @@ public class InsertSelectDSL {
         }
 
         public SelectGatherer withColumnList(SqlColumn<?>...columns) {
-            return new SelectGatherer(table, Arrays.asList(columns));
+            return withColumnList(Arrays.asList(columns));
+        }
+
+        public SelectGatherer withColumnList(List<SqlColumn<?>> columns) {
+            return new SelectGatherer(table, columns);
         }
 
         public InsertSelectDSL withSelectStatement(Buildable<SelectModel> selectModelBuilder) {

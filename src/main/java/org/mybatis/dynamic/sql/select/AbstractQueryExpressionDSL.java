@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -36,13 +37,13 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
 
     private final List<JoinSpecification.Builder> joinSpecificationBuilders = new ArrayList<>();
     protected final Map<SqlTable, String> tableAliases = new HashMap<>();
-    private final SqlTable table;
+    private final TableExpression table;
 
-    protected AbstractQueryExpressionDSL(SqlTable table) {
+    protected AbstractQueryExpressionDSL(TableExpression table) {
         this.table = Objects.requireNonNull(table);
     }
 
-    public SqlTable table() {
+    public TableExpression table() {
         return table;
     }
 

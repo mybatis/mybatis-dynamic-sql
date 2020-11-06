@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
@@ -47,17 +48,17 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     private final QueryExpressionWhereBuilder whereBuilder = new QueryExpressionWhereBuilder();
     private GroupByModel groupByModel;
 
-    QueryExpressionDSL(FromGatherer<R> fromGatherer) {
-        super(fromGatherer.table);
+    QueryExpressionDSL(FromGatherer<R> fromGatherer, TableExpression table) {
+        super(table);
         connector = fromGatherer.connector;
         selectList = fromGatherer.selectList;
         isDistinct = fromGatherer.isDistinct;
         selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
     }
 
-    QueryExpressionDSL(FromGatherer<R> fromGatherer, String tableAlias) {
-        this(fromGatherer);
-        tableAliases.put(fromGatherer.table, tableAlias);
+    QueryExpressionDSL(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
+        this(fromGatherer, table);
+        tableAliases.put(table, tableAlias);
     }
 
     public QueryExpressionWhereBuilder where() {
@@ -176,7 +177,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         private final List<BasicColumn> selectList;
         private final SelectDSL<R> selectDSL;
         private final boolean isDistinct;
-        private SqlTable table;
 
         public FromGatherer(Builder<R> builder) {
             this.connector = builder.connector;
@@ -185,14 +185,33 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             this.isDistinct = builder.isDistinct;
         }
 
+        public QueryExpressionDSL<R> from(Buildable<SelectModel> select) {
+            return selectDSL.newQueryExpression(this, buildSubQuery(select));
+        }
+
+        public QueryExpressionDSL<R> from(Buildable<SelectModel> select, String tableAlias) {
+            return selectDSL.newQueryExpression(this, buildSubQuery(select, tableAlias));
+        }
+
         public QueryExpressionDSL<R> from(SqlTable table) {
-            this.table = table;
-            return selectDSL.newQueryExpression(this);
+            return selectDSL.newQueryExpression(this, table);
         }
 
         public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
-            this.table = table;
-            return selectDSL.newQueryExpression(this, tableAlias);
+            return selectDSL.newQueryExpression(this, table, tableAlias);
+        }
+
+        private SubQuery buildSubQuery(Buildable<SelectModel> selectModel) {
+            return new SubQuery.Builder()
+                    .withSelectModel(selectModel.build())
+                    .build();
+        }
+
+        private SubQuery buildSubQuery(Buildable<SelectModel> selectModel, String alias) {
+            return new SubQuery.Builder()
+                    .withSelectModel(selectModel.build())
+                    .withAlias(alias)
+                    .build();
         }
 
         public static class Builder<R> {

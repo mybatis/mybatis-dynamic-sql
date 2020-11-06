@@ -59,6 +59,9 @@ fun PersonMapper.insert(record: PersonRecord) =
 fun PersonMapper.generalInsert(completer: GeneralInsertCompleter) =
     insertInto(this::generalInsert, Person, completer)
 
+fun PersonMapper.insertSelect(completer: InsertSelectCompleter) =
+    insertSelect(this::insertSelect, Person, completer)
+
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
     insertMultiple(records.toList())
 

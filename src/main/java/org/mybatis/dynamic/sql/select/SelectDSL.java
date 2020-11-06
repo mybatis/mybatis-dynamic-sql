@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.util.Buildable;
 
@@ -92,14 +94,14 @@ public class SelectDSL<R> implements Buildable<R> {
                 .build();
     }
 
-    QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer) {
-        QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer);
+    QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer, TableExpression table) {
+        QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer, table);
         queryExpressions.add(queryExpression);
         return queryExpression;
     }
 
-    QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer, String tableAlias) {
-        QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer, tableAlias);
+    QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
+        QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer, table, tableAlias);
         queryExpressions.add(queryExpression);
         return queryExpression;
     }
