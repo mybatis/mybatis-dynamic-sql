@@ -1,7 +1,9 @@
 # MyBatis Dynamic SQL
-MyBatis Dynamic SQL is an SQL templating library that makes it easier to execute dynamic SQL with MyBatis.  It generates SQL that is formatted in such a way that it can be directly executed by MyBatis.
+MyBatis Dynamic SQL is an SQL DSL (domain specific language). It allows developers to write SQL in Java or Kotlin using the natural feel of native SQL. It also
+includes many functions for creating very dynamic SQL statements based on current runtime parameter values.
 
-The library also supports generating SQL that is formatted for use by Spring JDBC Templates.
+The DSL will render standard SQL DELETE, INSERT, SELECT, and UPDATE statements - and associated
+parameters - that can be used directly by SQL execution engines like MyBatis or Spring JDBC template. 
 
 Please read the user's guide for detailed instructions on use.  The user's guide is accessible through menu links to the left.
 

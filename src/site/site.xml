@@ -47,6 +47,7 @@
       <item href="docs/delete.html" name="DELETE Statements" />
       <item href="docs/insert.html" name="INSERT Statements" />
       <item href="docs/update.html" name="UPDATE Statements" />
+      <item href="docs/subQueries.html" name="SubQuery Support" />
       <item href="docs/functions.html" name="Database Functions" />
       <item href="docs/mybatis3.html" name="MyBatis3 Support" />
       <item href="docs/kotlinMyBatis3.html" name="Kotlin Support for MyBatis3" />
