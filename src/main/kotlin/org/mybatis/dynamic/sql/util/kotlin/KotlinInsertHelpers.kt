@@ -32,3 +32,5 @@ typealias InsertCompleter<T> = @MyBatisDslMarker InsertDSL<T>.() -> Buildable<In
 typealias MultiRowInsertCompleter<T> = @MyBatisDslMarker MultiRowInsertDSL<T>.() -> Buildable<MultiRowInsertModel<T>>
 
 typealias BatchInsertCompleter<T> = @MyBatisDslMarker BatchInsertDSL<T>.() -> Buildable<BatchInsertModel<T>>
+
+typealias InsertSelectCompleter = @MyBatisDslMarker KotlinInsertSelectSubQueryBuilder.() -> KotlinInsertSelectSubQueryBuilder

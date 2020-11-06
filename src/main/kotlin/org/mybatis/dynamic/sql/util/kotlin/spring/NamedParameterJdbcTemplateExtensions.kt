@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
@@ -33,6 +34,7 @@ import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MyBatisDslMarker
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
@@ -108,6 +110,12 @@ fun <T> NamedParameterJdbcTemplate.insertMultiple(
     keyHolder: KeyHolder
 ) =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)
+
+fun NamedParameterJdbcTemplate.insertSelect(table: SqlTable, completer: InsertSelectCompleter) =
+    insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(table, completer))
+
+fun NamedParameterJdbcTemplate.insertSelect(insertStatement: InsertSelectStatementProvider) =
+    update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters))
 
 // insert with KeyHolder support
 fun NamedParameterJdbcTemplate.withKeyHolder(keyHolder: KeyHolder, build: KeyHolderHelper.() -> Int) =

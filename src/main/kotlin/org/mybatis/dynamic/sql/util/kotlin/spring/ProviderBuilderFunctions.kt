@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountColumnCompleter
@@ -30,9 +31,11 @@ import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinCountColumnBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinDeleteBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertSelectSubQueryBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
@@ -60,6 +63,14 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
     completer(GeneralInsertDSL.insertInto(table))
         .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
+fun insertSelect(table: SqlTable, completer: InsertSelectCompleter) =
+    with(completer(KotlinInsertSelectSubQueryBuilder())) {
+        SqlBuilder.insertInto(table)
+            .withColumnList(columnList)
+            .withSelectStatement(selectBuilder)
+            .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    }
 
 fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>) =
     completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)

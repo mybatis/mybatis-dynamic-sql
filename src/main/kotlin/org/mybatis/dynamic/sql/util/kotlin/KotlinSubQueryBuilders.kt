@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.SqlColumn
 
 @MyBatisDslMarker
 sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T> > {
@@ -55,6 +56,20 @@ class KotlinQualifiedSubQueryBuilder: KotlinBaseSubQueryBuilder<KotlinQualifiedS
         correlationName = this
         return self()
     }
+
+    override fun self() = this
+}
+
+class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinInsertSelectSubQueryBuilder>() {
+    lateinit var columnList : List<SqlColumn<*>>
+
+    fun columns(vararg columnList : SqlColumn<*>) =
+        columns(columnList.asList())
+
+    fun columns(columnList : List<SqlColumn<*>>) =
+        apply {
+            this.columnList = columnList
+        }
 
     override fun self() = this
 }

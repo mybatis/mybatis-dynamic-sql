@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -756,6 +757,11 @@ public interface SqlBuilder {
         }
 
         public InsertSelectDSL.SelectGatherer withColumnList(SqlColumn<?>...columns) {
+            return InsertSelectDSL.insertInto(table)
+                    .withColumnList(columns);
+        }
+
+        public InsertSelectDSL.SelectGatherer withColumnList(List<SqlColumn<?>> columns) {
             return InsertSelectDSL.insertInto(table)
                     .withColumnList(columns);
         }

@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.insert;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectRenderer;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
@@ -47,6 +48,7 @@ public class InsertSelectModel {
         return Optional.ofNullable(columnList);
     }
 
+    @NotNull
     public InsertSelectStatementProvider render(RenderingStrategy renderingStrategy) {
         return InsertSelectRenderer.withInsertSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)
