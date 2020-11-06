@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect
@@ -26,26 +24,26 @@ import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect
 
-fun <T> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>) =
-    IsEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+    IsEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
 
-fun <T> isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>) =
-    IsNotEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+    IsNotEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
 
-fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>) =
-    IsInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+    IsInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
 
-fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>) =
-    IsNotInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+    IsNotInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
 
-fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>) =
-    IsGreaterThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+    IsGreaterThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
 
-fun <T> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>) =
-    IsGreaterThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+    IsGreaterThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
 
-fun <T> isLessThan(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>) =
-    IsLessThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isLessThan(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+    IsLessThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
 
-fun <T> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Buildable<SelectModel>) =
-    IsLessThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+    IsLessThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)

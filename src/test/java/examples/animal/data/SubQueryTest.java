@@ -103,6 +103,82 @@ class SubQueryTest {
     }
 
     @Test
+    void testSimpleAliases() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+            DerivedColumn<Integer> rowNum = DerivedColumn.of("rownum()");
+
+            SelectStatementProvider selectStatement = select(animalName, rowNum)
+                    .from(
+                            select(id, animalName)
+                                    .from(animalData, "a")
+                                    .where(id, isLessThan(22))
+                                    .orderBy(animalName.descending()),
+                            "b"
+                    )
+                    .where(rowNum, isLessThan(5))
+                    .and(animalName, isLike("%a%"))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(
+                    "select animal_name, rownum() " +
+                            "from (select a.id, a.animal_name " +
+                            "from AnimalData a where a.id < #{parameters.p1,jdbcType=INTEGER} " +
+                            "order by animal_name DESC) b " +
+                            "where rownum() < #{parameters.p2} and animal_name like #{parameters.p3,jdbcType=VARCHAR}"
+            );
+            assertThat(selectStatement.getParameters()).containsEntry("p1", 22);
+            assertThat(selectStatement.getParameters()).containsEntry("p2", 5);
+            assertThat(selectStatement.getParameters()).containsEntry("p3", "%a%");
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+            assertThat(rows).hasSize(4);
+
+            assertThat(rows.get(2)).containsEntry("ANIMAL_NAME", "Chinchilla");
+            assertThat(rows.get(2)).containsEntry("ROWNUM", 3);
+        }
+    }
+
+    @Test
+    void testSimpleAliasesWithManualQualifiers() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+            DerivedColumn<Integer> rowNum = DerivedColumn.of("rownum()");
+
+            SelectStatementProvider selectStatement = select(animalName.qualifiedWith("b"), rowNum)
+                    .from(
+                            select(id, animalName)
+                                    .from(animalData, "a")
+                                    .where(id, isLessThan(22))
+                                    .orderBy(animalName.descending()),
+                            "b"
+                    )
+                    .where(rowNum, isLessThan(5))
+                    .and(animalName.qualifiedWith("b"), isLike("%a%"))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(
+                    "select b.animal_name, rownum() " +
+                            "from (select a.id, a.animal_name " +
+                            "from AnimalData a where a.id < #{parameters.p1,jdbcType=INTEGER} " +
+                            "order by animal_name DESC) b " +
+                            "where rownum() < #{parameters.p2} and b.animal_name like #{parameters.p3,jdbcType=VARCHAR}"
+            );
+            assertThat(selectStatement.getParameters()).containsEntry("p1", 22);
+            assertThat(selectStatement.getParameters()).containsEntry("p2", 5);
+            assertThat(selectStatement.getParameters()).containsEntry("p3", "%a%");
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+            assertThat(rows).hasSize(4);
+
+            assertThat(rows.get(2)).containsEntry("ANIMAL_NAME", "Chinchilla");
+            assertThat(rows.get(2)).containsEntry("ROWNUM", 3);
+        }
+    }
+
+    @Test
     void testBasicSubQueryWithAliases() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);

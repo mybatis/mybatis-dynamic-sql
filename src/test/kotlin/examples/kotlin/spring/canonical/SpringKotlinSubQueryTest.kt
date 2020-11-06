@@ -118,12 +118,13 @@ class SpringKotlinSubQueryTest {
 
         val selectStatement =
             select(outerFirstName.asCamelCase(), personId, rowNum) {
-                from ("b") {
+                from {
                     select(id.`as`("personId"), firstName) {
                         from(Person, "a")
                         where(id, isLessThan(22))
                         orderBy(firstName.descending())
                     }
+                    + "b"
                 }
                 where(rowNum, isLessThan(5))
                 and(outerFirstName, isLike("%a%"))

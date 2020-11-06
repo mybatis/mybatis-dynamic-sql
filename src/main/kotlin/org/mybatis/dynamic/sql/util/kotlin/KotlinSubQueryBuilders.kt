@@ -19,16 +19,42 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 
 @MyBatisDslMarker
-class KotlinSubQueryBuilder {
+sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T> > {
+    lateinit var selectBuilder: KotlinSelectBuilder
+
     fun select(vararg selectList: BasicColumn, completer: SelectCompleter) =
         select(selectList.toList(), completer)
 
     fun select(selectList: List<BasicColumn>, completer: SelectCompleter) =
-        completer(KotlinSelectBuilder(SqlBuilder.select(selectList)))
+        applySelf {
+            selectBuilder = completer(KotlinSelectBuilder(SqlBuilder.select(selectList)))
+        }
 
     fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
         selectDistinct(selectList.toList(), completer)
 
     fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
-        completer(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)))
+        applySelf {
+            selectBuilder = completer(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)))
+        }
+
+    private fun applySelf(block: T.() -> Unit): T =
+        self().apply { block() }
+
+    protected abstract fun self(): T
+}
+
+class KotlinSubQueryBuilder: KotlinBaseSubQueryBuilder<KotlinSubQueryBuilder>() {
+    override fun self() = this
+}
+
+class KotlinQualifiedSubQueryBuilder: KotlinBaseSubQueryBuilder<KotlinQualifiedSubQueryBuilder>() {
+    var correlationName: String? = null
+
+    operator fun String.unaryPlus(): KotlinQualifiedSubQueryBuilder {
+        correlationName = this
+        return self()
+    }
+
+    override fun self() = this
 }
