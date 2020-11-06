@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
@@ -29,6 +30,7 @@ import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
@@ -65,6 +67,13 @@ fun <T> insertMultiple(
     completer: MultiRowInsertCompleter<T>
 ) =
     mapper(SqlBuilder.insertMultiple(records).into(table, completer))
+
+fun insertSelect(
+    mapper: (InsertSelectStatementProvider) -> Int,
+    table: SqlTable,
+    completer: InsertSelectCompleter
+) =
+    mapper(insertSelect(table, completer))
 
 fun <T> selectDistinct(
     mapper: (SelectStatementProvider) -> List<T>,

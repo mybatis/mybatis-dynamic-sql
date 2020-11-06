@@ -15,6 +15,7 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
@@ -215,6 +216,23 @@ class PersonMapperTest {
             }
 
             assertThat(rows).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testInsertSelect() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.insertSelect {
+                columns(id, firstName, lastName, employed, occupation, addressId, birthDate)
+                select(add(id, constant<Int>("100")), firstName, lastName, employed, occupation, addressId, birthDate) {
+                    from(Person)
+                    orderBy(id)
+                }
+            }
+
+            assertThat(rows).isEqualTo(6)
         }
     }
 
