@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    Copyright 2016-2019 the original author or authors.
+#    Copyright 2016-2020 the original author or authors.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -35,15 +35,15 @@ echo "Current commit detected: ${commit_message}"
 if [ $TRAVIS_REPO_SLUG == "mybatis/mybatis-dynamic-sql" ]; then
   if [ $TRAVIS_JDK_VERSION == "openjdk8" ]; then
     # coveralls maven is stuck at JDK8
-    ./mvnw clean test jacoco:report coveralls:report -q
+    ./mvnw test jacoco:report coveralls:report -q
     echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
   fi
 
   if [ $TRAVIS_JDK_VERSION == "openjdk11" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
     # Run Sonar Analysis
-    ./mvnw sonar:sonar -Dsonar.projectKey=mybatis_mybatis-dynamic-sql
+    ./mvnw test jacoco:report sonar:sonar -Dsonar.projectKey=mybatis_mybatis-dynamic-sql
     # Deploy to Sonatype
-    ./mvnw clean deploy -q --settings ./travis/settings.xml
+    ./mvnw deploy -q --settings ./travis/settings.xml
     echo -e "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
   else
     echo "Not a master branch commit so no deployment of the new snapshot needed"
