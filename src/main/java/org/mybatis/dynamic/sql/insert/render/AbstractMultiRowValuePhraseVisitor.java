@@ -28,7 +28,7 @@ public abstract class AbstractMultiRowValuePhraseVisitor extends MultiRowInsertM
     protected final RenderingStrategy renderingStrategy;
     protected final String prefix;
 
-    public AbstractMultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
+    protected AbstractMultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
         this.renderingStrategy = renderingStrategy;
         this.prefix = prefix;
     }
