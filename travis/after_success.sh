@@ -32,12 +32,14 @@ echo "Current commit detected: ${commit_message}"
 #    a. Use -q option to only display Maven errors and warnings.
 #    b. Use --settings to force the usage of our "settings.xml" file.
 
-if [ $TRAVIS_JDK_VERSION == "openjdk8" ] && [ $TRAVIS_REPO_SLUG == "mybatis/mybatis-dynamic-sql" ]; then
+if [ $TRAVIS_REPO_SLUG == "mybatis/mybatis-dynamic-sql" ]; then
+  if [ $TRAVIS_JDK_VERSION == "openjdk8" ]; then
+    # coveralls maven is stuck at JDK8
+    ./mvnw clean test jacoco:report coveralls:report -q
+    echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
+  fi
 
-  ./mvnw clean test jacoco:report coveralls:report -q
-  echo -e "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
-
-  if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
+  if [ $TRAVIS_JDK_VERSION == "openjdk11" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
     # Run Sonar Analysis
     ./mvnw sonar:sonar -Dsonar.projectKey=mybatis_mybatis-dynamic-sql
     # Deploy to Sonatype
