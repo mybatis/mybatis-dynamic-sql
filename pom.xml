@@ -43,7 +43,7 @@
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
     <kotlin.code.style>official</kotlin.code.style>
-    <test.containers.version>1.14.3</test.containers.version>
+    <test.containers.version>1.15.0</test.containers.version>
     <osgi.export>org.mybatis.dynamic.sql.*;version=${project.version};-noimport:=true</osgi.export>
   </properties>
 
