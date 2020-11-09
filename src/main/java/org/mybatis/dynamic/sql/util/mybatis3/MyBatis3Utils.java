@@ -176,7 +176,7 @@ public class MyBatis3Utils {
     }
 
     public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
-            QueryExpressionDSL<SelectModel> start,SelectDSLCompleter completer) {
+            QueryExpressionDSL<SelectModel> start, SelectDSLCompleter completer) {
         return mapper.apply(select(start, completer));
     }
 

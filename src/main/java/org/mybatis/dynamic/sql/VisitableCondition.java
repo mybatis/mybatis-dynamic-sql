@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql;
 
 @FunctionalInterface
 public interface VisitableCondition<T> {
-    <R> R accept(ConditionVisitor<T,R> visitor);
+    <R> R accept(ConditionVisitor<T, R> visitor);
 
     /**
      * Subclasses can override this to inform the renderer if the condition should not be included

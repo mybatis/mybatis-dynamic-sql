@@ -43,7 +43,7 @@ public abstract class AbstractSingleValueCondition<T> implements VisitableCondit
     }
 
     @Override
-    public <R> R accept(ConditionVisitor<T,R> visitor) {
+    public <R> R accept(ConditionVisitor<T, R> visitor) {
         return visitor.visit(this);
     }
 
