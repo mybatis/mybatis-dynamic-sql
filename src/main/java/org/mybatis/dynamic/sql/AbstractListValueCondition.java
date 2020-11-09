@@ -59,7 +59,7 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
 
     public abstract String renderCondition(String columnName, Stream<String> placeholders);
 
-    public abstract static class AbstractListConditionBuilder<T, S extends AbstractListConditionBuilder<T,S>> {
+    public abstract static class AbstractListConditionBuilder<T, S extends AbstractListConditionBuilder<T, S>> {
         protected Collection<T> values = new ArrayList<>();
         protected UnaryOperator<Stream<T>> valueStreamTransformer = UnaryOperator.identity();
         protected Callback emptyCallback = () -> { };

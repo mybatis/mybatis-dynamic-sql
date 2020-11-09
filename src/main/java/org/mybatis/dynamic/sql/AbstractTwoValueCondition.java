@@ -51,7 +51,7 @@ public abstract class AbstractTwoValueCondition<T> implements VisitableCondition
     }
 
     @Override
-    public <R> R accept(ConditionVisitor<T,R> visitor) {
+    public <R> R accept(ConditionVisitor<T, R> visitor) {
         return visitor.visit(this);
     }
 
