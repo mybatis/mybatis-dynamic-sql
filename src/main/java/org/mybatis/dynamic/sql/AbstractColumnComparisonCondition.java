@@ -26,7 +26,7 @@ public abstract class AbstractColumnComparisonCondition<T> implements VisitableC
     }
 
     @Override
-    public <R> R accept(ConditionVisitor<T,R> visitor) {
+    public <R> R accept(ConditionVisitor<T, R> visitor) {
         return visitor.visit(this);
     }
 
