@@ -90,6 +90,14 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         return join(joinTable);
     }
 
+    public JoinSpecificationStarter join(Buildable<SelectModel> joinTable) {
+        return new JoinSpecificationStarter(buildSubQuery(joinTable), JoinType.INNER);
+    }
+
+    public JoinSpecificationStarter join(Buildable<SelectModel> joinTable, String tableAlias) {
+        return new JoinSpecificationStarter(buildSubQuery(joinTable, tableAlias), JoinType.INNER);
+    }
+
     public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.LEFT);
     }
@@ -97,6 +105,14 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return leftJoin(joinTable);
+    }
+
+    public JoinSpecificationStarter leftJoin(Buildable<SelectModel> joinTable) {
+        return new JoinSpecificationStarter(buildSubQuery(joinTable), JoinType.LEFT);
+    }
+
+    public JoinSpecificationStarter leftJoin(Buildable<SelectModel> joinTable, String tableAlias) {
+        return new JoinSpecificationStarter(buildSubQuery(joinTable, tableAlias), JoinType.LEFT);
     }
 
     public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
@@ -108,6 +124,14 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         return rightJoin(joinTable);
     }
 
+    public JoinSpecificationStarter rightJoin(Buildable<SelectModel> joinTable) {
+        return new JoinSpecificationStarter(buildSubQuery(joinTable), JoinType.RIGHT);
+    }
+
+    public JoinSpecificationStarter rightJoin(Buildable<SelectModel> joinTable, String tableAlias) {
+        return new JoinSpecificationStarter(buildSubQuery(joinTable, tableAlias), JoinType.RIGHT);
+    }
+
     public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
         return new JoinSpecificationStarter(joinTable, JoinType.FULL);
     }
@@ -115,6 +139,14 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return fullJoin(joinTable);
+    }
+
+    public JoinSpecificationStarter fullJoin(Buildable<SelectModel> joinTable) {
+        return new JoinSpecificationStarter(buildSubQuery(joinTable), JoinType.FULL);
+    }
+
+    public JoinSpecificationStarter fullJoin(Buildable<SelectModel> joinTable, String tableAlias) {
+        return new JoinSpecificationStarter(buildSubQuery(joinTable, tableAlias), JoinType.FULL);
     }
 
     public GroupByFinisher groupBy(BasicColumn...columns) {
@@ -201,19 +233,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return selectDSL.newQueryExpression(this, table, tableAlias);
         }
 
-        private SubQuery buildSubQuery(Buildable<SelectModel> selectModel) {
-            return new SubQuery.Builder()
-                    .withSelectModel(selectModel.build())
-                    .build();
-        }
-
-        private SubQuery buildSubQuery(Buildable<SelectModel> selectModel, String alias) {
-            return new SubQuery.Builder()
-                    .withSelectModel(selectModel.build())
-                    .withAlias(alias)
-                    .build();
-        }
-
         public static class Builder<R> {
             private String connector;
             private final List<BasicColumn> selectList = new ArrayList<>();
@@ -297,10 +316,10 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     }
 
     public class JoinSpecificationStarter {
-        private final SqlTable joinTable;
+        private final TableExpression joinTable;
         private final JoinType joinType;
 
-        public JoinSpecificationStarter(SqlTable joinTable, JoinType joinType) {
+        public JoinSpecificationStarter(TableExpression joinTable, JoinType joinType) {
             this.joinTable = joinTable;
             this.joinType = joinType;
         }
@@ -318,7 +337,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public class JoinSpecificationFinisher implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
 
-        public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
+        public JoinSpecificationFinisher(TableExpression table, BasicColumn joinColumn,
                 JoinCondition joinCondition, JoinType joinType) {
             JoinCriterion joinCriterion = new JoinCriterion.Builder()
                     .withConnector("on") //$NON-NLS-1$
@@ -333,7 +352,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             addJoinSpecificationBuilder(joinSpecificationBuilder);
         }
 
-        public JoinSpecificationFinisher(SqlTable table, BasicColumn joinColumn,
+        public JoinSpecificationFinisher(TableExpression table, BasicColumn joinColumn,
                 JoinCondition joinCondition, JoinType joinType, JoinCriterion...andJoinCriteria) {
             JoinCriterion onJoinCriterion = new JoinCriterion.Builder()
                     .withConnector("on") //$NON-NLS-1$
@@ -386,11 +405,27 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.join(joinTable, tableAlias);
         }
 
+        public JoinSpecificationStarter join(Buildable<SelectModel> joinTable) {
+            return QueryExpressionDSL.this.join(joinTable);
+        }
+
+        public JoinSpecificationStarter join(Buildable<SelectModel> joinTable, String tableAlias) {
+            return QueryExpressionDSL.this.join(joinTable, tableAlias);
+        }
+
         public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
             return QueryExpressionDSL.this.leftJoin(joinTable);
         }
 
         public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
+            return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);
+        }
+
+        public JoinSpecificationStarter leftJoin(Buildable<SelectModel> joinTable) {
+            return QueryExpressionDSL.this.leftJoin(joinTable);
+        }
+
+        public JoinSpecificationStarter leftJoin(Buildable<SelectModel> joinTable, String tableAlias) {
             return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);
         }
 
@@ -402,11 +437,27 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);
         }
 
+        public JoinSpecificationStarter rightJoin(Buildable<SelectModel> joinTable) {
+            return QueryExpressionDSL.this.rightJoin(joinTable);
+        }
+
+        public JoinSpecificationStarter rightJoin(Buildable<SelectModel> joinTable, String tableAlias) {
+            return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);
+        }
+
         public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
             return QueryExpressionDSL.this.fullJoin(joinTable);
         }
 
         public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
+            return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);
+        }
+
+        public JoinSpecificationStarter fullJoin(Buildable<SelectModel> joinTable) {
+            return QueryExpressionDSL.this.fullJoin(joinTable);
+        }
+
+        public JoinSpecificationStarter fullJoin(Buildable<SelectModel> joinTable, String tableAlias) {
             return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);
         }
 

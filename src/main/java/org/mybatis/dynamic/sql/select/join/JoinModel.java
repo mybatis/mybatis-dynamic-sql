@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
+import org.mybatis.dynamic.sql.TableExpression;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -33,5 +35,11 @@ public class JoinModel {
 
     public static JoinModel of(List<JoinSpecification> joinSpecifications) {
         return new JoinModel(joinSpecifications);
+    }
+
+    public boolean containsSubQueries() {
+        return joinSpecifications.stream()
+                .map(JoinSpecification::table)
+                .anyMatch(TableExpression::isSubQuery);
     }
 }

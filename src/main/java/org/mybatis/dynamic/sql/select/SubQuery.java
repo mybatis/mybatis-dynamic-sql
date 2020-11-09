@@ -39,6 +39,11 @@ public class SubQuery implements TableExpression {
     }
 
     @Override
+    public boolean isSubQuery() {
+        return true;
+    }
+
+    @Override
     public <R> R accept(TableExpressionVisitor<R> visitor) {
         return visitor.visit(this);
     }

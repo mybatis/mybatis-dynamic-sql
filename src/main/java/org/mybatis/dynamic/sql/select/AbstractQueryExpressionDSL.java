@@ -166,5 +166,18 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
                 .collect(Collectors.toList())));
     }
 
+    protected static SubQuery buildSubQuery(Buildable<SelectModel> selectModel) {
+        return new SubQuery.Builder()
+                .withSelectModel(selectModel.build())
+                .build();
+    }
+
+    protected static SubQuery buildSubQuery(Buildable<SelectModel> selectModel, String alias) {
+        return new SubQuery.Builder()
+                .withSelectModel(selectModel.build())
+                .withAlias(alias)
+                .build();
+    }
+
     protected abstract T getThis();
 }
