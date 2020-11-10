@@ -15,12 +15,12 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
-import org.mybatis.dynamic.sql.TableExpression;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import org.mybatis.dynamic.sql.TableExpression;
 
 public class JoinModel {
     private final List<JoinSpecification> joinSpecifications = new ArrayList<>();

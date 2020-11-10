@@ -190,76 +190,80 @@ class JoinSubQueryTest {
         }
     }
 
-//    @Test
-//    void testRightJoin() {
-//        try (SqlSession session = sqlSessionFactory.openSession()) {
-//            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
-//
-//            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
-//                    .from(orderLine, "ol")
-//                    .rightJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
-//                    .orderBy(itemMaster.itemId)
-//                    .build()
-//                    .render(RenderingStrategies.MYBATIS3);
-//
-//            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description"
-//                    + " from OrderLine ol right join ItemMaster im on ol.item_id = im.item_id"
-//                    + " order by item_id";
-//            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
-//
-//            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
-//
-//            assertThat(rows).hasSize(5);
-//            Map<String, Object> row = rows.get(2);
-//            assertThat(row).containsEntry("ORDER_ID", 1);
-//            assertThat(row).containsEntry("QUANTITY", 1);
-//            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
-//            assertThat(row).containsEntry("ITEM_ID", 33);
-//
-//            row = rows.get(4);
-//            assertThat(row).doesNotContainKey("ORDER_ID");
-//            assertThat(row).doesNotContainKey("QUANTITY");
-//            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
-//            assertThat(row).containsEntry("ITEM_ID", 55);
-//        }
-//    }
-//
-//    @Test
-//    void testRightJoin2() {
-//        try (SqlSession session = sqlSessionFactory.openSession()) {
-//            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
-//
-//            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
-//                    .from(orderMaster, "om")
-//                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-//                    .rightJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
-//                    .orderBy(orderLine.orderId, itemMaster.itemId)
-//                    .build()
-//                    .render(RenderingStrategies.MYBATIS3);
-//
-//            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description"
-//                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
-//                    + " right join ItemMaster im on ol.item_id = im.item_id"
-//                    + " order by order_id, item_id";
-//            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
-//
-//            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
-//
-//            assertThat(rows).hasSize(5);
-//            Map<String, Object> row = rows.get(0);
-//            assertThat(row).doesNotContainKey("ORDER_ID");
-//            assertThat(row).doesNotContainKey("QUANTITY");
-//            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
-//            assertThat(row).containsEntry("ITEM_ID", 55);
-//
-//            row = rows.get(4);
-//            assertThat(row).containsEntry("ORDER_ID", 2);
-//            assertThat(row).containsEntry("QUANTITY", 1);
-//            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
-//            assertThat(row).containsEntry("ITEM_ID", 44);
-//        }
-//    }
-//
+    @Test
+    void testRightJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity,
+                    itemMaster.itemId.qualifiedWith("im"), itemMaster.description)
+                    .from(orderLine, "ol")
+                    .rightJoin(select(itemMaster.allColumns()).from(itemMaster), "im")
+                    .on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .orderBy(itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, description"
+                    + " from OrderLine ol right join (select * from ItemMaster) im on ol.item_id = im.item_id"
+                    + " order by item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(5);
+            Map<String, Object> row = rows.get(2);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("ITEM_ID", 33);
+
+            row = rows.get(4);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
+        }
+    }
+
+    @Test
+    void testRightJoin2() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity,
+                    itemMaster.itemId.qualifiedWith(("im")), itemMaster.description)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .rightJoin(select(itemMaster.allColumns()).from(itemMaster), "im")
+                    .on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .orderBy(orderLine.orderId, itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, description"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
+                    + " right join (select * from ItemMaster) im on ol.item_id = im.item_id"
+                    + " order by order_id, item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(5);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
+
+            row = rows.get(4);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
+        }
+    }
+
 //    @Test
 //    void testRightJoin3() {
 //        try (SqlSession session = sqlSessionFactory.openSession()) {
@@ -332,76 +336,81 @@ class JoinSubQueryTest {
 //        }
 //    }
 //
-//    @Test
-//    void testLeftJoin() {
-//        try (SqlSession session = sqlSessionFactory.openSession()) {
-//            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
-//
-//            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
-//                    .from(itemMaster, "im")
-//                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
-//                    .orderBy(itemMaster.itemId)
-//                    .build()
-//                    .render(RenderingStrategies.MYBATIS3);
-//
-//            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description"
-//                    + " from ItemMaster im left join OrderLine ol on ol.item_id = im.item_id"
-//                    + " order by item_id";
-//            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
-//
-//            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
-//
-//            assertThat(rows).hasSize(5);
-//            Map<String, Object> row = rows.get(2);
-//            assertThat(row).containsEntry("ORDER_ID", 1);
-//            assertThat(row).containsEntry("QUANTITY", 1);
-//            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
-//            assertThat(row).containsEntry("ITEM_ID", 33);
-//
-//            row = rows.get(4);
-//            assertThat(row).doesNotContainKey("ORDER_ID");
-//            assertThat(row).doesNotContainKey("QUANTITY");
-//            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
-//            assertThat(row).containsEntry("ITEM_ID", 55);
-//        }
-//    }
-//
-//    @Test
-//    void testLeftJoin2() {
-//        try (SqlSession session = sqlSessionFactory.openSession()) {
-//            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
-//
-//            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
-//                    .from(orderMaster, "om")
-//                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-//                    .leftJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
-//                    .orderBy(orderLine.orderId, itemMaster.itemId)
-//                    .build()
-//                    .render(RenderingStrategies.MYBATIS3);
-//
-//            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description"
-//                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
-//                    + " left join ItemMaster im on ol.item_id = im.item_id"
-//                    + " order by order_id, item_id";
-//            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
-//
-//            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
-//
-//            assertThat(rows).hasSize(5);
-//            Map<String, Object> row = rows.get(2);
-//            assertThat(row).containsEntry("ORDER_ID", 2);
-//            assertThat(row).containsEntry("QUANTITY", 6);
-//            assertThat(row).doesNotContainKey("DESCRIPTION");
-//            assertThat(row).doesNotContainKey("ITEM_ID");
-//
-//            row = rows.get(4);
-//            assertThat(row).containsEntry("ORDER_ID", 2);
-//            assertThat(row).containsEntry("QUANTITY", 1);
-//            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
-//            assertThat(row).containsEntry("ITEM_ID", 44);
-//        }
-//    }
-//
+    @Test
+    void testLeftJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity,
+                    itemMaster.itemId.qualifiedWith("im"), itemMaster.description)
+                    .from(itemMaster, "im")
+                    .leftJoin(select(orderLine.allColumns()).from(orderLine), "ol")
+                    .on(orderLine.itemId.qualifiedWith("ol"), equalTo(itemMaster.itemId))
+                    .orderBy(itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select order_id, quantity, im.item_id, im.description"
+                    + " from ItemMaster im"
+                    + " left join (select * from OrderLine) ol on ol.item_id = im.item_id"
+                    + " order by item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(5);
+            Map<String, Object> row = rows.get(2);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("ITEM_ID", 33);
+
+            row = rows.get(4);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
+        }
+    }
+
+    @Test
+    void testLeftJoin2() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity,
+                    itemMaster.itemId.qualifiedWith("im"), itemMaster.description)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .leftJoin(select(itemMaster.allColumns()).from(itemMaster), "im")
+                    .on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .orderBy(orderLine.orderId, itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, description"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
+                    + " left join (select * from ItemMaster) im on ol.item_id = im.item_id"
+                    + " order by order_id, item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(5);
+            Map<String, Object> row = rows.get(2);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("ITEM_ID");
+
+            row = rows.get(4);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
+        }
+    }
+
 //    @Test
 //    void testLeftJoin3() {
 //        try (SqlSession session = sqlSessionFactory.openSession()) {
@@ -473,90 +482,95 @@ class JoinSubQueryTest {
 //            assertThat(row).containsEntry("ITEM_ID", 44);
 //        }
 //    }
-//
-//    @Test
-//    void testFullJoin() {
-//        try (SqlSession session = sqlSessionFactory.openSession()) {
-//            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
-//
-//            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
-//                    .from(itemMaster, "im")
-//                    .fullJoin(orderLine, "ol").on(itemMaster.itemId, equalTo(orderLine.itemId))
-//                    .orderBy(sortColumn("im_itemid"))
-//                    .build()
-//                    .render(RenderingStrategies.MYBATIS3);
-//
-//            String expectedStatement = "select ol.order_id, ol.quantity, ol.item_id as ol_itemid, im.item_id as im_itemid, im.description"
-//                    + " from ItemMaster im full join OrderLine ol on im.item_id = ol.item_id"
-//                    + " order by im_itemid";
-//            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
-//
-//            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
-//
-//            assertThat(rows).hasSize(6);
-//            Map<String, Object> row = rows.get(0);
-//            assertThat(row).containsEntry("ORDER_ID", 2);
-//            assertThat(row).containsEntry("QUANTITY", 6);
-//            assertThat(row).containsEntry("OL_ITEMID", 66);
-//            assertThat(row).doesNotContainKey("DESCRIPTION");
-//            assertThat(row).doesNotContainKey("IM_ITEMID");
-//
-//            row = rows.get(3);
-//            assertThat(row).containsEntry("ORDER_ID", 1);
-//            assertThat(row).containsEntry("QUANTITY", 1);
-//            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
-//            assertThat(row).containsEntry("IM_ITEMID", 33);
-//
-//            row = rows.get(5);
-//            assertThat(row).doesNotContainKey("ORDER_ID");
-//            assertThat(row).doesNotContainKey("QUANTITY");
-//            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
-//            assertThat(row).containsEntry("IM_ITEMID", 55);
-//        }
-//    }
-//
-//    @Test
-//    void testFullJoin2() {
-//        try (SqlSession session = sqlSessionFactory.openSession()) {
-//            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
-//
-//            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
-//                    .from(orderMaster, "om")
-//                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-//                    .fullJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
-//                    .orderBy(orderLine.orderId, itemMaster.itemId)
-//                    .build()
-//                    .render(RenderingStrategies.MYBATIS3);
-//
-//            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description"
-//                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
-//                    + " full join ItemMaster im on ol.item_id = im.item_id"
-//                    + " order by order_id, item_id";
-//            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
-//
-//            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
-//
-//            assertThat(rows).hasSize(6);
-//            Map<String, Object> row = rows.get(0);
-//            assertThat(row).doesNotContainKey("ORDER_ID");
-//            assertThat(row).doesNotContainKey("QUANTITY");
-//            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
-//            assertThat(row).containsEntry("ITEM_ID", 55);
-//
-//            row = rows.get(3);
-//            assertThat(row).containsEntry("ORDER_ID", 2);
-//            assertThat(row).containsEntry("QUANTITY", 6);
-//            assertThat(row).doesNotContainKey("DESCRIPTION");
-//            assertThat(row).doesNotContainKey("ITEM_ID");
-//
-//            row = rows.get(5);
-//            assertThat(row).containsEntry("ORDER_ID", 2);
-//            assertThat(row).containsEntry("QUANTITY", 1);
-//            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
-//            assertThat(row).containsEntry("ITEM_ID", 44);
-//        }
-//    }
-//
+
+    @Test
+    void testFullJoin() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity,
+                    orderLine.itemId.as("ol_itemid").qualifiedWith("ol"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
+                    .from(itemMaster, "im")
+                    .fullJoin(select(orderLine.allColumns()).from(orderLine), "ol")
+                    .on(itemMaster.itemId, equalTo(orderLine.itemId.qualifiedWith("ol")))
+                    .orderBy(sortColumn("im_itemid"))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select order_id, quantity, ol.item_id as ol_itemid, im.item_id as im_itemid, im.description"
+                    + " from ItemMaster im"
+                    + " full join (select * from OrderLine) ol on im.item_id = ol.item_id"
+                    + " order by im_itemid";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(6);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).containsEntry("OL_ITEMID", 66);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("IM_ITEMID");
+
+            row = rows.get(3);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("IM_ITEMID", 33);
+
+            row = rows.get(5);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("IM_ITEMID", 55);
+        }
+    }
+
+    @Test
+    void testFullJoin2() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity,
+                    itemMaster.itemId.qualifiedWith("im"), itemMaster.description)
+                    .from(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .fullJoin(select(itemMaster.allColumns()).from(itemMaster), "im")
+                    .on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .orderBy(orderLine.orderId, itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, description"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id"
+                    + " full join (select * from ItemMaster) im on ol.item_id = im.item_id"
+                    + " order by order_id, item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(6);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("ITEM_ID", 55);
+
+            row = rows.get(3);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("ITEM_ID");
+
+            row = rows.get(5);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+            assertThat(row).containsEntry("ITEM_ID", 44);
+        }
+    }
+
 //    @Test
 //    void testFullJoin3() {
 //        try (SqlSession session = sqlSessionFactory.openSession()) {

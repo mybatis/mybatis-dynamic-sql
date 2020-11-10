@@ -54,7 +54,8 @@ public class QueryExpressionModel {
         groupByModel = builder.groupByModel;
     }
 
-    private TableAliasCalculator determineJoinTableAliasCalculator(JoinModel joinModel, Map<SqlTable, String> tableAliases) {
+    private TableAliasCalculator determineJoinTableAliasCalculator(JoinModel joinModel, Map<SqlTable,
+            String> tableAliases) {
         if (joinModel.containsSubQueries()) {
             // if there are subQueries, then force explicit qualifiers
             return TableAliasCalculator.of(tableAliases);
