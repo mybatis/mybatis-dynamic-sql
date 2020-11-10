@@ -90,10 +90,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         return join(joinTable);
     }
 
-    public JoinSpecificationStarter join(Buildable<SelectModel> joinTable) {
-        return new JoinSpecificationStarter(buildSubQuery(joinTable), JoinType.INNER);
-    }
-
     public JoinSpecificationStarter join(Buildable<SelectModel> joinTable, String tableAlias) {
         return new JoinSpecificationStarter(buildSubQuery(joinTable, tableAlias), JoinType.INNER);
     }
@@ -105,10 +101,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return leftJoin(joinTable);
-    }
-
-    public JoinSpecificationStarter leftJoin(Buildable<SelectModel> joinTable) {
-        return new JoinSpecificationStarter(buildSubQuery(joinTable), JoinType.LEFT);
     }
 
     public JoinSpecificationStarter leftJoin(Buildable<SelectModel> joinTable, String tableAlias) {
@@ -124,10 +116,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         return rightJoin(joinTable);
     }
 
-    public JoinSpecificationStarter rightJoin(Buildable<SelectModel> joinTable) {
-        return new JoinSpecificationStarter(buildSubQuery(joinTable), JoinType.RIGHT);
-    }
-
     public JoinSpecificationStarter rightJoin(Buildable<SelectModel> joinTable, String tableAlias) {
         return new JoinSpecificationStarter(buildSubQuery(joinTable, tableAlias), JoinType.RIGHT);
     }
@@ -139,10 +127,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
         tableAliases.put(joinTable, tableAlias);
         return fullJoin(joinTable);
-    }
-
-    public JoinSpecificationStarter fullJoin(Buildable<SelectModel> joinTable) {
-        return new JoinSpecificationStarter(buildSubQuery(joinTable), JoinType.FULL);
     }
 
     public JoinSpecificationStarter fullJoin(Buildable<SelectModel> joinTable, String tableAlias) {
@@ -405,10 +389,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.join(joinTable, tableAlias);
         }
 
-        public JoinSpecificationStarter join(Buildable<SelectModel> joinTable) {
-            return QueryExpressionDSL.this.join(joinTable);
-        }
-
         public JoinSpecificationStarter join(Buildable<SelectModel> joinTable, String tableAlias) {
             return QueryExpressionDSL.this.join(joinTable, tableAlias);
         }
@@ -419,10 +399,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
 
         public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);
-        }
-
-        public JoinSpecificationStarter leftJoin(Buildable<SelectModel> joinTable) {
-            return QueryExpressionDSL.this.leftJoin(joinTable);
         }
 
         public JoinSpecificationStarter leftJoin(Buildable<SelectModel> joinTable, String tableAlias) {
@@ -437,10 +413,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);
         }
 
-        public JoinSpecificationStarter rightJoin(Buildable<SelectModel> joinTable) {
-            return QueryExpressionDSL.this.rightJoin(joinTable);
-        }
-
         public JoinSpecificationStarter rightJoin(Buildable<SelectModel> joinTable, String tableAlias) {
             return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);
         }
@@ -451,10 +423,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
 
         public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
             return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);
-        }
-
-        public JoinSpecificationStarter fullJoin(Buildable<SelectModel> joinTable) {
-            return QueryExpressionDSL.this.fullJoin(joinTable);
         }
 
         public JoinSpecificationStarter fullJoin(Buildable<SelectModel> joinTable, String tableAlias) {
