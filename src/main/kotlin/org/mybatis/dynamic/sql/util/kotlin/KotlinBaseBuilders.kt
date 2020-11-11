@@ -87,6 +87,12 @@ abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, Select
             getDsl().join(table, alias, receiver)
         }
 
+    fun join(subQuery: KotlinQualifiedSubQueryBuilder.() -> KotlinQualifiedSubQueryBuilder, joinCriteria: JoinReceiver): B =
+        applySelf {
+            val builder = subQuery(KotlinQualifiedSubQueryBuilder())
+            getDsl().join(builder, joinCriteria)
+        }
+
     fun fullJoin(table: SqlTable, receiver: JoinReceiver): B =
         applySelf {
             getDsl().fullJoin(table, receiver)
@@ -95,6 +101,12 @@ abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, Select
     fun fullJoin(table: SqlTable, alias: String, receiver: JoinReceiver): B =
         applySelf {
             getDsl().fullJoin(table, alias, receiver)
+        }
+
+    fun fullJoin(subQuery: KotlinQualifiedSubQueryBuilder.() -> KotlinQualifiedSubQueryBuilder, receiver: JoinReceiver): B =
+        applySelf {
+            val builder = subQuery(KotlinQualifiedSubQueryBuilder())
+            getDsl().fullJoin(builder, receiver)
         }
 
     fun leftJoin(table: SqlTable, receiver: JoinReceiver): B =

@@ -32,6 +32,12 @@ fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<
     }
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
+        .join(subQuery: KotlinQualifiedSubQueryBuilder, joinCriteria: JoinReceiver): T =
+    with(joinCriteria(JoinCollector())) {
+        return join(subQuery.selectBuilder, subQuery.correlationName, onJoinCriterion, andJoinCriteria)
+    }
+
+fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
         .fullJoin(table: SqlTable, collect: JoinReceiver): T =
     with(collect(JoinCollector())) {
         return fullJoin(table, onJoinCriterion, andJoinCriteria)
@@ -41,6 +47,12 @@ fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<
         .fullJoin(table: SqlTable, alias: String, collect: JoinReceiver): T =
     with(collect(JoinCollector())) {
         return fullJoin(table, alias, onJoinCriterion, andJoinCriteria)
+    }
+
+fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>
+        .fullJoin(builder: KotlinQualifiedSubQueryBuilder, collect: JoinReceiver): T =
+    with(collect(JoinCollector())) {
+        return fullJoin(builder.selectBuilder, builder.correlationName, onJoinCriterion, andJoinCriteria)
     }
 
 fun <T : AbstractQueryExpressionDSL<T, SelectModel>> AbstractQueryExpressionDSL<T, SelectModel>

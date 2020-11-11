@@ -71,6 +71,13 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
         return join(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
+    public T join(Buildable<SelectModel> subQuery, String tableAlias, JoinCriterion onJoinCriterion,
+                  List<JoinCriterion> andJoinCriteria) {
+        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.INNER,
+                andJoinCriteria);
+        return getThis();
+    }
+
     public T leftJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.LEFT, Arrays.asList(andJoinCriteria));
@@ -143,7 +150,14 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
         return fullJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
-    private void addJoinSpecificationBuilder(SqlTable joinTable, JoinCriterion onJoinCriterion, JoinType joinType,
+    public T fullJoin(Buildable<SelectModel> subQuery, String tableAlias, JoinCriterion onJoinCriterion,
+                  List<JoinCriterion> andJoinCriteria) {
+        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.FULL,
+                andJoinCriteria);
+        return getThis();
+    }
+
+    private void addJoinSpecificationBuilder(TableExpression joinTable, JoinCriterion onJoinCriterion, JoinType joinType,
             List<JoinCriterion> andJoinCriteria) {
         joinSpecificationBuilders.add(new JoinSpecification.Builder()
                 .withJoinTable(joinTable)
