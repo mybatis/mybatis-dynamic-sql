@@ -17,9 +17,7 @@
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.render.RenderingStrategies
@@ -29,67 +27,55 @@ import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinCountColumnBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinDeleteBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertSelectSubQueryBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.count
+import org.mybatis.dynamic.sql.util.kotlin.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.countFrom
+import org.mybatis.dynamic.sql.util.kotlin.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.insertSelect
+import org.mybatis.dynamic.sql.util.kotlin.into
+import org.mybatis.dynamic.sql.util.kotlin.select
+import org.mybatis.dynamic.sql.util.kotlin.selectDistinct
+import org.mybatis.dynamic.sql.util.kotlin.update
 
 fun count(column: BasicColumn, completer: CountColumnCompleter) =
-    completer(KotlinCountColumnBuilder(SqlBuilder.countColumn(column)))
-        .build().render(RenderingStrategies.MYBATIS3)
+    count(column, completer).render(RenderingStrategies.MYBATIS3)
 
 fun countDistinct(column: BasicColumn, completer: CountColumnCompleter) =
-    completer(KotlinCountColumnBuilder(SqlBuilder.countDistinctColumn(column)))
-        .build().render(RenderingStrategies.MYBATIS3)
-
-fun count(start: KotlinCountBuilder, completer: CountCompleter) =
-    completer(start).build().render(RenderingStrategies.MYBATIS3)
+    countDistinct(column, completer).render(RenderingStrategies.MYBATIS3)
 
 fun countFrom(table: SqlTable, completer: CountCompleter) =
-    count(KotlinCountBuilder(SqlBuilder.countFrom(table)), completer)
+    countFrom(table, completer).render(RenderingStrategies.MYBATIS3)
 
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
-    completer(KotlinDeleteBuilder(SqlBuilder.deleteFrom(table)))
-        .build().render(RenderingStrategies.MYBATIS3)
+    deleteFrom(table, completer).render(RenderingStrategies.MYBATIS3)
 
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
-    completer(GeneralInsertDSL.insertInto(table))
-        .build().render(RenderingStrategies.MYBATIS3)
+    insertInto(table, completer).render(RenderingStrategies.MYBATIS3)
 
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter) =
-    with(completer(KotlinInsertSelectSubQueryBuilder())) {
-        SqlBuilder.insertInto(table)
-            .withColumnList(columnList)
-            .withSelectStatement(selectBuilder)
-            .build().render(RenderingStrategies.MYBATIS3)
-    }
+    insertSelect(table, completer).render(RenderingStrategies.MYBATIS3)
 
 fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>) =
-    completer(into(table)).build().render(RenderingStrategies.MYBATIS3)
+    into(table, completer).render(RenderingStrategies.MYBATIS3)
 
 fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
-    completer(into(table)).build().render(RenderingStrategies.MYBATIS3)
-
-fun select(start: KotlinSelectBuilder, completer: SelectCompleter) =
-    completer(start).build().render(RenderingStrategies.MYBATIS3)
+    into(table, completer).render(RenderingStrategies.MYBATIS3)
 
 fun select(vararg columns: BasicColumn, completer: SelectCompleter) =
-    select(columns.asList(), completer)
+    select(columns = columns, completer).render(RenderingStrategies.MYBATIS3)
 
 fun select(columns: List<BasicColumn>, completer: SelectCompleter) =
-    select(KotlinSelectBuilder(SqlBuilder.select(columns)), completer)
+    select(columns, completer).render(RenderingStrategies.MYBATIS3)
 
 fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter) =
-    selectDistinct(columns.asList(), completer)
+    selectDistinct(columns = columns, completer).render(RenderingStrategies.MYBATIS3)
 
 fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter) =
-    select(KotlinSelectBuilder(SqlBuilder.selectDistinct(columns)), completer)
+    selectDistinct(columns, completer).render(RenderingStrategies.MYBATIS3)
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
-    completer(KotlinUpdateBuilder(SqlBuilder.update(table)))
-        .build().render(RenderingStrategies.MYBATIS3)
+    update(table, completer).render(RenderingStrategies.MYBATIS3)

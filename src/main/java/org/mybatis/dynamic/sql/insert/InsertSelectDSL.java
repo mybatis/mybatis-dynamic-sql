@@ -19,12 +19,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public class InsertSelectDSL {
+public class InsertSelectDSL implements Buildable<InsertSelectModel> {
 
     private final SqlTable table;
     private final InsertColumnListModel columnList;
@@ -42,6 +43,8 @@ public class InsertSelectDSL {
         this.columnList = null;
     }
 
+    @NotNull
+    @Override
     public InsertSelectModel build() {
         return InsertSelectModel.withTable(table)
                 .withColumnList(columnList)

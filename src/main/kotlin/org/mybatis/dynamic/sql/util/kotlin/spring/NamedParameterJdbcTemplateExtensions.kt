@@ -163,6 +163,7 @@ fun NamedParameterJdbcTemplate.update(table: SqlTable, completer: UpdateComplete
     update(org.mybatis.dynamic.sql.util.kotlin.spring.update(table, completer))
 
 // support classes for select DSL
+@MyBatisDslMarker
 class SelectListMapperGatherer(
     private val selectStatement: SelectStatementProvider,
     private val template: NamedParameterJdbcTemplate
@@ -171,6 +172,7 @@ class SelectListMapperGatherer(
         template.selectList(selectStatement, rowMapper)
 }
 
+@MyBatisDslMarker
 class SelectOneMapperGatherer(
     private val selectStatement: SelectStatementProvider,
     private val template: NamedParameterJdbcTemplate
