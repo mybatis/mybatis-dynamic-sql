@@ -82,7 +82,7 @@ fun <T> selectDistinct(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(select(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).from(table), completer))
+    mapper(selectDistinct(selectList) { completer(from(table)) })
 
 fun <T> selectList(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -90,7 +90,7 @@ fun <T> selectList(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(select(KotlinSelectBuilder(SqlBuilder.select(selectList)).from(table), completer))
+    mapper(select(selectList) { completer(from(table)) })
 
 fun <T> selectList(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -105,7 +105,7 @@ fun <T> selectOne(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(select(KotlinSelectBuilder(SqlBuilder.select(selectList)).from(table), completer))
+    mapper(select(selectList) { completer(from(table)) })
 
 fun <T> selectOne(
     mapper: (SelectStatementProvider) -> T?,
