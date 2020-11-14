@@ -32,14 +32,13 @@ import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
 fun count(mapper: (SelectStatementProvider) -> Long, column: BasicColumn, table: SqlTable, completer: CountCompleter) =
-    mapper(count(KotlinCountBuilder(SqlBuilder.countColumn(column).from(table)), completer))
+    mapper(count(column) { completer(from(table)) })
 
 fun countDistinct(
     mapper: (SelectStatementProvider) -> Long,
@@ -47,7 +46,7 @@ fun countDistinct(
     table: SqlTable,
     completer: CountCompleter
 ) =
-    mapper(count(KotlinCountBuilder(SqlBuilder.countDistinctColumn(column).from(table)), completer))
+    mapper(countDistinct(column) { completer(from(table)) })
 
 fun countFrom(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter) =
     mapper(countFrom(table, completer))
@@ -116,9 +115,6 @@ fun <T> selectOne(
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter) =
     mapper(update(table, completer))
-
-private fun count(start: KotlinCountBuilder, completer: CountCompleter) =
-    completer(start).build().render(RenderingStrategies.MYBATIS3)
 
 private fun select(start: KotlinSelectBuilder, completer: SelectCompleter) =
     completer(start).build().render(RenderingStrategies.MYBATIS3)

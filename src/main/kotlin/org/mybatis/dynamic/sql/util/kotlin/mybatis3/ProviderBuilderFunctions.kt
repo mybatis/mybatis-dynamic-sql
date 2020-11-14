@@ -14,6 +14,7 @@
  *    limitations under the License.
  */
 @file:Suppress("TooManyFunctions")
+
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn
@@ -21,7 +22,6 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.render.RenderingStrategies
-import org.mybatis.dynamic.sql.util.kotlin.CountColumnCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
@@ -30,21 +30,21 @@ import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
-import org.mybatis.dynamic.sql.util.kotlin.count
-import org.mybatis.dynamic.sql.util.kotlin.countDistinct
-import org.mybatis.dynamic.sql.util.kotlin.countFrom
-import org.mybatis.dynamic.sql.util.kotlin.deleteFrom
-import org.mybatis.dynamic.sql.util.kotlin.insertInto
-import org.mybatis.dynamic.sql.util.kotlin.insertSelect
-import org.mybatis.dynamic.sql.util.kotlin.into
-import org.mybatis.dynamic.sql.util.kotlin.select
-import org.mybatis.dynamic.sql.util.kotlin.selectDistinct
-import org.mybatis.dynamic.sql.util.kotlin.update
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.count
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countFrom
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.insertSelect
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.into
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.select
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.selectDistinct
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.update
 
-fun count(column: BasicColumn, completer: CountColumnCompleter) =
+fun count(column: BasicColumn, completer: CountCompleter) =
     count(column, completer).render(RenderingStrategies.MYBATIS3)
 
-fun countDistinct(column: BasicColumn, completer: CountColumnCompleter) =
+fun countDistinct(column: BasicColumn, completer: CountCompleter) =
     countDistinct(column, completer).render(RenderingStrategies.MYBATIS3)
 
 fun countFrom(table: SqlTable, completer: CountCompleter) =
