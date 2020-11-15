@@ -24,7 +24,6 @@ import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
-import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
@@ -115,7 +114,4 @@ fun <T> selectOne(
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter) =
     mapper(update(table, completer))
-
-private fun select(start: KotlinSelectBuilder, completer: SelectCompleter) =
-    completer(start).build().render(RenderingStrategies.MYBATIS3)
 

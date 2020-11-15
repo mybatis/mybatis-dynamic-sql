@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
@@ -64,6 +65,9 @@ fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertComplet
 
 fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
     into(table, completer).render(RenderingStrategies.MYBATIS3)
+
+fun select(start: KotlinSelectBuilder, completer: SelectCompleter) =
+    completer(start).build().render(RenderingStrategies.MYBATIS3)
 
 fun select(vararg columns: BasicColumn, completer: SelectCompleter) =
     select(columns = columns, completer).render(RenderingStrategies.MYBATIS3)
