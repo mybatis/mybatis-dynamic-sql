@@ -1050,4 +1050,161 @@ class CanonicalSpringKotlinTest {
         assertThat(returnedRecord).isNotNull()
         assertThat(returnedRecord!!.lastName?.name).isEqualTo("Smith")
     }
+
+    @Test
+    fun testUpdateSetNull() {
+        val updateStatement = update(Person) {
+            set(addressId).equalToNull()
+            where(id, isEqualTo(3))
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set address_id = null" +
+                    " where id = :p1"
+        )
+
+        assertThat(updateStatement.parameters).containsEntry("p1", 3)
+
+        val rows = template.update(updateStatement)
+
+        assertThat(rows).isEqualTo(1)
+
+        val selectStatement = select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(addressId, isNull())
+        }
+
+        val returnedRecord = template.selectOne(selectStatement, personRowMapper)
+        assertThat(returnedRecord).isNotNull()
+        assertThat(returnedRecord!!.addressId).isNull()
+    }
+
+    @Test
+    fun testUpdateSetToConstant() {
+        val updateStatement = update(Person) {
+            set(addressId).equalToConstant("5")
+            where(id, isEqualTo(3))
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set address_id = 5" +
+                    " where id = :p1"
+        )
+
+        assertThat(updateStatement.parameters).containsEntry("p1", 3)
+
+        val rows = template.update(updateStatement)
+
+        assertThat(rows).isEqualTo(1)
+
+        val selectStatement = select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isEqualTo(3))
+        }
+
+        val returnedRecord = template.selectOne(selectStatement, personRowMapper)
+        assertThat(returnedRecord).isNotNull()
+        assertThat(returnedRecord!!.addressId).isEqualTo(5)
+    }
+
+    @Test
+    fun testUpdateSetToColumn() {
+        val updateStatement = update(Person) {
+            set(addressId).equalTo(id)
+            where(id, isEqualTo(3))
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set address_id = id" +
+                    " where id = :p1"
+        )
+
+        assertThat(updateStatement.parameters).containsEntry("p1", 3)
+
+        val rows = template.update(updateStatement)
+
+        assertThat(rows).isEqualTo(1)
+
+        val selectStatement = select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isEqualTo(3))
+        }
+
+        val returnedRecord = template.selectOne(selectStatement, personRowMapper)
+        assertThat(returnedRecord).isNotNull()
+        assertThat(returnedRecord!!.addressId).isEqualTo(3)
+    }
+
+    @Test
+    fun testUpdateSetToSubQuery() {
+        val updateStatement = update(Person) {
+            set(addressId).equalToQueryResult {
+                select(add(max(addressId), constant<Int>("1"))) {
+                    from(Person)
+                }
+            }
+            where(id, isEqualTo(3))
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set address_id = (select (max(address_id) + 1) from Person)" +
+                    " where id = :p1"
+        )
+
+        assertThat(updateStatement.parameters).containsEntry("p1", 3)
+
+        val rows = template.update(updateStatement)
+
+        assertThat(rows).isEqualTo(1)
+
+        val selectStatement = select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isEqualTo(3))
+        }
+
+        val returnedRecord = template.selectOne(selectStatement, personRowMapper)
+        assertThat(returnedRecord).isNotNull()
+        assertThat(returnedRecord!!.addressId).isEqualTo(3)
+    }
+
+
+    @Test
+    fun testUpdateSetEqualToWhenPresent() {
+        val updateStatement = update(Person) {
+            set(addressId).equalTo(5)
+            set(firstName).equalToWhenPresent(null)
+            where(id, isEqualTo(3))
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set address_id = :p1" +
+                    " where id = :p2"
+        )
+
+        assertThat(updateStatement.parameters).containsEntry("p1", 5)
+        assertThat(updateStatement.parameters).containsEntry("p2", 3)
+
+        val rows = template.update(updateStatement)
+
+        assertThat(rows).isEqualTo(1)
+
+        val selectStatement = select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(Person)
+            where(id, isEqualTo(3))
+        }
+
+        val returnedRecord = template.selectOne(selectStatement, personRowMapper)
+        assertThat(returnedRecord).isNotNull()
+        assertThat(returnedRecord!!.addressId).isEqualTo(5)
+    }
 }

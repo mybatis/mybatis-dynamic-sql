@@ -32,7 +32,7 @@ create table Person (
    birth_date date not null,
    employed varchar(3) not null,
    occupation varchar(30) null,
-   address_id int not null,
+   address_id int null,
    primary key(id)
 );
 
