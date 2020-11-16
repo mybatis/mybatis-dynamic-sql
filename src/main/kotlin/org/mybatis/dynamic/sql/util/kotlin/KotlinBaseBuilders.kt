@@ -79,60 +79,49 @@ abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<
 abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, SelectModel>, W : AbstractWhereDSL<W>,
         B : KotlinBaseJoiningBuilder<T, W, B>> : KotlinBaseBuilder<W, B>() {
 
-    fun join(table: SqlTable, joinCriteria: JoinReceiver): B =
-        applySelf {
-            with(joinCriteria(JoinCollector())) {
-                this@KotlinBaseJoiningBuilder.getDsl().join(table, onJoinCriterion, andJoinCriteria)
-            }
+    fun join(table: SqlTable, joinCriteria: JoinReceiver) =
+        applyJoin(joinCriteria) {
+            getDsl().join(table, it.onJoinCriterion, it.andJoinCriteria)
         }
 
-    fun join(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
-        applySelf {
-            with(joinCriteria(JoinCollector())) {
-                this@KotlinBaseJoiningBuilder.getDsl().join(table, alias, onJoinCriterion, andJoinCriteria)
-            }
+    fun join(table: SqlTable, alias: String, joinCriteria: JoinReceiver) =
+        applyJoin(joinCriteria) {
+            getDsl().join(table, alias, it.onJoinCriterion, it.andJoinCriteria)
         }
 
-    fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
-        applySelf {
-            with(joinCriteria(JoinCollector())) {
-                this@KotlinBaseJoiningBuilder.getDsl().fullJoin(table, onJoinCriterion, andJoinCriteria)
-            }
+    fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver) =
+        applyJoin(joinCriteria) {
+            getDsl().fullJoin(table, it.onJoinCriterion, it.andJoinCriteria)
         }
 
-    fun fullJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
-        applySelf {
-            with(joinCriteria(JoinCollector())) {
-                this@KotlinBaseJoiningBuilder.getDsl().fullJoin(table, alias, onJoinCriterion, andJoinCriteria)
-            }
+    fun fullJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver) =
+        applyJoin(joinCriteria) {
+            getDsl().fullJoin(table, alias, it.onJoinCriterion, it.andJoinCriteria)
         }
 
-    fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
-        applySelf {
-            with(joinCriteria(JoinCollector())) {
-                this@KotlinBaseJoiningBuilder.getDsl().leftJoin(table, onJoinCriterion, andJoinCriteria)
-            }
+    fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver) =
+        applyJoin(joinCriteria) {
+            getDsl().leftJoin(table, it.onJoinCriterion, it.andJoinCriteria)
         }
 
-    fun leftJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
-        applySelf {
-            with(joinCriteria(JoinCollector())) {
-                this@KotlinBaseJoiningBuilder.getDsl().leftJoin(table, alias, onJoinCriterion, andJoinCriteria)
-            }
+    fun leftJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver) =
+        applyJoin(joinCriteria) {
+            getDsl().leftJoin(table, alias, it.onJoinCriterion, it.andJoinCriteria)
         }
 
-    fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
-        applySelf {
-            with(joinCriteria(JoinCollector())) {
-                this@KotlinBaseJoiningBuilder.getDsl().rightJoin(table, onJoinCriterion, andJoinCriteria)
-            }
+    fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver) =
+        applyJoin(joinCriteria) {
+            getDsl().rightJoin(table, it.onJoinCriterion, it.andJoinCriteria)
         }
 
-    fun rightJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
+    fun rightJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver) =
+        applyJoin(joinCriteria) {
+            getDsl().rightJoin(table, alias, it.onJoinCriterion, it.andJoinCriteria)
+        }
+
+    private fun applyJoin(joinCriteria: JoinReceiver, block: (JoinCollector) -> Unit) =
         applySelf {
-            with(joinCriteria(JoinCollector())) {
-                this@KotlinBaseJoiningBuilder.getDsl().rightJoin(table, alias, onJoinCriterion, andJoinCriteria)
-            }
+            joinCriteria(JoinCollector()).also(block)
         }
 
     protected abstract fun getDsl(): AbstractQueryExpressionDSL<T, SelectModel>
