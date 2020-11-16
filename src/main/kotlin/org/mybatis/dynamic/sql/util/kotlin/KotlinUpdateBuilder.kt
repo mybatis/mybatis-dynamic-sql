@@ -15,21 +15,75 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
+import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
 
-typealias UpdateCompleter = KotlinUpdateBuilder.() -> Buildable<UpdateModel>
+typealias UpdateCompleter = KotlinUpdateBuilder.() -> KotlinUpdateBuilder
 
 class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
     KotlinBaseBuilder<UpdateDSL<UpdateModel>.UpdateWhereBuilder, KotlinUpdateBuilder>(), Buildable<UpdateModel> {
 
-    fun <T> set(column: SqlColumn<T>): UpdateDSL<UpdateModel>.SetClauseFinisher<T> = dsl.set(column)
+    fun <T> set(column: SqlColumn<T>) = KotlinSetClauseFinisher(column)
 
     override fun build(): UpdateModel = dsl.build()
 
     override fun getWhere(): UpdateDSL<UpdateModel>.UpdateWhereBuilder = dsl.where()
 
     override fun self() = this
+
+    @MyBatisDslMarker
+    inner class KotlinSetClauseFinisher<T>(private val column: SqlColumn<T>) {
+        fun equalToNull() =
+            applyToDsl {
+                set(column).equalToNull()
+            }
+
+        fun equalToConstant(constant: String) =
+            applyToDsl {
+                set(column).equalToConstant(constant)
+            }
+
+        fun equalToStringConstant(constant: String) =
+            applyToDsl {
+                set(column).equalToStringConstant(constant)
+            }
+
+        fun equalTo(value: T) =
+            applyToDsl {
+                set(column).equalTo(value)
+            }
+
+        fun equalTo(value: () -> T) =
+            applyToDsl {
+                set(column).equalTo(value)
+            }
+
+        fun equalTo(rightColumn: BasicColumn) =
+            applyToDsl {
+                set(column).equalTo(rightColumn)
+            }
+
+        fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+            applyToDsl {
+                set(column).equalTo(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+            }
+
+        fun equalToWhenPresent(value: () -> T?) =
+            applyToDsl {
+                set(column).equalToWhenPresent(value)
+            }
+
+        fun equalToWhenPresent(value: T?) =
+            applyToDsl {
+                set(column).equalToWhenPresent(value)
+            }
+
+        private fun applyToDsl(block: UpdateDSL<UpdateModel>.() -> Unit) =
+            this@KotlinUpdateBuilder.also {
+                it.dsl.apply(block)
+            }
+    }
 }

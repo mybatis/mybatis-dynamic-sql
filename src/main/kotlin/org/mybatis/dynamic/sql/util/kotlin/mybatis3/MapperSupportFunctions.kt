@@ -31,14 +31,13 @@ import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
 fun count(mapper: (SelectStatementProvider) -> Long, column: BasicColumn, table: SqlTable, completer: CountCompleter) =
-    mapper(count(KotlinCountBuilder(SqlBuilder.countColumn(column).from(table)), completer))
+    mapper(count(column) { completer(from(table)) })
 
 fun countDistinct(
     mapper: (SelectStatementProvider) -> Long,
@@ -46,7 +45,7 @@ fun countDistinct(
     table: SqlTable,
     completer: CountCompleter
 ) =
-    mapper(count(KotlinCountBuilder(SqlBuilder.countDistinctColumn(column).from(table)), completer))
+    mapper(countDistinct(column) { completer(from(table)) })
 
 fun countFrom(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter) =
     mapper(countFrom(table, completer))
@@ -81,7 +80,7 @@ fun <T> selectDistinct(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(select(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).from(table), completer))
+    mapper(selectDistinct(selectList) { completer(from(table)) })
 
 fun <T> selectList(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -89,7 +88,7 @@ fun <T> selectList(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(select(KotlinSelectBuilder(SqlBuilder.select(selectList)).from(table), completer))
+    mapper(select(selectList) { completer(from(table)) })
 
 fun <T> selectList(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -104,7 +103,7 @@ fun <T> selectOne(
     table: SqlTable,
     completer: SelectCompleter
 ) =
-    mapper(select(KotlinSelectBuilder(SqlBuilder.select(selectList)).from(table), completer))
+    mapper(select(selectList) { completer(from(table)) })
 
 fun <T> selectOne(
     mapper: (SelectStatementProvider) -> T?,
@@ -115,3 +114,4 @@ fun <T> selectOne(
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter) =
     mapper(update(table, completer))
+

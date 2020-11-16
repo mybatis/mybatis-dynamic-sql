@@ -20,7 +20,8 @@ For example, a typical search can be coded with a query like this (the following
 
 ```kotlin
    fun search(id: String?, firstName: String?, lastName: String?) =
-        select(Customer.id, Customer.firstName, Customer.lastName).from(Customer) {
+        select(Customer.id, Customer.firstName, Customer.lastName) {
+            from(Customer)
             where(Customer.active, isEqualTo(true))
             and(Customer.id, isEqualToWhenPresent(id).then{ it?.padStart(5, '0') })
             and(Customer.firstName, isLikeCaseInsensitiveWhenPresent(firstName)
