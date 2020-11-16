@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
  * with the similar functions that build providers for the different rendering
  * strategies.
  */
+@Suppress("TooManyFunctions")
 object KotlinModelBuilderFunctions {
     fun count(column: BasicColumn, completer: CountCompleter) =
         completer(KotlinCountBuilder(SqlBuilder.countColumn(column))).build()

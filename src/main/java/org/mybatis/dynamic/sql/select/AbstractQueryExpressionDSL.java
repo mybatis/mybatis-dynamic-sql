@@ -102,6 +102,13 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
         return leftJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
+    public T leftJoin(Buildable<SelectModel> subQuery, String tableAlias, JoinCriterion onJoinCriterion,
+                      List<JoinCriterion> andJoinCriteria) {
+        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.LEFT,
+                andJoinCriteria);
+        return getThis();
+    }
+
     public T rightJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.RIGHT, Arrays.asList(andJoinCriteria));
@@ -124,6 +131,13 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
             List<JoinCriterion> andJoinCriteria) {
         tableAliases.put(joinTable, tableAlias);
         return rightJoin(joinTable, onJoinCriterion, andJoinCriteria);
+    }
+
+    public T rightJoin(Buildable<SelectModel> subQuery, String tableAlias, JoinCriterion onJoinCriterion,
+                      List<JoinCriterion> andJoinCriteria) {
+        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.RIGHT,
+                andJoinCriteria);
+        return getThis();
     }
 
     public T fullJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
@@ -157,8 +171,8 @@ public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressi
         return getThis();
     }
 
-    private void addJoinSpecificationBuilder(TableExpression joinTable, JoinCriterion onJoinCriterion, JoinType joinType,
-            List<JoinCriterion> andJoinCriteria) {
+    private void addJoinSpecificationBuilder(TableExpression joinTable, JoinCriterion onJoinCriterion,
+            JoinType joinType, List<JoinCriterion> andJoinCriteria) {
         joinSpecificationBuilders.add(new JoinSpecification.Builder()
                 .withJoinTable(joinTable)
                 .withJoinType(joinType)
