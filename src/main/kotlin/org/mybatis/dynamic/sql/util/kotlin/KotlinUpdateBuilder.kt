@@ -68,7 +68,7 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
 
         fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
             applyToDsl {
-                set(column).equalTo(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+                set(column).equalTo(subQuery(KotlinSubQueryBuilder()))
             }
 
         fun equalToWhenPresent(value: () -> T?) =

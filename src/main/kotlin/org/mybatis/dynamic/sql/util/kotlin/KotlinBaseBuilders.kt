@@ -96,7 +96,7 @@ abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, Select
     ) =
         applyJoin(joinCriteria) {
             val builder = subQuery(KotlinQualifiedSubQueryBuilder())
-            getDsl().join(builder.selectBuilder, builder.correlationName, it.onJoinCriterion, it.andJoinCriteria)
+            getDsl().join(builder, builder.correlationName, it.onJoinCriterion, it.andJoinCriteria)
         }
 
     fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver) =
@@ -115,7 +115,7 @@ abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, Select
     ) =
         applyJoin(joinCriteria) {
             val builder = subQuery(KotlinQualifiedSubQueryBuilder())
-            getDsl().fullJoin(builder.selectBuilder, builder.correlationName, it.onJoinCriterion, it.andJoinCriteria)
+            getDsl().fullJoin(builder, builder.correlationName, it.onJoinCriterion, it.andJoinCriteria)
         }
 
     fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver) =
@@ -134,7 +134,7 @@ abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, Select
     ) =
         applyJoin(joinCriteria) {
             val builder = subQuery(KotlinQualifiedSubQueryBuilder())
-            getDsl().leftJoin(builder.selectBuilder, builder.correlationName, it.onJoinCriterion, it.andJoinCriteria)
+            getDsl().leftJoin(builder, builder.correlationName, it.onJoinCriterion, it.andJoinCriteria)
         }
 
     fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver) =
@@ -153,7 +153,7 @@ abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, Select
     ) =
         applyJoin(joinCriteria) {
             val builder = subQuery(KotlinQualifiedSubQueryBuilder())
-            getDsl().rightJoin(builder.selectBuilder, builder.correlationName, it.onJoinCriterion, it.andJoinCriteria)
+            getDsl().rightJoin(builder, builder.correlationName, it.onJoinCriterion, it.andJoinCriteria)
         }
 
     private fun applyJoin(joinCriteria: JoinReceiver, block: (JoinCollector) -> Unit) =

@@ -25,25 +25,25 @@ import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect
 
 fun <T> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+    IsEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
 
 fun <T> isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsNotEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+    IsNotEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
 
 fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+    IsInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
 
 fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsNotInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+    IsNotInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
 
 fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsGreaterThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+    IsGreaterThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
 
 fun <T> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsGreaterThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+    IsGreaterThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
 
 fun <T> isLessThan(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsLessThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+    IsLessThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
 
 fun <T> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsLessThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+    IsLessThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))

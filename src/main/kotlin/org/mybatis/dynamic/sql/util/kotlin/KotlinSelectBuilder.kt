@@ -45,7 +45,7 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
     fun from(subQuery: KotlinQualifiedSubQueryBuilder.() -> KotlinQualifiedSubQueryBuilder) =
         apply {
             val builder = subQuery(KotlinQualifiedSubQueryBuilder())
-            dsl = fromGatherer.from(builder.selectBuilder, builder.correlationName)
+            dsl = fromGatherer.from(builder, builder.correlationName)
         }
 
     fun groupBy(vararg columns: BasicColumn) =

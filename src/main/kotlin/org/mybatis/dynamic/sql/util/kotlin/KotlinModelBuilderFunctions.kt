@@ -52,7 +52,7 @@ object KotlinModelBuilderFunctions {
         with(completer(KotlinInsertSelectSubQueryBuilder())) {
             SqlBuilder.insertInto(table)
                 .withColumnList(columnList)
-                .withSelectStatement(selectBuilder)
+                .withSelectStatement(this)
                 .build()
         }
 
