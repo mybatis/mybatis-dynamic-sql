@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.util.Buildable
 
-typealias DeleteCompleter = KotlinDeleteBuilder.() -> Buildable<DeleteModel>
+typealias DeleteCompleter = KotlinDeleteBuilder.() -> KotlinDeleteBuilder
 
 class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
         KotlinBaseBuilder<DeleteDSL<DeleteModel>.DeleteWhereBuilder, KotlinDeleteBuilder>(), Buildable<DeleteModel> {

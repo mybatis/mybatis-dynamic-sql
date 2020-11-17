@@ -1,12 +1,13 @@
-# SubQuery Support
-The library currently supports subQueries in the following areas:
+# Subquery Support
+The library currently supports subqueries in the following areas:
 
 1. In certain where conditions
 1. In certain insert statements
+1. In update statements
 1. In the "from" clause of a select statement
 
-## SubQueries in Where Conditions
-The library support subQueries in the following where conditions:
+## Subqueries in Where Conditions
+The library support subqueries in the following where conditions:
 
 - isEqualTo
 - isNotEqualTo
@@ -33,7 +34,7 @@ SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, bra
 ```
 
 ### Kotlin Support
-The library includes Kotlin versions of the where conditions that allow use of the Kotlin subQuery builder. The Kotlin
+The library includes Kotlin versions of the where conditions that allow use of the Kotlin subquery builder. The Kotlin
 where conditions are in the `org.mybatis.dynamic.sql.util.kotlin` package. An example is as follows:
 
 ```kotlin
@@ -47,7 +48,7 @@ val selectStatement = select(id, firstName, lastName, birthDate, employed, occup
 }
 ```
 
-## SubQueries in Insert Statements
+## Subqueries in Insert Statements
 The library supports an INSERT statement that retrieves values from a SELECT statement. For example:
 
 ```java
@@ -64,7 +65,7 @@ InsertSelectStatementProvider insertSelectStatement = insertInto(animalDataCopy)
 
 ### Kotlin Support
 
-The library includes a Kotlin builder for subQueries in insert statements that integrates with the select DSL. You
+The library includes a Kotlin builder for subqueries in insert statements that integrates with the select DSL. You
 can write inserts like this:
 
 ```kotlin
@@ -77,9 +78,42 @@ val insertStatement = insertSelect(Person) {
 }
 ```
 
-## SubQueries in a From Clause
+## Subqueries in Update Statements
+The library supports setting update values based on the results of a subquery. For example:
 
-The library supports subQueries in from clauses and the syntax is a natural extension of the
+```java
+UpdateStatementProvider updateStatement = update(animalData)
+        .set(brainWeight).equalTo(
+            select(avg(brainWeight))
+            .from(animalData)
+            .where(brainWeight, isGreaterThan(22.0))
+        )
+        .where(brainWeight, isLessThan(1.0))
+        .build()
+        .render(RenderingStrategies.MYBATIS3);
+```
+
+### Kotlin Support
+The library includes a Kotlin builder for subqueries in update statements that integrates
+with the select DSL. You can write subqueries like this:
+
+```kotlin
+val updateStatement = update(Person) {
+    set(addressId).equalToQueryResult {
+        select(add(max(addressId), constant<Int>("1"))) {
+            from(Person)
+        }
+    }
+    where(id, isEqualTo(3))
+}
+```
+
+Note the Kotlin method name is `set(xxx).equalToQueryResult(...)` - this is to avoid a collison with
+other methods in the update DSL.
+
+## Subqueries in a From Clause
+
+The library supports subqueries in from clauses and the syntax is a natural extension of the
 select DSL. An example is as follows:
 
 ```java
@@ -102,7 +136,7 @@ SelectStatementProvider selectStatement =
 Notice the use of a `DerivedColumn` to easily specify a function like `rownum()` that can be
 used both in the select list and in a where condition.
 
-### Table Qualifiers with SubQueries
+### Table Qualifiers with Subqueries
 
 The library attempts to automatically calculate table qualifiers. If a table qualifier is specified,
 the library will automatically render the table qualifier on all columns associated with the
@@ -128,12 +162,12 @@ Notice that the table qualifier `ad` is automatically applied to columns in the 
 In the case of join queries the table qualifier specified, or if not specified the table name
 itself, will be used as the table qualifier.
 
-With subQueries, it is important to understand the limits of automatic table qualifiers. The rules are
+With subqueries, it is important to understand the limits of automatic table qualifiers. The rules are
 as follows:
 
-1. The scope of automatic table qualifiers is limited to a single select statement. For subQueries, the outer
-   query has a different scope than the subQuery.
-1. A qualifier can be applied to a subQuery as a whole, but that qualifier is not automatically applied to
+1. The scope of automatic table qualifiers is limited to a single select statement. For subqueries, the outer
+   query has a different scope than the subquery.
+1. A qualifier can be applied to a subquery as a whole, but that qualifier is not automatically applied to
    any column
 
 As an example, consider the following query:
@@ -168,10 +202,10 @@ where rownum() < #{parameters.p2}
   and animal_name like  #{parameters.p3} 
 ```
 
-Notice that the qualifier `a` is automatically applied to columns in the subQuery and that the 
+Notice that the qualifier `a` is automatically applied to columns in the subquery and that the 
 qualifier `b` is not applied anywhere.
 
-If your query requires the subQuery qualifier to be applied to columns in the outer select list,
+If your query requires the subquery qualifier to be applied to columns in the outer select list,
 you can manually apply the qualifier to columns as follows:
 
 ```java
@@ -207,7 +241,7 @@ where rownum() < #{parameters.p2}
 
 ### Kotlin Support
 
-The library includes a Kotlin builder for subQueries that integrates with the select DSL. You
+The library includes a Kotlin builder for subqueries that integrates with the select DSL. You
 can write queries like this:
 
 ```kotlin
@@ -225,7 +259,7 @@ val selectStatement =
     }
 ```
 
-The same rules about table qualifiers apply as stated above. In Kotlin, a subQuery qualifier
+The same rules about table qualifiers apply as stated above. In Kotlin, a subquery qualifier
 can be added with the overloaded "+" operator as shown below:
 
 ```kotlin
@@ -245,4 +279,4 @@ val selectStatement =
 ```
 
 In this case the `a` qualifier is used in the context of the inner select statement and
-the `b` qualifier is applied to the subQuery as a whole.
+the `b` qualifier is applied to the subquery as a whole.

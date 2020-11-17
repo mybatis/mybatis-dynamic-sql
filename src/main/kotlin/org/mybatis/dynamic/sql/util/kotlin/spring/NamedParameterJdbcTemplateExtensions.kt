@@ -29,7 +29,6 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
-import org.mybatis.dynamic.sql.util.kotlin.CountColumnCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
@@ -50,10 +49,10 @@ import java.sql.ResultSet
 fun NamedParameterJdbcTemplate.count(selectStatement: SelectStatementProvider) =
     queryForObject(selectStatement.selectStatement, selectStatement.parameters, Long::class.java)!!
 
-fun NamedParameterJdbcTemplate.count(column: BasicColumn, completer: CountColumnCompleter) =
+fun NamedParameterJdbcTemplate.count(column: BasicColumn, completer: CountCompleter) =
     count(org.mybatis.dynamic.sql.util.kotlin.spring.count(column, completer))
 
-fun NamedParameterJdbcTemplate.countDistinct(column: BasicColumn, completer: CountColumnCompleter) =
+fun NamedParameterJdbcTemplate.countDistinct(column: BasicColumn, completer: CountCompleter) =
     count(org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct(column, completer))
 
 fun NamedParameterJdbcTemplate.countFrom(table: SqlTable, completer: CountCompleter) =
@@ -163,6 +162,7 @@ fun NamedParameterJdbcTemplate.update(table: SqlTable, completer: UpdateComplete
     update(org.mybatis.dynamic.sql.util.kotlin.spring.update(table, completer))
 
 // support classes for select DSL
+@MyBatisDslMarker
 class SelectListMapperGatherer(
     private val selectStatement: SelectStatementProvider,
     private val template: NamedParameterJdbcTemplate
@@ -171,6 +171,7 @@ class SelectListMapperGatherer(
         template.selectList(selectStatement, rowMapper)
 }
 
+@MyBatisDslMarker
 class SelectOneMapperGatherer(
     private val selectStatement: SelectStatementProvider,
     private val template: NamedParameterJdbcTemplate

@@ -17,84 +17,69 @@
 package org.mybatis.dynamic.sql.util.kotlin.spring
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
-import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
-import org.mybatis.dynamic.sql.util.kotlin.CountColumnCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinCountColumnBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinDeleteBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertSelectSubQueryBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
-import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.count
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countFrom
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.insertSelect
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.into
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.select
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.selectDistinct
+import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.update
 
-fun count(column: BasicColumn, completer: CountColumnCompleter) =
-    completer(KotlinCountColumnBuilder(SqlBuilder.countColumn(column)))
-        .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun count(column: BasicColumn, completer: CountCompleter) =
+    count(column, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun countDistinct(column: BasicColumn, completer: CountColumnCompleter) =
-    completer(KotlinCountColumnBuilder(SqlBuilder.countDistinctColumn(column)))
-        .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
-
-fun count(start: KotlinCountBuilder, completer: CountCompleter) =
-    completer(start).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun countDistinct(column: BasicColumn, completer: CountCompleter) =
+    countDistinct(column, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun countFrom(table: SqlTable, completer: CountCompleter) =
-    count(KotlinCountBuilder(SqlBuilder.countFrom(table)), completer)
+    countFrom(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
-    completer(KotlinDeleteBuilder(SqlBuilder.deleteFrom(table)))
-        .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    deleteFrom(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
-    completer(GeneralInsertDSL.insertInto(table))
-        .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    insertInto(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter) =
-    with(completer(KotlinInsertSelectSubQueryBuilder())) {
-        SqlBuilder.insertInto(table)
-            .withColumnList(columnList)
-            .withSelectStatement(selectBuilder)
-            .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
-    }
+    insertSelect(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>) =
-    completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>) =
-    completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
-    completer(into(table)).build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun select(vararg columns: BasicColumn, completer: SelectCompleter) =
-    select(columns.asList(), completer)
+    select(columns = columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun select(columns: List<BasicColumn>, completer: SelectCompleter) =
-    completer(KotlinSelectBuilder(SqlBuilder.select(columns)))
-        .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    select(columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter) =
-    selectDistinct(columns.asList(), completer)
+    selectDistinct(columns = columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter) =
-    completer(KotlinSelectBuilder(SqlBuilder.selectDistinct(columns)))
-        .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    selectDistinct(columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun update(table: SqlTable, completer: UpdateCompleter) =
-    completer(KotlinUpdateBuilder(SqlBuilder.update(table)))
-        .build().render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    update(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)

@@ -26,6 +26,9 @@ val personRowMapper: (ResultSet, Int) -> PersonRecord = { rs, _ ->
         employed = "Yes" == rs.getString(5)
         occupation = rs.getString(6)
         addressId = rs.getInt(7)
+        if (rs.wasNull()) {
+            addressId = null
+        }
     }
 }
 
