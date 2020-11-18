@@ -21,7 +21,6 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
-import org.mybatis.dynamic.sql.insert.InsertSelectModel
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 
 /**
@@ -48,14 +47,13 @@ object KotlinModelBuilderFunctions {
     fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
         GeneralInsertDSL.insertInto(table).apply(completer).build()
 
-    fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectModel {
+    fun insertSelect(table: SqlTable, completer: InsertSelectCompleter) =
         with(KotlinInsertSelectSubQueryBuilder().apply(completer)) {
-            return SqlBuilder.insertInto(table)
+            SqlBuilder.insertInto(table)
                 .withColumnList(columnList)
                 .withSelectStatement(this)
                 .build()
         }
-    }
 
     fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>) =
         into(table).also(completer).build()

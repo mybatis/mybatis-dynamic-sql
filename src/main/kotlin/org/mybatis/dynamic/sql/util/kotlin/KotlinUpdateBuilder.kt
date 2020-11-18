@@ -82,8 +82,8 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
             }
 
         private fun applyToDsl(block: UpdateDSL<UpdateModel>.() -> Unit) =
-            this@KotlinUpdateBuilder.also {
-                it.dsl.apply(block)
+            this@KotlinUpdateBuilder.apply {
+                dsl.apply(block)
             }
     }
 }
