@@ -30,7 +30,7 @@ sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T>> : Build
 
     fun select(selectList: List<BasicColumn>, completer: SelectCompleter) =
         applySelf {
-            selectBuilder = completer(KotlinSelectBuilder(SqlBuilder.select(selectList)))
+            selectBuilder = KotlinSelectBuilder(SqlBuilder.select(selectList)).apply(completer)
         }
 
     fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
@@ -38,7 +38,7 @@ sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T>> : Build
 
     fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
         applySelf {
-            selectBuilder = completer(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)))
+            selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)
         }
 
     override fun build() = selectBuilder.build()

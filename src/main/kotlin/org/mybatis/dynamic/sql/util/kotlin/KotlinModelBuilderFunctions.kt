@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
+import org.mybatis.dynamic.sql.insert.InsertSelectModel
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 
 /**
@@ -32,51 +33,51 @@ import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 @Suppress("TooManyFunctions")
 object KotlinModelBuilderFunctions {
     fun count(column: BasicColumn, completer: CountCompleter) =
-        completer(KotlinCountBuilder(SqlBuilder.countColumn(column))).build()
+        KotlinCountBuilder(SqlBuilder.countColumn(column)).apply(completer).build()
 
     fun countDistinct(column: BasicColumn, completer: CountCompleter) =
-        completer(KotlinCountBuilder(SqlBuilder.countDistinctColumn(column))).build()
+        KotlinCountBuilder(SqlBuilder.countDistinctColumn(column)).apply(completer).build()
 
     fun countFrom(table: SqlTable, completer: CountCompleter) =
-        with(KotlinCountBuilder(SqlBuilder.countColumn(SqlBuilder.constant<Long>("*")))) {
-            completer(from(table)).build()
-        }
+        KotlinCountBuilder(SqlBuilder.countColumn(SqlBuilder.constant<Long>("*")))
+            .from(table).apply(completer).build()
 
     fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
-        completer(KotlinDeleteBuilder(SqlBuilder.deleteFrom(table))).build()
+        KotlinDeleteBuilder(SqlBuilder.deleteFrom(table)).apply(completer).build()
 
     fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
-        completer(GeneralInsertDSL.insertInto(table)).build()
+        GeneralInsertDSL.insertInto(table).apply(completer).build()
 
-    fun insertSelect(table: SqlTable, completer: InsertSelectCompleter) =
-        with(completer(KotlinInsertSelectSubQueryBuilder())) {
-            SqlBuilder.insertInto(table)
+    fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectModel {
+        with(KotlinInsertSelectSubQueryBuilder().apply(completer)) {
+            return SqlBuilder.insertInto(table)
                 .withColumnList(columnList)
                 .withSelectStatement(this)
                 .build()
         }
+    }
 
     fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>) =
-        completer(into(table)).build()
+        into(table).also(completer).build()
 
     fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>) =
-        completer(into(table)).build()
+        into(table).apply(completer).build()
 
     fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
-        completer(into(table)).build()
+        into(table).apply(completer).build()
 
     fun select(vararg columns: BasicColumn, completer: SelectCompleter) =
         select(columns.asList(), completer)
 
     fun select(columns: List<BasicColumn>, completer: SelectCompleter) =
-        completer(KotlinSelectBuilder(SqlBuilder.select(columns))).build()
+        KotlinSelectBuilder(SqlBuilder.select(columns)).apply(completer).build()
 
     fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter) =
         selectDistinct(columns.asList(), completer)
 
     fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter) =
-        completer(KotlinSelectBuilder(SqlBuilder.selectDistinct(columns))).build()
+        KotlinSelectBuilder(SqlBuilder.selectDistinct(columns)).apply(completer).build()
 
     fun update(table: SqlTable, completer: UpdateCompleter) =
-        completer(KotlinUpdateBuilder(SqlBuilder.update(table))).build()
+        KotlinUpdateBuilder(SqlBuilder.update(table)).apply(completer).build()
 }

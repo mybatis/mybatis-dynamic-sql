@@ -24,26 +24,26 @@ import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect
 
-fun <T> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    IsEqualToWithSubselect.of<T>(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsNotEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    IsNotEqualToWithSubselect.of<T>(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    IsInWithSubselect.of<T>(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsNotInWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    IsNotInWithSubselect.of<T>(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsGreaterThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    IsGreaterThanWithSubselect.of<T>(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsGreaterThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    IsGreaterThanOrEqualToWithSubselect.of<T>(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isLessThan(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsLessThanWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isLessThan(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    IsLessThanWithSubselect.of<T>(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
-    IsLessThanOrEqualToWithSubselect.of<T>(subQuery(KotlinSubQueryBuilder()))
+fun <T> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    IsLessThanOrEqualToWithSubselect.of<T>(KotlinSubQueryBuilder().apply(subQuery))

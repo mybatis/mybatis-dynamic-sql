@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 
-typealias SelectCompleter = KotlinSelectBuilder.() -> KotlinSelectBuilder
+typealias SelectCompleter = KotlinSelectBuilder.() -> Unit
 
 @Suppress("TooManyFunctions")
 class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>) :
@@ -42,9 +42,9 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
             dsl = fromGatherer.from(table, alias)
         }
 
-    fun from(subQuery: KotlinQualifiedSubQueryBuilder.() -> KotlinQualifiedSubQueryBuilder) =
+    fun from(subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit) =
         apply {
-            val builder = subQuery(KotlinQualifiedSubQueryBuilder())
+            val builder = KotlinQualifiedSubQueryBuilder().apply(subQuery)
             dsl = fromGatherer.from(builder, builder.correlationName)
         }
 
