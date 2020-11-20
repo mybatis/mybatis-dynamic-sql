@@ -46,7 +46,7 @@ Kotlin DSL.
 - Added the capability to generate a camel cased alias for a column ([#272](https://github.com/mybatis/mybatis-dynamic-sql/issues/272))
 - Added sub-query support for "from" clauses in a select statement ([#282](https://github.com/mybatis/mybatis-dynamic-sql/pull/282))
 - Added Kotlin DSL updates to support sub-queries in select statements, where clauses, and insert statements ([#282](https://github.com/mybatis/mybatis-dynamic-sql/pull/282))
-- Added sub-query support for "join" clauses in a select statement
+- Added sub-query support for "join" clauses in a select statement ([#293](https://github.com/mybatis/mybatis-dynamic-sql/pull/293))
 
 
 ## Release 1.2.1 - September 29, 2020
