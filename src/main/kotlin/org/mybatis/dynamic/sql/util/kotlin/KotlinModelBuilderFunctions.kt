@@ -56,7 +56,7 @@ object KotlinModelBuilderFunctions {
         }
 
     fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>) =
-        into(table).also(completer).build()
+        into(table).apply(completer).build()
 
     fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>) =
         into(table).apply(completer).build()
