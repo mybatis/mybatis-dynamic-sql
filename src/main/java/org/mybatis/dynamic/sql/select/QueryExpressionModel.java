@@ -48,10 +48,20 @@ public class QueryExpressionModel {
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);
         joinModel = builder.joinModel;
-        tableAliasCalculator = joinModel().map(jm -> GuaranteedTableAliasCalculator.of(builder.tableAliases))
+        tableAliasCalculator = joinModel().map(jm -> determineJoinTableAliasCalculator(jm, builder.tableAliases))
                 .orElseGet(() -> TableAliasCalculator.of(builder.tableAliases));
         whereModel = builder.whereModel;
         groupByModel = builder.groupByModel;
+    }
+
+    private TableAliasCalculator determineJoinTableAliasCalculator(JoinModel joinModel, Map<SqlTable,
+            String> tableAliases) {
+        if (joinModel.containsSubQueries()) {
+            // if there are subQueries, then force explicit qualifiers
+            return TableAliasCalculator.of(tableAliases);
+        } else {
+            return GuaranteedTableAliasCalculator.of(tableAliases);
+        }
     }
 
     public Optional<String> connector() {

@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.join.JoinCriterion
 
-typealias JoinReceiver = JoinCollector.() -> JoinCollector
+typealias JoinReceiver = JoinCollector.() -> Unit
 
 @MyBatisDslMarker
 class JoinCollector {

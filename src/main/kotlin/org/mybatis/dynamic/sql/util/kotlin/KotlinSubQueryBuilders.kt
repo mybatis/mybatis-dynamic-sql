@@ -18,17 +18,19 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.util.Buildable
 
 @MyBatisDslMarker
-sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T> > {
-    lateinit var selectBuilder: KotlinSelectBuilder
+sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T>> : Buildable<SelectModel> {
+    private lateinit var selectBuilder: KotlinSelectBuilder
 
     fun select(vararg selectList: BasicColumn, completer: SelectCompleter) =
         select(selectList.toList(), completer)
 
     fun select(selectList: List<BasicColumn>, completer: SelectCompleter) =
         applySelf {
-            selectBuilder = completer(KotlinSelectBuilder(SqlBuilder.select(selectList)))
+            selectBuilder = KotlinSelectBuilder(SqlBuilder.select(selectList)).apply(completer)
         }
 
     fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
@@ -36,8 +38,10 @@ sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T> > {
 
     fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
         applySelf {
-            selectBuilder = completer(KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)))
+            selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)
         }
+
+    override fun build() = selectBuilder.build()
 
     private fun applySelf(block: T.() -> Unit): T =
         self().apply { block() }

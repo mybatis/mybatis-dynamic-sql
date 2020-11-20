@@ -223,6 +223,87 @@ class JoinMapperTest {
     }
 
     @Test
+    fun testFullJoinWithSubQuery() {
+        newSession().use { session ->
+            val mapper = session.getMapper(JoinMapper::class.java)
+
+            val selectStatement = select(OrderLine.orderId.qualifiedWith("ol"),
+                OrderLine.quantity, ItemMaster.itemId.qualifiedWith("im"),
+                ItemMaster.description) {
+                from {
+                    select(OrderMaster.allColumns()) {
+                        from(OrderMaster)
+                    }
+                    +"om"
+                }
+                join(subQuery = {
+                    select(OrderLine.allColumns()) {
+                        from(OrderLine)
+                    }
+                    + "ol"
+                }, joinCriteria = {
+                    on(
+                        OrderMaster.orderId.qualifiedWith("om"),
+                        equalTo(OrderLine.orderId.qualifiedWith("ol"))
+                    )
+                })
+                fullJoin({
+                    select(ItemMaster.allColumns()) {
+                        from(ItemMaster)
+                    }
+                    + "im"
+                }) {
+                    on(OrderLine.itemId.qualifiedWith("ol"),
+                        equalTo(ItemMaster.itemId.qualifiedWith("im")))
+                }
+                orderBy(OrderLine.orderId, ItemMaster.itemId)
+            }
+
+            val expectedStatement = "select ol.order_id, quantity, im.item_id, description" +
+                    " from (select * from OrderMaster) om" +
+                    " join (select * from OrderLine) ol on om.order_id = ol.order_id" +
+                    " full join (select * from ItemMaster) im on ol.item_id = im.item_id" +
+                    " order by order_id, item_id"
+
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            data class OrderDetail(val itemId: Int?, val orderId: Int?, val quantity: Int?, val description: String?)
+
+            val rows = mapper.selectMany(selectStatement) {
+                OrderDetail(
+                    it["ITEM_ID"] as Int?,
+                    it["ORDER_ID"] as Int?,
+                    it["QUANTITY"] as Int?,
+                    it["DESCRIPTION"] as String?
+                )
+            }
+
+            assertThat(rows).hasSize(6)
+
+            with(rows[0]) {
+                assertThat(itemId).isEqualTo(55)
+                assertThat(orderId).isNull()
+                assertThat(quantity).isNull()
+                assertThat(description).isEqualTo("Catcher Glove")
+            }
+
+            with(rows[3]) {
+                assertThat(itemId).isNull()
+                assertThat(orderId).isEqualTo(2)
+                assertThat(quantity).isEqualTo(6)
+                assertThat(description).isNull()
+            }
+
+            with(rows[5]) {
+                assertThat(itemId).isEqualTo(44)
+                assertThat(orderId).isEqualTo(2)
+                assertThat(quantity).isEqualTo(1)
+                assertThat(description).isEqualTo("Outfield Glove")
+            }
+        }
+    }
+
+    @Test
     fun testFullJoinWithoutAliases() {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
@@ -312,6 +393,54 @@ class JoinMapperTest {
     }
 
     @Test
+    fun testLeftJoinWithSubQuery() {
+        newSession().use { session ->
+            val mapper = session.getMapper(JoinMapper::class.java)
+
+            val selectStatement = select(OrderLine.orderId, OrderLine.quantity,
+                ItemMaster.itemId.qualifiedWith("im"),
+                ItemMaster.description) {
+                from(OrderMaster, "om")
+                join(OrderLine, "ol") {
+                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                }
+                leftJoin({
+                    select(ItemMaster.allColumns()) {
+                        from(ItemMaster)
+                    }
+                    + "im"
+                }) {
+                    on(OrderLine.itemId, equalTo(ItemMaster.itemId.qualifiedWith("im")))
+                }
+                orderBy(OrderLine.orderId, ItemMaster.itemId)
+            }
+
+            val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, description" +
+                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
+                    " left join (select * from ItemMaster) im on ol.item_id = im.item_id" +
+                    " order by order_id, item_id"
+
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+
+            assertThat(rows).hasSize(5)
+
+            assertThat(rows[2]).containsExactly(
+                entry("ORDER_ID", 2),
+                entry("QUANTITY", 6)
+            )
+
+            assertThat(rows[4]).containsExactly(
+                entry("ORDER_ID", 2),
+                entry("QUANTITY", 1),
+                entry("DESCRIPTION", "Outfield Glove"),
+                entry("ITEM_ID", 44)
+            )
+        }
+    }
+
+    @Test
     fun testLeftJoinWithoutAliases() {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
@@ -373,6 +502,53 @@ class JoinMapperTest {
             val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description" +
                     " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
                     " right join ItemMaster im on ol.item_id = im.item_id" +
+                    " order by order_id, item_id"
+
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+
+            assertThat(rows).hasSize(5)
+
+            assertThat(rows[0]).containsExactly(
+                entry("DESCRIPTION", "Catcher Glove"),
+                entry("ITEM_ID", 55)
+            )
+
+            assertThat(rows[4]).containsExactly(
+                entry("ORDER_ID", 2),
+                entry("QUANTITY", 1),
+                entry("DESCRIPTION", "Outfield Glove"),
+                entry("ITEM_ID", 44)
+            )
+        }
+    }
+
+    @Test
+    fun testRightJoinWithSubQuery() {
+        newSession().use { session ->
+            val mapper = session.getMapper(JoinMapper::class.java)
+
+            val selectStatement = select(OrderLine.orderId, OrderLine.quantity,
+                ItemMaster.itemId.qualifiedWith("im"), ItemMaster.description) {
+                from(OrderMaster, "om")
+                join(OrderLine, "ol") {
+                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                }
+                rightJoin ({
+                    select(ItemMaster.allColumns()) {
+                        from(ItemMaster)
+                    }
+                    +"im"
+                }) {
+                    on(OrderLine.itemId, equalTo(ItemMaster.itemId.qualifiedWith("im")))
+                }
+                orderBy(OrderLine.orderId, ItemMaster.itemId)
+            }
+
+            val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, description" +
+                    " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id" +
+                    " right join (select * from ItemMaster) im on ol.item_id = im.item_id" +
                     " order by order_id, item_id"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)

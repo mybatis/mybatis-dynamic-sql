@@ -6,10 +6,19 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.3.0+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.3.0+)
 
+### Release Themes
+
+The major themes of this release include the following:
+
+1. Add support for subqueries in select statements - both in a from clause and a join clause
+1. Continue to refine the Kotlin DSL. Most changes to the Kotlin DSL are internal and should be source code
+   compatible with existing code. There is one breaking change detailed below.
+1. Remove deprecated code from prior releases
+
 ### Breaking Change for Kotlin
 
 In this release the Kotlin support for `select` and `count` statements has been refactored. This will not impact code
-created by MyBatis generator. It will have an impact on Spring users as well as MyBatis users that coded joins or
+created by MyBatis generator. It will have an impact on Spring/Kotlin users as well as MyBatis users that coded joins or
 other queries directly in Kotlin. The difference is that the `from` clause has been moved inside the lambda for select
 and count statements.
 
@@ -37,6 +46,8 @@ Kotlin DSL.
 - Added the capability to generate a camel cased alias for a column ([#272](https://github.com/mybatis/mybatis-dynamic-sql/issues/272))
 - Added sub-query support for "from" clauses in a select statement ([#282](https://github.com/mybatis/mybatis-dynamic-sql/pull/282))
 - Added Kotlin DSL updates to support sub-queries in select statements, where clauses, and insert statements ([#282](https://github.com/mybatis/mybatis-dynamic-sql/pull/282))
+- Added sub-query support for "join" clauses in a select statement ([#293](https://github.com/mybatis/mybatis-dynamic-sql/pull/293))
+
 
 ## Release 1.2.1 - September 29, 2020
 

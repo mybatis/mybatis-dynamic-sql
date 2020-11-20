@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.select.CountDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
-typealias CountCompleter = KotlinCountBuilder.() -> KotlinCountBuilder
+typealias CountCompleter = KotlinCountBuilder.() -> Unit
 
 class KotlinCountBuilder(private val fromGatherer: CountDSL.FromGatherer<SelectModel>) :
     KotlinBaseJoiningBuilder<CountDSL<SelectModel>,

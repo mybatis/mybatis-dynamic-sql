@@ -31,33 +31,36 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
 
 fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? {
     val start = KotlinSelectBuilder(select(id.`as`("A_ID"), firstName, lastName, birthDate,
-        employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state))
-            .from(Person)
-            .fullJoin(Address) {
-                on(Person.addressId, equalTo(Address.id))
-            }
+        employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state)).apply {
+        from(Person)
+        fullJoin(Address) {
+            on(Person.addressId, equalTo(Address.id))
+        }
+    }
 
     return selectOne(this::selectOne, start, completer)
 }
 
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
     val start = KotlinSelectBuilder(select(id.`as`("A_ID"), firstName, lastName, birthDate,
-        employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state))
-            .from(Person, "p")
-            .fullJoin(Address) {
-                on(Person.addressId, equalTo(Address.id))
-            }
+        employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state)).apply {
+        from(Person, "p")
+        fullJoin(Address) {
+            on(Person.addressId, equalTo(Address.id))
+        }
+    }
 
     return selectList(this::selectMany, start, completer)
 }
 
 fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> {
     val start = KotlinSelectBuilder(selectDistinct(id.`as`("A_ID"), firstName, lastName,
-        birthDate, employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state))
-            .from(Person, "p")
-            .fullJoin(Address) {
-                on(Person.addressId, equalTo(Address.id))
-            }
+        birthDate, employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state)).apply {
+        from(Person, "p")
+        fullJoin(Address) {
+            on(Person.addressId, equalTo(Address.id))
+        }
+    }
 
     return selectList(this::selectMany, start, completer)
 }

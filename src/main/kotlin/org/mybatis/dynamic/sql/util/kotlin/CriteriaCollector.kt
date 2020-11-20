@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
-typealias CriteriaReceiver = CriteriaCollector.() -> CriteriaCollector
+typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 
 @MyBatisDslMarker
 class CriteriaCollector {
@@ -38,13 +38,13 @@ class CriteriaCollector {
     fun <T> and(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
-        collect: CriteriaReceiver
+        criteriaReceiver: CriteriaReceiver
     ) =
         apply {
             criteria.add(
                 SqlCriterion.withColumn(column)
                     .withCondition(condition)
-                    .withSubCriteria(collect(CriteriaCollector()).criteria)
+                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .withConnector("and")
                     .build()
             )
@@ -63,13 +63,13 @@ class CriteriaCollector {
     fun <T> or(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
-        collect: CriteriaReceiver
+        criteriaReceiver: CriteriaReceiver
     ) =
         apply {
             criteria.add(
                 SqlCriterion.withColumn(column)
                     .withCondition(condition)
-                    .withSubCriteria(collect(CriteriaCollector()).criteria)
+                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .withConnector("or")
                     .build()
             )

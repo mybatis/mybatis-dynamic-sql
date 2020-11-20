@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
 
-typealias UpdateCompleter = KotlinUpdateBuilder.() -> KotlinUpdateBuilder
+typealias UpdateCompleter = KotlinUpdateBuilder.() -> Unit
 
 class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
     KotlinBaseBuilder<UpdateDSL<UpdateModel>.UpdateWhereBuilder, KotlinUpdateBuilder>(), Buildable<UpdateModel> {
@@ -66,9 +66,9 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
                 set(column).equalTo(rightColumn)
             }
 
-        fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> KotlinSubQueryBuilder) =
+        fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> Unit) =
             applyToDsl {
-                set(column).equalTo(subQuery(KotlinSubQueryBuilder()).selectBuilder)
+                set(column).equalTo(KotlinSubQueryBuilder().apply(subQuery))
             }
 
         fun equalToWhenPresent(value: () -> T?) =
@@ -82,8 +82,8 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
             }
 
         private fun applyToDsl(block: UpdateDSL<UpdateModel>.() -> Unit) =
-            this@KotlinUpdateBuilder.also {
-                it.dsl.apply(block)
+            this@KotlinUpdateBuilder.apply {
+                dsl.apply(block)
             }
     }
 }

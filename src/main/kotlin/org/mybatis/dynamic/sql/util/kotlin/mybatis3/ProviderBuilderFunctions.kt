@@ -67,7 +67,7 @@ fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: Multi
     into(table, completer).render(RenderingStrategies.MYBATIS3)
 
 fun select(start: KotlinSelectBuilder, completer: SelectCompleter) =
-    completer(start).build().render(RenderingStrategies.MYBATIS3)
+    start.apply(completer).build().render(RenderingStrategies.MYBATIS3)
 
 fun select(vararg columns: BasicColumn, completer: SelectCompleter) =
     select(columns = columns, completer).render(RenderingStrategies.MYBATIS3)
