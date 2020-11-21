@@ -44,7 +44,7 @@ public class DeleteDSL<R> implements Buildable<R> {
     }
 
     public <T> DeleteWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
+            SqlCriterion...subCriteria) {
         whereBuilder.where(column, condition, subCriteria);
         return whereBuilder;
     }

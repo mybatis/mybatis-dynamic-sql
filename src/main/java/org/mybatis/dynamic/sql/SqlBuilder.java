@@ -235,37 +235,37 @@ public interface SqlBuilder {
     }
 
     static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>... subCriteria) {
+            SqlCriterion... subCriteria) {
         return WhereDSL.where().where(column, condition, subCriteria);
     }
 
     // where condition connectors
-    static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return SqlCriterion.withColumn(column)
+    static <T> SqlCriterion or(BindableColumn<T> column, VisitableCondition<T> condition) {
+        return ColumnBasedCriterion.withColumn(column)
                 .withConnector("or") //$NON-NLS-1$
                 .withCondition(condition)
                 .build();
     }
 
-    static <T> SqlCriterion<T> or(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.withColumn(column)
+    static <T> SqlCriterion or(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion...subCriteria) {
+        return ColumnBasedCriterion.withColumn(column)
                 .withConnector("or") //$NON-NLS-1$
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
 
-    static <T> SqlCriterion<T> and(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return SqlCriterion.withColumn(column)
+    static <T> SqlCriterion and(BindableColumn<T> column, VisitableCondition<T> condition) {
+        return ColumnBasedCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
                 .withCondition(condition)
                 .build();
     }
 
-    static <T> SqlCriterion<T> and(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
-        return SqlCriterion.withColumn(column)
+    static <T> SqlCriterion and(BindableColumn<T> column, VisitableCondition<T> condition,
+            SqlCriterion...subCriteria) {
+        return ColumnBasedCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))

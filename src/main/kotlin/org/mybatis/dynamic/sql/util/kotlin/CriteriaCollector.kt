@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.ColumnBasedCriterion
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
@@ -23,12 +24,12 @@ typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 
 @MyBatisDslMarker
 class CriteriaCollector {
-    val criteria = mutableListOf<SqlCriterion<*>>()
+    val criteria = mutableListOf<SqlCriterion>()
 
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
         apply {
             criteria.add(
-                SqlCriterion.withColumn(column)
+                ColumnBasedCriterion.withColumn(column)
                     .withCondition(condition)
                     .withConnector("and")
                     .build()
@@ -42,7 +43,7 @@ class CriteriaCollector {
     ) =
         apply {
             criteria.add(
-                SqlCriterion.withColumn(column)
+                ColumnBasedCriterion.withColumn(column)
                     .withCondition(condition)
                     .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .withConnector("and")
@@ -53,7 +54,7 @@ class CriteriaCollector {
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
         apply {
             criteria.add(
-                SqlCriterion.withColumn(column)
+                ColumnBasedCriterion.withColumn(column)
                     .withCondition(condition)
                     .withConnector("or")
                     .build()
@@ -67,7 +68,7 @@ class CriteriaCollector {
     ) =
         apply {
             criteria.add(
-                SqlCriterion.withColumn(column)
+                ColumnBasedCriterion.withColumn(column)
                     .withCondition(condition)
                     .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .withConnector("or")

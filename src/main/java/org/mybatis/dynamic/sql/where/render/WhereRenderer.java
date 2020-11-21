@@ -30,17 +30,17 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class WhereRenderer {
     private final WhereModel whereModel;
-    private final AtomicInteger sequence;
-    private final RenderingStrategy renderingStrategy;
-    private final TableAliasCalculator tableAliasCalculator;
-    private final String parameterName;
+    private final CriterionRenderer criterionRenderer;
 
     private WhereRenderer(Builder builder) {
         whereModel = Objects.requireNonNull(builder.whereModel);
-        sequence = Objects.requireNonNull(builder.sequence);
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
-        parameterName = builder.parameterName;
+
+        criterionRenderer = new CriterionRenderer.Builder()
+                .withSequence(builder.sequence)
+                .withRenderingStrategy(builder.renderingStrategy)
+                .withTableAliasCalculator(builder.tableAliasCalculator)
+                .withParameterName(builder.parameterName)
+                .build();
     }
 
     public Optional<WhereClauseProvider> render() {
@@ -68,14 +68,8 @@ public class WhereRenderer {
         return Optional.of(wcp);
     }
 
-    private Optional<RenderedCriterion> render(SqlCriterion<?> criterion) {
-        return CriterionRenderer.withCriterion(criterion)
-                .withSequence(sequence)
-                .withRenderingStrategy(renderingStrategy)
-                .withTableAliasCalculator(tableAliasCalculator)
-                .withParameterName(parameterName)
-                .build()
-                .render();
+    private Optional<RenderedCriterion> render(SqlCriterion criterion) {
+        return criterion.accept(criterionRenderer);
     }
 
     private String calculateWhereClause(FragmentCollector collector) {

@@ -56,7 +56,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
     }
 
     public <T> CountWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
+            SqlCriterion...subCriteria) {
         whereBuilder.where(column, condition, subCriteria);
         return whereBuilder;
     }

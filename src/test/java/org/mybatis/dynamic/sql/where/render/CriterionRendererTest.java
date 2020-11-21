@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.ColumnBasedCriterion;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -40,16 +40,18 @@ class CriterionRendererTest {
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
 
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
-        SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
+        ColumnBasedCriterion<Integer> criterion = ColumnBasedCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
-        FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
+
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
-                .build()
-                .render()
+                .build();
+
+        FragmentAndParameters fp = criterion.accept(renderer)
                 .get()
                 .fragmentAndParametersWithConnector();
 
@@ -62,7 +64,7 @@ class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
-        SqlCriterion<Integer> criterion = SqlCriterion.withColumn(column)
+        ColumnBasedCriterion<Integer> criterion = ColumnBasedCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
@@ -70,12 +72,13 @@ class CriterionRendererTest {
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
 
-        FragmentAndParameters fp = CriterionRenderer.withCriterion(criterion)
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
-                .build()
-                .render()
+                .build();
+
+        FragmentAndParameters fp = criterion.accept(renderer)
                 .get()
                 .fragmentAndParametersWithConnector();
 
