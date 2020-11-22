@@ -22,10 +22,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.ColumnBasedCriterion;
+import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlCriterionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.render.SelectRenderer;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
@@ -62,22 +65,32 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
     @Override
     public <T> Optional<RenderedCriterion> visit(ColumnBasedCriterion<T> criterion) {
-        return render(criterion);
-    }
-
-    private <T> Optional<RenderedCriterion> render(ColumnBasedCriterion<T> criterion) {
         RenderedCriterion rc;
         if (criterion.condition().shouldRender()) {
-            rc = renderWithInitialCondition(renderCondition(criterion),
-                    criterion, renderSubCriteria(criterion));
+            rc = renderWithInitialCondition(renderCondition(criterion), criterion);
         } else {
-            rc = renderWithoutInitialCondition(renderSubCriteria(criterion), criterion);
+            rc = renderWithoutInitialCondition(criterion);
         }
         return Optional.ofNullable(rc);
     }
 
+    @Override
+    public Optional<RenderedCriterion> visit(ExistsCriterion criterion) {
+        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(criterion.selectModel())
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(sequence)
+                .build()
+                .render();
+
+        FragmentAndParameters fp = FragmentAndParameters
+                .withFragment("exists (" + selectStatement.getSelectStatement() + ")") //$NON-NLS-1$ //$NON-NLS-2$
+                .withParameters(selectStatement.getParameters())
+                .build();
+
+        return Optional.of(renderWithInitialCondition(fp, criterion));
+    }
+
     private <T> FragmentAndParameters renderCondition(ColumnBasedCriterion<T> criterion) {
-        // TODO - reuse visitor
         WhereConditionVisitor<T> visitor = WhereConditionVisitor.withColumn(criterion.column())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
@@ -87,19 +100,15 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
         return criterion.condition().accept(visitor);
     }
 
-    private <T> List<RenderedCriterion> renderSubCriteria(ColumnBasedCriterion<T> criterion) {
-        return criterion.mapSubCriteria(this::renderSubCriterion)
+    private List<RenderedCriterion> renderSubCriteria(SqlCriterion criterion) {
+        return criterion.mapSubCriteria(c -> c.accept(this))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
 
-    private Optional<RenderedCriterion> renderSubCriterion(SqlCriterion subCriterion) {
-        return subCriterion.accept(this);
-    }
-
-    private RenderedCriterion renderWithoutInitialCondition(List<RenderedCriterion> subCriteria,
-                                                            SqlCriterion criterion) {
+    private RenderedCriterion renderWithoutInitialCondition(SqlCriterion criterion) {
+        List<RenderedCriterion> subCriteria = renderSubCriteria(criterion);
         if (subCriteria.isEmpty()) {
             return null;
         }
@@ -108,8 +117,8 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     private RenderedCriterion renderWithInitialCondition(FragmentAndParameters initialCondition,
-            SqlCriterion criterion,
-            List<RenderedCriterion> subCriteria) {
+            SqlCriterion criterion) {
+        List<RenderedCriterion> subCriteria = renderSubCriteria(criterion);
         if (subCriteria.isEmpty()) {
             return calculateRenderedCriterion(initialCondition, criterion);
         }
