@@ -31,6 +31,7 @@ import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.where.condition.Exists;
 
 /**
  * Renders a {@link SqlCriterion} to a {@link RenderedCriterion}. The process is complex because all conditions
@@ -74,14 +75,22 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
     @Override
     public Optional<RenderedCriterion> visit(ExistsCriterion criterion) {
-        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(criterion.selectModel())
+        Exists exists = criterion.exists();
+
+        SelectStatementProvider selectStatement = SelectRenderer
+                .withSelectModel(exists.selectModelBuilder().build())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
                 .build()
                 .render();
 
+        String prefix = "exists ("; //$NON-NLS-1$
+        if (exists.isNotExists()) {
+            prefix = "not " + prefix; //$NON-NLS-1$
+        }
+
         FragmentAndParameters initialCondition = FragmentAndParameters
-                .withFragment("exists (" + selectStatement.getSelectStatement() + ")") //$NON-NLS-1$ //$NON-NLS-2$
+                .withFragment(prefix + selectStatement.getSelectStatement() + ")") //$NON-NLS-1$
                 .withParameters(selectStatement.getParameters())
                 .build();
 

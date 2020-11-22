@@ -1,20 +1,19 @@
 package org.mybatis.dynamic.sql;
 
-import org.mybatis.dynamic.sql.select.SelectModel;
-import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.where.condition.Exists;
 
 import java.util.Objects;
 
 public class ExistsCriterion extends SqlCriterion {
-    private final Buildable<SelectModel> selectModelBuilder;
+    private final Exists exists;
 
     private ExistsCriterion(Builder builder) {
         super(builder);
-        this.selectModelBuilder = Objects.requireNonNull(builder.selectModelBuilder);
+        this.exists = Objects.requireNonNull(builder.exists);
     }
 
-    public SelectModel selectModel() {
-        return selectModelBuilder.build();
+    public Exists exists() {
+        return exists;
     }
 
     @Override
@@ -23,10 +22,10 @@ public class ExistsCriterion extends SqlCriterion {
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
-        private Buildable<SelectModel> selectModelBuilder;
+        private Exists exists;
 
-        public Builder withSelectModelBuilder(Buildable<SelectModel> selectModelBuilder) {
-            this.selectModelBuilder = selectModelBuilder;
+        public Builder withExists(Exists exists) {
+            this.exists = exists;
             return this;
         }
 

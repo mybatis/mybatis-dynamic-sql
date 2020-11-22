@@ -18,12 +18,10 @@ package org.mybatis.dynamic.sql.where;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.*;
-import org.mybatis.dynamic.sql.select.SelectModel;
-import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.where.condition.Exists;
 
 public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     private final List<SqlCriterion> criteria = new ArrayList<>();
@@ -51,22 +49,22 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public T where(Supplier<Buildable<SelectModel>> exists) {
+    public T where(Exists exists) {
         criteria.add(new ExistsCriterion.Builder()
-                .withSelectModelBuilder(exists.get())
+                .withExists(exists)
                 .build());
         return getThis();
     }
 
     @NotNull
-    public T where(Supplier<Buildable<SelectModel>> exists, SqlCriterion...subCriteria) {
+    public T where(Exists exists, SqlCriterion...subCriteria) {
         return where(exists, Arrays.asList(subCriteria));
     }
 
     @NotNull
-    public T where(Supplier<Buildable<SelectModel>> exists, List<SqlCriterion> subCriteria) {
+    public T where(Exists exists, List<SqlCriterion> subCriteria) {
         criteria.add(new ExistsCriterion.Builder()
-                .withSelectModelBuilder(exists.get())
+                .withExists(exists)
                 .withSubCriteria(subCriteria)
                 .build());
         return getThis();
