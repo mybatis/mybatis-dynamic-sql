@@ -57,54 +57,7 @@ import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.WhereDSL;
-import org.mybatis.dynamic.sql.where.condition.IsBetween;
-import org.mybatis.dynamic.sql.where.condition.IsBetweenWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
-import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn;
-import org.mybatis.dynamic.sql.where.condition.IsEqualToWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThan;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThanColumn;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualTo;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToColumn;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsIn;
-import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitive;
-import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitiveWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsInWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsInWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsLessThan;
-import org.mybatis.dynamic.sql.where.condition.IsLessThanColumn;
-import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualTo;
-import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToColumn;
-import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsLessThanWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsLike;
-import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitive;
-import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitiveWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsLikeWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsNotBetween;
-import org.mybatis.dynamic.sql.where.condition.IsNotBetweenWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsNotEqualTo;
-import org.mybatis.dynamic.sql.where.condition.IsNotEqualToColumn;
-import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsNotIn;
-import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive;
-import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitiveWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsNotInWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsNotLike;
-import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitive;
-import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitiveWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsNotLikeWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsNotNull;
-import org.mybatis.dynamic.sql.where.condition.IsNull;
+import org.mybatis.dynamic.sql.where.condition.*;
 
 public interface SqlBuilder {
 
@@ -241,7 +194,7 @@ public interface SqlBuilder {
 
     // where condition connectors
     static <T> SqlCriterion or(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return ColumnBasedCriterion.withColumn(column)
+        return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("or") //$NON-NLS-1$
                 .withCondition(condition)
                 .build();
@@ -249,7 +202,7 @@ public interface SqlBuilder {
 
     static <T> SqlCriterion or(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion...subCriteria) {
-        return ColumnBasedCriterion.withColumn(column)
+        return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("or") //$NON-NLS-1$
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
@@ -257,7 +210,7 @@ public interface SqlBuilder {
     }
 
     static <T> SqlCriterion and(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return ColumnBasedCriterion.withColumn(column)
+        return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
                 .withCondition(condition)
                 .build();
@@ -265,7 +218,7 @@ public interface SqlBuilder {
 
     static <T> SqlCriterion and(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion...subCriteria) {
-        return ColumnBasedCriterion.withColumn(column)
+        return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
@@ -375,6 +328,10 @@ public interface SqlBuilder {
     }
 
     // conditions for all data types
+    static Supplier<Buildable<SelectModel>> exists(Buildable<SelectModel> selectModelBuilder) {
+        return () -> selectModelBuilder;
+    }
+
     static <T> IsNull<T> isNull() {
         return new IsNull<>();
     }

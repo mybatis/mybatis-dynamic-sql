@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.mybatis3;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.sql.JDBCType;
 import java.util.Date;
@@ -25,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.ColumnBasedCriterion;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -41,7 +40,7 @@ class CriterionRendererTest {
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
 
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
-        ColumnBasedCriterion<Integer> criterion = ColumnBasedCriterion.withColumn(column)
+        ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
@@ -52,14 +51,11 @@ class CriterionRendererTest {
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build();
 
-        FragmentAndParameters fp = criterion.accept(renderer)
-                .get()
-                .fragmentAndParametersWithConnector();
-
-        assertAll(
-                () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}"),
-                () -> assertThat(fp.parameters()).hasSize(1)
-        );
+        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
+            FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
+            assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
+            assertThat(fp.parameters()).hasSize(1);
+        });
     }
 
     @Test
@@ -67,7 +63,7 @@ class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
-        ColumnBasedCriterion<Integer> criterion = ColumnBasedCriterion.withColumn(column)
+        ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
@@ -80,14 +76,11 @@ class CriterionRendererTest {
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
                 .build();
 
-        FragmentAndParameters fp = criterion.accept(renderer)
-                .get()
-                .fragmentAndParametersWithConnector();
-
-        assertAll(
-                () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}"),
-                () -> assertThat(fp.parameters()).hasSize(1)
-        );
+        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
+            FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
+            assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
+            assertThat(fp.parameters()).hasSize(1);
+        });
     }
 
     @Test
@@ -100,7 +93,7 @@ class CriterionRendererTest {
                 .withTypeHandler("foo.Bar")
                 .build();
         IsEqualTo<Date> condition = IsEqualTo.of(Date::new);
-        ColumnBasedCriterion<Date> criterion = ColumnBasedCriterion.withColumn(column)
+        ColumnAndConditionCriterion<Date> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
@@ -111,14 +104,11 @@ class CriterionRendererTest {
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build();
 
-        FragmentAndParameters fp = criterion.accept(renderer)
-                .get()
-                .fragmentAndParametersWithConnector();
-
-        assertAll(
-                () -> assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}"),
-                () -> assertThat(fp.parameters()).hasSize(1)
-        );
+        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
+            FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
+            assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}");
+            assertThat(fp.parameters()).hasSize(1);
+        });
     }
 
     @Test
@@ -126,7 +116,7 @@ class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER, "foo.Bar");
         IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
-        ColumnBasedCriterion<Integer> criterion = ColumnBasedCriterion.withColumn(column)
+        ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         AtomicInteger sequence = new AtomicInteger(1);
@@ -139,13 +129,10 @@ class CriterionRendererTest {
                 .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
                 .build();
 
-        FragmentAndParameters fp = criterion.accept(renderer)
-                .get()
-                .fragmentAndParametersWithConnector();
-
-        assertAll(
-                () -> assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}"),
-                () -> assertThat(fp.parameters()).hasSize(1)
-        );
+        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
+            FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
+            assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}");
+            assertThat(fp.parameters()).hasSize(1);
+        });
     }
 }

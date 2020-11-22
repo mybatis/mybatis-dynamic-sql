@@ -30,6 +30,10 @@ public class ExistsCriterion extends SqlCriterion {
             return this;
         }
 
+        public ExistsCriterion build() {
+            return new ExistsCriterion(this);
+        }
+
         @Override
         protected Builder getThis() {
             return this;

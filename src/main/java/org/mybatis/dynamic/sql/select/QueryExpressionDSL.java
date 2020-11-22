@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -68,6 +69,16 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion...subCriteria) {
         whereBuilder.where(column, condition, subCriteria);
+        return whereBuilder;
+    }
+
+    public QueryExpressionWhereBuilder where(Supplier<Buildable<SelectModel>> exists) {
+        whereBuilder.where(exists);
+        return whereBuilder;
+    }
+
+    public QueryExpressionWhereBuilder where(Supplier<Buildable<SelectModel>> exists, SqlCriterion...subCriteria) {
+        whereBuilder.where(exists, subCriteria);
         return whereBuilder;
     }
 

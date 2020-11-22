@@ -2,11 +2,11 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 
-public class ColumnBasedCriterion<T> extends SqlCriterion {
+public class ColumnAndConditionCriterion<T> extends SqlCriterion {
     private final BindableColumn<T> column;
     private final VisitableCondition<T> condition;
 
-    private ColumnBasedCriterion(Builder<T> builder) {
+    private ColumnAndConditionCriterion(Builder<T> builder) {
         super(builder);
         column = Objects.requireNonNull(builder.column);
         condition = Objects.requireNonNull(builder.condition);
@@ -48,8 +48,8 @@ public class ColumnBasedCriterion<T> extends SqlCriterion {
             return this;
         }
 
-        public ColumnBasedCriterion<T> build() {
-            return new ColumnBasedCriterion<>(this);
+        public ColumnAndConditionCriterion<T> build() {
+            return new ColumnAndConditionCriterion<>(this);
         }
     }
 }

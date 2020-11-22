@@ -1115,4 +1115,42 @@ class JoinMapperTest {
             assertThat(row).containsEntry("ITEM_ID", 22);
         }
     }
+
+    @Test
+    void testExists() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(itemMaster.allColumns())
+                    .from(itemMaster, "im")
+                    .where(exists(
+                            select(orderLine.allColumns())
+                                    .from(orderLine, "ol")
+                                    .where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
+                    ))
+                    .orderBy(itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select im.* from ItemMaster im"
+                    + " where exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
+                    + " order by item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(3);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).containsEntry("ITEM_ID", 22);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+
+            row = rows.get(1);
+            assertThat(row).containsEntry("ITEM_ID", 33);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+
+            row = rows.get(2);
+            assertThat(row).containsEntry("ITEM_ID", 44);
+            assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
+        }
+    }
 }

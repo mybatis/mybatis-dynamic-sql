@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.ColumnBasedCriterion;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlCriterionVisitor;
@@ -64,14 +64,12 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     @Override
-    public <T> Optional<RenderedCriterion> visit(ColumnBasedCriterion<T> criterion) {
-        RenderedCriterion rc;
+    public <T> Optional<RenderedCriterion> visit(ColumnAndConditionCriterion<T> criterion) {
         if (criterion.condition().shouldRender()) {
-            rc = renderWithInitialCondition(renderCondition(criterion), criterion);
+            return renderWithInitialCondition(renderCondition(criterion), criterion);
         } else {
-            rc = renderWithoutInitialCondition(criterion);
+            return renderWithoutInitialCondition(criterion);
         }
-        return Optional.ofNullable(rc);
     }
 
     @Override
@@ -82,15 +80,15 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                 .build()
                 .render();
 
-        FragmentAndParameters fp = FragmentAndParameters
+        FragmentAndParameters initialCondition = FragmentAndParameters
                 .withFragment("exists (" + selectStatement.getSelectStatement() + ")") //$NON-NLS-1$ //$NON-NLS-2$
                 .withParameters(selectStatement.getParameters())
                 .build();
 
-        return Optional.of(renderWithInitialCondition(fp, criterion));
+        return renderWithInitialCondition(initialCondition, criterion);
     }
 
-    private <T> FragmentAndParameters renderCondition(ColumnBasedCriterion<T> criterion) {
+    private <T> FragmentAndParameters renderCondition(ColumnAndConditionCriterion<T> criterion) {
         WhereConditionVisitor<T> visitor = WhereConditionVisitor.withColumn(criterion.column())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
@@ -107,16 +105,16 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                 .collect(Collectors.toList());
     }
 
-    private RenderedCriterion renderWithoutInitialCondition(SqlCriterion criterion) {
+    private Optional<RenderedCriterion> renderWithoutInitialCondition(SqlCriterion criterion) {
         List<RenderedCriterion> subCriteria = renderSubCriteria(criterion);
         if (subCriteria.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
         return calculateRenderedCriterion(subCriteria, criterion);
     }
 
-    private RenderedCriterion renderWithInitialCondition(FragmentAndParameters initialCondition,
+    private Optional<RenderedCriterion> renderWithInitialCondition(FragmentAndParameters initialCondition,
             SqlCriterion criterion) {
         List<RenderedCriterion> subCriteria = renderSubCriteria(criterion);
         if (subCriteria.isEmpty()) {
@@ -126,19 +124,19 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
         return calculateRenderedCriterion(initialCondition, criterion, subCriteria);
     }
 
-    private RenderedCriterion calculateRenderedCriterion(FragmentAndParameters initialCondition,
-                                                         SqlCriterion criterion) {
+    private Optional<RenderedCriterion> calculateRenderedCriterion(FragmentAndParameters initialCondition,
+            SqlCriterion criterion) {
         return fromFragmentAndParameters(initialCondition, criterion);
     }
 
-    private RenderedCriterion calculateRenderedCriterion(List<RenderedCriterion> subCriteria,
-                                                         SqlCriterion criterion) {
+    private Optional<RenderedCriterion> calculateRenderedCriterion(List<RenderedCriterion> subCriteria,
+            SqlCriterion criterion) {
         return calculateRenderedCriterion(subCriteria.get(0).fragmentAndParameters(),
                 criterion,
                 subCriteria.subList(1, subCriteria.size()));
     }
 
-    private RenderedCriterion calculateRenderedCriterion(FragmentAndParameters initialCondition,
+    private Optional<RenderedCriterion> calculateRenderedCriterion(FragmentAndParameters initialCondition,
             SqlCriterion criterion,
             List<RenderedCriterion> subCriteria) {
         FragmentCollector fc = subCriteria.stream()
@@ -158,14 +156,14 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
         }
     }
 
-    private RenderedCriterion fromFragmentAndParameters(FragmentAndParameters fragmentAndParameters,
-                                                        SqlCriterion criterion) {
+    private Optional<RenderedCriterion> fromFragmentAndParameters(FragmentAndParameters fragmentAndParameters,
+            SqlCriterion criterion) {
         RenderedCriterion.Builder builder = new RenderedCriterion.Builder()
                 .withFragmentAndParameters(fragmentAndParameters);
 
         criterion.connector().ifPresent(builder::withConnector);
 
-        return builder.build();
+        return Optional.of(builder.build());
     }
 
     public static class Builder {

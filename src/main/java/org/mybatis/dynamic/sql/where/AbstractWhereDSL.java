@@ -18,12 +18,12 @@ package org.mybatis.dynamic.sql.where;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.ColumnBasedCriterion;
-import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.*;
+import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.util.Buildable;
 
 public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     private final List<SqlCriterion> criteria = new ArrayList<>();
@@ -47,6 +47,28 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion> subCriteria) {
         addCriterion(column, condition, subCriteria);
+        return getThis();
+    }
+
+    @NotNull
+    public T where(Supplier<Buildable<SelectModel>> exists) {
+        criteria.add(new ExistsCriterion.Builder()
+                .withSelectModelBuilder(exists.get())
+                .build());
+        return getThis();
+    }
+
+    @NotNull
+    public T where(Supplier<Buildable<SelectModel>> exists, SqlCriterion...subCriteria) {
+        return where(exists, Arrays.asList(subCriteria));
+    }
+
+    @NotNull
+    public T where(Supplier<Buildable<SelectModel>> exists, List<SqlCriterion> subCriteria) {
+        criteria.add(new ExistsCriterion.Builder()
+                .withSelectModelBuilder(exists.get())
+                .withSubCriteria(subCriteria)
+                .build());
         return getThis();
     }
 
@@ -93,14 +115,14 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     private <S> void addCriterion(BindableColumn<S> column, VisitableCondition<S> condition) {
-        SqlCriterion criterion = ColumnBasedCriterion.withColumn(column)
+        SqlCriterion criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
         criteria.add(criterion);
     }
 
     private <S> void addCriterion(String connector, BindableColumn<S> column, VisitableCondition<S> condition) {
-        SqlCriterion criterion = ColumnBasedCriterion.withColumn(column)
+        SqlCriterion criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withConnector(connector)
                 .withCondition(condition)
                 .build();
@@ -109,7 +131,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     private <S> void addCriterion(BindableColumn<S> column, VisitableCondition<S> condition,
             List<SqlCriterion> subCriteria) {
-        SqlCriterion criterion = ColumnBasedCriterion.withColumn(column)
+        SqlCriterion criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
                 .build();
@@ -118,7 +140,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     private <S> void addCriterion(String connector, BindableColumn<S> column, VisitableCondition<S> condition,
             List<SqlCriterion> subCriteria) {
-        SqlCriterion criterion = ColumnBasedCriterion.withColumn(column)
+        SqlCriterion criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withConnector(connector)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
