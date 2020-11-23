@@ -329,11 +329,11 @@ public interface SqlBuilder {
 
     // conditions for all data types
     static Exists exists(Buildable<SelectModel> selectModelBuilder) {
-        return new Exists.Builder().withSelectModelBuilder(selectModelBuilder).build();
+        return Exists.exists().withSelectModelBuilder(selectModelBuilder).build();
     }
 
     static Exists notExists(Buildable<SelectModel> selectModelBuilder) {
-        return new Exists.Builder().withSelectModelBuilder(selectModelBuilder).isNotExists().build();
+        return Exists.notExists().withSelectModelBuilder(selectModelBuilder).build();
     }
 
     static <T> IsNull<T> isNull() {

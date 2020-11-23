@@ -84,13 +84,11 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                 .build()
                 .render();
 
-        String prefix = "exists ("; //$NON-NLS-1$
-        if (exists.isNotExists()) {
-            prefix = "not " + prefix; //$NON-NLS-1$
-        }
+        String fragment = exists.operator() + " (" //$NON-NLS-1$
+                + selectStatement.getSelectStatement() + ")"; //$NON-NLS-1$
 
         FragmentAndParameters initialCondition = FragmentAndParameters
-                .withFragment(prefix + selectStatement.getSelectStatement() + ")") //$NON-NLS-1$
+                .withFragment(fragment)
                 .withParameters(selectStatement.getParameters())
                 .build();
 
