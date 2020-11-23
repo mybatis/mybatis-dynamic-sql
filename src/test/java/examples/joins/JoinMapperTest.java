@@ -1153,4 +1153,34 @@ class JoinMapperTest {
             assertThat(row).containsEntry("DESCRIPTION", "Outfield Glove");
         }
     }
+
+    @Test
+    void testNotExists() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(itemMaster.allColumns())
+                    .from(itemMaster, "im")
+                    .where(notExists(
+                            select(orderLine.allColumns())
+                                    .from(orderLine, "ol")
+                                    .where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
+                    ))
+                    .orderBy(itemMaster.itemId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select im.* from ItemMaster im"
+                    + " where not exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
+                    + " order by item_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).containsEntry("ITEM_ID", 55);
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+        }
+    }
 }
