@@ -38,7 +38,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.WhereApplier;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>, R>
+public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>, R>
         implements Buildable<R> {
 
     private final String connector;
@@ -61,18 +61,9 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         tableAliases.put(table, tableAlias);
     }
 
-    public QueryExpressionWhereBuilder where() {
+    @Override
+    protected QueryExpressionWhereBuilder whereDsl() {
         return whereBuilder;
-    }
-
-    public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
-        whereBuilder.where(column, condition, subCriteria);
-        return whereBuilder;
-    }
-
-    public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return whereBuilder.applyWhere(whereApplier);
     }
 
     @NotNull

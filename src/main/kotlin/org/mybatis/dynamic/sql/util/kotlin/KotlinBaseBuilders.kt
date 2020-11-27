@@ -77,7 +77,7 @@ abstract class KotlinBaseBuilder<W : AbstractWhereDSL<W>, B : KotlinBaseBuilder<
 }
 
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, SelectModel>, W : AbstractWhereDSL<W>,
+abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<W, T, SelectModel>, W : AbstractWhereDSL<W>,
         B : KotlinBaseJoiningBuilder<T, W, B>> : KotlinBaseBuilder<W, B>() {
 
     fun join(table: SqlTable, joinCriteria: JoinReceiver) =
@@ -161,5 +161,5 @@ abstract class KotlinBaseJoiningBuilder<T : AbstractQueryExpressionDSL<T, Select
             JoinCollector().apply(joinCriteria).apply(block)
         }
 
-    protected abstract fun getDsl(): AbstractQueryExpressionDSL<T, SelectModel>
+    protected abstract fun getDsl(): AbstractQueryExpressionDSL<W, T, SelectModel>
 }

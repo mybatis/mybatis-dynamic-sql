@@ -20,14 +20,10 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
-import org.mybatis.dynamic.sql.where.WhereApplier;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 /**
@@ -39,7 +35,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
  *
  * @author Jeff Butler
  */
-public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> implements Buildable<R> {
+public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhereBuilder, CountDSL<R>, R> implements Buildable<R> {
 
     private final Function<SelectModel, R> adapterFunction;
     private final CountWhereBuilder whereBuilder = new CountWhereBuilder();
@@ -51,18 +47,9 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
-    public CountWhereBuilder where() {
+    @Override
+    protected CountWhereBuilder whereDsl() {
         return whereBuilder;
-    }
-
-    public <T> CountWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
-        whereBuilder.where(column, condition, subCriteria);
-        return whereBuilder;
-    }
-
-    public CountWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return whereBuilder.applyWhere(whereApplier);
     }
 
     @NotNull
