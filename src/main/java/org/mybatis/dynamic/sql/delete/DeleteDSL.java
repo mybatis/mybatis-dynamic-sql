@@ -37,7 +37,7 @@ public class DeleteDSL<R> extends AbstractWhereSupportingDSL<DeleteDSL<R>.Delete
     }
 
     @Override
-    protected DeleteWhereBuilder whereDsl() {
+    public DeleteWhereBuilder where() {
         return whereBuilder;
     }
 

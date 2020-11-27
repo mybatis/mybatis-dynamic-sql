@@ -13,10 +13,6 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractWhereSupportingDSL<W extends AbstractWhereDSL<?>> {
 
-    public W where() {
-        return whereDsl();
-    }
-
     public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
         return apply(w -> w.where(column, condition, subCriteria));
     }
@@ -26,10 +22,10 @@ public abstract class AbstractWhereSupportingDSL<W extends AbstractWhereDSL<?>> 
     }
 
     private W apply(Consumer<W> block) {
-        W dsl = whereDsl();
+        W dsl = where();
         block.accept(dsl);
         return dsl;
     }
 
-    protected abstract W whereDsl();
+    public abstract W where();
 }

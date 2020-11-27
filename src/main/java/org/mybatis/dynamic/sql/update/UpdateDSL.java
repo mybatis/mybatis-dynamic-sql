@@ -56,7 +56,7 @@ public class UpdateDSL<R> extends AbstractWhereSupportingDSL<UpdateDSL<R>.Update
     }
 
     @Override
-    protected UpdateWhereBuilder whereDsl() {
+    public UpdateWhereBuilder where() {
         return whereBuilder;
     }
 

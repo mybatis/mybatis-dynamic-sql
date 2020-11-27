@@ -62,7 +62,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     }
 
     @Override
-    protected QueryExpressionWhereBuilder whereDsl() {
+    public QueryExpressionWhereBuilder where() {
         return whereBuilder;
     }
 

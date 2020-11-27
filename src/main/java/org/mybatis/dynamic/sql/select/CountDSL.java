@@ -48,7 +48,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
     }
 
     @Override
-    protected CountWhereBuilder whereDsl() {
+    public CountWhereBuilder where() {
         return whereBuilder;
     }
 
