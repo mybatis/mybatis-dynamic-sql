@@ -30,11 +30,6 @@ public class WhereDSL extends AbstractWhereDSL<WhereDSL> {
         return new WhereDSL();
     }
 
-    @Override
-    protected WhereModel buildWhereModel() {
-        return super.internalBuild();
-    }
-
     public WhereModel build() {
         return buildWhereModel();
     }

@@ -132,7 +132,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
         @Override
         protected WhereModel buildWhereModel() {
-            return super.internalBuild();
+            return super.buildWhereModel();
         }
     }
 }
