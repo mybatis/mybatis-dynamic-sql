@@ -4,6 +4,8 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -14,6 +16,10 @@ import java.util.function.Consumer;
 public abstract class AbstractWhereSupportingDSL<W extends AbstractWhereDSL<?>> {
 
     public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion<?>...subCriteria) {
+        return where(column, condition, Arrays.asList(subCriteria));
+    }
+
+    public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition, List<SqlCriterion<?>> subCriteria) {
         return apply(w -> w.where(column, condition, subCriteria));
     }
 
