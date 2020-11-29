@@ -806,6 +806,26 @@ class AnimalDataTest {
     }
 
     @Test
+    void testLength() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(id, upper(animalName).as("animalname"), bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(Length.length(animalName), isGreaterThan(22))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(animals).hasSize(2);
+            assertThat(animals.get(0)).containsEntry("ANIMALNAME", "LESSER SHORT-TAILED SHREW");
+            assertThat(animals.get(1)).containsEntry("ANIMALNAME", "AFRICAN GIANT POUCHED RAT");
+        }
+    }
+
+    @Test
     void testNumericConstant() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
