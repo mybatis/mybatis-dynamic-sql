@@ -17,8 +17,10 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
+import org.mybatis.dynamic.sql.ExistsCriterion
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
+import org.mybatis.dynamic.sql.where.condition.Exists
 
 typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 
@@ -51,6 +53,27 @@ class CriteriaCollector {
             )
         }
 
+    fun and(exists: Exists) =
+        apply {
+            criteria.add(
+                ExistsCriterion.Builder()
+                    .withConnector("and")
+                    .withExists(exists)
+                    .build()
+            )
+        }
+
+    fun and(exists: Exists, criteriaReceiver: CriteriaReceiver) =
+        apply {
+            criteria.add(
+                ExistsCriterion.Builder()
+                    .withConnector("and")
+                    .withExists(exists)
+                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                    .build()
+            )
+        }
+
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
         apply {
             criteria.add(
@@ -72,6 +95,27 @@ class CriteriaCollector {
                     .withCondition(condition)
                     .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .withConnector("or")
+                    .build()
+            )
+        }
+
+    fun or(exists: Exists) =
+        apply {
+            criteria.add(
+                ExistsCriterion.Builder()
+                    .withConnector("or")
+                    .withExists(exists)
+                    .build()
+            )
+        }
+
+    fun or(exists: Exists, criteriaReceiver: CriteriaReceiver) =
+        apply {
+            criteria.add(
+                ExistsCriterion.Builder()
+                    .withConnector("or")
+                    .withExists(exists)
+                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .build()
             )
         }
