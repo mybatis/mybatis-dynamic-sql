@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
-import org.mybatis.dynamic.sql.where.AbstractWhereSupportingDSL
+import org.mybatis.dynamic.sql.where.AbstractWhereSupport
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 @DslMarker
@@ -31,7 +31,7 @@ typealias WhereApplier = AbstractWhereDSL<*>.() -> Unit
 
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseBuilder<D: AbstractWhereSupportingDSL<*>, B: KotlinBaseBuilder<D, B>> {
+abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilder<D, B>> {
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
         applyToWhere {
             where(column, condition)
