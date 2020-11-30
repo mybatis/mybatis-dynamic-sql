@@ -26,7 +26,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.*
+import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
 import org.mybatis.dynamic.sql.util.kotlin.exists
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.notExists
@@ -69,9 +70,9 @@ class ExistsTest {
                 orderBy(ItemMaster.itemId)
             }
 
-            val expectedStatement: String = ("select im.* from ItemMaster im"
-                    + " where exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " order by item_id")
+            val expectedStatement: String = "select im.* from ItemMaster im" +
+                    " where exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " order by item_id"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectManyMappedRows(selectStatement)
@@ -110,9 +111,9 @@ class ExistsTest {
                 orderBy(ItemMaster.itemId)
             }
 
-            val expectedStatement: String = ("select im.* from ItemMaster im"
-                    + " where not exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " order by item_id")
+            val expectedStatement: String = "select im.* from ItemMaster im" +
+                    " where not exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " order by item_id"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectManyMappedRows(selectStatement)
@@ -142,10 +143,10 @@ class ExistsTest {
                 orderBy(ItemMaster.itemId)
             }
 
-            val expectedStatement = ("select im.* from ItemMaster im"
-                    + " where im.item_id = #{parameters.p1,jdbcType=INTEGER}"
-                    + " and exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " order by item_id")
+            val expectedStatement = "select im.* from ItemMaster im" +
+                    " where im.item_id = #{parameters.p1,jdbcType=INTEGER}" +
+                    " and exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " order by item_id"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
@@ -178,11 +179,11 @@ class ExistsTest {
                 orderBy(ItemMaster.itemId)
             }
 
-            val expectedStatement = ("select im.* from ItemMaster im"
-                    + " where im.item_id = #{parameters.p1,jdbcType=INTEGER}"
-                    + " and (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " and im.item_id > #{parameters.p2,jdbcType=INTEGER})"
-                    + " order by item_id")
+            val expectedStatement = "select im.* from ItemMaster im" +
+                    " where im.item_id = #{parameters.p1,jdbcType=INTEGER}" +
+                    " and (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " and im.item_id > #{parameters.p2,jdbcType=INTEGER})" +
+                    " order by item_id"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectManyMappedRows(selectStatement)
@@ -212,10 +213,10 @@ class ExistsTest {
                 orderBy(ItemMaster.itemId)
             }
 
-            val expectedStatement = ("select im.* from ItemMaster im"
-                    + " where im.item_id = #{parameters.p1,jdbcType=INTEGER}"
-                    + " or exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " order by item_id")
+            val expectedStatement = "select im.* from ItemMaster im" +
+                    " where im.item_id = #{parameters.p1,jdbcType=INTEGER}" +
+                    " or exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " order by item_id"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectManyMappedRows(selectStatement)
@@ -262,11 +263,11 @@ class ExistsTest {
                 orderBy(ItemMaster.itemId)
             }
 
-            val expectedStatement = ("select im.* from ItemMaster im"
-                    + " where im.item_id = #{parameters.p1,jdbcType=INTEGER}"
-                    + " or (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " and im.item_id > #{parameters.p2,jdbcType=INTEGER})"
-                    + " order by item_id")
+            val expectedStatement = "select im.* from ItemMaster im" +
+                    " where im.item_id = #{parameters.p1,jdbcType=INTEGER}" +
+                    " or (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " and im.item_id > #{parameters.p2,jdbcType=INTEGER})" +
+                    " order by item_id"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectManyMappedRows(selectStatement)
@@ -312,10 +313,10 @@ class ExistsTest {
                 orderBy(ItemMaster.itemId)
             }
 
-            val expectedStatement = ("select im.* from ItemMaster im"
-                    + " where (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " or im.item_id = #{parameters.p1,jdbcType=INTEGER})"
-                    + " order by item_id")
+            val expectedStatement = "select im.* from ItemMaster im" +
+                    " where (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " or im.item_id = #{parameters.p1,jdbcType=INTEGER})" +
+                    " order by item_id"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectManyMappedRows(selectStatement)
@@ -356,10 +357,10 @@ class ExistsTest {
                 orderBy(ItemMaster.itemId)
             }
 
-            val expectedStatement = ("select im.* from ItemMaster im"
-                    + " where (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " and im.item_id = #{parameters.p1,jdbcType=INTEGER})"
-                    + " order by item_id")
+            val expectedStatement = "select im.* from ItemMaster im" +
+                    " where (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " and im.item_id = #{parameters.p1,jdbcType=INTEGER})" +
+                    " order by item_id"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectManyMappedRows(selectStatement)

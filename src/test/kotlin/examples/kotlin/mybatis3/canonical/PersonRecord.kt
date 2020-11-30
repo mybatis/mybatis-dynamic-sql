@@ -15,7 +15,7 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-import java.util.*
+import java.util.Date
 
 data class PersonRecord(
     var id: Int? = null,

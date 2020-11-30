@@ -17,7 +17,7 @@ package examples.kotlin.mybatis3.joins
 
 import org.mybatis.dynamic.sql.SqlTable
 import java.sql.JDBCType
-import java.util.*
+import java.util.Date
 
 object OrderMasterDynamicSQLSupport {
     object OrderMaster : SqlTable("OrderMaster") {

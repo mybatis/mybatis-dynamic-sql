@@ -15,7 +15,7 @@
  */
 package examples.kotlin.mybatis3.joins
 
-import java.util.*
+import java.util.Date
 
 data class OrderDetail(
     var orderId: Int? = null,

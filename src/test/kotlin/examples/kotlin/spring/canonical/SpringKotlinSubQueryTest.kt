@@ -22,12 +22,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.DerivedColumn
-import org.mybatis.dynamic.sql.SqlBuilder.*
+import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
+import org.mybatis.dynamic.sql.SqlBuilder.isLike
+import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
-import org.mybatis.dynamic.sql.util.kotlin.spring.select
 
 class SpringKotlinSubQueryTest {
     private lateinit var template: NamedParameterJdbcTemplate

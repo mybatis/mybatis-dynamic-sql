@@ -15,7 +15,7 @@
  */
 package examples.kotlin.spring.canonical
 
-import java.util.*
+import java.util.Date
 
 data class LastName(val name: String)
 

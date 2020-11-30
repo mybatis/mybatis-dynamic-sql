@@ -32,10 +32,20 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.*
+import org.mybatis.dynamic.sql.SqlBuilder.add
+import org.mybatis.dynamic.sql.SqlBuilder.constant
+import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isFalse
+import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
+import org.mybatis.dynamic.sql.SqlBuilder.isIn
+import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
+import org.mybatis.dynamic.sql.SqlBuilder.isLike
+import org.mybatis.dynamic.sql.SqlBuilder.isNotLike
+import org.mybatis.dynamic.sql.SqlBuilder.isNull
+import org.mybatis.dynamic.sql.SqlBuilder.isTrue
 import java.io.InputStreamReader
 import java.sql.DriverManager
-import java.util.*
+import java.util.Date
 
 class PersonMapperTest {
     private fun newSession(): SqlSession {

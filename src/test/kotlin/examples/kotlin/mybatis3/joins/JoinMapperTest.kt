@@ -29,10 +29,11 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.*
+import org.mybatis.dynamic.sql.SqlBuilder.equalTo
+import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 class JoinMapperTest {
 
@@ -535,7 +536,7 @@ class JoinMapperTest {
                 join(OrderLine, "ol") {
                     on(OrderMaster.orderId, equalTo(OrderLine.orderId))
                 }
-                rightJoin ({
+                rightJoin({
                     select(ItemMaster.allColumns()) {
                         from(ItemMaster)
                     }

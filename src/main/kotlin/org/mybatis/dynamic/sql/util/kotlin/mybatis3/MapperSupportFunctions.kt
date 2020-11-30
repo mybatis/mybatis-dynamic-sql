@@ -114,4 +114,3 @@ fun <T> selectOne(
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter) =
     mapper(update(table, completer))
-

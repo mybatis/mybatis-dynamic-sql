@@ -28,13 +28,33 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.occupatio
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.spring.*
+import org.mybatis.dynamic.sql.SqlBuilder.add
+import org.mybatis.dynamic.sql.SqlBuilder.constant
+import org.mybatis.dynamic.sql.SqlBuilder.equalTo
+import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
+import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThanOrEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
+import org.mybatis.dynamic.sql.SqlBuilder.isNotNull
+import org.mybatis.dynamic.sql.util.kotlin.spring.count
+import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
+import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.spring.insert
+import org.mybatis.dynamic.sql.util.kotlin.spring.insertBatch
+import org.mybatis.dynamic.sql.util.kotlin.spring.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple
+import org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect
+import org.mybatis.dynamic.sql.util.kotlin.spring.select
+import org.mybatis.dynamic.sql.util.kotlin.spring.selectDistinct
+import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne
+import org.mybatis.dynamic.sql.util.kotlin.spring.update
+import org.mybatis.dynamic.sql.util.kotlin.spring.withKeyHolder
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import org.springframework.jdbc.support.GeneratedKeyHolder
-import java.util.*
+import java.util.Date
 
 class CanonicalSpringKotlinTemplateDirectTest {
     private lateinit var template: NamedParameterJdbcTemplate
