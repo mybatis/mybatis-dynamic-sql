@@ -38,8 +38,8 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupportingDSL<*>, B: KotlinBase
         }
 
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver) =
-        applyToWhere(subCriteria) { sq ->
-            where(column, condition, sq)
+        applyToWhere(subCriteria) { sc ->
+            where(column, condition, sc)
         }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -53,8 +53,8 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupportingDSL<*>, B: KotlinBase
         }
 
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver) =
-        applyToWhere(subCriteria) { sq ->
-            and(column, condition, sq)
+        applyToWhere(subCriteria) { sc ->
+            and(column, condition, sc)
         }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -63,24 +63,24 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupportingDSL<*>, B: KotlinBase
         }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver) =
-        applyToWhere(subCriteria) { sq ->
-            or(column, condition, sq)
+        applyToWhere(subCriteria) { sc ->
+            or(column, condition, sc)
         }
 
     fun allRows() = self()
 
-    private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit): B {
-        getDsl().where().apply(block)
-        return self()
-    }
+    private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit) =
+        self().also{
+            getDsl().where().apply(block)
+        }
 
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
         block: AbstractWhereDSL<*>.(List<SqlCriterion<*>>) -> Unit
-    ): B {
-        getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
-        return self()
-    }
+    ) =
+        self().also {
+            getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
+        }
 
     protected abstract fun self(): B
 
@@ -163,17 +163,17 @@ abstract class KotlinBaseJoiningBuilder<D: AbstractQueryExpressionDSL<*, *, *>, 
             rightJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -> Unit): B {
-        getDsl().applyJoin(JoinCollector().apply(joinCriteria))
-        return self()
-    }
+    private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -> Unit) =
+        self().also {
+            getDsl().applyJoin(JoinCollector().apply(joinCriteria))
+        }
 
     private fun applyToDsl(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver,
         applyJoin: D.(KotlinQualifiedSubQueryBuilder, JoinCollector) -> Unit
-    ): B {
-        getDsl().applyJoin(KotlinQualifiedSubQueryBuilder().apply(subQuery), JoinCollector().apply(joinCriteria))
-        return self()
-    }
+    ) =
+        self().also {
+            getDsl().applyJoin(KotlinQualifiedSubQueryBuilder().apply(subQuery), JoinCollector().apply(joinCriteria))
+        }
 }
