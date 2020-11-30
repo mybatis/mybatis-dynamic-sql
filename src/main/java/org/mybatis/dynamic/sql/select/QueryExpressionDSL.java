@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
-import org.mybatis.dynamic.sql.where.AbstractWhereSupportingDSL;
+import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionDSL<R>
@@ -306,7 +306,7 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class JoinSpecificationFinisher extends AbstractWhereSupportingDSL<QueryExpressionWhereBuilder>
+    public class JoinSpecificationFinisher extends AbstractWhereSupport<QueryExpressionWhereBuilder>
             implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
 

@@ -24,11 +24,14 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
 /**
- * Base class for DSLs that support where clauses.
+ * Base class for DSLs that support where clauses - which is every DSL except Insert.
+ * The purpose of the class is to provide an implementation of the {@link AbstractWhereDSL}
+ * that is customized for a particular DSL, and to add the initiating common "where"
+ * methods.
  *
- * @param <W> the implementation of the Where DSL.
+ * @param <W> the implementation of the Where DSL customized for a particular SQL statement.
  */
-public abstract class AbstractWhereSupportingDSL<W extends AbstractWhereDSL<?>> {
+public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
 
     public abstract W where();
 
