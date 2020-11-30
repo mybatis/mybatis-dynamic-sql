@@ -20,7 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.*;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.ExistsCriterion;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.where.condition.Exists;
 
 public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {

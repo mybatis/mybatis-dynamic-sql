@@ -22,12 +22,12 @@ public class Exists {
         return selectModelBuilder;
     }
 
-    public static Builder exists() {
-        return new Builder();
+    public static Exists exists(Buildable<SelectModel> selectModelBuilder) {
+        return new Builder().withSelectModelBuilder(selectModelBuilder).build();
     }
 
-    public static Builder notExists() {
-        return new Builder().notExists();
+    public static Exists notExists(Buildable<SelectModel> selectModelBuilder) {
+        return new Builder().notExists().withSelectModelBuilder(selectModelBuilder).build();
     }
 
     public static class Builder {

@@ -57,7 +57,55 @@ import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.WhereDSL;
-import org.mybatis.dynamic.sql.where.condition.*;
+import org.mybatis.dynamic.sql.where.condition.Exists;
+import org.mybatis.dynamic.sql.where.condition.IsBetween;
+import org.mybatis.dynamic.sql.where.condition.IsBetweenWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn;
+import org.mybatis.dynamic.sql.where.condition.IsEqualToWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThan;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanColumn;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToColumn;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsIn;
+import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitive;
+import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitiveWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsInWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsInWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsLessThan;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanColumn;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToColumn;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsLike;
+import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitive;
+import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitiveWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsLikeWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsNotBetween;
+import org.mybatis.dynamic.sql.where.condition.IsNotBetweenWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualTo;
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualToColumn;
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsNotIn;
+import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive;
+import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitiveWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsNotInWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect;
+import org.mybatis.dynamic.sql.where.condition.IsNotLike;
+import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitive;
+import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitiveWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsNotLikeWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsNotNull;
+import org.mybatis.dynamic.sql.where.condition.IsNull;
 
 public interface SqlBuilder {
 
@@ -329,11 +377,11 @@ public interface SqlBuilder {
 
     // conditions for all data types
     static Exists exists(Buildable<SelectModel> selectModelBuilder) {
-        return Exists.exists().withSelectModelBuilder(selectModelBuilder).build();
+        return Exists.exists(selectModelBuilder);
     }
 
     static Exists notExists(Buildable<SelectModel> selectModelBuilder) {
-        return Exists.notExists().withSelectModelBuilder(selectModelBuilder).build();
+        return Exists.notExists(selectModelBuilder);
     }
 
     static <T> IsNull<T> isNull() {
