@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
+import org.mybatis.dynamic.sql.where.condition.Exists
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect
@@ -23,6 +24,12 @@ import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect
+
+fun exists(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    Exists.exists(KotlinSubQueryBuilder().apply(subQuery))
+
+fun notExists(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+    Exists.notExists(KotlinSubQueryBuilder().apply(subQuery))
 
 fun <T> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit) =
     IsEqualToWithSubselect.of<T>(KotlinSubQueryBuilder().apply(subQuery))

@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport
+import org.mybatis.dynamic.sql.where.condition.Exists
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 @DslMarker
@@ -42,6 +43,16 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilde
             where(column, condition, sc)
         }
 
+    fun where(exists: Exists) =
+        applyToWhere {
+            where(exists)
+        }
+
+    fun where(exists: Exists, subCriteria: CriteriaReceiver) =
+        applyToWhere(subCriteria) { sc ->
+            where(exists, sc)
+        }
+
     fun applyWhere(whereApplier: WhereApplier) =
         applyToWhere {
             applyWhere(whereApplier)
@@ -57,6 +68,16 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilde
             and(column, condition, sc)
         }
 
+    fun and(exists: Exists) =
+        applyToWhere {
+            and(exists)
+        }
+
+    fun and(exists: Exists, subCriteria: CriteriaReceiver) =
+        applyToWhere(subCriteria) { sc ->
+            and(exists, sc)
+        }
+
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
         applyToWhere {
             or(column, condition)
@@ -65,6 +86,16 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilde
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver) =
         applyToWhere(subCriteria) { sc ->
             or(column, condition, sc)
+        }
+
+    fun or(exists: Exists) =
+        applyToWhere {
+            or(exists)
+        }
+
+    fun or(exists: Exists, subCriteria: CriteriaReceiver) =
+        applyToWhere(subCriteria) { sc ->
+            or(exists, sc)
         }
 
     fun allRows() = self()

@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
@@ -37,10 +38,12 @@ public class Exists {
         return selectModelBuilder;
     }
 
+    @NotNull
     public static Exists exists(Buildable<SelectModel> selectModelBuilder) {
         return new Exists("exists", selectModelBuilder); //$NON-NLS-1$
     }
 
+    @NotNull
     public static Exists notExists(Buildable<SelectModel> selectModelBuilder) {
         return new Exists("not exists", selectModelBuilder); //$NON-NLS-1$
     }
