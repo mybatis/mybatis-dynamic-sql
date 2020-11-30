@@ -35,11 +35,11 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
-import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.condition.Exists;
 
-public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>, R>
+public class QueryExpressionDSL<R>
+        extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>, R>
         implements Buildable<R> {
 
     private final String connector;
@@ -62,28 +62,9 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         tableAliases.put(table, tableAlias);
     }
 
+    @Override
     public QueryExpressionWhereBuilder where() {
         return whereBuilder;
-    }
-
-    public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion...subCriteria) {
-        whereBuilder.where(column, condition, subCriteria);
-        return whereBuilder;
-    }
-
-    public QueryExpressionWhereBuilder where(Exists exists) {
-        whereBuilder.where(exists);
-        return whereBuilder;
-    }
-
-    public QueryExpressionWhereBuilder where(Exists exists, SqlCriterion...subCriteria) {
-        whereBuilder.where(exists, subCriteria);
-        return whereBuilder;
-    }
-
-    public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return whereBuilder.applyWhere(whereApplier);
     }
 
     @NotNull
@@ -304,9 +285,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return this;
         }
 
-        @Override
         protected WhereModel buildWhereModel() {
-            return super.internalBuild();
+            return internalBuild();
         }
     }
 
@@ -329,7 +309,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         }
     }
 
-    public class JoinSpecificationFinisher implements Buildable<R> {
+    public class JoinSpecificationFinisher extends AbstractWhereSupport<QueryExpressionWhereBuilder>
+            implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
 
         public JoinSpecificationFinisher(TableExpression table, BasicColumn joinColumn,
@@ -371,15 +352,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
 
         public QueryExpressionWhereBuilder where() {
             return QueryExpressionDSL.this.where();
-        }
-
-        public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-                SqlCriterion...subCriteria) {
-            return QueryExpressionDSL.this.where(column, condition, subCriteria);
-        }
-
-        public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
-            return QueryExpressionDSL.this.applyWhere(whereApplier);
         }
 
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {

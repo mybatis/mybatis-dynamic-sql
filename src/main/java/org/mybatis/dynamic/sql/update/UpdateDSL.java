@@ -42,7 +42,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.WhereApplier;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class UpdateDSL<R> implements Buildable<R> {
+public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereBuilder> implements Buildable<R> {
 
     private final Function<UpdateModel, R> adapterFunction;
     private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
@@ -58,18 +58,9 @@ public class UpdateDSL<R> implements Buildable<R> {
         return new SetClauseFinisher<>(column);
     }
 
+    @Override
     public UpdateWhereBuilder where() {
         return whereBuilder;
-    }
-
-    public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion...subCriteria) {
-        whereBuilder.where(column, condition, subCriteria);
-        return whereBuilder;
-    }
-
-    public UpdateWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return whereBuilder.applyWhere(whereApplier);
     }
 
     /**
@@ -165,9 +156,8 @@ public class UpdateDSL<R> implements Buildable<R> {
             return this;
         }
 
-        @Override
         protected WhereModel buildWhereModel() {
-            return super.internalBuild();
+            return internalBuild();
         }
     }
 }

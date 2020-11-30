@@ -39,7 +39,8 @@ import org.mybatis.dynamic.sql.where.WhereModel;
  *
  * @author Jeff Butler
  */
-public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> implements Buildable<R> {
+public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhereBuilder, CountDSL<R>, R>
+        implements Buildable<R> {
 
     private final Function<SelectModel, R> adapterFunction;
     private final CountWhereBuilder whereBuilder = new CountWhereBuilder();
@@ -51,18 +52,9 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
+    @Override
     public CountWhereBuilder where() {
         return whereBuilder;
-    }
-
-    public <T> CountWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion...subCriteria) {
-        whereBuilder.where(column, condition, subCriteria);
-        return whereBuilder;
-    }
-
-    public CountWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return whereBuilder.applyWhere(whereApplier);
     }
 
     @NotNull
@@ -143,9 +135,8 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>, R> impl
             return this;
         }
 
-        @Override
         protected WhereModel buildWhereModel() {
-            return super.internalBuild();
+            return internalBuild();
         }
     }
 }
