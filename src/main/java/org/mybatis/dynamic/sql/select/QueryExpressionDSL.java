@@ -39,7 +39,7 @@ import org.mybatis.dynamic.sql.where.WhereApplier;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.condition.Exists;
 
-public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>, R>
+public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>, R>
         implements Buildable<R> {
 
     private final String connector;
@@ -62,13 +62,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         tableAliases.put(table, tableAlias);
     }
 
+    @Override
     public QueryExpressionWhereBuilder where() {
-        return whereBuilder;
-    }
-
-    public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion...subCriteria) {
-        whereBuilder.where(column, condition, subCriteria);
         return whereBuilder;
     }
 
@@ -80,10 +75,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
     public QueryExpressionWhereBuilder where(Exists exists, SqlCriterion...subCriteria) {
         whereBuilder.where(exists, subCriteria);
         return whereBuilder;
-    }
-
-    public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return whereBuilder.applyWhere(whereApplier);
     }
 
     @NotNull
