@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.where.condition.Exists;
 
 /**
  * Base class for DSLs that support where clauses - which is every DSL except Insert.
@@ -41,6 +42,14 @@ public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
 
     public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition, List<SqlCriterion> subCriteria) {
         return apply(w -> w.where(column, condition, subCriteria));
+    }
+
+    public W where(Exists exists) {
+        return apply(w -> w.where(exists));
+    }
+
+    public W where(Exists exists, SqlCriterion...subCriteria) {
+        return apply(w -> w.where(exists, subCriteria));
     }
 
     public W applyWhere(WhereApplier whereApplier) {
