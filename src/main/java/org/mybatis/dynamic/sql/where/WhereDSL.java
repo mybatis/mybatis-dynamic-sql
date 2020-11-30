@@ -31,6 +31,6 @@ public class WhereDSL extends AbstractWhereDSL<WhereDSL> {
     }
 
     public WhereModel build() {
-        return buildWhereModel();
+        return internalBuild();
     }
 }

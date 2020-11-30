@@ -81,9 +81,8 @@ public class DeleteDSL<R> extends AbstractWhereSupportingDSL<DeleteDSL<R>.Delete
             return this;
         }
 
-        @Override
         protected WhereModel buildWhereModel() {
-            return super.buildWhereModel();
+            return internalBuild();
         }
     }
 }

@@ -153,9 +153,8 @@ public class UpdateDSL<R> extends AbstractWhereSupportingDSL<UpdateDSL<R>.Update
             return this;
         }
 
-        @Override
         protected WhereModel buildWhereModel() {
-            return super.buildWhereModel();
+            return internalBuild();
         }
     }
 }

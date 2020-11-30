@@ -23,22 +23,20 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
-import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.AbstractWhereSupportingDSL;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>, R>
+public class QueryExpressionDSL<R>
+        extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>, R>
         implements Buildable<R> {
 
     private final String connector;
@@ -284,9 +282,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return this;
         }
 
-        @Override
         protected WhereModel buildWhereModel() {
-            return super.buildWhereModel();
+            return internalBuild();
         }
     }
 
@@ -309,7 +306,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
         }
     }
 
-    public class JoinSpecificationFinisher implements Buildable<R> {
+    public class JoinSpecificationFinisher extends AbstractWhereSupportingDSL<QueryExpressionWhereBuilder>
+            implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
 
         public JoinSpecificationFinisher(TableExpression table, BasicColumn joinColumn,
@@ -349,17 +347,9 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return QueryExpressionDSL.this.build();
         }
 
+        @Override
         public QueryExpressionWhereBuilder where() {
             return QueryExpressionDSL.this.where();
-        }
-
-        public <T> QueryExpressionWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-                SqlCriterion<?>...subCriteria) {
-            return QueryExpressionDSL.this.where(column, condition, subCriteria);
-        }
-
-        public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
-            return QueryExpressionDSL.this.applyWhere(whereApplier);
         }
 
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
