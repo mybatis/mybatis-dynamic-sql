@@ -240,6 +240,14 @@ public interface SqlBuilder {
         return WhereDSL.where().where(column, condition, subCriteria);
     }
 
+    static WhereDSL where(Exists exists) {
+        return WhereDSL.where().where(exists);
+    }
+
+    static WhereDSL where(Exists exists, SqlCriterion... subCriteria) {
+        return WhereDSL.where().where(exists, subCriteria);
+    }
+
     // where condition connectors
     static <T> SqlCriterion or(BindableColumn<T> column, VisitableCondition<T> condition) {
         return ColumnAndConditionCriterion.withColumn(column)
@@ -257,6 +265,21 @@ public interface SqlBuilder {
                 .build();
     }
 
+    static SqlCriterion or(Exists exists) {
+        return new ExistsCriterion.Builder()
+                .withConnector("or") //$NON-NLS-1$
+                .withExists(exists)
+                .build();
+    }
+
+    static SqlCriterion or(Exists exists, SqlCriterion...subCriteria) {
+        return new ExistsCriterion.Builder()
+                .withConnector("or") //$NON-NLS-1$
+                .withExists(exists)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+    }
+
     static <T> SqlCriterion and(BindableColumn<T> column, VisitableCondition<T> condition) {
         return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
@@ -269,6 +292,21 @@ public interface SqlBuilder {
         return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
                 .withCondition(condition)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+    }
+
+    static SqlCriterion and(Exists exists) {
+        return new ExistsCriterion.Builder()
+                .withConnector("and") //$NON-NLS-1$
+                .withExists(exists)
+                .build();
+    }
+
+    static SqlCriterion and(Exists exists, SqlCriterion...subCriteria) {
+        return new ExistsCriterion.Builder()
+                .withConnector("and") //$NON-NLS-1$
+                .withExists(exists)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
