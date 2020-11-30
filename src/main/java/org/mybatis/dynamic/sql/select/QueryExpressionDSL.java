@@ -295,9 +295,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryExpressionDSL<QueryExpre
             return this;
         }
 
-        @Override
         protected WhereModel buildWhereModel() {
-            return super.internalBuild();
+            return internalBuild();
         }
     }
 
