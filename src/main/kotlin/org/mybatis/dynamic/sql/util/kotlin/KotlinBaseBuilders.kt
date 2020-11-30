@@ -76,7 +76,7 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilde
 
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
-        block: AbstractWhereDSL<*>.(List<SqlCriterion<*>>) -> Unit
+        block: AbstractWhereDSL<*>.(List<SqlCriterion>) -> Unit
     ) =
         self().also {
             getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
