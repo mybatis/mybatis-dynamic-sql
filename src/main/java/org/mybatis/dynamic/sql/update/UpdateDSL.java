@@ -138,9 +138,7 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
 
     public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> implements Buildable<R> {
 
-        public UpdateWhereBuilder() {
-            super();
-        }
+        private UpdateWhereBuilder() {}
 
         @NotNull
         @Override

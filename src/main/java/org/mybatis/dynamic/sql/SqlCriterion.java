@@ -42,7 +42,7 @@ public abstract class SqlCriterion {
 
     public abstract <R> R accept(SqlCriterionVisitor<R> visitor);
 
-    protected static abstract class AbstractBuilder<T extends AbstractBuilder<T>> {
+    protected abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
         private String connector;
         private final List<SqlCriterion> subCriteria = new ArrayList<>();
 

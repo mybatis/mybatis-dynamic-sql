@@ -66,9 +66,7 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
 
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> implements Buildable<R> {
 
-        private DeleteWhereBuilder() {
-            super();
-        }
+        private DeleteWhereBuilder() {}
 
         @NotNull
         @Override
