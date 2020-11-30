@@ -31,8 +31,12 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 
-public abstract class AbstractQueryExpressionDSL<T extends AbstractQueryExpressionDSL<T, R>, R>
+public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
+            T extends AbstractQueryExpressionDSL<W, T, R>, R>
+        extends AbstractWhereSupport<W>
         implements Buildable<R> {
 
     private final List<JoinSpecification.Builder> joinSpecificationBuilders = new ArrayList<>();

@@ -23,11 +23,8 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -39,10 +36,10 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
-import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class UpdateDSL<R> implements Buildable<R> {
+public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereBuilder> implements Buildable<R> {
 
     private final Function<UpdateModel, R> adapterFunction;
     private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
@@ -58,18 +55,9 @@ public class UpdateDSL<R> implements Buildable<R> {
         return new SetClauseFinisher<>(column);
     }
 
+    @Override
     public UpdateWhereBuilder where() {
         return whereBuilder;
-    }
-
-    public <T> UpdateWhereBuilder where(BindableColumn<T> column, VisitableCondition<T> condition,
-            SqlCriterion<?>...subCriteria) {
-        whereBuilder.where(column, condition, subCriteria);
-        return whereBuilder;
-    }
-
-    public UpdateWhereBuilder applyWhere(WhereApplier whereApplier) {
-        return whereBuilder.applyWhere(whereApplier);
     }
 
     /**
@@ -165,9 +153,8 @@ public class UpdateDSL<R> implements Buildable<R> {
             return this;
         }
 
-        @Override
         protected WhereModel buildWhereModel() {
-            return super.internalBuild();
+            return internalBuild();
         }
     }
 }
