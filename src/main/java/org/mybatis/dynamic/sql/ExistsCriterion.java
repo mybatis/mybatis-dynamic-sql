@@ -15,9 +15,9 @@
  */
 package org.mybatis.dynamic.sql;
 
-import org.mybatis.dynamic.sql.where.condition.Exists;
-
 import java.util.Objects;
+
+import org.mybatis.dynamic.sql.where.condition.Exists;
 
 public class ExistsCriterion extends SqlCriterion {
     private final Exists exists;

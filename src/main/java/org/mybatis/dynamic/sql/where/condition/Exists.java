@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
-
-import java.util.Objects;
 
 public class Exists {
     private final Buildable<SelectModel> selectModelBuilder;
