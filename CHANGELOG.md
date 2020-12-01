@@ -10,10 +10,12 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 
 The major themes of this release include the following:
 
-1. Add support for subqueries in select statements - both in a from clause and a join clause
+1. Add support for subqueries in select statements - both in a from clause and a join clause.
+1. Add support for the "exists" and "not exists" operator. This will work in "where" clauses anywhere
+   they are supported.
 1. Continue to refine the Kotlin DSL. Most changes to the Kotlin DSL are internal and should be source code
    compatible with existing code. There is one breaking change detailed below.
-1. Remove deprecated code from prior releases
+1. Remove deprecated code from prior releases.
 
 ### Breaking Change for Kotlin
 
@@ -37,16 +39,17 @@ The new code looks like this:
    }
 ```
   
-This change makes the Kotlin DSL a bit more consistent and also makes it easier to implement sub-query support in the
+This change makes the Kotlin DSL a bit more consistent and also makes it easier to implement subquery support in the
 Kotlin DSL.
 
 ### Added
 
 - Added a new sort specification that is useful in selects with joins ([#269](https://github.com/mybatis/mybatis-dynamic-sql/pull/269))
 - Added the capability to generate a camel cased alias for a column ([#272](https://github.com/mybatis/mybatis-dynamic-sql/issues/272))
-- Added sub-query support for "from" clauses in a select statement ([#282](https://github.com/mybatis/mybatis-dynamic-sql/pull/282))
+- Added subquery support for "from" clauses in a select statement ([#282](https://github.com/mybatis/mybatis-dynamic-sql/pull/282))
 - Added Kotlin DSL updates to support sub-queries in select statements, where clauses, and insert statements ([#282](https://github.com/mybatis/mybatis-dynamic-sql/pull/282))
-- Added sub-query support for "join" clauses in a select statement ([#293](https://github.com/mybatis/mybatis-dynamic-sql/pull/293))
+- Added subquery support for "join" clauses in a select statement ([#293](https://github.com/mybatis/mybatis-dynamic-sql/pull/293))
+- Added support for the "exists" and "not exists" operator in where clauses
 
 
 ## Release 1.2.1 - September 29, 2020

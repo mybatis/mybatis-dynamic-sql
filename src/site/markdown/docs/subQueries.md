@@ -1,7 +1,7 @@
 # Subquery Support
 The library currently supports subqueries in the following areas:
 
-1. In certain where conditions
+1. In where clauses - both with the "exists" operator and with column-based conditions
 1. In certain insert statements
 1. In update statements
 1. In the "from" clause of a select statement
@@ -116,6 +116,8 @@ where rownum() < #{parameters.p2}
 ## Subqueries in Where Conditions
 The library support subqueries in the following where conditions:
 
+- exists
+- notExists
 - isEqualTo
 - isNotEqualTo
 - isIn
@@ -125,7 +127,25 @@ The library support subqueries in the following where conditions:
 - isLessThan
 - isLessThanOrEqualTo
 
-A Java example is as follows:
+An example of an exists subquery is as follows:
+
+```java
+SelectStatementProvider selectStatement = select(itemMaster.allColumns())
+        .from(itemMaster, "im")
+        .where(exists(
+                select(orderLine.allColumns())
+                .from(orderLine, "ol")
+                .where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
+        ))
+        .orderBy(itemMaster.itemId)
+        .build()
+        .render(RenderingStrategies.MYBATIS3);
+```
+
+Note that we have to apply the qualifier for the outer query ("im") to the inner query. The qualifier
+for the inner query ("ol") is automatically applied.
+
+An example of a column based subquery is as follows:
 
 ```java
 SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -142,8 +162,23 @@ SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, bra
 
 ### Kotlin Support
 The library includes Kotlin versions of the where conditions that allow use of the Kotlin subquery builder. The Kotlin
-where conditions are in the `org.mybatis.dynamic.sql.util.kotlin` package. An example is as follows:
+where conditions are in the `org.mybatis.dynamic.sql.util.kotlin` package.
+ 
+An example of an exists subquery is as follows:
+```kotlin
+val selectStatement = select(ItemMaster.allColumns()) {
+    from(ItemMaster, "im")
+    where(exists {
+        select(OrderLine.allColumns()) {
+            from(OrderLine, "ol")
+            where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+        }
+    })
+    orderBy(ItemMaster.itemId)
+}
+```
 
+An example of a column based subquery is as follows:
 ```kotlin
 val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
     from(Person)
