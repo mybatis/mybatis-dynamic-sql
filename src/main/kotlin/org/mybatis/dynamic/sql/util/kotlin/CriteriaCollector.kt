@@ -18,9 +18,9 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
 import org.mybatis.dynamic.sql.ExistsCriterion
+import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
-import org.mybatis.dynamic.sql.where.condition.Exists
 
 typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 
@@ -53,22 +53,22 @@ class CriteriaCollector {
             )
         }
 
-    fun and(exists: Exists) =
+    fun and(existsPredicate: ExistsPredicate) =
         apply {
             criteria.add(
                 ExistsCriterion.Builder()
                     .withConnector("and")
-                    .withExists(exists)
+                    .withExistsPredicate(existsPredicate)
                     .build()
             )
         }
 
-    fun and(exists: Exists, criteriaReceiver: CriteriaReceiver) =
+    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver) =
         apply {
             criteria.add(
                 ExistsCriterion.Builder()
                     .withConnector("and")
-                    .withExists(exists)
+                    .withExistsPredicate(existsPredicate)
                     .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .build()
             )
@@ -99,22 +99,22 @@ class CriteriaCollector {
             )
         }
 
-    fun or(exists: Exists) =
+    fun or(existsPredicate: ExistsPredicate) =
         apply {
             criteria.add(
                 ExistsCriterion.Builder()
                     .withConnector("or")
-                    .withExists(exists)
+                    .withExistsPredicate(existsPredicate)
                     .build()
             )
         }
 
-    fun or(exists: Exists, criteriaReceiver: CriteriaReceiver) =
+    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver) =
         apply {
             criteria.add(
                 ExistsCriterion.Builder()
                     .withConnector("or")
-                    .withExists(exists)
+                    .withExistsPredicate(existsPredicate)
                     .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .build()
             )

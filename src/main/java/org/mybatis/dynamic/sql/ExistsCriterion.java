@@ -17,18 +17,16 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 
-import org.mybatis.dynamic.sql.where.condition.Exists;
-
 public class ExistsCriterion extends SqlCriterion {
-    private final Exists exists;
+    private final ExistsPredicate existsPredicate;
 
     private ExistsCriterion(Builder builder) {
         super(builder);
-        this.exists = Objects.requireNonNull(builder.exists);
+        this.existsPredicate = Objects.requireNonNull(builder.existsPredicate);
     }
 
-    public Exists exists() {
-        return exists;
+    public ExistsPredicate existsPredicate() {
+        return existsPredicate;
     }
 
     @Override
@@ -37,10 +35,10 @@ public class ExistsCriterion extends SqlCriterion {
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
-        private Exists exists;
+        private ExistsPredicate existsPredicate;
 
-        public Builder withExists(Exists exists) {
-            this.exists = exists;
+        public Builder withExistsPredicate(ExistsPredicate existsPredicate) {
+            this.existsPredicate = existsPredicate;
             return this;
         }
 

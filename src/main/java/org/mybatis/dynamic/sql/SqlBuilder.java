@@ -57,7 +57,6 @@ import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.WhereDSL;
-import org.mybatis.dynamic.sql.where.condition.Exists;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsBetweenWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
@@ -240,12 +239,12 @@ public interface SqlBuilder {
         return WhereDSL.where().where(column, condition, subCriteria);
     }
 
-    static WhereDSL where(Exists exists) {
-        return WhereDSL.where().where(exists);
+    static WhereDSL where(ExistsPredicate existsPredicate) {
+        return WhereDSL.where().where(existsPredicate);
     }
 
-    static WhereDSL where(Exists exists, SqlCriterion... subCriteria) {
-        return WhereDSL.where().where(exists, subCriteria);
+    static WhereDSL where(ExistsPredicate existsPredicate, SqlCriterion... subCriteria) {
+        return WhereDSL.where().where(existsPredicate, subCriteria);
     }
 
     // where condition connectors
@@ -265,17 +264,17 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static SqlCriterion or(Exists exists) {
+    static SqlCriterion or(ExistsPredicate existsPredicate) {
         return new ExistsCriterion.Builder()
                 .withConnector("or") //$NON-NLS-1$
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .build();
     }
 
-    static SqlCriterion or(Exists exists, SqlCriterion...subCriteria) {
+    static SqlCriterion or(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
         return new ExistsCriterion.Builder()
                 .withConnector("or") //$NON-NLS-1$
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
@@ -296,17 +295,17 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static SqlCriterion and(Exists exists) {
+    static SqlCriterion and(ExistsPredicate existsPredicate) {
         return new ExistsCriterion.Builder()
                 .withConnector("and") //$NON-NLS-1$
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .build();
     }
 
-    static SqlCriterion and(Exists exists, SqlCriterion...subCriteria) {
+    static SqlCriterion and(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
         return new ExistsCriterion.Builder()
                 .withConnector("and") //$NON-NLS-1$
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
@@ -414,12 +413,12 @@ public interface SqlBuilder {
     }
 
     // conditions for all data types
-    static Exists exists(Buildable<SelectModel> selectModelBuilder) {
-        return Exists.exists(selectModelBuilder);
+    static ExistsPredicate exists(Buildable<SelectModel> selectModelBuilder) {
+        return ExistsPredicate.exists(selectModelBuilder);
     }
 
-    static Exists notExists(Buildable<SelectModel> selectModelBuilder) {
-        return Exists.notExists(selectModelBuilder);
+    static ExistsPredicate notExists(Buildable<SelectModel> selectModelBuilder) {
+        return ExistsPredicate.notExists(selectModelBuilder);
     }
 
     static <T> IsNull<T> isNull() {

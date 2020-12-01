@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where.condition;
+package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 
@@ -21,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public class Exists {
+public class ExistsPredicate {
     private final Buildable<SelectModel> selectModelBuilder;
     private final String operator;
 
-    private Exists(String operator, Buildable<SelectModel> selectModelBuilder) {
+    private ExistsPredicate(String operator, Buildable<SelectModel> selectModelBuilder) {
         this.selectModelBuilder = Objects.requireNonNull(selectModelBuilder);
         this.operator = Objects.requireNonNull(operator);
     }
@@ -39,12 +39,12 @@ public class Exists {
     }
 
     @NotNull
-    public static Exists exists(Buildable<SelectModel> selectModelBuilder) {
-        return new Exists("exists", selectModelBuilder); //$NON-NLS-1$
+    public static ExistsPredicate exists(Buildable<SelectModel> selectModelBuilder) {
+        return new ExistsPredicate("exists", selectModelBuilder); //$NON-NLS-1$
     }
 
     @NotNull
-    public static Exists notExists(Buildable<SelectModel> selectModelBuilder) {
-        return new Exists("not exists", selectModelBuilder); //$NON-NLS-1$
+    public static ExistsPredicate notExists(Buildable<SelectModel> selectModelBuilder) {
+        return new ExistsPredicate("not exists", selectModelBuilder); //$NON-NLS-1$
     }
 }

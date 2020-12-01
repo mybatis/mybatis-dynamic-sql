@@ -16,13 +16,13 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport
-import org.mybatis.dynamic.sql.where.condition.Exists
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 @DslMarker
@@ -43,14 +43,14 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             where(column, condition, sc)
         }
 
-    fun where(exists: Exists) =
+    fun where(existsPredicate: ExistsPredicate) =
         applyToWhere {
-            where(exists)
+            where(existsPredicate)
         }
 
-    fun where(exists: Exists, subCriteria: CriteriaReceiver) =
+    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver) =
         applyToWhere(subCriteria) { sc ->
-            where(exists, sc)
+            where(existsPredicate, sc)
         }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -68,14 +68,14 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             and(column, condition, sc)
         }
 
-    fun and(exists: Exists) =
+    fun and(existsPredicate: ExistsPredicate) =
         applyToWhere {
-            and(exists)
+            and(existsPredicate)
         }
 
-    fun and(exists: Exists, subCriteria: CriteriaReceiver) =
+    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver) =
         applyToWhere(subCriteria) { sc ->
-            and(exists, sc)
+            and(existsPredicate, sc)
         }
 
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
@@ -88,14 +88,14 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             or(column, condition, sc)
         }
 
-    fun or(exists: Exists) =
+    fun or(existsPredicate: ExistsPredicate) =
         applyToWhere {
-            or(exists)
+            or(existsPredicate)
         }
 
-    fun or(exists: Exists, subCriteria: CriteriaReceiver) =
+    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver) =
         applyToWhere(subCriteria) { sc ->
-            or(exists, sc)
+            or(existsPredicate, sc)
         }
 
     fun allRows() = self()

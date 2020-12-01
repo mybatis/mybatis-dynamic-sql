@@ -23,9 +23,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.ExistsCriterion;
+import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
-import org.mybatis.dynamic.sql.where.condition.Exists;
 
 public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     private final List<SqlCriterion> criteria = new ArrayList<>();
@@ -53,22 +53,22 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public T where(Exists exists) {
+    public T where(ExistsPredicate existsPredicate) {
         criteria.add(new ExistsCriterion.Builder()
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .build());
         return getThis();
     }
 
     @NotNull
-    public T where(Exists exists, SqlCriterion...subCriteria) {
-        return where(exists, Arrays.asList(subCriteria));
+    public T where(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
+        return where(existsPredicate, Arrays.asList(subCriteria));
     }
 
     @NotNull
-    public T where(Exists exists, List<SqlCriterion> subCriteria) {
+    public T where(ExistsPredicate existsPredicate, List<SqlCriterion> subCriteria) {
         criteria.add(new ExistsCriterion.Builder()
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .withSubCriteria(subCriteria)
                 .build());
         return getThis();
@@ -105,24 +105,24 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public T and(Exists exists) {
+    public T and(ExistsPredicate existsPredicate) {
         criteria.add(new ExistsCriterion.Builder()
                 .withConnector("and") //$NON-NLS-1$
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .build());
         return getThis();
     }
 
     @NotNull
-    public T and(Exists exists, SqlCriterion...subCriteria) {
-        return and(exists, Arrays.asList(subCriteria));
+    public T and(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
+        return and(existsPredicate, Arrays.asList(subCriteria));
     }
 
     @NotNull
-    public T and(Exists exists, List<SqlCriterion> subCriteria) {
+    public T and(ExistsPredicate existsPredicate, List<SqlCriterion> subCriteria) {
         criteria.add(new ExistsCriterion.Builder()
                 .withConnector("and") //$NON-NLS-1$
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .withSubCriteria(subCriteria)
                 .build());
         return getThis();
@@ -153,24 +153,24 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public T or(Exists exists) {
+    public T or(ExistsPredicate existsPredicate) {
         criteria.add(new ExistsCriterion.Builder()
                 .withConnector("or") //$NON-NLS-1$
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .build());
         return getThis();
     }
 
     @NotNull
-    public T or(Exists exists, SqlCriterion...subCriteria) {
-        return or(exists, Arrays.asList(subCriteria));
+    public T or(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
+        return or(existsPredicate, Arrays.asList(subCriteria));
     }
 
     @NotNull
-    public T or(Exists exists, List<SqlCriterion> subCriteria) {
+    public T or(ExistsPredicate existsPredicate, List<SqlCriterion> subCriteria) {
         criteria.add(new ExistsCriterion.Builder()
                 .withConnector("or") //$NON-NLS-1$
-                .withExists(exists)
+                .withExistsPredicate(existsPredicate)
                 .withSubCriteria(subCriteria)
                 .build());
         return getThis();
