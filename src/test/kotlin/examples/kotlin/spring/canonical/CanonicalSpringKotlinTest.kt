@@ -28,13 +28,42 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.occupatio
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.*
-import org.mybatis.dynamic.sql.util.kotlin.spring.*
+import org.mybatis.dynamic.sql.SqlBuilder.add
+import org.mybatis.dynamic.sql.SqlBuilder.constant
+import org.mybatis.dynamic.sql.SqlBuilder.equalTo
+import org.mybatis.dynamic.sql.SqlBuilder.insert
+import org.mybatis.dynamic.sql.SqlBuilder.insertBatch
+import org.mybatis.dynamic.sql.SqlBuilder.insertMultiple
+import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
+import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThanOrEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
+import org.mybatis.dynamic.sql.SqlBuilder.isNotNull
+import org.mybatis.dynamic.sql.SqlBuilder.isNull
+import org.mybatis.dynamic.sql.SqlBuilder.max
+import org.mybatis.dynamic.sql.SqlBuilder.sortColumn
+import org.mybatis.dynamic.sql.util.kotlin.spring.count
+import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
+import org.mybatis.dynamic.sql.util.kotlin.spring.delete
+import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.spring.generalInsert
+import org.mybatis.dynamic.sql.util.kotlin.spring.insert
+import org.mybatis.dynamic.sql.util.kotlin.spring.insertBatch
+import org.mybatis.dynamic.sql.util.kotlin.spring.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple
+import org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect
+import org.mybatis.dynamic.sql.util.kotlin.spring.into
+import org.mybatis.dynamic.sql.util.kotlin.spring.select
+import org.mybatis.dynamic.sql.util.kotlin.spring.selectDistinct
+import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
+import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne
+import org.mybatis.dynamic.sql.util.kotlin.spring.update
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import org.springframework.jdbc.support.GeneratedKeyHolder
-import java.util.*
+import java.util.Date
 
 @Suppress("LargeClass", "MaxLineLength")
 class CanonicalSpringKotlinTest {
@@ -602,7 +631,8 @@ class CanonicalSpringKotlinTest {
                 "from Person " +
                 "where id = :p2 " +
                 "union " +
-                "select p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
+                "select p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, " +
+                    "p.address_id " +
                 "from Person p " +
                 "where p.id = :p3"
 
@@ -665,7 +695,8 @@ class CanonicalSpringKotlinTest {
                 "from Person " +
                 "where id = :p2 " +
                 "union " +
-                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
+                "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, " +
+                    "p.address_id " +
                 "from Person p " +
                 "where p.id = :p3"
 
@@ -730,7 +761,8 @@ class CanonicalSpringKotlinTest {
             "from Person " +
             "where id = :p2 " +
             "union all " +
-            "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, p.address_id " +
+            "select distinct p.id as A_ID, p.first_name, p.last_name, p.birth_date, p.employed, p.occupation, " +
+                    "p.address_id " +
             "from Person p " +
             "order by A_ID"
 
@@ -1174,7 +1206,6 @@ class CanonicalSpringKotlinTest {
         assertThat(returnedRecord).isNotNull()
         assertThat(returnedRecord!!.addressId).isEqualTo(3)
     }
-
 
     @Test
     fun testUpdateSetEqualToWhenPresent() {

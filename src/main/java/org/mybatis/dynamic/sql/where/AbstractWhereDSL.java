@@ -21,31 +21,56 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.ExistsCriterion;
+import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
 public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
-    private final List<SqlCriterion<?>> criteria = new ArrayList<>();
-
-    protected AbstractWhereDSL() {
-        super();
-    }
+    private final List<SqlCriterion> criteria = new ArrayList<>();
 
     @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition) {
-        addCriterion(column, condition);
+        criteria.add(ColumnAndConditionCriterion.withColumn(column)
+                .withCondition(condition)
+                .build());
         return getThis();
     }
 
     @NotNull
-    public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
-        addCriterion(column, condition, Arrays.asList(subCriteria));
+    public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion...subCriteria) {
+        return where(column, condition, Arrays.asList(subCriteria));
+    }
+
+    @NotNull
+    public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion> subCriteria) {
+        criteria.add(ColumnAndConditionCriterion.withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(subCriteria)
+                .build());
         return getThis();
     }
 
     @NotNull
-    public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
-        addCriterion(column, condition, subCriteria);
+    public T where(ExistsPredicate existsPredicate) {
+        criteria.add(new ExistsCriterion.Builder()
+                .withExistsPredicate(existsPredicate)
+                .build());
+        return getThis();
+    }
+
+    @NotNull
+    public T where(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
+        return where(existsPredicate, Arrays.asList(subCriteria));
+    }
+
+    @NotNull
+    public T where(ExistsPredicate existsPredicate, List<SqlCriterion> subCriteria) {
+        criteria.add(new ExistsCriterion.Builder()
+                .withExistsPredicate(existsPredicate)
+                .withSubCriteria(subCriteria)
+                .build());
         return getThis();
     }
 
@@ -57,72 +82,98 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition) {
-        addCriterion("and", column, condition); //$NON-NLS-1$
+        criteria.add(ColumnAndConditionCriterion.withColumn(column)
+                .withConnector("and") //$NON-NLS-1$
+                .withCondition(condition)
+                .build());
         return getThis();
     }
 
     @NotNull
-    public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
-        addCriterion("and", column, condition, Arrays.asList(subCriteria)); //$NON-NLS-1$
+    public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion...subCriteria) {
+        return and(column, condition, Arrays.asList(subCriteria));
+    }
+
+    @NotNull
+    public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion> subCriteria) {
+        criteria.add(ColumnAndConditionCriterion.withColumn(column)
+                .withConnector("and") //$NON-NLS-1$
+                .withCondition(condition)
+                .withSubCriteria(subCriteria)
+                .build());
         return getThis();
     }
 
     @NotNull
-    public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
-        addCriterion("and", column, condition, subCriteria); //$NON-NLS-1$
+    public T and(ExistsPredicate existsPredicate) {
+        criteria.add(new ExistsCriterion.Builder()
+                .withConnector("and") //$NON-NLS-1$
+                .withExistsPredicate(existsPredicate)
+                .build());
+        return getThis();
+    }
+
+    @NotNull
+    public T and(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
+        return and(existsPredicate, Arrays.asList(subCriteria));
+    }
+
+    @NotNull
+    public T and(ExistsPredicate existsPredicate, List<SqlCriterion> subCriteria) {
+        criteria.add(new ExistsCriterion.Builder()
+                .withConnector("and") //$NON-NLS-1$
+                .withExistsPredicate(existsPredicate)
+                .withSubCriteria(subCriteria)
+                .build());
         return getThis();
     }
 
     @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition) {
-        addCriterion("or", column, condition); //$NON-NLS-1$
+        criteria.add(ColumnAndConditionCriterion.withColumn(column)
+                .withConnector("or") //$NON-NLS-1$
+                .withCondition(condition)
+                .build());
         return getThis();
     }
 
     @NotNull
-    public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion<?>...subCriteria) {
-        addCriterion("or", column, condition, Arrays.asList(subCriteria)); //$NON-NLS-1$
+    public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion...subCriteria) {
+        return or(column, condition, Arrays.asList(subCriteria));
+    }
+
+    @NotNull
+    public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion> subCriteria) {
+        criteria.add(ColumnAndConditionCriterion.withColumn(column)
+                .withConnector("or") //$NON-NLS-1$
+                .withCondition(condition)
+                .withSubCriteria(subCriteria)
+                .build());
         return getThis();
     }
 
     @NotNull
-    public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition, List<SqlCriterion<?>> subCriteria) {
-        addCriterion("or", column, condition, subCriteria); //$NON-NLS-1$
+    public T or(ExistsPredicate existsPredicate) {
+        criteria.add(new ExistsCriterion.Builder()
+                .withConnector("or") //$NON-NLS-1$
+                .withExistsPredicate(existsPredicate)
+                .build());
         return getThis();
     }
 
-    private <S> void addCriterion(BindableColumn<S> column, VisitableCondition<S> condition) {
-        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
-                .withCondition(condition)
-                .build();
-        criteria.add(criterion);
+    @NotNull
+    public T or(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
+        return or(existsPredicate, Arrays.asList(subCriteria));
     }
 
-    private <S> void addCriterion(String connector, BindableColumn<S> column, VisitableCondition<S> condition) {
-        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
-                .withConnector(connector)
-                .withCondition(condition)
-                .build();
-        criteria.add(criterion);
-    }
-
-    private <S> void addCriterion(BindableColumn<S> column, VisitableCondition<S> condition,
-            List<SqlCriterion<?>> subCriteria) {
-        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
-                .withCondition(condition)
+    @NotNull
+    public T or(ExistsPredicate existsPredicate, List<SqlCriterion> subCriteria) {
+        criteria.add(new ExistsCriterion.Builder()
+                .withConnector("or") //$NON-NLS-1$
+                .withExistsPredicate(existsPredicate)
                 .withSubCriteria(subCriteria)
-                .build();
-        criteria.add(criterion);
-    }
-
-    private <S> void addCriterion(String connector, BindableColumn<S> column, VisitableCondition<S> condition,
-            List<SqlCriterion<?>> subCriteria) {
-        SqlCriterion<S> criterion = SqlCriterion.withColumn(column)
-                .withConnector(connector)
-                .withCondition(condition)
-                .withSubCriteria(subCriteria)
-                .build();
-        criteria.add(criterion);
+                .build());
+        return getThis();
     }
 
     protected WhereModel internalBuild() {

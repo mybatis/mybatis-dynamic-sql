@@ -23,11 +23,14 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstNa
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
-import org.mybatis.dynamic.sql.SqlBuilder.*
+import org.mybatis.dynamic.sql.SqlBuilder.equalTo
+import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.select
+import org.mybatis.dynamic.sql.SqlBuilder.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
 
 fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? {
     val start = KotlinSelectBuilder(select(id.`as`("A_ID"), firstName, lastName, birthDate,

@@ -41,18 +41,26 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.*
+import org.mybatis.dynamic.sql.SqlBuilder.count
+import org.mybatis.dynamic.sql.SqlBuilder.equalTo
+import org.mybatis.dynamic.sql.SqlBuilder.insert
+import org.mybatis.dynamic.sql.SqlBuilder.insertMultiple
+import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
+import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
+import org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isNotNull
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.into
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 import java.io.InputStreamReader
 import java.sql.DriverManager
-import java.util.*
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
+import java.util.Date
 
 @Suppress("MaxLineLength", "LargeClass")
 class GeneralKotlinTest {

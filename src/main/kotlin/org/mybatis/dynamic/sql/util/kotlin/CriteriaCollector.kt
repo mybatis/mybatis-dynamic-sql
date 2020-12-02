@@ -16,6 +16,9 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
+import org.mybatis.dynamic.sql.ExistsCriterion
+import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
@@ -23,12 +26,12 @@ typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 
 @MyBatisDslMarker
 class CriteriaCollector {
-    val criteria = mutableListOf<SqlCriterion<*>>()
+    val criteria = mutableListOf<SqlCriterion>()
 
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
         apply {
             criteria.add(
-                SqlCriterion.withColumn(column)
+                ColumnAndConditionCriterion.withColumn(column)
                     .withCondition(condition)
                     .withConnector("and")
                     .build()
@@ -42,7 +45,7 @@ class CriteriaCollector {
     ) =
         apply {
             criteria.add(
-                SqlCriterion.withColumn(column)
+                ColumnAndConditionCriterion.withColumn(column)
                     .withCondition(condition)
                     .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .withConnector("and")
@@ -50,10 +53,31 @@ class CriteriaCollector {
             )
         }
 
+    fun and(existsPredicate: ExistsPredicate) =
+        apply {
+            criteria.add(
+                ExistsCriterion.Builder()
+                    .withConnector("and")
+                    .withExistsPredicate(existsPredicate)
+                    .build()
+            )
+        }
+
+    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver) =
+        apply {
+            criteria.add(
+                ExistsCriterion.Builder()
+                    .withConnector("and")
+                    .withExistsPredicate(existsPredicate)
+                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                    .build()
+            )
+        }
+
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
         apply {
             criteria.add(
-                SqlCriterion.withColumn(column)
+                ColumnAndConditionCriterion.withColumn(column)
                     .withCondition(condition)
                     .withConnector("or")
                     .build()
@@ -67,10 +91,31 @@ class CriteriaCollector {
     ) =
         apply {
             criteria.add(
-                SqlCriterion.withColumn(column)
+                ColumnAndConditionCriterion.withColumn(column)
                     .withCondition(condition)
                     .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .withConnector("or")
+                    .build()
+            )
+        }
+
+    fun or(existsPredicate: ExistsPredicate) =
+        apply {
+            criteria.add(
+                ExistsCriterion.Builder()
+                    .withConnector("or")
+                    .withExistsPredicate(existsPredicate)
+                    .build()
+            )
+        }
+
+    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver) =
+        apply {
+            criteria.add(
+                ExistsCriterion.Builder()
+                    .withConnector("or")
+                    .withExistsPredicate(existsPredicate)
+                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .build()
             )
         }

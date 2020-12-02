@@ -31,13 +31,13 @@ public class WhereModel {
     private static final WhereClauseProvider EMPTY_WHERE_CLAUSE =
             new WhereClauseProvider.Builder().withWhereClause("").build(); //$NON-NLS-1$
 
-    private final List<SqlCriterion<?>> criteria = new ArrayList<>();
+    private final List<SqlCriterion> criteria = new ArrayList<>();
 
-    private WhereModel(List<SqlCriterion<?>> criteria) {
+    private WhereModel(List<SqlCriterion> criteria) {
         this.criteria.addAll(criteria);
     }
 
-    public <R> Stream<R> mapCriteria(Function<SqlCriterion<?>, R> mapper) {
+    public <R> Stream<R> mapCriteria(Function<SqlCriterion, R> mapper) {
         return criteria.stream().map(mapper);
     }
 
@@ -92,7 +92,7 @@ public class WhereModel {
                 .orElse(EMPTY_WHERE_CLAUSE);
     }
 
-    public static WhereModel of(List<SqlCriterion<?>> criteria) {
+    public static WhereModel of(List<SqlCriterion> criteria) {
         return new WhereModel(criteria);
     }
 }

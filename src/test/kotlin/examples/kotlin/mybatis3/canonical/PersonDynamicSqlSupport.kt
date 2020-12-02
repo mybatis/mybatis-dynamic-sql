@@ -17,7 +17,7 @@ package examples.kotlin.mybatis3.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
 import java.sql.JDBCType
-import java.util.*
+import java.util.Date
 
 object PersonDynamicSqlSupport {
     object Person : SqlTable("Person") {

@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
@@ -31,7 +32,7 @@ typealias WhereApplier = AbstractWhereDSL<*>.() -> Unit
 
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilder<D, B>> {
+abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuilder<D, B>> {
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
         applyToWhere {
             where(column, condition)
@@ -40,6 +41,16 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilde
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver) =
         applyToWhere(subCriteria) { sc ->
             where(column, condition, sc)
+        }
+
+    fun where(existsPredicate: ExistsPredicate) =
+        applyToWhere {
+            where(existsPredicate)
+        }
+
+    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver) =
+        applyToWhere(subCriteria) { sc ->
+            where(existsPredicate, sc)
         }
 
     fun applyWhere(whereApplier: WhereApplier) =
@@ -57,6 +68,16 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilde
             and(column, condition, sc)
         }
 
+    fun and(existsPredicate: ExistsPredicate) =
+        applyToWhere {
+            and(existsPredicate)
+        }
+
+    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver) =
+        applyToWhere(subCriteria) { sc ->
+            and(existsPredicate, sc)
+        }
+
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
         applyToWhere {
             or(column, condition)
@@ -67,16 +88,26 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilde
             or(column, condition, sc)
         }
 
+    fun or(existsPredicate: ExistsPredicate) =
+        applyToWhere {
+            or(existsPredicate)
+        }
+
+    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver) =
+        applyToWhere(subCriteria) { sc ->
+            or(existsPredicate, sc)
+        }
+
     fun allRows() = self()
 
     private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit) =
-        self().also{
+        self().also {
             getDsl().where().apply(block)
         }
 
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
-        block: AbstractWhereDSL<*>.(List<SqlCriterion<*>>) -> Unit
+        block: AbstractWhereDSL<*>.(List<SqlCriterion>) -> Unit
     ) =
         self().also {
             getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
@@ -88,8 +119,8 @@ abstract class KotlinBaseBuilder<D: AbstractWhereSupport<*>, B: KotlinBaseBuilde
 }
 
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseJoiningBuilder<D: AbstractQueryExpressionDSL<*, *, *>, B: KotlinBaseJoiningBuilder<D, B>>
-    : KotlinBaseBuilder<D, B>() {
+abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *, *>, B : KotlinBaseJoiningBuilder<D, B>> :
+    KotlinBaseBuilder<D, B>() {
 
     fun join(table: SqlTable, joinCriteria: JoinReceiver) =
         applyToDsl(joinCriteria) { jc ->

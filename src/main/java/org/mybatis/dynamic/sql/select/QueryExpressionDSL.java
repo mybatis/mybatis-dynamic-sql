@@ -240,8 +240,7 @@ public class QueryExpressionDSL<R>
 
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<R> {
-        private QueryExpressionWhereBuilder() {
-        }
+        private QueryExpressionWhereBuilder() {}
 
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();

@@ -17,9 +17,7 @@ package org.mybatis.dynamic.sql.where;
 
 public class WhereDSL extends AbstractWhereDSL<WhereDSL> {
 
-    private WhereDSL() {
-        super();
-    }
+    private WhereDSL() {}
 
     @Override
     protected WhereDSL getThis() {

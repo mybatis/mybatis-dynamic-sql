@@ -49,11 +49,11 @@ sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T>> : Build
     protected abstract fun self(): T
 }
 
-class KotlinSubQueryBuilder: KotlinBaseSubQueryBuilder<KotlinSubQueryBuilder>() {
+class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinSubQueryBuilder>() {
     override fun self() = this
 }
 
-class KotlinQualifiedSubQueryBuilder: KotlinBaseSubQueryBuilder<KotlinQualifiedSubQueryBuilder>() {
+class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinQualifiedSubQueryBuilder>() {
     var correlationName: String? = null
 
     operator fun String.unaryPlus(): KotlinQualifiedSubQueryBuilder {
@@ -65,12 +65,12 @@ class KotlinQualifiedSubQueryBuilder: KotlinBaseSubQueryBuilder<KotlinQualifiedS
 }
 
 class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinInsertSelectSubQueryBuilder>() {
-    lateinit var columnList : List<SqlColumn<*>>
+    lateinit var columnList: List<SqlColumn<*>>
 
-    fun columns(vararg columnList : SqlColumn<*>) =
+    fun columns(vararg columnList: SqlColumn<*>) =
         columns(columnList.asList())
 
-    fun columns(columnList : List<SqlColumn<*>>) =
+    fun columns(columnList: List<SqlColumn<*>>) =
         apply {
             this.columnList = columnList
         }

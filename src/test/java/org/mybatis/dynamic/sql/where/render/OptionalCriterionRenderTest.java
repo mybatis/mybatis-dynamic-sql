@@ -180,4 +180,125 @@ class OptionalCriterionRenderTest {
             () -> assertThat(whereClause.getWhereClause()).isEqualTo("where (first_name = :p1 or last_name = :p2)")
         );
     }
+
+    @Test
+    void testWhereExists() {
+        WhereClauseProvider whereClause = where(
+                exists(
+                        select(person.allColumns())
+                        .from(person)
+                        .where(id, isEqualTo(3))
+                ))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        assertThat(whereClause.getParameters()).containsExactly(entry("p1", 3));
+        assertThat(whereClause.getWhereClause()).isEqualTo("where exists (select * from person where id = :p1)");
+    }
+
+    @Test
+    void testWhereExistsOr() {
+        WhereClauseProvider whereClause = where(
+                exists(
+                        select(person.allColumns())
+                        .from(person)
+                        .where(id, isEqualTo(3))
+                ),
+                or(exists(
+                        select(person.allColumns())
+                        .from(person)
+                        .where(id, isEqualTo(4))
+                )))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        String expected = "where (exists (select * from person where id = :p1) " +
+                "or exists (select * from person where id = :p2))";
+
+        assertThat(whereClause.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4));
+        assertThat(whereClause.getWhereClause()).isEqualTo(expected);
+    }
+
+    @Test
+    void testWhereExistsOrOr() {
+        WhereClauseProvider whereClause = where(
+                exists(
+                        select(person.allColumns())
+                                .from(person)
+                                .where(id, isEqualTo(3))
+                ),
+                or(exists(
+                        select(person.allColumns())
+                                .from(person)
+                                .where(id, isEqualTo(4))
+                ), or(exists(
+                        select(person.allColumns())
+                                .from(person)
+                                .where(id, isEqualTo(5))
+
+                        )
+                )))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        String expected = "where (exists (select * from person where id = :p1) " +
+                "or (exists (select * from person where id = :p2) " +
+                "or exists (select * from person where id = :p3)))";
+
+        assertThat(whereClause.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
+        assertThat(whereClause.getWhereClause()).isEqualTo(expected);
+    }
+
+    @Test
+    void testWhereExistsAnd() {
+        WhereClauseProvider whereClause = where(
+                exists(
+                        select(person.allColumns())
+                                .from(person)
+                                .where(id, isEqualTo(3))
+                ),
+                and(exists(
+                        select(person.allColumns())
+                                .from(person)
+                                .where(id, isEqualTo(4))
+                )))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        String expected = "where (exists (select * from person where id = :p1) " +
+                "and exists (select * from person where id = :p2))";
+
+        assertThat(whereClause.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4));
+        assertThat(whereClause.getWhereClause()).isEqualTo(expected);
+    }
+
+    @Test
+    void testWhereExistsAndAnd() {
+        WhereClauseProvider whereClause = where(
+                exists(
+                        select(person.allColumns())
+                                .from(person)
+                                .where(id, isEqualTo(3))
+                ),
+                and(exists(
+                        select(person.allColumns())
+                                .from(person)
+                                .where(id, isEqualTo(4))
+                ), and(exists(
+                        select(person.allColumns())
+                                .from(person)
+                                .where(id, isEqualTo(5))
+
+                        )
+                )))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        String expected = "where (exists (select * from person where id = :p1) " +
+                "and (exists (select * from person where id = :p2) " +
+                "and exists (select * from person where id = :p3)))";
+
+        assertThat(whereClause.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
+        assertThat(whereClause.getWhereClause()).isEqualTo(expected);
+    }
 }
