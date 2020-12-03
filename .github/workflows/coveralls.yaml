@@ -16,7 +16,7 @@
 
 name: Coveralls
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   build:
@@ -32,6 +32,7 @@ jobs:
         with:
           java-version: 8
       - name: Report Coverage to Coveralls
-        run: ./mvnw test jacoco:report coveralls:report -q -Dlicense.skip=true -DrepoToken=$GITHUB_TOKEN -DserviceName=github
+        run: ./mvnw test jacoco:report coveralls:report -q -Dlicense.skip=true -DrepoToken=$GITHUB_TOKEN -DserviceName=github -DpullRequest=$PR_NUMBER
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
