@@ -32,13 +32,13 @@ jobs:
         with:
           java-version: 8
       - name: Report Coverage to Coveralls for Pull Requests
-        if: ${{ github.event.name == 'pull_request' }}
+        if: github.event.name == 'pull_request'
         run: ./mvnw test jacoco:report coveralls:report -q -Dlicense.skip=true -DrepoToken=$GITHUB_TOKEN -DserviceName=github -DpullRequest=$PR_NUMBER
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.number }}
       - name: Report Coverage to Coveralls for General Push
-        if: ${{ github.event.name == 'push' }}
+        if: github.event.name == 'push'
         run: ./mvnw test jacoco:report coveralls:report -q -Dlicense.skip=true -DrepoToken=$GITHUB_TOKEN -DserviceName=github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
