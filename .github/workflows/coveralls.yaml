@@ -32,4 +32,6 @@ jobs:
         with:
           java-version: 8
       - name: Report Coverage to Coveralls
-        run: ./mvnw test jacoco:report coveralls:report -q -Dlicense.skip=true
+        run: ./mvnw test jacoco:report coveralls:report -q -Dlicense.skip=true -DrepoToken=$GITHUB_TOKEN
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
