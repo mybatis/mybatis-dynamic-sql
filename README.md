@@ -1,6 +1,6 @@
 # MyBatis Dynamic SQL
 
-[![Build Status](https://travis-ci.org/mybatis/mybatis-dynamic-sql.svg?branch=master)](https://travis-ci.org/mybatis/mybatis-dynamic-sql)
+[![Build Status](https://github.com/mybatis/mybatis-dynamic-sql/workflows/Java%20CI/badge.svg?branch=master)](https://github.com/mybatis/mybatis-dynamic-sql/actions?query=workflow%3A%22Java+CI%22)
 [![Coverage Status](https://coveralls.io/repos/github/mybatis/mybatis-dynamic-sql/badge.svg?branch=master)](https://coveralls.io/github/mybatis/mybatis-dynamic-sql?branch=master)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/org.mybatis.dynamic-sql/mybatis-dynamic-sql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mybatis.dynamic-sql/mybatis-dynamic-sql)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/org.mybatis.dynamic-sql/mybatis-dynamic-sql.svg)](https://oss.sonatype.org/content/repositories/snapshots/org/mybatis/dynamic-sql/mybatis-dynamic-sql/)
