@@ -24,21 +24,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 8
-      - name: Report Coverage to Coveralls for Pull Requests
-        if: github.event_name == 'pull_request'
-        run: ./mvnw test jacoco:report coveralls:report -q -Dlicense.skip=true -DrepoToken=$GITHUB_TOKEN -DserviceName=github -DpullRequest=$PR_NUMBER
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.number }}
-      - name: Report Coverage to Coveralls for General Push
-        if: github.event_name == 'push'
-        run: ./mvnw test jacoco:report coveralls:report -q -Dlicense.skip=true -DrepoToken=$GITHUB_TOKEN -DserviceName=github
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          java-version: 11
+      - name: Generate Coverage Report
+        run: ./mvnw test jacoco:report -q -Dlicense.skip=true
+      - name: Report Coverage to Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./target/site/jacoco/jacoco.xml
