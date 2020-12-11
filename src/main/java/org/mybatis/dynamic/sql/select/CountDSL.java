@@ -35,7 +35,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
  *
  * @author Jeff Butler
  */
-public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhereBuilder, CountDSL<R>, R>
+public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhereBuilder, CountDSL<R>>
         implements Buildable<R> {
 
     private final Function<SelectModel, R> adapterFunction;

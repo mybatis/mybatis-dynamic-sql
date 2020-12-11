@@ -19,11 +19,12 @@ import javax.sql.DataSource;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 public class PgContainer extends PostgreSQLContainer<PgContainer> {
 
     public PgContainer(String initScriptPath) {
-        super();
+        super(DockerImageName.parse(IMAGE).withTag(DEFAULT_TAG));
         withInitScript(initScriptPath);
     }
 
