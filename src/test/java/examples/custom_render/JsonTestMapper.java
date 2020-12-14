@@ -18,23 +18,19 @@ package examples.custom_render;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
 
-public interface JsonTestMapper extends CommonSelectMapper {
+public interface JsonTestMapper extends CommonDeleteMapper, CommonInsertMapper<JsonTestRecord>, CommonSelectMapper,
+        CommonUpdateMapper {
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @Results(id = "JsonTestResult", value = {
             @Result(column = "id", property = "id", id = true),
@@ -46,19 +42,4 @@ public interface JsonTestMapper extends CommonSelectMapper {
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @ResultMap("JsonTestResult")
     Optional<JsonTestRecord> selectOne(SelectStatementProvider selectStatement);
-
-    @DeleteProvider(type = SqlProviderAdapter.class, method = "delete")
-    int delete(DeleteStatementProvider deleteStatement);
-
-    @UpdateProvider(type = SqlProviderAdapter.class, method = "update")
-    int update(UpdateStatementProvider updateStatement);
-
-    @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
-    int insert(InsertStatementProvider<JsonTestRecord> insertStatement);
-
-    @InsertProvider(type = SqlProviderAdapter.class, method = "generalInsert")
-    int generalInsert(GeneralInsertStatementProvider insertStatement);
-
-    @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
-    int insertMultiple(MultiRowInsertStatementProvider<JsonTestRecord> insertStatement);
 }

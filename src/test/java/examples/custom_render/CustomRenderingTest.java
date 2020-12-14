@@ -284,7 +284,7 @@ class CustomRenderingTest {
     }
 
     @Test
-    void testDefererence() {
+    void testDeReference() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
 
@@ -331,7 +331,7 @@ class CustomRenderingTest {
     }
 
     @Test
-    void testDefererence2() {
+    void testDereference2() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
 
