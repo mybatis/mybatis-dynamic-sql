@@ -18,6 +18,8 @@ package examples.generated.always.mybatis;
 import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,14 +71,14 @@ public interface GeneratedAlwaysMapper extends CommonInsertMapper<GeneratedAlway
     // for the actual MyBatis call
     @Insert("${insertStatement}")
     @Options(useGeneratedKeys=true, keyProperty="records.fullName")
-    int insertMultipleWithGeneratedKeys(@Param("insertStatement") String statement, @Param("records") List<GeneratedAlwaysRecord> records);
+    int insertMultiple(@Param("insertStatement") String statement, @Param("records") List<GeneratedAlwaysRecord> records);
 
-    default int insertMultipleWithGeneratedKeys(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert) {
-        return insertMultipleWithGeneratedKeys(multiInsert.getInsertStatement(), multiInsert.getRecords());
+    default int insertMultiple(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert) {
+        return insertMultiple(multiInsert.getInsertStatement(), multiInsert.getRecords());
     }
 
     BasicColumn[] selectList =
-            BasicColumn.columnList(id.as("A_ID"), firstName, lastName, fullName);
+            BasicColumn.columnList(id, firstName, lastName, fullName);
 
     default Optional<GeneratedAlwaysRecord> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, generatedAlways, completer);
@@ -130,5 +132,17 @@ public interface GeneratedAlwaysMapper extends CommonInsertMapper<GeneratedAlway
         return dsl.set(id).equalToWhenPresent(record::getId)
                 .set(firstName).equalToWhenPresent(record::getFirstName)
                 .set(lastName).equalToWhenPresent(record::getLastName);
+    }
+
+    default int insertMultiple(GeneratedAlwaysRecord...records) {
+        return insertMultiple(Arrays.asList(records));
+    }
+
+    default int insertMultiple(Collection<GeneratedAlwaysRecord> records) {
+        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, generatedAlways, c ->
+                c.map(id).toProperty("id")
+                        .map(firstName).toProperty("firstName")
+                        .map(lastName).toProperty("lastName")
+                );
     }
 }

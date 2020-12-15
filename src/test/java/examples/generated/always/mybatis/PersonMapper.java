@@ -15,6 +15,14 @@
  */
 package examples.generated.always.mybatis;
 
+import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.firstName;
+import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.fullName;
+import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.id;
+import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.lastName;
+import static examples.generated.always.mybatis.PersonDynamicSqlSupport.*;
+
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -23,13 +31,16 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
+import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 import examples.generated.always.PersonRecord;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 public interface PersonMapper {
 
@@ -64,5 +75,28 @@ public interface PersonMapper {
 
     default int insertSelect(InsertSelectStatementProvider insertSelectStatement, GeneratedKeyList keys) {
         return insertSelectMultiple(insertSelectStatement.getInsertStatement(), insertSelectStatement.getParameters(), keys);
+    }
+
+    default int insert(PersonRecord record) {
+        return MyBatis3Utils.insert(this::insert, record, person, c ->
+                c.map(firstName).toProperty("firstName")
+                        .map(lastName).toProperty("lastName"));
+    }
+
+    default int insertMultiple(PersonRecord...records) {
+        return insertMultiple(Arrays.asList(records));
+    }
+
+    default int insertMultiple(Collection<PersonRecord> records) {
+        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, person, c ->
+                c.map(firstName).toProperty("firstName")
+                        .map(lastName).toProperty("lastName"));
+    }
+
+    BasicColumn[] selectList =
+            BasicColumn.columnList(id, firstName, lastName);
+
+    default List<PersonRecord> select(SelectDSLCompleter completer) {
+        return MyBatis3Utils.selectList(this::selectMany, selectList, person, completer);
     }
 }
