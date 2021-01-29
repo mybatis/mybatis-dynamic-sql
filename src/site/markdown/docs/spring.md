@@ -63,17 +63,14 @@ The following code shows a complete example without the utility class:
         
     SqlParameterSource namedParameters = new MapSqlParameterSource(selectStatement.getParameters());
     List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), namedParameters,
-            new RowMapper<GeneratedAlwaysRecord>(){
-                @Override
-                public GeneratedAlwaysRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-                    record.setId(rs.getInt(1));
-                    record.setFirstName(rs.getString(2));
-                    record.setLastName(rs.getString(3));
-                    record.setFullName(rs.getString(4));
-                    return record;
-                }
-            });
+        (rs, rowNum) -> {
+            GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+            record.setId(rs.getInt(1));
+            record.setFirstName(rs.getString(2));
+            record.setLastName(rs.getString(3));
+            record.setFullName(rs.getString(4));
+            return record;
+        });
 ```
 
 The following code shows a complete example with the utility class:
@@ -88,17 +85,14 @@ The following code shows a complete example with the utility class:
             .orderBy(id.descending());
         
     List<GeneratedAlwaysRecord> records = extensions.selectList(selectStatement,
-            new RowMapper<GeneratedAlwaysRecord>(){
-                @Override
-                public GeneratedAlwaysRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-                    record.setId(rs.getInt(1));
-                    record.setFirstName(rs.getString(2));
-                    record.setLastName(rs.getString(3));
-                    record.setFullName(rs.getString(4));
-                    return record;
-                }
-            });
+        (rs, rowNum) -> {
+            GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+            record.setId(rs.getInt(1));
+            record.setFirstName(rs.getString(2));
+            record.setLastName(rs.getString(3));
+            record.setFullName(rs.getString(4));
+            return record;
+        });
 ```
 
 The utility class also includes a `selectOne` method that returns an `Optional`. An example is shown below:
@@ -112,17 +106,14 @@ The utility class also includes a `selectOne` method that returns an `Optional`.
             .where(id, isEqualTo(3));
         
     Optional<GeneratedAlwaysRecord> record = extensions.selectOne(selectStatement,
-            new RowMapper<GeneratedAlwaysRecord>(){
-                @Override
-                public GeneratedAlwaysRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-                    record.setId(rs.getInt(1));
-                    record.setFirstName(rs.getString(2));
-                    record.setLastName(rs.getString(3));
-                    record.setFullName(rs.getString(4));
-                    return record;
-                }
-            });
+        (rs, rowNum) -> {
+            GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
+            record.setId(rs.getInt(1));
+            record.setFirstName(rs.getString(2));
+            record.setLastName(rs.getString(3));
+            record.setFullName(rs.getString(4));
+            return record;
+        });
 ```
 
 ## Executing Insert Statements
