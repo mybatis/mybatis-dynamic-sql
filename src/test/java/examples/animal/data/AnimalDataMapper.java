@@ -51,7 +51,7 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
         "${whereClause}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExample(WhereClauseProvider whereClause);
+    List<AnimalData> selectWithWhereClause(WhereClauseProvider whereClause);
 
     @Select({
         "select a.id, a.animal_name, a.brain_weight, a.body_weight",
@@ -59,7 +59,7 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
         "${whereClause}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithAlias(WhereClauseProvider whereClause);
+    List<AnimalData> selectWithWhereClauseAndAlias(WhereClauseProvider whereClause);
 
     @Select({
         "select id, animal_name, brain_weight, body_weight",
@@ -69,8 +69,8 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
-            @Param("limit") int limit, @Param("offset") int offset);
+    List<AnimalData> selectWithWhereClauseLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
+                                                         @Param("limit") int limit, @Param("offset") int offset);
 
     @Select({
         "select b.id, b.animal_name, b.brain_weight, b.body_weight",
@@ -80,6 +80,6 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithAliasLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
-            @Param("limit") int limit, @Param("offset") int offset);
+    List<AnimalData> selectWithWhereClauseAliasLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
+                                                              @Param("limit") int limit, @Param("offset") int offset);
 }

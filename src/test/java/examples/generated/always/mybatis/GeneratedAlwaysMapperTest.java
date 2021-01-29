@@ -308,7 +308,7 @@ class GeneratedAlwaysMapperTest {
     }
 
     @Test
-    void testUpdateByExampleSelective() {
+    void testUpdateSelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysMapper mapper = session.getMapper(GeneratedAlwaysMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -332,7 +332,7 @@ class GeneratedAlwaysMapperTest {
     }
 
     @Test
-    void testUpdateByExample() {
+    void testUpdateByPrimaryKeySelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysMapper mapper = session.getMapper(GeneratedAlwaysMapper.class);
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();

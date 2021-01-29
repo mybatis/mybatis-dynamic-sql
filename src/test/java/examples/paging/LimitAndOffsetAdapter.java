@@ -34,13 +34,17 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
  *
  * I believe it works in MySQL, HSQLDB, and Postgres.
  *
+ * <b>Important Note: </b> this adapter is no longer required for limit and offset support as the
+ * library now supports limit and offset natively. However, this remains a good example of altering the generated
+ * SQL before it is executed.
+ *
  * @author Jeff Butler
  */
 public class LimitAndOffsetAdapter<R> {
-    private SelectModel selectModel;
-    private Function<SelectStatementProvider, R> mapperMethod;
-    private int limit;
-    private int offset;
+    private final SelectModel selectModel;
+    private final Function<SelectStatementProvider, R> mapperMethod;
+    private final int limit;
+    private final int offset;
 
     private LimitAndOffsetAdapter(SelectModel selectModel, Function<SelectStatementProvider, R> mapperMethod,
             int limit, int offset) {
@@ -65,8 +69,8 @@ public class LimitAndOffsetAdapter<R> {
     }
 
     public class LimitAndOffsetDecorator implements SelectStatementProvider {
-        private Map<String, Object> parameters = new HashMap<>();
-        private String selectStatement;
+        private final Map<String, Object> parameters = new HashMap<>();
+        private final String selectStatement;
 
         public LimitAndOffsetDecorator(SelectStatementProvider delegate) {
             parameters.putAll(delegate.getParameters());
