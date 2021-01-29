@@ -40,8 +40,11 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class PersonMapperTest {
 
@@ -77,6 +80,25 @@ class PersonMapperTest {
                     c.where(id, isEqualTo(1))
                     .or(occupation, isNull()));
 
+            assertThat(rows).hasSize(3);
+        }
+    }
+
+    // this example is in the quick start documentation...
+    @Test
+    void testGeneralSelect() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            SelectStatementProvider selectStatement = select(id.as("A_ID"), firstName, lastName, birthDate, employed,
+                        occupation, addressId)
+                    .from(person)
+                    .where(id, isEqualTo(1))
+                    .or(occupation, isNull())
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            List<PersonRecord> rows = mapper.selectMany(selectStatement);
             assertThat(rows).hasSize(3);
         }
     }
@@ -170,6 +192,22 @@ class PersonMapperTest {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             int rows = mapper.delete(c ->
                     c.where(occupation, isNull()));
+            assertThat(rows).isEqualTo(2);
+        }
+    }
+
+    // this test is in the quick start documentation
+    @Test
+    void testGeneralDelete() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            DeleteStatementProvider deleteStatement = deleteFrom(person)
+                    .where(occupation, isNull())
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            int rows = mapper.delete(deleteStatement);
             assertThat(rows).isEqualTo(2);
         }
     }

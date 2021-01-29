@@ -40,7 +40,7 @@ public interface LimitAndOffsetMapper {
     })
     List<AnimalData> selectMany(SelectStatementProvider selectStatement);
 
-    default QueryExpressionDSL<LimitAndOffsetAdapter<List<AnimalData>>> selectByExampleWithLimitAndOffset(int limit, int offset) {
+    default QueryExpressionDSL<LimitAndOffsetAdapter<List<AnimalData>>> selectWithLimitAndOffset(int limit, int offset) {
         return SelectDSL.select(selectModel -> LimitAndOffsetAdapter.of(selectModel, this::selectMany, limit, offset),
                 id, animalName, brainWeight, bodyWeight)
                 .from(animalData);

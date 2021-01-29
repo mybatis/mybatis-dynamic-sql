@@ -37,10 +37,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 import examples.generated.always.PersonRecord;
 
@@ -77,14 +74,7 @@ class PersonMapperTest {
             record.setFirstName("Fred");
             record.setLastName("Flintstone");
 
-            InsertStatementProvider<PersonRecord> insertStatement = SqlBuilder.insert(record)
-                    .into(person)
-                    .map(firstName).toProperty("firstName")
-                    .map(lastName).toProperty("lastName")
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            int rows = mapper.insert(insertStatement);
+            int rows = mapper.insert(record);
 
             assertThat(rows).isEqualTo(1);
             assertThat(record.getId()).isEqualTo(22);
@@ -99,13 +89,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1);
             assertThat(insertSelectStatement.getParameters()).containsEntry("id", 23);
 
-            SelectStatementProvider selectStatement = SqlBuilder.select(id, firstName, lastName)
-                    .from(person)
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            List<PersonRecord> records = mapper.selectMany(selectStatement);
+            List<PersonRecord> records = mapper.select(c -> c.orderBy(id));
             assertThat(records).hasSize(2);
             assertThat(records.get(0).getId()).isEqualTo(22);
             assertThat(records.get(1).getId()).isEqualTo(23);
@@ -125,14 +109,7 @@ class PersonMapperTest {
             record2.setFirstName("Barney");
             record2.setLastName("Rubble");
 
-            MultiRowInsertStatementProvider<PersonRecord> insertStatement = SqlBuilder.insertMultiple(record1, record2)
-                    .into(person)
-                    .map(firstName).toProperty("firstName")
-                    .map(lastName).toProperty("lastName")
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            int rows = mapper.insertMultiple(insertStatement);
+            int rows = mapper.insertMultiple(record1, record2);
 
             assertThat(rows).isEqualTo(2);
             assertThat(record1.getId()).isEqualTo(22);
@@ -153,13 +130,7 @@ class PersonMapperTest {
             assertThat(keys.get(0).getKey()).isEqualTo(24);
             assertThat(keys.get(1).getKey()).isEqualTo(25);
 
-            SelectStatementProvider selectStatement = SqlBuilder.select(id, firstName, lastName)
-                    .from(person)
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            List<PersonRecord> records = mapper.selectMany(selectStatement);
+            List<PersonRecord> records = mapper.select(c -> c.orderBy(id));
             assertThat(records).hasSize(4);
             assertThat(records.get(0).getId()).isEqualTo(22);
             assertThat(records.get(1).getId()).isEqualTo(23);

@@ -69,7 +69,10 @@ Most of the conditions also support a subquery.  For example:
 ```
 
 ## Stand Alone Where Clauses
-You can use the where clause support on its own if you would rather code your own SQL for the remainder of a statement.  There may be several reasons to do this - mainly if the library doesn't support some SQL or MyBatis feature you want to use.  A good example would be paginated queries which are currently not support by the library.  If you want to use a stand alone where clause, you can code a mapper method that looks like this:
+Although rare, you can use the where clause support on its own if you would rather code your own SQL for the remainder
+of a statement. There may be several reasons to do this - mainly if the library doesn't support some SQL or MyBatis
+feature you want to use. A good example would be if you want to append other SQL to the generated SQL produced by the
+library. If you want to use a stand alone where clause, you can code a mapper method that looks like this:
 
 ```java
     @Select({
@@ -78,7 +81,7 @@ You can use the where clause support on its own if you would rather code your ow
         "${whereClause}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExample(WhereClauseProvider whereClause);
+    List<AnimalData> selectWithWhereClause(WhereClauseProvider whereClause);
 ```
 
 You can build a stand alone where clause and call your mapper like this:
@@ -88,12 +91,14 @@ You can build a stand alone where clause and call your mapper like this:
             .build()
             .render(RenderingStrategies.MYBATIS3);
 
-    List<AnimalData> animals = mapper.selectByExample(whereClause);
+    List<AnimalData> animals = mapper.selectWithWhereClause(whereClause);
 ```
-This method works well when there are no other parameters needed for the statement and when there are no table aliases involved.  If you have those other needs, then see the following.
+This method works well when there are no other parameters needed for the statement and when there are no table aliases
+involved.  If you have those other needs, then see the following.
 
 ### Table Aliases
-If you need to use a table alias in the generated where clause you can supply it on the render method using the `TableAliasCalculator` class.  For example, if you have a mapper like this:
+If you need to use a table alias in the generated where clause you can supply it on the render method using the
+`TableAliasCalculator` class.  For example, if you have a mapper like this:
 
 ```java
     @Select({
@@ -102,7 +107,7 @@ If you need to use a table alias in the generated where clause you can supply it
         "${whereClause}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithAlias(WhereClauseProvider whereClause);
+    List<AnimalData> selectWithWhereClauseAndAlias(WhereClauseProvider whereClause);
 ```
 Then you can specify the alias for the generated WHERE clause on the render method like this:
 
@@ -111,12 +116,15 @@ Then you can specify the alias for the generated WHERE clause on the render meth
             .build()
             .render(RenderingStrategies.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
 
-    List<AnimalData> animals = mapper.selectByExampleWithAlias(whereClause);
+    List<AnimalData> animals = mapper.selectWithWhereClauseAndAlias(whereClause);
 ```
-It is more likely that you will be using table aliases with hand coded joins where there is more than on table alias.  In this case, you supply a `Map<SqlTable, String>` to the TableAliasCalculator that holds an alias for each table involved in the WHERE clause.
+It is more likely that you will be using table aliases with hand coded joins where there is more than on table alias.
+In this case, you supply a `Map<SqlTable, String>` to the TableAliasCalculator that holds an alias for each table
+involved in the WHERE clause.
 
 ### Handling Multiple Parameters
-By default, the WHERE clause renderer assumes that the rendered WHERE clause will be the only parameter to the mapper method. This is not always the case. For example, suppose you have a paginated query like this (this is HSQLDB syntax):
+By default, the WHERE clause renderer assumes that the rendered WHERE clause will be the only parameter to the mapper
+method. This is not always the case. For example, suppose you have a paginated query like this (this is HSQLDB syntax):
 
 ```java
     @Select({
@@ -127,19 +135,21 @@ By default, the WHERE clause renderer assumes that the rendered WHERE clause wil
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
     @ResultMap("AnimalDataResult")
-    List<AnimalData> selectByExampleWithLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
+    List<AnimalData> selectWithWhereClauseLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
             @Param("limit") int limit, @Param("offset") int offset);
 ```
 
-In this mapper method there are three parameters.  So in this case it will be necessary to tell the WHERE rendered what parameter name to use the for rendered where clause.  That code looks like this:
+In this mapper method there are three parameters.  So in this case it will be necessary to tell the WHERE rendered what
+parameter name to use the for rendered where clause.  That code looks like this:
 
 ```java
     WhereClauseProvider whereClause = where(id, isLessThan(60))
             .build()
             .render(RenderingStrategies.MYBATIS3, "whereClauseProvider");
             
-    List<AnimalData> animals = mapper.selectByExampleWithLimitAndOffset(whereClause, 5, 15);
+    List<AnimalData> animals = mapper.selectWithWhereClauseLimitAndOffset(whereClause, 5, 15);
 ```
-Notice that the string `whereClauseProvider` is used both as the parameter name in the mapper `@Param` annotation and the parameter name in the `render` method.
+Notice that the string `whereClauseProvider` is used both as the parameter name in the mapper `@Param` annotation,
+and the parameter name in the `render` method.
 
-The render method also has an override that accepts a TableAliasCalculator and a parameter name.
+The render method also has an override that accepts a `TableAliasCalculator` and a parameter name.

@@ -62,11 +62,11 @@ class LimitAndOffsetTest {
     }
 
     @Test
-    void testLimitandOffset() {
+    void testLimitAndOffset() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             LimitAndOffsetMapper mapper = sqlSession.getMapper(LimitAndOffsetMapper.class);
 
-            List<AnimalData> rows = mapper.selectByExampleWithLimitAndOffset(5, 3)
+            List<AnimalData> rows = mapper.selectWithLimitAndOffset(5, 3)
                     .orderBy(id)
                     .build()
                     .execute();

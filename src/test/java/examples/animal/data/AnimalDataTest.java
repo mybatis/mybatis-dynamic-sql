@@ -235,7 +235,7 @@ class AnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
-            List<AnimalData> animals = mapper.selectByExample(whereClause);
+            List<AnimalData> animals = mapper.selectWithWhereClause(whereClause);
             assertThat(animals).hasSize(16);
         }
     }
@@ -251,7 +251,7 @@ class AnimalDataTest {
 
             assertThat(whereClause.getWhereClause()).isEqualTo("where (a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight > #{parameters.p2,jdbcType=DOUBLE})");
 
-            List<AnimalData> animals = mapper.selectByExampleWithAlias(whereClause);
+            List<AnimalData> animals = mapper.selectWithWhereClauseAndAlias(whereClause);
             assertThat(animals).hasSize(59);
         }
     }
@@ -265,7 +265,7 @@ class AnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3, "whereClauseProvider");
 
-            List<AnimalData> animals = mapper.selectByExampleWithLimitAndOffset(whereClause, 5, 15);
+            List<AnimalData> animals = mapper.selectWithWhereClauseLimitAndOffset(whereClause, 5, 15);
             assertAll(
                     () -> assertThat(animals).hasSize(5),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(16)
@@ -282,7 +282,7 @@ class AnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3, TableAliasCalculator.of(animalData, "b"),  "whereClauseProvider");
 
-            List<AnimalData> animals = mapper.selectByExampleWithAliasLimitAndOffset(whereClause, 3, 24);
+            List<AnimalData> animals = mapper.selectWithWhereClauseAliasLimitAndOffset(whereClause, 3, 24);
             assertAll(
                     () -> assertThat(animals).hasSize(3),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(25)
@@ -1385,7 +1385,7 @@ class AnimalDataTest {
     }
 
     @Test
-    void testUpdateByExample() {
+    void testUpdate() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             AnimalData record = new AnimalData();
