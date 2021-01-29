@@ -55,6 +55,17 @@ See the following pages for detailed information:
 |[Kotlin Support with Spring](src/site/markdown/docs/kotlinSpring.md) | Information about the Kotlin extensions and Kotlin DSL when using Spring JDBC Template as the runtime |
 |[Spring Batch Support](src/site/markdown/docs/springBatch.md) | Information about specialized support for Spring Batch using the [MyBatis Spring Integration](https://github.com/mybatis/spring) |
 
+The library test cases provide several complete examples of using the library in various different styles:
+
+| Language | Runtime | Comments | Code Directory |
+|---|---|---|---|
+| Java | MyBatis3 | Example using Java utility classes for MyBatis in the style of MyBatis Generator | [src/test/java/examples/simple](src/test/java/examples/simple) |
+| Java | MyBatis3 | Example using Java utility classes for the MyBatis integration with Spring Batch | [src/test/java/examples/springbatch](src/test/java/examples/springbatch) |
+| Java | Spring JDBC | Example using Java utility classes for Spring JDBC Template | [src/test/java/examples/spring](src/test/java/examples/spring) |
+| Kotlin | MyBatis3 | Example using Kotlin utility classes for MyBatis in the style of MyBatis Generator | [src/test/kotlin/examples/kotlin/mybatis3/canonical](src/test/kotlin/examples/kotlin/mybatis3/canonical) |
+| Kotlin | Spring JDBC | Example using Kotlin utility classes for Spring JDBC Template | [src/test/kotlin/examples/kotlin/spring/canonical](src/test/kotlin/examples/kotlin/spring/canonical) |
+
+
 ## Requirements
 
 The library has no dependencies.  Java 8 or higher is required.
