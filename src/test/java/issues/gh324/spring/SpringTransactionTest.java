@@ -13,17 +13,24 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package issues.gh324;
+package issues.gh324.spring;
 
+import issues.gh324.ObservableCache;
+import issues.gh324.TestUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class Issue324Test {
-    private NameService nameService = new NameService();
+@SpringJUnitConfig(classes = TestConfiguration.class)
+class SpringTransactionTest {
+
+    @Autowired
+    private SpringNameService nameService;
 
     @Test
-    void testCacheWithAutoCommitOnUpdate() {
+    void testCacheWithCommit() {
         nameService.resetDatabase();
 
         nameService.insertRecord();
@@ -33,7 +40,7 @@ class Issue324Test {
         assertThat(nameService.getRecord()).hasValueSatisfying(TestUtils::recordIsFred);
         assertThat(ObservableCache.getInstance().getHits()).isEqualTo(1);
 
-        nameService.updateRecordWithAutoCommit();
+        nameService.updateRecordAndCommit();
         assertThat(nameService.getRecord()).hasValueSatisfying(TestUtils::recordIsBarney);
         assertThat(ObservableCache.getInstance().getHits()).isZero();
 
@@ -42,7 +49,7 @@ class Issue324Test {
     }
 
     @Test
-    void testCacheWithNoAutoCommitOnUpdateAndNoExplicitCommit() {
+    void testCacheWithRollback() {
         nameService.resetDatabase();
 
         nameService.insertRecord();
@@ -52,28 +59,9 @@ class Issue324Test {
         assertThat(nameService.getRecord()).hasValueSatisfying(TestUtils::recordIsFred);
         assertThat(ObservableCache.getInstance().getHits()).isEqualTo(1);
 
-        // the update should rollback
-        nameService.updateRecordWithoutAutoCommitAndNoExplicitCommit();
+        nameService.updateRecordAndRollback();
         assertThat(nameService.getRecord()).hasValueSatisfying(TestUtils::recordIsFred);
+        // should pull the result from cache as the transaction was rolled back
         assertThat(ObservableCache.getInstance().getHits()).isEqualTo(2);
-    }
-
-    @Test
-    void testCacheWithNoAutoCommitOnUpdateAndExplicitCommit() {
-        nameService.resetDatabase();
-
-        nameService.insertRecord();
-        assertThat(nameService.getRecord()).hasValueSatisfying(TestUtils::recordIsFred);
-        assertThat(ObservableCache.getInstance().getHits()).isZero();
-
-        assertThat(nameService.getRecord()).hasValueSatisfying(TestUtils::recordIsFred);
-        assertThat(ObservableCache.getInstance().getHits()).isEqualTo(1);
-
-        nameService.updateRecordWithoutAutoCommitAndExplicitCommit();
-        assertThat(nameService.getRecord()).hasValueSatisfying(TestUtils::recordIsBarney);
-        assertThat(ObservableCache.getInstance().getHits()).isZero();
-
-        assertThat(nameService.getRecord()).hasValueSatisfying(TestUtils::recordIsBarney);
-        assertThat(ObservableCache.getInstance().getHits()).isEqualTo(1);
     }
 }
