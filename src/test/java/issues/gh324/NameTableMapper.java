@@ -20,6 +20,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import org.apache.ibatis.annotations.*;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
@@ -29,7 +30,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.*;
 import java.util.List;
 import java.util.Optional;
 
-@CacheNamespace
+@CacheNamespace(implementation = ObservableCache.class)
 public interface NameTableMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<NameRecord>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="NameTableResult", value={
@@ -70,5 +71,9 @@ public interface NameTableMapper extends CommonCountMapper, CommonDeleteMapper, 
                 c.set(name).equalTo(record::getName)
                         .where(id, isEqualTo(record::getId))
         );
+    }
+
+    default int deleteAll() {
+        return MyBatis3Utils.deleteFrom(this::delete, nameTable, DeleteDSLCompleter.allRows());
     }
 }
