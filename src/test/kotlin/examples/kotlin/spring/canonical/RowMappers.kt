@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,34 +18,40 @@ package examples.kotlin.spring.canonical
 import java.sql.ResultSet
 
 val personRowMapper: (ResultSet, Int) -> PersonRecord = { rs, _ ->
-    PersonRecord().apply {
-        id = rs.getInt(1)
-        firstName = rs.getString(2)
-        lastName = rs.getString(3)?.let { LastName(it) }
-        birthDate = rs.getTimestamp(4)
-        employed = "Yes" == rs.getString(5)
-        occupation = rs.getString(6)
-        addressId = rs.getInt(7)
-        if (rs.wasNull()) {
-            addressId = null
+    PersonRecord(
+        id = rs.getInt(1),
+        firstName = rs.getString(2),
+        lastName = rs.getString(3)?.let { LastName(it) },
+        birthDate = rs.getTimestamp(4),
+        employed = "Yes" == rs.getString(5),
+        occupation = rs.getString(6),
+        addressId = rs.getIntOrNull(7)
+    )
+}
+
+private fun ResultSet.getIntOrNull(index: Int): Int? {
+    getInt(index).let {
+        return if (wasNull()) {
+            null
+        } else {
+            it
         }
     }
 }
 
 val personWithAddressRowMapper: (ResultSet, Int) -> PersonWithAddress = { rs, _ ->
-    PersonWithAddress().apply {
-        id = rs.getInt(1)
-        firstName = rs.getString(2)
-        lastName = rs.getString(3)?.let { LastName(it) }
-        birthDate = rs.getTimestamp(4)
-        employed = "Yes" == rs.getString(5)
-        occupation = rs.getString(6)
-
-        address = AddressRecord().apply {
-            id = rs.getInt(7)
-            streetAddress = rs.getString(8)
-            city = rs.getString(9)
-            state = rs.getString(10)
-        }
-    }
+    PersonWithAddress(
+        id = rs.getInt(1),
+        firstName = rs.getString(2),
+        lastName = rs.getString(3)?.let { LastName(it) },
+        birthDate = rs.getTimestamp(4),
+        employed = "Yes" == rs.getString(5),
+        occupation = rs.getString(6),
+        address = AddressRecord(
+            id = rs.getInt(7),
+            streetAddress = rs.getString(8),
+            city = rs.getString(9),
+            state = rs.getString(10),
+        )
+    )
 }

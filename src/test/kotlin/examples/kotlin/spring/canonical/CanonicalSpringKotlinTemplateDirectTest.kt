@@ -299,12 +299,12 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testInsertWithGeneratedKey() {
-        val record = GeneratedAlwaysRecord(firstName = "Fred", lastName = "Flintstone")
+        val command = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
 
         val keyHolder = GeneratedKeyHolder()
 
         val rows = template.withKeyHolder(keyHolder) {
-            insert(record).into(GeneratedAlways) {
+            insert(command).into(GeneratedAlways) {
                 map(GeneratedAlways.firstName).toProperty("firstName")
                 map(GeneratedAlways.lastName).toProperty("lastName")
             }
@@ -317,13 +317,13 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testMultiRowInsertWithGeneratedKey() {
-        val record1 = GeneratedAlwaysRecord(firstName = "Fred", lastName = "Flintstone")
-        val record2 = GeneratedAlwaysRecord(firstName = "Barney", lastName = "Rubble")
+        val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
+        val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
 
         val keyHolder = GeneratedKeyHolder()
 
         val rows = template.withKeyHolder(keyHolder) {
-            insertMultiple(record1, record2).into(GeneratedAlways) {
+            insertMultiple(command1, command2).into(GeneratedAlways) {
                 map(GeneratedAlways.firstName).toProperty("firstName")
                 map(GeneratedAlways.lastName).toProperty("lastName")
             }

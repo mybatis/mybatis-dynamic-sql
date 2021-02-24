@@ -417,9 +417,9 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testInsertWithGeneratedKey() {
-        val record = GeneratedAlwaysRecord(firstName = "Fred", lastName = "Flintstone")
+        val command = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
 
-        val insertStatement = insert(record).into(GeneratedAlways) {
+        val insertStatement = insert(command).into(GeneratedAlways) {
             map(GeneratedAlways.firstName).toProperty("firstName")
             map(GeneratedAlways.lastName).toProperty("lastName")
         }
@@ -434,10 +434,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testMultiRowInsertWithGeneratedKey() {
-        val record1 = GeneratedAlwaysRecord(firstName = "Fred", lastName = "Flintstone")
-        val record2 = GeneratedAlwaysRecord(firstName = "Barney", lastName = "Rubble")
+        val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
+        val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
 
-        val insertStatement = insertMultiple(record1, record2).into(GeneratedAlways) {
+        val insertStatement = insertMultiple(command1, command2).into(GeneratedAlways) {
             map(GeneratedAlways.firstName).toProperty("firstName")
             map(GeneratedAlways.lastName).toProperty("lastName")
         }
@@ -993,12 +993,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testUpdateWithTypeConverterAndNullValue() {
-        val record = PersonRecord(id = 3, firstName = "Sam")
-
         val updateStatement = update(Person) {
-            set(firstName).equalTo(record::firstName)
-            set(lastName).equalTo(record::lastName)
-            where(id, isEqualTo(record::id))
+            set(firstName).equalTo("Sam")
+            set(lastName).equalTo(null)
+            where(id, isEqualTo(3))
         }
 
         assertThat(updateStatement.updateStatement).isEqualTo(
@@ -1018,7 +1016,7 @@ class CanonicalSpringKotlinTest {
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isEqualTo(record::id))
+            where(id, isEqualTo(3))
         }
 
         val returnedRecord = template.selectOne(selectStatement, personRowMapper)
@@ -1028,12 +1026,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testUpdateWithTypeConverterAndNonNullValue() {
-        val record = PersonRecord(id = 3, firstName = "Sam", lastName = LastName("Smith"))
-
         val updateStatement = update(Person) {
-            set(firstName).equalTo(record::firstName)
-            set(lastName).equalTo(record::lastName)
-            where(id, isEqualTo(record::id))
+            set(firstName).equalTo("Sam")
+            set(lastName).equalTo(LastName("Smith"))
+            where(id, isEqualTo(3))
         }
 
         assertThat(updateStatement.updateStatement).isEqualTo(
@@ -1053,7 +1049,7 @@ class CanonicalSpringKotlinTest {
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isEqualTo(record::id))
+            where(id, isEqualTo(3))
         }
 
         val returnedRecord = template.selectOne(selectStatement, personRowMapper)
