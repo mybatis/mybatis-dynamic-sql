@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -64,16 +64,19 @@ class KotlinConditionsTest {
     fun testSelectEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isEqualTo {
-                select(max(id)) {
-                    from(Person)
+            where(
+                id,
+                isEqualTo {
+                    select(max(id)) {
+                        from(Person)
+                    }
                 }
-            })
+            )
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
-                    "from Person where id = (select max(id) from Person)"
+                "from Person where id = (select max(id) from Person)"
         )
 
         val row = template.selectOne(selectStatement, personRowMapper)
@@ -94,18 +97,21 @@ class KotlinConditionsTest {
     fun testSelectNotEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isNotEqualTo {
-                select(max(id)) {
-                    from(Person)
+            where(
+                id,
+                isNotEqualTo {
+                    select(max(id)) {
+                        from(Person)
+                    }
                 }
-            })
+            )
             orderBy(id)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
-                    "from Person where id <> (select max(id) from Person) " +
-                    "order by id"
+                "from Person where id <> (select max(id) from Person) " +
+                "order by id"
         )
 
         val rows = template.selectList(selectStatement, personRowMapper)
@@ -126,19 +132,22 @@ class KotlinConditionsTest {
     fun testInSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isIn {
-                select(id) {
-                    from(Person)
-                    where(lastName, isEqualTo(LastName("Rubble")))
+            where(
+                id,
+                isIn {
+                    select(id) {
+                        from(Person)
+                        where(lastName, isEqualTo(LastName("Rubble")))
+                    }
                 }
-            })
+            )
             orderBy(id)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
-                    "from Person where id in (select id from Person where last_name = :p1) " +
-                    "order by id"
+                "from Person where id in (select id from Person where last_name = :p1) " +
+                "order by id"
         )
         assertThat(selectStatement.parameters).containsEntry("p1", "Rubble")
 
@@ -160,19 +169,22 @@ class KotlinConditionsTest {
     fun testNotInSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isNotIn {
-                selectDistinct(id) {
-                    from(Person)
-                    where(lastName, isEqualTo(LastName("Rubble")))
+            where(
+                id,
+                isNotIn {
+                    selectDistinct(id) {
+                        from(Person)
+                        where(lastName, isEqualTo(LastName("Rubble")))
+                    }
                 }
-            })
+            )
             orderBy(id)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
-                    "from Person where id not in (select distinct id from Person where last_name = :p1) " +
-                    "order by id"
+                "from Person where id not in (select distinct id from Person where last_name = :p1) " +
+                "order by id"
         )
         assertThat(selectStatement.parameters).containsEntry("p1", "Rubble")
 
@@ -194,18 +206,21 @@ class KotlinConditionsTest {
     fun testLessThanSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isLessThan {
-                select(max(id)) {
-                    from(Person)
+            where(
+                id,
+                isLessThan {
+                    select(max(id)) {
+                        from(Person)
+                    }
                 }
-            })
+            )
             orderBy(id)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
-                    "from Person where id < (select max(id) from Person) " +
-                    "order by id"
+                "from Person where id < (select max(id) from Person) " +
+                "order by id"
         )
 
         val rows = template.selectList(selectStatement, personRowMapper)
@@ -226,18 +241,21 @@ class KotlinConditionsTest {
     fun testLessThanOrEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isLessThanOrEqualTo {
-                select(max(id)) {
-                    from(Person)
+            where(
+                id,
+                isLessThanOrEqualTo {
+                    select(max(id)) {
+                        from(Person)
+                    }
                 }
-            })
+            )
             orderBy(id)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
-                    "from Person where id <= (select max(id) from Person) " +
-                    "order by id"
+                "from Person where id <= (select max(id) from Person) " +
+                "order by id"
         )
 
         val rows = template.selectList(selectStatement, personRowMapper)
@@ -258,18 +276,21 @@ class KotlinConditionsTest {
     fun testGreaterThanSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isGreaterThan {
-                select(min(id)) {
-                    from(Person)
+            where(
+                id,
+                isGreaterThan {
+                    select(min(id)) {
+                        from(Person)
+                    }
                 }
-            })
+            )
             orderBy(id)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
-                    "from Person where id > (select min(id) from Person) " +
-                    "order by id"
+                "from Person where id > (select min(id) from Person) " +
+                "order by id"
         )
 
         val rows = template.selectList(selectStatement, personRowMapper)
@@ -290,18 +311,21 @@ class KotlinConditionsTest {
     fun testGreaterThanOrEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isGreaterThanOrEqualTo {
-                select(min(id)) {
-                    from(Person)
+            where(
+                id,
+                isGreaterThanOrEqualTo {
+                    select(min(id)) {
+                        from(Person)
+                    }
                 }
-            })
+            )
             orderBy(id)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
-                    "from Person where id >= (select min(id) from Person) " +
-                    "order by id"
+                "from Person where id >= (select min(id) from Person) " +
+                "order by id"
         )
 
         val rows = template.selectList(selectStatement, personRowMapper)

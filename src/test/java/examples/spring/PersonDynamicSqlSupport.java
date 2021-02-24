@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package examples.spring;
 
-import java.sql.JDBCType;
 import java.util.Date;
 
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -32,15 +31,15 @@ public final class PersonDynamicSqlSupport {
     public static final SqlColumn<Integer> addressId = person.addressId;
 
     public static final class Person extends SqlTable {
-        public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
-        public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
-        public final SqlColumn<LastName> lastName = column("last_name", JDBCType.VARCHAR)
+        public final SqlColumn<Integer> id = column("id");
+        public final SqlColumn<String> firstName = column("first_name");
+        public final SqlColumn<LastName> lastName = column("last_name")
                 .withParameterTypeConverter(new LastNameParameterConverter());
-        public final SqlColumn<Date> birthDate = column("birth_date", JDBCType.DATE);
-        public final SqlColumn<Boolean> employed = column("employed", JDBCType.VARCHAR)
+        public final SqlColumn<Date> birthDate = column("birth_date");
+        public final SqlColumn<Boolean> employed = column("employed")
                 .withParameterTypeConverter(new YesNoParameterConverter());
-        public final SqlColumn<String> occupation = column("occupation", JDBCType.VARCHAR);
-        public final SqlColumn<Integer> addressId = column("address_id", JDBCType.INTEGER);
+        public final SqlColumn<String> occupation = column("occupation");
+        public final SqlColumn<Integer> addressId = column("address_id");
 
         public Person() {
             super("Person");

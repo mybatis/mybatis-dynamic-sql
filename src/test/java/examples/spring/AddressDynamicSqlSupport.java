@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package examples.spring;
 
-import java.sql.JDBCType;
-
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
@@ -28,10 +26,10 @@ public final class AddressDynamicSqlSupport {
     public static final SqlColumn<String> state = address.state;
 
     public static final class Address extends SqlTable {
-        public final SqlColumn<Integer> id = column("address_id", JDBCType.INTEGER);
-        public final SqlColumn<String> streetAddress = column("street_address", JDBCType.VARCHAR);
-        public final SqlColumn<String> city = column("city", JDBCType.VARCHAR);
-        public final SqlColumn<String> state = column("state", JDBCType.VARCHAR);
+        public final SqlColumn<Integer> id = column("address_id");
+        public final SqlColumn<String> streetAddress = column("street_address");
+        public final SqlColumn<String> city = column("city");
+        public final SqlColumn<String> state = column("state");
 
         public Address() {
             super("Address");

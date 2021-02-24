@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -31,16 +31,16 @@ import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.count
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countDistinct
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countFrom
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.deleteFrom
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.insertInto
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.insertSelect
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.into
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.select
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.selectDistinct
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.update
+import org.mybatis.dynamic.sql.util.kotlin.model.count
+import org.mybatis.dynamic.sql.util.kotlin.model.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.model.countFrom
+import org.mybatis.dynamic.sql.util.kotlin.model.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.model.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.model.insertSelect
+import org.mybatis.dynamic.sql.util.kotlin.model.into
+import org.mybatis.dynamic.sql.util.kotlin.model.select
+import org.mybatis.dynamic.sql.util.kotlin.model.selectDistinct
+import org.mybatis.dynamic.sql.util.kotlin.model.update
 
 fun count(column: BasicColumn, completer: CountCompleter) =
     count(column, completer).render(RenderingStrategies.MYBATIS3)

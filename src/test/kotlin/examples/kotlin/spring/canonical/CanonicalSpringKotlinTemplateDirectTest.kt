@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -299,12 +299,12 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testInsertWithGeneratedKey() {
-        val record = GeneratedAlwaysRecord(firstName = "Fred", lastName = "Flintstone")
+        val command = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
 
         val keyHolder = GeneratedKeyHolder()
 
         val rows = template.withKeyHolder(keyHolder) {
-            insert(record).into(GeneratedAlways) {
+            insert(command).into(GeneratedAlways) {
                 map(GeneratedAlways.firstName).toProperty("firstName")
                 map(GeneratedAlways.lastName).toProperty("lastName")
             }
@@ -317,13 +317,13 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testMultiRowInsertWithGeneratedKey() {
-        val record1 = GeneratedAlwaysRecord(firstName = "Fred", lastName = "Flintstone")
-        val record2 = GeneratedAlwaysRecord(firstName = "Barney", lastName = "Rubble")
+        val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
+        val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
 
         val keyHolder = GeneratedKeyHolder()
 
         val rows = template.withKeyHolder(keyHolder) {
-            insertMultiple(record1, record2).into(GeneratedAlways) {
+            insertMultiple(command1, command2).into(GeneratedAlways) {
                 map(GeneratedAlways.firstName).toProperty("firstName")
                 map(GeneratedAlways.lastName).toProperty("lastName")
             }
@@ -358,8 +358,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelect() {
-        val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isLessThan(4)) {
                 and(occupation, isNotNull())
@@ -383,8 +382,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithUnion() {
-        val rows = template.select(
-            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isEqualTo(1))
             union {
@@ -394,10 +392,10 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 }
             }
             union {
-                    select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-                        from(Person)
-                        where(id, isEqualTo(2))
-                    }
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(Person)
+                    where(id, isEqualTo(2))
+                }
             }
         }.withRowMapper(personRowMapper)
 
@@ -415,8 +413,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithUnionAll() {
-        val rows = template.select(
-            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isEqualTo(1))
             union {
@@ -448,7 +445,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectByPrimaryKey() {
         val record = template.selectOne(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+        ) {
             from(Person)
             where(id, isEqualTo(1))
         }.withRowMapper(personRowMapper)
@@ -503,8 +501,9 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectWithJoin() {
         val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            Address.id, Address.streetAddress, Address.city, Address.state) {
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            Address.id, Address.streetAddress, Address.city, Address.state
+        ) {
             from(Person, "p")
             join(Address, "a") {
                 on(addressId, equalTo(Address.id))
@@ -531,8 +530,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithComplexWhere1() {
-        val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isLessThan(5))
             and(id, isLessThan(4)) {
@@ -558,8 +556,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithComplexWhere2() {
-        val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isEqualTo(5))
             or(id, isEqualTo(4)) {

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 
 typealias SelectCompleter = KotlinSelectBuilder.() -> Unit
 
@@ -90,7 +90,9 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
             return dsl
         } catch (e: UninitializedPropertyAccessException) {
             throw UninitializedPropertyAccessException(
-                "You must specify a \"from\" clause before any other clauses in a select statement", e)
+                "You must specify a \"from\" clause before any other clauses in a select statement",
+                e
+            )
         }
     }
 }
