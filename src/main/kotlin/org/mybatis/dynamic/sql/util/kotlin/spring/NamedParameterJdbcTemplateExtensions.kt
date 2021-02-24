@@ -68,20 +68,20 @@ fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteComp
 fun <T> NamedParameterJdbcTemplate.insertBatch(insertStatement: BatchInsert<T>): IntArray =
     batchUpdate(insertStatement.insertStatementSQL, SqlParameterSourceUtils.createBatch(insertStatement.records))
 
-fun <T> NamedParameterJdbcTemplate.insertBatch(vararg records: T) =
+fun <T : Any> NamedParameterJdbcTemplate.insertBatch(vararg records: T) =
     insertBatch(records.asList())
 
-fun <T> NamedParameterJdbcTemplate.insertBatch(records: List<T>) =
+fun <T : Any> NamedParameterJdbcTemplate.insertBatch(records: List<T>) =
     BatchInsertHelper(records, this)
 
 // single record insert
-fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>) =
+fun <T : Any> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>) =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.record))
 
-fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>, keyHolder: KeyHolder) =
+fun <T : Any> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>, keyHolder: KeyHolder) =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.record), keyHolder)
 
-fun <T> NamedParameterJdbcTemplate.insert(record: T) =
+fun <T : Any> NamedParameterJdbcTemplate.insert(record: T) =
     SingleRowInsertHelper(record, this)
 
 // general insert
@@ -95,10 +95,10 @@ fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralIns
     generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer))
 
 // multiple record insert
-fun <T> NamedParameterJdbcTemplate.insertMultiple(vararg records: T) =
+fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(vararg records: T) =
     insertMultiple(records.asList())
 
-fun <T> NamedParameterJdbcTemplate.insertMultiple(records: List<T>) =
+fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(records: List<T>) =
     MultiRowInsertHelper(records, this)
 
 fun <T> NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider<T>) =
@@ -189,24 +189,24 @@ class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: Na
     fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
         template.generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer), keyHolder)
 
-    fun <T> insert(record: T) =
+    fun <T : Any> insert(record: T) =
         SingleRowInsertHelper(record, template, keyHolder)
 
-    fun <T> insertMultiple(vararg records: T) =
+    fun <T : Any> insertMultiple(vararg records: T) =
         insertMultiple(records.asList())
 
-    fun <T> insertMultiple(records: List<T>) =
+    fun <T : Any> insertMultiple(records: List<T>) =
         MultiRowInsertHelper(records, template, keyHolder)
 }
 
 @MyBatisDslMarker
-class BatchInsertHelper<T>(private val records: List<T>, private val template: NamedParameterJdbcTemplate) {
+class BatchInsertHelper<T : Any>(private val records: List<T>, private val template: NamedParameterJdbcTemplate) {
     fun into(table: SqlTable, completer: BatchInsertCompleter<T>) =
         template.insertBatch(SqlBuilder.insertBatch(records).into(table, completer))
 }
 
 @MyBatisDslMarker
-class MultiRowInsertHelper<T>(
+class MultiRowInsertHelper<T : Any>(
     private val records: List<T>,
     private val template: NamedParameterJdbcTemplate,
     private val keyHolder: KeyHolder? = null
@@ -218,7 +218,7 @@ class MultiRowInsertHelper<T>(
 }
 
 @MyBatisDslMarker
-class SingleRowInsertHelper<T>(
+class SingleRowInsertHelper<T : Any>(
     private val record: T,
     private val template: NamedParameterJdbcTemplate,
     private val keyHolder: KeyHolder? = null
