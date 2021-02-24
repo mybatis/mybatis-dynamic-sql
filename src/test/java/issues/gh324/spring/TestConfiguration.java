@@ -15,10 +15,9 @@
  */
 package issues.gh324.spring;
 
-import issues.gh324.NameTableMapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -29,6 +28,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
+@MapperScan("issues.gh324")
 public class TestConfiguration {
     @Bean
     public DataSource dataSource() {
@@ -44,14 +44,6 @@ public class TestConfiguration {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource());
         return factoryBean.getObject();
-    }
-
-    @Bean
-    public MapperFactoryBean<NameTableMapper> nameTableMapper() throws Exception {
-        MapperFactoryBean<NameTableMapper> factory = new MapperFactoryBean<>();
-        factory.setMapperInterface(NameTableMapper.class);
-        factory.setSqlSessionFactory(sqlSessionFactory());
-        return factory;
     }
 
     @Bean
