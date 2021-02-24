@@ -18,9 +18,9 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 
 typealias SelectCompleter = KotlinSelectBuilder.() -> Unit
 
@@ -90,7 +90,9 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
             return dsl
         } catch (e: UninitializedPropertyAccessException) {
             throw UninitializedPropertyAccessException(
-                "You must specify a \"from\" clause before any other clauses in a select statement", e)
+                "You must specify a \"from\" clause before any other clauses in a select statement",
+                e
+            )
         }
     }
 }

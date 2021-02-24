@@ -131,14 +131,18 @@ fun NamedParameterJdbcTemplate.selectDistinct(vararg selectList: BasicColumn, co
 
 fun NamedParameterJdbcTemplate.selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
     SelectListMapperGatherer(
-        org.mybatis.dynamic.sql.util.kotlin.spring.selectDistinct(selectList, completer), this)
+        org.mybatis.dynamic.sql.util.kotlin.spring.selectDistinct(selectList, completer),
+        this
+    )
 
 fun NamedParameterJdbcTemplate.selectOne(vararg selectList: BasicColumn, completer: SelectCompleter) =
     selectOne(selectList.toList(), completer)
 
 fun NamedParameterJdbcTemplate.selectOne(selectList: List<BasicColumn>, completer: SelectCompleter) =
     SelectOneMapperGatherer(
-        org.mybatis.dynamic.sql.util.kotlin.spring.select(selectList, completer), this)
+        org.mybatis.dynamic.sql.util.kotlin.spring.select(selectList, completer),
+        this
+    )
 
 fun <T> NamedParameterJdbcTemplate.selectList(
     selectStatement: SelectStatementProvider,

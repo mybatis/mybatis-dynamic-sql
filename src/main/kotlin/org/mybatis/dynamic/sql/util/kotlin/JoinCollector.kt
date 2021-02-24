@@ -38,10 +38,12 @@ class JoinCollector {
 
     fun and(column: BasicColumn, condition: JoinCondition) =
         apply {
-            andJoinCriteria.add(JoinCriterion.Builder()
-                .withConnector("and")
-                .withJoinColumn(column)
-                .withJoinCondition(condition)
-                .build())
+            andJoinCriteria.add(
+                JoinCriterion.Builder()
+                    .withConnector("and")
+                    .withJoinColumn(column)
+                    .withJoinCondition(condition)
+                    .build()
+            )
         }
 }

@@ -34,7 +34,8 @@ interface PersonWithAddressMapper {
 
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
     @Results(
-        id = "PersonWithAddressResult", value = [
+        id = "PersonWithAddressResult",
+        value = [
             Result(column = "A_ID", property = "id", jdbcType = JdbcType.INTEGER, id = true),
             Result(column = "first_name", property = "firstName", jdbcType = JdbcType.VARCHAR),
             Result(

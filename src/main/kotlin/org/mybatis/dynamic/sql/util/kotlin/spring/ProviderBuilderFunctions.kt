@@ -28,9 +28,6 @@ import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
-import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.count
 import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countFrom
@@ -41,6 +38,9 @@ import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.into
 import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.select
 import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.update
+import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
 fun count(column: BasicColumn, completer: CountCompleter) =
     count(column, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)

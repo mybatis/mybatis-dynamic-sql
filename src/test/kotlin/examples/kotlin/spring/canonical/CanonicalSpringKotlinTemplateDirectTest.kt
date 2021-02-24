@@ -358,8 +358,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelect() {
-        val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isLessThan(4)) {
                 and(occupation, isNotNull())
@@ -383,8 +382,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithUnion() {
-        val rows = template.select(
-            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isEqualTo(1))
             union {
@@ -394,10 +392,10 @@ class CanonicalSpringKotlinTemplateDirectTest {
                 }
             }
             union {
-                    select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-                        from(Person)
-                        where(id, isEqualTo(2))
-                    }
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(Person)
+                    where(id, isEqualTo(2))
+                }
             }
         }.withRowMapper(personRowMapper)
 
@@ -415,8 +413,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithUnionAll() {
-        val rows = template.select(
-            id, firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isEqualTo(1))
             union {
@@ -448,7 +445,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectByPrimaryKey() {
         val record = template.selectOne(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+        ) {
             from(Person)
             where(id, isEqualTo(1))
         }.withRowMapper(personRowMapper)
@@ -503,8 +501,9 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectWithJoin() {
         val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
-            Address.id, Address.streetAddress, Address.city, Address.state) {
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            Address.id, Address.streetAddress, Address.city, Address.state
+        ) {
             from(Person, "p")
             join(Address, "a") {
                 on(addressId, equalTo(Address.id))
@@ -531,8 +530,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithComplexWhere1() {
-        val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isLessThan(5))
             and(id, isLessThan(4)) {
@@ -558,8 +556,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithComplexWhere2() {
-        val rows = template.select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
             where(id, isEqualTo(5))
             or(id, isEqualTo(4)) {

@@ -33,8 +33,12 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
 
 fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? {
-    val start = KotlinSelectBuilder(select(id.`as`("A_ID"), firstName, lastName, birthDate,
-        employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state)).apply {
+    val start = KotlinSelectBuilder(
+        select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
+            Address.streetAddress, Address.city, Address.state
+        )
+    ).apply {
         from(Person)
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))
@@ -45,8 +49,12 @@ fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAdd
 }
 
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
-    val start = KotlinSelectBuilder(select(id.`as`("A_ID"), firstName, lastName, birthDate,
-        employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state)).apply {
+    val start = KotlinSelectBuilder(
+        select(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
+            Address.streetAddress, Address.city, Address.state
+        )
+    ).apply {
         from(Person, "p")
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))
@@ -57,8 +65,12 @@ fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithA
 }
 
 fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> {
-    val start = KotlinSelectBuilder(selectDistinct(id.`as`("A_ID"), firstName, lastName,
-        birthDate, employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state)).apply {
+    val start = KotlinSelectBuilder(
+        selectDistinct(
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
+            Address.streetAddress, Address.city, Address.state
+        )
+    ).apply {
         from(Person, "p")
         fullJoin(Address) {
             on(Person.addressId, equalTo(Address.id))

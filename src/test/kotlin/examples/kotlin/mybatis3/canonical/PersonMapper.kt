@@ -39,7 +39,8 @@ interface PersonMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapp
 
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
     @Results(
-        id = "PersonResult", value = [
+        id = "PersonResult",
+        value = [
             Result(column = "A_ID", property = "id", jdbcType = JdbcType.INTEGER, id = true),
             Result(column = "first_name", property = "firstName", jdbcType = JdbcType.VARCHAR),
             Result(
@@ -56,7 +57,8 @@ interface PersonMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapp
                 typeHandler = YesNoTypeHandler::class
             ),
             Result(column = "occupation", property = "occupation", jdbcType = JdbcType.VARCHAR),
-            Result(column = "address_id", property = "addressId", jdbcType = JdbcType.INTEGER)]
+            Result(column = "address_id", property = "addressId", jdbcType = JdbcType.INTEGER)
+        ]
     )
     fun selectMany(selectStatement: SelectStatementProvider): List<PersonRecord>
 

@@ -63,10 +63,10 @@ class SpringKotlinSubQueryTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select first_name, rownum() " +
-                    "from (select id, first_name " +
-                    "from Person where id < :p1 " +
-                    "order by first_name DESC) " +
-                    "where rownum() < :p2 and first_name like :p3"
+                "from (select id, first_name " +
+                "from Person where id < :p1 " +
+                "order by first_name DESC) " +
+                "where rownum() < :p2 and first_name like :p3"
         )
 
         assertThat(selectStatement.parameters).containsEntry("p1", 22)
@@ -90,16 +90,16 @@ class SpringKotlinSubQueryTest {
         val rowNum = DerivedColumn.of<Int>("rownum()")
 
         val rows = template.select(firstName, rowNum) {
-                from {
-                    select(id, firstName) {
-                        from(Person)
-                        where(id, isLessThan(22))
-                        orderBy(firstName.descending())
-                    }
+            from {
+                select(id, firstName) {
+                    from(Person)
+                    where(id, isLessThan(22))
+                    orderBy(firstName.descending())
                 }
-                where(rowNum, isLessThan(5))
-                and(firstName, isLike("%a%"))
-            }.withRowMapper { rs, _ ->
+            }
+            where(rowNum, isLessThan(5))
+            and(firstName, isLike("%a%"))
+        }.withRowMapper { rs, _ ->
             mapOf(
                 Pair("FIRST_NAME", rs.getString(1)),
                 Pair("ROWNUM", rs.getInt(2))
@@ -133,10 +133,10 @@ class SpringKotlinSubQueryTest {
 
         assertThat(selectStatement.selectStatement).isEqualTo(
             "select b.first_name as \"firstName\", b.personId, rownum() as myRows " +
-                    "from (select a.id as personId, a.first_name " +
-                    "from Person a where a.id < :p1 " +
-                    "order by first_name DESC) b " +
-                    "where rownum() < :p2 and b.first_name like :p3"
+                "from (select a.id as personId, a.first_name " +
+                "from Person a where a.id < :p1 " +
+                "order by first_name DESC) b " +
+                "where rownum() < :p2 and b.first_name like :p3"
         )
 
         assertThat(selectStatement.parameters).containsEntry("p1", 22)
