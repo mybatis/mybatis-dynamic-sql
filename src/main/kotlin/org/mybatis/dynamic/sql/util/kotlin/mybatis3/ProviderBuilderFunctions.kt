@@ -27,20 +27,20 @@ import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.count
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countDistinct
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.countFrom
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.deleteFrom
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.insertInto
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.insertSelect
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.into
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.select
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.selectDistinct
-import org.mybatis.dynamic.sql.util.kotlin.KotlinModelBuilderFunctions.update
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.model.count
+import org.mybatis.dynamic.sql.util.kotlin.model.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.model.countFrom
+import org.mybatis.dynamic.sql.util.kotlin.model.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.model.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.model.insertSelect
+import org.mybatis.dynamic.sql.util.kotlin.model.into
+import org.mybatis.dynamic.sql.util.kotlin.model.select
+import org.mybatis.dynamic.sql.util.kotlin.model.selectDistinct
+import org.mybatis.dynamic.sql.util.kotlin.model.update
 
 fun count(column: BasicColumn, completer: CountCompleter) =
     count(column, completer).render(RenderingStrategies.MYBATIS3)
