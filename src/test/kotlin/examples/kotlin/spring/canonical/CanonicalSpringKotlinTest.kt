@@ -332,7 +332,8 @@ class CanonicalSpringKotlinTest {
         assertThat(insertStatement.insertStatement).isEqualTo(
             "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
                 "values (:records[0].id, :records[0].firstName, :records[0].lastNameAsString, " +
-                ":records[0].birthDate, :records[0].employedAsString, :records[0].occupation, :records[0].addressId), " +
+                ":records[0].birthDate, :records[0].employedAsString, " +
+                ":records[0].occupation, :records[0].addressId), " +
                 "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
                 ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, :records[1].addressId)"
         )

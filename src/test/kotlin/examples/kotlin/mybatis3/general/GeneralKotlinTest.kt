@@ -309,13 +309,16 @@ class GeneralKotlinTest {
                 map(addressId).toProperty("addressId")
             }
 
-            val expected = "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
-                "values " +
-                "(#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, " +
-                "#{record.lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}, " +
-                "#{record.birthDate,jdbcType=DATE}, " +
-                "#{record.employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}, " +
-                "#{record.occupation,jdbcType=VARCHAR}, #{record.addressId,jdbcType=INTEGER})"
+            val expected =
+                "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
+                    "values " +
+                    "(#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, " +
+                    "#{record.lastName,jdbcType=VARCHAR," +
+                    "typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}, " +
+                    "#{record.birthDate,jdbcType=DATE}, " +
+                    "#{record.employed,jdbcType=VARCHAR," +
+                    "typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}, " +
+                    "#{record.occupation,jdbcType=VARCHAR}, #{record.addressId,jdbcType=INTEGER})"
 
             assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
@@ -348,16 +351,20 @@ class GeneralKotlinTest {
                     " values" +
                     " (#{records[0].id,jdbcType=INTEGER}," +
                     " #{records[0].firstName,jdbcType=VARCHAR}," +
-                    " #{records[0].lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
+                    " #{records[0].lastName,jdbcType=VARCHAR," +
+                    "typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
                     " #{records[0].birthDate,jdbcType=DATE}," +
-                    " #{records[0].employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
+                    " #{records[0].employed,jdbcType=VARCHAR," +
+                    "typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
                     " #{records[0].occupation,jdbcType=VARCHAR}," +
                     " #{records[0].addressId,jdbcType=INTEGER})" +
                     ", (#{records[1].id,jdbcType=INTEGER}," +
                     " #{records[1].firstName,jdbcType=VARCHAR}," +
-                    " #{records[1].lastName,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
+                    " #{records[1].lastName,jdbcType=VARCHAR," +
+                    "typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
                     " #{records[1].birthDate,jdbcType=DATE}," +
-                    " #{records[1].employed,jdbcType=VARCHAR,typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
+                    " #{records[1].employed,jdbcType=VARCHAR," +
+                    "typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
                     " #{records[1].occupation,jdbcType=VARCHAR}," +
                     " #{records[1].addressId,jdbcType=INTEGER})"
 

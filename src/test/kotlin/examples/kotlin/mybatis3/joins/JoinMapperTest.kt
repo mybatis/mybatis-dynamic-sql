@@ -232,6 +232,7 @@ class JoinMapperTest {
     }
 
     @Test
+    @Suppress("LongMethod")
     fun testFullJoinWithSubQuery() {
         newSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
