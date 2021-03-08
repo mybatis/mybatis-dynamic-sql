@@ -34,8 +34,8 @@ fun <T : Any> SqlTable.column(
     renderingStrategy: RenderingStrategy? = null,
     parameterTypeConverter: ParameterTypeConverter<T, *>? = null
 ): SqlColumn<T> {
-    var column = if (jdbcType == null) {
-        column<T>(name)
+    var column: SqlColumn<T> = if (jdbcType == null) {
+        column(name)
     } else {
         column(name, jdbcType)
     }
