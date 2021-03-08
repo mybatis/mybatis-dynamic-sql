@@ -2028,6 +2028,7 @@ class AnimalDataTest {
             UpdateStatementProvider updateStatement = update(animalData)
                     .set(brainWeight).equalTo(add(brainWeight, constant("2")))
                     .set(bodyWeight).equalTo(subtract(bodyWeight, constant("3")))
+                    .set(animalName).equalToWhenPresent((String) null)
                     .where(id, isEqualTo(1))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
