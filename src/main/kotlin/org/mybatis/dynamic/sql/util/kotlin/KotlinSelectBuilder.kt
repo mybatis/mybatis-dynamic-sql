@@ -30,58 +30,58 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
 
     private lateinit var dsl: QueryExpressionDSL<SelectModel>
 
-    fun from(table: SqlTable) =
+    fun from(table: SqlTable): KotlinSelectBuilder =
         apply {
             dsl = fromGatherer.from(table)
         }
 
-    fun from(table: SqlTable, alias: String) =
+    fun from(table: SqlTable, alias: String): KotlinSelectBuilder =
         apply {
             dsl = fromGatherer.from(table, alias)
         }
 
-    fun from(subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit) =
+    fun from(subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit): KotlinSelectBuilder =
         apply {
             val builder = KotlinQualifiedSubQueryBuilder().apply(subQuery)
             dsl = fromGatherer.from(builder, builder.correlationName)
         }
 
-    fun groupBy(vararg columns: BasicColumn) =
+    fun groupBy(vararg columns: BasicColumn): KotlinSelectBuilder =
         apply {
             getDsl().groupBy(columns.toList())
         }
 
-    fun orderBy(vararg columns: SortSpecification) =
+    fun orderBy(vararg columns: SortSpecification): KotlinSelectBuilder =
         apply {
             getDsl().orderBy(columns.toList())
         }
 
-    fun limit(limit: Long) =
+    fun limit(limit: Long): KotlinSelectBuilder =
         apply {
             getDsl().limit(limit)
         }
 
-    fun offset(offset: Long) =
+    fun offset(offset: Long): KotlinSelectBuilder =
         apply {
             getDsl().offset(offset)
         }
 
-    fun fetchFirst(fetchFirstRows: Long) =
+    fun fetchFirst(fetchFirstRows: Long): KotlinSelectBuilder =
         apply {
             getDsl().fetchFirst(fetchFirstRows).rowsOnly()
         }
 
-    fun union(union: KotlinUnionBuilder.() -> Unit) =
+    fun union(union: KotlinUnionBuilder.() -> Unit): KotlinSelectBuilder =
         apply {
             union(KotlinUnionBuilder(getDsl().union()))
         }
 
-    fun unionAll(unionAll: KotlinUnionBuilder.() -> Unit) =
+    fun unionAll(unionAll: KotlinUnionBuilder.() -> Unit): KotlinSelectBuilder =
         apply {
             unionAll(KotlinUnionBuilder(getDsl().unionAll()))
         }
 
-    override fun build() = getDsl().build()
+    override fun build(): SelectModel = getDsl().build()
 
     override fun self(): KotlinSelectBuilder = this
 

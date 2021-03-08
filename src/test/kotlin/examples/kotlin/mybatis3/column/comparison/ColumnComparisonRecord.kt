@@ -13,20 +13,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.kotlin
+package examples.kotlin.mybatis3.column.comparison
 
-import org.mybatis.dynamic.sql.delete.DeleteDSL
-import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.util.Buildable
-
-typealias DeleteCompleter = KotlinDeleteBuilder.() -> Unit
-
-class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
-    KotlinBaseBuilder<DeleteDSL<DeleteModel>, KotlinDeleteBuilder>(), Buildable<DeleteModel> {
-
-    override fun build(): DeleteModel = dsl.build()
-
-    override fun getDsl(): DeleteDSL<DeleteModel> = dsl
-
-    override fun self(): KotlinDeleteBuilder = this
-}
+data class ColumnComparisonRecord(
+    val number1: Int,
+    val number2: Int
+)

@@ -28,14 +28,14 @@ class KotlinCountBuilder(private val fromGatherer: CountDSL.FromGatherer<SelectM
 
     private lateinit var dsl: CountDSL<SelectModel>
 
-    fun from(table: SqlTable) =
+    fun from(table: SqlTable): KotlinCountBuilder =
         apply {
             dsl = fromGatherer.from(table)
         }
 
     override fun build(): SelectModel = getDsl().build()
 
-    override fun self() = this
+    override fun self(): KotlinCountBuilder = this
 
     override fun getDsl(): CountDSL<SelectModel> {
         try {

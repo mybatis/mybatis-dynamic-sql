@@ -13,20 +13,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.kotlin
+package examples.kotlin.mybatis3.custom.render
 
-import org.mybatis.dynamic.sql.delete.DeleteDSL
-import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.util.Buildable
+import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.utility.DockerImageName
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
+import javax.sql.DataSource
 
-typealias DeleteCompleter = KotlinDeleteBuilder.() -> Unit
+class KPgContainer(initScriptPath: String) : PostgreSQLContainer<KPgContainer>(
+    DockerImageName.parse(IMAGE).withTag(DEFAULT_TAG)
+) {
+    val unPooledDataSource: DataSource
+        get() = UnpooledDataSource(driverClassName, jdbcUrl, username, password)
 
-class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
-    KotlinBaseBuilder<DeleteDSL<DeleteModel>, KotlinDeleteBuilder>(), Buildable<DeleteModel> {
-
-    override fun build(): DeleteModel = dsl.build()
-
-    override fun getDsl(): DeleteDSL<DeleteModel> = dsl
-
-    override fun self(): KotlinDeleteBuilder = this
+    init {
+        withInitScript(initScriptPath)
+    }
 }

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,5 +36,10 @@ public class Concatenate<T> extends OperatorFunction<T> {
     public static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return new Concatenate<>(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+    }
+
+    public static <T> Concatenate<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+                                        List<BasicColumn> subsequentColumns) {
+        return new Concatenate<>(firstColumn, secondColumn, subsequentColumns);
     }
 }

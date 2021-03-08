@@ -13,20 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.kotlin
+package examples.kotlin.mybatis3.custom.render
 
-import org.mybatis.dynamic.sql.delete.DeleteDSL
-import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.render.MyBatis3RenderingStrategy
 
-typealias DeleteCompleter = KotlinDeleteBuilder.() -> Unit
-
-class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
-    KotlinBaseBuilder<DeleteDSL<DeleteModel>, KotlinDeleteBuilder>(), Buildable<DeleteModel> {
-
-    override fun build(): DeleteModel = dsl.build()
-
-    override fun getDsl(): DeleteDSL<DeleteModel> = dsl
-
-    override fun self(): KotlinDeleteBuilder = this
+class KJsonRenderingStrategy : MyBatis3RenderingStrategy() {
+    override fun getFormattedJdbcPlaceholder(
+        column: BindableColumn<*>,
+        prefix: String,
+        parameterName: String
+    ): String {
+        return super.getFormattedJdbcPlaceholder(column, prefix, parameterName) + "::json"
+    }
 }

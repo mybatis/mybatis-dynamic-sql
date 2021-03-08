@@ -26,11 +26,11 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
-import org.mybatis.dynamic.sql.util.kotlin.exists
+import org.mybatis.dynamic.sql.util.kotlin.elements.exists
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.notExists
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
-import org.mybatis.dynamic.sql.util.kotlin.notExists
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 import java.io.InputStreamReader
 import java.sql.DriverManager

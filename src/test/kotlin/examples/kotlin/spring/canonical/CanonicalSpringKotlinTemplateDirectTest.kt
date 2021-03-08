@@ -28,14 +28,14 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.occupatio
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.add
-import org.mybatis.dynamic.sql.SqlBuilder.constant
-import org.mybatis.dynamic.sql.SqlBuilder.equalTo
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
-import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThanOrEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
-import org.mybatis.dynamic.sql.SqlBuilder.isNotNull
+import org.mybatis.dynamic.sql.util.kotlin.elements.add
+import org.mybatis.dynamic.sql.util.kotlin.elements.constant
+import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull
 import org.mybatis.dynamic.sql.util.kotlin.spring.count
 import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
@@ -255,7 +255,9 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testInsertSelect() {
         val rows = template.insertSelect(Person) {
             columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
-            select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
+            select(
+                add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId
+            ) {
                 from(Person)
                 orderBy(id)
             }
@@ -274,8 +276,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
             assertThat(id).isEqualTo(102)
             assertThat(firstName).isEqualTo("Wilma")
             assertThat(lastName).isEqualTo(LastName("Flintstone"))
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Accountant")
             assertThat(addressId).isEqualTo(1)
         }
@@ -373,8 +375,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -404,8 +406,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -435,8 +437,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -455,8 +457,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -518,8 +520,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(address?.id).isEqualTo(1)
             assertThat(address?.streetAddress).isEqualTo("123 Main Street")
@@ -547,8 +549,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -573,8 +575,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
             assertThat(id).isEqualTo(4)
             assertThat(firstName).isEqualTo("Barney")
             assertThat(lastName!!.name).isEqualTo("Rubble")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(2)
         }

@@ -13,20 +13,23 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.kotlin
+package examples.kotlin.mybatis3.custom.render
 
-import org.mybatis.dynamic.sql.delete.DeleteDSL
-import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.column
+import java.sql.JDBCType
 
-typealias DeleteCompleter = KotlinDeleteBuilder.() -> Unit
+object KJsonTestDynamicSqlSupport {
+    val jsonTest = JsonTest()
+    val id = jsonTest.id
+    val description = jsonTest.description
+    val info = jsonTest.info
 
-class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
-    KotlinBaseBuilder<DeleteDSL<DeleteModel>, KotlinDeleteBuilder>(), Buildable<DeleteModel> {
-
-    override fun build(): DeleteModel = dsl.build()
-
-    override fun getDsl(): DeleteDSL<DeleteModel> = dsl
-
-    override fun self(): KotlinDeleteBuilder = this
+    class JsonTest : SqlTable("JsonTest") {
+        val id = column<Int>("id", JDBCType.INTEGER)
+        val description = column<String>("description", JDBCType.VARCHAR)
+        val info = column<String>("info", JDBCType.VARCHAR) {
+            withRenderingStrategy(KJsonRenderingStrategy())
+        }
+    }
 }

@@ -13,19 +13,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.kotlin
+package org.mybatis.dynamic.sql.util.kotlin.elements
 
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
-import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 
-typealias GeneralInsertCompleter = @MyBatisDslMarker GeneralInsertDSL.() -> Unit
+// These insert functions help avoid the use of org.mybatis.dynamic.sql.SqlBuilder in Kotlin
 
-typealias InsertCompleter<T> = @MyBatisDslMarker InsertDSL<T>.() -> Unit
+fun <T> insert(record: T): InsertDSL.IntoGatherer<T> = InsertDSL.insert(record)
 
-typealias MultiRowInsertCompleter<T> = @MyBatisDslMarker MultiRowInsertDSL<T>.() -> Unit
+fun <T> insertBatch(vararg records: T): BatchInsertDSL.IntoGatherer<T> = insertBatch(records.asList())
 
-typealias BatchInsertCompleter<T> = @MyBatisDslMarker BatchInsertDSL<T>.() -> Unit
+fun <T> insertBatch(records: Collection<T>): BatchInsertDSL.IntoGatherer<T> = BatchInsertDSL.insert(records)
 
-typealias InsertSelectCompleter = @MyBatisDslMarker KotlinInsertSelectSubQueryBuilder.() -> Unit
+fun <T> insertMultiple(vararg records: T): MultiRowInsertDSL.IntoGatherer<T> = insertMultiple(records.asList())
+
+fun <T> insertMultiple(records: Collection<T>): MultiRowInsertDSL.IntoGatherer<T> = MultiRowInsertDSL.insert(records)

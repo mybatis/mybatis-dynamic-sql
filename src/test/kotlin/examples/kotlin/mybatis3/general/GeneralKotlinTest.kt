@@ -41,15 +41,15 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.count
-import org.mybatis.dynamic.sql.SqlBuilder.equalTo
-import org.mybatis.dynamic.sql.SqlBuilder.insert
-import org.mybatis.dynamic.sql.SqlBuilder.insertMultiple
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
-import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
-import org.mybatis.dynamic.sql.SqlBuilder.isNotEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.isNotNull
+import org.mybatis.dynamic.sql.util.kotlin.elements.count
+import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.insert
+import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -401,8 +401,8 @@ class GeneralKotlinTest {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
                 assertThat(lastName?.name).isEqualTo("Flintstone")
-                assertThat(birthDate).isNotNull()
-                assertThat(employed).isTrue()
+                assertThat(birthDate).isNotNull
+                assertThat(employed).isTrue
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
                 assertThat(addressId).isEqualTo(1)
             }
@@ -434,8 +434,8 @@ class GeneralKotlinTest {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
                 assertThat(lastName?.name).isEqualTo("Flintstone")
-                assertThat(birthDate).isNotNull()
-                assertThat(employed).isTrue()
+                assertThat(birthDate).isNotNull
+                assertThat(employed).isTrue
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
                 assertThat(addressId).isEqualTo(1)
             }
@@ -467,8 +467,8 @@ class GeneralKotlinTest {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
                 assertThat(lastName?.name).isEqualTo("Flintstone")
-                assertThat(birthDate).isNotNull()
-                assertThat(employed).isTrue()
+                assertThat(birthDate).isNotNull
+                assertThat(employed).isTrue
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
                 assertThat(address?.id).isEqualTo(1)
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
@@ -506,8 +506,8 @@ class GeneralKotlinTest {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
                 assertThat(lastName?.name).isEqualTo("Flintstone")
-                assertThat(birthDate).isNotNull()
-                assertThat(employed).isTrue()
+                assertThat(birthDate).isNotNull
+                assertThat(employed).isTrue
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
                 assertThat(address?.id).isEqualTo(1)
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
@@ -547,8 +547,8 @@ class GeneralKotlinTest {
                 assertThat(id).isEqualTo(4)
                 assertThat(firstName).isEqualTo("Barney")
                 assertThat(lastName?.name).isEqualTo("Rubble")
-                assertThat(birthDate).isNotNull()
-                assertThat(employed).isTrue()
+                assertThat(birthDate).isNotNull
+                assertThat(employed).isTrue
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
                 assertThat(address?.id).isEqualTo(2)
                 assertThat(address?.streetAddress).isEqualTo("456 Main Street")
@@ -594,8 +594,8 @@ class GeneralKotlinTest {
                 assertThat(id).isEqualTo(1)
                 assertThat(firstName).isEqualTo("Fred")
                 assertThat(lastName?.name).isEqualTo("Flintstone")
-                assertThat(birthDate).isNotNull()
-                assertThat(employed).isTrue()
+                assertThat(birthDate).isNotNull
+                assertThat(employed).isTrue
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
                 assertThat(addressId).isEqualTo(1)
             }
@@ -638,8 +638,8 @@ class GeneralKotlinTest {
                 assertThat(id).isEqualTo(4)
                 assertThat(firstName).isEqualTo("Barney")
                 assertThat(lastName?.name).isEqualTo("Rubble")
-                assertThat(birthDate).isNotNull()
-                assertThat(employed).isTrue()
+                assertThat(birthDate).isNotNull
+                assertThat(employed).isTrue
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
                 assertThat(addressId).isEqualTo(2)
             }
@@ -693,8 +693,8 @@ class GeneralKotlinTest {
                 assertThat(id).isEqualTo(3)
                 assertThat(firstName).isEqualTo("Pebbles")
                 assertThat(lastName?.name).isEqualTo("Flintstone")
-                assertThat(birthDate).isNotNull()
-                assertThat(employed).isFalse()
+                assertThat(birthDate).isNotNull
+                assertThat(employed).isFalse
                 assertThat(occupation).isNull()
                 assertThat(addressId).isEqualTo(1)
             }
@@ -718,8 +718,8 @@ class GeneralKotlinTest {
                 assertThat(id).isEqualTo(3)
                 assertThat(firstName).isEqualTo("Pebbles")
                 assertThat(lastName?.name).isEqualTo("Flintstone")
-                assertThat(birthDate).isNotNull()
-                assertThat(employed).isFalse()
+                assertThat(birthDate).isNotNull
+                assertThat(employed).isFalse
                 assertThat(occupation).isNull()
                 assertThat(addressId).isEqualTo(1)
             }

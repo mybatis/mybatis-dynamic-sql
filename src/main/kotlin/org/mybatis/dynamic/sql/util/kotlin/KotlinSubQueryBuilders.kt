@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,23 +25,30 @@ import org.mybatis.dynamic.sql.util.Buildable
 sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T>> : Buildable<SelectModel> {
     private lateinit var selectBuilder: KotlinSelectBuilder
 
-    fun select(vararg selectList: BasicColumn, completer: SelectCompleter) =
+    fun select(vararg selectList: BasicColumn, completer: SelectCompleter): T =
         select(selectList.toList(), completer)
 
-    fun select(selectList: List<BasicColumn>, completer: SelectCompleter) =
+    fun select(selectList: List<BasicColumn>, completer: SelectCompleter): T =
         applySelf {
             selectBuilder = KotlinSelectBuilder(SqlBuilder.select(selectList)).apply(completer)
         }
 
-    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
+    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter): T =
         selectDistinct(selectList.toList(), completer)
 
-    fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
+    fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter): T =
         applySelf {
             selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)
         }
 
-    override fun build() = selectBuilder.build()
+    override fun build(): SelectModel =
+        try {
+            selectBuilder.build()
+        } catch (e: UninitializedPropertyAccessException) {
+            throw UninitializedPropertyAccessException(
+                "You must specify a select statement", e
+            )
+        }
 
     private fun applySelf(block: T.() -> Unit): T =
         self().apply { block() }
@@ -50,7 +57,7 @@ sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T>> : Build
 }
 
 class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinSubQueryBuilder>() {
-    override fun self() = this
+    override fun self(): KotlinSubQueryBuilder = this
 }
 
 class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinQualifiedSubQueryBuilder>() {
@@ -61,19 +68,29 @@ class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinQualified
         return self()
     }
 
-    override fun self() = this
+    override fun self(): KotlinQualifiedSubQueryBuilder = this
 }
 
 class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinInsertSelectSubQueryBuilder>() {
-    lateinit var columnList: List<SqlColumn<*>>
+    private lateinit var lateColumnList: List<SqlColumn<*>>
 
-    fun columns(vararg columnList: SqlColumn<*>) =
+    val columnList: List<SqlColumn<*>>
+        get(): List<SqlColumn<*>> =
+            try {
+                lateColumnList
+            } catch (e: UninitializedPropertyAccessException) {
+                throw UninitializedPropertyAccessException(
+                    "You must specify a column list in an insert with select statement", e
+                )
+            }
+
+    fun columns(vararg columnList: SqlColumn<*>): KotlinInsertSelectSubQueryBuilder =
         columns(columnList.asList())
 
-    fun columns(columnList: List<SqlColumn<*>>) =
+    fun columns(columnList: List<SqlColumn<*>>): KotlinInsertSelectSubQueryBuilder =
         apply {
-            this.columnList = columnList
+            this.lateColumnList = columnList
         }
 
-    override fun self() = this
+    override fun self(): KotlinInsertSelectSubQueryBuilder = this
 }

@@ -33,74 +33,74 @@ typealias WhereApplier = AbstractWhereDSL<*>.() -> Unit
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuilder<D, B>> {
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             where(column, condition)
         }
 
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver) =
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             where(column, condition, sc)
         }
 
-    fun where(existsPredicate: ExistsPredicate) =
+    fun where(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             where(existsPredicate)
         }
 
-    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver) =
+    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             where(existsPredicate, sc)
         }
 
-    fun applyWhere(whereApplier: WhereApplier) =
+    fun applyWhere(whereApplier: WhereApplier): B =
         applyToWhere {
             applyWhere(whereApplier)
         }
 
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             and(column, condition)
         }
 
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver) =
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             and(column, condition, sc)
         }
 
-    fun and(existsPredicate: ExistsPredicate) =
+    fun and(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             and(existsPredicate)
         }
 
-    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver) =
+    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             and(existsPredicate, sc)
         }
 
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             or(column, condition)
         }
 
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver) =
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             or(column, condition, sc)
         }
 
-    fun or(existsPredicate: ExistsPredicate) =
+    fun or(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             or(existsPredicate)
         }
 
-    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver) =
+    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             or(existsPredicate, sc)
         }
 
-    fun allRows() = self()
+    fun allRows(): B = self()
 
-    private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit) =
+    private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit): B =
         self().also {
             getDsl().where().apply(block)
         }
@@ -108,7 +108,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
         block: AbstractWhereDSL<*>.(List<SqlCriterion>) -> Unit
-    ) =
+    ): B =
         self().also {
             getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
         }
@@ -122,12 +122,12 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
 abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B : KotlinBaseJoiningBuilder<D, B>> :
     KotlinBaseBuilder<D, B>() {
 
-    fun join(table: SqlTable, joinCriteria: JoinReceiver) =
+    fun join(table: SqlTable, joinCriteria: JoinReceiver): B =
         applyToDsl(joinCriteria) { jc ->
             join(table, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun join(table: SqlTable, alias: String, joinCriteria: JoinReceiver) =
+    fun join(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
         applyToDsl(joinCriteria) { jc ->
             join(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)
         }
@@ -135,17 +135,17 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B 
     fun join(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver
-    ) =
+    ): B =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
             join(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver) =
+    fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
         applyToDsl(joinCriteria) { jc ->
             fullJoin(table, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun fullJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver) =
+    fun fullJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
         applyToDsl(joinCriteria) { jc ->
             fullJoin(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)
         }
@@ -153,17 +153,17 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B 
     fun fullJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver
-    ) =
+    ): B =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
             fullJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver) =
+    fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
         applyToDsl(joinCriteria) { jc ->
             leftJoin(table, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun leftJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver) =
+    fun leftJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
         applyToDsl(joinCriteria) { jc ->
             leftJoin(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)
         }
@@ -171,17 +171,17 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B 
     fun leftJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver
-    ) =
+    ): B =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
             leftJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver) =
+    fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
         applyToDsl(joinCriteria) { jc ->
             rightJoin(table, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun rightJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver) =
+    fun rightJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
         applyToDsl(joinCriteria) { jc ->
             rightJoin(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)
         }
@@ -189,12 +189,12 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B 
     fun rightJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver
-    ) =
+    ): B =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
             rightJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -> Unit) =
+    private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -> Unit): B =
         self().also {
             getDsl().applyJoin(JoinCollector().apply(joinCriteria))
         }
@@ -203,7 +203,7 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B 
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver,
         applyJoin: D.(KotlinQualifiedSubQueryBuilder, JoinCollector) -> Unit
-    ) =
+    ): B =
         self().also {
             getDsl().applyJoin(KotlinQualifiedSubQueryBuilder().apply(subQuery), JoinCollector().apply(joinCriteria))
         }

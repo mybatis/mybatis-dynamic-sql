@@ -13,20 +13,18 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.kotlin
+package examples.kotlin.mybatis3.column.comparison
 
-import org.mybatis.dynamic.sql.delete.DeleteDSL
-import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.SqlTable
+import java.sql.JDBCType
 
-typealias DeleteCompleter = KotlinDeleteBuilder.() -> Unit
+object ColumnComparisonDynamicSqlSupport {
+    val columnComparison = ColumnComparison()
+    val number1 = columnComparison.number1
+    val number2 = columnComparison.number2
 
-class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
-    KotlinBaseBuilder<DeleteDSL<DeleteModel>, KotlinDeleteBuilder>(), Buildable<DeleteModel> {
-
-    override fun build(): DeleteModel = dsl.build()
-
-    override fun getDsl(): DeleteDSL<DeleteModel> = dsl
-
-    override fun self(): KotlinDeleteBuilder = this
+    class ColumnComparison : SqlTable("ColumnComparison") {
+        val number1 = column<Int>("number1", JDBCType.INTEGER)
+        val number2 = column<Int>("number2", JDBCType.INTEGER)
+    }
 }

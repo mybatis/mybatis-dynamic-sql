@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,14 +24,13 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -122,47 +121,3 @@ fun PersonMapper.selectByPrimaryKey(id_: Int) =
 
 fun PersonMapper.update(completer: UpdateCompleter) =
     update(this::update, Person, completer)
-
-fun KotlinUpdateBuilder.updateAllColumns(record: PersonRecord) =
-    apply {
-        set(id).equalTo(record::id)
-        set(firstName).equalTo(record::firstName)
-        set(lastName).equalTo(record::lastName)
-        set(birthDate).equalTo(record::birthDate)
-        set(employed).equalTo(record::employed)
-        set(occupation).equalTo(record::occupation)
-        set(addressId).equalTo(record::addressId)
-    }
-
-fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
-    apply {
-        set(id).equalToWhenPresent(record::id)
-        set(firstName).equalToWhenPresent(record::firstName)
-        set(lastName).equalToWhenPresent(record::lastName)
-        set(birthDate).equalToWhenPresent(record::birthDate)
-        set(employed).equalToWhenPresent(record::employed)
-        set(occupation).equalToWhenPresent(record::occupation)
-        set(addressId).equalToWhenPresent(record::addressId)
-    }
-
-fun PersonMapper.updateByPrimaryKey(record: PersonRecord) =
-    update {
-        set(firstName).equalTo(record::firstName)
-        set(lastName).equalTo(record::lastName)
-        set(birthDate).equalTo(record::birthDate)
-        set(employed).equalTo(record::employed)
-        set(occupation).equalTo(record::occupation)
-        set(addressId).equalTo(record::addressId)
-        where(id, isEqualTo(record::id))
-    }
-
-fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
-    update {
-        set(firstName).equalToWhenPresent(record::firstName)
-        set(lastName).equalToWhenPresent(record::lastName)
-        set(birthDate).equalToWhenPresent(record::birthDate)
-        set(employed).equalToWhenPresent(record::employed)
-        set(occupation).equalToWhenPresent(record::occupation)
-        set(addressId).equalToWhenPresent(record::addressId)
-        where(id, isEqualTo(record::id))
-    }

@@ -18,10 +18,18 @@ package org.mybatis.dynamic.sql.util.kotlin.spring
 
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+import org.mybatis.dynamic.sql.insert.render.BatchInsert
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
@@ -42,44 +50,47 @@ import org.mybatis.dynamic.sql.util.kotlin.model.select
 import org.mybatis.dynamic.sql.util.kotlin.model.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.model.update
 
-fun count(column: BasicColumn, completer: CountCompleter) =
+fun count(column: BasicColumn, completer: CountCompleter): SelectStatementProvider =
     count(column, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun countDistinct(column: BasicColumn, completer: CountCompleter) =
+fun countDistinct(column: BasicColumn, completer: CountCompleter): SelectStatementProvider =
     countDistinct(column, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun countFrom(table: SqlTable, completer: CountCompleter) =
+fun countFrom(table: SqlTable, completer: CountCompleter): SelectStatementProvider =
     countFrom(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun deleteFrom(table: SqlTable, completer: DeleteCompleter) =
+fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProvider =
     deleteFrom(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun insertInto(table: SqlTable, completer: GeneralInsertCompleter) =
+fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertStatementProvider =
     insertInto(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun insertSelect(table: SqlTable, completer: InsertSelectCompleter) =
+fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectStatementProvider =
     insertSelect(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>) =
+fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>): BatchInsert<T> =
     into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>) =
+fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>): InsertStatementProvider<T> =
     into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: MultiRowInsertCompleter<T>) =
+fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(
+    table: SqlTable,
+    completer: MultiRowInsertCompleter<T>
+): MultiRowInsertStatementProvider<T> =
     into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun select(vararg columns: BasicColumn, completer: SelectCompleter) =
+fun select(vararg columns: BasicColumn, completer: SelectCompleter): SelectStatementProvider =
     select(columns = columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun select(columns: List<BasicColumn>, completer: SelectCompleter) =
+fun select(columns: List<BasicColumn>, completer: SelectCompleter): SelectStatementProvider =
     select(columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter) =
+fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter): SelectStatementProvider =
     selectDistinct(columns = columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter) =
+fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter): SelectStatementProvider =
     selectDistinct(columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun update(table: SqlTable, completer: UpdateCompleter) =
+fun update(table: SqlTable, completer: UpdateCompleter): UpdateStatementProvider =
     update(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)

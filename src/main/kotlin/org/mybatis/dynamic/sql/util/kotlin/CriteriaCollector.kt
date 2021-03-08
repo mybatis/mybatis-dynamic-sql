@@ -28,7 +28,7 @@ typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 class CriteriaCollector {
     val criteria = mutableListOf<SqlCriterion>()
 
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
         apply {
             criteria.add(
                 ColumnAndConditionCriterion.withColumn(column)
@@ -42,7 +42,7 @@ class CriteriaCollector {
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
         criteriaReceiver: CriteriaReceiver
-    ) =
+    ): CriteriaCollector =
         apply {
             criteria.add(
                 ColumnAndConditionCriterion.withColumn(column)
@@ -53,7 +53,7 @@ class CriteriaCollector {
             )
         }
 
-    fun and(existsPredicate: ExistsPredicate) =
+    fun and(existsPredicate: ExistsPredicate): CriteriaCollector =
         apply {
             criteria.add(
                 ExistsCriterion.Builder()
@@ -63,7 +63,7 @@ class CriteriaCollector {
             )
         }
 
-    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver) =
+    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
         apply {
             criteria.add(
                 ExistsCriterion.Builder()
@@ -74,7 +74,7 @@ class CriteriaCollector {
             )
         }
 
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>) =
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
         apply {
             criteria.add(
                 ColumnAndConditionCriterion.withColumn(column)
@@ -88,7 +88,7 @@ class CriteriaCollector {
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
         criteriaReceiver: CriteriaReceiver
-    ) =
+    ): CriteriaCollector =
         apply {
             criteria.add(
                 ColumnAndConditionCriterion.withColumn(column)
@@ -99,7 +99,7 @@ class CriteriaCollector {
             )
         }
 
-    fun or(existsPredicate: ExistsPredicate) =
+    fun or(existsPredicate: ExistsPredicate): CriteriaCollector =
         apply {
             criteria.add(
                 ExistsCriterion.Builder()
@@ -109,7 +109,7 @@ class CriteriaCollector {
             )
         }
 
-    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver) =
+    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
         apply {
             criteria.add(
                 ExistsCriterion.Builder()

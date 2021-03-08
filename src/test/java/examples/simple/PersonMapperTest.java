@@ -84,6 +84,34 @@ class PersonMapperTest {
         }
     }
 
+    @Test
+    void testSelectEmployed() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            List<PersonRecord> rows = mapper.select(c ->
+                    c.where(employed, isTrue())
+                    .orderBy(id));
+
+            assertThat(rows).hasSize(4);
+            assertThat(rows.get(0).getId()).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void testSelectUnemployed() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            List<PersonRecord> rows = mapper.select(c ->
+                    c.where(employed, isFalse())
+                            .orderBy(id));
+
+            assertThat(rows).hasSize(2);
+            assertThat(rows.get(0).getId()).isEqualTo(3);
+        }
+    }
+
     // this example is in the quick start documentation...
     @Test
     void testGeneralSelect() {
