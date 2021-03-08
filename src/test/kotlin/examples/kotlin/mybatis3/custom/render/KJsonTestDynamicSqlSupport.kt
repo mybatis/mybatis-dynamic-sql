@@ -16,7 +16,7 @@
 package examples.kotlin.mybatis3.custom.render
 
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.util.kotlin.column
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 
 object KJsonTestDynamicSqlSupport {
@@ -28,8 +28,10 @@ object KJsonTestDynamicSqlSupport {
     class JsonTest : SqlTable("JsonTest") {
         val id = column<Int>("id", JDBCType.INTEGER)
         val description = column<String>("description", JDBCType.VARCHAR)
-        val info = column<String>("info", JDBCType.VARCHAR) {
-            withRenderingStrategy(KJsonRenderingStrategy())
-        }
+        val info = column<String>(
+            "info",
+            JDBCType.VARCHAR,
+            renderingStrategy = KJsonRenderingStrategy()
+        )
     }
 }

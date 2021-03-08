@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.kotlin
+package org.mybatis.dynamic.sql.util.kotlin.elements
 
 import org.mybatis.dynamic.sql.ParameterTypeConverter
 import org.mybatis.dynamic.sql.SqlColumn
@@ -22,39 +22,35 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy
 import java.sql.JDBCType
 
 /**
- * These functions replace the native functions in [@see SqlColumn} such as
+ * This function replaces the native functions in [@see SqlColumn} such as
  * [@see SqlColumn#withTypeHandler], [@see SqlColumn#withRenderingStrategy], etc.
- * These functions preserve the non-nullable column type which is lost with the Java
+ * This function preserves the non-nullable column type which is lost with the Java
  * native versions.
  */
-
-fun <T : Any> SqlTable.column(name: String, modifier: SqlColumnModifier<T>.() -> Unit): SqlColumn<T> =
-    with(SqlColumnModifier(column<T>(name))) {
-        modifier(this)
-        column
-    }
-
 fun <T : Any> SqlTable.column(
     name: String,
-    jdbcType: JDBCType,
-    modifier: SqlColumnModifier<T>.() -> Unit
-): SqlColumn<T> =
-    with(SqlColumnModifier(column<T>(name, jdbcType))) {
-        modifier(this)
-        column
+    jdbcType: JDBCType? = null,
+    typeHandler: String? = null,
+    renderingStrategy: RenderingStrategy? = null,
+    parameterTypeConverter: ParameterTypeConverter<T, *>? = null
+): SqlColumn<T> {
+    var column = if (jdbcType == null) {
+        column<T>(name)
+    } else {
+        column(name, jdbcType)
     }
 
-@MyBatisDslMarker
-class SqlColumnModifier<T>(var column: SqlColumn<T>) {
-    fun withTypeHandler(typeHandler: String) {
+    if (typeHandler != null) {
         column = column.withTypeHandler(typeHandler)
     }
 
-    fun withRenderingStrategy(renderingStrategy: RenderingStrategy) {
+    if (renderingStrategy != null) {
         column = column.withRenderingStrategy(renderingStrategy)
     }
 
-    fun withParameterTypeConverter(parameterTypeConverter: ParameterTypeConverter<T, *>) {
+    if (parameterTypeConverter != null) {
         column = column.withParameterTypeConverter(parameterTypeConverter)
     }
+
+    return column
 }

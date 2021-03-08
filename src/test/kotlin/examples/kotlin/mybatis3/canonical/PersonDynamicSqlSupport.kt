@@ -16,7 +16,7 @@
 package examples.kotlin.mybatis3.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.util.kotlin.column
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 import java.util.Date
 
@@ -24,13 +24,17 @@ object PersonDynamicSqlSupport {
     object Person : SqlTable("Person") {
         val id = column<Int>("id", JDBCType.INTEGER)
         val firstName = column<String>("first_name", JDBCType.VARCHAR)
-        val lastName = column<LastName>("last_name", JDBCType.VARCHAR) {
-            withTypeHandler("examples.kotlin.mybatis3.canonical.LastNameTypeHandler")
-        }
+        val lastName = column<LastName>(
+            name = "last_name",
+            jdbcType = JDBCType.VARCHAR,
+            typeHandler = "examples.kotlin.mybatis3.canonical.LastNameTypeHandler"
+        )
         val birthDate = column<Date>("birth_date", JDBCType.DATE)
-        val employed = column<Boolean>("employed", JDBCType.VARCHAR) {
-            withTypeHandler("examples.kotlin.mybatis3.canonical.YesNoTypeHandler")
-        }
+        val employed = column<Boolean>(
+            "employed",
+            JDBCType.VARCHAR,
+            typeHandler = "examples.kotlin.mybatis3.canonical.YesNoTypeHandler"
+        )
         val occupation = column<String>("occupation", JDBCType.VARCHAR)
         val addressId = column<Int>("address_id", JDBCType.INTEGER)
     }
