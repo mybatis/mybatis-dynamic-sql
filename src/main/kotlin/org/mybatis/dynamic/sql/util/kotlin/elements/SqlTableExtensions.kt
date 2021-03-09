@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin.elements
 
-import org.mybatis.dynamic.sql.ParameterTypeConverter
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.render.RenderingStrategy
@@ -32,7 +31,7 @@ fun <T : Any> SqlTable.column(
     jdbcType: JDBCType? = null,
     typeHandler: String? = null,
     renderingStrategy: RenderingStrategy? = null,
-    parameterTypeConverter: ParameterTypeConverter<T, *>? = null
+    parameterTypeConverter: ((T?) -> Any?)? = null
 ): SqlColumn<T> {
     var column: SqlColumn<T> = if (jdbcType == null) {
         column(name)
