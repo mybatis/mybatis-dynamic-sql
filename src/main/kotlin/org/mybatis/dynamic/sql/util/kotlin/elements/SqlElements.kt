@@ -206,12 +206,6 @@ fun <T : Any> isNotEqualToWhenPresent(value: T?): IsNotEqualToWhenPresent<T> = i
 fun <T : Any> isNotEqualToWhenPresent(valueSupplier: () -> T?): IsNotEqualToWhenPresent<T> =
     IsNotEqualToWhenPresent.of(valueSupplier)
 
-fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsInWithSubselect<T> =
-    IsInWithSubselect.of(KotlinSubQueryBuilder().apply(subQuery))
-
-fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotInWithSubselect<T> =
-    IsNotInWithSubselect.of(KotlinSubQueryBuilder().apply(subQuery))
-
 fun <T : Any> isGreaterThan(value: T): IsGreaterThan<T> = isGreaterThanProperty { value }
 
 fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> Unit) : IsGreaterThanWithSubselect<T> =
@@ -282,6 +276,9 @@ fun <T : Any> isIn(vararg values: T): IsIn<T> = isIn(values.asList())
 
 fun <T : Any> isIn(values: Collection<T>): IsIn<T> = IsIn.of(values)
 
+fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsInWithSubselect<T> =
+    IsInWithSubselect.of(KotlinSubQueryBuilder().apply(subQuery))
+
 fun <T : Any> isInWhenPresent(vararg values: T?): IsInWhenPresent<T> = isInWhenPresent(values.asList())
 
 fun <T : Any> isInWhenPresent(values: Collection<T?>): IsInWhenPresent<T> =
@@ -290,6 +287,9 @@ fun <T : Any> isInWhenPresent(values: Collection<T?>): IsInWhenPresent<T> =
 fun <T : Any> isNotIn(vararg values: T): IsNotIn<T> = isNotIn(values.asList())
 
 fun <T : Any> isNotIn(values: Collection<T>): IsNotIn<T> = IsNotIn.of(values)
+
+fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotInWithSubselect<T> =
+    IsNotInWithSubselect.of(KotlinSubQueryBuilder().apply(subQuery))
 
 fun <T : Any> isNotInWhenPresent(vararg values: T?): IsNotInWhenPresent<T> = isNotInWhenPresent(values.asList())
 
