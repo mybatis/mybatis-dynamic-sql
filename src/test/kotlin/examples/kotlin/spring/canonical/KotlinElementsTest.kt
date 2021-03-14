@@ -41,6 +41,7 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualToWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanWhenPresent
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeCaseInsensitive
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeCaseInsensitiveWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent
@@ -1133,5 +1134,56 @@ class KotlinElementsTest {
 
         assertThat(rows).hasSize(6)
         assertThat(rows[0]).isEqualTo("Fred")
+    }
+
+    @Test
+    fun testSearchWhenThenBlank() {
+        val fn = ""
+
+        val selectStatement = select(firstName) {
+            from(Person)
+            where(
+                upper(firstName),
+                isLike(fn).`when`(String::isNotBlank)
+                    .then(String::toUpperCase)
+                    .then { "%$it%" }
+            )
+            orderBy(id)
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select first_name from Person order by id"
+        )
+
+        val rows = template.selectList(selectStatement, String::class)
+
+        assertThat(rows).hasSize(6)
+        assertThat(rows[0]).isEqualTo("Fred")
+    }
+
+    @Test
+    fun testSearchWhenThenNotBlank() {
+        val fn = "w"
+
+        val selectStatement = select(firstName) {
+            from(Person)
+            where(
+                upper(firstName),
+                isLike(fn).`when`(String::isNotBlank)
+                    .then(String::toUpperCase)
+                    .then { "%$it%" }
+            )
+            orderBy(id)
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select first_name from Person where upper(first_name) like :p1 order by id"
+        )
+        assertThat(selectStatement.parameters).containsEntry("p1", "%W%")
+
+        val rows = template.selectList(selectStatement, String::class)
+
+        assertThat(rows).hasSize(1)
+        assertThat(rows[0]).isEqualTo("Wilma")
     }
 }
