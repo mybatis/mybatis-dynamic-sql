@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,8 +30,12 @@ import org.mybatis.dynamic.sql.Callback;
 
 public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
 
-    protected IsNotIn(Builder<T> builder) {
-        super(builder);
+    protected IsNotIn(Collection<T> values) {
+        super(values);
+    }
+
+    protected IsNotIn(Collection<T> values, Callback emptyCallback) {
+        super(values, emptyCallback);
     }
 
     @Override
@@ -41,11 +47,7 @@ public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
 
     @Override
     public IsNotIn<T> withListEmptyCallback(Callback callback) {
-        return new Builder<T>()
-                .withValues(values)
-                .withValueStreamTransformer(valueStreamTransformer)
-                .withEmptyCallback(callback)
-                .build();
+        return new IsNotIn<>(values, callback);
     }
 
     /**
@@ -54,16 +56,50 @@ public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
      * If you filter values out of the stream, then final condition will not reference those values. If you filter all
      * values out of the stream, then the condition will not render.
      *
+     * @deprecated replaced by {@link IsNotIn#map(UnaryOperator)} and {@link IsNotIn#filter(Predicate)}
      * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
      *     the values are placed in the parameter map
      * @return new condition with the specified transformer
      */
+    @Deprecated
     public IsNotIn<T> then(UnaryOperator<Stream<T>> valueStreamTransformer) {
-        return new Builder<T>()
-                .withValues(values)
-                .withValueStreamTransformer(valueStreamTransformer)
-                .withEmptyCallback(emptyCallback)
-                .build();
+        List<T> mapped = valueStreamTransformer.apply(values.stream())
+                .collect(Collectors.toList());
+
+        return new IsNotIn<>(mapped, emptyCallback);
+    }
+
+    /**
+     * If renderable apply the predicate to each value in the list and return a new condition with the filtered values.
+     *     Else returns a condition that will not render (this). If all values are filtered out of the value
+     *     list, then the condition will not render.
+     *
+     * @param predicate predicate applied to the values, if renderable
+     * @return a new condition with filtered values if renderable, otherwise a condition
+     *     that will not render.
+     */
+    public IsNotIn<T> filter(Predicate<T> predicate) {
+        if (shouldRender()) {
+            return new IsNotIn<>(applyFilter(predicate), emptyCallback);
+        } else {
+            return this;
+        }
+    }
+
+    /**
+     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
+     *     Else return a condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the values, if renderable
+     * @return a new condition with mapped values if renderable, otherwise a condition
+     *     that will not render.
+     */
+    public IsNotIn<T> map(UnaryOperator<T> mapper) {
+        if (shouldRender()) {
+            return new IsNotIn<>(applyMapper(mapper), emptyCallback);
+        } else {
+            return this;
+        }
     }
 
     @SafeVarargs
@@ -72,19 +108,6 @@ public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
     }
 
     public static <T> IsNotIn<T> of(Collection<T> values) {
-        return new Builder<T>()
-                .withValues(values)
-                .build();
-    }
-
-    public static class Builder<T> extends AbstractListConditionBuilder<T, Builder<T>> {
-        @Override
-        protected Builder<T> getThis() {
-            return this;
-        }
-
-        public IsNotIn<T> build() {
-            return new IsNotIn<>(this);
-        }
+        return new IsNotIn<>(values);
     }
 }

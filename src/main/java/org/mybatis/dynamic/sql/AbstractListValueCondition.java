@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,14 +26,15 @@ import java.util.stream.Stream;
 public abstract class AbstractListValueCondition<T, S extends AbstractListValueCondition<T, S>>
         implements VisitableCondition<T> {
     protected final Collection<T> values;
-    protected final UnaryOperator<Stream<T>> valueStreamTransformer;
     protected final Callback emptyCallback;
 
-    protected AbstractListValueCondition(AbstractListConditionBuilder<T, ?> builder) {
-        this.valueStreamTransformer = Objects.requireNonNull(builder.valueStreamTransformer);
-        this.values = valueStreamTransformer.apply(builder.values.stream())
-            .collect(Collectors.toList());
-        this.emptyCallback = Objects.requireNonNull(builder.emptyCallback);
+    protected AbstractListValueCondition(Collection<T> values) {
+        this(values, () -> { });
+    }
+
+    protected AbstractListValueCondition(Collection<T> values, Callback emptyCallback) {
+        this.values = Objects.requireNonNull(values);
+        this.emptyCallback = Objects.requireNonNull(emptyCallback);
     }
 
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
@@ -55,30 +56,17 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
         return visitor.visit(this);
     }
 
+    protected Collection<T> applyMapper(UnaryOperator<T> mapper) {
+        Objects.requireNonNull(mapper);
+        return values.stream().map(mapper).collect(Collectors.toList());
+    }
+
+    protected Collection<T> applyFilter(Predicate<T> predicate) {
+        Objects.requireNonNull(predicate);
+        return values.stream().filter(predicate).collect(Collectors.toList());
+    }
+
     public abstract S withListEmptyCallback(Callback callback);
 
     public abstract String renderCondition(String columnName, Stream<String> placeholders);
-
-    public abstract static class AbstractListConditionBuilder<T, S extends AbstractListConditionBuilder<T, S>> {
-        protected Collection<T> values = new ArrayList<>();
-        protected UnaryOperator<Stream<T>> valueStreamTransformer = UnaryOperator.identity();
-        protected Callback emptyCallback = () -> { };
-
-        public S withValues(Collection<T> values) {
-            this.values.addAll(values);
-            return getThis();
-        }
-
-        public S withValueStreamTransformer(UnaryOperator<Stream<T>> valueStreamTransformer) {
-            this.valueStreamTransformer = valueStreamTransformer;
-            return getThis();
-        }
-
-        public S withEmptyCallback(Callback emptyCallback) {
-            this.emptyCallback = emptyCallback;
-            return getThis();
-        }
-
-        protected abstract S getThis();
-    }
 }

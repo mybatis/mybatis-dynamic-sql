@@ -20,6 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlBuilder;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 class FilterTest {
 
     @Test
@@ -352,5 +356,79 @@ class FilterTest {
         assertThat(cond.shouldRender()).isFalse();
         assertThat(cond.value()).isNull();
         assertThat(cond).isSameAs(mapped);
+    }
+
+    @Test
+    void testIsInUnRenderableMapShouldReturnSameObject() {
+        IsIn<String> cond = SqlBuilder.isIn("Fred", "Wilma").filter(v -> false);
+        assertThat(cond.shouldRender()).isFalse();
+        IsIn<String> mapped = cond.map(String::toUpperCase);
+        assertThat(cond).isSameAs(mapped);
+    }
+
+    @Test
+    void testIsInRenderableMapShouldReturnMappedObject() {
+        IsIn<String> cond = SqlBuilder.isIn("Fred", "Wilma");
+        assertThat(cond.shouldRender()).isTrue();
+        IsIn<String> mapped = cond.map(String::toUpperCase);
+        List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
+        assertThat(mappedValues).containsExactly("FRED", "WILMA");
+    }
+
+    @Test
+    void testIsNotInUnRenderableMapShouldReturnSameObject() {
+        IsNotIn<String> cond = SqlBuilder.isNotIn("Fred", "Wilma").filter(v -> false);
+        assertThat(cond.shouldRender()).isFalse();
+        IsNotIn<String> mapped = cond.map(String::toUpperCase);
+        assertThat(cond).isSameAs(mapped);
+    }
+
+    @Test
+    void testIsNotInRenderableMapShouldReturnMappedObject() {
+        IsNotIn<String> cond = SqlBuilder.isNotIn("Fred", "Wilma");
+        assertThat(cond.shouldRender()).isTrue();
+        IsNotIn<String> mapped = cond.map(String::toUpperCase);
+        List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
+        assertThat(mappedValues).containsExactly("FRED", "WILMA");
+    }
+
+    @Test
+    void testIsNotInCaseInsensitiveUnRenderableMapShouldReturnSameObject() {
+        IsNotInCaseInsensitive cond = SqlBuilder.isNotInCaseInsensitive("Fred", "Wilma").filter(v -> false);
+        assertThat(cond.shouldRender()).isFalse();
+        IsNotInCaseInsensitive mapped = cond.map(String::toUpperCase);
+        assertThat(cond).isSameAs(mapped);
+    }
+
+    @Test
+    void testIsNotInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
+        IsNotInCaseInsensitive cond = SqlBuilder.isNotInCaseInsensitive("Fred  ", "Wilma  ");
+        List<String> values = cond.mapValues(Function.identity()).collect(Collectors.toList());
+        assertThat(values).containsExactly("FRED  ", "WILMA  ");
+        assertThat(cond.shouldRender()).isTrue();
+
+        IsNotInCaseInsensitive mapped = cond.map(String::trim);
+        List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
+        assertThat(mappedValues).containsExactly("FRED", "WILMA");
+    }
+
+    @Test
+    void testIsInCaseInsensitiveUnRenderableMapShouldReturnSameObject() {
+        IsInCaseInsensitive cond = SqlBuilder.isInCaseInsensitive("Fred", "Wilma").filter(v -> false);
+        assertThat(cond.shouldRender()).isFalse();
+        IsInCaseInsensitive mapped = cond.map(String::toUpperCase);
+        assertThat(cond).isSameAs(mapped);
+    }
+
+    @Test
+    void testIsInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
+        IsInCaseInsensitive cond = SqlBuilder.isInCaseInsensitive("Fred  ", "Wilma  ");
+        List<String> values = cond.mapValues(Function.identity()).collect(Collectors.toList());
+        assertThat(values).containsExactly("FRED  ", "WILMA  ");
+        assertThat(cond.shouldRender()).isTrue();
+
+        IsInCaseInsensitive mapped = cond.map(String::trim);
+        List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
+        assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 }
