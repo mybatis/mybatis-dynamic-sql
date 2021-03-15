@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,10 +27,6 @@ public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
         super(valueSupplier);
     }
 
-    protected IsNotLike(Supplier<T> valueSupplier, Predicate<T> predicate) {
-        super(valueSupplier, predicate);
-    }
-
     @Override
     public String renderCondition(String columnName, String placeholder) {
         return columnName + " not like " + placeholder; //$NON-NLS-1$
@@ -40,11 +36,78 @@ public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
         return new IsNotLike<>(valueSupplier);
     }
 
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @deprecated replaced by {@link IsNotLike#filter(Predicate)}
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    @Deprecated
     public IsNotLike<T> when(Predicate<T> predicate) {
-        return new IsNotLike<>(valueSupplier, predicate);
+        return filter(predicate);
     }
 
-    public IsNotLike<T> then(UnaryOperator<T> transformer) {
-        return shouldRender() ? new IsNotLike<>(() -> transformer.apply(value())) : this;
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @deprecated replaced by {@link IsNotLike#map(UnaryOperator)}
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    @Deprecated
+    public IsNotLike<T> then(UnaryOperator<T> mapper) {
+        return map(mapper);
+    }
+
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    public IsNotLike<T> filter(Predicate<T> predicate) {
+        if (shouldRender()) {
+            return predicate.test(value()) ? this : EmptyIsNotLike.empty();
+        } else {
+            return this;
+        }
+    }
+
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public IsNotLike<T> map(UnaryOperator<T> mapper) {
+        return shouldRender() ? new IsNotLike<>(() -> mapper.apply(value())) : this;
+    }
+
+    public static class EmptyIsNotLike<T> extends IsNotLike<T> {
+        private static final EmptyIsNotLike<?> EMPTY = new EmptyIsNotLike<>();
+
+        public static <T> EmptyIsNotLike<T> empty() {
+            @SuppressWarnings("unchecked")
+            EmptyIsNotLike<T> t = (EmptyIsNotLike<T>) EMPTY;
+            return t;
+        }
+
+        public EmptyIsNotLike() {
+            super(() -> null);
+        }
+
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
     }
 }

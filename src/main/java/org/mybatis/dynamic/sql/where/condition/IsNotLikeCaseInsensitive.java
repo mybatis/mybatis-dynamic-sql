@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,10 +27,6 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
         super(valueSupplier);
     }
 
-    protected IsNotLikeCaseInsensitive(Supplier<String> valueSupplier, Predicate<String> predicate) {
-        super(valueSupplier, predicate);
-    }
-
     @Override
     public String renderCondition(String columnName, String placeholder) {
         return "upper(" + columnName + ") not like " + placeholder; //$NON-NLS-1$ //$NON-NLS-2$
@@ -45,11 +41,76 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
         return new IsNotLikeCaseInsensitive(valueSupplier);
     }
 
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @deprecated replaced by {@link IsNotLikeCaseInsensitive#filter(Predicate)}
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    @Deprecated
     public IsNotLikeCaseInsensitive when(Predicate<String> predicate) {
-        return new IsNotLikeCaseInsensitive(valueSupplier, predicate);
+        return filter(predicate);
     }
 
-    public IsNotLikeCaseInsensitive then(UnaryOperator<String> transformer) {
-        return shouldRender() ? new IsNotLikeCaseInsensitive(() -> transformer.apply(value())) : this;
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @deprecated replaced by {@link IsNotLikeCaseInsensitive#map(UnaryOperator)}
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    @Deprecated
+    public IsNotLikeCaseInsensitive then(UnaryOperator<String> mapper) {
+        return map(mapper);
+    }
+
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    public IsNotLikeCaseInsensitive filter(Predicate<String> predicate) {
+        if (shouldRender()) {
+            return predicate.test(value()) ? this : EmptyIsNotLikeCaseInsensitive.empty();
+        } else {
+            return this;
+        }
+    }
+
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public IsNotLikeCaseInsensitive map(UnaryOperator<String> mapper) {
+        return shouldRender() ? new IsNotLikeCaseInsensitive(() -> mapper.apply(value())) : this;
+    }
+
+    public static class EmptyIsNotLikeCaseInsensitive extends IsNotLikeCaseInsensitive {
+        private static final EmptyIsNotLikeCaseInsensitive EMPTY = new EmptyIsNotLikeCaseInsensitive();
+
+        public static EmptyIsNotLikeCaseInsensitive empty() {
+            return EMPTY;
+        }
+
+        public EmptyIsNotLikeCaseInsensitive() {
+            super(() -> null);
+        }
+
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
     }
 }

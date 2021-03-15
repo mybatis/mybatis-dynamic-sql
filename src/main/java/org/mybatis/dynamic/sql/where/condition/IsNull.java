@@ -31,12 +31,12 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
     }
 
     /**
-     * If the supplier returns true, returns this condition. Else returns a new condition that will not render.
+     * If the supplier returns true, returns this condition. Else returns a condition that will not render.
      *
      * @deprecated replaced by {@link IsNull#filter(BooleanSupplier)}
      * @param booleanSupplier function that specifies whether the condition should render
      * @param <S> condition type - not used except for compilation compliance
-     * @return If the condition should render, returns this condition. Else a new condition that will not
+     * @return If the condition should render, returns this condition. Else a condition that will not
      *     render.
      */
     @Deprecated
@@ -45,11 +45,11 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
     }
 
     /**
-     * If the supplier returns true, returns this condition. Else returns a new condition that will not render.
+     * If the supplier returns true, returns this condition. Else returns a condition that will not render.
      *
      * @param booleanSupplier function that specifies whether the condition should render
      * @param <S> condition type - not used except for compilation compliance
-     * @return If the condition should render, returns this condition. Else a new condition that will not
+     * @return If the condition should render, returns this condition. Else a condition that will not
      *     render.
      */
     public <S> IsNull<S> filter(BooleanSupplier booleanSupplier) {

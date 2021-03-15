@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,10 +27,6 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
         super(valueSupplier);
     }
 
-    protected IsNotEqualTo(Supplier<T> valueSupplier, Predicate<T> predicate) {
-        super(valueSupplier, predicate);
-    }
-
     @Override
     public String renderCondition(String columnName, String placeholder) {
         return columnName + " <> " + placeholder; //$NON-NLS-1$
@@ -40,11 +36,78 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
         return new IsNotEqualTo<>(valueSupplier);
     }
 
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @deprecated replaced by {@link IsNotEqualTo#filter(Predicate)}
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    @Deprecated
     public IsNotEqualTo<T> when(Predicate<T> predicate) {
-        return new IsNotEqualTo<>(valueSupplier, predicate);
+        return filter(predicate);
     }
 
-    public IsNotEqualTo<T> then(UnaryOperator<T> transformer) {
-        return shouldRender() ? new IsNotEqualTo<>(() -> transformer.apply(value())) : this;
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @deprecated replaced by {@link IsNotEqualTo#map(UnaryOperator)}
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    @Deprecated
+    public IsNotEqualTo<T> then(UnaryOperator<T> mapper) {
+        return map(mapper);
+    }
+
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    public IsNotEqualTo<T> filter(Predicate<T> predicate) {
+        if (shouldRender()) {
+            return predicate.test(value()) ? this : EmptyIsNotEqualTo.empty();
+        } else {
+            return this;
+        }
+    }
+
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public IsNotEqualTo<T> map(UnaryOperator<T> mapper) {
+        return shouldRender() ? new IsNotEqualTo<>(() -> mapper.apply(value())) : this;
+    }
+
+    public static class EmptyIsNotEqualTo<T> extends IsNotEqualTo<T> {
+        private static final EmptyIsNotEqualTo<?> EMPTY = new EmptyIsNotEqualTo<>();
+
+        public static <T> EmptyIsNotEqualTo<T> empty() {
+            @SuppressWarnings("unchecked")
+            EmptyIsNotEqualTo<T> t = (EmptyIsNotEqualTo<T>) EMPTY;
+            return t;
+        }
+
+        public EmptyIsNotEqualTo() {
+            super(() -> null);
+        }
+
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
     }
 }
