@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,19 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
-    protected IsNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
-        super(valueSupplier);
-    }
-
-    protected IsNotLikeCaseInsensitive(Supplier<String> valueSupplier, Predicate<String> predicate) {
-        super(valueSupplier, predicate);
+    protected IsNotLikeCaseInsensitive(String value) {
+        super(value);
     }
 
     @Override
@@ -41,15 +36,80 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
         return StringUtilities.safelyUpperCase(super.value());
     }
 
-    public static IsNotLikeCaseInsensitive of(Supplier<String> valueSupplier) {
-        return new IsNotLikeCaseInsensitive(valueSupplier);
+    public static IsNotLikeCaseInsensitive of(String value) {
+        return new IsNotLikeCaseInsensitive(value);
     }
 
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @deprecated replaced by {@link IsNotLikeCaseInsensitive#filter(Predicate)}
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    @Deprecated
     public IsNotLikeCaseInsensitive when(Predicate<String> predicate) {
-        return new IsNotLikeCaseInsensitive(valueSupplier, predicate);
+        return filter(predicate);
     }
 
-    public IsNotLikeCaseInsensitive then(UnaryOperator<String> transformer) {
-        return shouldRender() ? new IsNotLikeCaseInsensitive(() -> transformer.apply(value())) : this;
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @deprecated replaced by {@link IsNotLikeCaseInsensitive#map(UnaryOperator)}
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    @Deprecated
+    public IsNotLikeCaseInsensitive then(UnaryOperator<String> mapper) {
+        return map(mapper);
+    }
+
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    public IsNotLikeCaseInsensitive filter(Predicate<String> predicate) {
+        if (shouldRender()) {
+            return predicate.test(value) ? this : EmptyIsNotLikeCaseInsensitive.empty();
+        } else {
+            return this;
+        }
+    }
+
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public IsNotLikeCaseInsensitive map(UnaryOperator<String> mapper) {
+        return shouldRender() ? new IsNotLikeCaseInsensitive(mapper.apply(value)) : this;
+    }
+
+    public static class EmptyIsNotLikeCaseInsensitive extends IsNotLikeCaseInsensitive {
+        private static final EmptyIsNotLikeCaseInsensitive EMPTY = new EmptyIsNotLikeCaseInsensitive();
+
+        public static EmptyIsNotLikeCaseInsensitive empty() {
+            return EMPTY;
+        }
+
+        private EmptyIsNotLikeCaseInsensitive() {
+            super(null);
+        }
+
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
     }
 }

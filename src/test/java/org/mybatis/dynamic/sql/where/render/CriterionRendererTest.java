@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
 
-        IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(3);
         ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
@@ -62,7 +62,7 @@ class CriterionRendererTest {
     void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-        IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
+        IsEqualTo<Integer> condition = IsEqualTo.of(3);
         ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
