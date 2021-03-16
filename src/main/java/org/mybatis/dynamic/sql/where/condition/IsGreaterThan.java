@@ -16,15 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsGreaterThan(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+    protected IsGreaterThan(T value) {
+        super(value);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
         return columnName + " > " + placeholder; //$NON-NLS-1$
     }
 
-    public static <T> IsGreaterThan<T> of(Supplier<T> valueSupplier) {
-        return new IsGreaterThan<>(valueSupplier);
+    public static <T> IsGreaterThan<T> of(T value) {
+        return new IsGreaterThan<>(value);
     }
 
     /**
@@ -74,7 +73,7 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
      */
     public IsGreaterThan<T> filter(Predicate<T> predicate) {
         if (shouldRender()) {
-            return predicate.test(value()) ? this : EmptyIsGreaterThan.empty();
+            return predicate.test(value) ? this : EmptyIsGreaterThan.empty();
         } else {
             return this;
         }
@@ -89,7 +88,7 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
      *     if renderable, otherwise a condition that will not render.
      */
     public IsGreaterThan<T> map(UnaryOperator<T> mapper) {
-        return shouldRender() ? new IsGreaterThan<>(() -> mapper.apply(value())) : this;
+        return shouldRender() ? new IsGreaterThan<>(mapper.apply(value)) : this;
     }
 
     public static class EmptyIsGreaterThan<T> extends IsGreaterThan<T> {
@@ -101,8 +100,8 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
             return t;
         }
 
-        public EmptyIsGreaterThan() {
-            super(() -> null);
+        private EmptyIsGreaterThan() {
+            super(null);
         }
 
         @Override

@@ -22,6 +22,9 @@ The major themes of this release include the following:
 All built-in conditions have been rafactored. The changes should have no impact for the vast majority of users.
 However, there are some changes in behavior and one breaking change.
 
+1. Internally, the conditions no longer hold value Suppliers, they now hold the values themselves. The SqlBuilder
+   methods that accept Suppliers will call the `Supplier.get()` method when the condition is constructed. This should
+   have no impact unless you were somehow relying on the delay in obtaining a value until the condition was rendered.
 1. The existing "then" and "when" methods have been deprecated and replaced with "map" and "filter" respectively.
    The new method names are more familiar and more representative of what these methods actually do. In effect,
    these methods mimic the function of the "map" and "filter" methods on "java.util.Optional" and they are used
@@ -33,8 +36,8 @@ However, there are some changes in behavior and one breaking change.
    in the SqlBuilder remain, and they will now produce a condition with a "NotNull" filter applied. So at the API level,
    things will function exactly as before, but the intermediate classes will be different.
 1. One breaking change is that the builder for List value conditions has been removed without replacement. If you
-   were using this builder, then the replacement is to build a new List value condition and then call the "map" and
-   "filter" methods as needed. For example, prior code looked like this
+   were using this builder to supply a "value stream transformer", then the replacement is to build a new List value
+   condition and then call the "map" and "filter" methods as needed. For example, prior code looked like this
 
    ```java
     public static IsIn<String> isIn(String...values) {
@@ -46,9 +49,7 @@ However, there are some changes in behavior and one breaking change.
                 .build();
     }
    ```
-   
-    New code should look like this:
-
+   New code should look like this:
    ```java
     public static IsIn<String> isIn(String...values) {
         return SqlBuilder.isIn(values)
@@ -57,7 +58,6 @@ However, there are some changes in behavior and one breaking change.
                 .filter(st -> !st.isEmpty());
     }
    ```
-   
    We think this is a marked improvement!
 
 ### Breaking Change for Kotlin

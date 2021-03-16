@@ -15,18 +15,15 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Objects;
-import java.util.function.Supplier;
-
 public abstract class AbstractSingleValueCondition<T> implements VisitableCondition<T> {
-    protected final Supplier<T> valueSupplier;
+    protected final T value;
 
-    protected AbstractSingleValueCondition(Supplier<T> valueSupplier) {
-        this.valueSupplier = Objects.requireNonNull(valueSupplier);
+    protected AbstractSingleValueCondition(T value) {
+        this.value = value;
     }
 
     public T value() {
-        return valueSupplier.get();
+        return value;
     }
 
     @Override

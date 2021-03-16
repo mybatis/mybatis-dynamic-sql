@@ -16,15 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
-    protected IsLikeCaseInsensitive(Supplier<String> valueSupplier) {
-        super(valueSupplier);
+    protected IsLikeCaseInsensitive(String value) {
+        super(value);
     }
 
     @Override
@@ -37,8 +36,8 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> 
         return StringUtilities.safelyUpperCase(super.value());
     }
 
-    public static IsLikeCaseInsensitive of(Supplier<String> valueSupplier) {
-        return new IsLikeCaseInsensitive(valueSupplier);
+    public static IsLikeCaseInsensitive of(String value) {
+        return new IsLikeCaseInsensitive(value);
     }
 
     /**
@@ -79,7 +78,7 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> 
      */
     public IsLikeCaseInsensitive filter(Predicate<String> predicate) {
         if (shouldRender()) {
-            return predicate.test(value()) ? this : EmptyIsLikeCaseInsensitive.empty();
+            return predicate.test(value) ? this : EmptyIsLikeCaseInsensitive.empty();
         } else {
             return this;
         }
@@ -94,7 +93,7 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> 
      *     if renderable, otherwise a condition that will not render.
      */
     public IsLikeCaseInsensitive map(UnaryOperator<String> mapper) {
-        return shouldRender() ? new IsLikeCaseInsensitive(() -> mapper.apply(value())) : this;
+        return shouldRender() ? new IsLikeCaseInsensitive(mapper.apply(value)) : this;
     }
 
     public static class EmptyIsLikeCaseInsensitive extends IsLikeCaseInsensitive {
@@ -104,8 +103,8 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> 
             return EMPTY;
         }
 
-        public EmptyIsLikeCaseInsensitive() {
-            super(() -> null);
+        private EmptyIsLikeCaseInsensitive() {
+            super(null);
         }
 
         @Override

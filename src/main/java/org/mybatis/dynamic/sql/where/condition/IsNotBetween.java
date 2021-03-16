@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
@@ -24,8 +23,8 @@ import org.mybatis.dynamic.sql.util.Predicates;
 
 public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
 
-    protected IsNotBetween(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2) {
-        super(valueSupplier1, valueSupplier2);
+    protected IsNotBetween(T value1, T value2) {
+        super(value1, value2);
     }
 
     @Override
@@ -72,7 +71,7 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
      */
     public IsNotBetween<T> filter(BiPredicate<T, T> predicate) {
         if (shouldRender()) {
-            return predicate.test(value1(), value2()) ? this : EmptyIsNotBetween.empty();
+            return predicate.test(value1, value2) ? this : EmptyIsNotBetween.empty();
         } else {
             return this;
         }
@@ -88,37 +87,38 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
      *     if renderable, otherwise a condition that will not render.
      */
     public IsNotBetween<T> map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2) {
-        return shouldRender() ? new IsNotBetween<>(() -> mapper1.apply(value1()), () -> mapper2.apply(value2())) : this;
+        return shouldRender() ? new IsNotBetween<>(mapper1.apply(value1), mapper2.apply(value2)) : this;
     }
 
-    public static <T> Builder<T> isNotBetween(Supplier<T> valueSupplier1) {
-        return new Builder<>(valueSupplier1);
+    public static <T> Builder<T> isNotBetween(T value1) {
+        return new Builder<>(value1);
     }
 
-    public static <T> WhenPresentBuilder<T> isNotBetweenWhenPresent(Supplier<T> valueSupplier1) {
-        return new WhenPresentBuilder<>(valueSupplier1);
+    public static <T> WhenPresentBuilder<T> isNotBetweenWhenPresent(T value1) {
+        return new WhenPresentBuilder<>(value1);
     }
 
     public static class Builder<T> extends AndGatherer<T, IsNotBetween<T>> {
 
-        private Builder(Supplier<T> valueSupplier1) {
-            super(valueSupplier1);
+        private Builder(T value1) {
+            super(value1);
         }
 
         @Override
         protected IsNotBetween<T> build() {
-            return new IsNotBetween<>(valueSupplier1, valueSupplier2);
+            return new IsNotBetween<>(value1, value2);
         }
     }
 
     public static class WhenPresentBuilder<T> extends AndGatherer<T, IsNotBetween<T>> {
-        private WhenPresentBuilder(Supplier<T> valueSupplier1) {
-            super(valueSupplier1);
+
+        private WhenPresentBuilder(T value1) {
+            super(value1);
         }
 
         @Override
         protected IsNotBetween<T> build() {
-            return new IsNotBetween<>(valueSupplier1, valueSupplier2).filter(Predicates.bothPresent());
+            return new IsNotBetween<>(value1, value2).filter(Predicates.bothPresent());
         }
     }
 
@@ -132,7 +132,7 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
         }
 
         public EmptyIsNotBetween() {
-            super(() -> null, () -> null);
+            super(null, null);
         }
 
         @Override

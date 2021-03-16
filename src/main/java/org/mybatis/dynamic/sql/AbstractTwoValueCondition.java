@@ -15,24 +15,21 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Objects;
-import java.util.function.Supplier;
-
 public abstract class AbstractTwoValueCondition<T> implements VisitableCondition<T> {
-    protected final Supplier<T> valueSupplier1;
-    protected final Supplier<T> valueSupplier2;
+    protected final T value1;
+    protected final T value2;
 
-    protected AbstractTwoValueCondition(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2) {
-        this.valueSupplier1 = Objects.requireNonNull(valueSupplier1);
-        this.valueSupplier2 = Objects.requireNonNull(valueSupplier2);
+    protected AbstractTwoValueCondition(T value1, T value2) {
+        this.value1 = value1;
+        this.value2 = value2;
     }
 
     public T value1() {
-        return valueSupplier1.get();
+        return value1;
     }
 
     public T value2() {
-        return valueSupplier2.get();
+        return value2;
     }
 
     @Override

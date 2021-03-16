@@ -16,15 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsLessThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsLessThanOrEqualTo(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+    protected IsLessThanOrEqualTo(T value) {
+        super(value);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class IsLessThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
         return columnName + " <= " + placeholder; //$NON-NLS-1$
     }
 
-    public static <T> IsLessThanOrEqualTo<T> of(Supplier<T> valueSupplier) {
-        return new IsLessThanOrEqualTo<>(valueSupplier);
+    public static <T> IsLessThanOrEqualTo<T> of(T value) {
+        return new IsLessThanOrEqualTo<>(value);
     }
 
     /**
@@ -74,7 +73,7 @@ public class IsLessThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
      */
     public IsLessThanOrEqualTo<T> filter(Predicate<T> predicate) {
         if (shouldRender()) {
-            return predicate.test(value()) ? this : EmptyIsLessThanOrEqualTo.empty();
+            return predicate.test(value) ? this : EmptyIsLessThanOrEqualTo.empty();
         } else {
             return this;
         }
@@ -89,7 +88,7 @@ public class IsLessThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
      *     if renderable, otherwise a condition that will not render.
      */
     public IsLessThanOrEqualTo<T> map(UnaryOperator<T> mapper) {
-        return shouldRender() ? new IsLessThanOrEqualTo<>(() -> mapper.apply(value())) : this;
+        return shouldRender() ? new IsLessThanOrEqualTo<>(mapper.apply(value)) : this;
     }
 
     public static class EmptyIsLessThanOrEqualTo<T> extends IsLessThanOrEqualTo<T> {
@@ -101,8 +100,8 @@ public class IsLessThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
             return t;
         }
 
-        public EmptyIsLessThanOrEqualTo() {
-            super(() -> null);
+        private EmptyIsLessThanOrEqualTo() {
+            super(null);
         }
 
         @Override

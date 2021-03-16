@@ -16,15 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsNotEqualTo(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+    protected IsNotEqualTo(T value) {
+        super(value);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
         return columnName + " <> " + placeholder; //$NON-NLS-1$
     }
 
-    public static <T> IsNotEqualTo<T> of(Supplier<T> valueSupplier) {
-        return new IsNotEqualTo<>(valueSupplier);
+    public static <T> IsNotEqualTo<T> of(T value) {
+        return new IsNotEqualTo<>(value);
     }
 
     /**
@@ -74,7 +73,7 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
      */
     public IsNotEqualTo<T> filter(Predicate<T> predicate) {
         if (shouldRender()) {
-            return predicate.test(value()) ? this : EmptyIsNotEqualTo.empty();
+            return predicate.test(value) ? this : EmptyIsNotEqualTo.empty();
         } else {
             return this;
         }
@@ -89,7 +88,7 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
      *     if renderable, otherwise a condition that will not render.
      */
     public IsNotEqualTo<T> map(UnaryOperator<T> mapper) {
-        return shouldRender() ? new IsNotEqualTo<>(() -> mapper.apply(value())) : this;
+        return shouldRender() ? new IsNotEqualTo<>(mapper.apply(value)) : this;
     }
 
     public static class EmptyIsNotEqualTo<T> extends IsNotEqualTo<T> {
@@ -101,8 +100,8 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
             return t;
         }
 
-        public EmptyIsNotEqualTo() {
-            super(() -> null);
+        private EmptyIsNotEqualTo() {
+            super(null);
         }
 
         @Override

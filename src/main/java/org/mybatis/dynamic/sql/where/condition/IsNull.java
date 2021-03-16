@@ -71,6 +71,10 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
             return t;
         }
 
+        private EmptyIsNull() {
+            super();
+        }
+
         @Override
         public boolean shouldRender() {
             return false;

@@ -16,15 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsLessThan(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+    protected IsLessThan(T value) {
+        super(value);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
         return columnName + " < " + placeholder; //$NON-NLS-1$
     }
 
-    public static <T> IsLessThan<T> of(Supplier<T> valueSupplier) {
-        return new IsLessThan<>(valueSupplier);
+    public static <T> IsLessThan<T> of(T value) {
+        return new IsLessThan<>(value);
     }
 
     /**
@@ -74,7 +73,7 @@ public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
      */
     public IsLessThan<T> filter(Predicate<T> predicate) {
         if (shouldRender()) {
-            return predicate.test(value()) ? this : EmptyIsLessThan.empty();
+            return predicate.test(value) ? this : EmptyIsLessThan.empty();
         } else {
             return this;
         }
@@ -89,7 +88,7 @@ public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
      *     if renderable, otherwise a condition that will not render.
      */
     public IsLessThan<T> map(UnaryOperator<T> mapper) {
-        return shouldRender() ? new IsLessThan<>(() -> mapper.apply(value())) : this;
+        return shouldRender() ? new IsLessThan<>(mapper.apply(value)) : this;
     }
 
     public static class EmptyIsLessThan<T> extends IsLessThan<T> {
@@ -101,8 +100,8 @@ public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
             return t;
         }
 
-        public EmptyIsLessThan() {
-            super(() -> null);
+        private EmptyIsLessThan() {
+            super(null);
         }
 
         @Override

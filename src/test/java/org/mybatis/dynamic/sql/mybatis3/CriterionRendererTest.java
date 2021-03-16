@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -39,7 +40,7 @@ class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
 
-        IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
+        IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
         ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
@@ -62,7 +63,7 @@ class CriterionRendererTest {
     void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-        IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
+        IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
         ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
@@ -92,7 +93,7 @@ class CriterionRendererTest {
                 .withJdbcType(JDBCType.DATE)
                 .withTypeHandler("foo.Bar")
                 .build();
-        IsEqualTo<Date> condition = IsEqualTo.of(Date::new);
+        IsEqualTo<Date> condition = SqlBuilder.isEqualTo(new Date());
         ColumnAndConditionCriterion<Date> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
@@ -115,7 +116,7 @@ class CriterionRendererTest {
     void testTypeHandlerAndAlias() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER, "foo.Bar");
-        IsEqualTo<Integer> condition = IsEqualTo.of(() -> 3);
+        IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
         ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();

@@ -16,15 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsEqualTo(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+    protected IsEqualTo(T value) {
+        super(value);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
         return columnName + " = " + placeholder; //$NON-NLS-1$
     }
 
-    public static <T> IsEqualTo<T> of(Supplier<T> valueSupplier) {
-        return new IsEqualTo<>(valueSupplier);
+    public static <T> IsEqualTo<T> of(T value) {
+        return new IsEqualTo<>(value);
     }
 
     /**
@@ -74,7 +73,7 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
      */
     public IsEqualTo<T> filter(Predicate<T> predicate) {
         if (shouldRender()) {
-            return predicate.test(value()) ? this : EmptyIsEqualTo.empty();
+            return predicate.test(value) ? this : EmptyIsEqualTo.empty();
         } else {
             return this;
         }
@@ -89,7 +88,7 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
      *     if renderable, otherwise a condition that will not render.
      */
     public IsEqualTo<T> map(UnaryOperator<T> mapper) {
-        return shouldRender() ? new IsEqualTo<>(() -> mapper.apply(value())) : this;
+        return shouldRender() ? new IsEqualTo<>(mapper.apply(value)) : this;
     }
 
     public static class EmptyIsEqualTo<T> extends IsEqualTo<T> {
@@ -101,8 +100,8 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
             return t;
         }
 
-        public EmptyIsEqualTo() {
-            super(() -> null);
+        private EmptyIsEqualTo() {
+            super(null);
         }
 
         @Override

@@ -16,15 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsGreaterThanOrEqualTo(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+    protected IsGreaterThanOrEqualTo(T value) {
+        super(value);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
         return columnName + " >= " + placeholder; //$NON-NLS-1$
     }
 
-    public static <T> IsGreaterThanOrEqualTo<T> of(Supplier<T> valueSupplier) {
-        return new IsGreaterThanOrEqualTo<>(valueSupplier);
+    public static <T> IsGreaterThanOrEqualTo<T> of(T value) {
+        return new IsGreaterThanOrEqualTo<>(value);
     }
 
     /**
@@ -74,7 +73,7 @@ public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
      */
     public IsGreaterThanOrEqualTo<T> filter(Predicate<T> predicate) {
         if (shouldRender()) {
-            return predicate.test(value()) ? this : EmptyIsGreaterThanOrEqualTo.empty();
+            return predicate.test(value) ? this : EmptyIsGreaterThanOrEqualTo.empty();
         } else {
             return this;
         }
@@ -89,7 +88,7 @@ public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
      *     if renderable, otherwise a condition that will not render.
      */
     public IsGreaterThanOrEqualTo<T> map(UnaryOperator<T> mapper) {
-        return shouldRender() ? new IsGreaterThanOrEqualTo<>(() -> mapper.apply(value())) : this;
+        return shouldRender() ? new IsGreaterThanOrEqualTo<>(mapper.apply(value)) : this;
     }
 
     public static class EmptyIsGreaterThanOrEqualTo<T> extends IsGreaterThanOrEqualTo<T> {
@@ -101,8 +100,8 @@ public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
             return t;
         }
 
-        public EmptyIsGreaterThanOrEqualTo() {
-            super(() -> null);
+        private EmptyIsGreaterThanOrEqualTo() {
+            super(null);
         }
 
         @Override

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,20 +27,20 @@ import java.util.function.Supplier;
  * @param <R> the type of condition being built
  */
 public abstract class AndGatherer<T, R> {
-    protected final Supplier<T> valueSupplier1;
-    protected Supplier<T> valueSupplier2;
+    protected final T value1;
+    protected T value2;
 
-    protected AndGatherer(Supplier<T> valueSupplier1) {
-        this.valueSupplier1 = valueSupplier1;
+    protected AndGatherer(T value1) {
+        this.value1 = value1;
     }
 
     public R and(T value2) {
-        return and(() -> value2);
+        this.value2 = value2;
+        return build();
     }
 
     public R and(Supplier<T> valueSupplier2) {
-        this.valueSupplier2 = valueSupplier2;
-        return build();
+        return and(valueSupplier2.get());
     }
 
     protected abstract R build();

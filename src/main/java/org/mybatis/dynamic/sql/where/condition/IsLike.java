@@ -16,15 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsLike<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsLike(Supplier<T> valueSupplier) {
-        super(valueSupplier);
+    protected IsLike(T value) {
+        super(value);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class IsLike<T> extends AbstractSingleValueCondition<T> {
         return columnName + " like " + placeholder; //$NON-NLS-1$
     }
 
-    public static <T> IsLike<T> of(Supplier<T> valueSupplier) {
-        return new IsLike<>(valueSupplier);
+    public static <T> IsLike<T> of(T value) {
+        return new IsLike<>(value);
     }
 
     /**
@@ -74,7 +73,7 @@ public class IsLike<T> extends AbstractSingleValueCondition<T> {
      */
     public IsLike<T> filter(Predicate<T> predicate) {
         if (shouldRender()) {
-            return predicate.test(value()) ? this : EmptyIsLike.empty();
+            return predicate.test(value) ? this : EmptyIsLike.empty();
         } else {
             return this;
         }
@@ -89,7 +88,7 @@ public class IsLike<T> extends AbstractSingleValueCondition<T> {
      *     if renderable, otherwise a condition that will not render.
      */
     public IsLike<T> map(UnaryOperator<T> mapper) {
-        return shouldRender() ? new IsLike<>(() -> mapper.apply(value())) : this;
+        return shouldRender() ? new IsLike<>(mapper.apply(value)) : this;
     }
 
     public static class EmptyIsLike<T> extends IsLike<T> {
@@ -101,8 +100,8 @@ public class IsLike<T> extends AbstractSingleValueCondition<T> {
             return t;
         }
 
-        public EmptyIsLike() {
-            super(() -> null);
+        private EmptyIsLike() {
+            super(null);
         }
 
         @Override

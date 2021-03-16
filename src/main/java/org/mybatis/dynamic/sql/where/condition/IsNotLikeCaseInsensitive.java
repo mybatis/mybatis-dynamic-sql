@@ -16,15 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
-    protected IsNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
-        super(valueSupplier);
+    protected IsNotLikeCaseInsensitive(String value) {
+        super(value);
     }
 
     @Override
@@ -37,8 +36,8 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
         return StringUtilities.safelyUpperCase(super.value());
     }
 
-    public static IsNotLikeCaseInsensitive of(Supplier<String> valueSupplier) {
-        return new IsNotLikeCaseInsensitive(valueSupplier);
+    public static IsNotLikeCaseInsensitive of(String value) {
+        return new IsNotLikeCaseInsensitive(value);
     }
 
     /**
@@ -79,7 +78,7 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
      */
     public IsNotLikeCaseInsensitive filter(Predicate<String> predicate) {
         if (shouldRender()) {
-            return predicate.test(value()) ? this : EmptyIsNotLikeCaseInsensitive.empty();
+            return predicate.test(value) ? this : EmptyIsNotLikeCaseInsensitive.empty();
         } else {
             return this;
         }
@@ -94,7 +93,7 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
      *     if renderable, otherwise a condition that will not render.
      */
     public IsNotLikeCaseInsensitive map(UnaryOperator<String> mapper) {
-        return shouldRender() ? new IsNotLikeCaseInsensitive(() -> mapper.apply(value())) : this;
+        return shouldRender() ? new IsNotLikeCaseInsensitive(mapper.apply(value)) : this;
     }
 
     public static class EmptyIsNotLikeCaseInsensitive extends IsNotLikeCaseInsensitive {
@@ -104,8 +103,8 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
             return EMPTY;
         }
 
-        public EmptyIsNotLikeCaseInsensitive() {
-            super(() -> null);
+        private EmptyIsNotLikeCaseInsensitive() {
+            super(null);
         }
 
         @Override
