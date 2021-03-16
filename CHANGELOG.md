@@ -13,9 +13,52 @@ The major themes of this release include the following:
 1. Add support for subqueries in select statements - both in a from clause and a join clause.
 1. Add support for the "exists" and "not exists" operator. This will work in "where" clauses anywhere
    they are supported.
+1. Refactor and improve the built-in conditions for consistency (see below)   
 1. Continue to refine the Kotlin DSL. Most changes to the Kotlin DSL are internal and should be source code
    compatible with existing code. There is one breaking change detailed below.
 1. Remove deprecated code from prior releases.
+
+### Built-In Condition Refactoring
+All built-in conditions have been rafactored. The changes should have no impact for the vast majority of users.
+However, there are some changes in behavior and one breaking change.
+
+1. The existing "then" and "when" methods have been deprecated and replaced with "map" and "filter" respectively.
+   The new method names are more familiar and more representative of what these methods actually do. In effect,
+   these methods mimic the function of the "map" and "filter" methods on "java.util.Optional" and they are used
+   for a similar purpose.
+1. The new "filter" method works a bit differently than the "when" method it replaces. The "when" method could not
+   be chained - if it was called multiple times, only the last call would take effect. The new "filter" methods works
+   as it should and every call will take effect.
+1. All the "WhenPresent" conditions have been removed as separate classes. The methods that produced these conditions
+   in the SqlBuilder remain, and they will now produce a condition with a "NotNull" filter applied. So at the API level,
+   things will function exactly as before, but the intermediate classes will be different.
+1. One breaking change is that the builder for List value conditions has been removed without replacement. If you
+   were using this builder, then the replacement is to build a new List value condition and then call the "map" and
+   "filter" methods as needed. For example, prior code looked like this
+
+   ```java
+    public static IsIn<String> isIn(String...values) {
+        return new IsIn.Builder<String>()
+                .withValues(Arrays.asList(values))
+                .withValueStreamTransformer(s -> s.filter(Objects::nonNull)
+                        .map(String::trim)
+                        .filter(st -> !st.isEmpty()))
+                .build();
+    }
+   ```
+   
+    New code should look like this:
+
+   ```java
+    public static IsIn<String> isIn(String...values) {
+        return SqlBuilder.isIn(values)
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(st -> !st.isEmpty());
+    }
+   ```
+   
+   We think this is a marked improvement!
 
 ### Breaking Change for Kotlin
 
