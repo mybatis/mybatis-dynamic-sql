@@ -58,7 +58,6 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.WhereDSL;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
-import org.mybatis.dynamic.sql.where.condition.IsBetweenWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn;
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
@@ -80,7 +79,6 @@ import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLike;
 import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitive;
 import org.mybatis.dynamic.sql.where.condition.IsNotBetween;
-import org.mybatis.dynamic.sql.where.condition.IsNotBetweenWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToColumn;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect;
@@ -612,12 +610,12 @@ public interface SqlBuilder {
         return IsBetween.isBetween(valueSupplier1);
     }
 
-    static <T> IsBetweenWhenPresent.Builder<T> isBetweenWhenPresent(T value1) {
+    static <T> IsBetween.WhenPresentBuilder<T> isBetweenWhenPresent(T value1) {
         return isBetweenWhenPresent(() -> value1);
     }
 
-    static <T> IsBetweenWhenPresent.Builder<T> isBetweenWhenPresent(Supplier<T> valueSupplier1) {
-        return IsBetweenWhenPresent.isBetweenWhenPresent(valueSupplier1);
+    static <T> IsBetween.WhenPresentBuilder<T> isBetweenWhenPresent(Supplier<T> valueSupplier1) {
+        return IsBetween.isBetweenWhenPresent(valueSupplier1);
     }
 
     static <T> IsNotBetween.Builder<T> isNotBetween(T value1) {
@@ -628,12 +626,12 @@ public interface SqlBuilder {
         return IsNotBetween.isNotBetween(valueSupplier1);
     }
 
-    static <T> IsNotBetweenWhenPresent.Builder<T> isNotBetweenWhenPresent(T value1) {
+    static <T> IsNotBetween.WhenPresentBuilder<T> isNotBetweenWhenPresent(T value1) {
         return isNotBetweenWhenPresent(() -> value1);
     }
 
-    static <T> IsNotBetweenWhenPresent.Builder<T> isNotBetweenWhenPresent(Supplier<T> valueSupplier1) {
-        return IsNotBetweenWhenPresent.isNotBetweenWhenPresent(valueSupplier1);
+    static <T> IsNotBetween.WhenPresentBuilder<T> isNotBetweenWhenPresent(Supplier<T> valueSupplier1) {
+        return IsNotBetween.isNotBetweenWhenPresent(valueSupplier1);
     }
 
     // for string columns, but generic for columns with type handlers

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
+import org.mybatis.dynamic.sql.util.Predicates;
 
 public class IsBetween<T> extends AbstractTwoValueCondition<T> {
 
@@ -27,13 +28,75 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
         super(valueSupplier1, valueSupplier2);
     }
 
-    protected IsBetween(Supplier<T> valueSupplier1, Supplier<T> valueSupplier2, BiPredicate<T, T> predicate) {
-        super(valueSupplier1, valueSupplier2, predicate);
-    }
-
     @Override
     public String renderCondition(String columnName, String placeholder1, String placeholder2) {
         return columnName + " between " + placeholder1 + " and " + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * If renderable and the values match the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @deprecated replaced by {@link IsBetween#filter(BiPredicate)}
+     * @param predicate predicate applied to the values, if renderable
+     * @return this condition if renderable and the values match the predicate, otherwise a condition
+     *     that will not render.
+     */
+    @Deprecated
+    public IsBetween<T> when(BiPredicate<T, T> predicate) {
+        return filter(predicate);
+    }
+
+    /**
+     * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
+     *     condition that will not render (this).
+     *
+     * @deprecated replaced by {@link IsBetween#map(UnaryOperator, UnaryOperator)}
+     * @param mapper1 a mapping function to apply to the first value, if renderable
+     * @param mapper2 a mapping function to apply to the second value, if renderable
+     * @return a new condition with the result of applying the mappers to the values of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    @Deprecated
+    public IsBetween<T> then(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2) {
+        return map(mapper1, mapper2);
+    }
+
+    /**
+     * If renderable and the values match the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @param predicate predicate applied to the values, if renderable
+     * @return this condition if renderable and the values match the predicate, otherwise a condition
+     *     that will not render.
+     */
+    public IsBetween<T> filter(BiPredicate<T, T> predicate) {
+        if (shouldRender()) {
+            return predicate.test(value1(), value2()) ? this : EmptyIsBetween.empty();
+        } else {
+            return this;
+        }
+    }
+
+    /**
+     * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper1 a mapping function to apply to the first value, if renderable
+     * @param mapper2 a mapping function to apply to the second value, if renderable
+     * @return a new condition with the result of applying the mappers to the values of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public IsBetween<T> map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2) {
+        return shouldRender() ? new IsBetween<>(() -> mapper1.apply(value1()), () -> mapper2.apply(value2())) : this;
+    }
+
+    public static <T> Builder<T> isBetween(Supplier<T> valueSupplier1) {
+        return new Builder<>(valueSupplier1);
+    }
+
+    public static <T> WhenPresentBuilder<T> isBetweenWhenPresent(Supplier<T> valueSupplier1) {
+        return new WhenPresentBuilder<>(valueSupplier1);
     }
 
     public static class Builder<T> extends AndGatherer<T, IsBetween<T>> {
@@ -47,16 +110,33 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
         }
     }
 
-    public static <T> Builder<T> isBetween(Supplier<T> valueSupplier1) {
-        return new Builder<>(valueSupplier1);
+    public static class WhenPresentBuilder<T> extends AndGatherer<T, IsBetween<T>> {
+        private WhenPresentBuilder(Supplier<T> valueSupplier1) {
+            super(valueSupplier1);
+        }
+
+        @Override
+        protected IsBetween<T> build() {
+            return new IsBetween<>(valueSupplier1, valueSupplier2).filter(Predicates.bothPresent());
+        }
     }
 
-    public IsBetween<T> when(BiPredicate<T, T> predicate) {
-        return new IsBetween<>(valueSupplier1, valueSupplier2, predicate);
-    }
+    public static class EmptyIsBetween<T> extends IsBetween<T> {
+        private static final EmptyIsBetween<?> EMPTY = new EmptyIsBetween<>();
 
-    public IsBetween<T> then(UnaryOperator<T> transformer1, UnaryOperator<T> transformer2) {
-        return shouldRender() ? new IsBetween<>(() -> transformer1.apply(value1()),
-                () -> transformer2.apply(value2())) : this;
+        public static <T> EmptyIsBetween<T> empty() {
+            @SuppressWarnings("unchecked")
+            EmptyIsBetween<T> t = (EmptyIsBetween<T>) EMPTY;
+            return t;
+        }
+
+        public EmptyIsBetween() {
+            super(() -> null, () -> null);
+        }
+
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
     }
 }

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-class FilterTest {
+class FilterAndMapTest {
 
     @Test
     void testIsEqualRenderableTruePredicateShouldReturnSameObject() {
@@ -430,5 +430,21 @@ class FilterTest {
         IsInCaseInsensitive mapped = cond.map(String::trim);
         List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
+    }
+
+    @Test
+    void testBetweenUnRenderableFilterShouldReturnSameObject() {
+        IsBetween<Integer> cond = SqlBuilder.isBetween(3).and(4).filter((i1, i2) -> false);
+        assertThat(cond.shouldRender()).isFalse();
+        IsBetween<Integer> filtered = cond.filter((v1, v2) -> true);
+        assertThat(cond).isSameAs(filtered);
+    }
+
+    @Test
+    void testNotBetweenUnRenderableFilterShouldReturnSameObject() {
+        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween(3).and(4).filter((i1, i2) -> false);
+        assertThat(cond.shouldRender()).isFalse();
+        IsNotBetween<Integer> filtered = cond.filter((v1, v2) -> true);
+        assertThat(cond).isSameAs(filtered);
     }
 }
