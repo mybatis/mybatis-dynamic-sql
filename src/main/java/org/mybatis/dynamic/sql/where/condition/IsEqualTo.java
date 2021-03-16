@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,19 +16,14 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
 
-    protected IsEqualTo(Supplier<T> valueSupplier) {
-        super(valueSupplier);
-    }
-
-    protected IsEqualTo(Supplier<T> valueSupplier, Predicate<T> predicate) {
-        super(valueSupplier, predicate);
+    protected IsEqualTo(T value) {
+        super(value);
     }
 
     @Override
@@ -36,15 +31,82 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
         return columnName + " = " + placeholder; //$NON-NLS-1$
     }
 
-    public static <T> IsEqualTo<T> of(Supplier<T> valueSupplier) {
-        return new IsEqualTo<>(valueSupplier);
+    public static <T> IsEqualTo<T> of(T value) {
+        return new IsEqualTo<>(value);
     }
 
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @deprecated replaced by {@link IsEqualTo#filter(Predicate)}
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    @Deprecated
     public IsEqualTo<T> when(Predicate<T> predicate) {
-        return new IsEqualTo<>(valueSupplier, predicate);
+        return filter(predicate);
     }
 
-    public IsEqualTo<T> then(UnaryOperator<T> transformer) {
-        return shouldRender() ? new IsEqualTo<>(() -> transformer.apply(value())) : this;
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @deprecated replaced by {@link IsEqualTo#map(UnaryOperator)}
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    @Deprecated
+    public IsEqualTo<T> then(UnaryOperator<T> mapper) {
+        return map(mapper);
+    }
+
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    public IsEqualTo<T> filter(Predicate<T> predicate) {
+        if (shouldRender()) {
+            return predicate.test(value) ? this : EmptyIsEqualTo.empty();
+        } else {
+            return this;
+        }
+    }
+
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public IsEqualTo<T> map(UnaryOperator<T> mapper) {
+        return shouldRender() ? new IsEqualTo<>(mapper.apply(value)) : this;
+    }
+
+    public static class EmptyIsEqualTo<T> extends IsEqualTo<T> {
+        private static final EmptyIsEqualTo<?> EMPTY = new EmptyIsEqualTo<>();
+
+        public static <T> EmptyIsEqualTo<T> empty() {
+            @SuppressWarnings("unchecked")
+            EmptyIsEqualTo<T> t = (EmptyIsEqualTo<T>) EMPTY;
+            return t;
+        }
+
+        private EmptyIsEqualTo() {
+            super(null);
+        }
+
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
     }
 }

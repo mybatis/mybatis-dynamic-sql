@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,31 +15,15 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Objects;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 public abstract class AbstractSingleValueCondition<T> implements VisitableCondition<T> {
-    protected final Supplier<T> valueSupplier;
-    private final Predicate<T> predicate;
+    protected final T value;
 
-    protected AbstractSingleValueCondition(Supplier<T> valueSupplier) {
-        this.valueSupplier = Objects.requireNonNull(valueSupplier);
-        predicate = v -> true;
-    }
-
-    protected AbstractSingleValueCondition(Supplier<T> valueSupplier, Predicate<T> predicate) {
-        this.valueSupplier = Objects.requireNonNull(valueSupplier);
-        this.predicate = Objects.requireNonNull(predicate);
+    protected AbstractSingleValueCondition(T value) {
+        this.value = value;
     }
 
     public T value() {
-        return valueSupplier.get();
-    }
-
-    @Override
-    public boolean shouldRender() {
-        return predicate.test(value());
+        return value;
     }
 
     @Override

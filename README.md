@@ -23,11 +23,11 @@ For example, a typical search can be coded with a query like this (the following
         select(Customer.id, Customer.firstName, Customer.lastName) {
             from(Customer)
             where(Customer.active, isEqualTo(true))
-            and(Customer.id, isEqualToWhenPresent(id).then{ it?.padStart(5, '0') })
+            and(Customer.id, isEqualToWhenPresent(id).map{ it?.padStart(5, '0') })
             and(Customer.firstName, isLikeCaseInsensitiveWhenPresent(firstName)
-                .then{ "%" + it.trim() + "%" })
+                .map{ "%" + it.trim() + "%" })
             and(Customer.lastName, isLikeCaseInsensitiveWhenPresent(lastName)
-                .then{ "%" + it.trim() + "%" })
+                .map{ "%" + it.trim() + "%" })
             orderBy(Customer.lastName, Customer.firstName)
             limit(500)
         }

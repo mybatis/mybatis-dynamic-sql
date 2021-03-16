@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -58,51 +58,35 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.WhereDSL;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
-import org.mybatis.dynamic.sql.where.condition.IsBetweenWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn;
-import org.mybatis.dynamic.sql.where.condition.IsEqualToWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThan;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanColumn;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToColumn;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
 import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitive;
-import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitiveWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsInWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsInWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLessThan;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanColumn;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToColumn;
-import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWithSubselect;
-import org.mybatis.dynamic.sql.where.condition.IsLessThanWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLike;
 import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitive;
-import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitiveWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsLikeWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsNotBetween;
-import org.mybatis.dynamic.sql.where.condition.IsNotBetweenWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualTo;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToColumn;
-import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsNotIn;
 import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive;
-import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitiveWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsNotInWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsNotLike;
 import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitive;
-import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitiveWhenPresent;
-import org.mybatis.dynamic.sql.where.condition.IsNotLikeWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsNotNull;
 import org.mybatis.dynamic.sql.where.condition.IsNull;
 
@@ -430,11 +414,11 @@ public interface SqlBuilder {
     }
 
     static <T> IsEqualTo<T> isEqualTo(T value) {
-        return isEqualTo(() -> value);
+        return IsEqualTo.of(value);
     }
 
     static <T> IsEqualTo<T> isEqualTo(Supplier<T> valueSupplier) {
-        return IsEqualTo.of(valueSupplier);
+        return isEqualTo(valueSupplier.get());
     }
 
     static <T> IsEqualToWithSubselect<T> isEqualTo(Buildable<SelectModel> selectModelBuilder) {
@@ -445,20 +429,20 @@ public interface SqlBuilder {
         return IsEqualToColumn.of(column);
     }
 
-    static <T> IsEqualToWhenPresent<T> isEqualToWhenPresent(T value) {
-        return isEqualToWhenPresent(() -> value);
+    static <T> IsEqualTo<T> isEqualToWhenPresent(T value) {
+        return IsEqualTo.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsEqualToWhenPresent<T> isEqualToWhenPresent(Supplier<T> valueSupplier) {
-        return IsEqualToWhenPresent.of(valueSupplier);
+    static <T> IsEqualTo<T> isEqualToWhenPresent(Supplier<T> valueSupplier) {
+        return isEqualToWhenPresent(valueSupplier.get());
     }
 
     static <T> IsNotEqualTo<T> isNotEqualTo(T value) {
-        return isNotEqualTo(() -> value);
+        return IsNotEqualTo.of(value);
     }
 
     static <T> IsNotEqualTo<T> isNotEqualTo(Supplier<T> valueSupplier) {
-        return IsNotEqualTo.of(valueSupplier);
+        return isNotEqualTo(valueSupplier.get());
     }
 
     static <T> IsNotEqualToWithSubselect<T> isNotEqualTo(Buildable<SelectModel> selectModelBuilder) {
@@ -469,20 +453,20 @@ public interface SqlBuilder {
         return IsNotEqualToColumn.of(column);
     }
 
-    static <T> IsNotEqualToWhenPresent<T> isNotEqualToWhenPresent(T value) {
-        return isNotEqualToWhenPresent(() -> value);
+    static <T> IsNotEqualTo<T> isNotEqualToWhenPresent(T value) {
+        return IsNotEqualTo.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsNotEqualToWhenPresent<T> isNotEqualToWhenPresent(Supplier<T> valueSupplier) {
-        return IsNotEqualToWhenPresent.of(valueSupplier);
+    static <T> IsNotEqualTo<T> isNotEqualToWhenPresent(Supplier<T> valueSupplier) {
+        return isNotEqualToWhenPresent(valueSupplier.get());
     }
 
     static <T> IsGreaterThan<T> isGreaterThan(T value) {
-        return isGreaterThan(() -> value);
+        return IsGreaterThan.of(value);
     }
 
     static <T> IsGreaterThan<T> isGreaterThan(Supplier<T> valueSupplier) {
-        return IsGreaterThan.of(valueSupplier);
+        return isGreaterThan(valueSupplier.get());
     }
 
     static <T> IsGreaterThanWithSubselect<T> isGreaterThan(Buildable<SelectModel> selectModelBuilder) {
@@ -493,20 +477,20 @@ public interface SqlBuilder {
         return IsGreaterThanColumn.of(column);
     }
 
-    static <T> IsGreaterThanWhenPresent<T> isGreaterThanWhenPresent(T value) {
-        return isGreaterThanWhenPresent(() -> value);
+    static <T> IsGreaterThan<T> isGreaterThanWhenPresent(T value) {
+        return IsGreaterThan.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsGreaterThanWhenPresent<T> isGreaterThanWhenPresent(Supplier<T> valueSupplier) {
-        return IsGreaterThanWhenPresent.of(valueSupplier);
+    static <T> IsGreaterThan<T> isGreaterThanWhenPresent(Supplier<T> valueSupplier) {
+        return isGreaterThanWhenPresent(valueSupplier.get());
     }
 
     static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(T value) {
-        return isGreaterThanOrEqualTo(() -> value);
+        return IsGreaterThanOrEqualTo.of(value);
     }
 
     static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(Supplier<T> valueSupplier) {
-        return IsGreaterThanOrEqualTo.of(valueSupplier);
+        return isGreaterThanOrEqualTo(valueSupplier.get());
     }
 
     static <T> IsGreaterThanOrEqualToWithSubselect<T> isGreaterThanOrEqualTo(
@@ -518,20 +502,20 @@ public interface SqlBuilder {
         return IsGreaterThanOrEqualToColumn.of(column);
     }
 
-    static <T> IsGreaterThanOrEqualToWhenPresent<T> isGreaterThanOrEqualToWhenPresent(T value) {
-        return isGreaterThanOrEqualToWhenPresent(() -> value);
+    static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualToWhenPresent(T value) {
+        return IsGreaterThanOrEqualTo.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsGreaterThanOrEqualToWhenPresent<T> isGreaterThanOrEqualToWhenPresent(Supplier<T> valueSupplier) {
-        return IsGreaterThanOrEqualToWhenPresent.of(valueSupplier);
+    static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualToWhenPresent(Supplier<T> valueSupplier) {
+        return isGreaterThanOrEqualToWhenPresent(valueSupplier.get());
     }
 
     static <T> IsLessThan<T> isLessThan(T value) {
-        return isLessThan(() -> value);
+        return IsLessThan.of(value);
     }
 
     static <T> IsLessThan<T> isLessThan(Supplier<T> valueSupplier) {
-        return IsLessThan.of(valueSupplier);
+        return isLessThan(valueSupplier.get());
     }
 
     static <T> IsLessThanWithSubselect<T> isLessThan(Buildable<SelectModel> selectModelBuilder) {
@@ -542,20 +526,20 @@ public interface SqlBuilder {
         return IsLessThanColumn.of(column);
     }
 
-    static <T> IsLessThanWhenPresent<T> isLessThanWhenPresent(T value) {
-        return isLessThanWhenPresent(() -> value);
+    static <T> IsLessThan<T> isLessThanWhenPresent(T value) {
+        return IsLessThan.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsLessThanWhenPresent<T> isLessThanWhenPresent(Supplier<T> valueSupplier) {
-        return IsLessThanWhenPresent.of(valueSupplier);
+    static <T> IsLessThan<T> isLessThanWhenPresent(Supplier<T> valueSupplier) {
+        return isLessThanWhenPresent(valueSupplier.get());
     }
 
     static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(T value) {
-        return isLessThanOrEqualTo(() -> value);
+        return IsLessThanOrEqualTo.of(value);
     }
 
     static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(Supplier<T> valueSupplier) {
-        return IsLessThanOrEqualTo.of(valueSupplier);
+        return isLessThanOrEqualTo(valueSupplier.get());
     }
 
     static <T> IsLessThanOrEqualToWithSubselect<T> isLessThanOrEqualTo(Buildable<SelectModel> selectModelBuilder) {
@@ -566,12 +550,12 @@ public interface SqlBuilder {
         return IsLessThanOrEqualToColumn.of(column);
     }
 
-    static <T> IsLessThanOrEqualToWhenPresent<T> isLessThanOrEqualToWhenPresent(T value) {
-        return isLessThanOrEqualToWhenPresent(() -> value);
+    static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualToWhenPresent(T value) {
+        return IsLessThanOrEqualTo.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsLessThanOrEqualToWhenPresent<T> isLessThanOrEqualToWhenPresent(Supplier<T> valueSupplier) {
-        return IsLessThanOrEqualToWhenPresent.of(valueSupplier);
+    static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualToWhenPresent(Supplier<T> valueSupplier) {
+        return isLessThanOrEqualToWhenPresent(valueSupplier.get());
     }
 
     @SafeVarargs
@@ -588,12 +572,12 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsInWhenPresent<T> isInWhenPresent(T...values) {
-        return IsInWhenPresent.of(values);
+    static <T> IsIn<T> isInWhenPresent(T...values) {
+        return IsIn.of(values).filter(Objects::nonNull);
     }
 
-    static <T> IsInWhenPresent<T> isInWhenPresent(Collection<T> values) {
-        return IsInWhenPresent.of(values);
+    static <T> IsIn<T> isInWhenPresent(Collection<T> values) {
+        return IsIn.of(values).filter(Objects::nonNull);
     }
 
     @SafeVarargs
@@ -610,77 +594,77 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsNotInWhenPresent<T> isNotInWhenPresent(T...values) {
-        return IsNotInWhenPresent.of(values);
+    static <T> IsNotIn<T> isNotInWhenPresent(T...values) {
+        return IsNotIn.of(values).filter(Objects::nonNull);
     }
 
-    static <T> IsNotInWhenPresent<T> isNotInWhenPresent(Collection<T> values) {
-        return IsNotInWhenPresent.of(values);
+    static <T> IsNotIn<T> isNotInWhenPresent(Collection<T> values) {
+        return IsNotIn.of(values).filter(Objects::nonNull);
     }
 
     static <T> IsBetween.Builder<T> isBetween(T value1) {
-        return isBetween(() -> value1);
+        return IsBetween.isBetween(value1);
     }
 
     static <T> IsBetween.Builder<T> isBetween(Supplier<T> valueSupplier1) {
-        return IsBetween.isBetween(valueSupplier1);
+        return isBetween(valueSupplier1.get());
     }
 
-    static <T> IsBetweenWhenPresent.Builder<T> isBetweenWhenPresent(T value1) {
-        return isBetweenWhenPresent(() -> value1);
+    static <T> IsBetween.WhenPresentBuilder<T> isBetweenWhenPresent(T value1) {
+        return IsBetween.isBetweenWhenPresent(value1);
     }
 
-    static <T> IsBetweenWhenPresent.Builder<T> isBetweenWhenPresent(Supplier<T> valueSupplier1) {
-        return IsBetweenWhenPresent.isBetweenWhenPresent(valueSupplier1);
+    static <T> IsBetween.WhenPresentBuilder<T> isBetweenWhenPresent(Supplier<T> valueSupplier1) {
+        return isBetweenWhenPresent(valueSupplier1.get());
     }
 
     static <T> IsNotBetween.Builder<T> isNotBetween(T value1) {
-        return isNotBetween(() -> value1);
+        return IsNotBetween.isNotBetween(value1);
     }
 
     static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<T> valueSupplier1) {
-        return IsNotBetween.isNotBetween(valueSupplier1);
+        return isNotBetween(valueSupplier1.get());
     }
 
-    static <T> IsNotBetweenWhenPresent.Builder<T> isNotBetweenWhenPresent(T value1) {
-        return isNotBetweenWhenPresent(() -> value1);
+    static <T> IsNotBetween.WhenPresentBuilder<T> isNotBetweenWhenPresent(T value1) {
+        return IsNotBetween.isNotBetweenWhenPresent(value1);
     }
 
-    static <T> IsNotBetweenWhenPresent.Builder<T> isNotBetweenWhenPresent(Supplier<T> valueSupplier1) {
-        return IsNotBetweenWhenPresent.isNotBetweenWhenPresent(valueSupplier1);
+    static <T> IsNotBetween.WhenPresentBuilder<T> isNotBetweenWhenPresent(Supplier<T> valueSupplier1) {
+        return isNotBetweenWhenPresent(valueSupplier1.get());
     }
 
     // for string columns, but generic for columns with type handlers
     static <T> IsLike<T> isLike(T value) {
-        return isLike(() -> value);
+        return IsLike.of(value);
     }
 
     static <T> IsLike<T> isLike(Supplier<T> valueSupplier) {
-        return IsLike.of(valueSupplier);
+        return isLike(valueSupplier.get());
     }
 
-    static <T> IsLikeWhenPresent<T> isLikeWhenPresent(T value) {
-        return isLikeWhenPresent(() -> value);
+    static <T> IsLike<T> isLikeWhenPresent(T value) {
+        return IsLike.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsLikeWhenPresent<T> isLikeWhenPresent(Supplier<T> valueSupplier) {
-        return IsLikeWhenPresent.of(valueSupplier);
+    static <T> IsLike<T> isLikeWhenPresent(Supplier<T> valueSupplier) {
+        return isLikeWhenPresent(valueSupplier.get());
     }
 
     static <T> IsNotLike<T> isNotLike(T value) {
-        return isNotLike(() -> value);
+        return IsNotLike.of(value);
     }
 
     static <T> IsNotLike<T> isNotLike(Supplier<T> valueSupplier) {
-        return IsNotLike.of(valueSupplier);
+        return isNotLike(valueSupplier.get());
     }
 
-    static <T> IsNotLikeWhenPresent<T> isNotLikeWhenPresent(T value) {
-        return isNotLikeWhenPresent(() -> value);
+    static <T> IsNotLike<T> isNotLikeWhenPresent(T value) {
+        return IsNotLike.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsNotLikeWhenPresent<T> isNotLikeWhenPresent(Supplier<T> valueSupplier) {
-        return IsNotLikeWhenPresent.of(valueSupplier);
+    static <T> IsNotLike<T> isNotLikeWhenPresent(Supplier<T> valueSupplier) {
+        return isNotLikeWhenPresent(valueSupplier.get());
     }
 
     // shortcuts for booleans
@@ -694,35 +678,35 @@ public interface SqlBuilder {
 
     // conditions for strings only
     static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
-        return isLikeCaseInsensitive(() -> value);
+        return IsLikeCaseInsensitive.of(value);
     }
 
     static IsLikeCaseInsensitive isLikeCaseInsensitive(Supplier<String> valueSupplier) {
-        return IsLikeCaseInsensitive.of(valueSupplier);
+        return isLikeCaseInsensitive(valueSupplier.get());
     }
 
-    static IsLikeCaseInsensitiveWhenPresent isLikeCaseInsensitiveWhenPresent(String value) {
-        return isLikeCaseInsensitiveWhenPresent(() -> value);
+    static IsLikeCaseInsensitive isLikeCaseInsensitiveWhenPresent(String value) {
+        return IsLikeCaseInsensitive.of(value).filter(Objects::nonNull);
     }
 
-    static IsLikeCaseInsensitiveWhenPresent isLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
-        return IsLikeCaseInsensitiveWhenPresent.of(valueSupplier);
+    static IsLikeCaseInsensitive isLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
+        return isLikeCaseInsensitiveWhenPresent(valueSupplier.get());
     }
 
     static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
-        return isNotLikeCaseInsensitive(() -> value);
+        return IsNotLikeCaseInsensitive.of(value);
     }
 
     static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
-        return IsNotLikeCaseInsensitive.of(valueSupplier);
+        return isNotLikeCaseInsensitive(valueSupplier.get());
     }
 
-    static IsNotLikeCaseInsensitiveWhenPresent isNotLikeCaseInsensitiveWhenPresent(String value) {
-        return isNotLikeCaseInsensitiveWhenPresent(() -> value);
+    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitiveWhenPresent(String value) {
+        return IsNotLikeCaseInsensitive.of(value).filter(Objects::nonNull);
     }
 
-    static IsNotLikeCaseInsensitiveWhenPresent isNotLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
-        return IsNotLikeCaseInsensitiveWhenPresent.of(valueSupplier);
+    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
+        return isNotLikeCaseInsensitiveWhenPresent(valueSupplier.get());
     }
 
     static IsInCaseInsensitive isInCaseInsensitive(String...values) {
@@ -733,12 +717,12 @@ public interface SqlBuilder {
         return IsInCaseInsensitive.of(values);
     }
 
-    static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(String...values) {
-        return IsInCaseInsensitiveWhenPresent.of(values);
+    static IsInCaseInsensitive isInCaseInsensitiveWhenPresent(String...values) {
+        return IsInCaseInsensitive.of(values).filter(Objects::nonNull);
     }
 
-    static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(Collection<String> values) {
-        return IsInCaseInsensitiveWhenPresent.of(values);
+    static IsInCaseInsensitive isInCaseInsensitiveWhenPresent(Collection<String> values) {
+        return IsInCaseInsensitive.of(values).filter(Objects::nonNull);
     }
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
@@ -749,12 +733,12 @@ public interface SqlBuilder {
         return IsNotInCaseInsensitive.of(values);
     }
 
-    static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(String...values) {
-        return IsNotInCaseInsensitiveWhenPresent.of(values);
+    static IsNotInCaseInsensitive isNotInCaseInsensitiveWhenPresent(String...values) {
+        return IsNotInCaseInsensitive.of(values).filter(Objects::nonNull);
     }
 
-    static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(Collection<String> values) {
-        return IsNotInCaseInsensitiveWhenPresent.of(values);
+    static IsNotInCaseInsensitive isNotInCaseInsensitiveWhenPresent(Collection<String> values) {
+        return IsNotInCaseInsensitive.of(values).filter(Objects::nonNull);
     }
 
     // order by support
