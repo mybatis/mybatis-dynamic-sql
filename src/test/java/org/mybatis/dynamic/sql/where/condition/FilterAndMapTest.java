@@ -25,6 +25,53 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class FilterAndMapTest {
+    @Test
+    void testIsNullRenderableTruePredicateShouldReturnSameObject() {
+        IsNull<String> cond = SqlBuilder.isNull();
+        IsNull<String> filtered = cond.filter(() -> true);
+        assertThat(filtered.shouldRender()).isTrue();
+        assertThat(cond).isSameAs(filtered);
+    }
+
+    @Test
+    void testIsNullRenderableFalsePredicate() {
+        IsNull<String> cond = SqlBuilder.isNull();
+        IsNull<String> filtered = cond.filter(() -> false);
+        assertThat(cond.shouldRender()).isTrue();
+        assertThat(filtered.shouldRender()).isFalse();
+    }
+
+    @Test
+    void testIsNullFilterUnRenderableShouldReturnSameObject() {
+        IsNull<String> cond = SqlBuilder.isNull().filter(() -> false);
+        IsNull<String> filtered = cond.filter(() -> true);
+        assertThat(filtered.shouldRender()).isFalse();
+        assertThat(cond).isSameAs(filtered);
+    }
+
+    @Test
+    void testIsNotNullRenderableTruePredicateShouldReturnSameObject() {
+        IsNotNull<String> cond = SqlBuilder.isNotNull();
+        IsNotNull<String> filtered = cond.filter(() -> true);
+        assertThat(filtered.shouldRender()).isTrue();
+        assertThat(cond).isSameAs(filtered);
+    }
+
+    @Test
+    void testIsNotNullRenderableFalsePredicate() {
+        IsNotNull<String> cond = SqlBuilder.isNotNull();
+        IsNotNull<String> filtered = cond.filter(() -> false);
+        assertThat(cond.shouldRender()).isTrue();
+        assertThat(filtered.shouldRender()).isFalse();
+    }
+
+    @Test
+    void testIsNotNullFilterUnRenderableShouldReturnSameObject() {
+        IsNotNull<String> cond = SqlBuilder.isNotNull().filter(() -> false);
+        IsNotNull<String> filtered = cond.filter(() -> true);
+        assertThat(filtered.shouldRender()).isFalse();
+        assertThat(cond).isSameAs(filtered);
+    }
 
     @Test
     void testIsEqualRenderableTruePredicateShouldReturnSameObject() {

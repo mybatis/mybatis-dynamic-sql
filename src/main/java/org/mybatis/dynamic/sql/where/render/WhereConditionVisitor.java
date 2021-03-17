@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
+    public FragmentAndParameters visit(AbstractSingleValueCondition<T, ?> condition) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
         String fragment = condition.renderCondition(columnName(),
                 getFormattedJdbcPlaceholder(mapKey));
@@ -77,7 +77,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractTwoValueCondition<T> condition) {
+    public FragmentAndParameters visit(AbstractTwoValueCondition<T, ?> condition) {
         String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);
         String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);
         String fragment = condition.renderCondition(columnName(),

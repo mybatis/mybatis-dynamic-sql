@@ -21,7 +21,19 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.util.Predicates;
 
-public class IsBetween<T> extends AbstractTwoValueCondition<T> {
+public class IsBetween<T> extends AbstractTwoValueCondition<T, IsBetween<T>> {
+    private static final IsBetween<?> EMPTY = new IsBetween<Object>(null, null) {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static <T> IsBetween<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsBetween<T> t = (IsBetween<T>) EMPTY;
+        return t;
+    }
 
     protected IsBetween(T value1, T value2) {
         super(value1, value2);
@@ -61,33 +73,14 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
         return map(mapper1, mapper2);
     }
 
-    /**
-     * If renderable and the values match the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @param predicate predicate applied to the values, if renderable
-     * @return this condition if renderable and the values match the predicate, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsBetween<T> filter(BiPredicate<T, T> predicate) {
-        if (shouldRender()) {
-            return predicate.test(value1, value2) ? this : EmptyIsBetween.empty();
-        } else {
-            return this;
-        }
+        return filter(predicate, IsBetween::empty, this);
     }
 
-    /**
-     * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
-     *     condition that will not render (this).
-     *
-     * @param mapper1 a mapping function to apply to the first value, if renderable
-     * @param mapper2 a mapping function to apply to the second value, if renderable
-     * @return a new condition with the result of applying the mappers to the values of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public IsBetween<T> map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2) {
-        return shouldRender() ? new IsBetween<>(mapper1.apply(value1), mapper2.apply(value2)) : this;
+        return map(mapper1, mapper2, IsBetween::new, this);
     }
 
     public static <T> Builder<T> isBetween(T value1) {
@@ -117,25 +110,6 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
         @Override
         protected IsBetween<T> build() {
             return new IsBetween<>(value1, value2).filter(Predicates.bothPresent());
-        }
-    }
-
-    public static class EmptyIsBetween<T> extends IsBetween<T> {
-        private static final EmptyIsBetween<?> EMPTY = new EmptyIsBetween<>();
-
-        public static <T> EmptyIsBetween<T> empty() {
-            @SuppressWarnings("unchecked")
-            EmptyIsBetween<T> t = (EmptyIsBetween<T>) EMPTY;
-            return t;
-        }
-
-        private EmptyIsBetween() {
-            super(null, null);
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
         }
     }
 }

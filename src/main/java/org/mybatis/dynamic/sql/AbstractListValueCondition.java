@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -56,15 +57,52 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
         return visitor.visit(this);
     }
 
-    protected Collection<T> applyMapper(UnaryOperator<T> mapper) {
+    private Collection<T> applyMapper(UnaryOperator<T> mapper) {
         Objects.requireNonNull(mapper);
         return values.stream().map(mapper).collect(Collectors.toList());
     }
 
-    protected Collection<T> applyFilter(Predicate<T> predicate) {
+    private Collection<T> applyFilter(Predicate<T> predicate) {
         Objects.requireNonNull(predicate);
         return values.stream().filter(predicate).collect(Collectors.toList());
     }
+
+    protected S filter(Predicate<T> predicate, BiFunction<Collection<T>, Callback, S> constructor, S self) {
+        if (shouldRender()) {
+            return constructor.apply(applyFilter(predicate), emptyCallback);
+        } else {
+            return self;
+        }
+    }
+
+    /**
+     * If renderable, apply the predicate to each value in the list and return a new condition with the filtered values.
+     *     Else returns a condition that will not render (this). If all values are filtered out of the value
+     *     list, then the condition will not render.
+     *
+     * @param predicate predicate applied to the values, if renderable
+     * @return a new condition with filtered values if renderable, otherwise a condition
+     *     that will not render.
+     */
+    public abstract S filter(Predicate<T> predicate);
+
+    protected S map(UnaryOperator<T> mapper, BiFunction<Collection<T>, Callback, S> constructor, S self) {
+        if (shouldRender()) {
+            return constructor.apply(applyMapper(mapper), emptyCallback);
+        } else {
+            return self;
+        }
+    }
+
+    /**
+     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
+     *     Else return a condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the values, if renderable
+     * @return a new condition with mapped values if renderable, otherwise a condition
+     *     that will not render.
+     */
+    public abstract S map(UnaryOperator<T> mapper);
 
     public abstract S withListEmptyCallback(Callback callback);
 

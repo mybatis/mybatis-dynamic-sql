@@ -20,6 +20,18 @@ import java.util.function.BooleanSupplier;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 
 public class IsNull<T> extends AbstractNoValueCondition<T> {
+    private static final IsNull<?> EMPTY = new IsNull<Object>() {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static <T> IsNull<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsNull<T> t = (IsNull<T>) EMPTY;
+        return t;
+    }
 
     public IsNull() {
         super();
@@ -31,13 +43,14 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
     }
 
     /**
-     * If the supplier returns true, returns this condition. Else returns a condition that will not render.
+     * If renderable and the supplier returns true, returns this condition. Else returns a condition
+     *     that will not render.
      *
      * @deprecated replaced by {@link IsNull#filter(BooleanSupplier)}
      * @param booleanSupplier function that specifies whether the condition should render
      * @param <S> condition type - not used except for compilation compliance
-     * @return If the condition should render, returns this condition. Else a condition that will not
-     *     render.
+     * @return this condition if renderable and the supplier returns true, otherwise a condition
+     *     that will not render.
      */
     @Deprecated
     public <S> IsNull<S> when(BooleanSupplier booleanSupplier) {
@@ -45,39 +58,17 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
     }
 
     /**
-     * If the supplier returns true, returns this condition. Else returns a condition that will not render.
+     * If renderable and the supplier returns true, returns this condition. Else returns a condition
+     *     that will not render.
      *
      * @param booleanSupplier function that specifies whether the condition should render
      * @param <S> condition type - not used except for compilation compliance
-     * @return If the condition should render, returns this condition. Else a condition that will not
-     *     render.
+     * @return this condition if renderable and the supplier returns true, otherwise a condition
+     *     that will not render.
      */
     public <S> IsNull<S> filter(BooleanSupplier booleanSupplier) {
-        if (booleanSupplier.getAsBoolean()) {
-            @SuppressWarnings("unchecked")
-            IsNull<S> self = (IsNull<S>) this;
-            return self;
-        } else {
-            return EmptyIsNull.empty();
-        }
-    }
-
-    public static class EmptyIsNull<T> extends IsNull<T> {
-        private static final EmptyIsNull<?> EMPTY = new EmptyIsNull<>();
-
-        public static <T> EmptyIsNull<T> empty() {
-            @SuppressWarnings("unchecked")
-            EmptyIsNull<T> t = (EmptyIsNull<T>) EMPTY;
-            return t;
-        }
-
-        private EmptyIsNull() {
-            super();
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
-        }
+        @SuppressWarnings("unchecked")
+        IsNull<S> self = (IsNull<S>) this;
+        return filter(booleanSupplier, IsNull::empty, self);
     }
 }
