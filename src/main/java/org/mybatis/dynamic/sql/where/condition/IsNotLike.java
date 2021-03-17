@@ -21,6 +21,18 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotLike<T> extends AbstractSingleValueCondition<T, IsNotLike<T>> {
+    private static final IsNotLike<?> EMPTY = new IsNotLike<Object>(null) {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static <T> IsNotLike<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsNotLike<T> t = (IsNotLike<T>) EMPTY;
+        return t;
+    }
 
     protected IsNotLike(T value) {
         super(value);
@@ -65,30 +77,11 @@ public class IsNotLike<T> extends AbstractSingleValueCondition<T, IsNotLike<T>> 
 
     @Override
     public IsNotLike<T> filter(Predicate<T> predicate) {
-        return filter(predicate, EmptyIsNotLike::empty, this);
+        return filter(predicate, IsNotLike::empty, this);
     }
 
     @Override
     public IsNotLike<T> map(UnaryOperator<T> mapper) {
         return map(mapper, IsNotLike::new, this);
-    }
-
-    public static class EmptyIsNotLike<T> extends IsNotLike<T> {
-        private static final EmptyIsNotLike<?> EMPTY = new EmptyIsNotLike<>();
-
-        public static <T> EmptyIsNotLike<T> empty() {
-            @SuppressWarnings("unchecked")
-            EmptyIsNotLike<T> t = (EmptyIsNotLike<T>) EMPTY;
-            return t;
-        }
-
-        private EmptyIsNotLike() {
-            super(null);
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
-        }
     }
 }

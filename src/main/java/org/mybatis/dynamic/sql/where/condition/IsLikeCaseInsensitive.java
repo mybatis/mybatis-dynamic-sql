@@ -22,6 +22,17 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String, IsLikeCaseInsensitive> {
+    private static final IsLikeCaseInsensitive EMPTY = new IsLikeCaseInsensitive(null) {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static IsLikeCaseInsensitive empty() {
+        return EMPTY;
+    }
+
     protected IsLikeCaseInsensitive(String value) {
         super(value);
     }
@@ -70,28 +81,11 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String, 
 
     @Override
     public IsLikeCaseInsensitive filter(Predicate<String> predicate) {
-        return filter(predicate, EmptyIsLikeCaseInsensitive::empty, this);
+        return filter(predicate, IsLikeCaseInsensitive::empty, this);
     }
 
     @Override
     public IsLikeCaseInsensitive map(UnaryOperator<String> mapper) {
         return map(mapper, IsLikeCaseInsensitive::new, this);
-    }
-
-    public static class EmptyIsLikeCaseInsensitive extends IsLikeCaseInsensitive {
-        private static final EmptyIsLikeCaseInsensitive EMPTY = new EmptyIsLikeCaseInsensitive();
-
-        public static EmptyIsLikeCaseInsensitive empty() {
-            return EMPTY;
-        }
-
-        private EmptyIsLikeCaseInsensitive() {
-            super(null);
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
-        }
     }
 }

@@ -21,6 +21,18 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T, IsNotEqualTo<T>> {
+    private static final IsNotEqualTo<?> EMPTY = new IsNotEqualTo<Object>(null) {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static <T> IsNotEqualTo<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsNotEqualTo<T> t = (IsNotEqualTo<T>) EMPTY;
+        return t;
+    }
 
     protected IsNotEqualTo(T value) {
         super(value);
@@ -65,30 +77,11 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T, IsNotEqualT
 
     @Override
     public IsNotEqualTo<T> filter(Predicate<T> predicate) {
-        return filter(predicate, EmptyIsNotEqualTo::empty, this);
+        return filter(predicate, IsNotEqualTo::empty, this);
     }
 
     @Override
     public IsNotEqualTo<T> map(UnaryOperator<T> mapper) {
         return map(mapper, IsNotEqualTo::new, this);
-    }
-
-    public static class EmptyIsNotEqualTo<T> extends IsNotEqualTo<T> {
-        private static final EmptyIsNotEqualTo<?> EMPTY = new EmptyIsNotEqualTo<>();
-
-        public static <T> EmptyIsNotEqualTo<T> empty() {
-            @SuppressWarnings("unchecked")
-            EmptyIsNotEqualTo<T> t = (EmptyIsNotEqualTo<T>) EMPTY;
-            return t;
-        }
-
-        private EmptyIsNotEqualTo() {
-            super(null);
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
-        }
     }
 }

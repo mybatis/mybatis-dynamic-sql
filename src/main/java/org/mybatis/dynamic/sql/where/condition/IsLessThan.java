@@ -21,6 +21,18 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsLessThan<T> extends AbstractSingleValueCondition<T, IsLessThan<T>> {
+    private static final IsLessThan<?> EMPTY = new IsLessThan<Object>(null) {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static <T> IsLessThan<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsLessThan<T> t = (IsLessThan<T>) EMPTY;
+        return t;
+    }
 
     protected IsLessThan(T value) {
         super(value);
@@ -65,30 +77,11 @@ public class IsLessThan<T> extends AbstractSingleValueCondition<T, IsLessThan<T>
 
     @Override
     public IsLessThan<T> filter(Predicate<T> predicate) {
-        return filter(predicate, EmptyIsLessThan::empty, this);
+        return filter(predicate, IsLessThan::empty, this);
     }
 
     @Override
     public IsLessThan<T> map(UnaryOperator<T> mapper) {
         return map(mapper, IsLessThan::new, this);
-    }
-
-    public static class EmptyIsLessThan<T> extends IsLessThan<T> {
-        private static final EmptyIsLessThan<?> EMPTY = new EmptyIsLessThan<>();
-
-        public static <T> EmptyIsLessThan<T> empty() {
-            @SuppressWarnings("unchecked")
-            EmptyIsLessThan<T> t = (EmptyIsLessThan<T>) EMPTY;
-            return t;
-        }
-
-        private EmptyIsLessThan() {
-            super(null);
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
-        }
     }
 }

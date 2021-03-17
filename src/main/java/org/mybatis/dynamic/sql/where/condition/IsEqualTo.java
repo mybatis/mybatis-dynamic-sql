@@ -22,6 +22,19 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsEqualTo<T> extends AbstractSingleValueCondition<T, IsEqualTo<T>> {
 
+    private static final IsEqualTo<?> EMPTY = new IsEqualTo<Object>(null) {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static <T> IsEqualTo<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsEqualTo<T> t = (IsEqualTo<T>) EMPTY;
+        return t;
+    }
+
     protected IsEqualTo(T value) {
         super(value);
     }
@@ -65,30 +78,11 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T, IsEqualTo<T>> 
 
     @Override
     public IsEqualTo<T> filter(Predicate<T> predicate) {
-        return filter(predicate, EmptyIsEqualTo::empty, this);
+        return filter(predicate, IsEqualTo::empty, this);
     }
 
     @Override
     public IsEqualTo<T> map(UnaryOperator<T> mapper) {
         return map(mapper, IsEqualTo::new, this);
-    }
-
-    public static class EmptyIsEqualTo<T> extends IsEqualTo<T> {
-        private static final EmptyIsEqualTo<?> EMPTY = new EmptyIsEqualTo<>();
-
-        public static <T> EmptyIsEqualTo<T> empty() {
-            @SuppressWarnings("unchecked")
-            EmptyIsEqualTo<T> t = (EmptyIsEqualTo<T>) EMPTY;
-            return t;
-        }
-
-        private EmptyIsEqualTo() {
-            super(null);
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
-        }
     }
 }

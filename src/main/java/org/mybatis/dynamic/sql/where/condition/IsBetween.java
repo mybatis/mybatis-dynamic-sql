@@ -22,6 +22,18 @@ import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.util.Predicates;
 
 public class IsBetween<T> extends AbstractTwoValueCondition<T, IsBetween<T>> {
+    private static final IsBetween<?> EMPTY = new IsBetween<Object>(null, null) {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static <T> IsBetween<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsBetween<T> t = (IsBetween<T>) EMPTY;
+        return t;
+    }
 
     protected IsBetween(T value1, T value2) {
         super(value1, value2);
@@ -63,7 +75,7 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T, IsBetween<T>> {
 
     @Override
     public IsBetween<T> filter(BiPredicate<T, T> predicate) {
-        return filter(predicate, EmptyIsBetween::empty, this);
+        return filter(predicate, IsBetween::empty, this);
     }
 
     @Override
@@ -98,25 +110,6 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T, IsBetween<T>> {
         @Override
         protected IsBetween<T> build() {
             return new IsBetween<>(value1, value2).filter(Predicates.bothPresent());
-        }
-    }
-
-    public static class EmptyIsBetween<T> extends IsBetween<T> {
-        private static final EmptyIsBetween<?> EMPTY = new EmptyIsBetween<>();
-
-        public static <T> EmptyIsBetween<T> empty() {
-            @SuppressWarnings("unchecked")
-            EmptyIsBetween<T> t = (EmptyIsBetween<T>) EMPTY;
-            return t;
-        }
-
-        private EmptyIsBetween() {
-            super(null, null);
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
         }
     }
 }

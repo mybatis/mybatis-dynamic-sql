@@ -20,6 +20,18 @@ import java.util.function.BooleanSupplier;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 
 public class IsNull<T> extends AbstractNoValueCondition<T> {
+    private static final IsNull<?> EMPTY = new IsNull<Object>() {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static <T> IsNull<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsNull<T> t = (IsNull<T>) EMPTY;
+        return t;
+    }
 
     public IsNull() {
         super();
@@ -58,26 +70,7 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
             IsNull<S> self = (IsNull<S>) this;
             return self;
         } else {
-            return EmptyIsNull.empty();
-        }
-    }
-
-    public static class EmptyIsNull<T> extends IsNull<T> {
-        private static final EmptyIsNull<?> EMPTY = new EmptyIsNull<>();
-
-        public static <T> EmptyIsNull<T> empty() {
-            @SuppressWarnings("unchecked")
-            EmptyIsNull<T> t = (EmptyIsNull<T>) EMPTY;
-            return t;
-        }
-
-        private EmptyIsNull() {
-            super();
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
+            return IsNull.empty();
         }
     }
 }
