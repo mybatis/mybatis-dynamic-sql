@@ -1144,9 +1144,9 @@ class KotlinElementsTest {
             from(Person)
             where(
                 upper(firstName),
-                isLike(fn).`when`(String::isNotBlank)
-                    .then(String::toUpperCase)
-                    .then { "%$it%" }
+                isLike(fn).filter(String::isNotBlank)
+                    .map(String::toUpperCase)
+                    .map { "%$it%" }
             )
             orderBy(id)
         }
@@ -1169,9 +1169,9 @@ class KotlinElementsTest {
             from(Person)
             where(
                 upper(firstName),
-                isLike(fn).`when`(String::isNotBlank)
-                    .then(String::toUpperCase)
-                    .then { "%$it%" }
+                isLike(fn).filter(String::isNotBlank)
+                    .map(String::toUpperCase)
+                    .map { "%$it%" }
             )
             orderBy(id)
         }

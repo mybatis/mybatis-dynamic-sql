@@ -15,18 +15,19 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin.elements
 
+import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 
 // These insert functions help avoid the use of org.mybatis.dynamic.sql.SqlBuilder in Kotlin
 
-fun <T> insert(record: T): InsertDSL.IntoGatherer<T> = InsertDSL.insert(record)
+fun <T> insert(record: T): InsertDSL.IntoGatherer<T> = SqlBuilder.insert(record)
 
 fun <T> insertBatch(vararg records: T): BatchInsertDSL.IntoGatherer<T> = insertBatch(records.asList())
 
-fun <T> insertBatch(records: Collection<T>): BatchInsertDSL.IntoGatherer<T> = BatchInsertDSL.insert(records)
+fun <T> insertBatch(records: Collection<T>): BatchInsertDSL.IntoGatherer<T> = SqlBuilder.insertBatch(records)
 
 fun <T> insertMultiple(vararg records: T): MultiRowInsertDSL.IntoGatherer<T> = insertMultiple(records.asList())
 
-fun <T> insertMultiple(records: Collection<T>): MultiRowInsertDSL.IntoGatherer<T> = MultiRowInsertDSL.insert(records)
+fun <T> insertMultiple(records: Collection<T>): MultiRowInsertDSL.IntoGatherer<T> = SqlBuilder.insertMultiple(records)
