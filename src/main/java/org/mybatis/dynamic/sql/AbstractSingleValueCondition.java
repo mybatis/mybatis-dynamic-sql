@@ -45,14 +45,6 @@ public abstract class AbstractSingleValueCondition<T, S extends AbstractSingleVa
         }
     }
 
-    protected S map(UnaryOperator<T> mapper, Function<T, S> constructor, S self) {
-        if (shouldRender()) {
-           return constructor.apply(mapper.apply(value));
-        }else {
-            return self;
-        }
-    }
-
     /**
      * If renderable and the value matches the predicate, returns this condition. Else returns a condition
      *     that will not render.
@@ -62,6 +54,14 @@ public abstract class AbstractSingleValueCondition<T, S extends AbstractSingleVa
      *     that will not render.
      */
     public abstract S filter(Predicate<T> predicate);
+
+    protected S map(UnaryOperator<T> mapper, Function<T, S> constructor, S self) {
+        if (shouldRender()) {
+            return constructor.apply(mapper.apply(value));
+        } else {
+            return self;
+        }
+    }
 
     /**
      * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a

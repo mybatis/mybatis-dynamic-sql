@@ -51,14 +51,6 @@ public abstract class AbstractTwoValueCondition<T, S extends AbstractTwoValueCon
         }
     }
 
-    protected S map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2, BiFunction<T, T, S> constructor, S self) {
-        if (shouldRender()) {
-            return constructor.apply(mapper1.apply(value1), mapper2.apply(value2));
-        }else {
-            return self;
-        }
-    }
-
     /**
      * If renderable and the values match the predicate, returns this condition. Else returns a condition
      *     that will not render.
@@ -68,6 +60,14 @@ public abstract class AbstractTwoValueCondition<T, S extends AbstractTwoValueCon
      *     that will not render.
      */
     public abstract S filter(BiPredicate<T, T> predicate);
+
+    protected S map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2, BiFunction<T, T, S> constructor, S self) {
+        if (shouldRender()) {
+            return constructor.apply(mapper1.apply(value1), mapper2.apply(value2));
+        } else {
+            return self;
+        }
+    }
 
     /**
      * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a

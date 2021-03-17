@@ -75,14 +75,6 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
         }
     }
 
-    protected S map(UnaryOperator<T> mapper, BiFunction<Collection<T>, Callback, S> constructor, S self) {
-        if (shouldRender()) {
-            return constructor.apply(applyMapper(mapper), emptyCallback);
-        } else {
-            return self;
-        }
-    }
-
     /**
      * If renderable, apply the predicate to each value in the list and return a new condition with the filtered values.
      *     Else returns a condition that will not render (this). If all values are filtered out of the value
@@ -93,6 +85,14 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
      *     that will not render.
      */
     public abstract S filter(Predicate<T> predicate);
+
+    protected S map(UnaryOperator<T> mapper, BiFunction<Collection<T>, Callback, S> constructor, S self) {
+        if (shouldRender()) {
+            return constructor.apply(applyMapper(mapper), emptyCallback);
+        } else {
+            return self;
+        }
+    }
 
     /**
      * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
