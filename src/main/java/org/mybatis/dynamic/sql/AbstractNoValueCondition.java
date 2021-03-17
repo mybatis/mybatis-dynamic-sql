@@ -15,11 +15,23 @@
  */
 package org.mybatis.dynamic.sql;
 
-public abstract class AbstractNoValueCondition<T> implements VisitableCondition<T> {
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
+public abstract class AbstractNoValueCondition<T>
+        implements VisitableCondition<T> {
 
     @Override
     public <R> R accept(ConditionVisitor<T, R> visitor) {
         return visitor.visit(this);
+    }
+
+    protected <S> S filter(BooleanSupplier booleanSupplier, Supplier<S> empty, S self) {
+        if (booleanSupplier.getAsBoolean()) {
+            return self;
+        } else {
+            return empty.get();
+        }
     }
 
     public abstract String renderCondition(String columnName);
