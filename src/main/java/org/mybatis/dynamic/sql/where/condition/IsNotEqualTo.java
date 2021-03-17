@@ -20,7 +20,7 @@ import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
-public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
+public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T, IsNotEqualTo<T>> {
 
     protected IsNotEqualTo(T value) {
         super(value);
@@ -63,32 +63,14 @@ public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
         return map(mapper);
     }
 
-    /**
-     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @param predicate predicate applied to the value, if renderable
-     * @return this condition if renderable and the value matches the predicate, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsNotEqualTo<T> filter(Predicate<T> predicate) {
-        if (shouldRender()) {
-            return predicate.test(value) ? this : EmptyIsNotEqualTo.empty();
-        } else {
-            return this;
-        }
+        return filter(predicate, EmptyIsNotEqualTo::empty, this);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     *     condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public IsNotEqualTo<T> map(UnaryOperator<T> mapper) {
-        return shouldRender() ? new IsNotEqualTo<>(mapper.apply(value)) : this;
+        return map(mapper, IsNotEqualTo::new, this);
     }
 
     public static class EmptyIsNotEqualTo<T> extends IsNotEqualTo<T> {

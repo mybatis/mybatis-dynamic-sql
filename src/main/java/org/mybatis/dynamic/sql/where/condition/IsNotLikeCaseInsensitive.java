@@ -21,7 +21,7 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
+public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String, IsNotLikeCaseInsensitive> {
     protected IsNotLikeCaseInsensitive(String value) {
         super(value);
     }
@@ -68,32 +68,14 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
         return map(mapper);
     }
 
-    /**
-     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @param predicate predicate applied to the value, if renderable
-     * @return this condition if renderable and the value matches the predicate, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsNotLikeCaseInsensitive filter(Predicate<String> predicate) {
-        if (shouldRender()) {
-            return predicate.test(value) ? this : EmptyIsNotLikeCaseInsensitive.empty();
-        } else {
-            return this;
-        }
+        return filter(predicate, EmptyIsNotLikeCaseInsensitive::empty, this);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     *     condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public IsNotLikeCaseInsensitive map(UnaryOperator<String> mapper) {
-        return shouldRender() ? new IsNotLikeCaseInsensitive(mapper.apply(value)) : this;
+        return map(mapper, IsNotLikeCaseInsensitive::new, this);
     }
 
     public static class EmptyIsNotLikeCaseInsensitive extends IsNotLikeCaseInsensitive {
