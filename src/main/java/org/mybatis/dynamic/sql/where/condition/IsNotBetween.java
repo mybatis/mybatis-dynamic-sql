@@ -63,12 +63,12 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T, IsNotBetween<T
 
     @Override
     public IsNotBetween<T> filter(BiPredicate<T, T> predicate) {
-        return filter(predicate, this, EmptyIsNotBetween.empty());
+        return filter(predicate, EmptyIsNotBetween::empty, this);
     }
 
     @Override
     public IsNotBetween<T> map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2) {
-        return map(mapper1, mapper2, this, IsNotBetween::new);
+        return map(mapper1, mapper2, IsNotBetween::new, this);
     }
 
     public static <T> Builder<T> isNotBetween(T value1) {

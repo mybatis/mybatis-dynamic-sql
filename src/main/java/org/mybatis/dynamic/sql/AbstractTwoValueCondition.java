@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql;
 
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 public abstract class AbstractTwoValueCondition<T, S extends AbstractTwoValueCondition<T, S>>
@@ -42,15 +43,15 @@ public abstract class AbstractTwoValueCondition<T, S extends AbstractTwoValueCon
         return visitor.visit(this);
     }
 
-    protected S filter(BiPredicate<T, T> predicate, S self, S empty) {
+    protected S filter(BiPredicate<T, T> predicate, Supplier<S> empty, S self) {
         if (shouldRender()) {
-            return predicate.test(value1, value2) ? self : empty;
+            return predicate.test(value1, value2) ? self : empty.get();
         } else {
             return self;
         }
     }
 
-    protected S map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2, S self, BiFunction<T, T, S> constructor) {
+    protected S map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2, BiFunction<T, T, S> constructor, S self) {
         if (shouldRender()) {
             return constructor.apply(mapper1.apply(value1), mapper2.apply(value2));
         }else {
