@@ -27,7 +27,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualToProperty
 import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
 import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
@@ -87,39 +86,13 @@ class KotlinConditionsTest {
     }
 
     @Test
-    fun testSelectEqualToValueSupplier() {
-        val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
-            where(id, isEqualToProperty { 6 })
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
-                "from Person where id = :p1"
-        )
-
-        val row = template.selectOne(selectStatement, personRowMapper)
-
-        assertThat(row).isNotNull
-        with(row!!) {
-            assertThat(id).isEqualTo(6)
-            assertThat(firstName).isEqualTo("Bamm Bamm")
-            assertThat(lastName!!.name).isEqualTo("Rubble")
-            assertThat(birthDate).isNotNull
-            assertThat(employed).isFalse
-            assertThat(occupation).isNull()
-            assertThat(addressId).isEqualTo(2)
-        }
-    }
-
-    @Test
-    fun testSelectEqualToValueSupplierAndRecord() {
+    fun testSelectEqualToValueWithRecord() {
         data class Record(val id: Int)
         val r = Record(6)
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(Person)
-            where(id, isEqualToProperty(r::id))
+            where(id, isEqualTo(r.id))
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(

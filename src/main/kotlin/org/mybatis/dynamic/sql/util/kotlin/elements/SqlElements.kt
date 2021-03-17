@@ -164,12 +164,7 @@ fun <T> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsEqualToWithSubs
 
 fun <T> isEqualTo(column: BasicColumn): IsEqualToColumn<T> = SqlBuilder.isEqualTo(column)
 
-fun <T : Any> isEqualToProperty(supplier: () -> T): IsEqualTo<T> = SqlBuilder.isEqualTo(supplier)
-
 fun <T : Any> isEqualToWhenPresent(value: T?): IsEqualTo<T> = SqlBuilder.isEqualToWhenPresent(value)
-
-fun <T : Any> isEqualToWhenPresent(valueSupplier: () -> T?): IsEqualTo<T> =
-    SqlBuilder.isEqualToWhenPresent(valueSupplier)
 
 fun <T : Any> isNotEqualTo(value: T): IsNotEqualTo<T> = SqlBuilder.isNotEqualTo(value)
 
@@ -178,26 +173,16 @@ fun <T> isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotEqualToWi
 
 fun <T> isNotEqualTo(column: BasicColumn): IsNotEqualToColumn<T> = SqlBuilder.isNotEqualTo(column)
 
-fun <T : Any> isNotEqualToProperty(supplier: () -> T): IsNotEqualTo<T> = SqlBuilder.isNotEqualTo(supplier)
-
 fun <T : Any> isNotEqualToWhenPresent(value: T?): IsNotEqualTo<T> = SqlBuilder.isNotEqualToWhenPresent(value)
-
-fun <T : Any> isNotEqualToWhenPresent(valueSupplier: () -> T?): IsNotEqualTo<T> =
-    SqlBuilder.isNotEqualToWhenPresent(valueSupplier)
 
 fun <T : Any> isGreaterThan(value: T): IsGreaterThan<T> = SqlBuilder.isGreaterThan(value)
 
-fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> Unit) : IsGreaterThanWithSubselect<T> =
+fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGreaterThanWithSubselect<T> =
     SqlBuilder.isGreaterThan(KotlinSubQueryBuilder().apply(subQuery))
 
 fun <T> isGreaterThan(column: BasicColumn): IsGreaterThanColumn<T> = SqlBuilder.isGreaterThan(column)
 
-fun <T : Any> isGreaterThanProperty(supplier: () -> T): IsGreaterThan<T> = SqlBuilder.isGreaterThan(supplier)
-
 fun <T : Any> isGreaterThanWhenPresent(value: T?): IsGreaterThan<T> = SqlBuilder.isGreaterThanWhenPresent(value)
-
-fun <T : Any> isGreaterThanWhenPresent(valueSupplier: () -> T?): IsGreaterThan<T> =
-    SqlBuilder.isGreaterThanWhenPresent(valueSupplier)
 
 fun <T : Any> isGreaterThanOrEqualTo(value: T): IsGreaterThanOrEqualTo<T> = SqlBuilder.isGreaterThanOrEqualTo(value)
 
@@ -207,14 +192,8 @@ fun <T> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGr
 fun <T> isGreaterThanOrEqualTo(column: BasicColumn): IsGreaterThanOrEqualToColumn<T> =
     SqlBuilder.isGreaterThanOrEqualTo(column)
 
-fun <T : Any> isGreaterThanOrEqualToProperty(supplier: () -> T): IsGreaterThanOrEqualTo<T> =
-    SqlBuilder.isGreaterThanOrEqualTo(supplier)
-
 fun <T : Any> isGreaterThanOrEqualToWhenPresent(value: T?): IsGreaterThanOrEqualTo<T> =
     SqlBuilder.isGreaterThanOrEqualToWhenPresent(value)
-
-fun <T : Any> isGreaterThanOrEqualToWhenPresent(valueSupplier: () -> T?): IsGreaterThanOrEqualTo<T> =
-    SqlBuilder.isGreaterThanOrEqualToWhenPresent(valueSupplier)
 
 fun <T : Any> isLessThan(value: T): IsLessThan<T> = SqlBuilder.isLessThan(value)
 
@@ -223,12 +202,7 @@ fun <T> isLessThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsLessThanWithSu
 
 fun <T> isLessThan(column: BasicColumn): IsLessThanColumn<T> = SqlBuilder.isLessThan(column)
 
-fun <T : Any> isLessThanProperty(supplier: () -> T): IsLessThan<T> = SqlBuilder.isLessThan(supplier)
-
 fun <T : Any> isLessThanWhenPresent(value: T?): IsLessThan<T> = SqlBuilder.isLessThanWhenPresent(value)
-
-fun <T : Any> isLessThanWhenPresent(valueSupplier: () -> T?): IsLessThan<T> =
-    SqlBuilder.isLessThanWhenPresent(valueSupplier)
 
 fun <T : Any> isLessThanOrEqualTo(value: T): IsLessThanOrEqualTo<T> = SqlBuilder.isLessThanOrEqualTo(value)
 
@@ -237,14 +211,8 @@ fun <T> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsLessT
 
 fun <T> isLessThanOrEqualTo(column: BasicColumn): IsLessThanOrEqualToColumn<T> = SqlBuilder.isLessThanOrEqualTo(column)
 
-fun <T : Any> isLessThanOrEqualToProperty(supplier: () -> T): IsLessThanOrEqualTo<T> =
-    SqlBuilder.isLessThanOrEqualTo(supplier)
-
 fun <T : Any> isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualTo<T> =
     SqlBuilder.isLessThanOrEqualToWhenPresent(value)
-
-fun <T : Any> isLessThanOrEqualToWhenPresent(valueSupplier: () -> T?): IsLessThanOrEqualTo<T> =
-    SqlBuilder.isLessThanOrEqualToWhenPresent(valueSupplier)
 
 fun <T : Any> isIn(vararg values: T): IsIn<T> = isIn(values.asList())
 
@@ -270,41 +238,21 @@ fun <T : Any> isNotInWhenPresent(values: Collection<T?>): IsNotIn<T> = SqlBuilde
 
 fun <T : Any> isBetween(value1: T): BetweenBuilder<T> = BetweenBuilder(value1)
 
-fun <T : Any> isBetween(valueSupplier1: () -> T): BetweenBuilder<T> = isBetween(valueSupplier1.invoke())
-
 fun <T : Any> isBetweenWhenPresent(value1: T?): BetweenWhenPresentBuilder<T> = BetweenWhenPresentBuilder(value1)
 
-fun <T : Any> isBetweenWhenPresent(valueSupplier1: () -> T?): BetweenWhenPresentBuilder<T> =
-    isBetweenWhenPresent(valueSupplier1.invoke())
-
 fun <T : Any> isNotBetween(value1: T): NotBetweenBuilder<T> = NotBetweenBuilder(value1)
-
-fun <T : Any> isNotBetween(valueSupplier1: () -> T): NotBetweenBuilder<T> = isNotBetween(valueSupplier1.invoke())
 
 fun <T : Any> isNotBetweenWhenPresent(value1: T?): NotBetweenWhenPresentBuilder<T> =
     NotBetweenWhenPresentBuilder(value1)
 
-fun <T : Any> isNotBetweenWhenPresent(valueSupplier1: () -> T?): NotBetweenWhenPresentBuilder<T> =
-    isNotBetweenWhenPresent(valueSupplier1.invoke())
-
 // for string columns, but generic for columns with type handlers
 fun <T : Any> isLike(value: T): IsLike<T> = SqlBuilder.isLike(value)
 
-fun <T : Any> isLike(valueSupplier: () -> T): IsLike<T> = SqlBuilder.isLike(valueSupplier)
-
 fun <T : Any> isLikeWhenPresent(value: T?): IsLike<T> = SqlBuilder.isLikeWhenPresent(value)
-
-fun <T : Any> isLikeWhenPresent(valueSupplier: () -> T?): IsLike<T> =
-    SqlBuilder.isLikeWhenPresent(valueSupplier)
 
 fun <T : Any> isNotLike(value: T): IsNotLike<T> = SqlBuilder.isNotLike(value)
 
-fun <T : Any> isNotLike(valueSupplier: () -> T): IsNotLike<T> = SqlBuilder.isNotLike(valueSupplier)
-
 fun <T : Any> isNotLikeWhenPresent(value: T?): IsNotLike<T> = SqlBuilder.isNotLikeWhenPresent(value)
-
-fun <T : Any> isNotLikeWhenPresent(valueSupplier: () -> T?): IsNotLike<T> =
-    SqlBuilder.isNotLikeWhenPresent(valueSupplier)
 
 // shortcuts for booleans
 fun isTrue(): IsEqualTo<Boolean> = isEqualTo(true)
@@ -314,25 +262,13 @@ fun isFalse(): IsEqualTo<Boolean> = isEqualTo(false)
 // conditions for strings only
 fun isLikeCaseInsensitive(value: String): IsLikeCaseInsensitive = SqlBuilder.isLikeCaseInsensitive(value)
 
-fun isLikeCaseInsensitive(valueSupplier: () -> String): IsLikeCaseInsensitive =
-    SqlBuilder.isLikeCaseInsensitive(valueSupplier)
-
 fun isLikeCaseInsensitiveWhenPresent(value: String?): IsLikeCaseInsensitive =
     SqlBuilder.isLikeCaseInsensitiveWhenPresent(value)
 
-fun isLikeCaseInsensitiveWhenPresent(valueSupplier: () -> String?): IsLikeCaseInsensitive =
-    SqlBuilder.isLikeCaseInsensitiveWhenPresent(valueSupplier)
-
 fun isNotLikeCaseInsensitive(value: String): IsNotLikeCaseInsensitive = SqlBuilder.isNotLikeCaseInsensitive(value)
-
-fun isNotLikeCaseInsensitive(valueSupplier: () -> String): IsNotLikeCaseInsensitive =
-    SqlBuilder.isNotLikeCaseInsensitive(valueSupplier)
 
 fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitive =
     SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(value)
-
-fun isNotLikeCaseInsensitiveWhenPresent(valueSupplier: () -> String?): IsNotLikeCaseInsensitive =
-    SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(valueSupplier)
 
 fun isInCaseInsensitive(vararg values: String): IsInCaseInsensitive = isInCaseInsensitive(values.asList())
 
@@ -379,30 +315,20 @@ fun sortColumn(tableAlias: String, column: SqlColumn<*>): SortSpecification = Sq
 // DSL Support Classes
 class BetweenBuilder<T>(private val value1: T) {
     fun and(value2: T): IsBetween<T> = SqlBuilder.isBetween(value1).and(value2)
-
-    fun and(valueSupplier2: () -> T): IsBetween<T> = and(valueSupplier2.invoke())
 }
 
 class BetweenWhenPresentBuilder<T>(private val value1: T?) {
     fun and(value2: T?): IsBetween<T> {
-        val b: IsBetween.WhenPresentBuilder<T> = SqlBuilder.isBetweenWhenPresent(value1)
-        return b.and(value2)
+        return SqlBuilder.isBetweenWhenPresent<T>(value1).and(value2)
     }
-
-    fun and(valueSupplier2: () -> T?): IsBetween<T> = and(valueSupplier2.invoke())
 }
 
 class NotBetweenBuilder<T>(private val value1: T) {
     fun and(value2: T): IsNotBetween<T> = SqlBuilder.isNotBetween(value1).and(value2)
-
-    fun and(valueSupplier2: () -> T): IsNotBetween<T> = and(valueSupplier2.invoke())
 }
 
 class NotBetweenWhenPresentBuilder<T>(private val value1: T?) {
     fun and(value2: T?): IsNotBetween<T> {
-        val b: IsNotBetween.WhenPresentBuilder<T> = SqlBuilder.isNotBetweenWhenPresent(value1)
-        return b.and(value2)
+        return SqlBuilder.isNotBetweenWhenPresent<T>(value1).and(value2)
     }
-
-    fun and(valueSupplier2: () -> T?): IsNotBetween<T> = and(valueSupplier2.invoke())
 }
