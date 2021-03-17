@@ -20,7 +20,19 @@ import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
-public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
+public class IsLessThan<T> extends AbstractSingleValueCondition<T, IsLessThan<T>> {
+    private static final IsLessThan<?> EMPTY = new IsLessThan<Object>(null) {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static <T> IsLessThan<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsLessThan<T> t = (IsLessThan<T>) EMPTY;
+        return t;
+    }
 
     protected IsLessThan(T value) {
         super(value);
@@ -63,50 +75,13 @@ public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
         return map(mapper);
     }
 
-    /**
-     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @param predicate predicate applied to the value, if renderable
-     * @return this condition if renderable and the value matches the predicate, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsLessThan<T> filter(Predicate<T> predicate) {
-        if (shouldRender()) {
-            return predicate.test(value) ? this : EmptyIsLessThan.empty();
-        } else {
-            return this;
-        }
+        return filter(predicate, IsLessThan::empty, this);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     *     condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public IsLessThan<T> map(UnaryOperator<T> mapper) {
-        return shouldRender() ? new IsLessThan<>(mapper.apply(value)) : this;
-    }
-
-    public static class EmptyIsLessThan<T> extends IsLessThan<T> {
-        private static final EmptyIsLessThan<?> EMPTY = new EmptyIsLessThan<>();
-
-        public static <T> EmptyIsLessThan<T> empty() {
-            @SuppressWarnings("unchecked")
-            EmptyIsLessThan<T> t = (EmptyIsLessThan<T>) EMPTY;
-            return t;
-        }
-
-        private EmptyIsLessThan() {
-            super(null);
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
-        }
+        return map(mapper, IsLessThan::new, this);
     }
 }

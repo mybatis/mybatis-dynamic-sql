@@ -21,7 +21,18 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
+public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String, IsNotLikeCaseInsensitive> {
+    private static final IsNotLikeCaseInsensitive EMPTY = new IsNotLikeCaseInsensitive(null) {
+        @Override
+        public boolean shouldRender() {
+            return false;
+        }
+    };
+
+    public static IsNotLikeCaseInsensitive empty() {
+        return EMPTY;
+    }
+
     protected IsNotLikeCaseInsensitive(String value) {
         super(value);
     }
@@ -68,48 +79,13 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
         return map(mapper);
     }
 
-    /**
-     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @param predicate predicate applied to the value, if renderable
-     * @return this condition if renderable and the value matches the predicate, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsNotLikeCaseInsensitive filter(Predicate<String> predicate) {
-        if (shouldRender()) {
-            return predicate.test(value) ? this : EmptyIsNotLikeCaseInsensitive.empty();
-        } else {
-            return this;
-        }
+        return filter(predicate, IsNotLikeCaseInsensitive::empty, this);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     *     condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public IsNotLikeCaseInsensitive map(UnaryOperator<String> mapper) {
-        return shouldRender() ? new IsNotLikeCaseInsensitive(mapper.apply(value)) : this;
-    }
-
-    public static class EmptyIsNotLikeCaseInsensitive extends IsNotLikeCaseInsensitive {
-        private static final EmptyIsNotLikeCaseInsensitive EMPTY = new EmptyIsNotLikeCaseInsensitive();
-
-        public static EmptyIsNotLikeCaseInsensitive empty() {
-            return EMPTY;
-        }
-
-        private EmptyIsNotLikeCaseInsensitive() {
-            super(null);
-        }
-
-        @Override
-        public boolean shouldRender() {
-            return false;
-        }
+        return map(mapper, IsNotLikeCaseInsensitive::new, this);
     }
 }

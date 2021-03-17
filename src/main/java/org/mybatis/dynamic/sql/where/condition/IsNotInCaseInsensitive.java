@@ -48,37 +48,14 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String, I
         return new IsNotInCaseInsensitive(values, callback);
     }
 
-    /**
-     * If renderable apply the predicate to each value in the list and return a new condition with the filtered values.
-     *     Else returns a condition that will not render (this). If all values are filtered out of the value
-     *     list, then the condition will not render.
-     *
-     * @param predicate predicate applied to the values, if renderable
-     * @return a new condition with filtered values if renderable, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsNotInCaseInsensitive filter(Predicate<String> predicate) {
-        if (shouldRender()) {
-            return new IsNotInCaseInsensitive(applyFilter(predicate), emptyCallback);
-        } else {
-            return this;
-        }
+        return filter(predicate, IsNotInCaseInsensitive::new, this);
     }
 
-    /**
-     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return a condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the values, if renderable
-     * @return a new condition with mapped values if renderable, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsNotInCaseInsensitive map(UnaryOperator<String> mapper) {
-        if (shouldRender()) {
-            return new IsNotInCaseInsensitive(applyMapper(mapper), emptyCallback);
-        } else {
-            return this;
-        }
+        return map(mapper, IsNotInCaseInsensitive::new, this);
     }
 
     public static IsNotInCaseInsensitive of(String... values) {

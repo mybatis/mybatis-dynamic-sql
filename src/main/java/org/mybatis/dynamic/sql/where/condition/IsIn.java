@@ -67,37 +67,14 @@ public class IsIn<T> extends AbstractListValueCondition<T, IsIn<T>> {
         return new IsIn<>(mapped, emptyCallback);
     }
 
-    /**
-     * If renderable, apply the predicate to each value in the list and return a new condition with the filtered values.
-     *     Else returns a condition that will not render (this). If all values are filtered out of the value
-     *     list, then the condition will not render.
-     *
-     * @param predicate predicate applied to the values, if renderable
-     * @return a new condition with filtered values if renderable, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsIn<T> filter(Predicate<T> predicate) {
-        if (shouldRender()) {
-            return new IsIn<>(applyFilter(predicate), emptyCallback);
-        } else {
-            return this;
-        }
+        return filter(predicate, IsIn::new, this);
     }
 
-    /**
-     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return a condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the values, if renderable
-     * @return a new condition with mapped values if renderable, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsIn<T> map(UnaryOperator<T> mapper) {
-        if (shouldRender()) {
-            return new IsIn<>(applyMapper(mapper), emptyCallback);
-        } else {
-            return this;
-        }
+        return map(mapper, IsIn::new, this);
     }
 
     @SafeVarargs
