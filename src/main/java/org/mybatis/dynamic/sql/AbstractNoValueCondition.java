@@ -18,8 +18,7 @@ package org.mybatis.dynamic.sql;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-public abstract class AbstractNoValueCondition<T>
-        implements VisitableCondition<T> {
+public abstract class AbstractNoValueCondition<T> implements VisitableCondition<T> {
 
     @Override
     public <R> R accept(ConditionVisitor<T, R> visitor) {
@@ -27,10 +26,10 @@ public abstract class AbstractNoValueCondition<T>
     }
 
     protected <S> S filter(BooleanSupplier booleanSupplier, Supplier<S> empty, S self) {
-        if (booleanSupplier.getAsBoolean()) {
-            return self;
+        if (shouldRender()) {
+            return booleanSupplier.getAsBoolean() ? self : empty.get();
         } else {
-            return empty.get();
+            return self;
         }
     }
 

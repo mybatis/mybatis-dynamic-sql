@@ -43,13 +43,14 @@ public class IsNotNull<T> extends AbstractNoValueCondition<T> {
     }
 
     /**
-     * If the supplier returns true, returns this condition. Else returns a condition that will not render.
+     * If renderable and the supplier returns true, returns this condition. Else returns a condition
+     *     that will not render.
      *
      * @deprecated replaced by {@link IsNotNull#filter(BooleanSupplier)}
      * @param booleanSupplier function that specifies whether the condition should render
      * @param <S> condition type - not used except for compilation compliance
-     * @return If the condition should render, returns this condition. Else a condition that will not
-     *     render.
+     * @return this condition if renderable and the supplier returns true, otherwise a condition
+     *     that will not render.
      */
     @Deprecated
     public <S> IsNotNull<S> when(BooleanSupplier booleanSupplier) {
@@ -57,12 +58,13 @@ public class IsNotNull<T> extends AbstractNoValueCondition<T> {
     }
 
     /**
-     * If the supplier returns true, returns this condition. Else returns a condition that will not render.
+     * If renderable and the supplier returns true, returns this condition. Else returns a condition
+     *     that will not render.
      *
      * @param booleanSupplier function that specifies whether the condition should render
      * @param <S> condition type - not used except for compilation compliance
-     * @return If the condition should render, returns this condition. Else a condition that will not
-     *     render.
+     * @return this condition if renderable and the supplier returns true, otherwise a condition
+     *     that will not render.
      */
     public <S> IsNotNull<S> filter(BooleanSupplier booleanSupplier) {
         @SuppressWarnings("unchecked")
