@@ -22,7 +22,7 @@ public interface ConditionVisitor<T, R> {
 
     R visit(AbstractSingleValueCondition<T> condition);
 
-    R visit(AbstractTwoValueCondition<T> condition);
+    R visit(AbstractTwoValueCondition<T, ?> condition);
 
     R visit(AbstractSubselectCondition<T> condition);
 

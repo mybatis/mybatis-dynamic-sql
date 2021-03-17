@@ -21,7 +21,7 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.util.Predicates;
 
-public class IsBetween<T> extends AbstractTwoValueCondition<T> {
+public class IsBetween<T> extends AbstractTwoValueCondition<T, IsBetween<T>> {
 
     protected IsBetween(T value1, T value2) {
         super(value1, value2);
@@ -61,33 +61,14 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
         return map(mapper1, mapper2);
     }
 
-    /**
-     * If renderable and the values match the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @param predicate predicate applied to the values, if renderable
-     * @return this condition if renderable and the values match the predicate, otherwise a condition
-     *     that will not render.
-     */
+    @Override
     public IsBetween<T> filter(BiPredicate<T, T> predicate) {
-        if (shouldRender()) {
-            return predicate.test(value1, value2) ? this : EmptyIsBetween.empty();
-        } else {
-            return this;
-        }
+        return filter(predicate, this, EmptyIsBetween.empty());
     }
 
-    /**
-     * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
-     *     condition that will not render (this).
-     *
-     * @param mapper1 a mapping function to apply to the first value, if renderable
-     * @param mapper2 a mapping function to apply to the second value, if renderable
-     * @return a new condition with the result of applying the mappers to the values of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public IsBetween<T> map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2) {
-        return shouldRender() ? new IsBetween<>(mapper1.apply(value1), mapper2.apply(value2)) : this;
+        return map(mapper1, mapper2, this, IsBetween::new);
     }
 
     public static <T> Builder<T> isBetween(T value1) {
