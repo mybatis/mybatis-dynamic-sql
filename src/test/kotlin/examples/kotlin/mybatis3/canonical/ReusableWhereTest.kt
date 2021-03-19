@@ -15,6 +15,9 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
@@ -27,8 +30,12 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
+import org.mybatis.dynamic.sql.util.kotlin.andThen
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNull
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
