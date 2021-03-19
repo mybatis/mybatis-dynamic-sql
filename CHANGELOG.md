@@ -94,6 +94,7 @@ Kotlin DSL.
 - Added subquery support for "join" clauses in a select statement ([#293](https://github.com/mybatis/mybatis-dynamic-sql/pull/293))
 - Added support for the "exists" and "not exists" operator in where clauses ([#296](https://github.com/mybatis/mybatis-dynamic-sql/pull/296))
 - Refactored the built-in conditions ([#331](https://github.com/mybatis/mybatis-dynamic-sql/pull/331))
+- Added composition functions for WhereApplier ([#335](https://github.com/mybatis/mybatis-dynamic-sql/pull/335))
 
 ## Release 1.2.1 - September 29, 2020
 
