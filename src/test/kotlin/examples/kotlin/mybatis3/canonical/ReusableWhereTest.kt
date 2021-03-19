@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -26,9 +29,13 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
 import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.SqlBuilder.isNotNull
 import org.mybatis.dynamic.sql.SqlBuilder.isNull
 import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
+import org.mybatis.dynamic.sql.util.kotlin.andThen
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
@@ -105,8 +112,31 @@ class ReusableWhereTest {
         }
     }
 
+    @Test
+    fun testComposition() {
+        var whereApplier = commonWhere.andThen {
+            and(birthDate, isNotNull())
+        }
+
+        whereApplier = whereApplier.andThen {
+            or(addressId, isLessThan(3))
+        }
+
+        val selectStatement = select(Person.allColumns()) {
+            from(Person)
+            applyWhere(whereApplier)
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select * from Person " +
+                "where id = #{parameters.p1,jdbcType=INTEGER} or occupation is null " +
+                "and birth_date is not null " +
+                "or address_id < #{parameters.p2,jdbcType=INTEGER}"
+        )
+    }
+
     private val commonWhere: WhereApplier = {
-        where(id, isEqualTo(1)).or(occupation, isNull<String>())
+        where(id, isEqualTo(1)).or(occupation, isNull())
     }
 
     companion object {

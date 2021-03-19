@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions;
@@ -39,7 +41,7 @@ class ReusableWhereTest {
     private NamedParameterJdbcTemplateExtensions template;
 
     @BeforeEach
-    void setup() throws Exception {
+    void setup() {
         EmbeddedDatabase db = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.HSQL)
                 .generateUniqueName(true)
@@ -89,5 +91,22 @@ class ReusableWhereTest {
         assertThat(rows).isEqualTo(3);
     }
 
-    private WhereApplier commonWhere =  d -> d.where(id, isEqualTo(1)).or(occupation, isNull());
+    @Test
+    void testComposition() {
+        WhereApplier whereApplier = commonWhere.andThen(wa -> wa.and(birthDate, isNotNull()));
+        whereApplier = whereApplier.andThen(wa -> wa.or(addressId, isLessThan(3)));
+
+        SelectStatementProvider selectStatement = select(person.allColumns())
+                .from(person)
+                .applyWhere(whereApplier)
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(
+                "select * from Person " +
+                    "where id = :p1 or occupation is null and birth_date is not null or address_id < :p2");
+
+    }
+
+    private final WhereApplier commonWhere =  d -> d.where(id, isEqualTo(1)).or(occupation, isNull());
 }
