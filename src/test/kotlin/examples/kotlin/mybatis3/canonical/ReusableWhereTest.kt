@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -103,6 +103,29 @@ class ReusableWhereTest {
 
             assertThat(rows).isEqualTo(3)
         }
+    }
+
+    @Test
+    fun testComposition() {
+        var whereApplier = commonWhere.andThen {
+            and(birthDate, isNotNull())
+        }
+
+        whereApplier = whereApplier.andThen {
+            or(addressId, isLessThan(3))
+        }
+
+        val selectStatement = select(Person.allColumns()) {
+            from(Person)
+            applyWhere(whereApplier)
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select * from Person " +
+                "where id = #{parameters.p1,jdbcType=INTEGER} or occupation is null " +
+                "and birth_date is not null " +
+                "or address_id < #{parameters.p2,jdbcType=INTEGER}"
+        )
     }
 
     private val commonWhere: WhereApplier = {

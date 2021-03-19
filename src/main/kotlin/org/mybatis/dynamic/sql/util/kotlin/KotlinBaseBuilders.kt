@@ -30,6 +30,11 @@ annotation class MyBatisDslMarker
 
 typealias WhereApplier = AbstractWhereDSL<*>.() -> Unit
 
+fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
+    invoke(this)
+    after(this)
+}
+
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuilder<D, B>> {
