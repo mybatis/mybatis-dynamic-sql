@@ -41,12 +41,12 @@ public abstract class AbstractListValueCondition<T>
 
     @Override
     public boolean shouldRender() {
-        if (values.isEmpty()) {
-            emptyCallback.call();
-            return false;
-        } else {
-            return true;
-        }
+        return !values.isEmpty();
+    }
+
+    @Override
+    public void renderingSkipped() {
+        emptyCallback.call();
     }
 
     @Override
