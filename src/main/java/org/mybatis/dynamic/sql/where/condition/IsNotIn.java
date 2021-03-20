@@ -19,7 +19,9 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -28,7 +30,14 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.Callback;
 
-public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
+public class IsNotIn<T> extends AbstractListValueCondition<T> {
+    private static final IsNotIn<?> EMPTY = new IsNotIn<>(Collections.emptyList());
+
+    public static <T> IsNotIn<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsNotIn<T> t = (IsNotIn<T>) EMPTY;
+        return t;
+    }
 
     protected IsNotIn(Collection<T> values) {
         super(values);
@@ -56,7 +65,7 @@ public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
      * If you filter values out of the stream, then final condition will not reference those values. If you filter all
      * values out of the stream, then the condition will not render.
      *
-     * @deprecated replaced by {@link IsNotIn#map(UnaryOperator)} and {@link IsNotIn#filter(Predicate)}
+     * @deprecated replaced by {@link IsNotIn#map(Function)} and {@link IsNotIn#filter(Predicate)}
      * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
      *     the values are placed in the parameter map
      * @return new condition with the specified transformer
@@ -70,13 +79,21 @@ public class IsNotIn<T> extends AbstractListValueCondition<T, IsNotIn<T>> {
     }
 
     @Override
-    public IsNotIn<T> filter(Predicate<T> predicate) {
-        return filter(predicate, IsNotIn::new, this);
+    public IsNotIn<T> filter(Predicate<? super T> predicate) {
+        return filterSupport(predicate, IsNotIn::new, this, IsNotIn::empty);
     }
 
-    @Override
-    public IsNotIn<T> map(UnaryOperator<T> mapper) {
-        return map(mapper, IsNotIn::new, this);
+    /**
+     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
+     *     Else return a condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the values, if renderable
+     * @param <R> type of the new condition
+     * @return a new condition with mapped values if renderable, otherwise a condition
+     *     that will not render.
+     */
+    public <R> IsNotIn<R> map(Function<? super T, ? extends R> mapper) {
+        return mapSupport(mapper, IsNotIn::new, IsNotIn::empty);
     }
 
     @SafeVarargs

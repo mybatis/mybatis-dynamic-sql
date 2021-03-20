@@ -17,14 +17,11 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractListValueCondition<T, S extends AbstractListValueCondition<T, S>>
+public abstract class AbstractListValueCondition<T>
         implements VisitableCondition<T> {
     protected final Collection<T> values;
     protected final Callback emptyCallback;
@@ -57,21 +54,32 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
         return visitor.visit(this);
     }
 
-    private Collection<T> applyMapper(UnaryOperator<T> mapper) {
+    private <R> Collection<R> applyMapper(Function<? super T, ? extends R> mapper) {
         Objects.requireNonNull(mapper);
         return values.stream().map(mapper).collect(Collectors.toList());
     }
 
-    private Collection<T> applyFilter(Predicate<T> predicate) {
+    private Collection<T> applyFilter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
         return values.stream().filter(predicate).collect(Collectors.toList());
     }
 
-    protected S filter(Predicate<T> predicate, BiFunction<Collection<T>, Callback, S> constructor, S self) {
+    protected <S> S filterSupport(Predicate<? super T> predicate,
+            BiFunction<Collection<T>, Callback, S> constructor, S self, Supplier<S> empty) {
         if (shouldRender()) {
-            return constructor.apply(applyFilter(predicate), emptyCallback);
+            Collection<T> filtered = applyFilter(predicate);
+            return filtered.isEmpty() ? empty.get() : constructor.apply(filtered, emptyCallback);
         } else {
             return self;
+        }
+    }
+
+    protected <R, S> S mapSupport(Function<? super T, ? extends R> mapper,
+            BiFunction<Collection<R>, Callback, S> constructor, Supplier<S> empty) {
+        if (shouldRender()) {
+            return constructor.apply(applyMapper(mapper), emptyCallback);
+        } else {
+            return empty.get();
         }
     }
 
@@ -84,27 +92,9 @@ public abstract class AbstractListValueCondition<T, S extends AbstractListValueC
      * @return a new condition with filtered values if renderable, otherwise a condition
      *     that will not render.
      */
-    public abstract S filter(Predicate<T> predicate);
+    public abstract AbstractListValueCondition<T> filter(Predicate<? super T> predicate);
 
-    protected S map(UnaryOperator<T> mapper, BiFunction<Collection<T>, Callback, S> constructor, S self) {
-        if (shouldRender()) {
-            return constructor.apply(applyMapper(mapper), emptyCallback);
-        } else {
-            return self;
-        }
-    }
-
-    /**
-     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return a condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the values, if renderable
-     * @return a new condition with mapped values if renderable, otherwise a condition
-     *     that will not render.
-     */
-    public abstract S map(UnaryOperator<T> mapper);
-
-    public abstract S withListEmptyCallback(Callback callback);
+    public abstract AbstractListValueCondition<T> withListEmptyCallback(Callback callback);
 
     public abstract String renderCondition(String columnName, Stream<String> placeholders);
 }
