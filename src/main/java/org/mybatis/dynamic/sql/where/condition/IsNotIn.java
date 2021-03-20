@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -93,7 +94,8 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
      *     that will not render.
      */
     public <R> IsNotIn<R> map(Function<? super T, ? extends R> mapper) {
-        return mapSupport(mapper, IsNotIn::new, IsNotIn::empty);
+        // the cast is a work around for a parse error in IntelliJ
+        return mapSupport(mapper, (BiFunction<Collection<R>, Callback, IsNotIn<R>>) IsNotIn::new, IsNotIn::empty);
     }
 
     @SafeVarargs
