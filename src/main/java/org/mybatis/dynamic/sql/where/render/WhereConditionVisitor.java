@@ -77,7 +77,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractTwoValueCondition<T, ?> condition) {
+    public FragmentAndParameters visit(AbstractTwoValueCondition<T> condition) {
         String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);
         String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);
         String fragment = condition.renderCondition(columnName(),
