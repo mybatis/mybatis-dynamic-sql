@@ -24,10 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -81,6 +78,32 @@ class PersonMapperTest {
                     .or(occupation, isNull()));
 
             assertThat(rows).hasSize(3);
+        }
+    }
+
+    @Test
+    void testSelectWithTypeConversion() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            List<PersonRecord> rows = mapper.select(c ->
+                    c.where(id, isEqualTo("1").map(Integer::parseInt))
+                            .or(occupation, isNull()));
+
+            assertThat(rows).hasSize(3);
+        }
+    }
+
+    @Test
+    void testSelectWithTypeConversionAndFilterAndNull() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            List<PersonRecord> rows = mapper.select(c ->
+                    c.where(id, isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt))
+                            .or(occupation, isNull()));
+
+            assertThat(rows).hasSize(2);
         }
     }
 

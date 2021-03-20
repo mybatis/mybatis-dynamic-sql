@@ -66,7 +66,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
 
     @Override
-    public FragmentAndParameters visit(AbstractSingleValueCondition<T, ?> condition) {
+    public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
         String fragment = condition.renderCondition(columnName(),
                 getFormattedJdbcPlaceholder(mapKey));

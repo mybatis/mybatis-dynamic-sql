@@ -16,15 +16,37 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlBuilder;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class FilterAndMapTest {
+    @Test
+    void testTypeConversion() {
+        IsEqualTo<Integer> cond = SqlBuilder.isEqualTo("1").map(Integer::parseInt);
+        assertThat(cond.shouldRender()).isTrue();
+        assertThat(cond.value()).isEqualTo(1);
+    }
+
+    @Test
+    void testTypeConversionWithNullThrowsException() {
+        assertThatExceptionOfType(NumberFormatException.class).isThrownBy(() ->
+            SqlBuilder.isEqualTo((String) null).map(Integer::parseInt)
+        );
+    }
+
+    @Test
+    void testTypeConversionWithNullAndFilterDoesNotThrowException() {
+        IsEqualTo<Integer> cond = SqlBuilder.isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt);
+        assertThat(cond.shouldRender()).isFalse();
+    }
+
     @Test
     void testIsNullRenderableTruePredicateShouldReturnSameObject() {
         IsNull<String> cond = SqlBuilder.isNull();
