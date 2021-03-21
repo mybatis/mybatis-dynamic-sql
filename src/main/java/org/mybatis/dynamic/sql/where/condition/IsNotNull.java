@@ -69,6 +69,6 @@ public class IsNotNull<T> extends AbstractNoValueCondition<T> {
     public <S> IsNotNull<S> filter(BooleanSupplier booleanSupplier) {
         @SuppressWarnings("unchecked")
         IsNotNull<S> self = (IsNotNull<S>) this;
-        return filter(booleanSupplier, IsNotNull::empty, self);
+        return filterSupport(booleanSupplier, IsNotNull::empty, self);
     }
 }

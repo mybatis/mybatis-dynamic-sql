@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -26,7 +27,12 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsInCaseInsensitive extends AbstractListValueCondition<String, IsInCaseInsensitive> {
+public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
+    private static final IsInCaseInsensitive EMPTY = new IsInCaseInsensitive(Collections.emptyList());
+
+    public static IsInCaseInsensitive empty() {
+        return EMPTY;
+    }
 
     protected  IsInCaseInsensitive(Collection<String> values) {
         super(values);
@@ -48,13 +54,20 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String, IsIn
     }
 
     @Override
-    public IsInCaseInsensitive filter(Predicate<String> predicate) {
-        return filter(predicate, IsInCaseInsensitive::new, this);
+    public IsInCaseInsensitive filter(Predicate<? super String> predicate) {
+        return filterSupport(predicate, IsInCaseInsensitive::new, this, IsInCaseInsensitive::empty);
     }
 
-    @Override
+    /**
+     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
+     *     Else return a condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the values, if renderable
+     * @return a new condition with mapped values if renderable, otherwise a condition
+     *     that will not render.
+     */
     public IsInCaseInsensitive map(UnaryOperator<String> mapper) {
-        return map(mapper, IsInCaseInsensitive::new, this);
+        return mapSupport(mapper, IsInCaseInsensitive::new, IsInCaseInsensitive::empty);
     }
 
     public static IsInCaseInsensitive of(String... values) {

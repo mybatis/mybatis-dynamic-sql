@@ -18,10 +18,8 @@ package org.mybatis.dynamic.sql;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
-public abstract class AbstractSingleValueCondition<T, S extends AbstractSingleValueCondition<T, S>>
-        implements VisitableCondition<T> {
+public abstract class AbstractSingleValueCondition<T> implements VisitableCondition<T> {
     protected final T value;
 
     protected AbstractSingleValueCondition(T value) {
@@ -37,11 +35,20 @@ public abstract class AbstractSingleValueCondition<T, S extends AbstractSingleVa
         return visitor.visit(this);
     }
 
-    protected S filter(Predicate<T> predicate, Supplier<S> empty, S self) {
+    protected <S> S filterSupport(Predicate<? super T> predicate, Supplier<S> empty, S self) {
         if (shouldRender()) {
             return predicate.test(value) ? self : empty.get();
         } else {
             return self;
+        }
+    }
+
+    protected <R, S> S mapSupport(Function<? super T, ? extends R> mapper, Function<R, S> constructor,
+            Supplier<S> empty) {
+        if (shouldRender()) {
+            return constructor.apply(mapper.apply(value));
+        } else {
+            return empty.get();
         }
     }
 
@@ -53,25 +60,7 @@ public abstract class AbstractSingleValueCondition<T, S extends AbstractSingleVa
      * @return this condition if renderable and the value matches the predicate, otherwise a condition
      *     that will not render.
      */
-    public abstract S filter(Predicate<T> predicate);
-
-    protected S map(UnaryOperator<T> mapper, Function<T, S> constructor, S self) {
-        if (shouldRender()) {
-            return constructor.apply(mapper.apply(value));
-        } else {
-            return self;
-        }
-    }
-
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     *     condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
-    public abstract S map(UnaryOperator<T> mapper);
+    public abstract AbstractSingleValueCondition<T> filter(Predicate<? super T> predicate);
 
     public abstract String renderCondition(String columnName, String placeholder);
 }

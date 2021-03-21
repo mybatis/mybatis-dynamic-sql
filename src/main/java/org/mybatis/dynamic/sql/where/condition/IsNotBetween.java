@@ -16,12 +16,13 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.util.Predicates;
 
-public class IsNotBetween<T> extends AbstractTwoValueCondition<T, IsNotBetween<T>> {
+public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
     private static final IsNotBetween<?> EMPTY = new IsNotBetween<Object>(null, null) {
         @Override
         public boolean shouldRender() {
@@ -62,7 +63,7 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T, IsNotBetween<T
      * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
      *     condition that will not render (this).
      *
-     * @deprecated replaced by {@link IsNotBetween#map(UnaryOperator, UnaryOperator)}
+     * @deprecated replaced by {@link IsNotBetween#map(Function, Function)}
      * @param mapper1 a mapping function to apply to the first value, if renderable
      * @param mapper2 a mapping function to apply to the second value, if renderable
      * @return a new condition with the result of applying the mappers to the values of this condition,
@@ -74,13 +75,23 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T, IsNotBetween<T
     }
 
     @Override
-    public IsNotBetween<T> filter(BiPredicate<T, T> predicate) {
-        return filter(predicate, IsNotBetween::empty, this);
+    public IsNotBetween<T> filter(BiPredicate<? super T, ? super T> predicate) {
+        return filterSupport(predicate, IsNotBetween::empty, this);
     }
 
-    @Override
-    public IsNotBetween<T> map(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2) {
-        return map(mapper1, mapper2, IsNotBetween::new, this);
+    /**
+     * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper1 a mapping function to apply to the first value, if renderable
+     * @param mapper2 a mapping function to apply to the second value, if renderable
+     * @param <R> type of the new condition
+     * @return a new condition with the result of applying the mappers to the values of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public <R> IsNotBetween<R> map(Function<? super T, ? extends R> mapper1,
+                                   Function<? super T, ? extends R> mapper2) {
+        return mapSupport(mapper1, mapper2, IsNotBetween::new, IsNotBetween::empty);
     }
 
     public static <T> Builder<T> isNotBetween(T value1) {
