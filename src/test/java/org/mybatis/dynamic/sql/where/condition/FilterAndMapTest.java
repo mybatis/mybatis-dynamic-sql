@@ -36,8 +36,9 @@ class FilterAndMapTest {
 
     @Test
     void testTypeConversionWithNullThrowsException() {
+        IsEqualTo<String> cond = SqlBuilder.isEqualTo((String) null);
         assertThatExceptionOfType(NumberFormatException.class).isThrownBy(() ->
-            SqlBuilder.isEqualTo((String) null).map(Integer::parseInt)
+            cond.map(Integer::parseInt)
         );
     }
 

@@ -94,8 +94,8 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
      *     that will not render.
      */
     public <R> IsNotIn<R> map(Function<? super T, ? extends R> mapper) {
-        // the cast is a work around for a parse error in IntelliJ
-        return mapSupport(mapper, (BiFunction<Collection<R>, Callback, IsNotIn<R>>) IsNotIn::new, IsNotIn::empty);
+        BiFunction<Collection<R>, Callback, IsNotIn<R>> constructor = IsNotIn::new;
+        return mapSupport(mapper, constructor, IsNotIn::empty);
     }
 
     @SafeVarargs

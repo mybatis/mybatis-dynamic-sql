@@ -26,14 +26,16 @@ However, there are some changes in behavior and one breaking change.
    methods that accept Suppliers will call the `Supplier.get()` method when the condition is constructed. This should
    have no impact unless you were somehow relying on the delay in obtaining a value until the condition was rendered.
 1. The existing "then" and "when" methods have been deprecated and replaced with "map" and "filter" respectively.
-   The new method names are more familiar and more representative of what these methods actually do. In effect,
+   The new method names are more familiar and more representative of what these methods actually do. In effect
    these methods mimic the function of the "map" and "filter" methods on "java.util.Optional" and they are used
    for a similar purpose.
-1. The new "filter" method works a bit differently than the "when" method it replaces. The "when" method could not
+1. The new "filter" method works a bit differently than the "when" method it replaces. The old "when" method could not
    be chained - if it was called multiple times, only the last call would take effect. The new "filter" methods works
    as it should and every call will take effect.
+1. The new "map" method will allow you to change the datatype of a condition as is normal for a "map" method. You
+   can use this method to apply a type conversion directly within condition.
 1. All the "WhenPresent" conditions have been removed as separate classes. The methods that produced these conditions
-   in the SqlBuilder remain, and they will now produce a condition with a "NotNull" filter applied. So at the API level,
+   in the SqlBuilder remain, and they will now produce a condition with a "NotNull" filter applied. So at the API level
    things will function exactly as before, but the intermediate classes will be different.
 1. One breaking change is that the builder for List value conditions has been removed without replacement. If you
    were using this builder to supply a "value stream transformer", then the replacement is to build a new List value

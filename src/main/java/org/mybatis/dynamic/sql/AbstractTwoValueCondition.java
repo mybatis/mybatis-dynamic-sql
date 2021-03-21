@@ -15,7 +15,10 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class AbstractTwoValueCondition<T>
         implements VisitableCondition<T> {
