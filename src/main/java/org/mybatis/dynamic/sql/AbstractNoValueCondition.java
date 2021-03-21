@@ -25,7 +25,7 @@ public abstract class AbstractNoValueCondition<T> implements VisitableCondition<
         return visitor.visit(this);
     }
 
-    protected <S> S filter(BooleanSupplier booleanSupplier, Supplier<S> empty, S self) {
+    protected <S> S filterSupport(BooleanSupplier booleanSupplier, Supplier<S> empty, S self) {
         if (shouldRender()) {
             return booleanSupplier.getAsBoolean() ? self : empty.get();
         } else {

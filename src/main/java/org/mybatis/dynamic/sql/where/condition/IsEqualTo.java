@@ -15,12 +15,13 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
-public class IsEqualTo<T> extends AbstractSingleValueCondition<T, IsEqualTo<T>> {
+public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
 
     private static final IsEqualTo<?> EMPTY = new IsEqualTo<Object>(null) {
         @Override
@@ -66,7 +67,7 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T, IsEqualTo<T>> 
      * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
      *     condition that will not render (this).
      *
-     * @deprecated replaced by {@link IsEqualTo#map(UnaryOperator)}
+     * @deprecated replaced by {@link IsEqualTo#map(Function)}
      * @param mapper a mapping function to apply to the value, if renderable
      * @return a new condition with the result of applying the mapper to the value of this condition,
      *     if renderable, otherwise a condition that will not render.
@@ -77,12 +78,20 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T, IsEqualTo<T>> 
     }
 
     @Override
-    public IsEqualTo<T> filter(Predicate<T> predicate) {
-        return filter(predicate, IsEqualTo::empty, this);
+    public IsEqualTo<T> filter(Predicate<? super T> predicate) {
+        return filterSupport(predicate, IsEqualTo::empty, this);
     }
 
-    @Override
-    public IsEqualTo<T> map(UnaryOperator<T> mapper) {
-        return map(mapper, IsEqualTo::new, this);
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @param <R> type of the new condition
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public <R> IsEqualTo<R> map(Function<? super T, ? extends R> mapper) {
+        return mapSupport(mapper, IsEqualTo::new, IsEqualTo::empty);
     }
 }

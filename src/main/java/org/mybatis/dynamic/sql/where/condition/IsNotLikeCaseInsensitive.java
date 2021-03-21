@@ -21,7 +21,7 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String, IsNotLikeCaseInsensitive> {
+public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
     private static final IsNotLikeCaseInsensitive EMPTY = new IsNotLikeCaseInsensitive(null) {
         @Override
         public boolean shouldRender() {
@@ -80,12 +80,19 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
     }
 
     @Override
-    public IsNotLikeCaseInsensitive filter(Predicate<String> predicate) {
-        return filter(predicate, IsNotLikeCaseInsensitive::empty, this);
+    public IsNotLikeCaseInsensitive filter(Predicate<? super String> predicate) {
+        return filterSupport(predicate, IsNotLikeCaseInsensitive::empty, this);
     }
 
-    @Override
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
     public IsNotLikeCaseInsensitive map(UnaryOperator<String> mapper) {
-        return map(mapper, IsNotLikeCaseInsensitive::new, this);
+        return mapSupport(mapper, IsNotLikeCaseInsensitive::new, IsNotLikeCaseInsensitive::empty);
     }
 }
