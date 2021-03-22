@@ -15,12 +15,13 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
-import org.mybatis.dynamic.sql.util.Predicates;
 
 public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
     private static final IsNotBetween<?> EMPTY = new IsNotBetween<Object>(null, null) {
@@ -79,6 +80,11 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
         return filterSupport(predicate, IsNotBetween::empty, this);
     }
 
+    @Override
+    public IsNotBetween<T> filter(Predicate<? super T> predicate) {
+        return filterSupport(predicate, IsNotBetween::empty, this);
+    }
+
     /**
      * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
      *     condition that will not render (this).
@@ -90,8 +96,21 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
      *     if renderable, otherwise a condition that will not render.
      */
     public <R> IsNotBetween<R> map(Function<? super T, ? extends R> mapper1,
-                                   Function<? super T, ? extends R> mapper2) {
+            Function<? super T, ? extends R> mapper2) {
         return mapSupport(mapper1, mapper2, IsNotBetween::new, IsNotBetween::empty);
+    }
+
+    /**
+     * If renderable, apply the mapping to both values and return a new condition with the new values. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to both values, if renderable
+     * @param <R> type of the new condition
+     * @return a new condition with the result of applying the mappers to the values of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public <R> IsNotBetween<R> map(Function<? super T, ? extends R> mapper) {
+        return map(mapper, mapper);
     }
 
     public static <T> Builder<T> isNotBetween(T value1) {
@@ -122,7 +141,7 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
 
         @Override
         protected IsNotBetween<T> build() {
-            return new IsNotBetween<>(value1, value2).filter(Predicates.bothPresent());
+            return new IsNotBetween<>(value1, value2).filter(Objects::nonNull);
         }
     }
 }
