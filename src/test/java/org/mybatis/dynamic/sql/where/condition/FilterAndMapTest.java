@@ -511,10 +511,59 @@ class FilterAndMapTest {
     }
 
     @Test
+    void testBetweenUnRenderableFirstNullFilterShouldReturnSameObject() {
+        IsBetween<Integer> cond = SqlBuilder.isBetween((Integer) null).and(4).filter(Objects::nonNull);
+        assertThat(cond.shouldRender()).isFalse();
+        IsBetween<Integer> filtered = cond.filter(v -> true);
+        assertThat(cond).isSameAs(filtered);
+    }
+
+    @Test
+    void testBetweenUnRenderableSecondNullFilterShouldReturnSameObject() {
+        IsBetween<Integer> cond = SqlBuilder.isBetween(3).and((Integer) null).filter(Objects::nonNull);
+        assertThat(cond.shouldRender()).isFalse();
+        IsBetween<Integer> filtered = cond.filter(v -> true);
+        assertThat(cond).isSameAs(filtered);
+    }
+
+    @Test
+    void testBetweenMapWithSingleMapper() {
+        IsBetween<Integer> cond = SqlBuilder.isBetween("3").and("4").map(Integer::parseInt);
+        assertThat(cond.shouldRender()).isTrue();
+        assertThat(cond.value1()).isEqualTo(3);
+        assertThat(cond.value2()).isEqualTo(4);
+    }
+
+    @Test
     void testNotBetweenUnRenderableFilterShouldReturnSameObject() {
         IsNotBetween<Integer> cond = SqlBuilder.isNotBetween(3).and(4).filter((i1, i2) -> false);
         assertThat(cond.shouldRender()).isFalse();
         IsNotBetween<Integer> filtered = cond.filter((v1, v2) -> true);
         assertThat(cond).isSameAs(filtered);
     }
+
+    @Test
+    void testNotBetweenUnRenderableFirstNullFilterShouldReturnSameObject() {
+        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween((Integer) null).and(4).filter(Objects::nonNull);
+        assertThat(cond.shouldRender()).isFalse();
+        IsNotBetween<Integer> filtered = cond.filter(v -> true);
+        assertThat(cond).isSameAs(filtered);
+    }
+
+    @Test
+    void testNotBetweenUnRenderableSecondNullFilterShouldReturnSameObject() {
+        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween(3).and((Integer) null).filter(Objects::nonNull);
+        assertThat(cond.shouldRender()).isFalse();
+        IsNotBetween<Integer> filtered = cond.filter(v -> true);
+        assertThat(cond).isSameAs(filtered);
+    }
+
+    @Test
+    void testNotBetweenMapWithSingleMapper() {
+        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween("3").and("4").map(Integer::parseInt);
+        assertThat(cond.shouldRender()).isTrue();
+        assertThat(cond.value1()).isEqualTo(3);
+        assertThat(cond.value2()).isEqualTo(4);
+    }
+
 }

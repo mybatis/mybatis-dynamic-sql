@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public abstract class AbstractTwoValueCondition<T>
@@ -52,6 +53,11 @@ public abstract class AbstractTwoValueCondition<T>
         }
     }
 
+    protected <S extends AbstractTwoValueCondition<T>> S filterSupport(Predicate<? super T> predicate,
+            Supplier<S> emptySupplier, S self) {
+        return filterSupport((v1, v2) -> predicate.test(v1) && predicate.test(v2), emptySupplier, self);
+    }
+
     protected <R, S extends AbstractTwoValueCondition<R>> S mapSupport(Function<? super T, ? extends R> mapper1,
             Function<? super T, ? extends R> mapper2, BiFunction<R, R, S> constructor, Supplier<S> emptySupplier) {
         if (shouldRender()) {
@@ -70,6 +76,17 @@ public abstract class AbstractTwoValueCondition<T>
      *     that will not render.
      */
     public abstract AbstractTwoValueCondition<T> filter(BiPredicate<? super T, ? super T> predicate);
+
+    /**
+     * If renderable and both values match the predicate, returns this condition. Else returns a condition
+     *     that will not render. This function implements a short-circuiting test. If the
+     *     first value does not match the predicate, then the second value will not be tested.
+     *
+     * @param predicate predicate applied to both values, if renderable
+     * @return this condition if renderable and the values match the predicate, otherwise a condition
+     *     that will not render.
+     */
+    public abstract AbstractTwoValueCondition<T> filter(Predicate<? super T> predicate);
 
     public abstract String renderCondition(String columnName, String placeholder1, String placeholder2);
 }
