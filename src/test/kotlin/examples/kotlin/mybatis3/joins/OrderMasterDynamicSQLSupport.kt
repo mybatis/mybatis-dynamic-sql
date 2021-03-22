@@ -16,12 +16,17 @@
 package examples.kotlin.mybatis3.joins
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 import java.util.Date
 
 object OrderMasterDynamicSQLSupport {
-    object OrderMaster : SqlTable("OrderMaster") {
-        val orderId = column<Int>("order_id", JDBCType.INTEGER)
-        val orderDate = column<Date>("order_date", JDBCType.DATE)
+    val orderMaster = OrderMaster();
+    val orderId = orderMaster.orderId
+    val orderDate = orderMaster.orderDate
+
+    class OrderMaster : SqlTable("OrderMaster") {
+        val orderId = column<Int>(name = "order_id", jdbcType = JDBCType.INTEGER)
+        val orderDate = column<Date>(name = "order_date", jdbcType = JDBCType.DATE)
     }
 }

@@ -15,14 +15,14 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.employed
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -237,7 +237,7 @@ class PersonMapperTest {
             val rows = mapper.insertSelect {
                 columns(id, firstName, lastName, employed, occupation, addressId, birthDate)
                 select(add(id, constant<Int>("100")), firstName, lastName, employed, occupation, addressId, birthDate) {
-                    from(Person)
+                    from(person)
                     orderBy(id)
                 }
             }

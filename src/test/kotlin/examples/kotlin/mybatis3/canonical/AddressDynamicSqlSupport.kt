@@ -16,13 +16,20 @@
 package examples.kotlin.mybatis3.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 
 object AddressDynamicSqlSupport {
-    object Address : SqlTable("Address") {
-        val id = column<Int>("address_id", JDBCType.INTEGER)
-        val streetAddress = column<String>("street_address", JDBCType.VARCHAR)
-        val city = column<String>("city", JDBCType.VARCHAR)
-        val state = column<String>("state", JDBCType.VARCHAR)
+    val address = Address()
+    val id = address.id
+    val streetAddress = address.streetAddress
+    val city = address.city
+    val state = address.state
+
+    class Address : SqlTable("Address") {
+        val id = column<Int>(name = "address_id", jdbcType =JDBCType.INTEGER)
+        val streetAddress = column<String>(name = "street_address", jdbcType =JDBCType.VARCHAR)
+        val city = column<String>(name = "city", jdbcType =JDBCType.VARCHAR)
+        val state = column<String>(name = "state", jdbcType =JDBCType.VARCHAR)
     }
 }

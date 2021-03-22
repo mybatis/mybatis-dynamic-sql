@@ -15,11 +15,11 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -122,8 +122,8 @@ class ReusableWhereTest {
             or(addressId, isLessThan(3))
         }
 
-        val selectStatement = select(Person.allColumns()) {
-            from(Person)
+        val selectStatement = select(person.allColumns()) {
+            from(person)
             applyWhere(whereApplier)
         }
 

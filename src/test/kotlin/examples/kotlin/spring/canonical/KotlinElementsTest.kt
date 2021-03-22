@@ -15,10 +15,10 @@
  */
 package examples.kotlin.spring.canonical
 
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.lastName
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -88,7 +88,7 @@ class KotlinElementsTest {
     @Test
     fun testCount() {
         val selectStatement = select(count(id)) {
-            from(Person)
+            from(person)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -102,7 +102,7 @@ class KotlinElementsTest {
     @Test
     fun testCountDistinct() {
         val selectStatement = select(countDistinct(lastName)) {
-            from(Person)
+            from(person)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -117,7 +117,7 @@ class KotlinElementsTest {
     @Test
     fun testAverage() {
         val selectStatement = select(avg(id)) {
-            from(Person)
+            from(person)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -132,7 +132,7 @@ class KotlinElementsTest {
     @Test
     fun testNull() {
         val selectStatement = select(id) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(55))
         }
 
@@ -148,7 +148,7 @@ class KotlinElementsTest {
     @Test
     fun testSum() {
         val selectStatement = select(sum(id)) {
-            from(Person)
+            from(person)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -163,7 +163,7 @@ class KotlinElementsTest {
     @Test
     fun testStringConstant() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isEqualTo(stringConstant("Fred")))
         }
 
@@ -179,7 +179,7 @@ class KotlinElementsTest {
     @Test
     fun testDivide() {
         val selectStatement = select(divide(id, constant<Int>("2.0"))) {
-            from(Person)
+            from(person)
             orderBy(id)
         }
 
@@ -196,7 +196,7 @@ class KotlinElementsTest {
     @Test
     fun testMultiply() {
         val selectStatement = select(multiply(id, constant<Int>("2.0"))) {
-            from(Person)
+            from(person)
             orderBy(id)
         }
 
@@ -213,7 +213,7 @@ class KotlinElementsTest {
     @Test
     fun testSubtract() {
         val selectStatement = select(subtract(id, constant<Int>("2"))) {
-            from(Person)
+            from(person)
             orderBy(id)
         }
 
@@ -230,7 +230,7 @@ class KotlinElementsTest {
     @Test
     fun testConcatenate() {
         val selectStatement = select(concatenate(firstName, stringConstant(" "), lastName)) {
-            from(Person)
+            from(person)
             orderBy(id)
         }
 
@@ -247,7 +247,7 @@ class KotlinElementsTest {
     @Test
     fun testApplyOperator() {
         val selectStatement = select(applyOperator("||", firstName, stringConstant(" "), lastName)) {
-            from(Person)
+            from(person)
             orderBy(id)
         }
 
@@ -264,7 +264,7 @@ class KotlinElementsTest {
     @Test
     fun testLower() {
         val selectStatement = select(lower(firstName)) {
-            from(Person)
+            from(person)
             orderBy(id)
         }
 
@@ -281,7 +281,7 @@ class KotlinElementsTest {
     @Test
     fun testUpper() {
         val selectStatement = select(upper(firstName)) {
-            from(Person)
+            from(person)
             orderBy(id)
         }
 
@@ -298,7 +298,7 @@ class KotlinElementsTest {
     @Test
     fun testSubstring() {
         val selectStatement = select(substring(firstName, 1, 3)) {
-            from(Person)
+            from(person)
             orderBy(id)
         }
 
@@ -315,7 +315,7 @@ class KotlinElementsTest {
     @Test
     fun testIsEqualToWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isEqualToWhenPresent(6))
             orderBy(id)
         }
@@ -333,7 +333,7 @@ class KotlinElementsTest {
     @Test
     fun testIsEqualToWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isEqualToWhenPresent(null))
             orderBy(id)
         }
@@ -351,7 +351,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotEqualToWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotEqualToWhenPresent(6))
             orderBy(id)
         }
@@ -369,7 +369,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotEqualToWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotEqualToWhenPresent(null))
             orderBy(id)
         }
@@ -387,7 +387,7 @@ class KotlinElementsTest {
     @Test
     fun testIsGreaterThanWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isGreaterThanWhenPresent(5))
             orderBy(id)
         }
@@ -405,7 +405,7 @@ class KotlinElementsTest {
     @Test
     fun testIsGreaterThanWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isGreaterThanWhenPresent(null))
             orderBy(id)
         }
@@ -423,7 +423,7 @@ class KotlinElementsTest {
     @Test
     fun testIsGreaterThanOrEqualToWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isGreaterThanOrEqualToWhenPresent(5))
             orderBy(id)
         }
@@ -441,7 +441,7 @@ class KotlinElementsTest {
     @Test
     fun testIsGreaterThanOrEqualToWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isGreaterThanOrEqualToWhenPresent(null))
             orderBy(id)
         }
@@ -459,7 +459,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLessThanWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isLessThanWhenPresent(5))
             orderBy(id)
         }
@@ -477,7 +477,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLessThanWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isGreaterThanWhenPresent(null))
             orderBy(id)
         }
@@ -495,7 +495,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLessThanOrEqualTo() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isLessThanOrEqualTo(5))
             orderBy(id)
         }
@@ -513,7 +513,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLessThanOrEqualToWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isLessThanOrEqualToWhenPresent(5))
             orderBy(id)
         }
@@ -531,7 +531,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLessThanOrEqualToWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isLessThanOrEqualToWhenPresent(null))
             orderBy(id)
         }
@@ -549,7 +549,7 @@ class KotlinElementsTest {
     @Test
     fun testIsInWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isInWhenPresent(1, null, 3))
             orderBy(id)
         }
@@ -572,7 +572,7 @@ class KotlinElementsTest {
         myList.add(3)
 
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isInWhenPresent(myList))
             orderBy(id)
         }
@@ -590,7 +590,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotInWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotInWhenPresent(1, null, 3))
             orderBy(id)
         }
@@ -612,7 +612,7 @@ class KotlinElementsTest {
         myList.add(3)
 
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotIn(myList))
             orderBy(id)
         }
@@ -630,7 +630,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotIn() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotIn(1, 3))
             orderBy(id)
         }
@@ -653,7 +653,7 @@ class KotlinElementsTest {
         myList.add(3)
 
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotInWhenPresent(myList))
             orderBy(id)
         }
@@ -671,7 +671,7 @@ class KotlinElementsTest {
     @Test
     fun testBetween() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isBetween(2).and(3))
             orderBy(id)
         }
@@ -689,7 +689,7 @@ class KotlinElementsTest {
     @Test
     fun testBetweenWhenPresentBothPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isBetweenWhenPresent(2).and(3))
             orderBy(id)
         }
@@ -707,7 +707,7 @@ class KotlinElementsTest {
     @Test
     fun testBetweenWhenPresentFirstMissing() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isBetweenWhenPresent<Int>(null).and(3))
             orderBy(id)
         }
@@ -725,7 +725,7 @@ class KotlinElementsTest {
     @Test
     fun testBetweenWhenPresentSecondMissing() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isBetweenWhenPresent(2).and(null))
             orderBy(id)
         }
@@ -743,7 +743,7 @@ class KotlinElementsTest {
     @Test
     fun testBetweenWhenPresentBothMissing() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isBetweenWhenPresent<Int>(null).and(null))
             orderBy(id)
         }
@@ -761,7 +761,7 @@ class KotlinElementsTest {
     @Test
     fun testNotBetween() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotBetween(2).and(3))
             orderBy(id)
         }
@@ -779,7 +779,7 @@ class KotlinElementsTest {
     @Test
     fun testNotBetweenWhenPresentBothPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotBetweenWhenPresent(2).and(3))
             orderBy(id)
         }
@@ -797,7 +797,7 @@ class KotlinElementsTest {
     @Test
     fun testNotBetweenWhenPresentFirstMissing() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotBetweenWhenPresent<Int>(null).and(3))
             orderBy(id)
         }
@@ -815,7 +815,7 @@ class KotlinElementsTest {
     @Test
     fun testNotBetweenWhenPresentSecondMissing() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotBetweenWhenPresent(2).and(null))
             orderBy(id)
         }
@@ -833,7 +833,7 @@ class KotlinElementsTest {
     @Test
     fun testNotBetweenWhenPresentBothMissing() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(id, isNotBetweenWhenPresent<Int>(null).and(null))
             orderBy(id)
         }
@@ -851,7 +851,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLikeWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isLikeWhenPresent("F%"))
             orderBy(id)
         }
@@ -869,7 +869,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLikeWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isLikeWhenPresent(null))
             orderBy(id)
         }
@@ -887,7 +887,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotLikeWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isNotLikeWhenPresent("F%"))
             orderBy(id)
         }
@@ -905,7 +905,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotLikeWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isNotLikeWhenPresent(null))
             orderBy(id)
         }
@@ -923,7 +923,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLikeCaseInsensitive() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isLikeCaseInsensitive("f%"))
             orderBy(id)
         }
@@ -941,7 +941,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLikeCaseInsensitiveWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isLikeCaseInsensitiveWhenPresent("f%"))
             orderBy(id)
         }
@@ -959,7 +959,7 @@ class KotlinElementsTest {
     @Test
     fun testIsLikeCaseInsensitiveWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isLikeCaseInsensitiveWhenPresent(null))
             orderBy(id)
         }
@@ -977,7 +977,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotLikeCaseInsensitive() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isNotLikeCaseInsensitive("f%"))
             orderBy(id)
         }
@@ -995,7 +995,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotLikeCaseInsensitiveWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isNotLikeCaseInsensitiveWhenPresent("f%"))
             orderBy(id)
         }
@@ -1013,7 +1013,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotLikeCaseInsensitiveWhenPresentNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isNotLikeCaseInsensitiveWhenPresent(null))
             orderBy(id)
         }
@@ -1031,7 +1031,7 @@ class KotlinElementsTest {
     @Test
     fun testIsInCaseInsensitive() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isInCaseInsensitive("FRED", "wilma"))
             orderBy(id)
         }
@@ -1049,7 +1049,7 @@ class KotlinElementsTest {
     @Test
     fun testIsInCaseInsensitiveWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isInCaseInsensitiveWhenPresent("FRED", null, "wilma"))
             orderBy(id)
         }
@@ -1067,7 +1067,7 @@ class KotlinElementsTest {
     @Test
     fun testIsInCaseInsensitiveWhenPresentAllNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isInCaseInsensitiveWhenPresent(null, null))
             orderBy(id)
         }
@@ -1085,7 +1085,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotInCaseInsensitive() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isNotInCaseInsensitive("FRED", "wilma"))
             orderBy(id)
         }
@@ -1103,7 +1103,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotInCaseInsensitiveWhenPresent() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isNotInCaseInsensitiveWhenPresent("FRED", null, "wilma"))
             orderBy(id)
         }
@@ -1121,7 +1121,7 @@ class KotlinElementsTest {
     @Test
     fun testIsNotInCaseInsensitiveWhenPresentAllNull() {
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(firstName, isNotInCaseInsensitiveWhenPresent(null, null))
             orderBy(id)
         }
@@ -1141,7 +1141,7 @@ class KotlinElementsTest {
         val fn = ""
 
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(
                 upper(firstName),
                 isLike(fn).filter(String::isNotBlank)
@@ -1166,7 +1166,7 @@ class KotlinElementsTest {
         val fn = "w"
 
         val selectStatement = select(firstName) {
-            from(Person)
+            from(person)
             where(
                 upper(firstName),
                 isLike(fn).filter(String::isNotBlank)

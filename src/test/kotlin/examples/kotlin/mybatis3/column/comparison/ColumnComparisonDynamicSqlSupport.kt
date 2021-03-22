@@ -16,6 +16,7 @@
 package examples.kotlin.mybatis3.column.comparison
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 
 object ColumnComparisonDynamicSqlSupport {
@@ -24,7 +25,7 @@ object ColumnComparisonDynamicSqlSupport {
     val number2 = columnComparison.number2
 
     class ColumnComparison : SqlTable("ColumnComparison") {
-        val number1 = column<Int>("number1", JDBCType.INTEGER)
-        val number2 = column<Int>("number2", JDBCType.INTEGER)
+        val number1 = column<Int>(name = "number1", jdbcType = JDBCType.INTEGER)
+        val number2 = column<Int>(name = "number2", jdbcType = JDBCType.INTEGER)
     }
 }

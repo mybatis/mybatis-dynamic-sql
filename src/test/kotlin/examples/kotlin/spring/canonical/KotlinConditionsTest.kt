@@ -15,14 +15,14 @@
  */
 package examples.kotlin.spring.canonical
 
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.addressId
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.employed
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -62,7 +62,7 @@ class KotlinConditionsTest {
     @Test
     fun testSelectEqualToValue() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(6))
         }
 
@@ -91,7 +91,7 @@ class KotlinConditionsTest {
         val r = Record(6)
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(r.id))
         }
 
@@ -117,12 +117,12 @@ class KotlinConditionsTest {
     @Test
     fun testSelectEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isEqualTo {
                     select(max(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -150,12 +150,12 @@ class KotlinConditionsTest {
     @Test
     fun testSelectNotEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isNotEqualTo {
                     select(max(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -185,12 +185,12 @@ class KotlinConditionsTest {
     @Test
     fun testInSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isIn {
                     select(id) {
-                        from(Person)
+                        from(person)
                         where(lastName, isEqualTo(LastName("Rubble")))
                     }
                 }
@@ -222,12 +222,12 @@ class KotlinConditionsTest {
     @Test
     fun testNotInSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isNotIn {
                     selectDistinct(id) {
-                        from(Person)
+                        from(person)
                         where(lastName, isEqualTo(LastName("Rubble")))
                     }
                 }
@@ -259,12 +259,12 @@ class KotlinConditionsTest {
     @Test
     fun testLessThanSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isLessThan {
                     select(max(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -294,12 +294,12 @@ class KotlinConditionsTest {
     @Test
     fun testLessThanOrEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isLessThanOrEqualTo {
                     select(max(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -329,12 +329,12 @@ class KotlinConditionsTest {
     @Test
     fun testGreaterThanSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isGreaterThan {
                     select(min(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -364,12 +364,12 @@ class KotlinConditionsTest {
     @Test
     fun testGreaterThanOrEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isGreaterThanOrEqualTo {
                     select(min(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )

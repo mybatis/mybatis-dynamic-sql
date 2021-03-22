@@ -15,16 +15,16 @@
  */
 package examples.kotlin.spring.canonical
 
-import examples.kotlin.spring.canonical.AddressDynamicSqlSupport.Address
-import examples.kotlin.spring.canonical.GeneratedAlwaysDynamicSqlSupport.GeneratedAlways
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.spring.canonical.AddressDynamicSqlSupport.address
+import examples.kotlin.spring.canonical.GeneratedAlwaysDynamicSqlSupport.generatedAlways
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.addressId
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.employed
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.BeforeEach
@@ -84,7 +84,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCount() {
-        val countStatement = countFrom(Person) {
+        val countStatement = countFrom(person) {
             where(id, isLessThan(4))
         }
 
@@ -99,7 +99,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCountAllRows() {
-        val countStatement = countFrom(Person) {
+        val countStatement = countFrom(person) {
             allRows()
         }
 
@@ -113,7 +113,7 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testRawCountLastName() {
         val countStatement = count(lastName) {
-            from(Person)
+            from(person)
         }
 
         assertThat(countStatement.selectStatement).isEqualTo("select count(last_name) from Person")
@@ -126,7 +126,7 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testRawCountDistinctLastName() {
         val countStatement = countDistinct(lastName) {
-            from(Person)
+            from(person)
         }
 
         assertThat(countStatement.selectStatement).isEqualTo("select count(distinct last_name) from Person")
@@ -138,7 +138,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawDelete1() {
-        val deleteStatement = deleteFrom(Person) {
+        val deleteStatement = deleteFrom(person) {
             where(id, isLessThan(4))
         }
 
@@ -153,7 +153,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawDelete2() {
-        val deleteStatement = deleteFrom(Person) {
+        val deleteStatement = deleteFrom(person) {
             where(id, isLessThan(4))
             and(occupation, isNotNull())
         }
@@ -170,7 +170,7 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testRawDelete3() {
 
-        val deleteStatement = deleteFrom(Person) {
+        val deleteStatement = deleteFrom(person) {
             where(id, isLessThan(4))
             or(occupation, isNotNull())
         }
@@ -187,7 +187,7 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testRawDelete4() {
 
-        val deleteStatement = deleteFrom(Person) {
+        val deleteStatement = deleteFrom(person) {
             where(id, isLessThan(4)) {
                 or(occupation, isNotNull())
             }
@@ -209,7 +209,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawDelete5() {
-        val deleteStatement = deleteFrom(Person) {
+        val deleteStatement = deleteFrom(person) {
             where(id, isLessThan(4))
             or(occupation, isNotNull()) {
                 and(employed, isEqualTo(true))
@@ -230,7 +230,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawDelete6() {
-        val deleteStatement = deleteFrom(Person) {
+        val deleteStatement = deleteFrom(person) {
             where(id, isLessThan(4))
             and(occupation, isNotNull()) {
                 and(employed, isEqualTo(true))
@@ -253,7 +253,7 @@ class CanonicalSpringKotlinTest {
 
         val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-        val insertStatement = insert(record).into(Person) {
+        val insertStatement = insert(record).into(person) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")
@@ -281,7 +281,7 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testGeneralInsert() {
 
-        val insertStatement = insertInto(Person) {
+        val insertStatement = insertInto(person) {
             set(id).toValue(100)
             set(firstName).toValue("Joe")
             set(lastName).toValue(LastName("Jones"))
@@ -299,7 +299,7 @@ class CanonicalSpringKotlinTest {
 
         val rows = template.generalInsert(insertStatement)
         val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(100))
         }.withRowMapper(personRowMapper)
 
@@ -320,7 +320,7 @@ class CanonicalSpringKotlinTest {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-        val insertStatement = insertMultiple(record1, record2).into(Person) {
+        val insertStatement = insertMultiple(record1, record2).into(person) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")
@@ -348,7 +348,7 @@ class CanonicalSpringKotlinTest {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-        val insertStatement = insertBatch(record1, record2).into(Person) {
+        val insertStatement = insertBatch(record1, record2).into(person) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")
@@ -366,10 +366,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testInsertSelect() {
-        val insertStatement = insertSelect(Person) {
+        val insertStatement = insertSelect(person) {
             columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
-                from(Person)
+                from(person)
                 orderBy(id)
             }
         }
@@ -384,7 +384,7 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(6)
 
         val records = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isGreaterThanOrEqualTo(100))
             orderBy(id)
         }.withRowMapper(personRowMapper)
@@ -404,9 +404,9 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testInsertSelectNoColumns() {
         assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
-            insertSelect(Person) {
+            insertSelect(person) {
                 select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(Person)
+                    from(person)
                     orderBy(id)
                 }
             }
@@ -416,7 +416,7 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testInsertSelectNoSelectStatement() {
         assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
-            insertSelect(Person) {
+            insertSelect(person) {
                 columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             }
         }.withMessage("You must specify a select statement")
@@ -424,9 +424,9 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testGeneralInsertWithGeneratedKey() {
-        val insertStatement = insertInto(GeneratedAlways) {
-            set(GeneratedAlways.firstName).toValue("Fred")
-            set(GeneratedAlways.lastName).toValue("Flintstone")
+        val insertStatement = insertInto(generatedAlways) {
+            set(generatedAlways.firstName).toValue("Fred")
+            set(generatedAlways.lastName).toValue("Flintstone")
         }
 
         val keyHolder = GeneratedKeyHolder()
@@ -441,9 +441,9 @@ class CanonicalSpringKotlinTest {
     fun testInsertWithGeneratedKey() {
         val command = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
 
-        val insertStatement = insert(command).into(GeneratedAlways) {
-            map(GeneratedAlways.firstName).toProperty("firstName")
-            map(GeneratedAlways.lastName).toProperty("lastName")
+        val insertStatement = insert(command).into(generatedAlways) {
+            map(generatedAlways.firstName).toProperty("firstName")
+            map(generatedAlways.lastName).toProperty("lastName")
         }
 
         val keyHolder = GeneratedKeyHolder()
@@ -459,9 +459,9 @@ class CanonicalSpringKotlinTest {
         val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
         val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
 
-        val insertStatement = insertMultiple(command1, command2).into(GeneratedAlways) {
-            map(GeneratedAlways.firstName).toProperty("firstName")
-            map(GeneratedAlways.lastName).toProperty("lastName")
+        val insertStatement = insertMultiple(command1, command2).into(generatedAlways) {
+            map(generatedAlways.firstName).toProperty("firstName")
+            map(generatedAlways.lastName).toProperty("lastName")
         }
 
         val keyHolder = GeneratedKeyHolder()
@@ -479,7 +479,7 @@ class CanonicalSpringKotlinTest {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
-            from(Person)
+            from(person)
             where(id, isLessThan(4)) {
                 and(occupation, isNotNull())
             }
@@ -505,7 +505,7 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectDistinct() {
         val selectStatement = selectDistinct(lastName) {
-            from(Person)
+            from(person)
         }
 
         val rows = template.selectList(selectStatement) { rs, _ ->
@@ -522,7 +522,7 @@ class CanonicalSpringKotlinTest {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(300))
         }
 
@@ -536,7 +536,7 @@ class CanonicalSpringKotlinTest {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(1))
         }
 
@@ -558,17 +558,17 @@ class CanonicalSpringKotlinTest {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(1))
             union {
                 select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(Person)
+                    from(person)
                     where(id, isEqualTo(2))
                 }
             }
             union {
                 select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(Person)
+                    from(person)
                     where(id, isEqualTo(3))
                 }
             }
@@ -617,17 +617,17 @@ class CanonicalSpringKotlinTest {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(1))
             union {
                 select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(Person)
+                    from(person)
                     where(id, isEqualTo(2))
                 }
             }
             union {
                 select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(Person, "p")
+                    from(person, "p")
                     where(id, isEqualTo(3))
                 }
             }
@@ -677,17 +677,17 @@ class CanonicalSpringKotlinTest {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(1))
             union {
                 select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(Person)
+                    from(person)
                     where(id, isEqualTo(2))
                 }
             }
             union {
                 selectDistinct(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(Person, "p")
+                    from(person, "p")
                     where(id, isEqualTo(3))
                 }
             }
@@ -737,17 +737,17 @@ class CanonicalSpringKotlinTest {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(1))
             union {
                 select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(Person)
+                    from(person)
                     where(id, isEqualTo(2))
                 }
             }
             unionAll {
                 selectDistinct(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(Person, "p")
+                    from(person, "p")
                     allRows()
                 }
             }
@@ -796,12 +796,12 @@ class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectWithJoin() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
-            Address.streetAddress, Address.city, Address.state
+            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, address.id,
+            address.streetAddress, address.city, address.state
         ) {
-            from(Person, "p")
-            join(Address, "a") {
-                on(addressId, equalTo(Address.id))
+            from(person, "p")
+            join(address, "a") {
+                on(addressId, equalTo(address.id))
             }
             where(id, isLessThan(4))
             orderBy(id)
@@ -836,7 +836,7 @@ class CanonicalSpringKotlinTest {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
-            from(Person)
+            from(person)
             where(id, isLessThan(5))
             and(id, isLessThan(4)) {
                 and(id, isLessThan(3)) {
@@ -875,7 +875,7 @@ class CanonicalSpringKotlinTest {
         val selectStatement = select(
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(5))
             or(id, isEqualTo(4)) {
                 or(id, isEqualTo(3)) {
@@ -911,7 +911,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawUpdate1() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(lastName).equalTo(LastName("Smith"))
             where(firstName, isEqualTo("Fred"))
         }
@@ -931,7 +931,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawUpdate2() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(firstName).equalTo("Sam")
             where(firstName, isEqualTo("Fred")) {
                 or(id, isGreaterThan(3))
@@ -951,7 +951,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawUpdate3() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(firstName).equalTo("Sam")
             where(firstName, isEqualTo("Fred"))
             or(id, isEqualTo(5)) {
@@ -973,7 +973,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawUpdate4() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(firstName).equalTo("Sam")
             where(firstName, isEqualTo("Fred"))
             and(id, isEqualTo(1)) {
@@ -995,7 +995,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawUpdate5() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(firstName).equalTo("Sam")
             where(firstName, isEqualTo("Fred"))
             or(id, isEqualTo(3))
@@ -1015,7 +1015,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testUpdateWithTypeConverterAndNullValue() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(firstName).equalTo("Sam")
             set(lastName).equalToNull()
             where(id, isEqualTo(3))
@@ -1036,7 +1036,7 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(3))
         }
 
@@ -1047,7 +1047,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testUpdateWithTypeConverterAndNonNullValue() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(firstName).equalTo("Sam")
             set(lastName).equalTo(LastName("Smith"))
             where(id, isEqualTo(3))
@@ -1069,7 +1069,7 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(3))
         }
 
@@ -1080,7 +1080,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testUpdateSetNull() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(addressId).equalToNull()
             where(id, isEqualTo(3))
         }
@@ -1098,7 +1098,7 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(addressId, isNull())
         }
 
@@ -1109,7 +1109,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testUpdateSetToConstant() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(addressId).equalToConstant("5")
             where(id, isEqualTo(3))
         }
@@ -1127,7 +1127,7 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(3))
         }
 
@@ -1138,7 +1138,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testUpdateSetToColumn() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(addressId).equalTo(id)
             where(id, isEqualTo(3))
         }
@@ -1156,7 +1156,7 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(3))
         }
 
@@ -1167,10 +1167,10 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testUpdateSetToSubQuery() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(addressId).equalToQueryResult {
                 select(add(max(addressId), constant<Int>("1"))) {
-                    from(Person)
+                    from(person)
                 }
             }
             where(id, isEqualTo(3))
@@ -1189,7 +1189,7 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(3))
         }
 
@@ -1200,7 +1200,7 @@ class CanonicalSpringKotlinTest {
 
     @Test
     fun testUpdateSetEqualToWhenPresent() {
-        val updateStatement = update(Person) {
+        val updateStatement = update(person) {
             set(addressId).equalTo(5)
             set(firstName).equalToWhenPresent(null)
             where(id, isEqualTo(3))
@@ -1220,7 +1220,7 @@ class CanonicalSpringKotlinTest {
         assertThat(rows).isEqualTo(1)
 
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(id, isEqualTo(3))
         }
 

@@ -15,8 +15,8 @@
  */
 package examples.kotlin.mybatis3.joins
 
-import examples.kotlin.mybatis3.joins.ItemMasterDynamicSQLSupport.ItemMaster
-import examples.kotlin.mybatis3.joins.OrderLineDynamicSQLSupport.OrderLine
+import examples.kotlin.mybatis3.joins.ItemMasterDynamicSQLSupport.itemMaster
+import examples.kotlin.mybatis3.joins.OrderLineDynamicSQLSupport.orderLine
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -59,17 +59,17 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
                 where(
                     exists {
-                        select(OrderLine.allColumns()) {
-                            from(OrderLine, "ol")
-                            where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
                 )
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement: String = "select im.* from ItemMaster im" +
@@ -102,17 +102,17 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
                 where(
                     notExists {
-                        select(OrderLine.allColumns()) {
-                            from(OrderLine, "ol")
-                            where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
                 )
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement: String = "select im.* from ItemMaster im" +
@@ -135,18 +135,18 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
-                where(ItemMaster.itemId, isEqualTo(22))
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where(itemMaster.itemId, isEqualTo(22))
                 and(
                     exists {
-                        select(OrderLine.allColumns()) {
-                            from(OrderLine, "ol")
-                            where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
                 )
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +
@@ -171,20 +171,20 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
-                where(ItemMaster.itemId, isEqualTo(22))
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where(itemMaster.itemId, isEqualTo(22))
                 and(
                     exists {
-                        select(OrderLine.allColumns()) {
-                            from(OrderLine, "ol")
-                            where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
                 ) {
-                    and(ItemMaster.itemId, isGreaterThan(2))
+                    and(itemMaster.itemId, isGreaterThan(2))
                 }
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +
@@ -209,20 +209,20 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
-                where(ItemMaster.itemId, isEqualTo(22)) {
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where(itemMaster.itemId, isEqualTo(22)) {
                     and(
                         exists {
-                            select(OrderLine.allColumns()) {
-                                from(OrderLine, "ol")
-                                where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                             }
                         }
                     )
-                    and(ItemMaster.itemId, isGreaterThan(2))
+                    and(itemMaster.itemId, isGreaterThan(2))
                 }
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +
@@ -247,21 +247,21 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
-                where(ItemMaster.itemId, isEqualTo(22)) {
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where(itemMaster.itemId, isEqualTo(22)) {
                     and(
                         exists {
-                            select(OrderLine.allColumns()) {
-                                from(OrderLine, "ol")
-                                where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                             }
                         }
                     ) {
-                        and(ItemMaster.itemId, isGreaterThan(2))
+                        and(itemMaster.itemId, isGreaterThan(2))
                     }
                 }
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +
@@ -286,18 +286,18 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
-                where(ItemMaster.itemId, isEqualTo(22))
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where(itemMaster.itemId, isEqualTo(22))
                 or(
                     exists {
-                        select(OrderLine.allColumns()) {
-                            from(OrderLine, "ol")
-                            where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
                 )
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +
@@ -331,25 +331,25 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
-                where(ItemMaster.itemId, isEqualTo(22))
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where(itemMaster.itemId, isEqualTo(22))
                 or(
                     exists {
-                        select(OrderLine.allColumns()) {
-                            from(OrderLine, "ol")
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
                             where(
-                                OrderLine.itemId,
+                                orderLine.itemId,
                                 isEqualTo(
-                                    ItemMaster.itemId.qualifiedWith("im")
+                                    itemMaster.itemId.qualifiedWith("im")
                                 )
                             )
                         }
                     }
                 ) {
-                    and(ItemMaster.itemId, isGreaterThan(2))
+                    and(itemMaster.itemId, isGreaterThan(2))
                 }
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +
@@ -384,20 +384,20 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
-                where(ItemMaster.itemId, isEqualTo(22)) {
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where(itemMaster.itemId, isEqualTo(22)) {
                     or(
                         exists {
-                            select(OrderLine.allColumns()) {
-                                from(OrderLine, "ol")
-                                where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                             }
                         }
                     )
-                    and(ItemMaster.itemId, isGreaterThan(2))
+                    and(itemMaster.itemId, isGreaterThan(2))
                 }
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +
@@ -432,21 +432,21 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
-                where(ItemMaster.itemId, isEqualTo(22)) {
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where(itemMaster.itemId, isEqualTo(22)) {
                     or(
                         exists {
-                            select(OrderLine.allColumns()) {
-                                from(OrderLine, "ol")
-                                where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                             }
                         }
                     ) {
-                        and(ItemMaster.itemId, isGreaterThan(2))
+                        and(itemMaster.itemId, isGreaterThan(2))
                     }
                 }
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +
@@ -481,19 +481,19 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
                 where(
                     exists {
-                        select(OrderLine.allColumns()) {
-                            from(OrderLine, "ol")
-                            where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
                 ) {
-                    or(ItemMaster.itemId, isEqualTo(22))
+                    or(itemMaster.itemId, isEqualTo(22))
                 }
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +
@@ -527,19 +527,19 @@ class ExistsTest {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
-            val selectStatement = select(ItemMaster.allColumns()) {
-                from(ItemMaster, "im")
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
                 where(
                     exists {
-                        select(OrderLine.allColumns()) {
-                            from(OrderLine, "ol")
-                            where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
                 ) {
-                    and(ItemMaster.itemId, isEqualTo(22))
+                    and(itemMaster.itemId, isEqualTo(22))
                 }
-                orderBy(ItemMaster.itemId)
+                orderBy(itemMaster.itemId)
             }
 
             val expectedStatement = "select im.* from ItemMaster im" +

@@ -15,14 +15,14 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.Address
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.address
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.employed
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
@@ -32,11 +32,11 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? {
     val selectStatement = select(
         id.`as`("A_ID"), firstName, lastName, birthDate,
-        employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state
+        employed, occupation, address.id, address.streetAddress, address.city, address.state
     ) {
-        from(Person)
-        fullJoin(Address) {
-            on(Person.addressId, equalTo(Address.id))
+        from(person)
+        fullJoin(address) {
+            on(person.addressId, equalTo(address.id))
         }
         completer()
     }
@@ -47,11 +47,11 @@ fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAdd
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
     val selectStatement = select(
         id.`as`("A_ID"), firstName, lastName, birthDate,
-        employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state
+        employed, occupation, address.id, address.streetAddress, address.city, address.state
     ) {
-        from(Person, "p")
-        fullJoin(Address) {
-            on(Person.addressId, equalTo(Address.id))
+        from(person, "p")
+        fullJoin(address) {
+            on(person.addressId, equalTo(address.id))
         }
         completer()
     }
@@ -62,11 +62,11 @@ fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithA
 fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> {
     val selectStatement = selectDistinct(
         id.`as`("A_ID"), firstName, lastName,
-        birthDate, employed, occupation, Address.id, Address.streetAddress, Address.city, Address.state
+        birthDate, employed, occupation, address.id, address.streetAddress, address.city, address.state
     ) {
-        from(Person)
-        fullJoin(Address) {
-            on(Person.addressId, equalTo(Address.id))
+        from(person)
+        fullJoin(address) {
+            on(person.addressId, equalTo(address.id))
         }
         completer()
     }
