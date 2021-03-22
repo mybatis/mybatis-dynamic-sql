@@ -35,20 +35,21 @@ public abstract class AbstractSingleValueCondition<T> implements VisitableCondit
         return visitor.visit(this);
     }
 
-    protected <S> S filterSupport(Predicate<? super T> predicate, Supplier<S> empty, S self) {
+    protected <S extends AbstractSingleValueCondition<T>> S filterSupport(Predicate<? super T> predicate,
+            Supplier<S> emptySupplier, S self) {
         if (shouldRender()) {
-            return predicate.test(value) ? self : empty.get();
+            return predicate.test(value) ? self : emptySupplier.get();
         } else {
             return self;
         }
     }
 
-    protected <R, S> S mapSupport(Function<? super T, ? extends R> mapper, Function<R, S> constructor,
-            Supplier<S> empty) {
+    protected <R, S extends AbstractSingleValueCondition<R>> S mapSupport(Function<? super T, ? extends R> mapper,
+            Function<R, S> constructor, Supplier<S> emptySupplier) {
         if (shouldRender()) {
             return constructor.apply(mapper.apply(value));
         } else {
-            return empty.get();
+            return emptySupplier.get();
         }
     }
 

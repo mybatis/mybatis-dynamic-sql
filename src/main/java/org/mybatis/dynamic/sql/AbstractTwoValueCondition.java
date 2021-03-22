@@ -43,22 +43,21 @@ public abstract class AbstractTwoValueCondition<T>
         return visitor.visit(this);
     }
 
-    protected <S> S filterSupport(BiPredicate<? super T, ? super T> predicate, Supplier<S> empty, S self) {
+    protected <S extends AbstractTwoValueCondition<T>> S filterSupport(BiPredicate<? super T, ? super T> predicate,
+            Supplier<S> emptySupplier, S self) {
         if (shouldRender()) {
-            return predicate.test(value1, value2) ? self : empty.get();
+            return predicate.test(value1, value2) ? self : emptySupplier.get();
         } else {
             return self;
         }
     }
 
-    protected <R, S> S mapSupport(Function<? super T, ? extends R> mapper1,
-                                 Function<? super T, ? extends R> mapper2,
-                                 BiFunction<R, R, S> constructor,
-                                 Supplier<S> empty) {
+    protected <R, S extends AbstractTwoValueCondition<R>> S mapSupport(Function<? super T, ? extends R> mapper1,
+            Function<? super T, ? extends R> mapper2, BiFunction<R, R, S> constructor, Supplier<S> emptySupplier) {
         if (shouldRender()) {
             return constructor.apply(mapper1.apply(value1), mapper2.apply(value2));
         } else {
-            return empty.get();
+            return emptySupplier.get();
         }
     }
 

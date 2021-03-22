@@ -24,8 +24,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractListValueCondition<T>
-        implements VisitableCondition<T> {
+public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
     protected final Collection<T> values;
     protected final Callback emptyCallback;
 
@@ -67,22 +66,22 @@ public abstract class AbstractListValueCondition<T>
         return values.stream().filter(predicate).collect(Collectors.toList());
     }
 
-    protected <S> S filterSupport(Predicate<? super T> predicate,
-            BiFunction<Collection<T>, Callback, S> constructor, S self, Supplier<S> empty) {
+    protected <S extends AbstractListValueCondition<T>> S filterSupport(Predicate<? super T> predicate,
+            BiFunction<Collection<T>, Callback, S> constructor, S self, Supplier<S> emptySupplier) {
         if (shouldRender()) {
             Collection<T> filtered = applyFilter(predicate);
-            return filtered.isEmpty() ? empty.get() : constructor.apply(filtered, emptyCallback);
+            return filtered.isEmpty() ? emptySupplier.get() : constructor.apply(filtered, emptyCallback);
         } else {
             return self;
         }
     }
 
-    protected <R, S> S mapSupport(Function<? super T, ? extends R> mapper,
-            BiFunction<Collection<R>, Callback, S> constructor, Supplier<S> empty) {
+    protected <R, S extends AbstractListValueCondition<R>> S mapSupport(Function<? super T, ? extends R> mapper,
+            BiFunction<Collection<R>, Callback, S> constructor, Supplier<S> emptySupplier) {
         if (shouldRender()) {
             return constructor.apply(applyMapper(mapper), emptyCallback);
         } else {
-            return empty.get();
+            return emptySupplier.get();
         }
     }
 
