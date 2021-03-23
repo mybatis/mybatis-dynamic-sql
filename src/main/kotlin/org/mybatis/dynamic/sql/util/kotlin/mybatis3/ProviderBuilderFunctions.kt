@@ -81,13 +81,13 @@ fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(
     into(table, completer).render(RenderingStrategies.MYBATIS3)
 
 fun select(vararg columns: BasicColumn, completer: SelectCompleter): SelectStatementProvider =
-    select(columns = columns, completer).render(RenderingStrategies.MYBATIS3)
+    select(columns.asList(), completer).render(RenderingStrategies.MYBATIS3)
 
 fun select(columns: List<BasicColumn>, completer: SelectCompleter): SelectStatementProvider =
     select(columns, completer).render(RenderingStrategies.MYBATIS3)
 
 fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter): SelectStatementProvider =
-    selectDistinct(columns = columns, completer).render(RenderingStrategies.MYBATIS3)
+    selectDistinct(columns.asList(), completer).render(RenderingStrategies.MYBATIS3)
 
 fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter): SelectStatementProvider =
     selectDistinct(columns, completer).render(RenderingStrategies.MYBATIS3)

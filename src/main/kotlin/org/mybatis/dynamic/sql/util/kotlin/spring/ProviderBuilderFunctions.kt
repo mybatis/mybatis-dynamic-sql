@@ -81,13 +81,13 @@ fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(
     into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun select(vararg columns: BasicColumn, completer: SelectCompleter): SelectStatementProvider =
-    select(columns = columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    select(columns.asList(), completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun select(columns: List<BasicColumn>, completer: SelectCompleter): SelectStatementProvider =
     select(columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter): SelectStatementProvider =
-    selectDistinct(columns = columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+    selectDistinct(columns.asList(), completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter): SelectStatementProvider =
     selectDistinct(columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
