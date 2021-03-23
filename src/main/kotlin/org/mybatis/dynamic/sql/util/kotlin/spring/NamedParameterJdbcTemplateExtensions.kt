@@ -14,11 +14,9 @@
  *    limitations under the License.
  */
 @file:Suppress("TooManyFunctions")
-
 package org.mybatis.dynamic.sql.util.kotlin.spring
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.render.BatchInsert
@@ -38,6 +36,9 @@ import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MyBatisDslMarker
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.elements.insert
+import org.mybatis.dynamic.sql.util.kotlin.elements.insertBatch
+import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
@@ -242,7 +243,7 @@ class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: Na
 @MyBatisDslMarker
 class BatchInsertHelper<T : Any>(private val records: List<T>, private val template: NamedParameterJdbcTemplate) {
     fun into(table: SqlTable, completer: BatchInsertCompleter<T>): IntArray =
-        template.insertBatch(SqlBuilder.insertBatch(records).into(table, completer))
+        template.insertBatch(insertBatch(records).into(table, completer))
 }
 
 @MyBatisDslMarker
@@ -251,7 +252,7 @@ class MultiRowInsertHelper<T : Any>(
     private val template: NamedParameterJdbcTemplate
 ) {
     fun into(table: SqlTable, completer: MultiRowInsertCompleter<T>): Int =
-        with(SqlBuilder.insertMultiple(records).into(table, completer)) {
+        with(insertMultiple(records).into(table, completer)) {
             template.insertMultiple(this)
         }
 }
@@ -263,7 +264,7 @@ class MultiRowInsertWithKeyHolderHelper<T : Any>(
     private val keyHolder: KeyHolder
 ) {
     fun into(table: SqlTable, completer: MultiRowInsertCompleter<T>): Int =
-        with(SqlBuilder.insertMultiple(records).into(table, completer)) {
+        with(insertMultiple(records).into(table, completer)) {
             template.insertMultiple(this, keyHolder)
         }
 }
@@ -274,7 +275,7 @@ class SingleRowInsertHelper<T : Any>(
     private val template: NamedParameterJdbcTemplate
 ) {
     fun into(table: SqlTable, completer: InsertCompleter<T>): Int =
-        with(SqlBuilder.insert(record).into(table, completer)) {
+        with(insert(record).into(table, completer)) {
             template.insert(this)
         }
 }
@@ -286,7 +287,7 @@ class SingleRowInsertWithKeyHolderHelper<T : Any>(
     private val keyHolder: KeyHolder
 ) {
     fun into(table: SqlTable, completer: InsertCompleter<T>): Int =
-        with(SqlBuilder.insert(record).into(table, completer)) {
+        with(insert(record).into(table, completer)) {
             template.insert(this, keyHolder)
         }
 }

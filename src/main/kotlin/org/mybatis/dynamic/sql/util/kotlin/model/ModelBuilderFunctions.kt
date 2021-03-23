@@ -46,10 +46,6 @@ import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
-/**
- * Collection of functions that will create various DSL models in a Kotlin native way.
- */
-
 fun count(column: BasicColumn, completer: CountCompleter): SelectModel =
     KotlinCountBuilder(SqlBuilder.countColumn(column)).apply(completer).build()
 
