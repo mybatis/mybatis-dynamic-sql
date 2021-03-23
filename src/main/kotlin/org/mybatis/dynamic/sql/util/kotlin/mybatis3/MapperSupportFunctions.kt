@@ -17,7 +17,6 @@
 package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
@@ -26,6 +25,7 @@ import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
+import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
@@ -34,6 +34,9 @@ import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.elements.insert
+import org.mybatis.dynamic.sql.util.kotlin.elements.insertBatch
+import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 
 fun count(
     mapper: (SelectStatementProvider) -> Long,
@@ -63,7 +66,21 @@ fun <T> insert(
     table: SqlTable,
     completer: InsertCompleter<T>
 ): Int =
-    mapper(SqlBuilder.insert(record).into(table, completer))
+    mapper(insert(record).into(table, completer))
+
+/**
+ * This function simply inserts all rows using the supplied mapper. It is up
+ * to the user to manage MyBatis3 batch processing externally.
+ */
+fun <T> insertBatch(
+    mapper: (InsertStatementProvider<T>) -> Int,
+    records: Collection<T>,
+    table: SqlTable,
+    completer: BatchInsertCompleter<T>
+): List<Int> =
+    with(insertBatch(records).into(table, completer)) {
+        insertStatements().map { mapper(it) }
+    }
 
 fun insertInto(
     mapper: (GeneralInsertStatementProvider) -> Int,
@@ -78,7 +95,7 @@ fun <T> insertMultiple(
     table: SqlTable,
     completer: MultiRowInsertCompleter<T>
 ): Int =
-    mapper(SqlBuilder.insertMultiple(records).into(table, completer))
+    mapper(insertMultiple(records).into(table, completer))
 
 fun insertSelect(
     mapper: (InsertSelectStatementProvider) -> Int,

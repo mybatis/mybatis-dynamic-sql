@@ -36,6 +36,7 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertSelect
@@ -77,6 +78,20 @@ fun PersonMapper.generalInsert(completer: GeneralInsertCompleter) =
 
 fun PersonMapper.insertSelect(completer: InsertSelectCompleter) =
     insertSelect(this::insertSelect, person, completer)
+
+fun PersonMapper.insertBatch(vararg records: PersonRecord): List<Int> =
+    insertBatch(records.toList())
+
+fun PersonMapper.insertBatch(records: Collection<PersonRecord>): List<Int> =
+    insertBatch(this::insert, records, person) {
+        map(id).toProperty("id")
+        map(firstName).toProperty("firstName")
+        map(lastName).toProperty("lastName")
+        map(birthDate).toProperty("birthDate")
+        map(employed).toProperty("employed")
+        map(occupation).toProperty("occupation")
+        map(addressId).toProperty("addressId")
+    }
 
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
     insertMultiple(records.toList())

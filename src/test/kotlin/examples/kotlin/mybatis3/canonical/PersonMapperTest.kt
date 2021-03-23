@@ -27,6 +27,7 @@ import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
 import org.apache.ibatis.session.Configuration
+import org.apache.ibatis.session.ExecutorType
 import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
@@ -48,7 +49,7 @@ import java.sql.DriverManager
 import java.util.Date
 
 class PersonMapperTest {
-    private fun newSession(): SqlSession {
+    private fun newSession(executorType: ExecutorType = ExecutorType.REUSE): SqlSession {
         Class.forName(JDBC_DRIVER)
         val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
         DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
@@ -63,7 +64,7 @@ class PersonMapperTest {
         config.typeHandlerRegistry.register(YesNoTypeHandler::class.java)
         config.addMapper(PersonMapper::class.java)
         config.addMapper(PersonWithAddressMapper::class.java)
-        return SqlSessionFactoryBuilder().build(config).openSession()
+        return SqlSessionFactoryBuilder().build(config).openSession(executorType)
     }
 
     @Test
@@ -243,6 +244,25 @@ class PersonMapperTest {
             }
 
             assertThat(rows).isEqualTo(6)
+        }
+    }
+
+    @Test
+    fun testInsertBatch() {
+        newSession(ExecutorType.BATCH).use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+            val updateCounts = mapper.insertBatch(record1, record2)
+
+            assertThat(updateCounts).hasSize(2)
+            assertThat(updateCounts).hasSize(2)
+
+            val batchResults = session.flushStatements()
+            assertThat(batchResults).hasSize(1)
+            assertThat(batchResults.flatMap { it.updateCounts.asList() }.sum()).isEqualTo(2)
         }
     }
 
