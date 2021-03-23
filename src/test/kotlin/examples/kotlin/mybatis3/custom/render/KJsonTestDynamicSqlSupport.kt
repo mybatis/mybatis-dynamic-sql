@@ -27,7 +27,7 @@ object KJsonTestDynamicSqlSupport {
 
     class JsonTest : SqlTable("JsonTest") {
         val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER)
-        val description = column<String>(name = "description", jdbcType= JDBCType.VARCHAR)
+        val description = column<String>(name = "description", jdbcType = JDBCType.VARCHAR)
         val info = column<String>(
             name = "info",
             JDBCType.VARCHAR,

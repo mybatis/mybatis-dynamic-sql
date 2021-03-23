@@ -27,9 +27,9 @@ object AddressDynamicSqlSupport {
     val state = address.state
 
     class Address : SqlTable("Address") {
-        val id = column<Int>(name = "address_id", jdbcType =JDBCType.INTEGER)
-        val streetAddress = column<String>(name = "street_address", jdbcType =JDBCType.VARCHAR)
-        val city = column<String>(name = "city", jdbcType =JDBCType.VARCHAR)
-        val state = column<String>(name = "state", jdbcType =JDBCType.VARCHAR)
+        val id = column<Int>(name = "address_id", jdbcType = JDBCType.INTEGER)
+        val streetAddress = column<String>(name = "street_address", jdbcType = JDBCType.VARCHAR)
+        val city = column<String>(name = "city", jdbcType = JDBCType.VARCHAR)
+        val state = column<String>(name = "state", jdbcType = JDBCType.VARCHAR)
     }
 }
