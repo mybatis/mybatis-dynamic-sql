@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
@@ -123,6 +124,15 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
 
         public UpdateDSL<R> equalTo(BasicColumn rightColumn) {
             columnMappings.add(ColumnToColumnMapping.of(column, rightColumn));
+            return UpdateDSL.this;
+        }
+
+        public UpdateDSL<R> equalToOrNull(T value) {
+            return equalToOrNull(() -> value);
+        }
+
+        public UpdateDSL<R> equalToOrNull(Supplier<T> valueSupplier) {
+            columnMappings.add(ValueOrNullMapping.of(column, valueSupplier));
             return UpdateDSL.this;
         }
 
