@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.UpdateMappingVisitor;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndParameters>> {
@@ -72,6 +73,16 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     @Override
     public <T> Optional<FragmentAndParameters> visit(ValueMapping<T> mapping) {
         return buildFragment(mapping, mapping.value());
+    }
+
+    @Override
+    public <T> Optional<FragmentAndParameters> visit(ValueOrNullMapping<T> mapping) {
+        return mapping.value()
+                .map(v -> buildFragment(mapping, v))
+                .orElseGet(() -> FragmentAndParameters
+                        .withFragment(mapping.columnName() + " = null") //$NON-NLS-1$
+                        .buildOptional()
+                );
     }
 
     @Override

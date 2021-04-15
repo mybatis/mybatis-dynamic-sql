@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -193,6 +193,11 @@ class ColumnMappingVisitorTest {
         }
 
         @Override
+        public <R> String visit(ValueOrNullMapping<R> mapping) {
+            return "Value or Null Mapping";
+        }
+
+        @Override
         public <R> String visit(ValueWhenPresentMapping<R> mapping) {
             return "Value When Present Mapping";
         }
@@ -244,6 +249,11 @@ class ColumnMappingVisitorTest {
         @Override
         public <R> String visit(ValueMapping<R> mapping) {
             return "Value Mapping";
+        }
+
+        @Override
+        public <R> String visit(ValueOrNullMapping<R> mapping) {
+            return "Value or Null Mapping";
         }
 
         @Override

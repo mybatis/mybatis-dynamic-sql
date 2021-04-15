@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.util.GeneralInsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor<Optional<FieldAndValueAndParameters>> {
@@ -39,9 +40,7 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
 
     @Override
     public Optional<FieldAndValueAndParameters> visit(NullMapping mapping) {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-                .withValuePhrase("null") //$NON-NLS-1$
-                .buildOptional();
+        return buildNullFragment(mapping);
     }
 
     @Override
@@ -64,6 +63,12 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
 
     @Override
+    public <T> Optional<FieldAndValueAndParameters> visit(ValueOrNullMapping<T> mapping) {
+        return mapping.value().map(v -> buildValueFragment(mapping, v))
+                .orElseGet(() -> buildNullFragment(mapping));
+    }
+
+    @Override
     public <T> Optional<FieldAndValueAndParameters> visit(ValueWhenPresentMapping<T> mapping) {
         return mapping.value().flatMap(v -> buildValueFragment(mapping, v));
     }
@@ -71,6 +76,12 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     private Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping mapping,
             Object value) {
         return buildFragment(mapping, value);
+    }
+
+    private Optional<FieldAndValueAndParameters> buildNullFragment(AbstractColumnMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
+                .withValuePhrase("null") //$NON-NLS-1$
+                .buildOptional();
     }
 
     private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
