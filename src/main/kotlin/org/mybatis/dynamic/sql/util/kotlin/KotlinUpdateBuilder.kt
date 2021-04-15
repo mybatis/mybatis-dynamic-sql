@@ -63,6 +63,13 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
                 set(column).equalTo(rightColumn)
             }
 
+        fun equalToOrNull(value: T?): KotlinUpdateBuilder = equalToOrNull { value }
+
+        fun equalToOrNull(value: () -> T?): KotlinUpdateBuilder =
+            applyToDsl {
+                set(column).equalToOrNull(value)
+            }
+
         fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> Unit): KotlinUpdateBuilder =
             applyToDsl {
                 set(column).equalTo(KotlinSubQueryBuilder().apply(subQuery))

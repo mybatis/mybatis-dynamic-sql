@@ -11,8 +11,9 @@ This page will show our recommended pattern for using the MyBatis Dynamic SQL wi
 The code shown on this page is from the `src/test/kotlin/examples/kotlin/mybatis3/canonical` directory in this
 repository. That directory contains a complete example of using this library with Kotlin.
 
-All Kotlin support is available in two packages:
+All Kotlin support is available in the following packages:
 
+* `org.mybatis.dynamic.sql.util.kotlin` - contains DSL support classes
 * `org.mybatis.dynamic.sql.util.kotlin.elements` - contains the basic DSL elements common to all runtimes
 * `org.mybatis.dynamic.sql.util.kotlin.mybatis3` - contains utilities specifically to simplify MyBatis3 based clients
 
@@ -25,8 +26,9 @@ library. For each operation, there are two different methods of executing SQL:
 
 1. The first method is a two-step method. With this method you build SQL provider objects as shown on the Kotlin
    overview page and then execute the generated SQL by passing the provider to a MyBatis3 mapper method
-1. The second method is a one-step method that combines these operations into a single step. With this method,
-   it is common to build extension methods for MyBatis3 mappers that are specific to 
+1. The second method is a one-step method that uses utility functions to combine these operations into a single step.
+   With this method it is common to build extension methods for MyBatis3 mappers that are specific to a table
+   (this is the code that MyBatis Generator will create)
 
 We will illustrate both approaches below.
 
@@ -109,9 +111,12 @@ interface PersonMapper {
 }
 ```
 
-And then extensions could be added to make a shortcut method as follows:
+Then extensions could be added to make a shortcut method as follows:
 
 ```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
+
 private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.select(completer: SelectCompleter) =
@@ -131,15 +136,12 @@ val rows = mapper.select {
 }
 ```
 
-This shows that the Kotlin support enables a more idiomatic Kotlin DSL.
- 
 ## Count Statements
 
-A count query is a specialized select - it returns a single column - typically a long - and supports joins and a where clause.
-
-Count method support enables the creation of methods that execute a count query allowing a user to specify a where clause at runtime, but abstracting away all other details.
-
-To use this support, we envision creating several methods - one standard mapper method, and other extension methods. The first method is the standard MyBatis Dynamic SQL method that will execute a select statement:
+### Two-Step Method
+Count statements are constructed as shown on the Kotlin overview page. These methods create a
+`SelectStatementProvider` that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
+a `count` method as follows:
 
 ```kotlin
 @Mapper
@@ -149,20 +151,49 @@ interface PersonMapper {
 }
 ```
 
-This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `Long`. The other methods should be extension methods. They will reuse the abstract method and supply everything needed to build the select statement except the where clause:
+This is a standard method for MyBatis Dynamic SQL that executes a query and returns a `Long`. This method can also be
+implemented by using a built-in base interface as follows:
 
 ```kotlin
-fun PersonMapper.count(completer: CountCompleter) = // count(*)
-    countFrom(this::count, Person, completer)
-
-fun PersonMapper.count(column: BasicColumn, completer: CountCompleter) = // count(column)
-    count(this::count, column, Person, completer)
-
-fun PersonMapper.countDistinct(column: BasicColumn, completer: CountCompleter) = // count(distinct column)
-    countDistinct(this::count, column, Person, completer)
+@Mapper
+interface PersonMapper : CommonCountMapper
 ```
 
-These methods show the use of `CountCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. This also shows use of the Kotlin `countFrom`, `count`, and `countDistinct` methods which are supplied by the library. Those methods will build and execute the select count statements with the supplied where clause. Clients can use the methods as follows:
+The mapper method can be used as follows:
+
+```kotlin
+val countStatement = count(...) // not shown... see the overview page for examples
+val mapper: PersonMapper = getMapper() // not shown
+val rows: Long = mapper.count(countStatement)
+```
+
+### One-Step Method
+You can use built-in utility functions to create mapper extension functions that simplify execution of count statements.
+The extension functions will reuse the abstract method and supply everything needed to build the select statement
+except the where clause:
+
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
+
+fun PersonMapper.count(completer: CountCompleter) = // count(*)
+    countFrom(this::count, person, completer)
+
+fun PersonMapper.count(column: BasicColumn, completer: CountCompleter) = // count(column)
+    count(this::count, column, person, completer)
+
+fun PersonMapper.countDistinct(column: BasicColumn, completer: CountCompleter) = // count(distinct column)
+    countDistinct(this::count, column, person, completer)
+```
+
+The methods are constructed to execute count queries on one specific table - `person` in this case.
+
+The methods show the use of `CountCompleter` which is a Kotlin typealias for a function with a receiver that will
+allow a user to supply a where clause. This also shows use of the Kotlin `countFrom`, `count`, and `countDistinct`
+methods which are supplied by the library. Those methods will build and execute the select count statements with the
+supplied where clause. Clients can use the methods as follows:
 
 ```kotlin
 val rows = mapper.count {
@@ -180,26 +211,54 @@ val rows = mapper.count { allRows() }
 
 ## Delete Method Support
 
-Delete method support enables the creation of methods that execute a delete statement allowing a user to specify a where clause at runtime, but abstracting away all other details.
-
-To use this support, we envision creating two methods - one standard mapper method, and one extension method. The first method is the standard MyBatis Dynamic SQL method that will execute a delete:
+### Two-Step Method
+Delete statements are constructed as shown on the Kotlin overview page. These methods create a
+`DeleteStatementProvider` that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
+a `delete` method as follows:
 
 ```kotlin
 @Mapper
 interface PersonMapper {
-    @DeleteProvider(type = SqlProviderAdapter::class, method = "delete")
-    fun delete(deleteStatement: DeleteStatementProvider): Int
+   @DeleteProvider(type = SqlProviderAdapter::class, method = "delete")
+   fun delete(deleteStatement: DeleteStatementProvider): Int
 }
 ```
 
-This is a standard method for MyBatis Dynamic SQL that executes a delete and returns an `Int` - the number of rows deleted. The second method should be an extension method. It will reuse the abstract method and supply everything needed to build the delete statement except the where clause:
+This is a standard method for MyBatis Dynamic SQL that executes a query and returns an `Int` - the number of rows
+deleted. This method can also be implemented by using a built-in base interface as follows:
 
 ```kotlin
-fun PersonMapper.delete(completer: DeleteCompleter) =
-    deleteFrom(this::delete, Person, completer)
+@Mapper
+interface PersonMapper : CommonDeleteMapper
 ```
 
-This method shows the use of `DeleteCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. This also shows use of the Kotlin `deleteFrom` method which is supplied by the library. That method will build and execute the delete statement with the supplied where clause. Clients can use the method as follows:
+The mapper method can be used as follows:
+
+```kotlin
+val deleteStatement = deleteFrom(...) // not shown... see the overview page for examples
+val mapper: PersonMapper = getMapper() // not shown
+val rows: Int = mapper.delete(deleteStatement)
+```
+
+### One-Step Method
+You can use built-in utility functions to create mapper extension functions that simplify execution of delete statements.
+The extension functions will reuse the abstract method and supply everything needed to build the delete statement
+except the where clause:
+
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
+
+fun PersonMapper.delete(completer: DeleteCompleter) =
+    deleteFrom(this::delete, person, completer)
+```
+
+The method is constructed to execute delete statements on one specific table - `person` in this case.
+
+The method shows the use of `DeleteCompleter` which is a Kotlin typealias for a function with a receiver that will
+allow a user to supply a where clause. This also shows use of the Kotlin `deleteFrom` method which are supplied by the
+library. Those methods will build and execute the delete statement with the supplied where clause. Clients can use the
+method as follows:
 
 ```kotlin
 val rows = mapper.delete {
@@ -444,7 +503,9 @@ val rows = mapper.update {
 ```
 ## Join Support
 
-There are functions that support building a reusable select method based on a join. In this way, you can create the start of the select statement (the column list and join specifications) and allow the user to supply where clauses and other parts of a select statement. For example, you could code a mapper extension method like this:
+There are functions that support building a reusable select method based on a join. In this way, you can create the
+start of the select statement (the column list and join specifications) and allow the user to supply where clauses and
+other parts of a select statement. For example, you could code a mapper extension method like this:
 
 ```kotlin
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
@@ -458,7 +519,9 @@ fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithA
 }
 ```
 
-This method creates the start of a select statement with a join, and accepts user input to complete the statement. This shows use of and overloaded `selectList` method that accepts the start of a select statement and a completer. Like other select methods, this method can be used as follows:
+This method creates the start of a select statement with a join, and accepts user input to complete the statement.
+This shows use of and overloaded `selectList` method that accepts the start of a select statement and a completer.
+Like other select methods, this method can be used as follows:
 
 ```kotlin
 val records = mapper.select {

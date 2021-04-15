@@ -36,13 +36,16 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.insert
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualToWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
 import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNull
 import org.mybatis.dynamic.sql.util.kotlin.elements.max
 import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
+import org.mybatis.dynamic.sql.util.kotlin.elements.upper
 import org.mybatis.dynamic.sql.util.kotlin.spring.count
 import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
@@ -1228,4 +1231,60 @@ class CanonicalSpringKotlinTest {
         assertThat(returnedRecord).isNotNull
         assertThat(returnedRecord!!.addressId).isEqualTo(5)
     }
+
+//    @Test
+//    fun testComplexSearch() {
+//        data class SearchParameters(
+//            val id: Int?,
+//            val firstName: String?,
+//            val lastName: String?
+//        )
+//
+//        val search1 = SearchParameters(id = null, firstName = "f", lastName = null)
+//
+//        val selectStatement = select(
+//            id, firstName, lastName, birthDate, employed, occupation, addressId
+//        ) {
+//            from(person)
+//            where(id, isEqualToWhenPresent(search1.id))
+//            and(
+//                upper(firstName), isLikeWhenPresent(search1.firstName)
+//                .map(String::trim)
+//                .filter(String::isNotEmpty)
+//                .map(String::toUpperCase)
+//                .map { "%$it%" }
+//            )
+//            and(
+//                upper(lastName), isLikeWhenPresent(search1.lastName)
+//                .map(String::trim)
+//                .filter(String::isNotEmpty)
+//                .map(String::toUpperCase)
+//                .map { LastName("%$it%") }
+//            )
+//            orderBy(id)
+//            limit(3)
+//        }
+//
+//        val expected = "select id, first_name, last_name, birth_date, employed, occupation, address_id" +
+//                " from Person" +
+//                " where id < :p1" +
+//                " and (id < :p2" +
+//                " and (id < :p3 and id < :p4))" +
+//                " order by id limit :p5"
+//
+//        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+//
+//        val rows = template.selectList(selectStatement, personRowMapper)
+//
+//        assertThat(rows).hasSize(1)
+//        with(rows[0]) {
+//            assertThat(id).isEqualTo(1)
+//            assertThat(firstName).isEqualTo("Fred")
+//            assertThat(lastName!!.name).isEqualTo("Flintstone")
+//            assertThat(birthDate).isNotNull
+//            assertThat(employed).isTrue
+//            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+//            assertThat(addressId).isEqualTo(1)
+//        }
+//    }
 }
