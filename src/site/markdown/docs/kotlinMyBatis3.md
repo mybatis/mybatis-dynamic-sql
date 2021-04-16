@@ -77,21 +77,48 @@ Kotlin, but store the values "Yes" or "No" on the database. This uses the MyBati
 Also note that we specify the "jdbcType" for each column. This is a best practice with MyBatis3 and will avoid errors
 will nullable fields.
 
-## Kotlin Mappers for MyBatis3
-The pattern we recommend involves two types of mapper methods: standard MyBatis mapper abstract methods and
-extension methods.
+## About MyBatis Mappers
+Many MyBatis operations can be standardized, and you can use functionality in this library to dramatically reduce the
+amount of boilerplate code you need to write. In particular, all COUNT, DELETE, and UPDATE statements can be executed
+with utilities built into the library. The examples below will show how this works.
 
-The standard MyBatis3 mapper abstract methods accept Provider objects created by the library. These methods use the
-normal MyBatis3 annotations to specify result mappings, generated key mappings, statement types, etc. Using these
-methods directly involves two steps: create the provider object, then execute the MyBatis call/ 
+Many INSERT statements can also be executed with built-in utilities. The only INSERT statements that require custom
+coding are INSERT statements that return generated keys. For these statements, you must code a custom mapper method
+with the MyBatis `@Options` annotation specifying how to retrieve generated keys.
+
+SELECT statements present unique challenges. One of the key functions of MyBatis is the mapping of result sets to
+objects. This is a very useful capability, but it requires that the mapping between result set and object be predefined
+and hard coded. Some SELECT statements can be executed without coding custom result maps. This library includes common
+SELECT support with the following capabilities:
+
+- Execute arbitrary SELECT statements and return `List<Map<String, Object>>` as the return value. This support
+  essentially bypasses MyBatis' result mapping capabilities and returns a low level list of results.
+- Execute SELECT statements that return a single column of various types (String, Integer, BigDecimal, etc.)
+
+The bottom line is this - if your query returns more than one column, and you want to utilize MyBatis' result mapping
+functionality, you will need to code a custom result mapping.
+
+This library was initially conceived as a tool to improve the code created by MyBatis Generator - and the "one step"
+methods shown below are based on the convention used by MyBatis generator where a set of mapper methods is created
+for each table individually. If you are not using MyBatis generator, or are adding custom queries such as join
+queries to an application bootstrapped with MyBatis Generator, then it is likely you will need to code custom
+SELECT methods with custom result maps.
+
+## Kotlin Mappers for MyBatis
+The pattern we recommend involves two types of mapper methods: standard MyBatis mapper methods and extension methods.
+
+The standard MyBatis mapper abstract methods accept Provider objects created by the library. These methods use the
+normal MyBatis annotations to specify result mappings, generated key mappings, statement types, etc. Using these
+methods directly involves two steps: create the provider object, then execute the MyBatis call.
 
 The extension methods will reuse the abstract methods and add functionality to mappers that will build and
-execute the SQL statements in a one-step process.
+execute the SQL statements in a one-step process. The extension methods shown below assume that you will create
+a set of CRUD methods for each table you are accessing (as is the case with code created by MyBatis generator).
 
 If you create a Kotlin mapper interface that includes both abstract and non-abstract methods, MyBatis will 
 throw errors. By default, Kotlin does not create Java default methods in an interface. For this reason, Kotlin
 mapper interfaces should only contain the actual MyBatis mapper abstract interface methods. What would normally be coded
-as default or static methods in a mapper interface should be coded as extension methods in Kotlin. For example,
+as default or static methods in a Java mapper interface should be coded as extension methods in Kotlin. For example,
 a simple MyBatis mapper could be coded like this:
 
 ```kotlin
@@ -124,7 +151,8 @@ fun PersonMapper.select(completer: SelectCompleter) =
 ```
 
 The extension method shows the use of the `SelectCompleter` type alias. This is a DSL extension supplied with the
-library. We will detail its use below. For now see that the extension method can be used in client code as follows:
+library. We will detail its use below. For now see that the extension method can be used in client code to supply a
+where clause and an order by clause as follows:
 
 ```kotlin
 val rows = mapper.select {
@@ -158,6 +186,8 @@ implemented by using a built-in base interface as follows:
 @Mapper
 interface PersonMapper : CommonCountMapper
 ```
+
+`CommonCountMapper` can also be used on its own if you inject it into a MyBatis configuration.
 
 The mapper method can be used as follows:
 
@@ -232,6 +262,8 @@ deleted. This method can also be implemented by using a built-in base interface 
 interface PersonMapper : CommonDeleteMapper
 ```
 
+`CommonDeleteMapper` can also be used on its own if you inject it into a MyBatis configuration.
+
 The mapper method can be used as follows:
 
 ```kotlin
@@ -272,7 +304,7 @@ There is an extension method that can be used to delete all rows in a table:
 val rows = mapper.delete { allRows() }
 ```
 
-## Insert Method Support
+## Single Record Insert Statement
 
 Insert method support enables the removal of some of the boilerplate code from insert methods in a mapper interfaces.
 
