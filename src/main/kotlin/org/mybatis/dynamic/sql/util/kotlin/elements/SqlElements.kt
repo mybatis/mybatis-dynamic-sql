@@ -99,25 +99,25 @@ fun <T> constant(constant: String): Constant<T> = SqlBuilder.constant(constant)
 fun stringConstant(constant: String): StringConstant = SqlBuilder.stringConstant(constant)
 
 // functions
-fun <T : Number> add(
+fun <T> add(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Add<T> = Add.of(firstColumn, secondColumn, subsequentColumns.asList())
 
-fun <T : Number> divide(
+fun <T> divide(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Divide<T> = Divide.of(firstColumn, secondColumn, subsequentColumns.asList())
 
-fun <T : Number> multiply(
+fun <T> multiply(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Multiply<T> = Multiply.of(firstColumn, secondColumn, subsequentColumns.asList())
 
-fun <T : Number> subtract(
+fun <T> subtract(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
@@ -136,15 +136,15 @@ fun <T> applyOperator(
     vararg subsequentColumns: BasicColumn
 ): OperatorFunction<T> = OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns.asList())
 
-fun lower(column: BindableColumn<String>): Lower = SqlBuilder.lower(column)
+fun <T> lower(column: BindableColumn<T>): Lower<T> = SqlBuilder.lower(column)
 
-fun substring(
-    column: BindableColumn<String>,
+fun <T> substring(
+    column: BindableColumn<T>,
     offset: Int,
     length: Int
-): Substring = SqlBuilder.substring(column, offset, length)
+): Substring<T> = SqlBuilder.substring(column, offset, length)
 
-fun upper(column: BindableColumn<String>): Upper = SqlBuilder.upper(column)
+fun <T> upper(column: BindableColumn<T>): Upper<T> = SqlBuilder.upper(column)
 
 // conditions for all data types
 fun <T> isNull(): IsNull<T> = SqlBuilder.isNull()

@@ -1232,59 +1232,59 @@ class CanonicalSpringKotlinTest {
         assertThat(returnedRecord!!.addressId).isEqualTo(5)
     }
 
-//    @Test
-//    fun testComplexSearch() {
-//        data class SearchParameters(
-//            val id: Int?,
-//            val firstName: String?,
-//            val lastName: String?
-//        )
-//
-//        val search1 = SearchParameters(id = null, firstName = "f", lastName = null)
-//
-//        val selectStatement = select(
-//            id, firstName, lastName, birthDate, employed, occupation, addressId
-//        ) {
-//            from(person)
-//            where(id, isEqualToWhenPresent(search1.id))
-//            and(
-//                upper(firstName), isLikeWhenPresent(search1.firstName)
-//                .map(String::trim)
-//                .filter(String::isNotEmpty)
-//                .map(String::toUpperCase)
-//                .map { "%$it%" }
-//            )
-//            and(
-//                upper(lastName), isLikeWhenPresent(search1.lastName)
-//                .map(String::trim)
-//                .filter(String::isNotEmpty)
-//                .map(String::toUpperCase)
-//                .map { LastName("%$it%") }
-//            )
-//            orderBy(id)
-//            limit(3)
-//        }
-//
-//        val expected = "select id, first_name, last_name, birth_date, employed, occupation, address_id" +
-//                " from Person" +
-//                " where id < :p1" +
-//                " and (id < :p2" +
-//                " and (id < :p3 and id < :p4))" +
-//                " order by id limit :p5"
-//
-//        assertThat(selectStatement.selectStatement).isEqualTo(expected)
-//
-//        val rows = template.selectList(selectStatement, personRowMapper)
-//
-//        assertThat(rows).hasSize(1)
-//        with(rows[0]) {
-//            assertThat(id).isEqualTo(1)
-//            assertThat(firstName).isEqualTo("Fred")
-//            assertThat(lastName!!.name).isEqualTo("Flintstone")
-//            assertThat(birthDate).isNotNull
-//            assertThat(employed).isTrue
-//            assertThat(occupation).isEqualTo("Brontosaurus Operator")
-//            assertThat(addressId).isEqualTo(1)
-//        }
-//    }
+    @Test
+    fun testComplexSearch() {
+        data class SearchParameters(
+            val id: Int?,
+            val firstName: String?,
+            val lastName: String?
+        )
+
+        val search1 = SearchParameters(id = null, firstName = "f", lastName = null)
+
+        val selectStatement = select(
+            id, firstName, lastName, birthDate, employed, occupation, addressId
+        ) {
+            from(person)
+            where(id, isEqualToWhenPresent(search1.id))
+            and(
+                upper(firstName), isLikeWhenPresent(search1.firstName)
+                .map(String::trim)
+                .filter(String::isNotEmpty)
+                .map(String::toUpperCase)
+                .map { "%$it%" }
+            )
+            and(
+                upper(lastName), isLikeWhenPresent(search1.lastName)
+                .map(String::trim)
+                .filter(String::isNotEmpty)
+                .map(String::toUpperCase)
+                .map { LastName("%$it%") }
+            )
+            orderBy(id)
+            limit(3)
+        }
+
+        val expected = "select id, first_name, last_name, birth_date, employed, occupation, address_id" +
+                " from Person" +
+                " where upper(first_name) like :p1" +
+                " order by id limit :p2"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", "%F%")
+        assertThat(selectStatement.parameters).containsEntry("p2", 3L)
+
+        val rows = template.selectList(selectStatement, personRowMapper)
+
+        assertThat(rows).hasSize(1)
+        with(rows[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(firstName).isEqualTo("Fred")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
+            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(addressId).isEqualTo(1)
+        }
+    }
 }
