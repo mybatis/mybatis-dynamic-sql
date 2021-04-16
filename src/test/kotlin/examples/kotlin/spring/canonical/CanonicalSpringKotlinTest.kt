@@ -285,18 +285,18 @@ class CanonicalSpringKotlinTest {
     fun testGeneralInsert() {
 
         val insertStatement = insertInto(person) {
-            set(id).toValue(100)
-            set(firstName).toValue("Joe")
+            set(id).toConstant("100")
+            set(firstName).toStringConstant("Joe")
             set(lastName).toValue(LastName("Jones"))
             set(birthDate).toValue(Date())
             set(employed).toValue(true)
-            set(occupation).toValue("Developer")
+            set(occupation).toNull()
             set(addressId).toValue(1)
         }
 
         val expected =
             "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
-                " values (:p1, :p2, :p3, :p4, :p5, :p6, :p7)"
+                " values (100, 'Joe', :p1, :p2, :p3, null, :p4)"
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
@@ -313,7 +313,44 @@ class CanonicalSpringKotlinTest {
             assertThat(lastName!!.name).isEqualTo("Jones")
             assertThat(birthDate).isNotNull
             assertThat(employed).isTrue
-            assertThat(occupation).isEqualTo("Developer")
+            assertThat(occupation).isNull()
+            assertThat(addressId).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testGeneralInsertSpecialConditions() {
+
+        val insertStatement = insertInto(person) {
+            set(id).toConstant("100")
+            set(firstName).toStringConstant("Joe")
+            set(lastName).toValue(LastName("Jones"))
+            set(birthDate).toValue(Date())
+            set(employed).toValueOrNull(true)
+            set(occupation).toValueWhenPresent(null)
+            set(addressId).toValue(1)
+        }
+
+        val expected =
+            "insert into Person (id, first_name, last_name, birth_date, employed, address_id)" +
+                    " values (100, 'Joe', :p1, :p2, :p3, :p4)"
+
+        assertThat(insertStatement.insertStatement).isEqualTo(expected)
+
+        val rows = template.generalInsert(insertStatement)
+        val record = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(person)
+            where(id, isEqualTo(100))
+        }.withRowMapper(personRowMapper)
+
+        assertThat(rows).isEqualTo(1)
+        with(record!!) {
+            assertThat(id).isEqualTo(100)
+            assertThat(firstName).isEqualTo("Joe")
+            assertThat(lastName!!.name).isEqualTo("Jones")
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
+            assertThat(occupation).isNull()
             assertThat(addressId).isEqualTo(1)
         }
     }
@@ -1009,6 +1046,26 @@ class CanonicalSpringKotlinTest {
                 " set first_name = :p1" +
                 " where first_name = :p2" +
                 " or id = :p3"
+        )
+
+        val rows = template.update(updateStatement)
+
+        assertThat(rows).isEqualTo(2)
+    }
+
+    @Test
+    fun testRawUpdate6() {
+        val updateStatement = update(person) {
+            set(occupation).equalToOrNull(null)
+            where(firstName, isEqualTo("Fred"))
+            or(id, isEqualTo(3))
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person" +
+                    " set occupation = null" +
+                    " where first_name = :p1" +
+                    " or id = :p2"
         )
 
         val rows = template.update(updateStatement)

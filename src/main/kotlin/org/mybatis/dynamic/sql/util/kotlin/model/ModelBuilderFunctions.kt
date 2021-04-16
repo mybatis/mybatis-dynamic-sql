@@ -39,6 +39,7 @@ import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinDeleteBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinGeneralInsertBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertSelectSubQueryBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
@@ -60,7 +61,7 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteModel =
     KotlinDeleteBuilder(SqlBuilder.deleteFrom(table)).apply(completer).build()
 
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertModel =
-    GeneralInsertDSL.insertInto(table).apply(completer).build()
+    KotlinGeneralInsertBuilder(GeneralInsertDSL.insertInto(table)).apply(completer).build()
 
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectModel =
     with(KotlinInsertSelectSubQueryBuilder().apply(completer)) {

@@ -35,6 +35,7 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
     override fun self(): KotlinUpdateBuilder = this
 
     @MyBatisDslMarker
+    @Suppress("TooManyFunctions")
     inner class KotlinSetClauseFinisher<T>(private val column: SqlColumn<T>) {
         fun equalToNull(): KotlinUpdateBuilder =
             applyToDsl {

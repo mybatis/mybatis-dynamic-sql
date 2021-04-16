@@ -15,12 +15,15 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
+import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
+import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+import org.mybatis.dynamic.sql.util.Buildable
 
-typealias GeneralInsertCompleter = @MyBatisDslMarker GeneralInsertDSL.() -> Unit
+typealias GeneralInsertCompleter = @MyBatisDslMarker KotlinGeneralInsertBuilder.() -> Unit
 
 typealias InsertCompleter<T> = @MyBatisDslMarker InsertDSL<T>.() -> Unit
 
@@ -29,3 +32,55 @@ typealias MultiRowInsertCompleter<T> = @MyBatisDslMarker MultiRowInsertDSL<T>.()
 typealias BatchInsertCompleter<T> = @MyBatisDslMarker BatchInsertDSL<T>.() -> Unit
 
 typealias InsertSelectCompleter = @MyBatisDslMarker KotlinInsertSelectSubQueryBuilder.() -> Unit
+
+@MyBatisDslMarker
+class KotlinGeneralInsertBuilder(private val dsl: GeneralInsertDSL) : Buildable<GeneralInsertModel> {
+
+    fun <T> set(column: SqlColumn<T>): GeneralInsertSetClauseFinisher<T> = GeneralInsertSetClauseFinisher(column)
+
+    override fun build(): GeneralInsertModel = dsl.build()
+
+    @MyBatisDslMarker
+    inner class GeneralInsertSetClauseFinisher<T>(private val column: SqlColumn<T>) {
+        fun toNull(): KotlinGeneralInsertBuilder =
+            applyToDsl {
+                set(column).toNull()
+            }
+
+        fun toConstant(constant: String): KotlinGeneralInsertBuilder =
+            applyToDsl {
+                set(column).toConstant(constant)
+            }
+
+        fun toStringConstant(constant: String): KotlinGeneralInsertBuilder =
+            applyToDsl {
+                set(column).toStringConstant(constant)
+            }
+
+        fun toValue(value: T): KotlinGeneralInsertBuilder = toValue { value }
+
+        fun toValue(value: () -> T): KotlinGeneralInsertBuilder =
+            applyToDsl {
+                set(column).toValue(value)
+            }
+
+        fun toValueOrNull(value: T?): KotlinGeneralInsertBuilder = toValueOrNull { value }
+
+        fun toValueOrNull(value: () -> T?): KotlinGeneralInsertBuilder =
+            applyToDsl {
+                set(column).toValueOrNull(value)
+            }
+
+        fun toValueWhenPresent(value: T?): KotlinGeneralInsertBuilder = toValueWhenPresent { value }
+
+        fun toValueWhenPresent(value: () -> T?): KotlinGeneralInsertBuilder =
+            applyToDsl {
+                set(column).toValueWhenPresent(value)
+            }
+
+        private fun applyToDsl(block: GeneralInsertDSL.() -> Unit): KotlinGeneralInsertBuilder =
+            this@KotlinGeneralInsertBuilder.apply {
+                dsl.apply(block)
+            }
+    }
+}
