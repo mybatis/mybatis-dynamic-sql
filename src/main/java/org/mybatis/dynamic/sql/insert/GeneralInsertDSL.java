@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
@@ -85,6 +86,15 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
 
         public GeneralInsertDSL toValue(Supplier<T> valueSupplier) {
             insertMappings.add(ValueMapping.of(column, valueSupplier));
+            return GeneralInsertDSL.this;
+        }
+
+        public GeneralInsertDSL toValueOrNull(T value) {
+            return toValueOrNull(() -> value);
+        }
+
+        public GeneralInsertDSL toValueOrNull(Supplier<T> valueSupplier) {
+            insertMappings.add(ValueOrNullMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
         }
 

@@ -1407,6 +1407,46 @@ class AnimalDataTest {
     }
 
     @Test
+    void testUpdateValueOrNullWithValue() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            AnimalData record = new AnimalData();
+            record.setBodyWeight(2.6);
+
+            UpdateStatementProvider updateStatement = update(animalData)
+                    .set(animalName).equalToOrNull("fred")
+                    .where(id, isEqualTo(1))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(
+                    "update AnimalData set animal_name = #{parameters.p1,jdbcType=VARCHAR} where id = #{parameters.p2,jdbcType=INTEGER}");
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void testUpdateValueOrNullWithNull() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            AnimalData record = new AnimalData();
+            record.setBodyWeight(2.6);
+
+            UpdateStatementProvider updateStatement = update(animalData)
+                    .set(animalName).equalToOrNull((String) null)
+                    .where(id, isEqualTo(1))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(
+                    "update AnimalData set animal_name = null where id = #{parameters.p1,jdbcType=INTEGER}");
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(1);
+        }
+    }
+
+    @Test
     void testInsert() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
@@ -1983,6 +2023,61 @@ class AnimalDataTest {
 
             String expected = "insert into AnimalData (id, animal_name, brain_weight, body_weight) "
                     + "values (#{parameters.p1,jdbcType=INTEGER}, 'Fred', 2.2, #{parameters.p2,jdbcType=DOUBLE})";
+
+            assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
+            assertThat(insertStatement.getParameters()).hasSize(2);
+            assertThat(insertStatement.getParameters()).containsEntry("p1", 101);
+            assertThat(insertStatement.getParameters()).containsEntry("p2", 4.5);
+
+            int rows = mapper.generalInsert(insertStatement);
+            assertThat(rows).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void testGeneralInsertValueOrNullWithValue() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+            GeneralInsertStatementProvider insertStatement = insertInto(animalData)
+                    .set(id).toValue(101)
+                    .set(animalName).toValueOrNull("Fred")
+                    .set(brainWeight).toConstant("2.2")
+                    .set(bodyWeight).toValue(4.5)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "insert into AnimalData (id, animal_name, brain_weight, body_weight) "
+                    + "values (#{parameters.p1,jdbcType=INTEGER}, #{parameters.p2,jdbcType=VARCHAR}, 2.2, "
+                    + "#{parameters.p3,jdbcType=DOUBLE})";
+
+            assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
+            assertThat(insertStatement.getParameters()).hasSize(3);
+            assertThat(insertStatement.getParameters()).containsEntry("p1", 101);
+            assertThat(insertStatement.getParameters()).containsEntry("p2", "Fred");
+            assertThat(insertStatement.getParameters()).containsEntry("p3", 4.5);
+
+            int rows = mapper.generalInsert(insertStatement);
+            assertThat(rows).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void testGeneralInsertValueOrNullWithNull() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+            GeneralInsertStatementProvider insertStatement = insertInto(animalData)
+                    .set(id).toValue(101)
+                    .set(animalName).toValueOrNull((String) null)
+                    .set(brainWeight).toConstant("2.2")
+                    .set(bodyWeight).toValue(4.5)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "insert into AnimalData (id, animal_name, brain_weight, body_weight) "
+                    + "values (#{parameters.p1,jdbcType=INTEGER}, null, 2.2, "
+                    + "#{parameters.p2,jdbcType=DOUBLE})";
 
             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
             assertThat(insertStatement.getParameters()).hasSize(2);

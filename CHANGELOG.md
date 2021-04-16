@@ -97,6 +97,7 @@ Kotlin DSL.
 - Added support for the "exists" and "not exists" operator in where clauses ([#296](https://github.com/mybatis/mybatis-dynamic-sql/pull/296))
 - Refactored the built-in conditions ([#331](https://github.com/mybatis/mybatis-dynamic-sql/pull/331)) ([#336](https://github.com/mybatis/mybatis-dynamic-sql/pull/336))
 - Added composition functions for WhereApplier ([#335](https://github.com/mybatis/mybatis-dynamic-sql/pull/335))
+- Added a mapping for general insert and update statements that will render null values as "null" in the SQL ([#343](https://github.com/mybatis/mybatis-dynamic-sql/pull/343))
 
 ## Release 1.2.1 - September 29, 2020
 

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package org.mybatis.dynamic.sql.select.function;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Substring extends AbstractUniTypeFunction<String, Substring> {
+public class Substring<T> extends AbstractUniTypeFunction<T, Substring<T>> {
 
     private final int offset;
     private final int length;
 
-    private Substring(BindableColumn<String> column, int offset, int length) {
+    private Substring(BindableColumn<T> column, int offset, int length) {
         super(column);
         this.offset = offset;
         this.length = length;
@@ -41,11 +41,11 @@ public class Substring extends AbstractUniTypeFunction<String, Substring> {
     }
 
     @Override
-    protected Substring copy() {
-        return new Substring(column, offset, length);
+    protected Substring<T> copy() {
+        return new Substring<>(column, offset, length);
     }
 
-    public static Substring of(BindableColumn<String> column, int offset, int length) {
-        return new Substring(column, offset, length);
+    public static <T> Substring<T> of(BindableColumn<T> column, int offset, int length) {
+        return new Substring<>(column, offset, length);
     }
 }

@@ -88,6 +88,15 @@ class ColumnMappingVisitorTest {
     }
 
     @Test
+    void testThatInsertVisitorErrorsForValueOrNullMapping() {
+        TestTable table = new TestTable();
+        InsertVisitor tv = new InsertVisitor();
+        ValueOrNullMapping<Integer> mapping = ValueOrNullMapping.of(table.id, () -> 3);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping));
+    }
+
+    @Test
     void testThatInsertVisitorErrorsForValueWhenPresentMapping() {
         TestTable table = new TestTable();
         InsertVisitor tv = new InsertVisitor();
@@ -226,7 +235,7 @@ class ColumnMappingVisitorTest {
 
         @Override
         public String visit(PropertyWhenPresentMapping mapping) {
-            return "Property Whn Present Mapping";
+            return "Property When Present Mapping";
         }
     }
 
