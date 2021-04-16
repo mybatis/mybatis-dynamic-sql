@@ -354,22 +354,22 @@ public interface SqlBuilder {
     }
 
     // functions
-    static <T extends Number> Add<T> add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    static <T> Add<T> add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Add.of(firstColumn, secondColumn, subsequentColumns);
     }
 
-    static <T extends Number> Divide<T> divide(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    static <T> Divide<T> divide(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Divide.of(firstColumn, secondColumn, subsequentColumns);
     }
 
-    static <T extends Number> Multiply<T> multiply(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    static <T> Multiply<T> multiply(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Multiply.of(firstColumn, secondColumn, subsequentColumns);
     }
 
-    static <T extends Number> Subtract<T> subtract(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    static <T> Subtract<T> subtract(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Subtract.of(firstColumn, secondColumn, subsequentColumns);
     }
@@ -384,15 +384,15 @@ public interface SqlBuilder {
         return OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns);
     }
 
-    static Lower lower(BindableColumn<String> column) {
+    static <T> Lower<T> lower(BindableColumn<T> column) {
         return Lower.of(column);
     }
 
-    static Substring substring(BindableColumn<String> column, int offset, int length) {
+    static <T> Substring<T> substring(BindableColumn<T> column, int offset, int length) {
         return Substring.of(column, offset, length);
     }
 
-    static Upper upper(BindableColumn<String> column) {
+    static <T> Upper<T> upper(BindableColumn<T> column) {
         return Upper.of(column);
     }
 

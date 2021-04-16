@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package org.mybatis.dynamic.sql.select.function;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Upper extends AbstractUniTypeFunction<String, Upper> {
+public class Upper<T> extends AbstractUniTypeFunction<T, Upper<T>> {
 
-    private Upper(BindableColumn<String> column) {
+    private Upper(BindableColumn<T> column) {
         super(column);
     }
 
@@ -32,11 +32,11 @@ public class Upper extends AbstractUniTypeFunction<String, Upper> {
     }
 
     @Override
-    protected Upper copy() {
-        return new Upper(column);
+    protected Upper<T> copy() {
+        return new Upper<>(column);
     }
 
-    public static Upper of(BindableColumn<String> column) {
-        return new Upper(column);
+    public static <T> Upper<T> of(BindableColumn<T> column) {
+        return new Upper<>(column);
     }
 }

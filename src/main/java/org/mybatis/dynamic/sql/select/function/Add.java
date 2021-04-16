@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.util.List;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 
-public class Add<T extends Number> extends OperatorFunction<T> {
+public class Add<T> extends OperatorFunction<T> {
 
     private Add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
@@ -33,12 +33,12 @@ public class Add<T extends Number> extends OperatorFunction<T> {
         return new Add<>(column, secondColumn, subsequentColumns);
     }
 
-    public static <T extends Number> Add<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
-                                               BasicColumn... subsequentColumns) {
+    public static <T> Add<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+                                BasicColumn... subsequentColumns) {
         return of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
 
-    public static <T extends Number> Add<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    public static <T> Add<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
         return new Add<>(firstColumn, secondColumn, subsequentColumns);
     }
