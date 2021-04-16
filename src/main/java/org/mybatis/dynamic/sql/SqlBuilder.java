@@ -577,7 +577,7 @@ public interface SqlBuilder {
     }
 
     static <T> IsIn<T> isInWhenPresent(Collection<T> values) {
-        return IsIn.of(values).filter(Objects::nonNull);
+        return values == null ? IsIn.empty() : IsIn.of(values).filter(Objects::nonNull);
     }
 
     @SafeVarargs
@@ -599,7 +599,7 @@ public interface SqlBuilder {
     }
 
     static <T> IsNotIn<T> isNotInWhenPresent(Collection<T> values) {
-        return IsNotIn.of(values).filter(Objects::nonNull);
+        return values == null ? IsNotIn.empty() : IsNotIn.of(values).filter(Objects::nonNull);
     }
 
     static <T> IsBetween.Builder<T> isBetween(T value1) {
@@ -722,7 +722,7 @@ public interface SqlBuilder {
     }
 
     static IsInCaseInsensitive isInCaseInsensitiveWhenPresent(Collection<String> values) {
-        return IsInCaseInsensitive.of(values).filter(Objects::nonNull);
+        return values == null ? IsInCaseInsensitive.empty() : IsInCaseInsensitive.of(values).filter(Objects::nonNull);
     }
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String...values) {
@@ -738,7 +738,8 @@ public interface SqlBuilder {
     }
 
     static IsNotInCaseInsensitive isNotInCaseInsensitiveWhenPresent(Collection<String> values) {
-        return IsNotInCaseInsensitive.of(values).filter(Objects::nonNull);
+        return values == null ? IsNotInCaseInsensitive.empty() :
+                IsNotInCaseInsensitive.of(values).filter(Objects::nonNull);
     }
 
     // order by support
