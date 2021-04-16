@@ -223,7 +223,7 @@ fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsInWithSubselect<T> =
 
 fun <T : Any> isInWhenPresent(vararg values: T?): IsIn<T> = isInWhenPresent(values.asList())
 
-fun <T : Any> isInWhenPresent(values: Collection<T?>): IsIn<T> = SqlBuilder.isInWhenPresent(values)
+fun <T : Any> isInWhenPresent(values: Collection<T?>?): IsIn<T> = SqlBuilder.isInWhenPresent(values)
 
 fun <T : Any> isNotIn(vararg values: T): IsNotIn<T> = isNotIn(values.asList())
 
@@ -234,7 +234,7 @@ fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotInWithSubselec
 
 fun <T : Any> isNotInWhenPresent(vararg values: T?): IsNotIn<T> = isNotInWhenPresent(values.asList())
 
-fun <T : Any> isNotInWhenPresent(values: Collection<T?>): IsNotIn<T> = SqlBuilder.isNotInWhenPresent(values)
+fun <T : Any> isNotInWhenPresent(values: Collection<T?>?): IsNotIn<T> = SqlBuilder.isNotInWhenPresent(values)
 
 fun <T : Any> isBetween(value1: T): BetweenBuilder<T> = BetweenBuilder(value1)
 
@@ -277,7 +277,7 @@ fun isInCaseInsensitive(values: Collection<String>): IsInCaseInsensitive = SqlBu
 fun isInCaseInsensitiveWhenPresent(vararg values: String?): IsInCaseInsensitive =
     isInCaseInsensitiveWhenPresent(values.asList())
 
-fun isInCaseInsensitiveWhenPresent(values: Collection<String?>): IsInCaseInsensitive =
+fun isInCaseInsensitiveWhenPresent(values: Collection<String?>?): IsInCaseInsensitive =
     SqlBuilder.isInCaseInsensitiveWhenPresent(values)
 
 fun isNotInCaseInsensitive(vararg values: String): IsNotInCaseInsensitive = isNotInCaseInsensitive(values.asList())
@@ -288,7 +288,7 @@ fun isNotInCaseInsensitive(values: Collection<String>): IsNotInCaseInsensitive =
 fun isNotInCaseInsensitiveWhenPresent(vararg values: String?): IsNotInCaseInsensitive =
     isNotInCaseInsensitiveWhenPresent(values.asList())
 
-fun isNotInCaseInsensitiveWhenPresent(values: Collection<String?>): IsNotInCaseInsensitive =
+fun isNotInCaseInsensitiveWhenPresent(values: Collection<String?>?): IsNotInCaseInsensitive =
     SqlBuilder.isNotInCaseInsensitiveWhenPresent(values)
 
 // order by support
