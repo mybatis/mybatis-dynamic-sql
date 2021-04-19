@@ -15,15 +15,17 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.firstName
+import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.generatedAlways
+import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.lastName
 import org.apache.ibatis.annotations.InsertProvider
 import org.apache.ibatis.annotations.Options
+import org.apache.ibatis.annotations.Param
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
-import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.generatedAlways
-import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.firstName
-import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.lastName
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultipleWithGeneratedKeys
 
 interface GeneratedAlwaysMapper {
     @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
@@ -32,10 +34,21 @@ interface GeneratedAlwaysMapper {
 
     @InsertProvider(type = SqlProviderAdapter::class, method = "generalInsert")
     fun generalInsert(insertStatement: GeneralInsertStatementProvider): Int
+
+    @InsertProvider(type = SqlProviderAdapter::class, method = "insertMultipleWithGeneratedKeys")
+    @Options(useGeneratedKeys = true, keyProperty="records.id,records.fullName", keyColumn = "id,full_name")
+    fun insertMultiple(insertStatement: String, @Param("records") records: List<GeneratedAlwaysRecord>): Int
 }
 
 fun GeneratedAlwaysMapper.insert(record: GeneratedAlwaysRecord): Int {
     return insert(this::insert, record, generatedAlways) {
+        map(firstName).toProperty("firstName")
+        map(lastName).toProperty("lastName")
+    }
+}
+
+fun GeneratedAlwaysMapper.insertMultiple(records: Collection<GeneratedAlwaysRecord>): Int {
+    return insertMultipleWithGeneratedKeys(this::insertMultiple, records, generatedAlways) {
         map(firstName).toProperty("firstName")
         map(lastName).toProperty("lastName")
     }

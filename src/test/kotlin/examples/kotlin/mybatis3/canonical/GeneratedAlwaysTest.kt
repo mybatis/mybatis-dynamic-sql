@@ -46,7 +46,7 @@ class GeneratedAlwaysTest {
     }
 
     @Test
-    fun testSelect() {
+    fun testInsertSingleRecord() {
         newSession().use { session ->
             val mapper = session.getMapper(GeneratedAlwaysMapper::class.java)
 
@@ -60,6 +60,31 @@ class GeneratedAlwaysTest {
             assertThat(rows).isEqualTo(1)
             assertThat(record.id).isEqualTo(22)
             assertThat(record.fullName).isEqualTo("Fred Flintstone")
+        }
+    }
+
+    @Test
+    fun testInsertMultiple() {
+        newSession().use { session ->
+            val mapper = session.getMapper(GeneratedAlwaysMapper::class.java)
+
+            val record1 = GeneratedAlwaysRecord(
+                firstName = "Fred",
+                lastName = "Flintstone"
+            )
+
+            val record2 = GeneratedAlwaysRecord(
+                firstName = "Barney",
+                lastName = "Rubble"
+            )
+
+            val rows = mapper.insertMultiple(listOf(record1, record2))
+
+            assertThat(rows).isEqualTo(2)
+            assertThat(record1.id).isEqualTo(22)
+            assertThat(record1.fullName).isEqualTo("Fred Flintstone")
+            assertThat(record2.id).isEqualTo(23)
+            assertThat(record2.fullName).isEqualTo("Barney Rubble")
         }
     }
 
