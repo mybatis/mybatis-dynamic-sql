@@ -242,7 +242,7 @@ val rows = mapper.count { allRows() }
 ## Delete Method Support
 
 ### Two-Step Method
-Delete statements are constructed as shown on the Kotlin overview page. These methods create a
+Delete statements are constructed as shown on the Kotlin overview page. This method creates a
 `DeleteStatementProvider` that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
 a `delete` method as follows:
 
@@ -306,9 +306,190 @@ val rows = mapper.delete { allRows() }
 
 ## Single Record Insert Statement
 
+### Two-Step Method
+Single record insert statements are constructed as shown on the Kotlin overview page. This method creates
+an `InsertStatementProvider`  that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
+an `insert` method as follows:
+
+```kotlin
+@Mapper
+interface PersonMapper {
+    @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
+    fun insert(insertStatement: InsertStatementProvider<PersonRecord>): Int
+}
+```
+
+This is a standard method for MyBatis Dynamic SQL that executes an insert and returns a `Int` - the number of rows
+inserted. This method can also be implemented by using a built-in base interface as follows:
+
+```kotlin
+@Mapper
+interface PersonMapper : CommonInsertMapper<T>
+```
+
+`CommonInsertMapper` can also be used on its own if you inject it into a MyBatis configuration.
+
+The mapper method can be used as follows:
+
+```kotlin
+val insertStatement = insert(...) // not shown, see overview page
+val mapper: PersonMapper = getMapper() // not shown
+val rows: Int = mapper.insert(insertStatement)
+```
+
+### One-Step Method
+
+You can use built-in utility functions to create mapper extension functions that simplify execution of single record
+insert statements. The extension functions will reuse the abstract method and supply everything needed to build the
+insert statement:
+
+```kotlin
+fun PersonMapper.insert(record: PersonRecord) =
+    insert(this::insert, record, Person) {
+        map(id).toProperty("id")
+        map(firstName).toProperty("firstName")
+        map(lastName).toProperty("lastName")
+        map(birthDate).toProperty("birthDate")
+        map(employed).toProperty("employed")
+        map(occupation).toProperty("occupation")
+        map(addressId).toProperty("addressId")
+    }
+```
+
+This extension method reuses the mapper method and supplies all the column mappings. Clients can use the method
+as follows:
+
+```kotlin
+val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+val mapper: PersonMapper = getMapper() // not shown
+val rows = mapper.insert(record)
+```
+
+### Generated Key Support
+
+Single record insert statements support returning a generated key using normal MyBatis generated key support. When
+generated keys are expected you must code the mapper method manually and supply the `@Options` annotation that
+configures generated key support. For example:
+
+```kotlin
+interface GeneratedAlwaysMapper {
+    @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
+    @Options(useGeneratedKeys = true, keyProperty = "record.id,record.fullName", keyColumn = "id,full_name")
+    fun insert(insertStatement: InsertStatementProvider<GeneratedAlwaysRecord>): Int
+}
+```
+
+This method will return two generated values in each row: `id` and `full_name`. The values will be placed into the
+record properties `id` and `fullName` respectively.
+
+## General Insert Statement
+General insert statements are constructed as shown on the Kotlin overview page. This method creates
+an `GeneralInsertStatementProvider`  that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
+a `generalInsert` method as follows:
+
+```kotlin
+@Mapper
+interface PersonMapper {
+    @InsertProvider(type = SqlProviderAdapter::class, method = "generalInsert")
+    fun generalInsert(insertStatement: GeneralInsertStatementProvider): Int
+}
+```
+
+This is a standard method for MyBatis Dynamic SQL that executes an insert and returns a `Int` - the number of rows
+inserted. This method can also be implemented by using a built-in base interface as follows:
+
+```kotlin
+@Mapper
+interface PersonMapper : CommonInsertMapper<T>
+```
+
+`CommonInsertMapper` can also be used on its own if you inject it into a MyBatis configuration.
+
+The mapper method can be used as follows:
+
+```kotlin
+val insertStatement = insertInto(...) // not shown, see overview page
+val mapper: PersonMapper = getMapper() // not shown
+val rows: Int = mapper.generalInsert(insertStatement)
+```
+
+### One-Step Method
+
+You can use built-in utility functions to create mapper extension functions that simplify execution of general
+insert statements. The extension functions will reuse the abstract method and supply everything needed to build the
+insert statement except the values to insert:
+
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
+
+fun PersonMapper.generalInsert(completer: GeneralInsertCompleter) =
+    insertInto(this::generalInsert, person, completer)
+```
+
+The method is constructed to execute insert statements on one specific table - `person` in this case.
+
+The method shows the use of `GeneralInsertCompleter` which is a Kotlin typealias for a function with a receiver that will
+allow a user to supply values to insert. This also shows use of the Kotlin `insertInto` method which are supplied by the
+library. Those methods will build and execute the insert statement with the supplied values. Clients can use the
+method as follows:
+
+```kotlin
+val rows = mapper.generalInsert {
+    set(id).toValue(100)
+    set(firstName).toValue("Joe")
+    set(lastName).toValue(LastName("Jones"))
+    set(employed).toValue(true)
+    set(occupation).toValue("Developer")
+    set(addressId).toValue(1)
+    set(birthDate).toValue(Date())
+}
+```
+
+### Generated Key Support
+Generated keys are not supported with general insert statements.
+
+## Multi-Row Insert Statement
+### Two-Step Method
+Multi-row insert statements are constructed as shown on the Kotlin overview page. This method creates
+a `MultiRowInsertStatementProvider`  that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
+an `insertMultiple` method as follows:
+
+```kotlin
+@Mapper
+interface PersonMapper {
+    @InsertProvider(type = SqlProviderAdapter::class, method = "insertMultiple")
+    fun insertMultiple(insertStatement: MultiRowInsertStatementProvider<PersonRecord>): Int
+}
+```
+
+This is a standard method for MyBatis Dynamic SQL that executes an insert and returns a `Int` - the number of rows
+inserted. This method can also be implemented by using a built-in base interface as follows:
+
+```kotlin
+@Mapper
+interface PersonMapper : CommonInsertMapper<T>
+```
+
+`CommonInsertMapper` can also be used on its own if you inject it into a MyBatis configuration.
+
+The mapper method can be used as follows:
+
+```kotlin
+val insertStatement = insertMultiple(...) // not shown, see overview page
+val mapper: PersonMapper = getMapper() // not shown
+val rows: Int = mapper.insertMultiple(insertStatement)
+```
+
+### One-Step Method
+
+
+
+
 Insert method support enables the removal of some of the boilerplate code from insert methods in a mapper interfaces.
 
-To use this support, we envision creating several methods - both standard mapper methods, and other extension methods. The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute an insert:
+To use this support, we envision creating several methods - both standard mapper methods, and other extension methods.
+The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute an insert:
 
 ```kotlin
 @Mapper
