@@ -227,7 +227,7 @@ class GeneratedAlwaysMapperTest {
 
             assertThat(multiRowInsert.getInsertStatement()).isEqualTo(statement);
 
-            int rows = mapper.insertMultiple(multiRowInsert);
+            int rows = mapper.insertMultiple(multiRowInsert.getInsertStatement(), multiRowInsert.getRecords());
 
             assertAll(
                     () -> assertThat(rows).isEqualTo(1),
