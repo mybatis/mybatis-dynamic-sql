@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.util.mybatis3;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
@@ -136,6 +137,12 @@ public class MyBatis3Utils {
     public static <R> int insertMultiple(ToIntFunction<MultiRowInsertStatementProvider<R>> mapper,
             Collection<R> records, SqlTable table, UnaryOperator<MultiRowInsertDSL<R>> completer) {
         return mapper.applyAsInt(insertMultiple(records, table, completer));
+    }
+
+    public static <R> int insertMultipleWithGeneratedKeys(ToIntBiFunction<String, List<R>> mapper,
+            Collection<R> records, SqlTable table, UnaryOperator<MultiRowInsertDSL<R>> completer) {
+        MultiRowInsertStatementProvider<R> provider = insertMultiple(records, table, completer);
+        return mapper.applyAsInt(provider.getInsertStatement(), provider.getRecords());
     }
 
     public static SelectStatementProvider select(BasicColumn[] selectList, SqlTable table,

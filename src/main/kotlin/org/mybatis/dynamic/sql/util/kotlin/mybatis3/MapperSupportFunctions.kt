@@ -107,6 +107,16 @@ fun <T> insertMultipleWithGeneratedKeys(
         mapper(insertStatement, this.records)
     }
 
+fun <T> insertMultipleWithGeneratedKeys(
+    mapper: (String, List<T>) -> Int,
+    records: Collection<T>,
+    table: SqlTable,
+    completer: MultiRowInsertCompleter<T>
+): Int =
+    with(SqlBuilder.insertMultiple(records).into(table, completer)) {
+        mapper(insertStatement, this.records)
+    }
+
 fun insertSelect(
     mapper: (InsertSelectStatementProvider) -> Int,
     table: SqlTable,
