@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,6 +23,10 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
  * Adapter for use with MyBatis SQL provider annotations.
  *
@@ -45,6 +49,30 @@ public class SqlProviderAdapter {
 
     public String insertMultiple(MultiRowInsertStatementProvider<?> insertStatement) {
         return insertStatement.getInsertStatement();
+    }
+
+    /**
+     * This adapter method is intended for use with MyBatis' @InsertProvider annotation when there are generated
+     * values expected from executing the insert statement.
+     *
+     * @param parameterMap The parameter map is automatically created by MyBatis when there are multiple
+     *     parameters in the insert method.
+     * @return the SQL statement contained in the parameter map. This is assumed to be the one
+     *     and only map entry of type String.
+     */
+    public String insertMultipleWithGeneratedKeys(Map<String, Object> parameterMap) {
+        List<String> entries = parameterMap.entrySet().stream()
+                .filter(e -> e.getKey().startsWith("param")) //$NON-NLS-1$
+                .filter(e -> String.class.isAssignableFrom(e.getValue().getClass()))
+                .map(e -> (String) e.getValue())
+                .collect(Collectors.toList());
+
+        if (entries.size() == 1) {
+            return entries.get(0);
+        } else {
+            throw new IllegalArgumentException("The parameters for insertMultipleWithGeneratedKeys" + //$NON-NLS-1$
+                    " must contain exactly one parameter of type String"); //$NON-NLS-1$
+        }
     }
 
     public String insertSelect(InsertSelectStatementProvider insertStatement) {
