@@ -99,6 +99,7 @@ Kotlin DSL.
 - Added composition functions for WhereApplier ([#335](https://github.com/mybatis/mybatis-dynamic-sql/pull/335))
 - Added a mapping for general insert and update statements that will render null values as "null" in the SQL ([#343](https://github.com/mybatis/mybatis-dynamic-sql/pull/343))
 - Allow the "in when present" conditions to accept a null Collection as a parameter ([#346](https://github.com/mybatis/mybatis-dynamic-sql/pull/346))
+- Add Better Support for MyBatis Multi-Row Inserts that Return Generated Keys ([#349](https://github.com/mybatis/mybatis-dynamic-sql/pull/349))
 
 ## Release 1.2.1 - September 29, 2020
 
