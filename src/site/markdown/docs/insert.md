@@ -161,17 +161,20 @@ The XML element should look like this:
 ```
 
 ### Generated Values
-MyBatis supports returning generated values from a multiple row insert statement with some limitations. The main limitation is that MyBatis does not support nested lists in parameter objects. Unfortunately, the `MultiRowInsertStatementProvider` relies on a nested List. It is likely this limitation in MyBatis will be removed at some point in the future, so stay tuned.
+MyBatis supports returning generated values from a multiple row insert statement with some limitations. The main
+limitation is that MyBatis does not support nested lists in parameter objects. Unfortunately, the
+`MultiRowInsertStatementProvider` relies on a nested List. It is likely this limitation in MyBatis will be removed at
+some point in the future, so stay tuned.
 
-Nevertheless, you can configure a mapper that will work with the `MultiRowInsertStatementProvider` as created by this library. The main idea is to decompose the statement from the parameter map and send them as separate parameters to the MyBatis mapper. For example:
+Nevertheless, you can configure a mapper that will work with the `MultiRowInsertStatementProvider` as created by this
+library. The main idea is to decompose the statement from the parameter map and send them as separate parameters to the
+MyBatis mapper. For example:
 
 ```java
 ...
-    @Insert({
-        "${insertStatement}"
-    })
+    @InsertProvider(type=SqlProviderAdapter.class, method="insertMultipleWithGeneratedKeys")
     @Options(useGeneratedKeys=true, keyProperty="records.fullName")
-    int insertMultipleWithGeneratedKeys(@Param("insertStatement") String statement, @Param("records") List<GeneratedAlwaysRecord> records);
+    int insertMultipleWithGeneratedKeys(String insertStatement, @Param("records") List<GeneratedAlwaysRecord> records);
 
     default int insertMultipleWithGeneratedKeys(MultiRowInsertStatementProvider<GeneratedAlwaysRecord> multiInsert) {
         return insertMultipleWithGeneratedKeys(multiInsert.getInsertStatement(), multiInsert.getRecords());
@@ -179,7 +182,13 @@ Nevertheless, you can configure a mapper that will work with the `MultiRowInsert
 ...
 ```
 
-The first method above shows the actual MyBatis mapper method. Note the use of the `@Options` annotation to specify that we expect generated values. Further note that the `keyProperty` is set to `records.fullName` - in this case, `fullName` is a property of the objects in the `records` List.
+The first method above shows the actual MyBatis mapper method. Note the use of the `@Options` annotation to specify
+that we expect generated values. Further, note that the `keyProperty` is set to `records.fullName` - in this case,
+`fullName` is a property of the objects in the `records` List. The library supplied adapter method will simply
+return the `insertStatement` as supplied in the method call. The adapter method requires that there be one, and only
+one, String parameter in the method call, and it assumes that this one String parameter is the SQL insert statement.
+The parameter can have any name and can be specified in any position in the method's parameter list.
+The `@Param` annotation is not required for the insert statement. However, it may be specified if you so desire. 
 
 The second method above decomposes the `MultiRowInsertStatementProvider` and calls the first method.
 
