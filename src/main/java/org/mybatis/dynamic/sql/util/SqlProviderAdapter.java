@@ -23,6 +23,10 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
  * Adapter for use with MyBatis SQL provider annotations.
  *
@@ -45,6 +49,19 @@ public class SqlProviderAdapter {
 
     public String insertMultiple(MultiRowInsertStatementProvider<?> insertStatement) {
         return insertStatement.getInsertStatement();
+    }
+
+    public String insertMultipleWithGeneratedKeys(Map<String, Object> parameterMap) {
+        List<String> entries = parameterMap.entrySet().stream()
+                .filter(e -> e.getKey().startsWith("param")) //$NON-NLS-1$
+                .filter(e -> e.getValue() instanceof String)
+                .map(e -> (String) e.getValue())
+                .collect(Collectors.toList());
+        if (entries.size() == 1) {
+            return entries.get(0);
+        } else {
+            throw new RuntimeException("The parameters for insertMultipleWithGeneratedKeys must contain exactly one parameter of type String");
+        }
     }
 
     public String insertSelect(InsertSelectStatementProvider insertStatement) {
