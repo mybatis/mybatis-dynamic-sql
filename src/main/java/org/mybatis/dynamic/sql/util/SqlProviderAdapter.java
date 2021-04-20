@@ -63,8 +63,9 @@ public class SqlProviderAdapter {
     public String insertMultipleWithGeneratedKeys(Map<String, Object> parameterMap) {
         List<String> entries = parameterMap.entrySet().stream()
                 .filter(e -> e.getKey().startsWith("param")) //$NON-NLS-1$
-                .filter(e -> String.class.isAssignableFrom(e.getValue().getClass()))
-                .map(e -> (String) e.getValue())
+                .map(Map.Entry::getValue)
+                .filter(String.class::isInstance)
+                .map(String.class::cast)
                 .collect(Collectors.toList());
 
         if (entries.size() == 1) {
