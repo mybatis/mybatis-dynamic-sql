@@ -78,8 +78,8 @@ fun <T> insertBatch(
     table: SqlTable,
     completer: BatchInsertCompleter<T>
 ): List<Int> =
-    with(insertBatch(records).into(table, completer)) {
-        insertStatements().map { mapper(it) }
+    insertBatch(records).into(table, completer).run {
+        insertStatements().map(mapper)
     }
 
 fun insertInto(
