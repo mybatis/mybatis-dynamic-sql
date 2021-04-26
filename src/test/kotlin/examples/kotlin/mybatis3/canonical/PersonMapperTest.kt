@@ -255,10 +255,7 @@ class PersonMapperTest {
             val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
             val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-            val updateCounts = mapper.insertBatch(record1, record2)
-
-            assertThat(updateCounts).hasSize(2)
-            assertThat(updateCounts).hasSize(2)
+            mapper.insertBatch(record1, record2)
 
             val batchResults = session.flushStatements()
             assertThat(batchResults).hasSize(1)

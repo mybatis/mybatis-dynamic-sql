@@ -29,8 +29,8 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 
-fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? {
-    val selectStatement = select(
+fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? =
+    select(
         id.`as`("A_ID"), firstName, lastName, birthDate,
         employed, occupation, address.id, address.streetAddress, address.city, address.state
     ) {
@@ -39,13 +39,10 @@ fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAdd
             on(person.addressId, equalTo(address.id))
         }
         completer()
-    }
+    }.run(this::selectOne)
 
-    return selectOne(selectStatement)
-}
-
-fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
-    val selectStatement = select(
+fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> =
+    select(
         id.`as`("A_ID"), firstName, lastName, birthDate,
         employed, occupation, address.id, address.streetAddress, address.city, address.state
     ) {
@@ -54,13 +51,10 @@ fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithA
             on(person.addressId, equalTo(address.id))
         }
         completer()
-    }
+    }.run(this::selectMany)
 
-    return selectMany(selectStatement)
-}
-
-fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> {
-    val selectStatement = selectDistinct(
+fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> =
+    selectDistinct(
         id.`as`("A_ID"), firstName, lastName,
         birthDate, employed, occupation, address.id, address.streetAddress, address.city, address.state
     ) {
@@ -69,10 +63,7 @@ fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<Per
             on(person.addressId, equalTo(address.id))
         }
         completer()
-    }
-
-    return selectMany(selectStatement)
-}
+    }.run(this::selectMany)
 
 fun PersonWithAddressMapper.selectByPrimaryKey(id_: Int) =
     selectOne {

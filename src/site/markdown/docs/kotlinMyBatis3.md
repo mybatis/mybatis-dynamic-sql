@@ -344,6 +344,8 @@ insert statements. The extension functions will reuse the abstract method and su
 insert statement:
 
 ```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
+
 fun PersonMapper.insert(record: PersonRecord) =
     insert(this::insert, record, Person) {
         map(id).toProperty("id")
@@ -369,7 +371,7 @@ val rows = mapper.insert(record)
 
 Single record insert statements support returning a generated key using normal MyBatis generated key support. When
 generated keys are expected you must code the mapper method manually and supply the `@Options` annotation that
-configures generated key support. For example:
+configures generated key support. You cannot use the built-in base interface when there are generated keys. For example:
 
 ```kotlin
 interface GeneratedAlwaysMapper {
@@ -383,8 +385,9 @@ This method will return two generated values in each row: `id` and `full_name`. 
 record properties `id` and `fullName` respectively.
 
 ## General Insert Statement
+### Two-Step Method
 General insert statements are constructed as shown on the Kotlin overview page. This method creates
-an `GeneralInsertStatementProvider`  that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
+a `GeneralInsertStatementProvider`  that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
 a `generalInsert` method as follows:
 
 ```kotlin
@@ -447,12 +450,45 @@ val rows = mapper.generalInsert {
 ```
 
 ### Generated Key Support
-Generated keys are not supported with general insert statements.
+You cen retrieve generated keys from general insert statements if you use the two-step method.
+You cannot use the built-in base interface when there are generated keys. First, code the
+abstract mapper method as follows:
+
+```kotlin
+interface GeneratedAlwaysMapper {
+    @InsertProvider(type = SqlProviderAdapter::class, method = "generalInsert")
+    @Options(useGeneratedKeys = true, keyProperty="parameters.id,parameters.fullName", keyColumn = "id,full_name")
+    fun generalInsert(insertStatement: GeneralInsertStatementProvider): Int
+}
+```
+
+This method will return two generated values: `id` and `full_name`. The values will be placed into the
+parameter map in the `GeneralInsertStatementProvider` with keys `id` and `fullName` respectively.
+
+The method can be used as follows:
+
+```kotlin
+val mapper = getMapper() // not shown
+val insertStatement = insertInto(generatedAlways) {
+    set(firstName).toValue("Fred")
+    set(lastName).toValue("Flintstone")
+}
+
+val rows = mapper.generalInsert(insertStatement);
+```
+
+After the statement completes, then generated keys are available in the mapper:
+
+```kotlin
+val id = insertStatement.parameters["id"] as Int
+val fullName = insertStatement.parameters["fullName"] as String
+```
 
 ## Multi-Row Insert Statement
+
 ### Two-Step Method
 Multi-row insert statements are constructed as shown on the Kotlin overview page. This method creates
-a `MultiRowInsertStatementProvider`  that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
+a `MultiRowInsertStatementProvider` that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
 an `insertMultiple` method as follows:
 
 ```kotlin
@@ -483,33 +519,151 @@ val rows: Int = mapper.insertMultiple(insertStatement)
 
 ### One-Step Method
 
+You can use built-in utility functions to create mapper extension functions that simplify execution of multi-row
+insert statements. The extension functions will reuse the abstract method and supply everything needed to build the
+insert statement except the values to insert:
 
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultiple
 
+fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
+    insertMultiple(records.toList())
 
-Insert method support enables the removal of some of the boilerplate code from insert methods in a mapper interfaces.
+fun PersonMapper.insertMultiple(records: Collection<PersonRecord>) =
+    insertMultiple(this::insertMultiple, records, person) {
+        map(id).toProperty("id")
+        map(firstName).toProperty("firstName")
+        map(lastName).toProperty("lastName")
+        map(birthDate).toProperty("birthDate")
+        map(employed).toProperty("employed")
+        map(occupation).toProperty("occupation")
+        map(addressId).toProperty("addressId")
+    }
+```
 
-To use this support, we envision creating several methods - both standard mapper methods, and other extension methods.
-The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute an insert:
+The method is constructed to execute multi-row insert statements on one specific table - `person` in this case.
+
+This extension method reuses the mapper method and supplies all the column mappings. Clients can use the method
+as follows:
+
+```kotlin
+val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+val rows = mapper.insertMultiple(record1, record2)
+```
+
+### Generated Key Support
+
+Multi-row insert statements support returning a generated key using normal MyBatis generated key support. However, 
+generated keys require some care for multi-row insert statements. In this section we will show how to use the
+library's built-in support. When generated keys are expected you must code the mapper method manually and supply the
+`@Options` annotation that configures generated key support. You cannot use the built-in base interface when there are
+generated keys. For example:
+
+```kotlin
+interface GeneratedAlwaysMapper {
+    @InsertProvider(type = SqlProviderAdapter::class, method = "insertMultipleWithGeneratedKeys")
+    @Options(useGeneratedKeys = true, keyProperty="records.id,records.fullName", keyColumn = "id,full_name")
+    fun insertMultiple(insertStatement: String, @Param("records") records: List<GeneratedAlwaysRecord>): Int
+}
+```
+
+Note that this method uses a different `SQLProviderAdapter` method and also uses a decomposed version of the
+provider class. This is done to code around some limitations in MyBatis3. This method will return two generated values
+in each row: `id` and `full_name`. The values will be placed into the record properties `id` and `fullName` respectively.
+
+For the one-step method, the mapper extension method should use a different utility function as shown below:
+
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultipleWithGeneratedKeys
+
+fun GeneratedAlwaysMapper.insertMultiple(records: Collection<GeneratedAlwaysRecord>): Int {
+    return insertMultipleWithGeneratedKeys(this::insertMultiple, records, generatedAlways) {
+        map(firstName).toProperty("firstName")
+        map(lastName).toProperty("lastName")
+    }
+}
+```
+
+## Batch Insert Statement
+
+### Two-Step Method
+Batch insert statements are constructed as shown on the Kotlin overview page. This method creates
+a `BatchInsert` that can be executed with a MyBatis3 mapper method.
+
+Batch inserts will reuse the regular `insert` method created for single record inserts. It is coded as follows:
 
 ```kotlin
 @Mapper
 interface PersonMapper {
     @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
     fun insert(insertStatement: InsertStatementProvider<PersonRecord>): Int
-
-    @InsertProvider(type = SqlProviderAdapter::class, method = "generalInsert")
-    fun generalInsert(insertStatement: GeneralInsertStatementProvider): Int
-
-    @InsertProvider(type = SqlProviderAdapter::class, method = "insertMultiple")
-    fun insertMultiple(insertStatement: MultiRowInsertStatementProvider<PersonRecord>): Int
 }
 ```
 
-These methods can be used to implement simplified insert methods with Kotlin extension methods:
+This is a standard method for MyBatis Dynamic SQL that executes an insert and returns a `Int` - the number of rows
+inserted. This method can also be implemented by using a built-in base interface as follows:
 
 ```kotlin
-fun PersonMapper.insert(record: PersonRecord) =
-    insert(this::insert, record, Person) {
+@Mapper
+interface PersonMapper : CommonInsertMapper<T>
+```
+
+`CommonInsertMapper` can also be used on its own if you inject it into a MyBatis configuration.
+
+MyBatis batch executions are coded as multiple invocations of a simple insert method. The difference is in the
+construction of the mapper. The `SqlSession` associated with the mapper must be in "batch mode". This is accomplished
+when opening the session. For example:
+
+```kotlin
+import org.apache.ibatis.session.ExecutorType
+import org.apache.ibatis.session.SqlSession
+import org.apache.ibatis.session.SqlSessionFactory
+
+val sqlSessionFactory: SqlSessionFactory = getSessionFactory() // not shown
+val sqlSession: SqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)
+val mapper: PersonMaper = sqlSession.getMapper(PersonMapper::class.java)
+```
+
+The mapper is now associated with a BATCH session. The mapper method can be used as follows:
+
+```kotlin
+import org.apache.ibatis.executor.BatchResult
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertBatch
+
+val sqlSessionFactory: SqlSessionFactory = getSessionFactory() // not shown
+val sqlSession: SqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)
+val mapper: PersonMapper = sqlSession.getMapper(PersonMapper::class.java)
+
+val batchInsert = insertBatch(...) // not shown, see overview page
+batchInsert.execute(mapper) // see note below about return value
+val batchResults: List<BatchResult> = sqlSession.flushStatements()
+```
+
+Note the use of the extension function `BatchInsert.execute(mapper)`. This function simply loops over all
+insert statements in the batch and executes them with the supplied mapper. Note also that
+`BatchInsert.execute(mapper)` will return a `List<Int>`. However, when the mapper is in batch mode the
+values in the list will not be useful. In batch mode you must execute `sqlSession.flushStatements()` to obtain update
+counts. The `flushStatements` call will also commit the batch. Note that this built-in support executes all inserts
+as a single transaction. If you have a large batch of records and want to process intermediate commits, you can do so
+by writing code to loop through the list of insert statements obtained from `BatchInsert.insertStatements()` and execute
+flush/commit as desired.
+
+### One-Step Method
+
+You can use built-in utility functions to create mapper extension functions that simplify execution of batch
+insert statements. The extension functions will reuse the abstract method and supply everything needed to build the
+insert statement except the values to insert:
+
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertBatch
+
+fun PersonMapper.insertBatch(vararg records: PersonRecord): List<Int> =
+    insertBatch(records.toList())
+
+fun PersonMapper.insertBatch(records: Collection<PersonRecord>): List<Int> =
+    insertBatch(this::insert, records, person) {
         map(id).toProperty("id")
         map(firstName).toProperty("firstName")
         map(lastName).toProperty("lastName")
@@ -518,67 +672,116 @@ fun PersonMapper.insert(record: PersonRecord) =
         map(occupation).toProperty("occupation")
         map(addressId).toProperty("addressId")
     }
-
-fun PersonMapper.generalInsert(completer: GeneralInsertCompleter) =
-    insertInto(this::generalInsert, Person, completer)
-
-fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
-    insertMultiple(records.toList())
-
-fun PersonMapper.insertMultiple(records: Collection<PersonRecord>) =
-    insertMultiple(this::insertMultiple, records, Person) {
-        map(id).toProperty("id")
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
-        map(birthDate).toProperty("birthDate")
-        map(employed).toProperty("employed")
-        map(occupation).toProperty("occupation")
-        map(addressId).toProperty("addressId")
-    }
-
-fun PersonMapper.insertSelective(record: PersonRecord) =
-    insert(this::insert, record, Person) {
-        map(id).toPropertyWhenPresent("id", record::id)
-        map(firstName).toPropertyWhenPresent("firstName", record::firstName)
-        map(lastName).toPropertyWhenPresent("lastName", record::lastName)
-        map(birthDate).toPropertyWhenPresent("birthDate", record::birthDate)
-        map(employed).toPropertyWhenPresent("employed", record::employed)
-        map(occupation).toPropertyWhenPresent("occupation", record::occupation)
-        map(addressId).toPropertyWhenPresent("addressId", record::addressId)
-    }
 ```
 
-Note these methods use Kotlin utility methods named `insert`, `insertInto`, and `insertMultiple`. Those methods accept a function with a receiver that will allow column mappings. The methods will build and execute insert statements with the supplied column mappings.
+The method is constructed to execute batch insert statements on one specific table - `person` in this case.
 
-Clients use these methods as follows:
+This extension method reuses the mapper method and supplies all the column mappings. Clients can use the method
+as follows:
 
 ```kotlin
-// single insert...
-val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-val rows = mapper.insert(record)
-
-// general insert...
-val rows = mapper.insert {
-    set(id).toValue(100)
-    set(firstName).toValue("Joe")
-    set(lastName).toValue(LastName("Jones"))
-    set(employed).toValue(true)
-    set(occupation).toValue("Developer")
-    set(addressId).toValue(1)
-    set(birthDate).toValue(Date())
-}
-
-// multiple insert...
 val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
-val rows = mapper.insertMultiple(record1, record2)
+
+val sqlSessionFactory: SqlSessionFactory = getSessionFactory() // not shown
+val sqlSession: SqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)
+val mapper: PersonMapper = sqlSession.getMapper(PersonMapper::class.java)
+mapper.insertBatch(record1, record2)
+val batchResults: List<BatchResult> = sqlSession.flushStatements()
 ```
+
+### Generated Key Support
+
+Batch insert statements support returning a generated key using normal MyBatis generated key support. If you code
+the `@Options` annotation on the `insert` statement, then the generated keys will be populated into the input records
+when the transaction is committed or flushed. When generated keys are expected you must code the mapper method manually
+and supply the `@Options` annotation that configures generated key support. You cannot use the built-in base interface
+when there are generated keys. For example:
+
+```kotlin
+interface GeneratedAlwaysMapper {
+    @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
+    @Options(useGeneratedKeys = true, keyProperty="record.id,record.fullName", keyColumn = "id,full_name")
+    fun insert(insertStatement: InsertStatementProvider<GeneratedAlwaysRecord>): Int
+}
+```
+
+This insert method can be used with mappers in batch mode as shown above.
+
+## Insert Select Statement
+### Two-Step Method
+Insert select statements are constructed as shown on the Kotlin overview page. This method creates
+an `InsertSelectStatementProvider` that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
+a `generalInsert` method as follows:
+
+```kotlin
+@Mapper
+interface PersonMapper {
+    @InsertProvider(type = SqlProviderAdapter::class, method = "insertSelect")
+    fun insertSelect(insertSelectStatement: InsertSelectStatementProvider): Int
+}
+```
+
+This is a standard method for MyBatis Dynamic SQL that executes an insert and returns a `Int` - the number of rows
+inserted. This method can also be implemented by using a built-in base interface as follows:
+
+```kotlin
+@Mapper
+interface PersonMapper : CommonInsertMapper<T>
+```
+
+`CommonInsertMapper` can also be used on its own if you inject it into a MyBatis configuration.
+
+The mapper method can be used as follows:
+
+```kotlin
+val insertStatement = insertSelect(...) // not shown, see overview page
+val mapper: PersonMapper = getMapper() // not shown
+val rows: Int = mapper.insertSelect(insertStatement)
+```
+
+### One-Step Method
+You can use built-in utility functions to create mapper extension functions that simplify execution of insert select
+statements. The extension functions will reuse the abstract method and supply everything needed to build the
+insert statement except the values to insert:
+
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertSelect
+
+fun PersonMapper.insertSelect(completer: InsertSelectCompleter) =
+    insertSelect(this::insertSelect, person, completer)
+```
+
+The method is constructed to execute insert statements on one specific table - `person` in this case.
+
+The method shows the use of `InsertSelectCompleter` which is a Kotlin typealias for a function with a receiver that will
+allow a user to supply value column list ans select statement. This also shows use of the Kotlin `insertSelect` method
+which is supplied by the library. This method will build and execute the insert statement with the supplied column
+list and select statement. Clients can use the method as follows:
+
+```kotlin
+val mapper = getMapper() // not shown
+val rows = mapper.insertSelect {
+    columns(id, firstName, lastName, employed, occupation, addressId, birthDate)
+    select(add(id, constant<Int>("100")), firstName, lastName, employed, occupation, addressId, birthDate) {
+        from(person)
+        orderBy(id)
+    }
+}
+```
+
+### Generated Key Support
+
+Generated keys with insert select are not directly supported by library utilities and can be quite challenging.
+There are examples in the source repository if you have a need to do this.
 
 ## Select Method Support
 
-Select method support enables the creation of methods that execute a query allowing a user to specify a where clause and/or an order by clause and/or pagination clauses at runtime, but abstracting away all other details.
-
-To use this support, we envision creating several methods - two standard mapper methods, and other extension methods. The standard mapper methods are standard MyBatis Dynamic SQL methods that will execute a select statement:
+### Two-Step Method
+Select statements are constructed as shown on the Kotlin overview page. Those methods create a
+`SelectStatementProvider` that can be executed with MyBatis3 mapper methods. We recommend creating two mapper methods:
+one that returns a list of records, and another that returns a single record or null:
 
 ```kotlin
 @Mapper
@@ -602,9 +805,35 @@ interface PersonMapper {
 }
 ```
 
-These methods can be used to create simplified select methods with Kotlin extension methods:
+Note that the result map is shared between the two methods.
+
+The methods can be used as follows:
 
 ```kotlin
+val mapper: PersonMapper = getMapper() // not shown
+
+val selectStatement = select(...) // not shown... see the overview page for examples
+val rows: List<PersonRecord> = mapper.selectMany(selectStatement)
+
+val selectOneStatement = select(...) // not shown... see the overview page for examples
+val row: PersonRecord? = mapper.selectOne(selectStatement)
+```
+
+Note that the select statement is the same whether multiple or single rows are expected. Also note that a select
+distinct can be executed with the `selectMany` method.
+
+### One-Step Method
+You can use built-in utility functions to create mapper extension functions that simplify execution of select statements.
+The extension functions will reuse the abstract methods and supply the table and column list for the statement.
+We recommend three extension methods for select multiple records, select multiple records with the distinct keyword, 
+and selecting a single record:
+
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
+
 private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.selectOne(completer: SelectCompleter) =
@@ -617,7 +846,31 @@ fun PersonMapper.selectDistinct(completer: SelectCompleter) =
     selectDistinct(this::selectMany, columnList, Person, completer)
 ```
 
-These methods show the use of `SelectCompleter` which is a which is a Kotlin typealias for a function with a receiver that will allow a user to supply a where clause. The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause and/or an order by clause. Typically we recommend two of these methods - for select, and select distinct. The `selectOne` method is used to create a generalized select method where a user can specify a where clause. These methods also show the use of the built in Kotlin functions `selectDistinct`, `selectList`, and `selectOne`. These functions build and execute select statements, and help to avoid platform type issues in Kotlin. They enable the Kotlin compiler to correctly infer the result type (either `PersonRecord?` or `List<PersonRecord>` in this case). 
+The methods are constructed to execute select statements on one specific table - `person` in this case - and with a fixed
+column list that matches the MyBatis result mapping.
+
+The methods show the use of `SelectCompleter` which is a Kotlin typealias for a function with a receiver that will
+allow a user to supply a where clause. This also shows use of the Kotlin `selectDistinct`, `selectList`, and `selectOne`
+methods which are supplied by the library. Those methods will build and execute the select statement. Clients can use
+the methods as follows:
+
+```kotlin
+val mapper = getMapper() // not shown
+val distinctRecords = mapper.selectDistinct {
+    where(id, isGreaterThan(5))
+}
+
+val rows = mapper.select {
+    where(firstName, isIn("Fred", "Barney"))
+    orderBy(id)
+    limit(3)
+}
+
+val record = mapper.selectOne {
+    where(id, isEqualTo(1))
+}
+
+```
 
 The general `selectOne` method can also be used to implement a `selectByPrimaryKey` method:
 
@@ -626,16 +879,6 @@ fun PersonMapper.selectByPrimaryKey(id_: Int) =
     selectOne {
         where(id, isEqualTo(id_))
     }
-```
-
-Clients can use the methods as follows:
-
-```kotlin
-val rows = mapper.select {
-    where(firstName, isIn("Fred", "Barney"))
-    orderBy(id)
-    limit(3)
-}
 ```
 
 There is a utility method that will select all rows in a table:
@@ -650,6 +893,36 @@ The following query will select all rows in a specified order:
 val rows = mapper.select {
     allRows()
     orderBy(lastName, firstName)
+}
+```
+### Join Support
+
+You can implement functions that support a reusable select method based on a join. In this way, you can create
+the start of the select statement (the column list and join specifications) and allow the user to supply where clauses
+and other parts of a select statement. For example, you could code a mapper extension method like this:
+
+```kotlin
+fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> =
+    select(
+        id.`as`("A_ID"), firstName, lastName, birthDate,
+        employed, occupation, address.id, address.streetAddress, address.city, address.state
+    ) {
+        from(person, "p")
+        fullJoin(address) {
+            on(person.addressId, equalTo(address.id))
+        }
+        completer()
+    }.run(this::selectMany)
+```
+
+This method creates the start of a select statement with a join, and accepts user input to complete the statement.
+This shows reuse of a regular MyBatis mapper method - `selectMany` as shown above - with a result map that matches the
+select list. Like other select methods, this method can be used as follows:
+
+```kotlin
+val records = mapper.select {
+    where(id, isLessThan(100))
+    limit(5)
 }
 ```
 
@@ -712,33 +985,5 @@ This method will selectively set values if corresponding fields in a record are 
 val rows = mapper.update {
     updateSelectiveColumns(updateRecord)
     where(id, isEqualTo(100))
-}
-```
-## Join Support
-
-There are functions that support building a reusable select method based on a join. In this way, you can create the
-start of the select statement (the column list and join specifications) and allow the user to supply where clauses and
-other parts of a select statement. For example, you could code a mapper extension method like this:
-
-```kotlin
-fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
-    val start = select(columnList) {
-        from(Person, "p")        
-        join(Address, "a") {
-            on(Person.addressId, equalTo(Address.id))
-        }
-    }
-    return selectList(this::selectMany, start, completer)
-}
-```
-
-This method creates the start of a select statement with a join, and accepts user input to complete the statement.
-This shows use of and overloaded `selectList` method that accepts the start of a select statement and a completer.
-Like other select methods, this method can be used as follows:
-
-```kotlin
-val records = mapper.select {
-    where(id, isLessThan(100))
-    limit(5)
 }
 ```

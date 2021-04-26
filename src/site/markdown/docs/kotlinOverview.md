@@ -208,7 +208,7 @@ This method creates models or providers depending on which package is used:
 | org.mybatis.dynamic.sql.util.kotlin.mybatis3 | org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider (rendered for MyBatis3) |
 | org.mybatis.dynamic.sql.util.kotlin.spring | org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider (rendered for Spring) |
 
-### Single Record Insert Statement
+## Single Record Insert Statement
 
 This method support enables the creation of arbitrary insert statements given a class that matches a database row.
 If you do not with to create such a class, then see the general insert support following this section.
@@ -251,7 +251,7 @@ This method creates models or providers depending on which package is used:
 | org.mybatis.dynamic.sql.util.kotlin.mybatis3 | org.mybatis.dynamic.sql.insert.render.InsertStatementProvider (rendered for MyBatis3) |
 | org.mybatis.dynamic.sql.util.kotlin.spring | org.mybatis.dynamic.sql.insert.render.InsertStatementProvider (rendered for Spring) |
 
-### General Insert Statement
+## General Insert Statement
 
 General insert method support enables the creation of arbitrary insert statements and does not require the creation of
 a class matching the database row.
@@ -278,7 +278,7 @@ This method creates models or providers depending on which package is used:
 | org.mybatis.dynamic.sql.util.kotlin.mybatis3 | org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider (rendered for MyBatis3) |
 | org.mybatis.dynamic.sql.util.kotlin.spring | org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider (rendered for Spring) |
 
-### Multi-Row Insert Statement
+## Multi-Row Insert Statement
 
 Multi-row inserts allow you to insert multiple rows into a table with a single insert statement. This is a convenient
 way to insert multiple rows, but there are some limitations. Multi-row inserts are not intended for large bulk inserts
@@ -323,7 +323,7 @@ This method creates models or providers depending on which package is used:
 | org.mybatis.dynamic.sql.util.kotlin.mybatis3 | org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider (rendered for MyBatis3) |
 | org.mybatis.dynamic.sql.util.kotlin.spring | org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider (rendered for Spring) |
 
-### Batch Insert Statement
+## Batch Insert Statement
 
 A batch insert is a sequence of insert statements that can be handled as a batch by the JDBC driver. Batches
 have virtually no limit on the number of statements that can be executed. Batches also support intermediate commits.
@@ -361,7 +361,7 @@ This method creates models or providers depending on which package is used:
 | org.mybatis.dynamic.sql.util.kotlin.mybatis3 | org.mybatis.dynamic.sql.insert.render.BatchInsert (rendered for MyBatis3) |
 | org.mybatis.dynamic.sql.util.kotlin.spring | org.mybatis.dynamic.sql.insert.render.BatchInsert (rendered for Spring) |
 
-### Insert Select Statement
+## Insert Select Statement
 
 An insert select statement obtains insert values from a nested select statement.
 

@@ -19,6 +19,7 @@ package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
+import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
@@ -44,7 +45,10 @@ fun count(
     table: SqlTable,
     completer: CountCompleter
 ): Long =
-    mapper(count(column) { completer(from(table)) })
+    count(column) {
+        from(table)
+        completer()
+    }.run(mapper)
 
 fun countDistinct(
     mapper: (SelectStatementProvider) -> Long,
@@ -52,13 +56,16 @@ fun countDistinct(
     table: SqlTable,
     completer: CountCompleter
 ): Long =
-    mapper(countDistinct(column) { completer(from(table)) })
+    countDistinct(column) {
+        from(table)
+        completer()
+    }.run(mapper)
 
 fun countFrom(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter): Long =
-    mapper(countFrom(table, completer))
+    countFrom(table, completer).run(mapper)
 
 fun deleteFrom(mapper: (DeleteStatementProvider) -> Int, table: SqlTable, completer: DeleteCompleter): Int =
-    mapper(deleteFrom(table, completer))
+    deleteFrom(table, completer).run(mapper)
 
 fun <T> insert(
     mapper: (InsertStatementProvider<T>) -> Int,
@@ -66,11 +73,17 @@ fun <T> insert(
     table: SqlTable,
     completer: InsertCompleter<T>
 ): Int =
-    mapper(insert(record).into(table, completer))
+    insert(record).into(table, completer).run(mapper)
+
+fun <T> BatchInsert<T>.execute(mapper: (InsertStatementProvider<T>) -> Int): List<Int> =
+    insertStatements().map(mapper)
 
 /**
  * This function simply inserts all rows using the supplied mapper. It is up
- * to the user to manage MyBatis3 batch processing externally.
+ * to the user to manage MyBatis3 batch processing externally. When executed with a SqlSession
+ * in batch mode, the return value will not contain relevant update counts (each entry in the
+ * list will be [org.apache.ibatis.executor.BatchExecutor.BATCH_UPDATE_RETURN_VALUE]).
+ * To retrieve update counts, execute [org.apache.ibatis.session.SqlSession.flushStatements].
  */
 fun <T> insertBatch(
     mapper: (InsertStatementProvider<T>) -> Int,
@@ -78,16 +91,14 @@ fun <T> insertBatch(
     table: SqlTable,
     completer: BatchInsertCompleter<T>
 ): List<Int> =
-    insertBatch(records).into(table, completer).run {
-        insertStatements().map(mapper)
-    }
+    insertBatch(records).into(table, completer).execute(mapper)
 
 fun insertInto(
     mapper: (GeneralInsertStatementProvider) -> Int,
     table: SqlTable,
     completer: GeneralInsertCompleter
 ): Int =
-    mapper(insertInto(table, completer))
+    insertInto(table, completer).run(mapper)
 
 fun <T> insertMultiple(
     mapper: (MultiRowInsertStatementProvider<T>) -> Int,
@@ -95,7 +106,7 @@ fun <T> insertMultiple(
     table: SqlTable,
     completer: MultiRowInsertCompleter<T>
 ): Int =
-    mapper(insertMultiple(records).into(table, completer))
+    insertMultiple(records).into(table, completer).run(mapper)
 
 fun <T> insertMultipleWithGeneratedKeys(
     mapper: (String, List<T>) -> Int,
@@ -112,7 +123,7 @@ fun insertSelect(
     table: SqlTable,
     completer: InsertSelectCompleter
 ): Int =
-    mapper(insertSelect(table, completer))
+    insertSelect(table, completer).run(mapper)
 
 fun <T> selectDistinct(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -120,12 +131,10 @@ fun <T> selectDistinct(
     table: SqlTable,
     completer: SelectCompleter
 ): List<T> =
-    mapper(
-        selectDistinct(selectList) {
-            from(table)
-            completer()
-        }
-    )
+    selectDistinct(selectList) {
+        from(table)
+        completer()
+    }.run(mapper)
 
 fun <T> selectList(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -133,12 +142,10 @@ fun <T> selectList(
     table: SqlTable,
     completer: SelectCompleter
 ): List<T> =
-    mapper(
-        select(selectList) {
-            from(table)
-            completer()
-        }
-    )
+    select(selectList) {
+        from(table)
+        completer()
+    }.run(mapper)
 
 fun <T> selectOne(
     mapper: (SelectStatementProvider) -> T?,
@@ -146,12 +153,10 @@ fun <T> selectOne(
     table: SqlTable,
     completer: SelectCompleter
 ): T? =
-    mapper(
-        select(selectList) {
-            from(table)
-            completer()
-        }
-    )
+    select(selectList) {
+        from(table)
+        completer()
+    }.run(mapper)
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter): Int =
-    mapper(update(table, completer))
+    update(table, completer).run(mapper)

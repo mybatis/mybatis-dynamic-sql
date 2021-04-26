@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 package examples.generated.always.mybatis;
 
 import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.firstName;
-import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.fullName;
 import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.id;
 import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.lastName;
-import static examples.generated.always.mybatis.PersonDynamicSqlSupport.*;
+import static examples.generated.always.mybatis.PersonDynamicSqlSupport.person;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,9 +51,7 @@ public interface PersonMapper {
     @Options(useGeneratedKeys = true, keyProperty = "record.id")
     int insert(InsertStatementProvider<PersonRecord> insertStatement);
 
-    @Insert({
-        "${insertStatement}"
-    })
+    @InsertProvider(type=SqlProviderAdapter.class, method="insertMultipleWithGeneratedKeys")
     @Options(useGeneratedKeys = true, keyProperty = "records.id")
     int insertMultiple(@Param("insertStatement") String insertStatement, @Param("records") List<PersonRecord> records);
 
