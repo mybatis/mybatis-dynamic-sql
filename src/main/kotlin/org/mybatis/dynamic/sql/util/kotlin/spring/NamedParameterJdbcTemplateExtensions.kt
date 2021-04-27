@@ -124,6 +124,12 @@ fun NamedParameterJdbcTemplate.insertSelect(table: SqlTable, completer: InsertSe
 fun NamedParameterJdbcTemplate.insertSelect(insertStatement: InsertSelectStatementProvider): Int =
     update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters))
 
+fun NamedParameterJdbcTemplate.insertSelect(
+    insertStatement: InsertSelectStatementProvider,
+    keyHolder: KeyHolder
+): Int =
+    update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters), keyHolder)
+
 // insert with KeyHolder support
 fun NamedParameterJdbcTemplate.withKeyHolder(keyHolder: KeyHolder, build: KeyHolderHelper.() -> Int): Int =
     build(KeyHolderHelper(keyHolder, this))
@@ -238,6 +244,9 @@ class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: Na
 
     fun <T : Any> insertMultiple(records: List<T>): MultiRowInsertWithKeyHolderHelper<T> =
         MultiRowInsertWithKeyHolderHelper(records, template, keyHolder)
+
+    fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): Int =
+        template.insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(table, completer), keyHolder)
 }
 
 @MyBatisDslMarker

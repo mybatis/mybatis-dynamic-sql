@@ -339,6 +339,27 @@ class CanonicalSpringKotlinTemplateDirectTest {
     }
 
     @Test
+    fun testInsertSelectWithGeneratedKey() {
+        val keyHolder = GeneratedKeyHolder()
+
+        val rows = template.withKeyHolder(keyHolder) {
+            insertSelect(generatedAlways) {
+                columns(generatedAlways.firstName, generatedAlways.lastName)
+                select(person.firstName, person.lastName) {
+                    from(person)
+                }
+            }
+        }
+
+        assertThat(rows).isEqualTo(6)
+        assertThat(keyHolder.keyList).hasSize(6)
+        assertThat(keyHolder.keyList[0]).containsEntry("ID", 22)
+        assertThat(keyHolder.keyList[0]).containsEntry("FULL_NAME", "Fred Flintstone")
+        assertThat(keyHolder.keyList[5]).containsEntry("ID", 27)
+        assertThat(keyHolder.keyList[5]).containsEntry("FULL_NAME", "Bamm Bamm Rubble")
+    }
+
+    @Test
     fun testSelectAll() {
         val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)

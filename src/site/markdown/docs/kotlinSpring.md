@@ -388,6 +388,13 @@ val template: NamedParameterJdbcTemplate = getTemplate() // not shown
 val rows = template.insertSelect(insertStatement) // rows is an Int
 ```
 
+If you want to retrieve generated keys, you can use Spring's KeyHolder as follows:
+
+```kotlin
+val keyHolder = GeneratedKeyHolder()
+val rows = template.insertSelect(insertStatement, keyHolder)  // rows is an Int
+```
+
 ### One-Step Method
 Insert select statements can be constructed and executed in a single step with code like the following:
 
@@ -399,6 +406,24 @@ val insertSelectRows: Int = template.insertSelect(person) {
     ) {
         from(person)
         where(employed, isTrue())
+    }
+}
+```
+
+Using a KeyHolder with the single step method looks like this:
+
+```kotlin
+val keyHolder = GeneratedKeyHolder()
+
+val rows = template.withKeyHolder(keyHolder) {
+    insertSelect(person) {
+       columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
+       select(
+          add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId
+       ) {
+          from(person)
+          where(employed, isTrue())
+       }
     }
 }
 ```
