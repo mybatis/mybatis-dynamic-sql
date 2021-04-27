@@ -15,12 +15,16 @@
  */
 package org.mybatis.dynamic.sql.util.mybatis3;
 
+import org.apache.ibatis.annotations.Flush;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.executor.BatchResult;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+
+import java.util.List;
 
 /**
  * This is a general purpose mapper for executing various types of insert statements.
@@ -65,4 +69,13 @@ public interface CommonInsertMapper<T> {
      */
     @InsertProvider(type = SqlProviderAdapter.class, method = "insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<T> insertStatement);
+
+    /**
+     * Flush batched insert statements and return details of the current batch.
+     * This is useful when there is no direct access to the @link({@link org.apache.ibatis.session.SqlSession}.
+     *
+     * @return details about the current batch including update counts, etc.
+     */
+    @Flush
+    List<BatchResult> flush();
 }

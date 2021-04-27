@@ -113,7 +113,7 @@ methods directly involves two steps: create the provider object, then execute th
 
 The extension methods will reuse the abstract methods and add functionality to mappers that will build and
 execute the SQL statements in a one-step process. The extension methods shown below assume that you will create
-a set of CRUD methods for each table you are accessing (as is the case with code created by MyBatis generator).
+a set of CRUD methods for each table you are accessing (as is the case with code created by MyBatis Generator).
 
 If you create a Kotlin mapper interface that includes both abstract and non-abstract methods, MyBatis will 
 throw errors. By default, Kotlin does not create Java default methods in an interface. For this reason, Kotlin
@@ -474,7 +474,7 @@ val insertStatement = insertInto(generatedAlways) {
     set(lastName).toValue("Flintstone")
 }
 
-val rows = mapper.generalInsert(insertStatement);
+val rows = mapper.generalInsert(insertStatement)
 ```
 
 After the statement completes, then generated keys are available in the mapper:
@@ -592,18 +592,27 @@ fun GeneratedAlwaysMapper.insertMultiple(records: Collection<GeneratedAlwaysReco
 Batch insert statements are constructed as shown on the Kotlin overview page. This method creates
 a `BatchInsert` that can be executed with a MyBatis3 mapper method.
 
-Batch inserts will reuse the regular `insert` method created for single record inserts. It is coded as follows:
+Batch inserts will reuse the regular `insert` method created for single record inserts. It is also convenient to create
+a method to flush the batch statements - this causes a commit and returns detailed information about the
+batch such as update counts. The methods are coded as follows:
 
 ```kotlin
+import org.apache.ibatis.annotations.Flush
+import org.apache.ibatis.annotations.InsertProvider
+import org.apache.ibatis.executor.BatchResult
+
 @Mapper
 interface PersonMapper {
     @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
     fun insert(insertStatement: InsertStatementProvider<PersonRecord>): Int
+    
+    @Flush
+    fun flush(): List<BatchResult>
 }
 ```
 
-This is a standard method for MyBatis Dynamic SQL that executes an insert and returns a `Int` - the number of rows
-inserted. This method can also be implemented by using a built-in base interface as follows:
+
+These are standard methods for MyBatis. The methods can also be implemented by using a built-in base interface as follows:
 
 ```kotlin
 @Mapper
@@ -638,14 +647,14 @@ val mapper: PersonMapper = sqlSession.getMapper(PersonMapper::class.java)
 
 val batchInsert = insertBatch(...) // not shown, see overview page
 batchInsert.execute(mapper) // see note below about return value
-val batchResults: List<BatchResult> = sqlSession.flushStatements()
+val batchResults: mapper.flush()
 ```
 
 Note the use of the extension function `BatchInsert.execute(mapper)`. This function simply loops over all
 insert statements in the batch and executes them with the supplied mapper. Note also that
 `BatchInsert.execute(mapper)` will return a `List<Int>`. However, when the mapper is in batch mode the
-values in the list will not be useful. In batch mode you must execute `sqlSession.flushStatements()` to obtain update
-counts. The `flushStatements` call will also commit the batch. Note that this built-in support executes all inserts
+values in the list will not be useful. In batch mode you must execute the flush method (or `sqlSession.flushStatements()`)
+to obtain update counts. The `flush` call will also commit the batch. Note that this built-in support executes all inserts
 as a single transaction. If you have a large batch of records and want to process intermediate commits, you can do so
 by writing code to loop through the list of insert statements obtained from `BatchInsert.insertStatements()` and execute
 flush/commit as desired.
@@ -687,7 +696,7 @@ val sqlSessionFactory: SqlSessionFactory = getSessionFactory() // not shown
 val sqlSession: SqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)
 val mapper: PersonMapper = sqlSession.getMapper(PersonMapper::class.java)
 mapper.insertBatch(record1, record2)
-val batchResults: List<BatchResult> = sqlSession.flushStatements()
+val batchResults: mapper.flush()
 ```
 
 ### Generated Key Support

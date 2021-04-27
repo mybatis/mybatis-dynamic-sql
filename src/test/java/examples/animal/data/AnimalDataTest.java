@@ -1571,7 +1571,7 @@ class AnimalDataTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             batchInsert.insertStatements().forEach(mapper::insert);
-            sqlSession.commit();
+            mapper.flush();
 
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)

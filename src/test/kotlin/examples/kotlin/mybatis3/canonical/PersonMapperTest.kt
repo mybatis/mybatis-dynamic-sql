@@ -257,7 +257,7 @@ class PersonMapperTest {
 
             mapper.insertBatch(record1, record2)
 
-            val batchResults = session.flushStatements()
+            val batchResults = mapper.flush()
             assertThat(batchResults).hasSize(1)
             assertThat(batchResults.flatMap { it.updateCounts.asList() }.sum()).isEqualTo(2)
         }
