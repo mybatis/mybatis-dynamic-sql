@@ -38,7 +38,7 @@
     <spring.batch.version>4.3.2</spring.batch.version>
     <clirr.comparisonVersion>1.2.0</clirr.comparisonVersion>
     <module.name>org.mybatis.dynamic.sql</module.name>
-    <kotlin.version>1.4.32</kotlin.version>
+    <kotlin.version>1.5.0</kotlin.version>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
@@ -218,7 +218,7 @@
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
-      <version>3.5.6</version>
+      <version>3.5.7</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
@@ -312,7 +312,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.19</version>
+      <version>42.2.20</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
