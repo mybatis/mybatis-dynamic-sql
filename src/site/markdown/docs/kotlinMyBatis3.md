@@ -600,6 +600,7 @@ batch such as update counts. The methods are coded as follows:
 import org.apache.ibatis.annotations.Flush
 import org.apache.ibatis.annotations.InsertProvider
 import org.apache.ibatis.executor.BatchResult
+...
 
 @Mapper
 interface PersonMapper {
@@ -612,7 +613,10 @@ interface PersonMapper {
 ```
 
 
-These are standard methods for MyBatis. The methods can also be implemented by using a built-in base interface as follows:
+These are standard methods for MyBatis. Note that the return value of the "insert" statement will NOT be the number of
+rows when using batch mode operations. In batch mode the rows are not actually inserted until the statements
+are flushed, or the session is committed. In batch mode, the return value is a constant with no actual meaning.
+The methods can also be implemented by using a built-in base interface as follows:
 
 ```kotlin
 @Mapper
@@ -937,9 +941,10 @@ val records = mapper.select {
 
 ## Update Method Support
 
-Update method support enables the creation of methods that execute an update allowing a user to specify SET clauses and/or a WHERE clause, but abstracting away all other details.
-
-To use this support, we envision creating several methods - one standard mapper method, and other extension methods. The standard mapper method is a standard MyBatis Dynamic SQL methods that will execute an update:
+### Two-Step Method
+Update statements are constructed as shown on the Kotlin overview page. This method creates an
+`UpdateStatementProvider` that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
+an `update` method as follows:
 
 ```kotlin
 @Mapper
@@ -949,31 +954,62 @@ interface PersonMapper {
 }
 ```
 
-This is a standard method for MyBatis Dynamic SQL that executes an update and returns an `int` - the number of rows updated. The extension methods will reuse this method and supply everything needed to build the update statement except the values and the where clause:
+This is a standard method for MyBatis Dynamic SQL that executes an update and returns an `Int` - the number of rows
+updated. This method can also be implemented by using a built-in base interface as follows:
 
 ```kotlin
-fun PersonMapper.update(completer: UpdateCompleter) =
-    update(this::update, Person, completer)
+@Mapper
+interface PersonMapper : CommonUpdateMapper
 ```
 
-This extension method shows the use of `UpdateCompleter` which is a Kotlin typealias for a function with a receiver that will allow a user to supply values and a where clause. This also shows use of the Kotlin `update` method which is supplied by the library. That method will build and execute the update statement with the supplied values and where clause. Clients can use the method as follows:
+`CommonUpdateMapper` can also be used on its own if you inject it into a MyBatis configuration.
+
+The mapper method can be used as follows:
+
+```kotlin
+val updateStatement = update(...) // not shown... see the overview page for examples
+val mapper: PersonMapper = getMapper() // not shown
+val rows: Int = mapper.update(updateStatement)
+```
+
+### One-Step Method
+You can use built-in utility functions to create mapper extension functions that simplify execution of update statements.
+The extension functions will reuse the abstract method and supply everything needed to build the update statement
+except the set and where clauses:
+
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
+
+fun PersonMapper.update(completer: UpdateCompleter) =
+    update(this::update, person, completer)
+```
+
+The method is constructed to execute update statements on one specific table - `person` in this case.
+
+The method shows the use of `UpdateCompleter` which is a Kotlin typealias for a function with a receiver that will
+allow a user to supply set phrases and a where clause. This also shows use of the Kotlin `update` method which is
+supplied by the library. Those methods will build and execute the update statement with the supplied set phrases and
+where clause. Clients can use the method as follows:
 
 ```kotlin
 val rows = mapper.update {
     set(occupation).equalTo("Programmer")
     where(id, isEqualTo(100))
+    and(firstName, isEqualTo("Joe"))
 }
 ```
 
-All rows in a table can be updated by simply omitting the where clause:
+If you wish to update all rows in a table, you can simply omit the where clause as follows:
 
 ```kotlin
+// update all rows...
 val rows = mapper.update {
     set(occupation).equalTo("Programmer")
 }
 ```
 
-It is also possible to write a utility method that will set values. For example:
+It is also possible to write utility methods that will set values. For example:
 
 ```kotlin
 fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
@@ -988,7 +1024,8 @@ fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
     }
 ```
 
-This method will selectively set values if corresponding fields in a record are non null. This method can be used as follows:
+This method will selectively set values if corresponding fields in a record are non-null. This method can be used as
+follows:
 
 ```kotlin
 val rows = mapper.update {
@@ -996,3 +1033,35 @@ val rows = mapper.update {
     where(id, isEqualTo(100))
 }
 ```
+
+If you wish to implement an "update by primary key" method, you can reuse the extension method as follows:
+
+```kotlin
+fun PersonMapper.updateByPrimaryKey(record: PersonRecord) =
+    update {
+        set(firstName).equalToOrNull(record::firstName)
+        set(lastName).equalToOrNull(record::lastName)
+        set(birthDate).equalToOrNull(record::birthDate)
+        set(employed).equalToOrNull(record::employed)
+        set(occupation).equalToOrNull(record::occupation)
+        set(addressId).equalToOrNull(record::addressId)
+        where(id, isEqualTo(record.id!!))
+    }
+
+fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
+    update {
+        set(firstName).equalToWhenPresent(record::firstName)
+        set(lastName).equalToWhenPresent(record::lastName)
+        set(birthDate).equalToWhenPresent(record::birthDate)
+        set(employed).equalToWhenPresent(record::employed)
+        set(occupation).equalToWhenPresent(record::occupation)
+        set(addressId).equalToWhenPresent(record::addressId)
+        where(id, isEqualTo(record.id!!))
+    }
+```
+
+The method `updateByPrimaryKey` will update every column - if a property in the record is null, the column will be set
+to null.
+
+The method `updateByPrimaryKeySelective` will update every column that has a non-null corresponding property
+in the record. If a property in the record is null, the column will not be updated.
