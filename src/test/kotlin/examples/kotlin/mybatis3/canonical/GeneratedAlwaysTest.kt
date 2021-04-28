@@ -109,7 +109,7 @@ class GeneratedAlwaysTest {
 
             mapper.insertBatch(listOf(record1, record2))
 
-            val batchResults = session.flushStatements()
+            val batchResults = mapper.flush()
 
             assertThat(batchResults).hasSize(1)
             assertThat(batchResults[0].updateCounts).hasSize(2)

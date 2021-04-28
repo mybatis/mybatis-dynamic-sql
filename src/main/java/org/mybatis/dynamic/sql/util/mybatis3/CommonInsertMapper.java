@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.util.mybatis3;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Flush;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.executor.BatchResult;
@@ -23,8 +25,6 @@ import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-
-import java.util.List;
 
 /**
  * This is a general purpose mapper for executing various types of insert statements.
