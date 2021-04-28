@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,40 +15,41 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.employed
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
 import org.apache.ibatis.session.Configuration
+import org.apache.ibatis.session.ExecutorType
 import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.add
-import org.mybatis.dynamic.sql.SqlBuilder.constant
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.isFalse
-import org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan
-import org.mybatis.dynamic.sql.SqlBuilder.isIn
-import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
-import org.mybatis.dynamic.sql.SqlBuilder.isLike
-import org.mybatis.dynamic.sql.SqlBuilder.isNotLike
-import org.mybatis.dynamic.sql.SqlBuilder.isNull
-import org.mybatis.dynamic.sql.SqlBuilder.isTrue
+import org.mybatis.dynamic.sql.util.kotlin.elements.add
+import org.mybatis.dynamic.sql.util.kotlin.elements.constant
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isFalse
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNotLike
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNull
+import org.mybatis.dynamic.sql.util.kotlin.elements.isTrue
 import java.io.InputStreamReader
 import java.sql.DriverManager
 import java.util.Date
 
 class PersonMapperTest {
-    private fun newSession(): SqlSession {
+    private fun newSession(executorType: ExecutorType = ExecutorType.REUSE): SqlSession {
         Class.forName(JDBC_DRIVER)
         val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
         DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
@@ -63,7 +64,7 @@ class PersonMapperTest {
         config.typeHandlerRegistry.register(YesNoTypeHandler::class.java)
         config.addMapper(PersonMapper::class.java)
         config.addMapper(PersonWithAddressMapper::class.java)
-        return SqlSessionFactoryBuilder().build(config).openSession()
+        return SqlSessionFactoryBuilder().build(config).openSession(executorType)
     }
 
     @Test
@@ -237,12 +238,28 @@ class PersonMapperTest {
             val rows = mapper.insertSelect {
                 columns(id, firstName, lastName, employed, occupation, addressId, birthDate)
                 select(add(id, constant<Int>("100")), firstName, lastName, employed, occupation, addressId, birthDate) {
-                    from(Person)
+                    from(person)
                     orderBy(id)
                 }
             }
 
             assertThat(rows).isEqualTo(6)
+        }
+    }
+
+    @Test
+    fun testInsertBatch() {
+        newSession(ExecutorType.BATCH).use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+            mapper.insertBatch(record1, record2)
+
+            val batchResults = mapper.flush()
+            assertThat(batchResults).hasSize(1)
+            assertThat(batchResults.flatMap { it.updateCounts.asList() }.sum()).isEqualTo(2)
         }
     }
 
@@ -281,8 +298,10 @@ class PersonMapperTest {
             var rows = mapper.insert(record)
             assertThat(rows).isEqualTo(1)
 
-            record.occupation = "Programmer"
-            rows = mapper.updateByPrimaryKey(record)
+            rows = mapper.update {
+                set(occupation).equalTo("Programmer")
+                where(id, isEqualTo(100))
+            }
             assertThat(rows).isEqualTo(1)
 
             val newRecord = mapper.selectByPrimaryKey(100)
@@ -300,8 +319,10 @@ class PersonMapperTest {
             var rows = mapper.insert(record)
             assertThat(rows).isEqualTo(1)
 
-            val updateRecord = PersonRecord(id = 100, occupation = "Programmer")
-            rows = mapper.updateByPrimaryKeySelective(updateRecord)
+            rows = mapper.update {
+                set(occupation).equalTo("Programmer")
+                where(id, isEqualTo(100))
+            }
             assertThat(rows).isEqualTo(1)
 
             val newRecord = mapper.selectByPrimaryKey(100)
@@ -320,10 +341,8 @@ class PersonMapperTest {
             var rows = mapper.insert(record)
             assertThat(rows).isEqualTo(1)
 
-            record.occupation = "Programmer"
-
             rows = mapper.update {
-                updateAllColumns(record)
+                set(occupation).equalTo("Programmer")
                 where(id, isEqualTo(100))
                 and(firstName, isEqualTo("Joe"))
             }
@@ -388,10 +407,8 @@ class PersonMapperTest {
             var rows = mapper.insert(record)
             assertThat(rows).isEqualTo(1)
 
-            val updateRecord = PersonRecord(occupation = "Programmer")
-
             rows = mapper.update {
-                updateSelectiveColumns(updateRecord)
+                set(occupation).equalTo("Programmer")
             }
 
             assertThat(rows).isEqualTo(7)
@@ -411,10 +428,8 @@ class PersonMapperTest {
             var rows = mapper.insert(record)
             assertThat(rows).isEqualTo(1)
 
-            val updateRecord = PersonRecord(occupation = "Programmer")
-
             rows = mapper.update {
-                updateSelectiveColumns(updateRecord)
+                set(occupation).equalTo("Programmer")
                 where(id, isEqualTo(100))
             }
 
@@ -576,11 +591,11 @@ class PersonMapperTest {
             assertThat(records).hasSize(6)
             with(records[0]) {
                 assertThat(id).isEqualTo(1)
-                assertThat(employed).isTrue()
+                assertThat(employed).isTrue
                 assertThat(firstName).isEqualTo("Fred")
                 assertThat(lastName).isEqualTo(LastName("Flintstone"))
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
-                assertThat(birthDate).isNotNull()
+                assertThat(birthDate).isNotNull
                 assertThat(address?.id).isEqualTo(1)
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
                 assertThat(address?.city).isEqualTo("Bedrock")
@@ -601,11 +616,11 @@ class PersonMapperTest {
             assertThat(records).hasSize(1)
             with(records[0]) {
                 assertThat(id).isEqualTo(1)
-                assertThat(employed).isTrue()
+                assertThat(employed).isTrue
                 assertThat(firstName).isEqualTo("Fred")
                 assertThat(lastName).isEqualTo(LastName("Flintstone"))
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
-                assertThat(birthDate).isNotNull()
+                assertThat(birthDate).isNotNull
                 assertThat(address?.id).isEqualTo(1)
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
                 assertThat(address?.city).isEqualTo("Bedrock")
@@ -626,11 +641,11 @@ class PersonMapperTest {
             assertThat(records).hasSize(1)
             with(records[0]) {
                 assertThat(id).isEqualTo(1)
-                assertThat(employed).isTrue()
+                assertThat(employed).isTrue
                 assertThat(firstName).isEqualTo("Fred")
                 assertThat(lastName).isEqualTo(LastName("Flintstone"))
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
-                assertThat(birthDate).isNotNull()
+                assertThat(birthDate).isNotNull
                 assertThat(address?.id).isEqualTo(1)
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
                 assertThat(address?.city).isEqualTo("Bedrock")
@@ -646,14 +661,14 @@ class PersonMapperTest {
 
             val record = mapper.selectByPrimaryKey(1)
 
-            assertThat(record).isNotNull()
+            assertThat(record).isNotNull
             with(record!!) {
                 assertThat(id).isEqualTo(1)
-                assertThat(employed).isTrue()
+                assertThat(employed).isTrue
                 assertThat(firstName).isEqualTo("Fred")
                 assertThat(lastName).isEqualTo(LastName("Flintstone"))
                 assertThat(occupation).isEqualTo("Brontosaurus Operator")
-                assertThat(birthDate).isNotNull()
+                assertThat(birthDate).isNotNull
                 assertThat(address?.id).isEqualTo(1)
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
                 assertThat(address?.city).isEqualTo("Bedrock")

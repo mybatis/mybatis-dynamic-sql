@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,19 +16,35 @@
 package examples.kotlin.mybatis3.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 import java.util.Date
 
 object PersonDynamicSqlSupport {
-    object Person : SqlTable("Person") {
-        val id = column<Int>("id", JDBCType.INTEGER)
-        val firstName = column<String>("first_name", JDBCType.VARCHAR)
-        val lastName =
-            column<LastName>("last_name", JDBCType.VARCHAR, "examples.kotlin.mybatis3.canonical.LastNameTypeHandler")
-        val birthDate = column<Date>("birth_date", JDBCType.DATE)
-        val employed =
-            column<Boolean>("employed", JDBCType.VARCHAR, "examples.kotlin.mybatis3.canonical.YesNoTypeHandler")
-        val occupation = column<String>("occupation", JDBCType.VARCHAR)
-        val addressId = column<Int>("address_id", JDBCType.INTEGER)
+    val person = Person()
+    val id = person.id
+    val firstName = person.firstName
+    val lastName = person.lastName
+    val birthDate = person.birthDate
+    val employed = person.employed
+    val occupation = person.occupation
+    val addressId = person.addressId
+
+    class Person : SqlTable("Person") {
+        val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER)
+        val firstName = column<String>(name = "first_name", jdbcType = JDBCType.VARCHAR)
+        val lastName = column<LastName>(
+            name = "last_name",
+            jdbcType = JDBCType.VARCHAR,
+            typeHandler = "examples.kotlin.mybatis3.canonical.LastNameTypeHandler"
+        )
+        val birthDate = column<Date>(name = "birth_date", jdbcType = JDBCType.DATE)
+        val employed = column<Boolean>(
+            name = "employed",
+            JDBCType.VARCHAR,
+            typeHandler = "examples.kotlin.mybatis3.canonical.YesNoTypeHandler"
+        )
+        val occupation = column<String>(name = "occupation", jdbcType = JDBCType.VARCHAR)
+        val addressId = column<Int>(name = "address_id", jdbcType = JDBCType.INTEGER)
     }
 }

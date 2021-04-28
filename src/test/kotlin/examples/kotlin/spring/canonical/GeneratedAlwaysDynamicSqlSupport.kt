@@ -16,12 +16,19 @@
 package examples.kotlin.spring.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
 object GeneratedAlwaysDynamicSqlSupport {
-    object GeneratedAlways : SqlTable("GeneratedAlways") {
+    val generatedAlways = GeneratedAlways()
+    val id = generatedAlways.id
+    val firstName = generatedAlways.firstName
+    val lastName = generatedAlways.lastName
+    val fullName = generatedAlways.fullName
+
+    class GeneratedAlways : SqlTable("GeneratedAlways") {
         val id = column<Int>("id")
-        val firstName = column<String>("first_name")
-        val lastName = column<String>("last_name")
-        val fullName = column<String>("full_name")
+        val firstName = column<String>(name = "first_name")
+        val lastName = column<String>(name = "last_name")
+        val fullName = column<String>(name = "full_name")
     }
 }

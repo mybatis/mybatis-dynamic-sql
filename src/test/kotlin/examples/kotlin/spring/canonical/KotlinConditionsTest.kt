@@ -15,28 +15,27 @@
  */
 package examples.kotlin.spring.canonical
 
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.addressId
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.employed
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.max
-import org.mybatis.dynamic.sql.SqlBuilder.min
-import org.mybatis.dynamic.sql.util.kotlin.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.isGreaterThan
-import org.mybatis.dynamic.sql.util.kotlin.isGreaterThanOrEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.isIn
-import org.mybatis.dynamic.sql.util.kotlin.isLessThan
-import org.mybatis.dynamic.sql.util.kotlin.isLessThanOrEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.isNotEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.isNotIn
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn
+import org.mybatis.dynamic.sql.util.kotlin.elements.max
+import org.mybatis.dynamic.sql.util.kotlin.elements.min
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne
@@ -61,14 +60,69 @@ class KotlinConditionsTest {
     }
 
     @Test
+    fun testSelectEqualToValue() {
+        val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(person)
+            where(id, isEqualTo(6))
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person where id = :p1"
+        )
+
+        val row = template.selectOne(selectStatement, personRowMapper)
+
+        assertThat(row).isNotNull
+        with(row!!) {
+            assertThat(id).isEqualTo(6)
+            assertThat(firstName).isEqualTo("Bamm Bamm")
+            assertThat(lastName!!.name).isEqualTo("Rubble")
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isFalse
+            assertThat(occupation).isNull()
+            assertThat(addressId).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun testSelectEqualToValueWithRecord() {
+        data class Record(val id: Int)
+        val r = Record(6)
+
+        val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(person)
+            where(id, isEqualTo(r.id))
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                "from Person where id = :p1"
+        )
+
+        val row = template.selectOne(selectStatement, personRowMapper)
+
+        assertThat(row).isNotNull
+        with(row!!) {
+            assertThat(id).isEqualTo(6)
+            assertThat(firstName).isEqualTo("Bamm Bamm")
+            assertThat(lastName!!.name).isEqualTo("Rubble")
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isFalse
+            assertThat(occupation).isNull()
+            assertThat(addressId).isEqualTo(2)
+        }
+    }
+
+    @Test
     fun testSelectEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isEqualTo {
                     select(max(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -81,13 +135,13 @@ class KotlinConditionsTest {
 
         val row = template.selectOne(selectStatement, personRowMapper)
 
-        assertThat(row).isNotNull()
+        assertThat(row).isNotNull
         with(row!!) {
             assertThat(id).isEqualTo(6)
             assertThat(firstName).isEqualTo("Bamm Bamm")
             assertThat(lastName!!.name).isEqualTo("Rubble")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isFalse()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isFalse
             assertThat(occupation).isNull()
             assertThat(addressId).isEqualTo(2)
         }
@@ -96,12 +150,12 @@ class KotlinConditionsTest {
     @Test
     fun testSelectNotEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isNotEqualTo {
                     select(max(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -121,8 +175,8 @@ class KotlinConditionsTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -131,12 +185,12 @@ class KotlinConditionsTest {
     @Test
     fun testInSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isIn {
                     select(id) {
-                        from(Person)
+                        from(person)
                         where(lastName, isEqualTo(LastName("Rubble")))
                     }
                 }
@@ -158,8 +212,8 @@ class KotlinConditionsTest {
             assertThat(id).isEqualTo(4)
             assertThat(firstName).isEqualTo("Barney")
             assertThat(lastName!!.name).isEqualTo("Rubble")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(2)
         }
@@ -168,12 +222,12 @@ class KotlinConditionsTest {
     @Test
     fun testNotInSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isNotIn {
                     selectDistinct(id) {
-                        from(Person)
+                        from(person)
                         where(lastName, isEqualTo(LastName("Rubble")))
                     }
                 }
@@ -195,8 +249,8 @@ class KotlinConditionsTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -205,12 +259,12 @@ class KotlinConditionsTest {
     @Test
     fun testLessThanSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isLessThan {
                     select(max(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -230,8 +284,8 @@ class KotlinConditionsTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -240,12 +294,12 @@ class KotlinConditionsTest {
     @Test
     fun testLessThanOrEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isLessThanOrEqualTo {
                     select(max(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -265,8 +319,8 @@ class KotlinConditionsTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }
@@ -275,12 +329,12 @@ class KotlinConditionsTest {
     @Test
     fun testGreaterThanSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isGreaterThan {
                     select(min(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -300,8 +354,8 @@ class KotlinConditionsTest {
             assertThat(id).isEqualTo(2)
             assertThat(firstName).isEqualTo("Wilma")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Accountant")
             assertThat(addressId).isEqualTo(1)
         }
@@ -310,12 +364,12 @@ class KotlinConditionsTest {
     @Test
     fun testGreaterThanOrEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(Person)
+            from(person)
             where(
                 id,
                 isGreaterThanOrEqualTo {
                     select(min(id)) {
-                        from(Person)
+                        from(person)
                     }
                 }
             )
@@ -335,8 +389,8 @@ class KotlinConditionsTest {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")
-            assertThat(birthDate).isNotNull()
-            assertThat(employed).isTrue()
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
             assertThat(occupation).isEqualTo("Brontosaurus Operator")
             assertThat(addressId).isEqualTo(1)
         }

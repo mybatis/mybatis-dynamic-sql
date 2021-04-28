@@ -15,6 +15,10 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
@@ -22,10 +26,6 @@ import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Adapter for use with MyBatis SQL provider annotations.
@@ -52,8 +52,17 @@ public class SqlProviderAdapter {
     }
 
     /**
-     * This adapter method is intended for use with MyBatis' @InsertProvider annotation when there are generated
-     * values expected from executing the insert statement.
+     * This adapter method is intended for use with MyBatis' &#064;InsertProvider annotation when there are generated
+     * values expected from executing the insert statement. The canonical method signature for using this
+     * adapter method is as follows:
+     *
+     * <pre>
+     * public interface FooMapper {
+     *     &#064;InsertProvider(type=SqlProviderAdapter.class, method="insertMultipleWithGeneratedKeys")
+     *     &#064;Options(useGeneratedKeys=true, keyProperty="records.id")
+     *     int insertMultiple(String insertStatement, &#064;Param("records") List&lt;Foo&gt; records)
+     * }
+     * </pre>
      *
      * @param parameterMap The parameter map is automatically created by MyBatis when there are multiple
      *     parameters in the insert method.
@@ -63,8 +72,9 @@ public class SqlProviderAdapter {
     public String insertMultipleWithGeneratedKeys(Map<String, Object> parameterMap) {
         List<String> entries = parameterMap.entrySet().stream()
                 .filter(e -> e.getKey().startsWith("param")) //$NON-NLS-1$
-                .filter(e -> String.class.isAssignableFrom(e.getValue().getClass()))
-                .map(e -> (String) e.getValue())
+                .map(Map.Entry::getValue)
+                .filter(String.class::isInstance)
+                .map(String.class::cast)
                 .collect(Collectors.toList());
 
         if (entries.size() == 1) {

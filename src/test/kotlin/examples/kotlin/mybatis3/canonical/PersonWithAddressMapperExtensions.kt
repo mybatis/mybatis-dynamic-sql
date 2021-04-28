@@ -15,70 +15,55 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.Address
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
-import org.mybatis.dynamic.sql.SqlBuilder.equalTo
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.select
-import org.mybatis.dynamic.sql.SqlBuilder.selectDistinct
-import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
+import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.address
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.employed
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
+import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 
-fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? {
-    val start = KotlinSelectBuilder(
-        select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
-            Address.streetAddress, Address.city, Address.state
-        )
-    ).apply {
-        from(Person)
-        fullJoin(Address) {
-            on(Person.addressId, equalTo(Address.id))
+fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? =
+    select(
+        id.`as`("A_ID"), firstName, lastName, birthDate,
+        employed, occupation, address.id, address.streetAddress, address.city, address.state
+    ) {
+        from(person)
+        fullJoin(address) {
+            on(person.addressId, equalTo(address.id))
         }
-    }
+        completer()
+    }.run(this::selectOne)
 
-    return selectOne(this::selectOne, start, completer)
-}
-
-fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> {
-    val start = KotlinSelectBuilder(
-        select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
-            Address.streetAddress, Address.city, Address.state
-        )
-    ).apply {
-        from(Person, "p")
-        fullJoin(Address) {
-            on(Person.addressId, equalTo(Address.id))
+fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> =
+    select(
+        id.`as`("A_ID"), firstName, lastName, birthDate,
+        employed, occupation, address.id, address.streetAddress, address.city, address.state
+    ) {
+        from(person, "p")
+        fullJoin(address) {
+            on(person.addressId, equalTo(address.id))
         }
-    }
+        completer()
+    }.run(this::selectMany)
 
-    return selectList(this::selectMany, start, completer)
-}
-
-fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> {
-    val start = KotlinSelectBuilder(
-        selectDistinct(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, Address.id,
-            Address.streetAddress, Address.city, Address.state
-        )
-    ).apply {
-        from(Person, "p")
-        fullJoin(Address) {
-            on(Person.addressId, equalTo(Address.id))
+fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> =
+    selectDistinct(
+        id.`as`("A_ID"), firstName, lastName,
+        birthDate, employed, occupation, address.id, address.streetAddress, address.city, address.state
+    ) {
+        from(person)
+        fullJoin(address) {
+            on(person.addressId, equalTo(address.id))
         }
-    }
-
-    return selectList(this::selectMany, start, completer)
-}
+        completer()
+    }.run(this::selectMany)
 
 fun PersonWithAddressMapper.selectByPrimaryKey(id_: Int) =
     selectOne {

@@ -18,26 +18,33 @@ package examples.kotlin.mybatis3.canonical
 import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.firstName
 import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.generatedAlways
 import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.lastName
+import org.apache.ibatis.annotations.Flush
 import org.apache.ibatis.annotations.InsertProvider
 import org.apache.ibatis.annotations.Options
 import org.apache.ibatis.annotations.Param
+import org.apache.ibatis.executor.BatchResult
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultipleWithGeneratedKeys
 
 interface GeneratedAlwaysMapper {
     @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
-    @Options(useGeneratedKeys = true, keyProperty="record.id,record.fullName", keyColumn = "id,full_name")
+    @Options(useGeneratedKeys = true, keyProperty = "record.id,record.fullName", keyColumn = "id,full_name")
     fun insert(insertStatement: InsertStatementProvider<GeneratedAlwaysRecord>): Int
 
     @InsertProvider(type = SqlProviderAdapter::class, method = "generalInsert")
+    @Options(useGeneratedKeys = true, keyProperty = "parameters.id,parameters.fullName", keyColumn = "id,full_name")
     fun generalInsert(insertStatement: GeneralInsertStatementProvider): Int
 
     @InsertProvider(type = SqlProviderAdapter::class, method = "insertMultipleWithGeneratedKeys")
-    @Options(useGeneratedKeys = true, keyProperty="records.id,records.fullName", keyColumn = "id,full_name")
+    @Options(useGeneratedKeys = true, keyProperty = "records.id,records.fullName", keyColumn = "id,full_name")
     fun insertMultiple(insertStatement: String, @Param("records") records: List<GeneratedAlwaysRecord>): Int
+
+    @Flush
+    fun flush(): List<BatchResult>
 }
 
 fun GeneratedAlwaysMapper.insert(record: GeneratedAlwaysRecord): Int {
@@ -49,6 +56,13 @@ fun GeneratedAlwaysMapper.insert(record: GeneratedAlwaysRecord): Int {
 
 fun GeneratedAlwaysMapper.insertMultiple(records: Collection<GeneratedAlwaysRecord>): Int {
     return insertMultipleWithGeneratedKeys(this::insertMultiple, records, generatedAlways) {
+        map(firstName).toProperty("firstName")
+        map(lastName).toProperty("lastName")
+    }
+}
+
+fun GeneratedAlwaysMapper.insertBatch(records: Collection<GeneratedAlwaysRecord>): List<Int> {
+    return insertBatch(this::insert, records, generatedAlways) {
         map(firstName).toProperty("firstName")
         map(lastName).toProperty("lastName")
     }

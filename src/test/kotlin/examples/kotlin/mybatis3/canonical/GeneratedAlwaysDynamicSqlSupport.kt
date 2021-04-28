@@ -16,6 +16,7 @@
 package examples.kotlin.mybatis3.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 
 object GeneratedAlwaysDynamicSqlSupport {
@@ -26,9 +27,9 @@ object GeneratedAlwaysDynamicSqlSupport {
     val fullName = generatedAlways.fullName
 
     class GeneratedAlways : SqlTable("GeneratedAlways") {
-        val id = column<Int>("id", JDBCType.INTEGER)
-        val firstName = column<String>("first_name", JDBCType.VARCHAR)
-        val lastName = column<String>("last_name", JDBCType.VARCHAR)
-        val fullName = column<String>("full_name", JDBCType.VARCHAR)
+        val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER)
+        val firstName = column<String>(name = "first_name", jdbcType = JDBCType.VARCHAR)
+        val lastName = column<String>(name = "last_name", jdbcType = JDBCType.VARCHAR)
+        val fullName = column<String>(name = "full_name", jdbcType = JDBCType.VARCHAR)
     }
 }

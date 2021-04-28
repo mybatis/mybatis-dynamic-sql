@@ -15,17 +15,6 @@
  */
 package examples.simple;
 
-import static examples.simple.PersonDynamicSqlSupport.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.*;
-
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
@@ -42,6 +31,38 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static examples.simple.PersonDynamicSqlSupport.addressId;
+import static examples.simple.PersonDynamicSqlSupport.birthDate;
+import static examples.simple.PersonDynamicSqlSupport.employed;
+import static examples.simple.PersonDynamicSqlSupport.firstName;
+import static examples.simple.PersonDynamicSqlSupport.id;
+import static examples.simple.PersonDynamicSqlSupport.lastName;
+import static examples.simple.PersonDynamicSqlSupport.occupation;
+import static examples.simple.PersonDynamicSqlSupport.person;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isFalse;
+import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
+import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNotLike;
+import static org.mybatis.dynamic.sql.SqlBuilder.isNull;
+import static org.mybatis.dynamic.sql.SqlBuilder.isTrue;
+import static org.mybatis.dynamic.sql.SqlBuilder.or;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 class PersonMapperTest {
 
@@ -78,6 +99,34 @@ class PersonMapperTest {
                     .or(occupation, isNull()));
 
             assertThat(rows).hasSize(3);
+        }
+    }
+
+    @Test
+    void testSelectEmployed() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            List<PersonRecord> rows = mapper.select(c ->
+                    c.where(employed, isTrue())
+                    .orderBy(id));
+
+            assertThat(rows).hasSize(4);
+            assertThat(rows.get(0).getId()).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void testSelectUnemployed() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            List<PersonRecord> rows = mapper.select(c ->
+                    c.where(employed, isFalse())
+                            .orderBy(id));
+
+            assertThat(rows).hasSize(2);
+            assertThat(rows.get(0).getId()).isEqualTo(3);
         }
     }
 

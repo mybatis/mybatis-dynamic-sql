@@ -26,7 +26,7 @@ class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
 
     override fun build(): DeleteModel = dsl.build()
 
-    override fun getDsl() = dsl
+    override fun getDsl(): DeleteDSL<DeleteModel> = dsl
 
-    override fun self() = this
+    override fun self(): KotlinDeleteBuilder = this
 }

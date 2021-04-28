@@ -15,11 +15,11 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -29,12 +29,12 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
-import org.mybatis.dynamic.sql.SqlBuilder.isNotNull
-import org.mybatis.dynamic.sql.SqlBuilder.isNull
 import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
 import org.mybatis.dynamic.sql.util.kotlin.andThen
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull
+import org.mybatis.dynamic.sql.util.kotlin.elements.isNull
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
@@ -122,8 +122,8 @@ class ReusableWhereTest {
             or(addressId, isLessThan(3))
         }
 
-        val selectStatement = select(Person.allColumns()) {
-            from(Person)
+        val selectStatement = select(person.allColumns()) {
+            from(person)
             applyWhere(whereApplier)
         }
 
@@ -136,7 +136,7 @@ class ReusableWhereTest {
     }
 
     private val commonWhere: WhereApplier = {
-        where(id, isEqualTo(1)).or(occupation, isNull())
+        where(id, isEqualTo(1)).or(occupation, isNull<String>())
     }
 
     companion object {

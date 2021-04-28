@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,16 +15,15 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.addressId
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.birthDate
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.employed
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.id
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.lastName
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.Person.occupation
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.addressId
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.employed
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
@@ -32,11 +31,13 @@ import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertSelect
@@ -46,16 +47,16 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 
 fun PersonMapper.count(column: BasicColumn, completer: CountCompleter) =
-    count(this::count, column, Person, completer)
+    count(this::count, column, person, completer)
 
 fun PersonMapper.countDistinct(column: BasicColumn, completer: CountCompleter) =
-    countDistinct(this::count, column, Person, completer)
+    countDistinct(this::count, column, person, completer)
 
 fun PersonMapper.count(completer: CountCompleter) =
-    countFrom(this::count, Person, completer)
+    countFrom(this::count, person, completer)
 
 fun PersonMapper.delete(completer: DeleteCompleter) =
-    deleteFrom(this::delete, Person, completer)
+    deleteFrom(this::delete, person, completer)
 
 fun PersonMapper.deleteByPrimaryKey(id_: Int) =
     delete {
@@ -63,7 +64,7 @@ fun PersonMapper.deleteByPrimaryKey(id_: Int) =
     }
 
 fun PersonMapper.insert(record: PersonRecord) =
-    insert(this::insert, record, Person) {
+    insert(this::insert, record, person) {
         map(id).toProperty("id")
         map(firstName).toProperty("firstName")
         map(lastName).toProperty("lastName")
@@ -74,16 +75,30 @@ fun PersonMapper.insert(record: PersonRecord) =
     }
 
 fun PersonMapper.generalInsert(completer: GeneralInsertCompleter) =
-    insertInto(this::generalInsert, Person, completer)
+    insertInto(this::generalInsert, person, completer)
 
 fun PersonMapper.insertSelect(completer: InsertSelectCompleter) =
-    insertSelect(this::insertSelect, Person, completer)
+    insertSelect(this::insertSelect, person, completer)
+
+fun PersonMapper.insertBatch(vararg records: PersonRecord): List<Int> =
+    insertBatch(records.toList())
+
+fun PersonMapper.insertBatch(records: Collection<PersonRecord>): List<Int> =
+    insertBatch(this::insert, records, person) {
+        map(id).toProperty("id")
+        map(firstName).toProperty("firstName")
+        map(lastName).toProperty("lastName")
+        map(birthDate).toProperty("birthDate")
+        map(employed).toProperty("employed")
+        map(occupation).toProperty("occupation")
+        map(addressId).toProperty("addressId")
+    }
 
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
     insertMultiple(records.toList())
 
 fun PersonMapper.insertMultiple(records: Collection<PersonRecord>) =
-    insertMultiple(this::insertMultiple, records, Person) {
+    insertMultiple(this::insertMultiple, records, person) {
         map(id).toProperty("id")
         map(firstName).toProperty("firstName")
         map(lastName).toProperty("lastName")
@@ -94,7 +109,7 @@ fun PersonMapper.insertMultiple(records: Collection<PersonRecord>) =
     }
 
 fun PersonMapper.insertSelective(record: PersonRecord) =
-    insert(this::insert, record, Person) {
+    insert(this::insert, record, person) {
         map(id).toPropertyWhenPresent("id", record::id)
         map(firstName).toPropertyWhenPresent("firstName", record::firstName)
         map(lastName).toPropertyWhenPresent("lastName", record::lastName)
@@ -107,13 +122,13 @@ fun PersonMapper.insertSelective(record: PersonRecord) =
 private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.selectOne(completer: SelectCompleter) =
-    selectOne(this::selectOne, columnList, Person, completer)
+    selectOne(this::selectOne, columnList, person, completer)
 
 fun PersonMapper.select(completer: SelectCompleter) =
-    selectList(this::selectMany, columnList, Person, completer)
+    selectList(this::selectMany, columnList, person, completer)
 
 fun PersonMapper.selectDistinct(completer: SelectCompleter) =
-    selectDistinct(this::selectMany, columnList, Person, completer)
+    selectDistinct(this::selectMany, columnList, person, completer)
 
 fun PersonMapper.selectByPrimaryKey(id_: Int) =
     selectOne {
@@ -121,17 +136,17 @@ fun PersonMapper.selectByPrimaryKey(id_: Int) =
     }
 
 fun PersonMapper.update(completer: UpdateCompleter) =
-    update(this::update, Person, completer)
+    update(this::update, person, completer)
 
 fun KotlinUpdateBuilder.updateAllColumns(record: PersonRecord) =
     apply {
-        set(id).equalTo(record::id)
-        set(firstName).equalTo(record::firstName)
-        set(lastName).equalTo(record::lastName)
-        set(birthDate).equalTo(record::birthDate)
-        set(employed).equalTo(record::employed)
-        set(occupation).equalTo(record::occupation)
-        set(addressId).equalTo(record::addressId)
+        set(id).equalToOrNull(record::id)
+        set(firstName).equalToOrNull(record::firstName)
+        set(lastName).equalToOrNull(record::lastName)
+        set(birthDate).equalToOrNull(record::birthDate)
+        set(employed).equalToOrNull(record::employed)
+        set(occupation).equalToOrNull(record::occupation)
+        set(addressId).equalToOrNull(record::addressId)
     }
 
 fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
@@ -147,13 +162,13 @@ fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
 
 fun PersonMapper.updateByPrimaryKey(record: PersonRecord) =
     update {
-        set(firstName).equalTo(record::firstName)
-        set(lastName).equalTo(record::lastName)
-        set(birthDate).equalTo(record::birthDate)
-        set(employed).equalTo(record::employed)
-        set(occupation).equalTo(record::occupation)
-        set(addressId).equalTo(record::addressId)
-        where(id, isEqualTo(record::id))
+        set(firstName).equalToOrNull(record::firstName)
+        set(lastName).equalToOrNull(record::lastName)
+        set(birthDate).equalToOrNull(record::birthDate)
+        set(employed).equalToOrNull(record::employed)
+        set(occupation).equalToOrNull(record::occupation)
+        set(addressId).equalToOrNull(record::addressId)
+        where(id, isEqualTo(record.id!!))
     }
 
 fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
@@ -164,5 +179,5 @@ fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
         set(employed).equalToWhenPresent(record::employed)
         set(occupation).equalToWhenPresent(record::occupation)
         set(addressId).equalToWhenPresent(record::addressId)
-        where(id, isEqualTo(record::id))
+        where(id, isEqualTo(record.id!!))
     }

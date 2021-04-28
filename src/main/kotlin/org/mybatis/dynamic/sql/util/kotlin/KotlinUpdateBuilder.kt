@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,62 +26,64 @@ typealias UpdateCompleter = KotlinUpdateBuilder.() -> Unit
 class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
     KotlinBaseBuilder<UpdateDSL<UpdateModel>, KotlinUpdateBuilder>(), Buildable<UpdateModel> {
 
-    fun <T> set(column: SqlColumn<T>) = KotlinSetClauseFinisher(column)
+    fun <T> set(column: SqlColumn<T>): KotlinSetClauseFinisher<T> = KotlinSetClauseFinisher(column)
 
     override fun build(): UpdateModel = dsl.build()
 
-    override fun getDsl() = dsl
+    override fun getDsl(): UpdateDSL<UpdateModel> = dsl
 
-    override fun self() = this
+    override fun self(): KotlinUpdateBuilder = this
 
     @MyBatisDslMarker
+    @Suppress("TooManyFunctions")
     inner class KotlinSetClauseFinisher<T>(private val column: SqlColumn<T>) {
-        fun equalToNull() =
+        fun equalToNull(): KotlinUpdateBuilder =
             applyToDsl {
                 set(column).equalToNull()
             }
 
-        fun equalToConstant(constant: String) =
+        fun equalToConstant(constant: String): KotlinUpdateBuilder =
             applyToDsl {
                 set(column).equalToConstant(constant)
             }
 
-        fun equalToStringConstant(constant: String) =
+        fun equalToStringConstant(constant: String): KotlinUpdateBuilder =
             applyToDsl {
                 set(column).equalToStringConstant(constant)
             }
 
-        fun equalTo(value: T) =
+        fun equalTo(value: T): KotlinUpdateBuilder = equalTo { value }
+
+        fun equalTo(value: () -> T): KotlinUpdateBuilder =
             applyToDsl {
                 set(column).equalTo(value)
             }
 
-        fun equalTo(value: () -> T) =
-            applyToDsl {
-                set(column).equalTo(value)
-            }
-
-        fun equalTo(rightColumn: BasicColumn) =
+        fun equalTo(rightColumn: BasicColumn): KotlinUpdateBuilder =
             applyToDsl {
                 set(column).equalTo(rightColumn)
             }
 
-        fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> Unit) =
+        fun equalToOrNull(value: T?): KotlinUpdateBuilder = equalToOrNull { value }
+
+        fun equalToOrNull(value: () -> T?): KotlinUpdateBuilder =
+            applyToDsl {
+                set(column).equalToOrNull(value)
+            }
+
+        fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> Unit): KotlinUpdateBuilder =
             applyToDsl {
                 set(column).equalTo(KotlinSubQueryBuilder().apply(subQuery))
             }
 
-        fun equalToWhenPresent(value: () -> T?) =
+        fun equalToWhenPresent(value: () -> T?): KotlinUpdateBuilder =
             applyToDsl {
                 set(column).equalToWhenPresent(value)
             }
 
-        fun equalToWhenPresent(value: T?) =
-            applyToDsl {
-                set(column).equalToWhenPresent(value)
-            }
+        fun equalToWhenPresent(value: T?): KotlinUpdateBuilder = equalToWhenPresent { value }
 
-        private fun applyToDsl(block: UpdateDSL<UpdateModel>.() -> Unit) =
+        private fun applyToDsl(block: UpdateDSL<UpdateModel>.() -> Unit): KotlinUpdateBuilder =
             this@KotlinUpdateBuilder.apply {
                 dsl.apply(block)
             }

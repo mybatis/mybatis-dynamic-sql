@@ -16,18 +16,18 @@
 package examples.kotlin.mybatis3.joins
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 
 object UserDynamicSQLSupport {
-    object User1 : SqlTable("User") {
-        val userId = column<Int>("user_id", JDBCType.INTEGER)
-        val userName = column<String>("user_name", JDBCType.VARCHAR)
-        val parentId = column<Int>("parent_id", JDBCType.INTEGER)
-    }
+    val user = User()
+    val userId = user.userId
+    val userName = user.userName
+    val parentId = user.parentId
 
-    object User2 : SqlTable("User") {
-        val userId = column<Int>("user_id", JDBCType.INTEGER)
-        val userName = column<String>("user_name", JDBCType.VARCHAR)
-        val parentId = column<Int>("parent_id", JDBCType.INTEGER)
+    class User : SqlTable("User") {
+        val userId = column<Int>(name = "user_id", jdbcType = JDBCType.INTEGER)
+        val userName = column<String>(name = "user_name", jdbcType = JDBCType.VARCHAR)
+        val parentId = column<Int>(name = "parent_id", jdbcType = JDBCType.INTEGER)
     }
 }

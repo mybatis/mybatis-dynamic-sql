@@ -16,18 +16,32 @@
 package examples.kotlin.spring.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.util.Date
 
 object PersonDynamicSqlSupport {
-    object Person : SqlTable("Person") {
-        val id = column<Int>("id")
-        val firstName = column<String>("first_name")
-        val lastName = column<LastName>("last_name")
-            .withParameterTypeConverter(lastNameConverter)
-        val birthDate = column<Date>("birth_date")
-        val employed = column<Boolean>("employed")
-            .withParameterTypeConverter(booleanToStringConverter)
-        val occupation = column<String>("occupation")
-        val addressId = column<Int>("address_id")
+    val person = Person()
+    val id = person.id
+    val firstName = person.firstName
+    val lastName = person.lastName
+    val birthDate = person.birthDate
+    val employed = person.employed
+    val occupation = person.occupation
+    val addressId = person.addressId
+
+    class Person : SqlTable("Person") {
+        val id = column<Int>(name = "id")
+        val firstName = column<String>(name = "first_name")
+        val lastName = column(
+            name = "last_name",
+            parameterTypeConverter = lastNameConverter
+        )
+        val birthDate = column<Date>(name = "birth_date")
+        val employed = column(
+            name = "employed",
+            parameterTypeConverter = booleanToStringConverter
+        )
+        val occupation = column<String>(name = "occupation")
+        val addressId = column<Int>(name = "address_id")
     }
 }

@@ -19,7 +19,7 @@ The major themes of this release include the following:
 1. Remove deprecated code from prior releases.
 
 ### Built-In Condition Refactoring
-All built-in conditions have been rafactored. The changes should have no impact for the vast majority of users.
+All built-in conditions have been refactored. The changes should have no impact for the vast majority of users.
 However, there are some changes in behavior and one breaking change.
 
 1. Internally, the conditions no longer hold value Suppliers, they now hold the values themselves. The SqlBuilder
@@ -100,6 +100,7 @@ Kotlin DSL.
 - Added a mapping for general insert and update statements that will render null values as "null" in the SQL ([#343](https://github.com/mybatis/mybatis-dynamic-sql/pull/343))
 - Allow the "in when present" conditions to accept a null Collection as a parameter ([#346](https://github.com/mybatis/mybatis-dynamic-sql/pull/346))
 - Add Better Support for MyBatis Multi-Row Inserts that Return Generated Keys ([#349](https://github.com/mybatis/mybatis-dynamic-sql/pull/349))
+- Major improvement to the Kotlin DSL ([#353](https://github.com/mybatis/mybatis-dynamic-sql/pull/353))
 
 ## Release 1.2.1 - September 29, 2020
 

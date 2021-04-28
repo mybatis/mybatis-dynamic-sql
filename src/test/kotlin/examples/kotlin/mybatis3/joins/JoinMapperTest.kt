@@ -15,10 +15,10 @@
  */
 package examples.kotlin.mybatis3.joins
 
-import examples.kotlin.mybatis3.joins.ItemMasterDynamicSQLSupport.ItemMaster
-import examples.kotlin.mybatis3.joins.OrderDetailDynamicSQLSupport.OrderDetail
-import examples.kotlin.mybatis3.joins.OrderLineDynamicSQLSupport.OrderLine
-import examples.kotlin.mybatis3.joins.OrderMasterDynamicSQLSupport.OrderMaster
+import examples.kotlin.mybatis3.joins.ItemMasterDynamicSQLSupport.itemMaster
+import examples.kotlin.mybatis3.joins.OrderDetailDynamicSQLSupport.orderDetail
+import examples.kotlin.mybatis3.joins.OrderLineDynamicSQLSupport.orderLine
+import examples.kotlin.mybatis3.joins.OrderMasterDynamicSQLSupport.orderMaster
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -29,8 +29,8 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.SqlBuilder.equalTo
-import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
@@ -60,12 +60,12 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderMaster.orderId, OrderMaster.orderDate,
-                OrderDetail.lineNumber, OrderDetail.description, OrderDetail.quantity
+                orderMaster.orderId, orderMaster.orderDate,
+                orderDetail.lineNumber, orderDetail.description, orderDetail.quantity
             ) {
-                from(OrderMaster, "om")
-                join(OrderDetail, "od") {
-                    on(OrderMaster.orderId, equalTo(OrderDetail.orderId))
+                from(orderMaster, "om")
+                join(orderDetail, "od") {
+                    on(orderMaster.orderId, equalTo(orderDetail.orderId))
                 }
             }
 
@@ -97,13 +97,13 @@ class JoinMapperTest {
     fun testCompoundJoin1() {
         // this is a nonsensical join, but it does test the "and" capability
         val selectStatement = select(
-            OrderMaster.orderId, OrderMaster.orderDate, OrderDetail.lineNumber,
-            OrderDetail.description, OrderDetail.quantity
+            orderMaster.orderId, orderMaster.orderDate, orderDetail.lineNumber,
+            orderDetail.description, orderDetail.quantity
         ) {
-            from(OrderMaster, "om")
-            join(OrderDetail, "od") {
-                on(OrderMaster.orderId, equalTo(OrderDetail.orderId))
-                and(OrderMaster.orderId, equalTo(OrderDetail.orderId))
+            from(orderMaster, "om")
+            join(orderDetail, "od") {
+                on(orderMaster.orderId, equalTo(orderDetail.orderId))
+                and(orderMaster.orderId, equalTo(orderDetail.orderId))
             }
         }
 
@@ -116,15 +116,15 @@ class JoinMapperTest {
     fun testCompoundJoin2() {
         // this is a nonsensical join, but it does test the "and" capability
         val selectStatement = select(
-            OrderMaster.orderId, OrderMaster.orderDate, OrderDetail.lineNumber,
-            OrderDetail.description, OrderDetail.quantity
+            orderMaster.orderId, orderMaster.orderDate, orderDetail.lineNumber,
+            orderDetail.description, orderDetail.quantity
         ) {
-            from(OrderMaster, "om")
-            join(OrderDetail, "od") {
-                on(OrderMaster.orderId, equalTo(OrderDetail.orderId))
-                and(OrderMaster.orderId, equalTo(OrderDetail.orderId))
+            from(orderMaster, "om")
+            join(orderDetail, "od") {
+                on(orderMaster.orderId, equalTo(orderDetail.orderId))
+                and(orderMaster.orderId, equalTo(orderDetail.orderId))
             }
-            where(OrderMaster.orderId, isEqualTo(1))
+            where(orderMaster.orderId, isEqualTo(1))
         }
 
         val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
@@ -139,17 +139,17 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderMaster.orderId, OrderMaster.orderDate, OrderLine.lineNumber,
-                ItemMaster.description, OrderLine.quantity
+                orderMaster.orderId, orderMaster.orderDate, orderLine.lineNumber,
+                itemMaster.description, orderLine.quantity
             ) {
-                from(OrderMaster, "om")
-                join(OrderLine, "ol") {
-                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                from(orderMaster, "om")
+                join(orderLine, "ol") {
+                    on(orderMaster.orderId, equalTo(orderLine.orderId))
                 }
-                join(ItemMaster, "im") {
-                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                join(itemMaster, "im") {
+                    on(orderLine.itemId, equalTo(itemMaster.itemId))
                 }
-                where(OrderMaster.orderId, isEqualTo(2))
+                where(orderMaster.orderId, isEqualTo(2))
             }
 
             val expectedStatement = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity" +
@@ -176,16 +176,16 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description
+                orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description
             ) {
-                from(OrderMaster, "om")
-                join(OrderLine, "ol") {
-                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                from(orderMaster, "om")
+                join(orderLine, "ol") {
+                    on(orderMaster.orderId, equalTo(orderLine.orderId))
                 }
-                fullJoin(ItemMaster, "im") {
-                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                fullJoin(itemMaster, "im") {
+                    on(orderLine.itemId, equalTo(itemMaster.itemId))
                 }
-                orderBy(OrderLine.orderId, ItemMaster.itemId)
+                orderBy(orderLine.orderId, itemMaster.itemId)
             }
 
             val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description" +
@@ -238,43 +238,43 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderLine.orderId.qualifiedWith("ol"), OrderLine.quantity, ItemMaster.itemId.qualifiedWith("im"),
-                ItemMaster.description
+                orderLine.orderId.qualifiedWith("ol"), orderLine.quantity, itemMaster.itemId.qualifiedWith("im"),
+                itemMaster.description
             ) {
                 from {
-                    select(OrderMaster.allColumns()) {
-                        from(OrderMaster)
+                    select(orderMaster.allColumns()) {
+                        from(orderMaster)
                     }
                     + "om"
                 }
                 join(
                     subQuery = {
-                        select(OrderLine.allColumns()) {
-                            from(OrderLine)
+                        select(orderLine.allColumns()) {
+                            from(orderLine)
                         }
                         + "ol"
                     },
                     joinCriteria = {
                         on(
-                            OrderMaster.orderId.qualifiedWith("om"),
-                            equalTo(OrderLine.orderId.qualifiedWith("ol"))
+                            orderMaster.orderId.qualifiedWith("om"),
+                            equalTo(orderLine.orderId.qualifiedWith("ol"))
                         )
                     }
                 )
                 fullJoin(
                     {
-                        select(ItemMaster.allColumns()) {
-                            from(ItemMaster)
+                        select(itemMaster.allColumns()) {
+                            from(itemMaster)
                         }
                         + "im"
                     }
                 ) {
                     on(
-                        OrderLine.itemId.qualifiedWith("ol"),
-                        equalTo(ItemMaster.itemId.qualifiedWith("im"))
+                        orderLine.itemId.qualifiedWith("ol"),
+                        equalTo(itemMaster.itemId.qualifiedWith("im"))
                     )
                 }
-                orderBy(OrderLine.orderId, ItemMaster.itemId)
+                orderBy(orderLine.orderId, itemMaster.itemId)
             }
 
             val expectedStatement = "select ol.order_id, quantity, im.item_id, description" +
@@ -327,16 +327,16 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description
+                orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description
             ) {
-                from(OrderMaster, "om")
-                join(OrderLine, "ol") {
-                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                from(orderMaster, "om")
+                join(orderLine, "ol") {
+                    on(orderMaster.orderId, equalTo(orderLine.orderId))
                 }
-                fullJoin(ItemMaster) {
-                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                fullJoin(itemMaster) {
+                    on(orderLine.itemId, equalTo(itemMaster.itemId))
                 }
-                orderBy(OrderLine.orderId, ItemMaster.itemId)
+                orderBy(orderLine.orderId, itemMaster.itemId)
             }
 
             val expectedStatement = "select ol.order_id, ol.quantity, ItemMaster.item_id, ItemMaster.description" +
@@ -375,16 +375,16 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description
+                orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description
             ) {
-                from(OrderMaster, "om")
-                join(OrderLine, "ol") {
-                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                from(orderMaster, "om")
+                join(orderLine, "ol") {
+                    on(orderMaster.orderId, equalTo(orderLine.orderId))
                 }
-                leftJoin(ItemMaster, "im") {
-                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                leftJoin(itemMaster, "im") {
+                    on(orderLine.itemId, equalTo(itemMaster.itemId))
                 }
-                orderBy(OrderLine.orderId, ItemMaster.itemId)
+                orderBy(orderLine.orderId, itemMaster.itemId)
             }
 
             val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description" +
@@ -418,24 +418,24 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId.qualifiedWith("im"),
-                ItemMaster.description
+                orderLine.orderId, orderLine.quantity, itemMaster.itemId.qualifiedWith("im"),
+                itemMaster.description
             ) {
-                from(OrderMaster, "om")
-                join(OrderLine, "ol") {
-                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                from(orderMaster, "om")
+                join(orderLine, "ol") {
+                    on(orderMaster.orderId, equalTo(orderLine.orderId))
                 }
                 leftJoin(
                     {
-                        select(ItemMaster.allColumns()) {
-                            from(ItemMaster)
+                        select(itemMaster.allColumns()) {
+                            from(itemMaster)
                         }
                         + "im"
                     }
                 ) {
-                    on(OrderLine.itemId, equalTo(ItemMaster.itemId.qualifiedWith("im")))
+                    on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
                 }
-                orderBy(OrderLine.orderId, ItemMaster.itemId)
+                orderBy(orderLine.orderId, itemMaster.itemId)
             }
 
             val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, description" +
@@ -469,16 +469,16 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description
+                orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description
             ) {
-                from(OrderMaster, "om")
-                join(OrderLine, "ol") {
-                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                from(orderMaster, "om")
+                join(orderLine, "ol") {
+                    on(orderMaster.orderId, equalTo(orderLine.orderId))
                 }
-                leftJoin(ItemMaster) {
-                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                leftJoin(itemMaster) {
+                    on(orderLine.itemId, equalTo(itemMaster.itemId))
                 }
-                orderBy(OrderLine.orderId, ItemMaster.itemId)
+                orderBy(orderLine.orderId, itemMaster.itemId)
             }
 
             val expectedStatement = "select ol.order_id, ol.quantity, ItemMaster.item_id, ItemMaster.description" +
@@ -512,16 +512,16 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description
+                orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description
             ) {
-                from(OrderMaster, "om")
-                join(OrderLine, "ol") {
-                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                from(orderMaster, "om")
+                join(orderLine, "ol") {
+                    on(orderMaster.orderId, equalTo(orderLine.orderId))
                 }
-                rightJoin(ItemMaster, "im") {
-                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                rightJoin(itemMaster, "im") {
+                    on(orderLine.itemId, equalTo(itemMaster.itemId))
                 }
-                orderBy(OrderLine.orderId, ItemMaster.itemId)
+                orderBy(orderLine.orderId, itemMaster.itemId)
             }
 
             val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description" +
@@ -555,24 +555,24 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderLine.orderId, OrderLine.quantity,
-                ItemMaster.itemId.qualifiedWith("im"), ItemMaster.description
+                orderLine.orderId, orderLine.quantity,
+                itemMaster.itemId.qualifiedWith("im"), itemMaster.description
             ) {
-                from(OrderMaster, "om")
-                join(OrderLine, "ol") {
-                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                from(orderMaster, "om")
+                join(orderLine, "ol") {
+                    on(orderMaster.orderId, equalTo(orderLine.orderId))
                 }
                 rightJoin(
                     {
-                        select(ItemMaster.allColumns()) {
-                            from(ItemMaster)
+                        select(itemMaster.allColumns()) {
+                            from(itemMaster)
                         }
                         + "im"
                     }
                 ) {
-                    on(OrderLine.itemId, equalTo(ItemMaster.itemId.qualifiedWith("im")))
+                    on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
                 }
-                orderBy(OrderLine.orderId, ItemMaster.itemId)
+                orderBy(orderLine.orderId, itemMaster.itemId)
             }
 
             val expectedStatement = "select ol.order_id, ol.quantity, im.item_id, description" +
@@ -606,16 +606,16 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                OrderLine.orderId, OrderLine.quantity, ItemMaster.itemId, ItemMaster.description
+                orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description
             ) {
-                from(OrderMaster, "om")
-                join(OrderLine, "ol") {
-                    on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+                from(orderMaster, "om")
+                join(orderLine, "ol") {
+                    on(orderMaster.orderId, equalTo(orderLine.orderId))
                 }
-                rightJoin(ItemMaster) {
-                    on(OrderLine.itemId, equalTo(ItemMaster.itemId))
+                rightJoin(itemMaster) {
+                    on(orderLine.itemId, equalTo(itemMaster.itemId))
                 }
-                orderBy(OrderLine.orderId, ItemMaster.itemId)
+                orderBy(orderLine.orderId, itemMaster.itemId)
             }
 
             val expectedStatement = "select ol.order_id, ol.quantity, ItemMaster.item_id, ItemMaster.description" +

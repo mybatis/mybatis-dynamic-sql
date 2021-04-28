@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,15 +21,15 @@ import org.mybatis.dynamic.sql.select.SelectModel
 
 @MyBatisDslMarker
 class KotlinUnionBuilder(private val unionBuilder: QueryExpressionDSL<SelectModel>.UnionBuilder) {
-    fun select(vararg selectList: BasicColumn, completer: SelectCompleter) =
+    fun select(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
         select(selectList.toList(), completer)
 
-    fun select(selectList: List<BasicColumn>, completer: SelectCompleter) =
+    fun select(selectList: List<BasicColumn>, completer: SelectCompleter): Unit =
         completer(KotlinSelectBuilder(unionBuilder.select(selectList)))
 
-    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
+    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
         selectDistinct(selectList.toList(), completer)
 
-    fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) =
+    fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter): Unit =
         completer(KotlinSelectBuilder(unionBuilder.selectDistinct(selectList)))
 }

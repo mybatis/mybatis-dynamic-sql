@@ -15,15 +15,15 @@
  */
 package examples.kotlin.spring.canonical
 
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.firstName
-import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.Person.id
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.firstName
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.DerivedColumn
-import org.mybatis.dynamic.sql.SqlBuilder.isLessThan
-import org.mybatis.dynamic.sql.SqlBuilder.isLike
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -52,7 +52,7 @@ class SpringKotlinSubQueryTest {
             select(firstName, rowNum) {
                 from {
                     select(id, firstName) {
-                        from(Person)
+                        from(person)
                         where(id, isLessThan(22))
                         orderBy(firstName.descending())
                     }
@@ -92,7 +92,7 @@ class SpringKotlinSubQueryTest {
         val rows = template.select(firstName, rowNum) {
             from {
                 select(id, firstName) {
-                    from(Person)
+                    from(person)
                     where(id, isLessThan(22))
                     orderBy(firstName.descending())
                 }
@@ -121,7 +121,7 @@ class SpringKotlinSubQueryTest {
             select(outerFirstName.asCamelCase(), personId, rowNum) {
                 from {
                     select(id.`as`("personId"), firstName) {
-                        from(Person, "a")
+                        from(person, "a")
                         where(id, isLessThan(22))
                         orderBy(firstName.descending())
                     }

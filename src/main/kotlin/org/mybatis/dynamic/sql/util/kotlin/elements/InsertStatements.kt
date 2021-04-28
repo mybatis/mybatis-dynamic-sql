@@ -1,0 +1,33 @@
+/*
+ *    Copyright 2016-2021 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.util.kotlin.elements
+
+import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.insert.BatchInsertDSL
+import org.mybatis.dynamic.sql.insert.InsertDSL
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+
+// These insert functions help avoid the use of org.mybatis.dynamic.sql.SqlBuilder in Kotlin
+
+fun <T> insert(record: T): InsertDSL.IntoGatherer<T> = SqlBuilder.insert(record)
+
+fun <T> insertBatch(vararg records: T): BatchInsertDSL.IntoGatherer<T> = insertBatch(records.asList())
+
+fun <T> insertBatch(records: Collection<T>): BatchInsertDSL.IntoGatherer<T> = SqlBuilder.insertBatch(records)
+
+fun <T> insertMultiple(vararg records: T): MultiRowInsertDSL.IntoGatherer<T> = insertMultiple(records.asList())
+
+fun <T> insertMultiple(records: Collection<T>): MultiRowInsertDSL.IntoGatherer<T> = SqlBuilder.insertMultiple(records)

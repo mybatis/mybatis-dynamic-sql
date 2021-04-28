@@ -16,13 +16,20 @@
 package examples.kotlin.mybatis3.joins
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 
 object OrderLineDynamicSQLSupport {
-    object OrderLine : SqlTable("OrderLine") {
-        val orderId = column<Int>("order_id", JDBCType.INTEGER)
-        val itemId = column<Int>("item_id", JDBCType.INTEGER)
-        val lineNumber = column<Int>("line_number", JDBCType.INTEGER)
-        val quantity = column<Int>("quantity", JDBCType.INTEGER)
+    val orderLine = OrderLine()
+    val orderId = orderLine.orderId
+    val itemId = orderLine.itemId
+    val lineNumber = orderLine.lineNumber
+    val quantity = orderLine.quantity
+
+    class OrderLine : SqlTable("OrderLine") {
+        val orderId = column<Int>(name = "order_id", jdbcType = JDBCType.INTEGER)
+        val itemId = column<Int>(name = "item_id", jdbcType = JDBCType.INTEGER)
+        val lineNumber = column<Int>(name = "line_number", jdbcType = JDBCType.INTEGER)
+        val quantity = column<Int>(name = "quantity", jdbcType = JDBCType.INTEGER)
     }
 }

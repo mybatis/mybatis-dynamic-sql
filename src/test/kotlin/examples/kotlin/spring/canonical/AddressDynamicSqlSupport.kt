@@ -16,12 +16,19 @@
 package examples.kotlin.spring.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
 object AddressDynamicSqlSupport {
-    object Address : SqlTable("Address") {
-        val id = column<Int>("address_id")
-        val streetAddress = column<String>("street_address")
-        val city = column<String>("city")
-        val state = column<String>("state")
+    val address = Address()
+    val id = address.id
+    val streetAddress = address.streetAddress
+    val city = address.city
+    val state = address.state
+
+    class Address : SqlTable("Address") {
+        val id = column<Int>(name = "address_id")
+        val streetAddress = column<String>(name = "street_address")
+        val city = column<String>(name = "city")
+        val state = column<String>(name = "state")
     }
 }

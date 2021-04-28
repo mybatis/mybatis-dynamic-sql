@@ -27,7 +27,7 @@ class JoinCollector {
     val andJoinCriteria = mutableListOf<JoinCriterion>()
     private lateinit var internalOnCriterion: JoinCriterion
 
-    fun on(column: BasicColumn, condition: JoinCondition) =
+    fun on(column: BasicColumn, condition: JoinCondition): JoinCollector =
         apply {
             internalOnCriterion = JoinCriterion.Builder()
                 .withConnector("on")
@@ -36,7 +36,7 @@ class JoinCollector {
                 .build()
         }
 
-    fun and(column: BasicColumn, condition: JoinCondition) =
+    fun and(column: BasicColumn, condition: JoinCondition): JoinCollector =
         apply {
             andJoinCriteria.add(
                 JoinCriterion.Builder()

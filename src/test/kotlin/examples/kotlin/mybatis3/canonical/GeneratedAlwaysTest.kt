@@ -15,6 +15,9 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.firstName
+import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.generatedAlways
+import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.lastName
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -25,6 +28,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
@@ -85,6 +89,57 @@ class GeneratedAlwaysTest {
             assertThat(record1.fullName).isEqualTo("Fred Flintstone")
             assertThat(record2.id).isEqualTo(23)
             assertThat(record2.fullName).isEqualTo("Barney Rubble")
+        }
+    }
+
+    @Test
+    fun testInsertBatch() {
+        newSession(ExecutorType.BATCH).use { session ->
+            val mapper = session.getMapper(GeneratedAlwaysMapper::class.java)
+
+            val record1 = GeneratedAlwaysRecord(
+                firstName = "Fred",
+                lastName = "Flintstone"
+            )
+
+            val record2 = GeneratedAlwaysRecord(
+                firstName = "Barney",
+                lastName = "Rubble"
+            )
+
+            mapper.insertBatch(listOf(record1, record2))
+
+            val batchResults = mapper.flush()
+
+            assertThat(batchResults).hasSize(1)
+            assertThat(batchResults[0].updateCounts).hasSize(2)
+            assertThat(batchResults[0].updateCounts[0]).isEqualTo(1)
+            assertThat(batchResults[0].updateCounts[1]).isEqualTo(1)
+
+            assertThat(record1.id).isEqualTo(22)
+            assertThat(record1.fullName).isEqualTo("Fred Flintstone")
+            assertThat(record2.id).isEqualTo(23)
+            assertThat(record2.fullName).isEqualTo("Barney Rubble")
+        }
+    }
+
+    @Test
+    fun testGeneralInsert() {
+        newSession().use { session ->
+            val mapper = session.getMapper(GeneratedAlwaysMapper::class.java)
+
+            val insertStatement = insertInto(generatedAlways) {
+                set(firstName).toValue("Fred")
+                set(lastName).toValue("Flintstone")
+            }
+
+            val rows = mapper.generalInsert(insertStatement)
+            val id = insertStatement.parameters["id"] as Int
+            val fullName = insertStatement.parameters["fullName"] as String
+
+            assertThat(rows).isEqualTo(1)
+            assertThat(id).isEqualTo(22)
+            assertThat(fullName).isEqualTo("Fred Flintstone")
         }
     }
 
