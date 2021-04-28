@@ -55,13 +55,14 @@ public class SqlProviderAdapter {
      * This adapter method is intended for use with MyBatis' &#064;InsertProvider annotation when there are generated
      * values expected from executing the insert statement. The canonical method signature for using this
      * adapter method is as follows:
-     * <code>
+     *
+     * <pre>
      * public interface FooMapper {
      *     &#064;InsertProvider(type=SqlProviderAdapter.class, method="insertMultipleWithGeneratedKeys")
      *     &#064;Options(useGeneratedKeys=true, keyProperty="records.id")
      *     int insertMultiple(String insertStatement, &#064;Param("records") List&lt;Foo&gt; records)
      * }
-     * </code>
+     * </pre>
      *
      * @param parameterMap The parameter map is automatically created by MyBatis when there are multiple
      *     parameters in the insert method.
