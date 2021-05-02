@@ -14,7 +14,7 @@ The major themes of this release include the following:
 1. Add support for the "exists" and "not exists" operator. This will work in "where" clauses anywhere
    they are supported.
 1. Refactor and improve the built-in conditions for consistency (see below)   
-1. Continue to refine the Kotlin DSL. Most changes to the Kotlin DSL are internal and should be source code
+1. Continue to refine the Kotlin DSL. Many changes to the Kotlin DSL are internal and should be source code
    compatible with existing code. There is one breaking change detailed below.
 1. Remove deprecated code from prior releases.
 
@@ -31,7 +31,8 @@ However, there are some changes in behavior and one breaking change.
    for a similar purpose.
 1. The new "filter" method works a bit differently than the "when" method it replaces. The old "when" method could not
    be chained - if it was called multiple times, only the last call would take effect. The new "filter" methods works
-   as it should and every call will take effect.
+   as it should and every call will take effect. This allows you to construct map/filter pipelines as you would
+   expect.
 1. The new "map" method will allow you to change the datatype of a condition as is normal for a "map" method. You
    can use this method to apply a type conversion directly within condition.
 1. All the "WhenPresent" conditions have been removed as separate classes. The methods that produced these conditions
@@ -62,9 +63,26 @@ However, there are some changes in behavior and one breaking change.
    ```
    We think this is a marked improvement!
 
-### Breaking Change for Kotlin
+### Kotlin DSL Update and Breaking Change for Kotlin
 
-In this release the Kotlin support for `select` and `count` statements has been refactored. This will not impact code
+The Kotlin DSL continues to evolve. With this release we have fully built out the DSL, and it is no longer necessary
+to use any functions in `org.mybatis.dynamic.sql.SqlBuilder`. The advantages of this are many and are detailed on the
+Kotlin overview page in the documentation. Many functions in `SqlBuilder` have been replaced by
+top level functions the `org.mybatis.dynamic.sql.util.kotlin.elements` package. In most cases you can switch to the
+native Kotlin DSL by simply changing the import statements. For example, you can switch usage of the `isEqualTo`
+function by changing
+
+```kotlin
+import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
+```
+
+to
+
+```kotlin
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+```
+
+A breaking change is that Kotlin support for `select` and `count` statements has been refactored. This will not impact code
 created by MyBatis generator. It will have an impact on Spring/Kotlin users as well as MyBatis users that coded joins or
 other queries directly in Kotlin. The difference is that the `from` clause has been moved inside the lambda for select
 and count statements.
