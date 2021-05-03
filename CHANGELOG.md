@@ -19,7 +19,7 @@ The major themes of this release include the following:
 1. Remove deprecated code from prior releases.
 
 ### Built-In Condition Refactoring
-All built-in conditions have been refactored. The changes should have no impact for the vast majority of users.
+All built-in conditions have been refactored. The changes should have little impact for the vast majority of users.
 However, there are some changes in behavior and one breaking change.
 
 1. Internally, the conditions no longer hold value Suppliers, they now hold the values themselves. The SqlBuilder
@@ -81,6 +81,11 @@ to
 ```kotlin
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 ```
+
+Several functions that accepted supplier arguments are not present in the Kotlin DSL. This is to avoid difficult
+and confusing method overload problems for methods that did not offer any real benefit. If you were using one of these
+methods in the Java DSL, then in the Kotlin DSL you will have to change the function argument from a supplier to the
+actual value itself. 
 
 A breaking change is that Kotlin support for `select` and `count` statements has been refactored. This will not impact code
 created by MyBatis generator. It will have an impact on Spring/Kotlin users as well as MyBatis users that coded joins or
