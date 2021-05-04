@@ -2,7 +2,7 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
-## Release 1.3.0 - Unreleased
+## Release 1.3.0 - May 4, 2021
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.3.0+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.3.0+)
 
@@ -13,12 +13,13 @@ The major themes of this release include the following:
 1. Add support for subqueries in select statements - both in a from clause and a join clause.
 1. Add support for the "exists" and "not exists" operator. This will work in "where" clauses anywhere
    they are supported.
-1. Refactor and improve the built-in conditions for consistency (see below)   
+1. Refactor and improve the built-in conditions for consistency (see below). There is one breaking change also
+   detailed below.
 1. Continue to refine the Kotlin DSL. Many changes to the Kotlin DSL are internal and should be source code
    compatible with existing code. There is one breaking change detailed below.
 1. Remove deprecated code from prior releases.
 
-### Built-In Condition Refactoring
+### Built-In Condition Refactoring and Breaking Change
 All built-in conditions have been refactored. The changes should have little impact for the vast majority of users.
 However, there are some changes in behavior and one breaking change.
 
@@ -38,7 +39,7 @@ However, there are some changes in behavior and one breaking change.
 1. All the "WhenPresent" conditions have been removed as separate classes. The methods that produced these conditions
    in the SqlBuilder remain, and they will now produce a condition with a "NotNull" filter applied. So at the API level
    things will function exactly as before, but the intermediate classes will be different.
-1. One breaking change is that the builder for List value conditions has been removed without replacement. If you
+1. One **breaking change** is that the builder for List value conditions has been removed without replacement. If you
    were using this builder to supply a "value stream transformer", then the replacement is to build a new List value
    condition and then call the "map" and "filter" methods as needed. For example, prior code looked like this
 
@@ -87,7 +88,7 @@ and confusing method overload problems for methods that did not offer any real b
 methods in the Java DSL, then in the Kotlin DSL you will have to change the function argument from a supplier to the
 actual value itself. 
 
-A breaking change is that Kotlin support for `select` and `count` statements has been refactored. This will not impact code
+A **breaking change** is that Kotlin support for `select` and `count` statements has been refactored. This will not impact code
 created by MyBatis generator. It will have an impact on Spring/Kotlin users as well as MyBatis users that coded joins or
 other queries directly in Kotlin. The difference is that the `from` clause has been moved inside the lambda for select
 and count statements.
@@ -107,7 +108,7 @@ The new code looks like this:
    }
 ```
   
-This change makes the Kotlin DSL a bit more consistent and also makes it easier to implement subquery support in the
+This change makes the Kotlin DSL more consistent and also makes it easier to implement subquery support in the
 Kotlin DSL.
 
 ### Added
