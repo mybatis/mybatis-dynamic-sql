@@ -443,14 +443,14 @@ int rows = mapper.update(c ->
 It is also possible to write a utility method that will set values. For example:
 
 ```java
-static UpdateDSL<UpdateModel> updateSelectiveColumns(PersonRecord record,
+static UpdateDSL<UpdateModel> updateSelectiveColumns(PersonRecord row,
         UpdateDSL<UpdateModel> dsl) {
-    return dsl.set(id).equalToWhenPresent(record::getId)
-            .set(firstName).equalToWhenPresent(record::getFirstName)
-            .set(lastName).equalToWhenPresent(record::getLastName)
-            .set(birthDate).equalToWhenPresent(record::getBirthDate)
-            .set(employed).equalToWhenPresent(record::getEmployed)
-            .set(occupation).equalToWhenPresent(record::getOccupation);
+    return dsl.set(id).equalToWhenPresent(row::getId)
+            .set(firstName).equalToWhenPresent(row::getFirstName)
+            .set(lastName).equalToWhenPresent(row::getLastName)
+            .set(birthDate).equalToWhenPresent(row::getBirthDate)
+            .set(employed).equalToWhenPresent(row::getEmployed)
+            .set(occupation).equalToWhenPresent(row::getOccupation);
 }
 ```
 

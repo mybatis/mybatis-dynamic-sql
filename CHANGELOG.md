@@ -101,6 +101,7 @@ Kotlin DSL.
 - Allow the "in when present" conditions to accept a null Collection as a parameter ([#346](https://github.com/mybatis/mybatis-dynamic-sql/pull/346))
 - Add Better Support for MyBatis Multi-Row Inserts that Return Generated Keys ([#349](https://github.com/mybatis/mybatis-dynamic-sql/pull/349))
 - Major improvement to the Kotlin DSL ([#353](https://github.com/mybatis/mybatis-dynamic-sql/pull/353))
+- Remove use of "record" as an identifier (it is restricted in JDK16)
 
 ## Release 1.2.1 - September 29, 2020
 

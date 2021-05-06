@@ -304,10 +304,10 @@ There is an extension method that can be used to delete all rows in a table:
 val rows = mapper.delete { allRows() }
 ```
 
-## Single Record Insert Statement
+## Single Row Insert Statement
 
 ### Two-Step Method
-Single record insert statements are constructed as shown on the Kotlin overview page. This method creates
+Single row insert statements are constructed as shown on the Kotlin overview page. This method creates
 an `InsertStatementProvider`  that can be executed with a MyBatis3 mapper method. MyBatis3 mappers should declare
 an `insert` method as follows:
 
@@ -346,8 +346,8 @@ insert statement:
 ```kotlin
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
 
-fun PersonMapper.insert(record: PersonRecord) =
-    insert(this::insert, record, Person) {
+fun PersonMapper.insert(row: PersonRecord) =
+    insert(this::insert, row, Person) {
         map(id).toProperty("id")
         map(firstName).toProperty("firstName")
         map(lastName).toProperty("lastName")
@@ -376,13 +376,13 @@ configures generated key support. You cannot use the built-in base interface whe
 ```kotlin
 interface GeneratedAlwaysMapper {
     @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
-    @Options(useGeneratedKeys = true, keyProperty = "record.id,record.fullName", keyColumn = "id,full_name")
+    @Options(useGeneratedKeys = true, keyProperty = "row.id,row.fullName", keyColumn = "id,full_name")
     fun insert(insertStatement: InsertStatementProvider<GeneratedAlwaysRecord>): Int
 }
 ```
 
 This method will return two generated values in each row: `id` and `full_name`. The values will be placed into the
-record properties `id` and `fullName` respectively.
+row properties `id` and `fullName` respectively.
 
 ## General Insert Statement
 ### Two-Step Method

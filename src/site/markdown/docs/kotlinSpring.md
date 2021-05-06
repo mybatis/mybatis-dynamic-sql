@@ -171,7 +171,7 @@ val rows = template.deleteFrom(person) {
 }
 ```
 
-## Single Record Insert Statement
+## Single Row Insert Statement
 
 ### Two-Step Method
 Single record insert statements are constructed as shown on the Kotlin overview page. These methods create a
@@ -194,15 +194,15 @@ val rows = template.insert(insertStatement, keyHolder)  // rows is an Int
 Single record insert statements can be constructed and executed in a single step with code like the following:
 
 ```kotlin
-val record = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
+val row = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
 
-val rows = template.insert(record).into(Person) {
+val rows = template.insert(row).into(Person) {
     map(id).toProperty("id")
     map(firstName).toProperty("firstName")
     map(lastName).toProperty("lastName")
     map(birthDate).toProperty("birthDate")
     map(employed).toProperty("employedAsString")
-    map(occupation).toPropertyWhenPresent("occupation", record::occupation)
+    map(occupation).toPropertyWhenPresent("occupation", row::occupation)
     map(addressId).toProperty("addressId")
 }
 ```
@@ -214,16 +214,16 @@ Using a KeyHolder with the single step method looks like this:
 
 ```kotlin
 val keyHolder = GeneratedKeyHolder()
-val record = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
+val row = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
 
 val rows = template.withKeyHolder(keyHolder) {
-    insert(record).into(Person) {
+    insert(row).into(Person) {
         map(id).toProperty("id")
         map(firstName).toProperty("firstName")
         map(lastName).toProperty("lastName")
         map(birthDate).toProperty("birthDate")
         map(employed).toProperty("employedAsString")
-        map(occupation).toPropertyWhenPresent("occupation", record::occupation)
+        map(occupation).toPropertyWhenPresent("occupation", row::occupation)
         map(addressId).toProperty("addressId")
     }
 }

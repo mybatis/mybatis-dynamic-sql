@@ -103,16 +103,16 @@ public class MyBatis3Utils {
         return mapper.applyAsInt(deleteFrom(table, completer));
     }
 
-    public static <R> InsertStatementProvider<R> insert(R record, SqlTable table,
+    public static <R> InsertStatementProvider<R> insert(R row, SqlTable table,
             UnaryOperator<InsertDSL<R>> completer) {
-        return completer.apply(SqlBuilder.insert(record).into(table))
+        return completer.apply(SqlBuilder.insert(row).into(table))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
     }
 
-    public static <R> int insert(ToIntFunction<InsertStatementProvider<R>> mapper, R record,
+    public static <R> int insert(ToIntFunction<InsertStatementProvider<R>> mapper, R row,
             SqlTable table, UnaryOperator<InsertDSL<R>> completer) {
-        return mapper.applyAsInt(insert(record, table, completer));
+        return mapper.applyAsInt(insert(row, table, completer));
     }
 
     public static GeneralInsertStatementProvider generalInsert(SqlTable table,

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,12 +32,12 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class InsertDSL<T> implements Buildable<InsertModel<T>> {
 
-    private final T record;
+    private final T row;
     private final SqlTable table;
     private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
 
-    private InsertDSL(T record, SqlTable table) {
-        this.record = record;
+    private InsertDSL(T row, SqlTable table) {
+        this.row = row;
         this.table = table;
     }
 
@@ -48,25 +48,25 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
     @NotNull
     @Override
     public InsertModel<T> build() {
-        return InsertModel.withRecord(record)
+        return InsertModel.withRow(row)
                 .withTable(table)
                 .withColumnMappings(columnMappings)
                 .build();
     }
 
-    public static <T> IntoGatherer<T> insert(T record) {
-        return new IntoGatherer<>(record);
+    public static <T> IntoGatherer<T> insert(T row) {
+        return new IntoGatherer<>(row);
     }
 
     public static class IntoGatherer<T> {
-        private final T record;
+        private final T row;
 
-        private IntoGatherer(T record) {
-            this.record = record;
+        private IntoGatherer(T row) {
+            this.row = row;
         }
 
         public InsertDSL<T> into(SqlTable table) {
-            return new InsertDSL<>(record, table);
+            return new InsertDSL<>(row, table);
         }
     }
 
