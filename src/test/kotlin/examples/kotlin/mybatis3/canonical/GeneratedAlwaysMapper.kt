@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultipleWithGeneratedK
 
 interface GeneratedAlwaysMapper {
     @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
-    @Options(useGeneratedKeys = true, keyProperty = "record.id,record.fullName", keyColumn = "id,full_name")
+    @Options(useGeneratedKeys = true, keyProperty = "row.id,row.fullName", keyColumn = "id,full_name")
     fun insert(insertStatement: InsertStatementProvider<GeneratedAlwaysRecord>): Int
 
     @InsertProvider(type = SqlProviderAdapter::class, method = "generalInsert")

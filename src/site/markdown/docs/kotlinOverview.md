@@ -134,7 +134,7 @@ The library supports the following types of statements:
    statements support where clauses, joins, and subqueries.
 1. Delete statement with or without a where clause.
 1. Insert statements of various types:
-   1. Single record insert - a statement where the insert values are obtained from a record class
+   1. Single row insert - a statement where the insert values are obtained from a record class
    1. General insert - a statement where the insert values are set directly in the statement
    1. Multi-row Insert - a statement where the insert values are derived from a collection of records
    1. Batch insert - a set of insert statements appropriate for use as a JDBC batch
@@ -208,7 +208,7 @@ This method creates models or providers depending on which package is used:
 | org.mybatis.dynamic.sql.util.kotlin.mybatis3 | org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider (rendered for MyBatis3) |
 | org.mybatis.dynamic.sql.util.kotlin.spring | org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider (rendered for Spring) |
 
-## Single Record Insert Statement
+## Single Row Insert Statement
 
 This method support enables the creation of arbitrary insert statements given a class that matches a database row.
 If you do not with to create such a class, then see the general insert support following this section.
@@ -226,15 +226,15 @@ data class PersonRecord(
    val addressId: Int
 )
 
-val record = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
+val row = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
 
-val insertRecordStatement = insert(record).into(person) {
+val insertRecordStatement = insert(row).into(person) {
    map(id).toProperty("id")
    map(firstName).toProperty("firstName")
    map(lastName).toProperty("lastName")
    map(birthDate).toProperty("birthDate")
    map(employed).toProperty("employedAsString")
-   map(occupation).toPropertyWhenPresent("occupation", record::occupation)
+   map(occupation).toPropertyWhenPresent("occupation", row::occupation)
    map(addressId).toProperty("addressId")
 }
 ```

@@ -128,8 +128,8 @@ public interface SqlBuilder {
         return DeleteDSL.deleteFrom(table);
     }
 
-    static <T> InsertDSL.IntoGatherer<T> insert(T record) {
-        return InsertDSL.insert(record);
+    static <T> InsertDSL.IntoGatherer<T> insert(T row) {
+        return InsertDSL.insert(row);
     }
 
     /**

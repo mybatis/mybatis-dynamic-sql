@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class NamedParameterJdbcTemplateExtensions {
 
     public <T> int insert(InsertStatementProvider<T> insertStatement) {
         return template.update(insertStatement.getInsertStatement(),
-                new BeanPropertySqlParameterSource(insertStatement.getRecord()));
+                new BeanPropertySqlParameterSource(insertStatement.getRow()));
     }
 
     public <T> int insert(Buildable<InsertModel<T>> insertStatement, KeyHolder keyHolder) {
@@ -99,7 +99,7 @@ public class NamedParameterJdbcTemplateExtensions {
 
     public <T> int insert(InsertStatementProvider<T> insertStatement, KeyHolder keyHolder) {
         return template.update(insertStatement.getInsertStatement(),
-                new BeanPropertySqlParameterSource(insertStatement.getRecord()), keyHolder);
+                new BeanPropertySqlParameterSource(insertStatement.getRow()), keyHolder);
     }
 
     public <T> int[] insertBatch(Buildable<BatchInsertModel<T>> insertStatement) {

@@ -1,26 +1,26 @@
 # Insert Statements
 The library will generate a variety of INSERT statements:
 
-1. An insert for a single record
-1. An insert for multiple records with a single statement
-1. An insert for multiple records with a JDBC batch
+1. An insert for a single row
+1. An insert for multiple rows with a single statement
+1. An insert for multiple rows with a JDBC batch
 1. A general insert statement
 1. An insert with a select statement 
 
-## Single Record Insert
+## Single Row Insert
 A single record insert is a statement that inserts a single record into a table.  This statement is configured differently than other statements in the library so that MyBatis' support for generated keys will work properly.  To use the statement, you must first create an object that will map to the database row, then map object attributes to fields in the database.  For example:
 
 ```java
 ...
-    SimpleTableRecord record = new SimpleTableRecord();
-    record.setId(100);
-    record.setFirstName("Joe");
-    record.setLastName("Jones");
-    record.setBirthDate(new Date());
-    record.setEmployed(true);
-    record.setOccupation("Developer");
+    SimpleTableRecord row = new SimpleTableRecord();
+    row.setId(100);
+    row.setFirstName("Joe");
+    row.setLastName("Jones");
+    row.setBirthDate(new Date());
+    row.setEmployed(true);
+    row.setOccupation("Developer");
 
-    InsertStatementProvider<SimpleTableRecord> insertStatement = insert(record)
+    InsertStatementProvider<SimpleTableRecord> insertStatement = insert(row)
             .into(simpleTable)
             .map(id).toProperty("id")
             .map(firstName).toProperty("firstName")
@@ -43,7 +43,7 @@ Notice the `map` method.  It is used to map a database column to an attribute of
 4. `map(column).toProperty(property)` will insert a value from the record into a column.  The value of the property will be bound to the SQL statement as a prepared statement parameter
 5. `map(column).toPropertyWhenPresent(property, Supplier<?> valueSupplier)` will insert a value from the record into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" insert as defined in MyBatis Generator.
 
-### Annotated Mapper for Single Record Insert Statements
+### Annotated Mapper for Single Row Insert Statements
 The InsertStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
 are using an annotated mapper, the insert method should look like this (with @Options added for generated values if necessary):
 
@@ -59,7 +59,7 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ```
 
-### XML Mapper for Single Record Insert Statements
+### XML Mapper for Single Row Insert Statements
 We do not recommend using an XML mapper for insert statements, but if you want to do so the InsertStatementProvider object can be used as a parameter to a MyBatis mapper method directly.
 
 If you are using an XML mapper, the insert method should look like this in the Java interface:
@@ -82,17 +82,17 @@ The XML element should look like this (with attributes added for generated value
 ```
 
 ### Generated Values
-MyBatis supports returning generated values from a single record insert, or a batch insert.  In either case, it is simply a matter of configuring the insert mapper method appropriately.  For example, to retrieve the value of a calculated column configure your mapper method like this:
+MyBatis supports returning generated values from a single row insert, or a batch insert.  In either case, it is simply a matter of configuring the insert mapper method appropriately.  For example, to retrieve the value of a calculated column configure your mapper method like this:
 
 ```java
 ...
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
-    @Options(useGeneratedKeys=true, keyProperty="record.fullName")
+    @Options(useGeneratedKeys=true, keyProperty="row.fullName")
     int insert(InsertStatementProvider<GeneratedAlwaysRecord> insertStatement);
 ...
 ```
 
-The important thing is that the `keyProperty` is set correctly.  It should always be in the form `record.<attribute>` where `<attribute>` is the attribute of the record class that should be updated with the generated value.
+The important thing is that the `keyProperty` is set correctly.  It should always be in the form `row.<attribute>` where `<attribute>` is the attribute of the record class that should be updated with the generated value.
 
 ## Multiple Row Insert Support
 A multiple row insert is a single insert statement that inserts multiple rows into a table. This can be a convenient way to insert a few rows into a table, but it has some limitations:
