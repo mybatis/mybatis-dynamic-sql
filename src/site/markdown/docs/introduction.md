@@ -13,16 +13,16 @@ parameters required for that statement.  The SQL statement object can be used di
 
 The library will generate these types of SQL statements:
 
+- COUNT statements - specialized SELECT statements that return a Long value
 - DELETE statements with flexible WHERE clauses
 - INSERT statements of several types:
-    - A statement that inserts a single record and will insert null values into columns (a "full" insert)
-    - A statement that inserts a single record that will ignore null input values and their associated columns (a "selective" insert)
+    - A statement that inserts a single row with values supplied from a corresponding Object
+    - A statement that inserts a single row with values supplied directly in the statement
+    - A statement that inserts multiple rows using multiple VALUES clauses
+    - A statement that inserts multiple rows using a JDBC batch
     - A statement that inserts into a table using the results of a SELECT statement
-    - A parameter object is designed for inserting multiple objects with a JDBC batch
 - SELECT statements with a flexible column list, a flexible WHERE clause, and support for distinct, "group by", joins, unions, "order by", etc.
-- UPDATE statements with a flexible WHERE clause.  Like the INSERT statement, there are two varieties of UPDATE statements:
-    - A "full" update that will set null values
-    - A "selective" update that will ignore null input values
+- UPDATE statements with a flexible WHERE clause, and flexible SET clauses
 
 The primary goals of the library are:
 

@@ -37,7 +37,8 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ## XML Mapper for Delete Statements
 
-We do not recommend using an XML mapper for delete statements, but if you want to do so the DeleteStatementProvider object can be used as a parameter to a MyBatis mapper method directly.
+We do not recommend using an XML mapper for delete statements, but if you want to do so, the DeleteStatementProvider
+object can be used as a parameter to a MyBatis mapper method directly.
 
 If you are using an XML mapper, the delete method should look like this in the Java interface:
   

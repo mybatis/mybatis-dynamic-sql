@@ -33,9 +33,9 @@ Simple conditions are the most common - they render the basic SQL operators.
 | Null | where(foo, isNull()) | `where foo is null` |
 
 
-## Sub-Selects
+## Subqueries
 
-Many conditions can be rendered with sub selects.
+Many conditions can be rendered with subqueries.
 
 | Condition | Example | Result |
 |-----------|---------|--------|
@@ -62,6 +62,58 @@ Column comparison conditions can be used to write where clauses comparing the va
 | Less Than or Equals | where(foo, isLessThanOrEqualTo(bar)) | `where foo <= bar` |
 | Not Equals | where(foo, isNotEqualTo(bar)) | `where foo <> bar` |
 
+## Value Transformation
+
+All conditions (except `isNull` and `isNotNull`) support a `map` function that allows you to transform the value(s)
+associated with the condition before the statement is rendered. The map function functions similarly to the JDK
+standard `map` functions on Streams and Optionals - it allows you to transform a value and change the data type.
+
+For example, suppose you want to code a wild card search with the SQL `like` operator. To make this work, you will
+need to append SQL wildcards to the search value. This can be accomplished directly i the condition with a `map`
+method as follows:
+
+```java
+List<Animal> search(String searchName) {
+        SelectStatementProvider selectStatement=select(id,animalName,bodyWeight,brainWeight)
+        .from(animalData)
+        .where(animalName,isLike(searchName).map(s->"%"+s+"%"))
+        .orderBy(id)
+        .build()
+        .render(RenderingStrategies.MYBATIS3);
+        
+        ...
+}
+```
+
+You can see the `map` method accepts a lambda that adds SQL wildcards to the `searchName` field. This is more succint
+if you use a method reference:
+
+```java
+List<Animal> search(String searchName){
+        SelectStatementProvider selectStatement=select(id,animalName,bodyWeight,brainWeight)
+        .from(animalData)
+        .where(animalName,isLike(searchName).map(this::appendWildCards))
+        .orderBy(id)
+        .build()
+        .render(RenderingStrategies.MYBATIS3);
+}
+        
+String appendWildCards(String in) {
+    return "%" + in + "%";
+}
+```
+
+The `map` on each condition accepts a lambda expression that can be used to transform the value(s) associated with the
+condition. The lambda is the standard JDK type `Function&lt;T,R&gt;` where `T` is the type of the condition and `R`
+is the output type. For most conditions this should be fairly simple to understand. The unusual cases are detailed
+below:
+
+1. The `Between` and `NotBetween` conditions have `map` methods that accept one or two map functions. If you pass
+   one function, it will be applied to both values in the condition. If you supply two functions, then they will be
+   applied to the first and second values respectively.
+1. The `In` and `NotIn` conditions accept a single mapping function and it will be applied to all values in the
+   collection of values in the condition.
+
 ## Optional Conditions
 
 All conditions support optionality - meaning they can be configured to render into the final SQL if a configured test
@@ -78,8 +130,8 @@ For example, you could code a search like this:
         SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
                 .where(animalName, isEqualTo(animalName_).filter(Objects::nonNull))
-                .and(bodyWeight, isEqualToWhen(bodyWeight_).filter(Objects::nonNull))
-                .and(brainWeight, isEqualToWhen(brainWeight_).filter(Objects::nonNull))
+                .and(bodyWeight, isEqualTo(bodyWeight_).filter(Objects::nonNull))
+                .and(brainWeight, isEqualTo(brainWeight_).filter(Objects::nonNull))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         ...
@@ -96,20 +148,22 @@ table lists the optional conditions and shows how to use them:
 
 | Condition | Example | Rendering Rules |
 |-----------|---------|-----------------|
-| Between| where(foo, isBetween(x).and(y).when(BiPredicate)) | The library will pass x and y to the BiPredicate's test method. The condition will render if BiPredicate.test(x, y) returns true |
-| Equals | where(foo, isEqualTo(x).when(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Greater Than | where(id, isGreaterThan(x).when(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Greater Than or Equals | where(id, isGreaterThanOrEqualTo(x).when(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Less Than | where(id, isLessThan(x).when(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Less Than or Equals | where(id, isLessThanOrEqualTo(x).when(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Like | where(id, isLike(x).when(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Like Case Insensitive | where(id, isLikeCaseInsensitive(x).when(Predicate&lt;String&gt;)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Not Between | where(id, isNotBetween(x).and(y).when(BiPredicate)) | The library will pass x and y to the BiPredicate's test method. The condition will render if BiPredicate.test(x, y) returns true |
-| Not Equals | where(id, isNotEqualTo(x).when(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Not Like | where(id, isNotLike(x).when(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Not Like Case Insensitive | where(id, isNotLikeCaseInsensitive(x).when(Predicate&lt;String&gt;)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
-| Not Null | where(id, isNotNull().when(BooleanSupplier) | The condition will render if BooleanSupplier.getAsBoolean() returns true |
-| Null | where(id, isNull().when(BooleanSupplier) | The condition will render if BooleanSupplier.getAsBoolean() returns true |
+| Between| where(foo, isBetween(x).and(y).filter(BiPredicate)) | The library will pass x and y to the BiPredicate's test method. The condition will render if BiPredicate.test(x, y) returns true |
+| Between| where(foo, isBetween(x).and(y).filter(Predicate)) | The library will invoke the Predicate's test method twice - once with x, once with y. The condition will render if both function calls return true |
+| Equals | where(foo, isEqualTo(x).filter(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Greater Than | where(id, isGreaterThan(x).filter(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Greater Than or Equals | where(id, isGreaterThanOrEqualTo(x).filter(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Less Than | where(id, isLessThan(x).filter(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Less Than or Equals | where(id, isLessThanOrEqualTo(x).filter(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Like | where(id, isLike(x).filter(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Like Case Insensitive | where(id, isLikeCaseInsensitive(x).filter(Predicate&lt;String&gt;)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Not Between | where(id, isNotBetween(x).and(y).filter(BiPredicate)) | The library will pass x and y to the BiPredicate's test method. The condition will render if BiPredicate.test(x, y) returns true |
+| Not Between| where(foo, isNotBetween(x).and(y).filter(Predicate)) | The library will invoke the Predicate's test method twice - once with x, once with y. The condition will render if both function calls return true |
+| Not Equals | where(id, isNotEqualTo(x).filter(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Not Like | where(id, isNotLike(x).filter(Predicate)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Not Like Case Insensitive | where(id, isNotLikeCaseInsensitive(x).filter(Predicate&lt;String&gt;)) | The library will pass x to the Predicate's test method. The condition will render if Predicate.test(x) returns true |
+| Not Null | where(id, isNotNull().filter(BooleanSupplier) | The condition will render if BooleanSupplier.getAsBoolean() returns true |
+| Null | where(id, isNull().filter(BooleanSupplier) | The condition will render if BooleanSupplier.getAsBoolean() returns true |
 
 ### "When Present" Condition Builders
 The library supplies several methods that supply conditions to be used in the common case of checking for null
