@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert</a> &gt; <span class="el_source">InsertDSL.java</span></div><h1>InsertDSL.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -32,12 +32,12 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class InsertDSL&lt;T&gt; implements Buildable&lt;InsertModel&lt;T&gt;&gt; {
 
-    private final T record;
+    private final T row;
     private final SqlTable table;
 <span class="fc" id="L37">    private final List&lt;AbstractColumnMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L39">    private InsertDSL(T record, SqlTable table) {</span>
-<span class="fc" id="L40">        this.record = record;</span>
+<span class="fc" id="L39">    private InsertDSL(T row, SqlTable table) {</span>
+<span class="fc" id="L40">        this.row = row;</span>
 <span class="fc" id="L41">        this.table = table;</span>
 <span class="fc" id="L42">    }</span>
 
@@ -48,25 +48,25 @@ public class InsertDSL&lt;T&gt; implements Buildable&lt;InsertModel&lt;T&gt;&gt;
     @NotNull
     @Override
     public InsertModel&lt;T&gt; build() {
-<span class="fc" id="L51">        return InsertModel.withRecord(record)</span>
+<span class="fc" id="L51">        return InsertModel.withRow(row)</span>
 <span class="fc" id="L52">                .withTable(table)</span>
 <span class="fc" id="L53">                .withColumnMappings(columnMappings)</span>
 <span class="fc" id="L54">                .build();</span>
     }
 
-    public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(T record) {
-<span class="fc" id="L58">        return new IntoGatherer&lt;&gt;(record);</span>
+    public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(T row) {
+<span class="fc" id="L58">        return new IntoGatherer&lt;&gt;(row);</span>
     }
 
     public static class IntoGatherer&lt;T&gt; {
-        private final T record;
+        private final T row;
 
-<span class="fc" id="L64">        private IntoGatherer(T record) {</span>
-<span class="fc" id="L65">            this.record = record;</span>
+<span class="fc" id="L64">        private IntoGatherer(T row) {</span>
+<span class="fc" id="L65">            this.row = row;</span>
 <span class="fc" id="L66">        }</span>
 
         public InsertDSL&lt;T&gt; into(SqlTable table) {
-<span class="fc" id="L69">            return new InsertDSL&lt;&gt;(record, table);</span>
+<span class="fc" id="L69">            return new InsertDSL&lt;&gt;(row, table);</span>
         }
     }
 
@@ -103,4 +103,4 @@ public class InsertDSL&lt;T&gt; implements Buildable&lt;InsertModel&lt;T&gt;&gt;
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

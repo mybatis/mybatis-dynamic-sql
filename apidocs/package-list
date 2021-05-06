@@ -13,6 +13,7 @@ org.mybatis.dynamic.sql.update
 org.mybatis.dynamic.sql.update.render
 org.mybatis.dynamic.sql.util
 org.mybatis.dynamic.sql.util.mybatis3
+org.mybatis.dynamic.sql.util.spring
 org.mybatis.dynamic.sql.util.springbatch
 org.mybatis.dynamic.sql.where
 org.mybatis.dynamic.sql.where.condition

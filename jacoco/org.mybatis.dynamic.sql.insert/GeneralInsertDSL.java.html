@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeneralInsertDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert</a> &gt; <span class="el_source">GeneralInsertDSL.java</span></div><h1>GeneralInsertDSL.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -29,73 +29,83 @@ import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertDSL implements Buildable&lt;GeneralInsertModel&gt; {
-<span class="fc" id="L35">    private final List&lt;AbstractColumnMapping&gt; insertMappings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L36">    private final List&lt;AbstractColumnMapping&gt; insertMappings = new ArrayList&lt;&gt;();</span>
     private final SqlTable table;
 
-<span class="fc" id="L38">    private GeneralInsertDSL(SqlTable table) {</span>
-<span class="fc" id="L39">        this.table = Objects.requireNonNull(table);</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L39">    private GeneralInsertDSL(SqlTable table) {</span>
+<span class="fc" id="L40">        this.table = Objects.requireNonNull(table);</span>
+<span class="fc" id="L41">    }</span>
 
     public &lt;T&gt; SetClauseFinisher&lt;T&gt; set(SqlColumn&lt;T&gt; column) {
-<span class="fc" id="L43">        return new SetClauseFinisher&lt;&gt;(column);</span>
+<span class="fc" id="L44">        return new SetClauseFinisher&lt;&gt;(column);</span>
     }
 
     @NotNull
     @Override
     public GeneralInsertModel build() {
-<span class="fc" id="L49">        return new GeneralInsertModel.Builder()</span>
-<span class="fc" id="L50">                .withTable(table)</span>
-<span class="fc" id="L51">                .withInsertMappings(insertMappings)</span>
-<span class="fc" id="L52">                .build();</span>
+<span class="fc" id="L50">        return new GeneralInsertModel.Builder()</span>
+<span class="fc" id="L51">                .withTable(table)</span>
+<span class="fc" id="L52">                .withInsertMappings(insertMappings)</span>
+<span class="fc" id="L53">                .build();</span>
     }
 
     public static GeneralInsertDSL insertInto(SqlTable table) {
-<span class="fc" id="L56">        return new GeneralInsertDSL(table);</span>
+<span class="fc" id="L57">        return new GeneralInsertDSL(table);</span>
     }
 
     public class SetClauseFinisher&lt;T&gt; {
 
         private final SqlColumn&lt;T&gt; column;
 
-<span class="fc" id="L63">        public SetClauseFinisher(SqlColumn&lt;T&gt; column) {</span>
-<span class="fc" id="L64">            this.column = column;</span>
-<span class="fc" id="L65">        }</span>
+<span class="fc" id="L64">        public SetClauseFinisher(SqlColumn&lt;T&gt; column) {</span>
+<span class="fc" id="L65">            this.column = column;</span>
+<span class="fc" id="L66">        }</span>
 
         public GeneralInsertDSL toNull() {
-<span class="fc" id="L68">            insertMappings.add(NullMapping.of(column));</span>
-<span class="fc" id="L69">            return GeneralInsertDSL.this;</span>
+<span class="fc" id="L69">            insertMappings.add(NullMapping.of(column));</span>
+<span class="fc" id="L70">            return GeneralInsertDSL.this;</span>
         }
 
         public GeneralInsertDSL toConstant(String constant) {
-<span class="fc" id="L73">            insertMappings.add(ConstantMapping.of(column, constant));</span>
-<span class="fc" id="L74">            return GeneralInsertDSL.this;</span>
+<span class="fc" id="L74">            insertMappings.add(ConstantMapping.of(column, constant));</span>
+<span class="fc" id="L75">            return GeneralInsertDSL.this;</span>
         }
 
         public GeneralInsertDSL toStringConstant(String constant) {
-<span class="fc" id="L78">            insertMappings.add(StringConstantMapping.of(column, constant));</span>
-<span class="fc" id="L79">            return GeneralInsertDSL.this;</span>
+<span class="fc" id="L79">            insertMappings.add(StringConstantMapping.of(column, constant));</span>
+<span class="fc" id="L80">            return GeneralInsertDSL.this;</span>
         }
 
         public GeneralInsertDSL toValue(T value) {
-<span class="fc" id="L83">            return toValue(() -&gt; value);</span>
+<span class="fc" id="L84">            return toValue(() -&gt; value);</span>
         }
 
         public GeneralInsertDSL toValue(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L87">            insertMappings.add(ValueMapping.of(column, valueSupplier));</span>
-<span class="fc" id="L88">            return GeneralInsertDSL.this;</span>
+<span class="fc" id="L88">            insertMappings.add(ValueMapping.of(column, valueSupplier));</span>
+<span class="fc" id="L89">            return GeneralInsertDSL.this;</span>
+        }
+
+        public GeneralInsertDSL toValueOrNull(T value) {
+<span class="fc" id="L93">            return toValueOrNull(() -&gt; value);</span>
+        }
+
+        public GeneralInsertDSL toValueOrNull(Supplier&lt;T&gt; valueSupplier) {
+<span class="fc" id="L97">            insertMappings.add(ValueOrNullMapping.of(column, valueSupplier));</span>
+<span class="fc" id="L98">            return GeneralInsertDSL.this;</span>
         }
 
         public GeneralInsertDSL toValueWhenPresent(T value) {
-<span class="fc" id="L92">            return toValueWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L102">            return toValueWhenPresent(() -&gt; value);</span>
         }
 
         public GeneralInsertDSL toValueWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L96">            insertMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));</span>
-<span class="fc" id="L97">            return GeneralInsertDSL.this;</span>
+<span class="fc" id="L106">            insertMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));</span>
+<span class="fc" id="L107">            return GeneralInsertDSL.this;</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

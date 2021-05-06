@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractWhereSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where</a> &gt; <span class="el_source">AbstractWhereSupport.java</span></div><h1>AbstractWhereSupport.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2021 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.where;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.VisitableCondition;
+
+/**
+ * Base class for DSLs that support where clauses - which is every DSL except Insert.
+ * The purpose of the class is to provide an implementation of the {@link AbstractWhereDSL}
+ * that is customized for a particular DSL, and to add the initiating common &quot;where&quot;
+ * methods.
+ *
+ * @param &lt;W&gt; the implementation of the Where DSL customized for a particular SQL statement.
+ */
+<span class="fc" id="L35">public abstract class AbstractWhereSupport&lt;W extends AbstractWhereDSL&lt;?&gt;&gt; {</span>
+
+    public abstract W where();
+
+    public &lt;T&gt; W where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition, SqlCriterion...subCriteria) {
+<span class="fc" id="L40">        return where(column, condition, Arrays.asList(subCriteria));</span>
+    }
+
+    public &lt;T&gt; W where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition, List&lt;SqlCriterion&gt; subCriteria) {
+<span class="fc" id="L44">        return apply(w -&gt; w.where(column, condition, subCriteria));</span>
+    }
+
+    public W where(ExistsPredicate existsPredicate) {
+<span class="fc" id="L48">        return apply(w -&gt; w.where(existsPredicate));</span>
+    }
+
+    public W where(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
+<span class="fc" id="L52">        return apply(w -&gt; w.where(existsPredicate, subCriteria));</span>
+    }
+
+    public W applyWhere(WhereApplier whereApplier) {
+<span class="fc" id="L56">        return apply(w -&gt; w.applyWhere(whereApplier));</span>
+    }
+
+    private W apply(Consumer&lt;W&gt; block) {
+<span class="fc" id="L60">        W dsl = where();</span>
+<span class="fc" id="L61">        block.accept(dsl);</span>
+<span class="fc" id="L62">        return dsl;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

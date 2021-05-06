@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CriteriaCollector.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">CriteriaCollector.kt</span></div><h1>CriteriaCollector.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -16,63 +16,108 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
+import org.mybatis.dynamic.sql.ExistsCriterion
+import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
-typealias CriteriaReceiver = CriteriaCollector.() -&gt; CriteriaCollector
+typealias CriteriaReceiver = CriteriaCollector.() -&gt; Unit
 
-@MyBatisDslMarker
-<span class="fc" id="L25">class CriteriaCollector {</span>
-<span class="fc" id="L26">    val criteria = mutableListOf&lt;SqlCriterion&lt;*&gt;&gt;()</span>
+<span class="fc" id="L27">@MyBatisDslMarker</span>
+<span class="fc" id="L28">class CriteriaCollector {</span>
+<span class="fc" id="L29">    val criteria = mutableListOf&lt;SqlCriterion&gt;()</span>
 
-    fun &lt;T&gt; and(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;) =
-<span class="fc" id="L29">        apply {</span>
-<span class="fc" id="L30">            criteria.add(</span>
-<span class="fc" id="L31">                SqlCriterion.withColumn(column)</span>
-<span class="fc" id="L32">                    .withCondition(condition)</span>
-<span class="fc" id="L33">                    .withConnector(&quot;and&quot;)</span>
-<span class="fc" id="L34">                    .build()</span>
+    fun &lt;T&gt; and(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;): CriteriaCollector =
+<span class="fc" id="L32">        apply {</span>
+<span class="fc" id="L33">            criteria.add(</span>
+<span class="fc" id="L34">                ColumnAndConditionCriterion.withColumn(column)</span>
+<span class="fc" id="L35">                    .withCondition(condition)</span>
+<span class="fc" id="L36">                    .withConnector(&quot;and&quot;)</span>
+<span class="fc" id="L37">                    .build()</span>
             )
-<span class="fc" id="L36">        }</span>
+<span class="fc" id="L39">        }</span>
 
     fun &lt;T&gt; and(
         column: BindableColumn&lt;T&gt;,
         condition: VisitableCondition&lt;T&gt;,
-        collect: CriteriaReceiver
-    ) =
-<span class="fc" id="L43">        apply {</span>
-<span class="fc" id="L44">            criteria.add(</span>
-<span class="fc" id="L45">                SqlCriterion.withColumn(column)</span>
-<span class="fc" id="L46">                    .withCondition(condition)</span>
-<span class="fc" id="L47">                    .withSubCriteria(collect(CriteriaCollector()).criteria)</span>
-<span class="fc" id="L48">                    .withConnector(&quot;and&quot;)</span>
-<span class="fc" id="L49">                    .build()</span>
+        criteriaReceiver: CriteriaReceiver
+    ): CriteriaCollector =
+<span class="fc" id="L46">        apply {</span>
+<span class="fc" id="L47">            criteria.add(</span>
+<span class="fc" id="L48">                ColumnAndConditionCriterion.withColumn(column)</span>
+<span class="fc" id="L49">                    .withCondition(condition)</span>
+<span class="fc" id="L50">                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)</span>
+<span class="fc" id="L51">                    .withConnector(&quot;and&quot;)</span>
+<span class="fc" id="L52">                    .build()</span>
             )
-<span class="fc" id="L51">        }</span>
+<span class="fc" id="L54">        }</span>
 
-    fun &lt;T&gt; or(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;) =
-<span class="fc" id="L54">        apply {</span>
-<span class="fc" id="L55">            criteria.add(</span>
-<span class="fc" id="L56">                SqlCriterion.withColumn(column)</span>
-<span class="fc" id="L57">                    .withCondition(condition)</span>
-<span class="fc" id="L58">                    .withConnector(&quot;or&quot;)</span>
-<span class="fc" id="L59">                    .build()</span>
+    fun and(existsPredicate: ExistsPredicate): CriteriaCollector =
+<span class="fc" id="L57">        apply {</span>
+<span class="fc" id="L58">            criteria.add(</span>
+<span class="fc" id="L59">                ExistsCriterion.Builder()</span>
+<span class="fc" id="L60">                    .withConnector(&quot;and&quot;)</span>
+<span class="fc" id="L61">                    .withExistsPredicate(existsPredicate)</span>
+<span class="fc" id="L62">                    .build()</span>
             )
-<span class="fc" id="L61">        }</span>
+<span class="fc" id="L64">        }</span>
+
+    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+<span class="fc" id="L67">        apply {</span>
+<span class="fc" id="L68">            criteria.add(</span>
+<span class="fc" id="L69">                ExistsCriterion.Builder()</span>
+<span class="fc" id="L70">                    .withConnector(&quot;and&quot;)</span>
+<span class="fc" id="L71">                    .withExistsPredicate(existsPredicate)</span>
+<span class="fc" id="L72">                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)</span>
+<span class="fc" id="L73">                    .build()</span>
+            )
+<span class="fc" id="L75">        }</span>
+
+    fun &lt;T&gt; or(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;): CriteriaCollector =
+<span class="fc" id="L78">        apply {</span>
+<span class="fc" id="L79">            criteria.add(</span>
+<span class="fc" id="L80">                ColumnAndConditionCriterion.withColumn(column)</span>
+<span class="fc" id="L81">                    .withCondition(condition)</span>
+<span class="fc" id="L82">                    .withConnector(&quot;or&quot;)</span>
+<span class="fc" id="L83">                    .build()</span>
+            )
+<span class="fc" id="L85">        }</span>
 
     fun &lt;T&gt; or(
         column: BindableColumn&lt;T&gt;,
         condition: VisitableCondition&lt;T&gt;,
-        collect: CriteriaReceiver
-    ) =
-<span class="fc" id="L68">        apply {</span>
-<span class="fc" id="L69">            criteria.add(</span>
-<span class="fc" id="L70">                SqlCriterion.withColumn(column)</span>
-<span class="fc" id="L71">                    .withCondition(condition)</span>
-<span class="fc" id="L72">                    .withSubCriteria(collect(CriteriaCollector()).criteria)</span>
-<span class="fc" id="L73">                    .withConnector(&quot;or&quot;)</span>
-<span class="fc" id="L74">                    .build()</span>
+        criteriaReceiver: CriteriaReceiver
+    ): CriteriaCollector =
+<span class="fc" id="L92">        apply {</span>
+<span class="fc" id="L93">            criteria.add(</span>
+<span class="fc" id="L94">                ColumnAndConditionCriterion.withColumn(column)</span>
+<span class="fc" id="L95">                    .withCondition(condition)</span>
+<span class="fc" id="L96">                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)</span>
+<span class="fc" id="L97">                    .withConnector(&quot;or&quot;)</span>
+<span class="fc" id="L98">                    .build()</span>
             )
-<span class="fc" id="L76">        }</span>
+<span class="fc" id="L100">        }</span>
+
+    fun or(existsPredicate: ExistsPredicate): CriteriaCollector =
+<span class="fc" id="L103">        apply {</span>
+<span class="fc" id="L104">            criteria.add(</span>
+<span class="fc" id="L105">                ExistsCriterion.Builder()</span>
+<span class="fc" id="L106">                    .withConnector(&quot;or&quot;)</span>
+<span class="fc" id="L107">                    .withExistsPredicate(existsPredicate)</span>
+<span class="fc" id="L108">                    .build()</span>
+            )
+<span class="fc" id="L110">        }</span>
+
+    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+<span class="fc" id="L113">        apply {</span>
+<span class="fc" id="L114">            criteria.add(</span>
+<span class="fc" id="L115">                ExistsCriterion.Builder()</span>
+<span class="fc" id="L116">                    .withConnector(&quot;or&quot;)</span>
+<span class="fc" id="L117">                    .withExistsPredicate(existsPredicate)</span>
+<span class="fc" id="L118">                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)</span>
+<span class="fc" id="L119">                    .build()</span>
+            )
+<span class="fc" id="L121">        }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

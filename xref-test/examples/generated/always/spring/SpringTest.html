@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../testapidocs/examples/generated/always/spring/SpringTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2020 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2021 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -102,7 +102,7 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          List&lt;GeneratedAlwaysRecord&gt; records = template.query(selectStatement.getSelectStatement(), namedParameters,
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                  (rs, rowNum) -&gt; {
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>                      <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/alw<a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>cord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>                      <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>                      record.setId(rs.getInt(1));
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>                      record.setFirstName(rs.getString(2));
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>                     record.setLastName(rs.getString(3));
@@ -137,7 +137,7 @@
 <a class="jxr_linenumber" name="L129" href="#L129">129</a> 
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     @Test
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">void</strong> testInsert() {
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/alw<a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>cord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         record.setId(100);
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         record.setFirstName(<span class="jxr_string">"Bob"</span>);
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         record.setLastName(<span class="jxr_string">"Jones"</span>);
@@ -162,7 +162,7 @@
 <a class="jxr_linenumber" name="L154" href="#L154">154</a> 
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>     @Test
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>     <strong class="jxr_keyword">void</strong> testInsertWithExtensions() {
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/alw<a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>cord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>         record.setId(100);
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>         record.setFirstName(<span class="jxr_string">"Bob"</span>);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>         record.setLastName(<span class="jxr_string">"Jones"</span>);
@@ -237,7 +237,7 @@
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>     @Test
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>     <strong class="jxr_keyword">void</strong> testInsertBatch() {
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>         List&lt;GeneratedAlwaysRecord&gt; records = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/alw<a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>cord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>         record.setId(100);
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>         record.setFirstName(<span class="jxr_string">"Bob"</span>);
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>         record.setLastName(<span class="jxr_string">"Jones"</span>);
@@ -271,7 +271,7 @@
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>         NamedParameterJdbcTemplateExtensions extensions = <strong class="jxr_keyword">new</strong> NamedParameterJdbcTemplateExtensions(template);
 <a class="jxr_linenumber" name="L264" href="#L264">264</a> 
 <a class="jxr_linenumber" name="L265" href="#L265">265</a>         List&lt;GeneratedAlwaysRecord&gt; records = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/alw<a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>cord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
 <a class="jxr_linenumber" name="L267" href="#L267">267</a>         record.setId(100);
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>         record.setFirstName(<span class="jxr_string">"Bob"</span>);
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>         record.setLastName(<span class="jxr_string">"Jones"</span>);
@@ -302,7 +302,7 @@
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>         KeyHolder keyHolder = <strong class="jxr_keyword">new</strong> GeneratedKeyHolder();
 <a class="jxr_linenumber" name="L295" href="#L295">295</a> 
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>         List&lt;GeneratedAlwaysRecord&gt; records = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/alw<a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>cord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a>();
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>         record.setId(100);
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>         record.setFirstName(<span class="jxr_string">"Bob"</span>);
 <a class="jxr_linenumber" name="L300" href="#L300">300</a>         record.setLastName(<span class="jxr_string">"Jones"</span>);
@@ -343,6 +343,6 @@
 <a class="jxr_linenumber" name="L335" href="#L335">335</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2021 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

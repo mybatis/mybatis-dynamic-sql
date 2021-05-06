@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">QueryExpressionModel.java</span></div><h1>QueryExpressionModel.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +26,7 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -37,123 +36,128 @@ public class QueryExpressionModel {
     private final String connector;
     private final boolean isDistinct;
     private final List&lt;BasicColumn&gt; selectList;
-    private final SqlTable table;
+    private final TableExpression table;
     private final JoinModel joinModel;
     private final TableAliasCalculator tableAliasCalculator;
     private final WhereModel whereModel;
     private final GroupByModel groupByModel;
 
-<span class="fc" id="L46">    private QueryExpressionModel(Builder builder) {</span>
-<span class="fc" id="L47">        connector = builder.connector;</span>
-<span class="fc" id="L48">        isDistinct = builder.isDistinct;</span>
-<span class="fc" id="L49">        selectList = Objects.requireNonNull(builder.selectList);</span>
-<span class="fc" id="L50">        table = Objects.requireNonNull(builder.table);</span>
-<span class="fc" id="L51">        joinModel = builder.joinModel;</span>
-<span class="fc" id="L52">        tableAliasCalculator = joinModel().map(jm -&gt; GuaranteedTableAliasCalculator.of(builder.tableAliases))</span>
-<span class="fc" id="L53">                .orElseGet(() -&gt; TableAliasCalculator.of(builder.tableAliases));</span>
-<span class="fc" id="L54">        whereModel = builder.whereModel;</span>
-<span class="fc" id="L55">        groupByModel = builder.groupByModel;</span>
-<span class="fc" id="L56">    }</span>
+<span class="fc" id="L45">    private QueryExpressionModel(Builder builder) {</span>
+<span class="fc" id="L46">        connector = builder.connector;</span>
+<span class="fc" id="L47">        isDistinct = builder.isDistinct;</span>
+<span class="fc" id="L48">        selectList = Objects.requireNonNull(builder.selectList);</span>
+<span class="fc" id="L49">        table = Objects.requireNonNull(builder.table);</span>
+<span class="fc" id="L50">        joinModel = builder.joinModel;</span>
+<span class="fc" id="L51">        tableAliasCalculator = joinModel().map(jm -&gt; determineJoinTableAliasCalculator(jm, builder.tableAliases))</span>
+<span class="fc" id="L52">                .orElseGet(() -&gt; TableAliasCalculator.of(builder.tableAliases));</span>
+<span class="fc" id="L53">        whereModel = builder.whereModel;</span>
+<span class="fc" id="L54">        groupByModel = builder.groupByModel;</span>
+<span class="fc" id="L55">    }</span>
+
+    private TableAliasCalculator determineJoinTableAliasCalculator(JoinModel joinModel, Map&lt;SqlTable,
+            String&gt; tableAliases) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (joinModel.containsSubQueries()) {</span>
+            // if there are subQueries, then force explicit qualifiers
+<span class="fc" id="L61">            return TableAliasCalculator.of(tableAliases);</span>
+        } else {
+<span class="fc" id="L63">            return GuaranteedTableAliasCalculator.of(tableAliases);</span>
+        }
+    }
 
     public Optional&lt;String&gt; connector() {
-<span class="fc" id="L59">        return Optional.ofNullable(connector);</span>
+<span class="fc" id="L68">        return Optional.ofNullable(connector);</span>
     }
 
     public boolean isDistinct() {
-<span class="fc" id="L63">        return isDistinct;</span>
+<span class="fc" id="L72">        return isDistinct;</span>
     }
 
     public &lt;R&gt; Stream&lt;R&gt; mapColumns(Function&lt;BasicColumn, R&gt; mapper) {
-<span class="fc" id="L67">        return selectList.stream().map(mapper);</span>
+<span class="fc" id="L76">        return selectList.stream().map(mapper);</span>
     }
 
-    public SqlTable table() {
-<span class="fc" id="L71">        return table;</span>
+    public TableExpression table() {
+<span class="fc" id="L80">        return table;</span>
     }
 
     public TableAliasCalculator tableAliasCalculator() {
-<span class="fc" id="L75">        return tableAliasCalculator;</span>
+<span class="fc" id="L84">        return tableAliasCalculator;</span>
     }
 
     public Optional&lt;WhereModel&gt; whereModel() {
-<span class="fc" id="L79">        return Optional.ofNullable(whereModel);</span>
+<span class="fc" id="L88">        return Optional.ofNullable(whereModel);</span>
     }
 
     public Optional&lt;JoinModel&gt; joinModel() {
-<span class="fc" id="L83">        return Optional.ofNullable(joinModel);</span>
+<span class="fc" id="L92">        return Optional.ofNullable(joinModel);</span>
     }
 
     public Optional&lt;GroupByModel&gt; groupByModel() {
-<span class="fc" id="L87">        return Optional.ofNullable(groupByModel);</span>
-    }
-
-    public String calculateTableNameIncludingAlias(SqlTable table) {
-<span class="fc" id="L91">        return table.tableNameAtRuntime()</span>
-<span class="fc" id="L92">                + spaceBefore(tableAliasCalculator.aliasForTable(table));</span>
+<span class="fc" id="L96">        return Optional.ofNullable(groupByModel);</span>
     }
 
     public static Builder withSelectList(List&lt;BasicColumn&gt; columnList) {
-<span class="fc" id="L96">        return new Builder().withSelectList(columnList);</span>
+<span class="fc" id="L100">        return new Builder().withSelectList(columnList);</span>
     }
 
-<span class="fc" id="L99">    public static class Builder {</span>
+<span class="fc" id="L103">    public static class Builder {</span>
         private String connector;
         private boolean isDistinct;
-<span class="fc" id="L102">        private final List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
-        private SqlTable table;
-<span class="fc" id="L104">        private final Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L106">        private final List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
+        private TableExpression table;
+<span class="fc" id="L108">        private final Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
         private WhereModel whereModel;
         private JoinModel joinModel;
         private GroupByModel groupByModel;
 
         public Builder withConnector(String connector) {
-<span class="fc" id="L110">            this.connector = connector;</span>
-<span class="fc" id="L111">            return this;</span>
+<span class="fc" id="L114">            this.connector = connector;</span>
+<span class="fc" id="L115">            return this;</span>
         }
 
-        public Builder withTable(SqlTable table) {
-<span class="fc" id="L115">            this.table = table;</span>
-<span class="fc" id="L116">            return this;</span>
+        public Builder withTable(TableExpression table) {
+<span class="fc" id="L119">            this.table = table;</span>
+<span class="fc" id="L120">            return this;</span>
         }
 
         public Builder isDistinct(boolean isDistinct) {
-<span class="fc" id="L120">            this.isDistinct = isDistinct;</span>
-<span class="fc" id="L121">            return this;</span>
+<span class="fc" id="L124">            this.isDistinct = isDistinct;</span>
+<span class="fc" id="L125">            return this;</span>
         }
 
         public Builder withSelectColumn(BasicColumn selectColumn) {
-<span class="fc" id="L125">            this.selectList.add(selectColumn);</span>
-<span class="fc" id="L126">            return this;</span>
+<span class="fc" id="L129">            this.selectList.add(selectColumn);</span>
+<span class="fc" id="L130">            return this;</span>
         }
 
         public Builder withSelectList(List&lt;BasicColumn&gt; selectList) {
-<span class="fc" id="L130">            this.selectList.addAll(selectList);</span>
-<span class="fc" id="L131">            return this;</span>
+<span class="fc" id="L134">            this.selectList.addAll(selectList);</span>
+<span class="fc" id="L135">            return this;</span>
         }
 
         public Builder withTableAliases(Map&lt;SqlTable, String&gt; tableAliases) {
-<span class="fc" id="L135">            this.tableAliases.putAll(tableAliases);</span>
-<span class="fc" id="L136">            return this;</span>
+<span class="fc" id="L139">            this.tableAliases.putAll(tableAliases);</span>
+<span class="fc" id="L140">            return this;</span>
         }
 
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L140">            this.whereModel = whereModel;</span>
-<span class="fc" id="L141">            return this;</span>
+<span class="fc" id="L144">            this.whereModel = whereModel;</span>
+<span class="fc" id="L145">            return this;</span>
         }
 
         public Builder withJoinModel(JoinModel joinModel) {
-<span class="fc" id="L145">            this.joinModel = joinModel;</span>
-<span class="fc" id="L146">            return this;</span>
+<span class="fc" id="L149">            this.joinModel = joinModel;</span>
+<span class="fc" id="L150">            return this;</span>
         }
 
         public Builder withGroupByModel(GroupByModel groupByModel) {
-<span class="fc" id="L150">            this.groupByModel = groupByModel;</span>
-<span class="fc" id="L151">            return this;</span>
+<span class="fc" id="L154">            this.groupByModel = groupByModel;</span>
+<span class="fc" id="L155">            return this;</span>
         }
 
         public QueryExpressionModel build() {
-<span class="fc" id="L155">            return new QueryExpressionModel(this);</span>
+<span class="fc" id="L159">            return new QueryExpressionModel(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RenderingStrategy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.render</a> &gt; <span class="el_source">RenderingStrategy.java</span></div><h1>RenderingStrategy.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -20,28 +20,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mybatis.dynamic.sql.BindableColumn;
 
 <span class="fc" id="L22">public abstract class RenderingStrategy {</span>
-    /**
-     * Rendering strategy for MyBatis3.
-     *
-     * @deprecated use {@link RenderingStrategies#MYBATIS3} instead
-     */
-    @Deprecated
-    @SuppressWarnings(&quot;squid:S2390&quot;)
-<span class="fc" id="L30">    public static final RenderingStrategy MYBATIS3 = new MyBatis3RenderingStrategy();</span>
-
-    /**
-     * Rendering strategy for Spring JDBC Template Named Parameters.
-     *
-     * @deprecated use {@link RenderingStrategies#SPRING_NAMED_PARAMETER} instead
-     */
-    @Deprecated
-    @SuppressWarnings(&quot;squid:S2390&quot;)
-<span class="fc" id="L39">    public static final RenderingStrategy SPRING_NAMED_PARAMETER = new SpringNamedParameterRenderingStrategy();</span>
-
     public static final String DEFAULT_PARAMETER_PREFIX = &quot;parameters&quot;; //$NON-NLS-1$
 
     public static String formatParameterMapKey(AtomicInteger sequence) {
-<span class="fc" id="L44">        return &quot;p&quot; + sequence.getAndIncrement(); //$NON-NLS-1$</span>
+<span class="fc" id="L26">        return &quot;p&quot; + sequence.getAndIncrement(); //$NON-NLS-1$</span>
     }
 
     public abstract String getFormattedJdbcPlaceholder(BindableColumn&lt;?&gt; column, String prefix, String parameterName);
@@ -49,7 +31,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
     public abstract String getFormattedJdbcPlaceholder(String prefix, String parameterName);
 
     public String getMultiRowFormattedJdbcPlaceholder(BindableColumn&lt;?&gt; column, String prefix, String parameterName) {
-<span class="fc" id="L52">        return getFormattedJdbcPlaceholder(column, prefix, parameterName);</span>
+<span class="fc" id="L34">        return getFormattedJdbcPlaceholder(column, prefix, parameterName);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SetPhraseVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update.render</a> &gt; <span class="el_source">SetPhraseVisitor.java</span></div><h1>SetPhraseVisitor.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.UpdateMappingVisitor;
 import org.mybatis.dynamic.sql.util.ValueMapping;
+import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class SetPhraseVisitor extends UpdateMappingVisitor&lt;Optional&lt;FragmentAndParameters&gt;&gt; {
@@ -40,89 +41,99 @@ public class SetPhraseVisitor extends UpdateMappingVisitor&lt;Optional&lt;Fragme
     private final AtomicInteger sequence;
     private final RenderingStrategy renderingStrategy;
 
-<span class="fc" id="L43">    public SetPhraseVisitor(AtomicInteger sequence, RenderingStrategy renderingStrategy) {</span>
-<span class="fc" id="L44">        this.sequence = Objects.requireNonNull(sequence);</span>
-<span class="fc" id="L45">        this.renderingStrategy = Objects.requireNonNull(renderingStrategy);</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L44">    public SetPhraseVisitor(AtomicInteger sequence, RenderingStrategy renderingStrategy) {</span>
+<span class="fc" id="L45">        this.sequence = Objects.requireNonNull(sequence);</span>
+<span class="fc" id="L46">        this.renderingStrategy = Objects.requireNonNull(renderingStrategy);</span>
+<span class="fc" id="L47">    }</span>
 
     @Override
     public Optional&lt;FragmentAndParameters&gt; visit(NullMapping mapping) {
-<span class="fc" id="L50">        return FragmentAndParameters.withFragment(mapping.columnName() + &quot; = null&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L51">                .buildOptional();</span>
+<span class="fc" id="L51">        return FragmentAndParameters.withFragment(mapping.columnName() + &quot; = null&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L52">                .buildOptional();</span>
     }
 
     @Override
     public Optional&lt;FragmentAndParameters&gt; visit(ConstantMapping mapping) {
-<span class="fc" id="L56">        String fragment = mapping.columnName() + &quot; = &quot; + mapping.constant(); //$NON-NLS-1$</span>
-<span class="fc" id="L57">        return FragmentAndParameters.withFragment(fragment)</span>
-<span class="fc" id="L58">                .buildOptional();</span>
+<span class="fc" id="L57">        String fragment = mapping.columnName() + &quot; = &quot; + mapping.constant(); //$NON-NLS-1$</span>
+<span class="fc" id="L58">        return FragmentAndParameters.withFragment(fragment)</span>
+<span class="fc" id="L59">                .buildOptional();</span>
     }
 
     @Override
     public Optional&lt;FragmentAndParameters&gt; visit(StringConstantMapping mapping) {
-<span class="fc" id="L63">        String fragment = mapping.columnName()</span>
+<span class="fc" id="L64">        String fragment = mapping.columnName()</span>
                 + &quot; = '&quot; //$NON-NLS-1$
-<span class="fc" id="L65">                + mapping.constant()</span>
+<span class="fc" id="L66">                + mapping.constant()</span>
                 + &quot;'&quot;; //$NON-NLS-1$
 
-<span class="fc" id="L68">        return FragmentAndParameters.withFragment(fragment)</span>
-<span class="fc" id="L69">                .buildOptional();</span>
+<span class="fc" id="L69">        return FragmentAndParameters.withFragment(fragment)</span>
+<span class="fc" id="L70">                .buildOptional();</span>
     }
 
     @Override
     public &lt;T&gt; Optional&lt;FragmentAndParameters&gt; visit(ValueMapping&lt;T&gt; mapping) {
-<span class="fc" id="L74">        return buildFragment(mapping, mapping.value());</span>
+<span class="fc" id="L75">        return buildFragment(mapping, mapping.value());</span>
+    }
+
+    @Override
+    public &lt;T&gt; Optional&lt;FragmentAndParameters&gt; visit(ValueOrNullMapping&lt;T&gt; mapping) {
+<span class="fc" id="L80">        return mapping.value()</span>
+<span class="fc" id="L81">                .map(v -&gt; buildFragment(mapping, v))</span>
+<span class="fc" id="L82">                .orElseGet(() -&gt; FragmentAndParameters</span>
+<span class="fc" id="L83">                        .withFragment(mapping.columnName() + &quot; = null&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L84">                        .buildOptional()</span>
+                );
     }
 
     @Override
     public &lt;T&gt; Optional&lt;FragmentAndParameters&gt; visit(ValueWhenPresentMapping&lt;T&gt; mapping) {
-<span class="fc" id="L79">        return mapping.value().flatMap(v -&gt; buildFragment(mapping, v));</span>
+<span class="fc" id="L90">        return mapping.value().flatMap(v -&gt; buildFragment(mapping, v));</span>
     }
 
     @Override
     public Optional&lt;FragmentAndParameters&gt; visit(SelectMapping mapping) {
-<span class="fc" id="L84">        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(mapping.selectModel())</span>
-<span class="fc" id="L85">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L86">                .withSequence(sequence)</span>
-<span class="fc" id="L87">                .build()</span>
-<span class="fc" id="L88">                .render();</span>
+<span class="fc" id="L95">        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(mapping.selectModel())</span>
+<span class="fc" id="L96">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L97">                .withSequence(sequence)</span>
+<span class="fc" id="L98">                .build()</span>
+<span class="fc" id="L99">                .render();</span>
 
-<span class="fc" id="L90">        String fragment = mapping.columnName()</span>
+<span class="fc" id="L101">        String fragment = mapping.columnName()</span>
                 + &quot; = (&quot; //$NON-NLS-1$
-<span class="fc" id="L92">                + selectStatement.getSelectStatement()</span>
+<span class="fc" id="L103">                + selectStatement.getSelectStatement()</span>
                 + &quot;)&quot;; //$NON-NLS-1$
 
-<span class="fc" id="L95">        return FragmentAndParameters.withFragment(fragment)</span>
-<span class="fc" id="L96">                .withParameters(selectStatement.getParameters())</span>
-<span class="fc" id="L97">                .buildOptional();</span>
+<span class="fc" id="L106">        return FragmentAndParameters.withFragment(fragment)</span>
+<span class="fc" id="L107">                .withParameters(selectStatement.getParameters())</span>
+<span class="fc" id="L108">                .buildOptional();</span>
     }
 
     @Override
     public Optional&lt;FragmentAndParameters&gt; visit(ColumnToColumnMapping mapping) {
-<span class="fc" id="L102">        String setPhrase = mapping.columnName()</span>
+<span class="fc" id="L113">        String setPhrase = mapping.columnName()</span>
                 + &quot; = &quot;  //$NON-NLS-1$
-<span class="fc" id="L104">                + mapping.rightColumn().renderWithTableAlias(TableAliasCalculator.empty());</span>
+<span class="fc" id="L115">                + mapping.rightColumn().renderWithTableAlias(TableAliasCalculator.empty());</span>
 
-<span class="fc" id="L106">        return FragmentAndParameters.withFragment(setPhrase)</span>
-<span class="fc" id="L107">                .buildOptional();</span>
+<span class="fc" id="L117">        return FragmentAndParameters.withFragment(setPhrase)</span>
+<span class="fc" id="L118">                .buildOptional();</span>
     }
 
     private &lt;T&gt; Optional&lt;FragmentAndParameters&gt; buildFragment(AbstractColumnMapping mapping, T value) {
-<span class="fc" id="L111">        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);</span>
+<span class="fc" id="L122">        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);</span>
 
-<span class="fc" id="L113">        String jdbcPlaceholder = mapping.mapColumn(c -&gt; calculateJdbcPlaceholder(c, mapKey));</span>
-<span class="fc" id="L114">        String setPhrase = mapping.columnName()</span>
+<span class="fc" id="L124">        String jdbcPlaceholder = mapping.mapColumn(c -&gt; calculateJdbcPlaceholder(c, mapKey));</span>
+<span class="fc" id="L125">        String setPhrase = mapping.columnName()</span>
                 + &quot; = &quot;  //$NON-NLS-1$
                 + jdbcPlaceholder;
 
-<span class="fc" id="L118">        return FragmentAndParameters.withFragment(setPhrase)</span>
-<span class="fc" id="L119">                .withParameter(mapKey, value)</span>
-<span class="fc" id="L120">                .buildOptional();</span>
+<span class="fc" id="L129">        return FragmentAndParameters.withFragment(setPhrase)</span>
+<span class="fc" id="L130">                .withParameter(mapKey, value)</span>
+<span class="fc" id="L131">                .buildOptional();</span>
     }
 
     private String calculateJdbcPlaceholder(SqlColumn&lt;?&gt; column, String parameterName) {
-<span class="fc" id="L124">        return column.renderingStrategy().orElse(renderingStrategy)</span>
-<span class="fc" id="L125">                .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);</span>
+<span class="fc" id="L135">        return column.renderingStrategy().orElse(renderingStrategy)</span>
+<span class="fc" id="L136">                .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KotlinInsertHelpers.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">KotlinInsertHelpers.kt</span></div><h1>KotlinInsertHelpers.kt</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2021 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.util.kotlin
+
+import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.insert.BatchInsertDSL
+import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
+import org.mybatis.dynamic.sql.insert.GeneralInsertModel
+import org.mybatis.dynamic.sql.insert.InsertDSL
+import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
+import org.mybatis.dynamic.sql.util.Buildable
+
+typealias GeneralInsertCompleter = @MyBatisDslMarker KotlinGeneralInsertBuilder.() -&gt; Unit
+
+typealias InsertCompleter&lt;T&gt; = @MyBatisDslMarker InsertDSL&lt;T&gt;.() -&gt; Unit
+
+typealias MultiRowInsertCompleter&lt;T&gt; = @MyBatisDslMarker MultiRowInsertDSL&lt;T&gt;.() -&gt; Unit
+
+typealias BatchInsertCompleter&lt;T&gt; = @MyBatisDslMarker BatchInsertDSL&lt;T&gt;.() -&gt; Unit
+
+typealias InsertSelectCompleter = @MyBatisDslMarker KotlinInsertSelectSubQueryBuilder.() -&gt; Unit
+
+<span class="fc" id="L36">@MyBatisDslMarker</span>
+<span class="fc" id="L37">class KotlinGeneralInsertBuilder(private val dsl: GeneralInsertDSL) : Buildable&lt;GeneralInsertModel&gt; {</span>
+
+<span class="fc" id="L39">    fun &lt;T&gt; set(column: SqlColumn&lt;T&gt;): GeneralInsertSetClauseFinisher&lt;T&gt; = GeneralInsertSetClauseFinisher(column)</span>
+
+<span class="fc" id="L41">    override fun build(): GeneralInsertModel = dsl.build()</span>
+
+<span class="fc" id="L43">    @MyBatisDslMarker</span>
+<span class="fc" id="L44">    inner class GeneralInsertSetClauseFinisher&lt;T&gt;(private val column: SqlColumn&lt;T&gt;) {</span>
+        fun toNull(): KotlinGeneralInsertBuilder =
+<span class="fc" id="L46">            applyToDsl {</span>
+<span class="fc" id="L47">                set(column).toNull()</span>
+<span class="fc" id="L48">            }</span>
+
+        fun toConstant(constant: String): KotlinGeneralInsertBuilder =
+<span class="fc" id="L51">            applyToDsl {</span>
+<span class="fc" id="L52">                set(column).toConstant(constant)</span>
+<span class="fc" id="L53">            }</span>
+
+        fun toStringConstant(constant: String): KotlinGeneralInsertBuilder =
+<span class="fc" id="L56">            applyToDsl {</span>
+<span class="fc" id="L57">                set(column).toStringConstant(constant)</span>
+<span class="fc" id="L58">            }</span>
+
+<span class="fc" id="L60">        fun toValue(value: T): KotlinGeneralInsertBuilder = toValue { value }</span>
+
+        fun toValue(value: () -&gt; T): KotlinGeneralInsertBuilder =
+<span class="fc" id="L63">            applyToDsl {</span>
+<span class="fc" id="L64">                set(column).toValue(value)</span>
+<span class="fc" id="L65">            }</span>
+
+<span class="fc" id="L67">        fun toValueOrNull(value: T?): KotlinGeneralInsertBuilder = toValueOrNull { value }</span>
+
+        fun toValueOrNull(value: () -&gt; T?): KotlinGeneralInsertBuilder =
+<span class="fc" id="L70">            applyToDsl {</span>
+<span class="fc" id="L71">                set(column).toValueOrNull(value)</span>
+<span class="fc" id="L72">            }</span>
+
+<span class="fc" id="L74">        fun toValueWhenPresent(value: T?): KotlinGeneralInsertBuilder = toValueWhenPresent { value }</span>
+
+        fun toValueWhenPresent(value: () -&gt; T?): KotlinGeneralInsertBuilder =
+<span class="fc" id="L77">            applyToDsl {</span>
+<span class="fc" id="L78">                set(column).toValueWhenPresent(value)</span>
+<span class="fc" id="L79">            }</span>
+
+        private fun applyToDsl(block: GeneralInsertDSL.() -&gt; Unit): KotlinGeneralInsertBuilder =
+<span class="fc" id="L82">            this@KotlinGeneralInsertBuilder.apply {</span>
+<span class="fc" id="L83">                dsl.apply(block)</span>
+<span class="fc" id="L84">            }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

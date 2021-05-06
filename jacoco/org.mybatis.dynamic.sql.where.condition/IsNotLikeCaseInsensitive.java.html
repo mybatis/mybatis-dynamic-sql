@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsNotLikeCaseInsensitive.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsNotLikeCaseInsensitive.java</span></div><h1>IsNotLikeCaseInsensitive.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -16,41 +16,84 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition&lt;String&gt; {
-    protected IsNotLikeCaseInsensitive(Supplier&lt;String&gt; valueSupplier) {
-<span class="fc" id="L27">        super(valueSupplier);</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L25">    private static final IsNotLikeCaseInsensitive EMPTY = new IsNotLikeCaseInsensitive(null) {</span>
+        @Override
+        public boolean shouldRender() {
+<span class="fc" id="L28">            return false;</span>
+        }
+    };
 
-    protected IsNotLikeCaseInsensitive(Supplier&lt;String&gt; valueSupplier, Predicate&lt;String&gt; predicate) {
-<span class="fc" id="L31">        super(valueSupplier, predicate);</span>
-<span class="fc" id="L32">    }</span>
+    public static IsNotLikeCaseInsensitive empty() {
+<span class="fc" id="L33">        return EMPTY;</span>
+    }
+
+    protected IsNotLikeCaseInsensitive(String value) {
+<span class="fc" id="L37">        super(value);</span>
+<span class="fc" id="L38">    }</span>
 
     @Override
     public String renderCondition(String columnName, String placeholder) {
-<span class="fc" id="L36">        return &quot;upper(&quot; + columnName + &quot;) not like &quot; + placeholder; //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L42">        return &quot;upper(&quot; + columnName + &quot;) not like &quot; + placeholder; //$NON-NLS-1$ //$NON-NLS-2$</span>
     }
 
     @Override
     public String value() {
-<span class="fc" id="L41">        return StringUtilities.safelyUpperCase(super.value());</span>
+<span class="fc" id="L47">        return StringUtilities.safelyUpperCase(super.value());</span>
     }
 
-    public static IsNotLikeCaseInsensitive of(Supplier&lt;String&gt; valueSupplier) {
-<span class="fc" id="L45">        return new IsNotLikeCaseInsensitive(valueSupplier);</span>
+    public static IsNotLikeCaseInsensitive of(String value) {
+<span class="fc" id="L51">        return new IsNotLikeCaseInsensitive(value);</span>
     }
 
+    /**
+     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @deprecated replaced by {@link IsNotLikeCaseInsensitive#filter(Predicate)}
+     * @param predicate predicate applied to the value, if renderable
+     * @return this condition if renderable and the value matches the predicate, otherwise a condition
+     *     that will not render.
+     */
+    @Deprecated
     public IsNotLikeCaseInsensitive when(Predicate&lt;String&gt; predicate) {
-<span class="fc" id="L49">        return new IsNotLikeCaseInsensitive(valueSupplier, predicate);</span>
+<span class="fc" id="L65">        return filter(predicate);</span>
     }
 
-    public IsNotLikeCaseInsensitive then(UnaryOperator&lt;String&gt; transformer) {
-<span class="fc bfc" id="L53" title="All 2 branches covered.">        return shouldRender() ? new IsNotLikeCaseInsensitive(() -&gt; transformer.apply(value())) : this;</span>
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @deprecated replaced by {@link IsNotLikeCaseInsensitive#map(UnaryOperator)}
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    @Deprecated
+    public IsNotLikeCaseInsensitive then(UnaryOperator&lt;String&gt; mapper) {
+<span class="fc" id="L79">        return map(mapper);</span>
+    }
+
+    @Override
+    public IsNotLikeCaseInsensitive filter(Predicate&lt;? super String&gt; predicate) {
+<span class="fc" id="L84">        return filterSupport(predicate, IsNotLikeCaseInsensitive::empty, this);</span>
+    }
+
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public IsNotLikeCaseInsensitive map(UnaryOperator&lt;String&gt; mapper) {
+<span class="fc" id="L96">        return mapSupport(mapper, IsNotLikeCaseInsensitive::new, IsNotLikeCaseInsensitive::empty);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

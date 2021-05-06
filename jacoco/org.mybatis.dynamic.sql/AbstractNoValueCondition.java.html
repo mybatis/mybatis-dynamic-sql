@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractNoValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractNoValueCondition.java</span></div><h1>AbstractNoValueCondition.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,31 +15,25 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Objects;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
-public abstract class AbstractNoValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {
-
-    private final BooleanSupplier booleanSupplier;
-
-<span class="fc" id="L25">    protected AbstractNoValueCondition() {</span>
-<span class="fc" id="L26">        booleanSupplier = () -&gt; true;</span>
-<span class="fc" id="L27">    }</span>
-
-<span class="fc" id="L29">    protected AbstractNoValueCondition(BooleanSupplier booleanSupplier) {</span>
-<span class="fc" id="L30">        this.booleanSupplier = Objects.requireNonNull(booleanSupplier);</span>
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L21">public abstract class AbstractNoValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {</span>
 
     @Override
-    public boolean shouldRender() {
-<span class="fc" id="L35">        return booleanSupplier.getAsBoolean();</span>
+    public &lt;R&gt; R accept(ConditionVisitor&lt;T, R&gt; visitor) {
+<span class="fc" id="L25">        return visitor.visit(this);</span>
     }
 
-    @Override
-    public &lt;R&gt; R accept(ConditionVisitor&lt;T,R&gt; visitor) {
-<span class="fc" id="L40">        return visitor.visit(this);</span>
+    protected &lt;S extends  AbstractNoValueCondition&lt;?&gt;&gt; S filterSupport(BooleanSupplier booleanSupplier,
+            Supplier&lt;S&gt; emptySupplier, S self) {
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (shouldRender()) {</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            return booleanSupplier.getAsBoolean() ? self : emptySupplier.get();</span>
+        } else {
+<span class="fc" id="L33">            return self;</span>
+        }
     }
 
     public abstract String renderCondition(String columnName);
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

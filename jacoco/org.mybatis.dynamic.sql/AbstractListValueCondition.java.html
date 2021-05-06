@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractListValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractListValueCondition.java</span></div><h1>AbstractListValueCondition.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,71 +15,89 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractListValueCondition&lt;T, S extends AbstractListValueCondition&lt;T, S&gt;&gt;
-        implements VisitableCondition&lt;T&gt; {
+public abstract class AbstractListValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {
     protected final Collection&lt;T&gt; values;
-    protected final UnaryOperator&lt;Stream&lt;T&gt;&gt; valueStreamTransformer;
     protected final Callback emptyCallback;
 
-<span class="fc" id="L32">    protected AbstractListValueCondition(AbstractListConditionBuilder&lt;T, ?&gt; builder) {</span>
-<span class="fc" id="L33">        this.valueStreamTransformer = Objects.requireNonNull(builder.valueStreamTransformer);</span>
-<span class="fc" id="L34">        this.values = valueStreamTransformer.apply(builder.values.stream())</span>
-<span class="fc" id="L35">            .collect(Collectors.toList());</span>
-<span class="fc" id="L36">        this.emptyCallback = Objects.requireNonNull(builder.emptyCallback);</span>
-<span class="fc" id="L37">    }</span>
+    protected AbstractListValueCondition(Collection&lt;T&gt; values) {
+<span class="fc" id="L32">        this(values, () -&gt; { });</span>
+<span class="fc" id="L33">    }</span>
+
+<span class="fc" id="L35">    protected AbstractListValueCondition(Collection&lt;T&gt; values, Callback emptyCallback) {</span>
+<span class="fc" id="L36">        this.values = Objects.requireNonNull(values);</span>
+<span class="fc" id="L37">        this.emptyCallback = Objects.requireNonNull(emptyCallback);</span>
+<span class="fc" id="L38">    }</span>
 
     public final &lt;R&gt; Stream&lt;R&gt; mapValues(Function&lt;T, R&gt; mapper) {
-<span class="fc" id="L40">        return values.stream().map(mapper);</span>
+<span class="fc" id="L41">        return values.stream().map(mapper);</span>
     }
 
     @Override
     public boolean shouldRender() {
-<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (values.isEmpty()) {</span>
-<span class="fc" id="L46">            emptyCallback.call();</span>
-<span class="fc" id="L47">            return false;</span>
-        } else {
-<span class="fc" id="L49">            return true;</span>
-        }
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        return !values.isEmpty();</span>
     }
 
     @Override
+    public void renderingSkipped() {
+<span class="fc" id="L51">        emptyCallback.call();</span>
+<span class="fc" id="L52">    }</span>
+
+    @Override
     public &lt;R&gt; R accept(ConditionVisitor&lt;T, R&gt; visitor) {
-<span class="fc" id="L55">        return visitor.visit(this);</span>
+<span class="fc" id="L56">        return visitor.visit(this);</span>
     }
 
-    public abstract S withListEmptyCallback(Callback callback);
+    private &lt;R&gt; Collection&lt;R&gt; applyMapper(Function&lt;? super T, ? extends R&gt; mapper) {
+<span class="fc" id="L60">        Objects.requireNonNull(mapper);</span>
+<span class="fc" id="L61">        return values.stream().map(mapper).collect(Collectors.toList());</span>
+    }
+
+    private Collection&lt;T&gt; applyFilter(Predicate&lt;? super T&gt; predicate) {
+<span class="fc" id="L65">        Objects.requireNonNull(predicate);</span>
+<span class="fc" id="L66">        return values.stream().filter(predicate).collect(Collectors.toList());</span>
+    }
+
+    protected &lt;S extends AbstractListValueCondition&lt;T&gt;&gt; S filterSupport(Predicate&lt;? super T&gt; predicate,
+            BiFunction&lt;Collection&lt;T&gt;, Callback, S&gt; constructor, S self, Supplier&lt;S&gt; emptySupplier) {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (shouldRender()) {</span>
+<span class="fc" id="L72">            Collection&lt;T&gt; filtered = applyFilter(predicate);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            return filtered.isEmpty() ? emptySupplier.get() : constructor.apply(filtered, emptyCallback);</span>
+        } else {
+<span class="fc" id="L75">            return self;</span>
+        }
+    }
+
+    protected &lt;R, S extends AbstractListValueCondition&lt;R&gt;&gt; S mapSupport(Function&lt;? super T, ? extends R&gt; mapper,
+            BiFunction&lt;Collection&lt;R&gt;, Callback, S&gt; constructor, Supplier&lt;S&gt; emptySupplier) {
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (shouldRender()) {</span>
+<span class="fc" id="L82">            return constructor.apply(applyMapper(mapper), emptyCallback);</span>
+        } else {
+<span class="fc" id="L84">            return emptySupplier.get();</span>
+        }
+    }
+
+    /**
+     * If renderable, apply the predicate to each value in the list and return a new condition with the filtered values.
+     *     Else returns a condition that will not render (this). If all values are filtered out of the value
+     *     list, then the condition will not render.
+     *
+     * @param predicate predicate applied to the values, if renderable
+     * @return a new condition with filtered values if renderable, otherwise a condition
+     *     that will not render.
+     */
+    public abstract AbstractListValueCondition&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate);
+
+    public abstract AbstractListValueCondition&lt;T&gt; withListEmptyCallback(Callback callback);
 
     public abstract String renderCondition(String columnName, Stream&lt;String&gt; placeholders);
-
-<span class="fc" id="L62">    public abstract static class AbstractListConditionBuilder&lt;T, S extends AbstractListConditionBuilder&lt;T,S&gt;&gt; {</span>
-<span class="fc" id="L63">        protected Collection&lt;T&gt; values = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L64">        protected UnaryOperator&lt;Stream&lt;T&gt;&gt; valueStreamTransformer = UnaryOperator.identity();</span>
-<span class="fc" id="L65">        protected Callback emptyCallback = () -&gt; { };</span>
-
-        public S withValues(Collection&lt;T&gt; values) {
-<span class="fc" id="L68">            this.values.addAll(values);</span>
-<span class="fc" id="L69">            return getThis();</span>
-        }
-
-        public S withValueStreamTransformer(UnaryOperator&lt;Stream&lt;T&gt;&gt; valueStreamTransformer) {
-<span class="fc" id="L73">            this.valueStreamTransformer = valueStreamTransformer;</span>
-<span class="fc" id="L74">            return getThis();</span>
-        }
-
-        public S withEmptyCallback(Callback emptyCallback) {
-<span class="fc" id="L78">            this.emptyCallback = emptyCallback;</span>
-<span class="fc" id="L79">            return getThis();</span>
-        }
-
-        protected abstract S getThis();
-    }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

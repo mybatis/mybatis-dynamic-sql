@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SqlProviderAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util</a> &gt; <span class="el_source">SqlProviderAdapter.java</span></div><h1>SqlProviderAdapter.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
@@ -29,34 +33,68 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
  * @author Jeff Butler
  *
  */
-<span class="fc" id="L32">public class SqlProviderAdapter {</span>
+<span class="fc" id="L36">public class SqlProviderAdapter {</span>
 
     public String delete(DeleteStatementProvider deleteStatement) {
-<span class="fc" id="L35">        return deleteStatement.getDeleteStatement();</span>
+<span class="fc" id="L39">        return deleteStatement.getDeleteStatement();</span>
     }
 
     public String generalInsert(GeneralInsertStatementProvider insertStatement) {
-<span class="fc" id="L39">        return insertStatement.getInsertStatement();</span>
-    }
-
-    public String insert(InsertStatementProvider&lt;?&gt; insertStatement) {
 <span class="fc" id="L43">        return insertStatement.getInsertStatement();</span>
     }
 
-    public String insertMultiple(MultiRowInsertStatementProvider&lt;?&gt; insertStatement) {
+    public String insert(InsertStatementProvider&lt;?&gt; insertStatement) {
 <span class="fc" id="L47">        return insertStatement.getInsertStatement();</span>
     }
 
-    public String insertSelect(InsertSelectStatementProvider insertStatement) {
+    public String insertMultiple(MultiRowInsertStatementProvider&lt;?&gt; insertStatement) {
 <span class="fc" id="L51">        return insertStatement.getInsertStatement();</span>
     }
 
+    /**
+     * This adapter method is intended for use with MyBatis' &amp;#064;InsertProvider annotation when there are generated
+     * values expected from executing the insert statement. The canonical method signature for using this
+     * adapter method is as follows:
+     *
+     * &lt;pre&gt;
+     * public interface FooMapper {
+     *     &amp;#064;InsertProvider(type=SqlProviderAdapter.class, method=&quot;insertMultipleWithGeneratedKeys&quot;)
+     *     &amp;#064;Options(useGeneratedKeys=true, keyProperty=&quot;records.id&quot;)
+     *     int insertMultiple(String insertStatement, &amp;#064;Param(&quot;records&quot;) List&amp;lt;Foo&amp;gt; records)
+     * }
+     * &lt;/pre&gt;
+     *
+     * @param parameterMap The parameter map is automatically created by MyBatis when there are multiple
+     *     parameters in the insert method.
+     * @return the SQL statement contained in the parameter map. This is assumed to be the one
+     *     and only map entry of type String.
+     */
+    public String insertMultipleWithGeneratedKeys(Map&lt;String, Object&gt; parameterMap) {
+<span class="fc" id="L73">        List&lt;String&gt; entries = parameterMap.entrySet().stream()</span>
+<span class="fc" id="L74">                .filter(e -&gt; e.getKey().startsWith(&quot;param&quot;)) //$NON-NLS-1$</span>
+<span class="fc" id="L75">                .map(Map.Entry::getValue)</span>
+<span class="fc" id="L76">                .filter(String.class::isInstance)</span>
+<span class="fc" id="L77">                .map(String.class::cast)</span>
+<span class="fc" id="L78">                .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (entries.size() == 1) {</span>
+<span class="fc" id="L81">            return entries.get(0);</span>
+        } else {
+<span class="fc" id="L83">            throw new IllegalArgumentException(&quot;The parameters for insertMultipleWithGeneratedKeys&quot; //$NON-NLS-1$</span>
+                    + &quot; must contain exactly one parameter of type String&quot;); //$NON-NLS-1$
+        }
+    }
+
+    public String insertSelect(InsertSelectStatementProvider insertStatement) {
+<span class="fc" id="L89">        return insertStatement.getInsertStatement();</span>
+    }
+
     public String select(SelectStatementProvider selectStatement) {
-<span class="fc" id="L55">        return selectStatement.getSelectStatement();</span>
+<span class="fc" id="L93">        return selectStatement.getSelectStatement();</span>
     }
 
     public String update(UpdateStatementProvider updateStatement) {
-<span class="fc" id="L59">        return updateStatement.getUpdateStatement();</span>
+<span class="fc" id="L97">        return updateStatement.getUpdateStatement();</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

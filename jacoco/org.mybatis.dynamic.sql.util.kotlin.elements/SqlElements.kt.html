@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SqlElements.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin.elements</a> &gt; <span class="el_source">SqlElements.kt</span></div><h1>SqlElements.kt</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2021 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+@file:Suppress(&quot;TooManyFunctions&quot;)
+package org.mybatis.dynamic.sql.util.kotlin.elements
+
+import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.Constant
+import org.mybatis.dynamic.sql.ExistsPredicate
+import org.mybatis.dynamic.sql.SortSpecification
+import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.StringConstant
+import org.mybatis.dynamic.sql.select.aggregate.Avg
+import org.mybatis.dynamic.sql.select.aggregate.Count
+import org.mybatis.dynamic.sql.select.aggregate.CountAll
+import org.mybatis.dynamic.sql.select.aggregate.CountDistinct
+import org.mybatis.dynamic.sql.select.aggregate.Max
+import org.mybatis.dynamic.sql.select.aggregate.Min
+import org.mybatis.dynamic.sql.select.aggregate.Sum
+import org.mybatis.dynamic.sql.select.function.Add
+import org.mybatis.dynamic.sql.select.function.Concatenate
+import org.mybatis.dynamic.sql.select.function.Divide
+import org.mybatis.dynamic.sql.select.function.Lower
+import org.mybatis.dynamic.sql.select.function.Multiply
+import org.mybatis.dynamic.sql.select.function.OperatorFunction
+import org.mybatis.dynamic.sql.select.function.Substring
+import org.mybatis.dynamic.sql.select.function.Subtract
+import org.mybatis.dynamic.sql.select.function.Upper
+import org.mybatis.dynamic.sql.select.join.EqualTo
+import org.mybatis.dynamic.sql.util.kotlin.KotlinSubQueryBuilder
+import org.mybatis.dynamic.sql.where.condition.IsBetween
+import org.mybatis.dynamic.sql.where.condition.IsEqualTo
+import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn
+import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThan
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanColumn
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualTo
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToColumn
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsIn
+import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitive
+import org.mybatis.dynamic.sql.where.condition.IsInWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsLessThan
+import org.mybatis.dynamic.sql.where.condition.IsLessThanColumn
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualTo
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToColumn
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsLike
+import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitive
+import org.mybatis.dynamic.sql.where.condition.IsNotBetween
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualTo
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualToColumn
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsNotIn
+import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive
+import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsNotLike
+import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitive
+import org.mybatis.dynamic.sql.where.condition.IsNotNull
+import org.mybatis.dynamic.sql.where.condition.IsNull
+
+// join support
+<span class="fc" id="L79">fun equalTo(column: BasicColumn): EqualTo = SqlBuilder.equalTo(column)</span>
+
+// aggregate support
+<span class="fc" id="L82">fun count(): CountAll = SqlBuilder.count()</span>
+
+<span class="fc" id="L84">fun count(column: BasicColumn): Count = SqlBuilder.count(column)</span>
+
+<span class="fc" id="L86">fun countDistinct(column: BasicColumn): CountDistinct = SqlBuilder.countDistinct(column)</span>
+
+<span class="fc" id="L88">fun &lt;T&gt; max(column: BindableColumn&lt;T&gt;): Max&lt;T&gt; = SqlBuilder.max(column)</span>
+
+<span class="fc" id="L90">fun &lt;T&gt; min(column: BindableColumn&lt;T&gt;): Min&lt;T&gt; = SqlBuilder.min(column)</span>
+
+<span class="fc" id="L92">fun &lt;T&gt; avg(column: BindableColumn&lt;T&gt;): Avg&lt;T&gt; = SqlBuilder.avg(column)</span>
+
+<span class="fc" id="L94">fun &lt;T&gt; sum(column: BindableColumn&lt;T&gt;): Sum&lt;T&gt; = SqlBuilder.sum(column)</span>
+
+// constants
+<span class="fc" id="L97">fun &lt;T&gt; constant(constant: String): Constant&lt;T&gt; = SqlBuilder.constant(constant)</span>
+
+<span class="fc" id="L99">fun stringConstant(constant: String): StringConstant = SqlBuilder.stringConstant(constant)</span>
+
+// functions
+fun &lt;T&gt; add(
+    firstColumn: BindableColumn&lt;T&gt;,
+    secondColumn: BasicColumn,
+    vararg subsequentColumns: BasicColumn
+<span class="fc" id="L106">): Add&lt;T&gt; = Add.of(firstColumn, secondColumn, subsequentColumns.asList())</span>
+
+fun &lt;T&gt; divide(
+    firstColumn: BindableColumn&lt;T&gt;,
+    secondColumn: BasicColumn,
+    vararg subsequentColumns: BasicColumn
+<span class="fc" id="L112">): Divide&lt;T&gt; = Divide.of(firstColumn, secondColumn, subsequentColumns.asList())</span>
+
+fun &lt;T&gt; multiply(
+    firstColumn: BindableColumn&lt;T&gt;,
+    secondColumn: BasicColumn,
+    vararg subsequentColumns: BasicColumn
+<span class="fc" id="L118">): Multiply&lt;T&gt; = Multiply.of(firstColumn, secondColumn, subsequentColumns.asList())</span>
+
+fun &lt;T&gt; subtract(
+    firstColumn: BindableColumn&lt;T&gt;,
+    secondColumn: BasicColumn,
+    vararg subsequentColumns: BasicColumn
+<span class="fc" id="L124">): Subtract&lt;T&gt; = Subtract.of(firstColumn, secondColumn, subsequentColumns.asList())</span>
+
+fun &lt;T&gt; concatenate(
+    firstColumn: BindableColumn&lt;T&gt;,
+    secondColumn: BasicColumn,
+    vararg subsequentColumns: BasicColumn
+<span class="fc" id="L130">): Concatenate&lt;T&gt; = Concatenate.of(firstColumn, secondColumn, subsequentColumns.asList())</span>
+
+fun &lt;T&gt; applyOperator(
+    operator: String,
+    firstColumn: BindableColumn&lt;T&gt;,
+    secondColumn: BasicColumn,
+    vararg subsequentColumns: BasicColumn
+<span class="fc" id="L137">): OperatorFunction&lt;T&gt; = OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns.asList())</span>
+
+<span class="fc" id="L139">fun &lt;T&gt; lower(column: BindableColumn&lt;T&gt;): Lower&lt;T&gt; = SqlBuilder.lower(column)</span>
+
+fun &lt;T&gt; substring(
+    column: BindableColumn&lt;T&gt;,
+    offset: Int,
+    length: Int
+<span class="fc" id="L145">): Substring&lt;T&gt; = SqlBuilder.substring(column, offset, length)</span>
+
+<span class="fc" id="L147">fun &lt;T&gt; upper(column: BindableColumn&lt;T&gt;): Upper&lt;T&gt; = SqlBuilder.upper(column)</span>
+
+// conditions for all data types
+<span class="fc" id="L150">fun &lt;T&gt; isNull(): IsNull&lt;T&gt; = SqlBuilder.isNull()</span>
+
+<span class="fc" id="L152">fun &lt;T&gt; isNotNull(): IsNotNull&lt;T&gt; = SqlBuilder.isNotNull()</span>
+
+fun exists(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): ExistsPredicate =
+<span class="fc" id="L155">    SqlBuilder.exists(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+fun notExists(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): ExistsPredicate =
+<span class="fc" id="L158">    SqlBuilder.notExists(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+<span class="fc" id="L160">fun &lt;T : Any&gt; isEqualTo(value: T): IsEqualTo&lt;T&gt; = SqlBuilder.isEqualTo(value)</span>
+
+fun &lt;T&gt; isEqualTo(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): IsEqualToWithSubselect&lt;T&gt; =
+<span class="fc" id="L163">    SqlBuilder.isEqualTo(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+<span class="fc" id="L165">fun &lt;T&gt; isEqualTo(column: BasicColumn): IsEqualToColumn&lt;T&gt; = SqlBuilder.isEqualTo(column)</span>
+
+<span class="fc" id="L167">fun &lt;T : Any&gt; isEqualToWhenPresent(value: T?): IsEqualTo&lt;T&gt; = SqlBuilder.isEqualToWhenPresent(value)</span>
+
+<span class="fc" id="L169">fun &lt;T : Any&gt; isNotEqualTo(value: T): IsNotEqualTo&lt;T&gt; = SqlBuilder.isNotEqualTo(value)</span>
+
+fun &lt;T&gt; isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): IsNotEqualToWithSubselect&lt;T&gt; =
+<span class="fc" id="L172">    SqlBuilder.isNotEqualTo(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+<span class="fc" id="L174">fun &lt;T&gt; isNotEqualTo(column: BasicColumn): IsNotEqualToColumn&lt;T&gt; = SqlBuilder.isNotEqualTo(column)</span>
+
+<span class="fc" id="L176">fun &lt;T : Any&gt; isNotEqualToWhenPresent(value: T?): IsNotEqualTo&lt;T&gt; = SqlBuilder.isNotEqualToWhenPresent(value)</span>
+
+<span class="fc" id="L178">fun &lt;T : Any&gt; isGreaterThan(value: T): IsGreaterThan&lt;T&gt; = SqlBuilder.isGreaterThan(value)</span>
+
+fun &lt;T&gt; isGreaterThan(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): IsGreaterThanWithSubselect&lt;T&gt; =
+<span class="fc" id="L181">    SqlBuilder.isGreaterThan(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+<span class="fc" id="L183">fun &lt;T&gt; isGreaterThan(column: BasicColumn): IsGreaterThanColumn&lt;T&gt; = SqlBuilder.isGreaterThan(column)</span>
+
+<span class="fc" id="L185">fun &lt;T : Any&gt; isGreaterThanWhenPresent(value: T?): IsGreaterThan&lt;T&gt; = SqlBuilder.isGreaterThanWhenPresent(value)</span>
+
+<span class="fc" id="L187">fun &lt;T : Any&gt; isGreaterThanOrEqualTo(value: T): IsGreaterThanOrEqualTo&lt;T&gt; = SqlBuilder.isGreaterThanOrEqualTo(value)</span>
+
+fun &lt;T&gt; isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): IsGreaterThanOrEqualToWithSubselect&lt;T&gt; =
+<span class="fc" id="L190">    SqlBuilder.isGreaterThanOrEqualTo(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+fun &lt;T&gt; isGreaterThanOrEqualTo(column: BasicColumn): IsGreaterThanOrEqualToColumn&lt;T&gt; =
+<span class="fc" id="L193">    SqlBuilder.isGreaterThanOrEqualTo(column)</span>
+
+fun &lt;T : Any&gt; isGreaterThanOrEqualToWhenPresent(value: T?): IsGreaterThanOrEqualTo&lt;T&gt; =
+<span class="fc" id="L196">    SqlBuilder.isGreaterThanOrEqualToWhenPresent(value)</span>
+
+<span class="fc" id="L198">fun &lt;T : Any&gt; isLessThan(value: T): IsLessThan&lt;T&gt; = SqlBuilder.isLessThan(value)</span>
+
+fun &lt;T&gt; isLessThan(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): IsLessThanWithSubselect&lt;T&gt; =
+<span class="fc" id="L201">    SqlBuilder.isLessThan(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+<span class="fc" id="L203">fun &lt;T&gt; isLessThan(column: BasicColumn): IsLessThanColumn&lt;T&gt; = SqlBuilder.isLessThan(column)</span>
+
+<span class="fc" id="L205">fun &lt;T : Any&gt; isLessThanWhenPresent(value: T?): IsLessThan&lt;T&gt; = SqlBuilder.isLessThanWhenPresent(value)</span>
+
+<span class="fc" id="L207">fun &lt;T : Any&gt; isLessThanOrEqualTo(value: T): IsLessThanOrEqualTo&lt;T&gt; = SqlBuilder.isLessThanOrEqualTo(value)</span>
+
+fun &lt;T&gt; isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): IsLessThanOrEqualToWithSubselect&lt;T&gt; =
+<span class="fc" id="L210">    SqlBuilder.isLessThanOrEqualTo(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+<span class="fc" id="L212">fun &lt;T&gt; isLessThanOrEqualTo(column: BasicColumn): IsLessThanOrEqualToColumn&lt;T&gt; = SqlBuilder.isLessThanOrEqualTo(column)</span>
+
+fun &lt;T : Any&gt; isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualTo&lt;T&gt; =
+<span class="fc" id="L215">    SqlBuilder.isLessThanOrEqualToWhenPresent(value)</span>
+
+<span class="fc" id="L217">fun &lt;T : Any&gt; isIn(vararg values: T): IsIn&lt;T&gt; = isIn(values.asList())</span>
+
+<span class="fc" id="L219">fun &lt;T : Any&gt; isIn(values: Collection&lt;T&gt;): IsIn&lt;T&gt; = SqlBuilder.isIn(values)</span>
+
+fun &lt;T&gt; isIn(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): IsInWithSubselect&lt;T&gt; =
+<span class="fc" id="L222">    SqlBuilder.isIn(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+<span class="fc" id="L224">fun &lt;T : Any&gt; isInWhenPresent(vararg values: T?): IsIn&lt;T&gt; = isInWhenPresent(values.asList())</span>
+
+<span class="fc" id="L226">fun &lt;T : Any&gt; isInWhenPresent(values: Collection&lt;T?&gt;?): IsIn&lt;T&gt; = SqlBuilder.isInWhenPresent(values)</span>
+
+<span class="fc" id="L228">fun &lt;T : Any&gt; isNotIn(vararg values: T): IsNotIn&lt;T&gt; = isNotIn(values.asList())</span>
+
+<span class="fc" id="L230">fun &lt;T : Any&gt; isNotIn(values: Collection&lt;T&gt;): IsNotIn&lt;T&gt; = SqlBuilder.isNotIn(values)</span>
+
+fun &lt;T&gt; isNotIn(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): IsNotInWithSubselect&lt;T&gt; =
+<span class="fc" id="L233">    SqlBuilder.isNotIn(KotlinSubQueryBuilder().apply(subQuery))</span>
+
+<span class="fc" id="L235">fun &lt;T : Any&gt; isNotInWhenPresent(vararg values: T?): IsNotIn&lt;T&gt; = isNotInWhenPresent(values.asList())</span>
+
+<span class="fc" id="L237">fun &lt;T : Any&gt; isNotInWhenPresent(values: Collection&lt;T?&gt;?): IsNotIn&lt;T&gt; = SqlBuilder.isNotInWhenPresent(values)</span>
+
+<span class="fc" id="L239">fun &lt;T : Any&gt; isBetween(value1: T): BetweenBuilder&lt;T&gt; = BetweenBuilder(value1)</span>
+
+<span class="fc" id="L241">fun &lt;T : Any&gt; isBetweenWhenPresent(value1: T?): BetweenWhenPresentBuilder&lt;T&gt; = BetweenWhenPresentBuilder(value1)</span>
+
+<span class="fc" id="L243">fun &lt;T : Any&gt; isNotBetween(value1: T): NotBetweenBuilder&lt;T&gt; = NotBetweenBuilder(value1)</span>
+
+fun &lt;T : Any&gt; isNotBetweenWhenPresent(value1: T?): NotBetweenWhenPresentBuilder&lt;T&gt; =
+<span class="fc" id="L246">    NotBetweenWhenPresentBuilder(value1)</span>
+
+// for string columns, but generic for columns with type handlers
+<span class="fc" id="L249">fun &lt;T : Any&gt; isLike(value: T): IsLike&lt;T&gt; = SqlBuilder.isLike(value)</span>
+
+<span class="fc" id="L251">fun &lt;T : Any&gt; isLikeWhenPresent(value: T?): IsLike&lt;T&gt; = SqlBuilder.isLikeWhenPresent(value)</span>
+
+<span class="fc" id="L253">fun &lt;T : Any&gt; isNotLike(value: T): IsNotLike&lt;T&gt; = SqlBuilder.isNotLike(value)</span>
+
+<span class="fc" id="L255">fun &lt;T : Any&gt; isNotLikeWhenPresent(value: T?): IsNotLike&lt;T&gt; = SqlBuilder.isNotLikeWhenPresent(value)</span>
+
+// shortcuts for booleans
+<span class="fc" id="L258">fun isTrue(): IsEqualTo&lt;Boolean&gt; = isEqualTo(true)</span>
+
+<span class="fc" id="L260">fun isFalse(): IsEqualTo&lt;Boolean&gt; = isEqualTo(false)</span>
+
+// conditions for strings only
+<span class="fc" id="L263">fun isLikeCaseInsensitive(value: String): IsLikeCaseInsensitive = SqlBuilder.isLikeCaseInsensitive(value)</span>
+
+fun isLikeCaseInsensitiveWhenPresent(value: String?): IsLikeCaseInsensitive =
+<span class="fc" id="L266">    SqlBuilder.isLikeCaseInsensitiveWhenPresent(value)</span>
+
+<span class="fc" id="L268">fun isNotLikeCaseInsensitive(value: String): IsNotLikeCaseInsensitive = SqlBuilder.isNotLikeCaseInsensitive(value)</span>
+
+fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitive =
+<span class="fc" id="L271">    SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(value)</span>
+
+<span class="fc" id="L273">fun isInCaseInsensitive(vararg values: String): IsInCaseInsensitive = isInCaseInsensitive(values.asList())</span>
+
+<span class="fc" id="L275">fun isInCaseInsensitive(values: Collection&lt;String&gt;): IsInCaseInsensitive = SqlBuilder.isInCaseInsensitive(values)</span>
+
+fun isInCaseInsensitiveWhenPresent(vararg values: String?): IsInCaseInsensitive =
+<span class="fc" id="L278">    isInCaseInsensitiveWhenPresent(values.asList())</span>
+
+fun isInCaseInsensitiveWhenPresent(values: Collection&lt;String?&gt;?): IsInCaseInsensitive =
+<span class="fc" id="L281">    SqlBuilder.isInCaseInsensitiveWhenPresent(values)</span>
+
+<span class="fc" id="L283">fun isNotInCaseInsensitive(vararg values: String): IsNotInCaseInsensitive = isNotInCaseInsensitive(values.asList())</span>
+
+fun isNotInCaseInsensitive(values: Collection&lt;String&gt;): IsNotInCaseInsensitive =
+<span class="fc" id="L286">    SqlBuilder.isNotInCaseInsensitive(values)</span>
+
+fun isNotInCaseInsensitiveWhenPresent(vararg values: String?): IsNotInCaseInsensitive =
+<span class="fc" id="L289">    isNotInCaseInsensitiveWhenPresent(values.asList())</span>
+
+fun isNotInCaseInsensitiveWhenPresent(values: Collection&lt;String?&gt;?): IsNotInCaseInsensitive =
+<span class="fc" id="L292">    SqlBuilder.isNotInCaseInsensitiveWhenPresent(values)</span>
+
+// order by support
+/**
+ * Creates a sort specification based on a String. This is useful when a column has been
+ * aliased in the select list.
+ *
+ * @param name the string to use as a sort specification
+ * @return a sort specification
+ */
+<span class="fc" id="L302">fun sortColumn(name: String): SortSpecification = SqlBuilder.sortColumn(name)</span>
+
+/**
+ * Creates a sort specification based on a column and a table alias. This can be useful in a join
+ * where the desired sort order is based on a column not in the select list. This will likely
+ * fail in union queries depending on database support.
+ *
+ * @param tableAlias the table alias
+ * @param column the column
+ * @return a sort specification
+ */
+<span class="fc" id="L313">fun sortColumn(tableAlias: String, column: SqlColumn&lt;*&gt;): SortSpecification = SqlBuilder.sortColumn(tableAlias, column)</span>
+
+// DSL Support Classes
+<span class="fc" id="L316">class BetweenBuilder&lt;T&gt;(private val value1: T) {</span>
+<span class="fc" id="L317">    fun and(value2: T): IsBetween&lt;T&gt; = SqlBuilder.isBetween(value1).and(value2)</span>
+}
+
+<span class="fc" id="L320">class BetweenWhenPresentBuilder&lt;T&gt;(private val value1: T?) {</span>
+    fun and(value2: T?): IsBetween&lt;T&gt; {
+<span class="fc" id="L322">        return SqlBuilder.isBetweenWhenPresent&lt;T&gt;(value1).and(value2)</span>
+    }
+}
+
+<span class="fc" id="L326">class NotBetweenBuilder&lt;T&gt;(private val value1: T) {</span>
+<span class="fc" id="L327">    fun and(value2: T): IsNotBetween&lt;T&gt; = SqlBuilder.isNotBetween(value1).and(value2)</span>
+}
+
+<span class="fc" id="L330">class NotBetweenWhenPresentBuilder&lt;T&gt;(private val value1: T?) {</span>
+    fun and(value2: T?): IsNotBetween&lt;T&gt; {
+<span class="fc" id="L332">        return SqlBuilder.isNotBetweenWhenPresent&lt;T&gt;(value1).and(value2)</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

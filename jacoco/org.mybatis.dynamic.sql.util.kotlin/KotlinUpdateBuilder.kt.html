@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KotlinUpdateBuilder.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">KotlinUpdateBuilder.kt</span></div><h1>KotlinUpdateBuilder.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,22 +15,78 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
+import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
 
-typealias UpdateCompleter = KotlinUpdateBuilder.() -&gt; Buildable&lt;UpdateModel&gt;
+typealias UpdateCompleter = KotlinUpdateBuilder.() -&gt; Unit
 
-<span class="fc" id="L25">class KotlinUpdateBuilder(private val dsl: UpdateDSL&lt;UpdateModel&gt;) :</span>
-<span class="fc" id="L26">    KotlinBaseBuilder&lt;UpdateDSL&lt;UpdateModel&gt;.UpdateWhereBuilder, KotlinUpdateBuilder&gt;(), Buildable&lt;UpdateModel&gt; {</span>
+<span class="fc" id="L26">class KotlinUpdateBuilder(private val dsl: UpdateDSL&lt;UpdateModel&gt;) :</span>
+<span class="fc" id="L27">    KotlinBaseBuilder&lt;UpdateDSL&lt;UpdateModel&gt;, KotlinUpdateBuilder&gt;(), Buildable&lt;UpdateModel&gt; {</span>
 
-<span class="fc" id="L28">    fun &lt;T&gt; set(column: SqlColumn&lt;T&gt;): UpdateDSL&lt;UpdateModel&gt;.SetClauseFinisher&lt;T&gt; = dsl.set(column)</span>
+<span class="fc" id="L29">    fun &lt;T&gt; set(column: SqlColumn&lt;T&gt;): KotlinSetClauseFinisher&lt;T&gt; = KotlinSetClauseFinisher(column)</span>
 
-<span class="fc" id="L30">    override fun build(): UpdateModel = dsl.build()</span>
+<span class="fc" id="L31">    override fun build(): UpdateModel = dsl.build()</span>
 
-<span class="fc" id="L32">    override fun getWhere(): UpdateDSL&lt;UpdateModel&gt;.UpdateWhereBuilder = dsl.where()</span>
+<span class="fc" id="L33">    override fun getDsl(): UpdateDSL&lt;UpdateModel&gt; = dsl</span>
 
-<span class="fc" id="L34">    override fun self() = this</span>
+<span class="fc" id="L35">    override fun self(): KotlinUpdateBuilder = this</span>
+
+<span class="fc" id="L37">    @MyBatisDslMarker</span>
+    @Suppress(&quot;TooManyFunctions&quot;)
+<span class="fc" id="L39">    inner class KotlinSetClauseFinisher&lt;T&gt;(private val column: SqlColumn&lt;T&gt;) {</span>
+        fun equalToNull(): KotlinUpdateBuilder =
+<span class="fc" id="L41">            applyToDsl {</span>
+<span class="fc" id="L42">                set(column).equalToNull()</span>
+<span class="fc" id="L43">            }</span>
+
+        fun equalToConstant(constant: String): KotlinUpdateBuilder =
+<span class="fc" id="L46">            applyToDsl {</span>
+<span class="fc" id="L47">                set(column).equalToConstant(constant)</span>
+<span class="fc" id="L48">            }</span>
+
+        fun equalToStringConstant(constant: String): KotlinUpdateBuilder =
+<span class="fc" id="L51">            applyToDsl {</span>
+<span class="fc" id="L52">                set(column).equalToStringConstant(constant)</span>
+<span class="fc" id="L53">            }</span>
+
+<span class="fc" id="L55">        fun equalTo(value: T): KotlinUpdateBuilder = equalTo { value }</span>
+
+        fun equalTo(value: () -&gt; T): KotlinUpdateBuilder =
+<span class="fc" id="L58">            applyToDsl {</span>
+<span class="fc" id="L59">                set(column).equalTo(value)</span>
+<span class="fc" id="L60">            }</span>
+
+        fun equalTo(rightColumn: BasicColumn): KotlinUpdateBuilder =
+<span class="fc" id="L63">            applyToDsl {</span>
+<span class="fc" id="L64">                set(column).equalTo(rightColumn)</span>
+<span class="fc" id="L65">            }</span>
+
+<span class="fc" id="L67">        fun equalToOrNull(value: T?): KotlinUpdateBuilder = equalToOrNull { value }</span>
+
+        fun equalToOrNull(value: () -&gt; T?): KotlinUpdateBuilder =
+<span class="fc" id="L70">            applyToDsl {</span>
+<span class="fc" id="L71">                set(column).equalToOrNull(value)</span>
+<span class="fc" id="L72">            }</span>
+
+        fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -&gt; Unit): KotlinUpdateBuilder =
+<span class="fc" id="L75">            applyToDsl {</span>
+<span class="fc" id="L76">                set(column).equalTo(KotlinSubQueryBuilder().apply(subQuery))</span>
+<span class="fc" id="L77">            }</span>
+
+        fun equalToWhenPresent(value: () -&gt; T?): KotlinUpdateBuilder =
+<span class="fc" id="L80">            applyToDsl {</span>
+<span class="fc" id="L81">                set(column).equalToWhenPresent(value)</span>
+<span class="fc" id="L82">            }</span>
+
+<span class="fc" id="L84">        fun equalToWhenPresent(value: T?): KotlinUpdateBuilder = equalToWhenPresent { value }</span>
+
+        private fun applyToDsl(block: UpdateDSL&lt;UpdateModel&gt;.() -&gt; Unit): KotlinUpdateBuilder =
+<span class="fc" id="L87">            this@KotlinUpdateBuilder.apply {</span>
+<span class="fc" id="L88">                dsl.apply(block)</span>
+<span class="fc" id="L89">            }</span>
+    }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

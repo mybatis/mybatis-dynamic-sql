@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Lower.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.function</a> &gt; <span class="el_source">Lower.java</span></div><h1>Lower.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package org.mybatis.dynamic.sql.select.function;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
-public class Lower extends AbstractUniTypeFunction&lt;String, Lower&gt; {
+public class Lower&lt;T&gt; extends AbstractUniTypeFunction&lt;T, Lower&lt;T&gt;&gt; {
 
-    private Lower(BindableColumn&lt;String&gt; column) {
+    private Lower(BindableColumn&lt;T&gt; column) {
 <span class="fc" id="L24">        super(column);</span>
 <span class="fc" id="L25">    }</span>
 
@@ -32,12 +32,12 @@ public class Lower extends AbstractUniTypeFunction&lt;String, Lower&gt; {
     }
 
     @Override
-    protected Lower copy() {
-<span class="fc" id="L36">        return new Lower(column);</span>
+    protected Lower&lt;T&gt; copy() {
+<span class="fc" id="L36">        return new Lower&lt;&gt;(column);</span>
     }
 
-    public static Lower of(BindableColumn&lt;String&gt; column) {
-<span class="fc" id="L40">        return new Lower(column);</span>
+    public static &lt;T&gt; Lower&lt;T&gt; of(BindableColumn&lt;T&gt; column) {
+<span class="fc" id="L40">        return new Lower&lt;&gt;(column);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

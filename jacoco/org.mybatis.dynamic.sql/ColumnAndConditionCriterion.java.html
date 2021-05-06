@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ColumnAndConditionCriterion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">ColumnAndConditionCriterion.java</span></div><h1>ColumnAndConditionCriterion.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2021 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql;
+
+import java.util.Objects;
+
+public class ColumnAndConditionCriterion&lt;T&gt; extends SqlCriterion {
+    private final BindableColumn&lt;T&gt; column;
+    private final VisitableCondition&lt;T&gt; condition;
+
+    private ColumnAndConditionCriterion(Builder&lt;T&gt; builder) {
+<span class="fc" id="L25">        super(builder);</span>
+<span class="fc" id="L26">        column = Objects.requireNonNull(builder.column);</span>
+<span class="fc" id="L27">        condition = Objects.requireNonNull(builder.condition);</span>
+<span class="fc" id="L28">    }</span>
+
+    public BindableColumn&lt;T&gt; column() {
+<span class="fc" id="L31">        return column;</span>
+    }
+
+    public VisitableCondition&lt;T&gt; condition() {
+<span class="fc" id="L35">        return condition;</span>
+    }
+
+    @Override
+    public &lt;R&gt; R accept(SqlCriterionVisitor&lt;R&gt; visitor) {
+<span class="fc" id="L40">        return visitor.visit(this);</span>
+    }
+
+    public static &lt;T&gt; Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
+<span class="fc" id="L44">        return new Builder&lt;T&gt;().withColumn(column);</span>
+    }
+
+<span class="fc" id="L47">    public static class Builder&lt;T&gt; extends AbstractBuilder&lt;Builder&lt;T&gt;&gt; {</span>
+        private BindableColumn&lt;T&gt; column;
+        private VisitableCondition&lt;T&gt; condition;
+
+        public Builder&lt;T&gt; withColumn(BindableColumn&lt;T&gt; column) {
+<span class="fc" id="L52">            this.column = column;</span>
+<span class="fc" id="L53">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; withCondition(VisitableCondition&lt;T&gt; condition) {
+<span class="fc" id="L57">            this.condition = condition;</span>
+<span class="fc" id="L58">            return this;</span>
+        }
+
+        @Override
+        protected Builder&lt;T&gt; getThis() {
+<span class="fc" id="L63">            return this;</span>
+        }
+
+        public ColumnAndConditionCriterion&lt;T&gt; build() {
+<span class="fc" id="L67">            return new ColumnAndConditionCriterion&lt;&gt;(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

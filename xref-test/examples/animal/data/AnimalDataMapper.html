@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../testapidocs/examples/animal/data/AnimalDataMapper.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2020 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2021 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -59,7 +59,7 @@
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          <span class="jxr_string">"${whereClause}"</span>
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      })
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      List&lt;AnimalData&gt; selectByExample(WhereClauseProvider whereClause);
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      List&lt;AnimalData&gt; selectWithWhereClause(WhereClauseProvider whereClause);
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      @Select({
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>          <span class="jxr_string">"select a.id, a.animal_name, a.brain_weight, a.body_weight"</span>,
@@ -67,7 +67,7 @@
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>          <span class="jxr_string">"${whereClause}"</span>
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      })
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      List&lt;AnimalData&gt; selectByExampleWithAlias(WhereClauseProvider whereClause);
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      List&lt;AnimalData&gt; selectWithWhereClauseAndAlias(WhereClauseProvider whereClause);
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      @Select({
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          <span class="jxr_string">"select id, animal_name, brain_weight, body_weight"</span>,
@@ -77,8 +77,8 @@
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          <span class="jxr_string">"OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"</span>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      })
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      List&lt;AnimalData&gt; selectByExampleWithLimitAndOffset(@Param(<span class="jxr_string">"whereClauseProvider"</span>) WhereClauseProvider whereClause,
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>              @Param(<span class="jxr_string">"limit"</span>) <strong class="jxr_keyword">int</strong> limit, @Param(<span class="jxr_string">"offset"</span>) <strong class="jxr_keyword">int</strong> offset);
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      List&lt;AnimalData&gt; selectWithWhereClauseLimitAndOffset(@Param(<span class="jxr_string">"whereClauseProvider"</span>) WhereClauseProvider whereClause,
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>                                                           @Param(<span class="jxr_string">"limit"</span>) <strong class="jxr_keyword">int</strong> limit, @Param(<span class="jxr_string">"offset"</span>) <strong class="jxr_keyword">int</strong> offset);
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>      @Select({
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          <span class="jxr_string">"select b.id, b.animal_name, b.brain_weight, b.body_weight"</span>,
@@ -88,11 +88,11 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          <span class="jxr_string">"OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"</span>
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      })
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      @ResultMap(<span class="jxr_string">"AnimalDataResult"</span>)
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      List&lt;AnimalData&gt; selectByExampleWithAliasLimitAndOffset(@Param(<span class="jxr_string">"whereClauseProvider"</span>) WhereClauseProvider whereClause,
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>              @Param(<span class="jxr_string">"limit"</span>) <strong class="jxr_keyword">int</strong> limit, @Param(<span class="jxr_string">"offset"</span>) <strong class="jxr_keyword">int</strong> offset);
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      List&lt;AnimalData&gt; selectWithWhereClauseAliasLimitAndOffset(@Param(<span class="jxr_string">"whereClauseProvider"</span>) WhereClauseProvider whereClause,
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>                                                                @Param(<span class="jxr_string">"limit"</span>) <strong class="jxr_keyword">int</strong> limit, @Param(<span class="jxr_string">"offset"</span>) <strong class="jxr_keyword">int</strong> offset);
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2020 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2021 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

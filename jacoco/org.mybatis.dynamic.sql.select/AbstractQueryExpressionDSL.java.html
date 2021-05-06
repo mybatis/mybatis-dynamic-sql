@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractQueryExpressionDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">AbstractQueryExpressionDSL.java</span></div><h1>AbstractQueryExpressionDSL.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -25,146 +25,191 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 
-public abstract class AbstractQueryExpressionDSL&lt;T extends AbstractQueryExpressionDSL&lt;T, R&gt;, R&gt;
-        implements Buildable&lt;R&gt; {
+public abstract class AbstractQueryExpressionDSL&lt;W extends AbstractWhereDSL&lt;?&gt;,
+            T extends AbstractQueryExpressionDSL&lt;W, T&gt;&gt;
+        extends AbstractWhereSupport&lt;W&gt; {
 
-<span class="fc" id="L37">    private final List&lt;JoinSpecification.Builder&gt; joinSpecificationBuilders = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L38">    protected final Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
-    private final SqlTable table;
+<span class="fc" id="L41">    private final List&lt;JoinSpecification.Builder&gt; joinSpecificationBuilders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L42">    protected final Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
+    private final TableExpression table;
 
-<span class="fc" id="L41">    protected AbstractQueryExpressionDSL(SqlTable table) {</span>
-<span class="fc" id="L42">        this.table = Objects.requireNonNull(table);</span>
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L45">    protected AbstractQueryExpressionDSL(TableExpression table) {</span>
+<span class="fc" id="L46">        this.table = Objects.requireNonNull(table);</span>
+<span class="fc" id="L47">    }</span>
 
-    public SqlTable table() {
-<span class="fc" id="L46">        return table;</span>
+    public TableExpression table() {
+<span class="fc" id="L50">        return table;</span>
     }
 
     public T join(SqlTable joinTable, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-<span class="fc" id="L51">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.INNER, Arrays.asList(andJoinCriteria));</span>
-<span class="fc" id="L52">        return getThis();</span>
+<span class="fc" id="L55">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.INNER, Arrays.asList(andJoinCriteria));</span>
+<span class="fc" id="L56">        return getThis();</span>
     }
 
     public T join(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-<span class="fc" id="L57">        tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L58">        return join(joinTable, onJoinCriterion, andJoinCriteria);</span>
+<span class="fc" id="L61">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L62">        return join(joinTable, onJoinCriterion, andJoinCriteria);</span>
     }
 
     public T join(SqlTable joinTable, JoinCriterion onJoinCriterion,
             List&lt;JoinCriterion&gt; andJoinCriteria) {
-<span class="fc" id="L63">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.INNER, andJoinCriteria);</span>
-<span class="fc" id="L64">        return getThis();</span>
+<span class="fc" id="L67">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.INNER, andJoinCriteria);</span>
+<span class="fc" id="L68">        return getThis();</span>
     }
 
     public T join(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List&lt;JoinCriterion&gt; andJoinCriteria) {
-<span class="fc" id="L69">        tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L70">        return join(joinTable, onJoinCriterion, andJoinCriteria);</span>
+<span class="fc" id="L73">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L74">        return join(joinTable, onJoinCriterion, andJoinCriteria);</span>
+    }
+
+    public T join(Buildable&lt;SelectModel&gt; subQuery, String tableAlias, JoinCriterion onJoinCriterion,
+                  List&lt;JoinCriterion&gt; andJoinCriteria) {
+<span class="fc" id="L79">        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.INNER,</span>
+                andJoinCriteria);
+<span class="fc" id="L81">        return getThis();</span>
     }
 
     public T leftJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-<span class="fc" id="L75">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.LEFT, Arrays.asList(andJoinCriteria));</span>
-<span class="fc" id="L76">        return getThis();</span>
+<span class="fc" id="L86">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.LEFT, Arrays.asList(andJoinCriteria));</span>
+<span class="fc" id="L87">        return getThis();</span>
     }
 
     public T leftJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-<span class="fc" id="L81">        tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L82">        return leftJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
+<span class="fc" id="L92">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L93">        return leftJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
     }
 
     public T leftJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
             List&lt;JoinCriterion&gt; andJoinCriteria) {
-<span class="fc" id="L87">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.LEFT, andJoinCriteria);</span>
-<span class="fc" id="L88">        return getThis();</span>
+<span class="fc" id="L98">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.LEFT, andJoinCriteria);</span>
+<span class="fc" id="L99">        return getThis();</span>
     }
 
     public T leftJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List&lt;JoinCriterion&gt; andJoinCriteria) {
-<span class="fc" id="L93">        tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L94">        return leftJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
+<span class="fc" id="L104">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L105">        return leftJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
     }
 
-    public T rightJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
-            JoinCriterion...andJoinCriteria) {
-<span class="fc" id="L99">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.RIGHT, Arrays.asList(andJoinCriteria));</span>
-<span class="fc" id="L100">        return getThis();</span>
-    }
-
-    public T rightJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
-            JoinCriterion...andJoinCriteria) {
-<span class="fc" id="L105">        tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L106">        return rightJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
-    }
-
-    public T rightJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
-            List&lt;JoinCriterion&gt; andJoinCriteria) {
-<span class="fc" id="L111">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.RIGHT, andJoinCriteria);</span>
+    public T leftJoin(Buildable&lt;SelectModel&gt; subQuery, String tableAlias, JoinCriterion onJoinCriterion,
+                      List&lt;JoinCriterion&gt; andJoinCriteria) {
+<span class="fc" id="L110">        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.LEFT,</span>
+                andJoinCriteria);
 <span class="fc" id="L112">        return getThis();</span>
     }
 
+    public T rightJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
+            JoinCriterion...andJoinCriteria) {
+<span class="fc" id="L117">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.RIGHT, Arrays.asList(andJoinCriteria));</span>
+<span class="fc" id="L118">        return getThis();</span>
+    }
+
+    public T rightJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
+            JoinCriterion...andJoinCriteria) {
+<span class="fc" id="L123">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L124">        return rightJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
+    }
+
+    public T rightJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
+            List&lt;JoinCriterion&gt; andJoinCriteria) {
+<span class="fc" id="L129">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.RIGHT, andJoinCriteria);</span>
+<span class="fc" id="L130">        return getThis();</span>
+    }
+
     public T rightJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List&lt;JoinCriterion&gt; andJoinCriteria) {
-<span class="fc" id="L117">        tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L118">        return rightJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
+<span class="fc" id="L135">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L136">        return rightJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
+    }
+
+    public T rightJoin(Buildable&lt;SelectModel&gt; subQuery, String tableAlias, JoinCriterion onJoinCriterion,
+                      List&lt;JoinCriterion&gt; andJoinCriteria) {
+<span class="fc" id="L141">        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.RIGHT,</span>
+                andJoinCriteria);
+<span class="fc" id="L143">        return getThis();</span>
     }
 
     public T fullJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-<span class="fc" id="L123">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.FULL, Arrays.asList(andJoinCriteria));</span>
-<span class="fc" id="L124">        return getThis();</span>
+<span class="fc" id="L148">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.FULL, Arrays.asList(andJoinCriteria));</span>
+<span class="fc" id="L149">        return getThis();</span>
     }
 
     public T fullJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-<span class="fc" id="L129">        tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L130">        return fullJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
+<span class="fc" id="L154">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L155">        return fullJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
     }
 
     public T fullJoin(SqlTable joinTable, JoinCriterion onJoinCriterion,
             List&lt;JoinCriterion&gt; andJoinCriteria) {
-<span class="fc" id="L135">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.FULL, andJoinCriteria);</span>
-<span class="fc" id="L136">        return getThis();</span>
+<span class="fc" id="L160">        addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.FULL, andJoinCriteria);</span>
+<span class="fc" id="L161">        return getThis();</span>
     }
 
     public T fullJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List&lt;JoinCriterion&gt; andJoinCriteria) {
-<span class="fc" id="L141">        tableAliases.put(joinTable, tableAlias);</span>
-<span class="fc" id="L142">        return fullJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
+<span class="fc" id="L166">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L167">        return fullJoin(joinTable, onJoinCriterion, andJoinCriteria);</span>
     }
 
-    private void addJoinSpecificationBuilder(SqlTable joinTable, JoinCriterion onJoinCriterion, JoinType joinType,
-            List&lt;JoinCriterion&gt; andJoinCriteria) {
-<span class="fc" id="L147">        joinSpecificationBuilders.add(new JoinSpecification.Builder()</span>
-<span class="fc" id="L148">                .withJoinTable(joinTable)</span>
-<span class="fc" id="L149">                .withJoinType(joinType)</span>
-<span class="fc" id="L150">                .withJoinCriterion(onJoinCriterion)</span>
-<span class="fc" id="L151">                .withJoinCriteria(andJoinCriteria));</span>
-<span class="fc" id="L152">    }</span>
+    public T fullJoin(Buildable&lt;SelectModel&gt; subQuery, String tableAlias, JoinCriterion onJoinCriterion,
+                  List&lt;JoinCriterion&gt; andJoinCriteria) {
+<span class="fc" id="L172">        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.FULL,</span>
+                andJoinCriteria);
+<span class="fc" id="L174">        return getThis();</span>
+    }
+
+    private void addJoinSpecificationBuilder(TableExpression joinTable, JoinCriterion onJoinCriterion,
+            JoinType joinType, List&lt;JoinCriterion&gt; andJoinCriteria) {
+<span class="fc" id="L179">        joinSpecificationBuilders.add(new JoinSpecification.Builder()</span>
+<span class="fc" id="L180">                .withJoinTable(joinTable)</span>
+<span class="fc" id="L181">                .withJoinType(joinType)</span>
+<span class="fc" id="L182">                .withJoinCriterion(onJoinCriterion)</span>
+<span class="fc" id="L183">                .withJoinCriteria(andJoinCriteria));</span>
+<span class="fc" id="L184">    }</span>
 
     protected void addJoinSpecificationBuilder(JoinSpecification.Builder builder) {
-<span class="fc" id="L155">        joinSpecificationBuilders.add(builder);</span>
-<span class="fc" id="L156">    }</span>
+<span class="fc" id="L187">        joinSpecificationBuilders.add(builder);</span>
+<span class="fc" id="L188">    }</span>
 
     protected Optional&lt;JoinModel&gt; buildJoinModel() {
-<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (joinSpecificationBuilders.isEmpty()) {</span>
-<span class="fc" id="L160">            return Optional.empty();</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        if (joinSpecificationBuilders.isEmpty()) {</span>
+<span class="fc" id="L192">            return Optional.empty();</span>
         }
 
-<span class="fc" id="L163">        return Optional.of(JoinModel.of(joinSpecificationBuilders.stream()</span>
-<span class="fc" id="L164">                .map(JoinSpecification.Builder::build)</span>
-<span class="fc" id="L165">                .collect(Collectors.toList())));</span>
+<span class="fc" id="L195">        return Optional.of(JoinModel.of(joinSpecificationBuilders.stream()</span>
+<span class="fc" id="L196">                .map(JoinSpecification.Builder::build)</span>
+<span class="fc" id="L197">                .collect(Collectors.toList())));</span>
+    }
+
+    protected static SubQuery buildSubQuery(Buildable&lt;SelectModel&gt; selectModel) {
+<span class="fc" id="L201">        return new SubQuery.Builder()</span>
+<span class="fc" id="L202">                .withSelectModel(selectModel.build())</span>
+<span class="fc" id="L203">                .build();</span>
+    }
+
+    protected static SubQuery buildSubQuery(Buildable&lt;SelectModel&gt; selectModel, String alias) {
+<span class="fc" id="L207">        return new SubQuery.Builder()</span>
+<span class="fc" id="L208">                .withSelectModel(selectModel.build())</span>
+<span class="fc" id="L209">                .withAlias(alias)</span>
+<span class="fc" id="L210">                .build();</span>
     }
 
     protected abstract T getThis();
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
