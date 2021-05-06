@@ -3,7 +3,7 @@ Update statements are composed by specifying the table and columns to update, an
 
 ```java
     UpdateStatementProvider updateStatement = update(animalData)
-            .set(bodyWeight).equalTo(record.getBodyWeight())
+            .set(bodyWeight).equalTo(row.getBodyWeight())
             .set(animalName).equalToNull()
             .where(id, isIn(1, 5, 7))
             .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
@@ -32,7 +32,7 @@ For example:
 
 ```java
     UpdateStatementProvider updateStatement = update(animalData)
-            .set(bodyWeight).equalTo(record.getBodyWeight())
+            .set(bodyWeight).equalTo(row.getBodyWeight())
             .set(animalName).equalToNull()
             .build()
             .render(RenderingStrategies.MYBATIS3);

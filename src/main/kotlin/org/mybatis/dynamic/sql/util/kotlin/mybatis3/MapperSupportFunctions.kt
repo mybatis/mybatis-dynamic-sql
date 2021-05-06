@@ -69,11 +69,11 @@ fun deleteFrom(mapper: (DeleteStatementProvider) -> Int, table: SqlTable, comple
 
 fun <T> insert(
     mapper: (InsertStatementProvider<T>) -> Int,
-    record: T,
+    row: T,
     table: SqlTable,
     completer: InsertCompleter<T>
 ): Int =
-    insert(record).into(table, completer).run(mapper)
+    insert(row).into(table, completer).run(mapper)
 
 fun <T> BatchInsert<T>.execute(mapper: (InsertStatementProvider<T>) -> Int): List<Int> =
     insertStatements().map(mapper)

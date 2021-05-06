@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,12 +30,12 @@ import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
 public class InsertModel<T> {
     private final SqlTable table;
-    private final T record;
+    private final T row;
     private final List<AbstractColumnMapping> columnMappings;
 
     private InsertModel(Builder<T> builder) {
         table = Objects.requireNonNull(builder.table);
-        record = Objects.requireNonNull(builder.record);
+        row = Objects.requireNonNull(builder.row);
         columnMappings = Objects.requireNonNull(builder.columnMappings);
     }
 
@@ -43,8 +43,8 @@ public class InsertModel<T> {
         return columnMappings.stream().map(mapper);
     }
 
-    public T record() {
-        return record;
+    public T row() {
+        return row;
     }
 
     public SqlTable table() {
@@ -59,13 +59,13 @@ public class InsertModel<T> {
                 .render();
     }
 
-    public static <T> Builder<T> withRecord(T record) {
-        return new Builder<T>().withRecord(record);
+    public static <T> Builder<T> withRow(T row) {
+        return new Builder<T>().withRow(row);
     }
 
     public static class Builder<T> {
         private SqlTable table;
-        private T record;
+        private T row;
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
 
         public Builder<T> withTable(SqlTable table) {
@@ -73,8 +73,8 @@ public class InsertModel<T> {
             return this;
         }
 
-        public Builder<T> withRecord(T record) {
-            this.record = record;
+        public Builder<T> withRow(T row) {
+            this.row = row;
             return this;
         }
 

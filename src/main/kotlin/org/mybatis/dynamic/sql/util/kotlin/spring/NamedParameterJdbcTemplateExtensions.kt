@@ -76,18 +76,18 @@ fun <T : Any> NamedParameterJdbcTemplate.insertBatch(vararg records: T): BatchIn
 fun <T : Any> NamedParameterJdbcTemplate.insertBatch(records: List<T>): BatchInsertHelper<T> =
     BatchInsertHelper(records, this)
 
-// single record insert
+// single row insert
 fun <T : Any> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>): Int =
-    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.record))
+    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.row))
 
 fun <T : Any> NamedParameterJdbcTemplate.insert(
     insertStatement: InsertStatementProvider<T>,
     keyHolder: KeyHolder
 ): Int =
-    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.record), keyHolder)
+    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.row), keyHolder)
 
-fun <T : Any> NamedParameterJdbcTemplate.insert(record: T): SingleRowInsertHelper<T> =
-    SingleRowInsertHelper(record, this)
+fun <T : Any> NamedParameterJdbcTemplate.insert(row: T): SingleRowInsertHelper<T> =
+    SingleRowInsertHelper(row, this)
 
 // general insert
 fun NamedParameterJdbcTemplate.generalInsert(insertStatement: GeneralInsertStatementProvider): Int =
@@ -102,7 +102,7 @@ fun NamedParameterJdbcTemplate.generalInsert(
 fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralInsertCompleter): Int =
     generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer))
 
-// multiple record insert
+// multiple row insert
 fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(vararg records: T): MultiRowInsertHelper<T> =
     insertMultiple(records.asList())
 
@@ -236,8 +236,8 @@ class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: Na
     fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): Int =
         template.generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer), keyHolder)
 
-    fun <T : Any> insert(record: T): SingleRowInsertWithKeyHolderHelper<T> =
-        SingleRowInsertWithKeyHolderHelper(record, template, keyHolder)
+    fun <T : Any> insert(row: T): SingleRowInsertWithKeyHolderHelper<T> =
+        SingleRowInsertWithKeyHolderHelper(row, template, keyHolder)
 
     fun <T : Any> insertMultiple(vararg records: T): MultiRowInsertWithKeyHolderHelper<T> =
         insertMultiple(records.asList())
@@ -280,23 +280,23 @@ class MultiRowInsertWithKeyHolderHelper<T : Any>(
 
 @MyBatisDslMarker
 class SingleRowInsertHelper<T : Any>(
-    private val record: T,
+    private val row: T,
     private val template: NamedParameterJdbcTemplate
 ) {
     fun into(table: SqlTable, completer: InsertCompleter<T>): Int =
-        with(insert(record).into(table, completer)) {
+        with(insert(row).into(table, completer)) {
             template.insert(this)
         }
 }
 
 @MyBatisDslMarker
 class SingleRowInsertWithKeyHolderHelper<T : Any>(
-    private val record: T,
+    private val row: T,
     private val template: NamedParameterJdbcTemplate,
     private val keyHolder: KeyHolder
 ) {
     fun into(table: SqlTable, completer: InsertCompleter<T>): Int =
-        with(insert(record).into(table, completer)) {
+        with(insert(row).into(table, completer)) {
             template.insert(this, keyHolder)
         }
 }
