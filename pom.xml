@@ -34,7 +34,7 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <junit.jupiter.version>5.7.2</junit.jupiter.version>
-    <junit.platform.version>1.7.1</junit.platform.version>
+    <junit.platform.version>1.7.2</junit.platform.version>
     <spring.batch.version>4.3.2</spring.batch.version>
     <clirr.comparisonVersion>1.2.0</clirr.comparisonVersion>
     <module.name>org.mybatis.dynamic.sql</module.name>
