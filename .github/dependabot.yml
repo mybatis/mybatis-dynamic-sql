@@ -21,3 +21,7 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.hsqldb:hsqldb
+    versions:
+    - ">= 2.6.0"
