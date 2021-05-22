@@ -29,6 +29,28 @@
   <description>MyBatis framework for generating dynamic SQL</description>
   <inceptionYear>2016</inceptionYear>
 
+  <scm>
+    <url>https://github.com/mybatis/mybatis-dynamic-sql</url>
+    <connection>scm:git:ssh://github.com/mybatis/mybatis-dynamic-sql.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issue Management</system>
+    <url>https://github.com/mybatis/mybatis-dynamic-sql/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Travis CI</system>
+    <url>https://travis-ci.org/mybatis/mybatis-dynamic-sql</url>
+  </ciManagement>
+  <distributionManagement>
+    <site>
+      <id>gh-pages</id>
+      <name>MyBatis Dynamic SQL GitHub Pages</name>
+      <url>git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git?gh-pages#</url>
+    </site>
+  </distributionManagement>
+
   <properties>
     <java.version>1.8</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -55,17 +77,6 @@
   </properties>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <quiet>true</quiet>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.jetbrains.kotlin</groupId>
@@ -312,47 +323,4 @@
     </dependency>
   </dependencies>
 
-  <scm>
-    <url>https://github.com/mybatis/mybatis-dynamic-sql</url>
-    <connection>scm:git:ssh://github.com/mybatis/mybatis-dynamic-sql.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-  <issueManagement>
-    <system>GitHub Issue Management</system>
-    <url>https://github.com/mybatis/mybatis-dynamic-sql/issues</url>
-  </issueManagement>
-  <ciManagement>
-    <system>Travis CI</system>
-    <url>https://travis-ci.org/mybatis/mybatis-dynamic-sql</url>
-  </ciManagement>
-  <distributionManagement>
-    <site>
-      <id>gh-pages</id>
-      <name>MyBatis Dynamic SQL GitHub Pages</name>
-      <url>git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git?gh-pages#</url>
-    </site>
-  </distributionManagement>
-
-  <profiles>
-    <profile>
-      <id>javadocVersion</id>
-      <activation>
-        <jdk>[9,)</jdk>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <configuration>
-                <additionalOptions>-html5</additionalOptions>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-  </profiles>
 </project>
