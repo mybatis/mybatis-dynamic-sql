@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package examples.column.comparison;
 
 import java.sql.JDBCType;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
@@ -24,6 +25,8 @@ public final class ColumnComparisonDynamicSqlSupport {
     public static final ColumnComparison columnComparison = new ColumnComparison();
     public static final SqlColumn<Integer> number1 = columnComparison.number1;
     public static final SqlColumn<Integer> number2 = columnComparison.number2;
+
+    public static final BasicColumn[] columnList = { number1, number2 };
 
     public static final class ColumnComparison extends SqlTable {
         public final SqlColumn<Integer> number1 = column("number1", JDBCType.INTEGER);

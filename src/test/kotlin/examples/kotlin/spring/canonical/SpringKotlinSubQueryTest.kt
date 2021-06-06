@@ -19,30 +19,22 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.person
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.firstName
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.DerivedColumn
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
+import org.springframework.transaction.annotation.Transactional
 
+@SpringJUnitConfig(classes = [SpringConfiguration::class])
+@Transactional
 class SpringKotlinSubQueryTest {
+    @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
-
-    @BeforeEach
-    fun setup() {
-        val db = with(EmbeddedDatabaseBuilder()) {
-            setType(EmbeddedDatabaseType.HSQL)
-            generateUniqueName(true)
-            addScript("classpath:/examples/kotlin/spring/CreateSimpleDB.sql")
-            build()
-        }
-        template = NamedParameterJdbcTemplate(db)
-    }
 
     @Test
     fun testBasicSubQuery() {

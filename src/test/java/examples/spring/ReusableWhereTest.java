@@ -21,7 +21,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -31,24 +30,16 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions;
 import org.mybatis.dynamic.sql.where.WhereApplier;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
+@SpringJUnitConfig(classes = SpringConfiguration.class)
+@Transactional
 class ReusableWhereTest {
 
+    @Autowired
     private NamedParameterJdbcTemplateExtensions template;
-
-    @BeforeEach
-    void setup() {
-        EmbeddedDatabase db = new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.HSQL)
-                .generateUniqueName(true)
-                .addScript("classpath:/examples/simple/CreateSimpleDB.sql")
-                .build();
-        template = new NamedParameterJdbcTemplateExtensions(new NamedParameterJdbcTemplate(db));
-    }
 
     @Test
     void testCount() {

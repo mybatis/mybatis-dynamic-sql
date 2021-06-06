@@ -22,6 +22,8 @@ import org.apache.ibatis.annotations.SelectProvider
 import org.apache.ibatis.type.JdbcType
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
 
 @Mapper
 interface ColumnComparisonMapper {
@@ -32,3 +34,12 @@ interface ColumnComparisonMapper {
     )
     fun selectMany(selectStatement: SelectStatementProvider): List<ColumnComparisonRecord>
 }
+
+// helper methods must be declared as extension methods in Kotlin
+fun ColumnComparisonMapper.select(completer: SelectCompleter) =
+    selectList(
+        this::selectMany,
+        ColumnComparisonDynamicSqlSupport.columnList,
+        ColumnComparisonDynamicSqlSupport.columnComparison,
+        completer
+    )

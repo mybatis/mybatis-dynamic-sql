@@ -60,9 +60,11 @@ The library test cases provide several complete examples of using the library in
 | Language | Runtime | Comments | Code Directory |
 |---|---|---|---|
 | Java | MyBatis3 | Example using Java utility classes for MyBatis in the style of MyBatis Generator | [src/test/java/examples/simple](src/test/java/examples/simple) |
-| Java | MyBatis3 | Example using Java utility classes for the MyBatis integration with Spring Batch | [src/test/java/examples/springbatch](src/test/java/examples/springbatch) |
+| Java | MyBatis3 + MyBatis-Spring | Example using MyBatis-Spring integration | [src/test/java/examples/column/comparison](src/test/java/examples/column/comparison) |
+| Java | MyBatis3 + MyBatis-Spring (Spring Batch)| Example using Java utility classes for the MyBatis integration with Spring Batch | [src/test/java/examples/springbatch](src/test/java/examples/springbatch) |
 | Java | Spring JDBC | Example using Java utility classes for Spring JDBC Template | [src/test/java/examples/spring](src/test/java/examples/spring) |
 | Kotlin | MyBatis3 | Example using Kotlin utility classes for MyBatis in the style of MyBatis Generator | [src/test/kotlin/examples/kotlin/mybatis3/canonical](src/test/kotlin/examples/kotlin/mybatis3/canonical) |
+| Kotlin | MyBatis3 + MyBatis-Spring | Example using MyBatis-Spring integration in Kotlin | [src/test/kotlin/examples/kotlin/mybatis3/column/comparison](src/test/kotlin/examples/kotlin/mybatis3/column/comparison) |
 | Kotlin | Spring JDBC | Example using Kotlin utility classes for Spring JDBC Template | [src/test/kotlin/examples/kotlin/spring/canonical](src/test/kotlin/examples/kotlin/spring/canonical) |
 
 

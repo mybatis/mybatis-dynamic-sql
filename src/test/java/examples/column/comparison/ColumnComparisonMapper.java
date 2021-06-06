@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,8 +20,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 public interface ColumnComparisonMapper {
 
@@ -31,4 +33,9 @@ public interface ColumnComparisonMapper {
         @Result(column="number2", property="number2", id=true)
     })
     List<ColumnComparisonRecord> selectMany(SelectStatementProvider selectStatement);
+
+    default List<ColumnComparisonRecord> select(SelectDSLCompleter completer) {
+        return MyBatis3Utils.selectList(this::selectMany, ColumnComparisonDynamicSqlSupport.columnList,
+                ColumnComparisonDynamicSqlSupport.columnComparison, completer);
+    }
 }

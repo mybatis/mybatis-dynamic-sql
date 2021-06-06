@@ -13,33 +13,32 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.mybatis3.column.comparison
+package examples.kotlin.spring.canonical
 
-import org.apache.ibatis.session.SqlSessionFactory
-import org.mybatis.spring.SqlSessionFactoryBean
-import org.mybatis.spring.annotation.MapperScan
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import javax.sql.DataSource
 
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.jdbc.datasource.DataSourceTransactionManager
+
 @Configuration
-@MapperScan("examples.kotlin.mybatis3.column.comparison")
-open class ColumnComparisonConfiguration {
+open class SpringConfiguration {
     @Bean
-    open fun dataSource(): DataSource =
+    open fun datasource(): DataSource =
         EmbeddedDatabaseBuilder().run {
             setType(EmbeddedDatabaseType.HSQL)
             generateUniqueName(true)
-            addScript("classpath:/examples/column/comparison/CreateDB.sql")
+            addScript("classpath:/examples/kotlin/spring/CreateGeneratedAlwaysDB.sql")
+            addScript("classpath:/examples/kotlin/spring/CreateSimpleDB.sql")
             build()
         }
 
     @Bean
-    open fun sqlSessionFactory(dataSource: DataSource): SqlSessionFactory =
-        SqlSessionFactoryBean().run {
-            setDataSource(dataSource)
-            `object`!!
-        }
+    open fun template(dataSource: DataSource) = NamedParameterJdbcTemplate(dataSource)
+
+    @Bean
+    open fun transactionManager(dataSource: DataSource) = DataSourceTransactionManager(dataSource)
 }
