@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 
 @SpringJUnitConfig(classes = [ColumnComparisonConfiguration::class])
-internal class ColumnComparisonTest {
+class ColumnComparisonTest {
 
     @Autowired
     private lateinit var mapper: ColumnComparisonMapper
@@ -151,6 +151,18 @@ internal class ColumnComparisonTest {
 
         val records = mapper.selectMany(selectStatement)
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(records).hasSize(10)
+        assertThat(records[0].number1).isEqualTo(1)
+        assertThat(records[9].number1).isEqualTo(11)
+    }
+
+    @Test
+    fun testHelperMethod() {
+        val records = mapper.select {
+            where(number1, isNotEqualTo(number2))
+            orderBy(number1, number2)
+        }
+
         assertThat(records).hasSize(10)
         assertThat(records[0].number1).isEqualTo(1)
         assertThat(records[9].number1).isEqualTo(11)

@@ -27,7 +27,6 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
@@ -63,27 +62,20 @@ import org.mybatis.dynamic.sql.util.kotlin.spring.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne
 import org.mybatis.dynamic.sql.util.kotlin.spring.update
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
+import org.springframework.transaction.annotation.Transactional
 import java.util.Date
 
 @Suppress("LargeClass")
+@SpringJUnitConfig(classes = [SpringConfiguration::class])
+@Transactional
 class CanonicalSpringKotlinTest {
+    @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
-
-    @BeforeEach
-    fun setup() {
-        val db = with(EmbeddedDatabaseBuilder()) {
-            setType(EmbeddedDatabaseType.HSQL)
-            generateUniqueName(true)
-            addScript("classpath:/examples/kotlin/spring/CreateGeneratedAlwaysDB.sql")
-            addScript("classpath:/examples/kotlin/spring/CreateSimpleDB.sql")
-            build()
-        }
-        template = NamedParameterJdbcTemplate(db)
-    }
 
     @Test
     fun testRawCount() {
@@ -463,6 +455,7 @@ class CanonicalSpringKotlinTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     fun testGeneralInsertWithGeneratedKey() {
         val insertStatement = insertInto(generatedAlways) {
             set(generatedAlways.firstName).toValue("Fred")
@@ -478,6 +471,7 @@ class CanonicalSpringKotlinTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     fun testInsertWithGeneratedKey() {
         val command = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
 
@@ -495,6 +489,7 @@ class CanonicalSpringKotlinTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     fun testMultiRowInsertWithGeneratedKey() {
         val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
         val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
@@ -515,6 +510,7 @@ class CanonicalSpringKotlinTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     fun testInsertSelectWithGeneratedKey() {
         val insertStatement = insertSelect(generatedAlways) {
             columns(generatedAlways.firstName, generatedAlways.lastName)
@@ -1328,14 +1324,14 @@ class CanonicalSpringKotlinTest {
                 upper(firstName), isLikeWhenPresent(search1.firstName)
                 .map(String::trim)
                 .filter(String::isNotEmpty)
-                .map(String::toUpperCase)
+                .map(String::uppercase)
                 .map { "%$it%" }
             )
             and(
                 upper(lastName), isLikeWhenPresent(search1.lastName)
                 .map(String::trim)
                 .filter(String::isNotEmpty)
-                .map(String::toUpperCase)
+                .map(String::uppercase)
                 .map { LastName("%$it%") }
             )
             orderBy(id)

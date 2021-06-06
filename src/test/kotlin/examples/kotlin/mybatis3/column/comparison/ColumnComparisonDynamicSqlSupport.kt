@@ -24,6 +24,8 @@ object ColumnComparisonDynamicSqlSupport {
     val number1 = columnComparison.number1
     val number2 = columnComparison.number2
 
+    val columnList = listOf(number1, number2)
+
     class ColumnComparison : SqlTable("ColumnComparison") {
         val number1 = column<Int>(name = "number1", jdbcType = JDBCType.INTEGER)
         val number2 = column<Int>(name = "number2", jdbcType = JDBCType.INTEGER)

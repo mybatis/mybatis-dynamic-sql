@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.insert.BatchInsertModel;
@@ -36,25 +35,17 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
+@SpringJUnitConfig(classes = SpringConfiguration.class)
+@Transactional
 class PersonTemplateTest {
 
+    @Autowired
     private NamedParameterJdbcTemplateExtensions template;
-
-    @BeforeEach
-    void setup() throws Exception {
-        EmbeddedDatabase db = new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.HSQL)
-                .generateUniqueName(true)
-                .addScript("classpath:/examples/simple/CreateSimpleDB.sql")
-                .build();
-        template = new NamedParameterJdbcTemplateExtensions(new NamedParameterJdbcTemplate(db));
-    }
 
     @Test
     void testSelect() {
@@ -740,7 +731,7 @@ class PersonTemplateTest {
     }
 
     @Test
-    void testJoinCountWithSubcriteria() {
+    void testJoinCountWithSubCriteria() {
         Buildable<SelectModel> countStatement = countFrom(person)
                 .join(address, on(person.addressId, equalTo(address.id)))
                 .where(person.id, isEqualTo(55), or(person.id, isEqualTo(1)));
@@ -749,14 +740,14 @@ class PersonTemplateTest {
         assertThat(count).isEqualTo(1);
     }
 
-    private RowMapper<PersonWithAddress> personWithAddressRowMapper =
+    private final RowMapper<PersonWithAddress> personWithAddressRowMapper =
             (rs, i) -> {
                 PersonWithAddress record = new PersonWithAddress();
                 record.setId(rs.getInt(1));
                 record.setFirstName(rs.getString(2));
                 record.setLastName(LastName.of(rs.getString(3)));
                 record.setBirthDate(rs.getTimestamp(4));
-                record.setEmployed("Yes".equals(rs.getString(5)) ? true : false);
+                record.setEmployed("Yes".equals(rs.getString(5)));
                 record.setOccupation(rs.getString(6));
 
                 AddressRecord address = new AddressRecord();
@@ -777,7 +768,7 @@ class PersonTemplateTest {
                 record.setFirstName(rs.getString(2));
                 record.setLastName(LastName.of(rs.getString(3)));
                 record.setBirthDate(rs.getTimestamp(4));
-                record.setEmployed("Yes".equals(rs.getString(5)) ? true : false);
+                record.setEmployed("Yes".equals(rs.getString(5)));
                 record.setOccupation(rs.getString(6));
                 record.setAddressId(rs.getInt(7));
                 return record;
