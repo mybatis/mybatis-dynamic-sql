@@ -36,6 +36,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected final RenderingStrategy renderingStrategy;
     protected final ParameterTypeConverter<T, ?> parameterTypeConverter;
     protected final BiFunction<TableAliasCalculator, SqlTable, Optional<String>> tableQualifierFunction;
+    protected final Class<T> javaType;
 
     private SqlColumn(Builder<T> builder) {
         name = Objects.requireNonNull(builder.name);
@@ -47,6 +48,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         renderingStrategy = builder.renderingStrategy;
         parameterTypeConverter = builder.parameterTypeConverter;
         tableQualifierFunction = Objects.requireNonNull(builder.tableQualifierFunction);
+        javaType = builder.javaType;
     }
 
     public String name() {
@@ -70,6 +72,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     @Override
     public Optional<String> typeHandler() {
         return Optional.ofNullable(typeHandler);
+    }
+
+    @Override
+    public Optional<Class<T>> javaType() {
+        return Optional.ofNullable(javaType);
     }
 
     @Override
@@ -158,6 +165,12 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return b.withParameterTypeConverter(parameterTypeConverter).build();
     }
 
+    @NotNull
+    public <S> SqlColumn<S> withJavaType(Class<S> javaType) {
+        Builder<S> b = copy();
+        return b.withJavaType(javaType).build();
+    }
+
     /**
      * This method helps us tell a bit of fiction to the Java compiler. Java, for better or worse,
      * does not carry generic type information through chained methods. We want to enable method
@@ -178,7 +191,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .withTypeHandler(this.typeHandler)
                 .withRenderingStrategy(this.renderingStrategy)
                 .withParameterTypeConverter((ParameterTypeConverter<S, ?>) this.parameterTypeConverter)
-                .withTableQualifierFunction(this.tableQualifierFunction);
+                .withTableQualifierFunction(this.tableQualifierFunction)
+                .withJavaType((Class<S>) this.javaType);
     }
 
     private String applyTableAlias(String tableAlias) {
@@ -209,6 +223,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         protected ParameterTypeConverter<T, ?> parameterTypeConverter;
         protected BiFunction<TableAliasCalculator, SqlTable, Optional<String>> tableQualifierFunction =
                 TableAliasCalculator::aliasForColumn;
+        protected Class<T> javaType;
 
         public Builder<T> withName(String name) {
             this.name = name;
@@ -253,6 +268,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         private Builder<T> withTableQualifierFunction(
                 BiFunction<TableAliasCalculator, SqlTable, Optional<String>> tableQualifierFunction) {
             this.tableQualifierFunction = tableQualifierFunction;
+            return this;
+        }
+
+        public Builder<T> withJavaType(Class<T> javaType) {
+            this.javaType = javaType;
             return this;
         }
 

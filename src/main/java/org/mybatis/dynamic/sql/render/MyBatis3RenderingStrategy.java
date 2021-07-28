@@ -34,6 +34,7 @@ public class MyBatis3RenderingStrategy extends RenderingStrategy {
                 + "." //$NON-NLS-1$
                 + parameterName
                 + renderJdbcType(column)
+                + renderJavaType(column)
                 + renderTypeHandler(column)
                 + "}"; //$NON-NLS-1$
     }
@@ -47,6 +48,12 @@ public class MyBatis3RenderingStrategy extends RenderingStrategy {
     private String renderJdbcType(BindableColumn<?> column) {
         return column.jdbcType()
                 .map(jt -> ",jdbcType=" + jt.getName()) //$NON-NLS-1$
+                .orElse(""); //$NON-NLS-1$
+    }
+
+    private String renderJavaType(BindableColumn<?> column) {
+        return column.javaType()
+                .map(jt -> ",javaType=" + jt.getName()) //$NON-NLS-1$
                 .orElse(""); //$NON-NLS-1$
     }
 }

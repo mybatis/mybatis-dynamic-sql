@@ -51,4 +51,8 @@ public interface BindableColumn<T> extends BasicColumn {
     default Object convertParameterType(T value) {
         return value;
     }
+
+    default Optional<Class<T>> javaType() {
+        return Optional.empty();
+    }
 }

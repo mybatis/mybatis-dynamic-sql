@@ -27,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static examples.simple.AddressDynamicSqlSupport.address;
 import static examples.simple.PersonDynamicSqlSupport.addressId;
 import static examples.simple.PersonDynamicSqlSupport.birthDate;
 import static examples.simple.PersonDynamicSqlSupport.employed;
@@ -52,17 +54,7 @@ import static examples.simple.PersonDynamicSqlSupport.occupation;
 import static examples.simple.PersonDynamicSqlSupport.person;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.isFalse;
-import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
-import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
-import static org.mybatis.dynamic.sql.SqlBuilder.isLike;
-import static org.mybatis.dynamic.sql.SqlBuilder.isNotLike;
-import static org.mybatis.dynamic.sql.SqlBuilder.isNull;
-import static org.mybatis.dynamic.sql.SqlBuilder.isTrue;
-import static org.mybatis.dynamic.sql.SqlBuilder.or;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 class PersonMapperTest {
 
@@ -86,6 +78,7 @@ class PersonMapperTest {
         Configuration config = new Configuration(environment);
         config.addMapper(PersonMapper.class);
         config.addMapper(PersonWithAddressMapper.class);
+        config.addMapper(AddressMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
 
@@ -650,6 +643,9 @@ class PersonMapperTest {
             assertThat(records.get(0).getAddress().getStreetAddress()).isEqualTo("123 Main Street");
             assertThat(records.get(0).getAddress().getCity()).isEqualTo("Bedrock");
             assertThat(records.get(0).getAddress().getState()).isEqualTo("IN");
+            assertThat(records.get(0).getAddress().getAddressType()).isEqualTo(AddressRecord.AddressType.HOME);
+
+            assertThat(records.get(4).getAddress().getAddressType()).isEqualTo(AddressRecord.AddressType.BUSINESS);
         }
     }
 
@@ -721,6 +717,34 @@ class PersonMapperTest {
             long count = mapper.count(c -> c.where(person.id, isEqualTo(55), or(person.id, isEqualTo(1))));
 
             assertThat(count).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void testWithEnumOrdinalTypeHandler() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            AddressMapper mapper = session.getMapper(AddressMapper.class);
+
+            GeneralInsertStatementProvider insertStatement = insertInto(address)
+                    .set(address.id).toValue(4)
+                    .set(address.streetAddress).toValue("987 Elm Street")
+                    .set(address.city).toValue("Mayberry")
+                    .set(address.state).toValue("NC")
+                    .set(address.addressType).toValue(AddressRecord.AddressType.HOME)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            int rows = mapper.generalInsert(insertStatement);
+            assertThat(rows).isEqualTo(1);
+
+            SelectStatementProvider selectStatement = select(address.addressType)
+                    .from(address)
+                    .where(address.id, isEqualTo(4))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            Optional<Integer> type = mapper.selectOptionalInteger(selectStatement);
+            assertThat(type).hasValueSatisfying(i -> assertThat(i).isEqualTo(0));
         }
     }
 }
