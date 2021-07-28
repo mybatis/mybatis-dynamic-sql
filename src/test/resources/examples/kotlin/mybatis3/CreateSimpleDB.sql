@@ -1,5 +1,5 @@
 --
---    Copyright 2016-2019 the original author or authors.
+--    Copyright 2016-2021 the original author or authors.
 --
 --    Licensed under the Apache License, Version 2.0 (the "License");
 --    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ create table Address (
    street_address varchar(50) not null,
    city varchar(20) not null,
    state varchar(2) not null,
+   address_type int not null,
    primary key(address_id)
 );
 
@@ -36,11 +37,11 @@ create table Person (
    primary key(id)
 );
 
-insert into Address (address_id, street_address, city, state)
-values(1, '123 Main Street', 'Bedrock', 'IN');
+insert into Address (address_id, street_address, city, state, address_type)
+values(1, '123 Main Street', 'Bedrock', 'IN', 0);
 
-insert into Address (address_id, street_address, city, state)
-values(2, '456 Main Street', 'Bedrock', 'IN');
+insert into Address (address_id, street_address, city, state, address_type)
+values(2, '456 Main Street', 'Bedrock', 'IN', 1);
 
 insert into Person values(1, 'Fred', 'Flintstone', '1935-02-01', 'Yes', 'Brontosaurus Operator', 1);
 

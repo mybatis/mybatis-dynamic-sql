@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.type.EnumOrdinalTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
@@ -64,7 +65,9 @@ public interface PersonWithAddressMapper {
             @Result(column="address_id", property="address.id", jdbcType=JdbcType.INTEGER),
             @Result(column="street_address", property="address.streetAddress", jdbcType=JdbcType.VARCHAR),
             @Result(column="city", property="address.city", jdbcType=JdbcType.VARCHAR),
-            @Result(column="state", property="address.state", jdbcType=JdbcType.CHAR)
+            @Result(column="state", property="address.state", jdbcType=JdbcType.CHAR),
+            @Result(column="address_type", property="address.addressType", jdbcType=JdbcType.INTEGER,
+                    typeHandler = EnumOrdinalTypeHandler.class)
     })
     List<PersonWithAddress> selectMany(SelectStatementProvider selectStatement);
 
@@ -77,7 +80,7 @@ public interface PersonWithAddressMapper {
 
     BasicColumn[] selectList =
             BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, address.id,
-                    address.streetAddress, address.city, address.state);
+                    address.streetAddress, address.city, address.state, address.addressType);
 
     default Optional<PersonWithAddress> selectOne(SelectDSLCompleter completer) {
         QueryExpressionDSL<SelectModel> start = SqlBuilder.select(selectList).from(person)

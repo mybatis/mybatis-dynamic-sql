@@ -15,14 +15,7 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-data class AddressRecord(
-    var id: Int? = null,
-    var streetAddress: String? = null,
-    var city: String? = null,
-    var state: String? = null,
-    var addressType: AddressType? = null
-)
+import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 
-enum class AddressType {
-    HOME, BUSINESS
-}
+interface AddressMapper: CommonInsertMapper<AddressRecord>, CommonSelectMapper

@@ -13,16 +13,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.mybatis3.canonical
+package examples.simple;
 
-data class AddressRecord(
-    var id: Int? = null,
-    var streetAddress: String? = null,
-    var city: String? = null,
-    var state: String? = null,
-    var addressType: AddressType? = null
-)
+import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
-enum class AddressType {
-    HOME, BUSINESS
+public interface AddressMapper extends CommonInsertMapper<AddressRecord>, CommonSelectMapper {
 }

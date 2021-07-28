@@ -25,11 +25,18 @@ object AddressDynamicSqlSupport {
     val streetAddress = address.streetAddress
     val city = address.city
     val state = address.state
+    val addressType = address.addressType
 
     class Address : SqlTable("Address") {
         val id = column<Int>(name = "address_id", jdbcType = JDBCType.INTEGER)
         val streetAddress = column<String>(name = "street_address", jdbcType = JDBCType.VARCHAR)
         val city = column<String>(name = "city", jdbcType = JDBCType.VARCHAR)
         val state = column<String>(name = "state", jdbcType = JDBCType.VARCHAR)
+        val addressType = column(
+            name = "address_type",
+            jdbcType = JDBCType.INTEGER,
+            javaType = AddressType::class,
+            typeHandler = "org.apache.ibatis.type.EnumOrdinalTypeHandler"
+        )
     }
 }

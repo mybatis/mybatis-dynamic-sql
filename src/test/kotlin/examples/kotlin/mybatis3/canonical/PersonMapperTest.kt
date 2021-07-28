@@ -15,7 +15,7 @@
  */
 package examples.kotlin.mybatis3.canonical
 
-import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
+import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.address
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.addressId
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.employed
@@ -23,6 +23,7 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
+import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -44,9 +45,11 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotLike
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNull
 import org.mybatis.dynamic.sql.util.kotlin.elements.isTrue
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
-import java.util.Date
+import java.util.*
 
 class PersonMapperTest {
     private fun newSession(executorType: ExecutorType = ExecutorType.REUSE): SqlSession {
@@ -55,7 +58,7 @@ class PersonMapperTest {
         DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
             val sr = ScriptRunner(connection)
             sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script))
+            sr.runScript(InputStreamReader(script!!))
         }
 
         val ds = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
@@ -64,6 +67,7 @@ class PersonMapperTest {
         config.typeHandlerRegistry.register(YesNoTypeHandler::class.java)
         config.addMapper(PersonMapper::class.java)
         config.addMapper(PersonWithAddressMapper::class.java)
+        config.addMapper(AddressMapper::class.java)
         return SqlSessionFactoryBuilder().build(config).openSession(executorType)
     }
 
@@ -600,6 +604,11 @@ class PersonMapperTest {
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
                 assertThat(address?.city).isEqualTo("Bedrock")
                 assertThat(address?.state).isEqualTo("IN")
+                assertThat(address?.addressType).isEqualTo(AddressType.HOME)
+            }
+
+            with(records[4]) {
+                assertThat(address?.addressType).isEqualTo(AddressType.BUSINESS)
             }
         }
     }
@@ -625,6 +634,7 @@ class PersonMapperTest {
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
                 assertThat(address?.city).isEqualTo("Bedrock")
                 assertThat(address?.state).isEqualTo("IN")
+                assertThat(address?.addressType).isEqualTo(AddressType.HOME)
             }
         }
     }
@@ -650,6 +660,7 @@ class PersonMapperTest {
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
                 assertThat(address?.city).isEqualTo("Bedrock")
                 assertThat(address?.state).isEqualTo("IN")
+                assertThat(address?.addressType).isEqualTo(AddressType.HOME)
             }
         }
     }
@@ -673,6 +684,7 @@ class PersonMapperTest {
                 assertThat(address?.streetAddress).isEqualTo("123 Main Street")
                 assertThat(address?.city).isEqualTo("Bedrock")
                 assertThat(address?.state).isEqualTo("IN")
+                assertThat(address?.addressType).isEqualTo(AddressType.HOME)
             }
         }
     }
@@ -685,6 +697,33 @@ class PersonMapperTest {
             val record = mapper.selectByPrimaryKey(55)
 
             assertThat(record).isNull()
+        }
+    }
+
+    @Test
+    fun testWithEnumOrdinalTypeHandler() {
+        newSession().use { session ->
+            val mapper: AddressMapper = session.getMapper(AddressMapper::class.java)
+
+            val insertStatement = insertInto(address) {
+                set(address.id).toValue(4)
+                set(address.streetAddress).toValue("987 Elm Street")
+                set(address.city).toValue("Mayberry")
+                set(address.state).toValue("NC")
+                set(address.addressType).toValue(AddressType.HOME)
+            }
+
+            val rows = mapper.generalInsert(insertStatement)
+            assertThat(rows).isEqualTo(1)
+
+            val selectStatement = select(address.addressType) {
+                from(address)
+                where(address.id, isEqualTo(4))
+            }
+
+            val type = mapper.selectOptionalInteger(selectStatement)
+
+            assertThat(type).hasValueSatisfying { assertThat(it).isEqualTo(0) }
         }
     }
 

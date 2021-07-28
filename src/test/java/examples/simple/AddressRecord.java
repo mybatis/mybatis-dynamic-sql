@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ public class AddressRecord {
     private String streetAddress;
     private String city;
     private String state;
+    private AddressType addressType;
 
     public Integer getId() {
         return id;
@@ -51,5 +52,18 @@ public class AddressRecord {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public AddressType getAddressType() {
+        return addressType;
+    }
+
+    public void setAddressType(AddressType addressType) {
+        this.addressType = addressType;
+    }
+
+    public enum AddressType {
+        HOME,
+        BUSINESS
     }
 }
