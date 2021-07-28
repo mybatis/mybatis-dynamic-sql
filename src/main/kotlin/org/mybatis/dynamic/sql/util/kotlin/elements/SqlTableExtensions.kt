@@ -19,6 +19,7 @@ import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import java.sql.JDBCType
+import kotlin.reflect.KClass
 
 /**
  * This function replaces the native functions in [@see SqlColumn} such as
@@ -31,7 +32,8 @@ fun <T : Any> SqlTable.column(
     jdbcType: JDBCType? = null,
     typeHandler: String? = null,
     renderingStrategy: RenderingStrategy? = null,
-    parameterTypeConverter: ((T?) -> Any?)? = null
+    parameterTypeConverter: ((T?) -> Any?)? = null,
+    javaType: KClass<T>? = null
 ): SqlColumn<T> {
     var column: SqlColumn<T> = if (jdbcType == null) {
         column(name)
@@ -49,6 +51,10 @@ fun <T : Any> SqlTable.column(
 
     if (parameterTypeConverter != null) {
         column = column.withParameterTypeConverter(parameterTypeConverter)
+    }
+
+    if (javaType != null) {
+        column = column.withJavaType(javaType.java)
     }
 
     return column

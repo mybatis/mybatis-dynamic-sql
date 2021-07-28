@@ -29,11 +29,12 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 
+private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate,
+    employed, occupation, address.id, address.streetAddress, address.city, address.state, address.addressType
+)
+
 fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAddress? =
-    select(
-        id.`as`("A_ID"), firstName, lastName, birthDate,
-        employed, occupation, address.id, address.streetAddress, address.city, address.state
-    ) {
+    select(columnList) {
         from(person)
         fullJoin(address) {
             on(person.addressId, equalTo(address.id))
@@ -42,10 +43,7 @@ fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAdd
     }.run(this::selectOne)
 
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> =
-    select(
-        id.`as`("A_ID"), firstName, lastName, birthDate,
-        employed, occupation, address.id, address.streetAddress, address.city, address.state
-    ) {
+    select(columnList) {
         from(person, "p")
         fullJoin(address) {
             on(person.addressId, equalTo(address.id))
@@ -54,10 +52,7 @@ fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithA
     }.run(this::selectMany)
 
 fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<PersonWithAddress> =
-    selectDistinct(
-        id.`as`("A_ID"), firstName, lastName,
-        birthDate, employed, occupation, address.id, address.streetAddress, address.city, address.state
-    ) {
+    selectDistinct(columnList) {
         from(person)
         fullJoin(address) {
             on(person.addressId, equalTo(address.id))
