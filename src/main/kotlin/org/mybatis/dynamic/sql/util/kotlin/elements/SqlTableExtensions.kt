@@ -22,7 +22,7 @@ import java.sql.JDBCType
 import kotlin.reflect.KClass
 
 /**
- * This function replaces the native functions in [@see SqlColumn} such as
+ * This function replaces the native functions in [@see SqlColumn] such as
  * [@see SqlColumn#withTypeHandler], [@see SqlColumn#withRenderingStrategy], etc.
  * This function preserves the non-nullable column type which is lost with the Java
  * native versions.
@@ -34,28 +34,13 @@ fun <T : Any> SqlTable.column(
     renderingStrategy: RenderingStrategy? = null,
     parameterTypeConverter: ((T?) -> Any?)? = null,
     javaType: KClass<T>? = null
-): SqlColumn<T> {
-    var column: SqlColumn<T> = if (jdbcType == null) {
-        column(name)
-    } else {
-        column(name, jdbcType)
-    }
-
-    if (typeHandler != null) {
-        column = column.withTypeHandler(typeHandler)
-    }
-
-    if (renderingStrategy != null) {
-        column = column.withRenderingStrategy(renderingStrategy)
-    }
-
-    if (parameterTypeConverter != null) {
-        column = column.withParameterTypeConverter(parameterTypeConverter)
-    }
-
-    if (javaType != null) {
-        column = column.withJavaType(javaType.java)
-    }
-
-    return column
+): SqlColumn<T> = SqlColumn.Builder<T>().run {
+    withTable(this@column)
+    withName(name)
+    withJdbcType(jdbcType)
+    withTypeHandler(typeHandler)
+    withRenderingStrategy(renderingStrategy)
+    withParameterTypeConverter(parameterTypeConverter)
+    withJavaType(javaType?.java)
+    build()
 }

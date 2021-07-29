@@ -744,7 +744,7 @@ class PersonMapperTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             Optional<Integer> type = mapper.selectOptionalInteger(selectStatement);
-            assertThat(type).hasValueSatisfying(i -> assertThat(i).isEqualTo(0));
+            assertThat(type).hasValueSatisfying(i -> assertThat(i).isZero());
         }
     }
 }
