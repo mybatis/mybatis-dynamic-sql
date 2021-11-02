@@ -194,8 +194,6 @@ class SelectStatementTest {
                 + "from foo a "
                 + "order by column2 DESC, column1";
 
-        Map<String, Object> parameters = selectStatement.getParameters();
-
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
     }
 
