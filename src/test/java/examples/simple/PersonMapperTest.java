@@ -25,6 +25,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
@@ -38,6 +39,7 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -248,6 +250,25 @@ class PersonMapperTest {
                     () -> assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone"),
                     () -> assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble")
             );
+        }
+    }
+
+    @Test
+    void testOrderByCollection() {
+        Collection<SortSpecification> orderByColumns = new ArrayList<>();
+        orderByColumns.add(firstName);
+
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            List<PersonRecord> rows = mapper.select(c -> c
+                    .where(firstName, isIn("Fred", "Barney"))
+                    .orderBy(orderByColumns)
+            );
+
+            assertThat(rows).hasSize(2);
+            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Rubble");
+            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Flintstone");
         }
     }
 

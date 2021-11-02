@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -29,6 +30,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.Callback;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -174,6 +176,25 @@ class SelectStatementTest {
                 () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
                 () -> assertThat(parameters).containsEntry("p1", d)
         );
+    }
+
+    @Test
+    void testOrderByMultipleColumnsWithCollection() {
+        Collection<SortSpecification> orderByColumns = new ArrayList<>();
+        orderByColumns.add(column2.descending());
+        orderByColumns.add(column1);
+
+        SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
+                .from(table, "a")
+                .orderBy(orderByColumns)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expectedFullStatement = "select a.column1 as A_COLUMN1, a.column2 "
+                + "from foo a "
+                + "order by column2 DESC, column1";
+
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement);
     }
 
     @Test
