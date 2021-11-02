@@ -267,8 +267,8 @@ class PersonMapperTest {
             );
 
             assertThat(rows).hasSize(2);
-            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone");
-            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble");
+            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Rubble");
+            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Flintstone");
         }
     }
 

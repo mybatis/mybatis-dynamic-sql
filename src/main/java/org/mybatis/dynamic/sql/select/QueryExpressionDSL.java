@@ -251,10 +251,18 @@ public class QueryExpressionDSL<R>
         }
 
         public SelectDSL<R> orderBy(SortSpecification...columns) {
+            return orderBy(Arrays.asList(columns));
+        }
+
+        public SelectDSL<R> orderBy(Collection<SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
         public GroupByFinisher groupBy(BasicColumn...columns) {
+            return groupBy(Arrays.asList(columns));
+        }
+
+        public GroupByFinisher groupBy(Collection<BasicColumn> columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
 
@@ -410,6 +418,10 @@ public class QueryExpressionDSL<R>
         }
 
         public GroupByFinisher groupBy(BasicColumn...columns) {
+            return groupBy(Arrays.asList(columns));
+        }
+
+        public GroupByFinisher groupBy(Collection<BasicColumn> columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
 
@@ -422,6 +434,10 @@ public class QueryExpressionDSL<R>
         }
 
         public SelectDSL<R> orderBy(SortSpecification...columns) {
+            return orderBy(Arrays.asList(columns));
+        }
+
+        public SelectDSL<R> orderBy(Collection<SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
@@ -440,6 +456,10 @@ public class QueryExpressionDSL<R>
 
     public class GroupByFinisher implements Buildable<R> {
         public SelectDSL<R> orderBy(SortSpecification...columns) {
+            return orderBy(Arrays.asList(columns));
+        }
+
+        public SelectDSL<R> orderBy(Collection<SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
