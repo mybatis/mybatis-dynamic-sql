@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -35,9 +35,12 @@ public class GuaranteedTableAliasCalculator extends TableAliasCalculator {
 
     @Override
     public Optional<String> aliasForColumn(SqlTable table) {
-        return super.aliasForColumn(table)
-                .map(Optional::of)
-                .orElseGet(() -> Optional.of(table.tableNameAtRuntime()));
+        Optional<String> alias = super.aliasForColumn(table);
+        if (alias.isPresent()) {
+            return alias;
+        } else {
+            return Optional.of(table.tableNameAtRuntime());
+        }
     }
 
     public static TableAliasCalculator of(Map<SqlTable, String> aliases) {
