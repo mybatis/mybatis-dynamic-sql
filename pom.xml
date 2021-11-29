@@ -56,7 +56,7 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <junit.jupiter.version>5.8.1</junit.jupiter.version>
-    <junit.platform.version>1.8.1</junit.platform.version>
+    <junit.platform.version>1.8.2</junit.platform.version>
     <spring.batch.version>4.3.4</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
