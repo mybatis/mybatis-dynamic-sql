@@ -44,6 +44,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.exception.DuplicateTableAliasException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
@@ -948,14 +950,11 @@ class JoinMapperTest {
 
     @Test
     void testSelfWithDuplicateAlias() {
-        assertThatExceptionOfType(DuplicateTableAliasException.class).isThrownBy(() ->
-                select(user.userId, user.userName, user.parentId)
-                        .from(user, "u1")
-                        .join(user, "u2").on(user.userId, equalTo(user.parentId))
-                        .where(user.userId, isEqualTo(4))
-                        .build()
-                        .render(RenderingStrategies.MYBATIS3)
-        ).withMessage("Table \"User\" with requested alias \"u2\" is already aliased in this query with alias \"u1\". Attempting to re-alias a table in the same query is not supported.");
+        QueryExpressionDSL<SelectModel> dsl = select(user.userId, user.userName, user.parentId)
+                .from(user, "u1");
+
+        assertThatExceptionOfType(DuplicateTableAliasException.class).isThrownBy(() -> dsl.join(user, "u2"))
+                .withMessage("Table \"User\" with requested alias \"u2\" is already aliased in this query with alias \"u1\". Attempting to re-alias a table in the same query is not supported.");
     }
 
     @Test

@@ -32,18 +32,13 @@ import org.mybatis.dynamic.sql.SqlTable;
  */
 public class DuplicateTableAliasException extends RuntimeException {
 
-    private final SqlTable table;
-    private final String newAlias;
-    private final String existingAlias;
-
     public DuplicateTableAliasException(SqlTable table, String newAlias, String existingAlias) {
-        this.table = Objects.requireNonNull(table);
-        this.newAlias = Objects.requireNonNull(newAlias);
-        this.existingAlias = Objects.requireNonNull(existingAlias);
+        super(generateMessage(Objects.requireNonNull(table),
+                Objects.requireNonNull(newAlias),
+                Objects.requireNonNull(existingAlias)));
     }
 
-    @Override
-    public String getMessage() {
+    private static String generateMessage(SqlTable table, String newAlias, String existingAlias) {
         return "Table \"" + table.tableNameAtRuntime() //$NON-NLS-1$
                 + "\" with requested alias \"" + newAlias //$NON-NLS-1$
                 + "\" is already aliased in this query with alias \"" + existingAlias //$NON-NLS-1$
