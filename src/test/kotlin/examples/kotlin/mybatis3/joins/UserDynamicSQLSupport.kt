@@ -15,7 +15,7 @@
  */
 package examples.kotlin.mybatis3.joins
 
-import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.AliasableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 
@@ -25,7 +25,7 @@ object UserDynamicSQLSupport {
     val userName = user.userName
     val parentId = user.parentId
 
-    class User : SqlTable("User") {
+    class User : AliasableSqlTable<User>("User", ::User) {
         val userId = column<Int>(name = "user_id", jdbcType = JDBCType.INTEGER)
         val userName = column<String>(name = "user_name", jdbcType = JDBCType.VARCHAR)
         val parentId = column<Int>(name = "parent_id", jdbcType = JDBCType.INTEGER)

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package examples.joins;
 
 import java.sql.JDBCType;
 
+import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
 
 public class UserDynamicSQLSupport {
     public static final User user = new User();
@@ -26,13 +26,13 @@ public class UserDynamicSQLSupport {
     public final SqlColumn<String> userName = user.userName;
     public final SqlColumn<Integer> parentId = user.parentId;
 
-    public static final class User extends SqlTable {
+    public static final class User extends AliasableSqlTable<User> {
         public final SqlColumn<Integer> userId = column("user_id", JDBCType.INTEGER);
         public final SqlColumn<String> userName = column("user_name", JDBCType.VARCHAR);
         public final SqlColumn<Integer> parentId = column("parent_id", JDBCType.INTEGER);
 
         public User() {
-            super("User");
+            super(() -> "User", User::new);
         }
     }
 }

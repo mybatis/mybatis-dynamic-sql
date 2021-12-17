@@ -44,6 +44,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.exception.DuplicateTableAliasException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
@@ -948,14 +950,73 @@ class JoinMapperTest {
 
     @Test
     void testSelfWithDuplicateAlias() {
-        assertThatExceptionOfType(DuplicateTableAliasException.class).isThrownBy(() ->
-                select(user.userId, user.userName, user.parentId)
-                        .from(user, "u1")
-                        .join(user, "u2").on(user.userId, equalTo(user.parentId))
-                        .where(user.userId, isEqualTo(4))
-                        .build()
-                        .render(RenderingStrategies.MYBATIS3)
-        ).withMessage("Table \"User\" with requested alias \"u2\" is already aliased in this query with alias \"u1\". Attempting to re-alias a table in the same query is not supported.");
+        QueryExpressionDSL<SelectModel> dsl = select(user.userId, user.userName, user.parentId)
+                .from(user, "u1");
+
+        assertThatExceptionOfType(DuplicateTableAliasException.class).isThrownBy(() -> dsl.join(user, "u2"))
+                .withMessage("Table \"User\" with requested alias \"u2\" is already aliased in this query with alias \"u1\". Attempting to re-alias a table in the same query is not supported.");
+    }
+
+    @Test
+    void testSelfWithNewAlias() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+
+            // create second table instance for self-join
+            UserDynamicSQLSupport.User user2 = user.withAlias("u2");
+
+            // get Bamm Bamm's parent - should be Barney
+            SelectStatementProvider selectStatement = select(user.userId, user.userName, user.parentId)
+                    .from(user)
+                    .join(user2).on(user.userId, equalTo(user2.parentId))
+                    .where(user2.userId, isEqualTo(4))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select User.user_id, User.user_name, User.parent_id"
+                    + " from User join User u2 on User.user_id = u2.parent_id"
+                    + " where u2.user_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<User> rows = mapper.selectUsers(selectStatement);
+
+            assertThat(rows).hasSize(1);
+            User row = rows.get(0);
+            assertThat(row.getUserId()).isEqualTo(2);
+            assertThat(row.getUserName()).isEqualTo("Barney");
+            assertThat(row.getParentId()).isNull();
+        }
+    }
+
+    @Test
+    void testSelfWithNewAliasAndOverride() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+
+            // create second table instance for self-join
+            UserDynamicSQLSupport.User user2 = user.withAlias("other_user");
+
+            // get Bamm Bamm's parent - should be Barney
+            SelectStatementProvider selectStatement = select(user.userId, user.userName, user.parentId)
+                    .from(user, "u1")
+                    .join(user2, "u2").on(user.userId, equalTo(user2.parentId))
+                    .where(user2.userId, isEqualTo(4))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select u1.user_id, u1.user_name, u1.parent_id"
+                    + " from User u1 join User u2 on u1.user_id = u2.parent_id"
+                    + " where u2.user_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<User> rows = mapper.selectUsers(selectStatement);
+
+            assertThat(rows).hasSize(1);
+            User row = rows.get(0);
+            assertThat(row.getUserId()).isEqualTo(2);
+            assertThat(row.getUserName()).isEqualTo("Barney");
+            assertThat(row.getParentId()).isNull();
+        }
     }
 
     @Test

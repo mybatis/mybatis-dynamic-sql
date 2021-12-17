@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,11 +32,20 @@ public class TableAliasCalculator {
     }
 
     public Optional<String> aliasForColumn(SqlTable table) {
-        return Optional.ofNullable(aliases.get(table));
+        return explicitAliasOrTableAlias(table);
     }
 
     public Optional<String> aliasForTable(SqlTable table) {
-        return Optional.ofNullable(aliases.get(table));
+        return explicitAliasOrTableAlias(table);
+    }
+
+    private Optional<String> explicitAliasOrTableAlias(SqlTable table) {
+        String alias = aliases.get(table);
+        if (alias == null) {
+            return table.tableAlias();
+        } else {
+            return Optional.of(alias);
+        }
     }
 
     public static TableAliasCalculator of(SqlTable table, String alias) {
