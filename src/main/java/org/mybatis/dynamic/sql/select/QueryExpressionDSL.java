@@ -56,7 +56,7 @@ public class QueryExpressionDSL<R>
 
     QueryExpressionDSL(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
         this(fromGatherer, table);
-        tableAliases.put(table, tableAlias);
+        addTableAlias(table, tableAlias);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class QueryExpressionDSL<R>
     }
 
     public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return join(joinTable);
     }
 
@@ -88,7 +88,7 @@ public class QueryExpressionDSL<R>
     }
 
     public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return leftJoin(joinTable);
     }
 
@@ -101,7 +101,7 @@ public class QueryExpressionDSL<R>
     }
 
     public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return rightJoin(joinTable);
     }
 
@@ -114,7 +114,7 @@ public class QueryExpressionDSL<R>
     }
 
     public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return fullJoin(joinTable);
     }
 
@@ -153,7 +153,7 @@ public class QueryExpressionDSL<R>
                 .withConnector(connector)
                 .withTable(table())
                 .isDistinct(isDistinct)
-                .withTableAliases(tableAliases)
+                .withTableAliases(tableAliases())
                 .withWhereModel(whereBuilder.buildWhereModel())
                 .withJoinModel(buildJoinModel().orElse(null))
                 .withGroupByModel(groupByModel)
