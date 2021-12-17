@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import static examples.joins.OrderMasterDynamicSQLSupport.orderDate;
 import static examples.joins.OrderMasterDynamicSQLSupport.orderMaster;
 import static examples.joins.UserDynamicSQLSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
@@ -41,6 +42,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.exception.DuplicateTableAliasException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
@@ -942,6 +944,18 @@ class JoinMapperTest {
             assertThat(row.getUserName()).isEqualTo("Barney");
             assertThat(row.getParentId()).isNull();
         }
+    }
+
+    @Test
+    void testSelfWithDuplicateAlias() {
+        assertThatExceptionOfType(DuplicateTableAliasException.class).isThrownBy(() ->
+                select(user.userId, user.userName, user.parentId)
+                        .from(user, "u1")
+                        .join(user, "u2").on(user.userId, equalTo(user.parentId))
+                        .where(user.userId, isEqualTo(4))
+                        .build()
+                        .render(RenderingStrategies.MYBATIS3)
+        ).withMessage("Table \"User\" with requested alias \"u2\" is already aliased in this query with alias \"u1\". Attempting to re-alias a table in the same query is not supported.");
     }
 
     @Test

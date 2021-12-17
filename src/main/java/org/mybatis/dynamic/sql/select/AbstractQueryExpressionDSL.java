@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.exception.DuplicateTableAliasException;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -39,7 +41,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
         extends AbstractWhereSupport<W> {
 
     private final List<JoinSpecification.Builder> joinSpecificationBuilders = new ArrayList<>();
-    protected final Map<SqlTable, String> tableAliases = new HashMap<>();
+    private final Map<SqlTable, String> tableAliases = new HashMap<>();
     private final TableExpression table;
 
     protected AbstractQueryExpressionDSL(TableExpression table) {
@@ -58,7 +60,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
 
     public T join(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return join(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
@@ -70,7 +72,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
 
     public T join(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return join(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
@@ -89,7 +91,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
 
     public T leftJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return leftJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
@@ -101,7 +103,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
 
     public T leftJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return leftJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
@@ -120,7 +122,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
 
     public T rightJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return rightJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
@@ -132,7 +134,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
 
     public T rightJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return rightJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
@@ -151,7 +153,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
 
     public T fullJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             JoinCriterion...andJoinCriteria) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return fullJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
@@ -163,7 +165,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
 
     public T fullJoin(SqlTable joinTable, String tableAlias, JoinCriterion onJoinCriterion,
             List<JoinCriterion> andJoinCriteria) {
-        tableAliases.put(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return fullJoin(joinTable, onJoinCriterion, andJoinCriteria);
     }
 
@@ -195,6 +197,18 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
         return Optional.of(JoinModel.of(joinSpecificationBuilders.stream()
                 .map(JoinSpecification.Builder::build)
                 .collect(Collectors.toList())));
+    }
+
+    protected void addTableAlias(SqlTable table, String tableAlias) {
+        if (tableAliases.containsKey(table)) {
+            throw new DuplicateTableAliasException(table, tableAlias, tableAliases.get(table));
+        }
+
+        tableAliases.put(table, tableAlias);
+    }
+
+    protected Map<SqlTable, String> tableAliases() {
+        return Collections.unmodifiableMap(tableAliases);
     }
 
     protected static SubQuery buildSubQuery(Buildable<SelectModel> selectModel) {
