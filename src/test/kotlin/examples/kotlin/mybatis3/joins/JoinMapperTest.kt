@@ -19,6 +19,7 @@ import examples.kotlin.mybatis3.joins.ItemMasterDynamicSQLSupport.itemMaster
 import examples.kotlin.mybatis3.joins.OrderDetailDynamicSQLSupport.orderDetail
 import examples.kotlin.mybatis3.joins.OrderLineDynamicSQLSupport.orderLine
 import examples.kotlin.mybatis3.joins.OrderMasterDynamicSQLSupport.orderMaster
+import examples.kotlin.mybatis3.joins.UserDynamicSQLSupport.user
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
@@ -639,6 +640,100 @@ class JoinMapperTest {
                 entry("QUANTITY", 1),
                 entry("DESCRIPTION", "Outfield Glove"),
                 entry("ITEM_ID", 44)
+            )
+        }
+    }
+
+    @Test
+    fun testSelf() {
+        newSession().use { session ->
+            val mapper = session.getMapper(JoinMapper::class.java)
+
+            // create second table instance for self-join
+            val user2 = UserDynamicSQLSupport.User()
+
+            // get Bamm Bamm's parent - should be Barney
+            val selectStatement = select(user.userId, user.userName, user.parentId) {
+                from(user, "u1")
+                join(user2, "u2") {
+                    on(user.userId, equalTo(user2.parentId))
+                }
+                where(user2.userId, isEqualTo(4))
+            }
+
+            val expectedStatement = "select u1.user_id, u1.user_name, u1.parent_id" +
+                    " from User u1 join User u2 on u1.user_id = u2.parent_id" +
+                    " where u2.user_id = #{parameters.p1,jdbcType=INTEGER}"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
+
+            assertThat(rows).hasSize(1)
+            assertThat(rows[0]).containsExactly(
+                entry("USER_ID", 2),
+                entry("USER_NAME", "Barney"),
+            )
+        }
+    }
+
+    @Test
+    fun testSelfWithNewAlias() {
+        newSession().use { session ->
+            val mapper = session.getMapper(JoinMapper::class.java)
+
+            // create second table instance for self-join
+            val user2 = user.withAlias("u2")
+
+            // get Bamm Bamm's parent - should be Barney
+            val selectStatement = select(user.userId, user.userName, user.parentId) {
+                from(user)
+                join(user2) {
+                    on(user.userId, equalTo(user2.parentId))
+                }
+                where(user2.userId, isEqualTo(4))
+            }
+
+            val expectedStatement = "select User.user_id, User.user_name, User.parent_id" +
+                    " from User join User u2 on User.user_id = u2.parent_id" +
+                    " where u2.user_id = #{parameters.p1,jdbcType=INTEGER}"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(1)
+
+            assertThat(rows[0]).containsExactly(
+                entry("USER_ID", 2),
+                entry("USER_NAME", "Barney"),
+            )
+        }
+    }
+
+    @Test
+    fun testSelfWithNewAliasAndOverride() {
+        newSession().use { session ->
+            val mapper = session.getMapper(JoinMapper::class.java)
+
+            // create second table instance for self-join
+            val user2 = user.withAlias("other_user")
+
+            // get Bamm Bamm's parent - should be Barney
+            val selectStatement = select(user.userId, user.userName, user.parentId) {
+                from(user, "u1")
+                join(user2, "u2") {
+                    on(user.userId, equalTo(user2.parentId))
+                }
+                where(user2.userId, isEqualTo(4))
+            }
+
+            val expectedStatement = "select u1.user_id, u1.user_name, u1.parent_id" +
+                    " from User u1 join User u2 on u1.user_id = u2.parent_id" +
+                    " where u2.user_id = #{parameters.p1,jdbcType=INTEGER}"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(1)
+
+            assertThat(rows[0]).containsExactly(
+                entry("USER_ID", 2),
+                entry("USER_NAME", "Barney"),
             )
         }
     }

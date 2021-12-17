@@ -85,7 +85,7 @@ The library supports the generation of UNION and UNION ALL queries. For example:
 
 Any number of SELECT statements can be added to a UNION query. Only one ORDER BY phrase is allowed.
 
-## Annotated Mapper for Select Statements
+## MyBatis Mapper for Select Statements
 
 The SelectStatementProvider object can be used as a parameter to a MyBatis mapper method directly. If you
 are using an annotated mapper, the select method should look like this (note that we recommend coding a "selectMany" and a "selectOne" method with a shared result mapping):
