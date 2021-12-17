@@ -10,6 +10,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 
 - Added the ability to specify a JavaType associated with a column. The JavaType will be rendered properly for MyBatis ([#386](https://github.com/mybatis/mybatis-dynamic-sql/pull/386))
 - Added a few missing groupBy and orderBy methods on the `select` statement ([#409](https://github.com/mybatis/mybatis-dynamic-sql/pull/409))
+- Added a check for when a table alias is re-used in error (typically in a self-join) ([#425](https://github.com/mybatis/mybatis-dynamic-sql/pull/425))
 - Added a new extension of SqlTable that supports setting a table alias directly within the table definition
 
 ## Release 1.3.0 - May 6, 2021
