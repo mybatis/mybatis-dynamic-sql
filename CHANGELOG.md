@@ -2,7 +2,9 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
-## Release 1.3.1 - Unreleased
+## Release 1.3.1 - December 18, 2021
+
+This is a minor release with a few small enhancements. Most deprecated methods will be removed in the next release.
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.3.1+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.3.1+)
 
