@@ -108,8 +108,12 @@ public class SqlTable implements TableExpression {
 <span class="fc" id="L108">        return visitor.visit(this);</span>
     }
 
+    public Optional&lt;String&gt; tableAlias() {
+<span class="fc" id="L112">        return Optional.empty();</span>
+    }
+
     public static SqlTable of(String name) {
-<span class="fc" id="L112">        return new SqlTable(name);</span>
+<span class="fc" id="L116">        return new SqlTable(name);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

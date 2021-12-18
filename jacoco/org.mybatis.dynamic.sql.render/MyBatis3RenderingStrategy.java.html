@@ -34,20 +34,27 @@ import org.mybatis.dynamic.sql.BindableColumn;
                 + &quot;.&quot; //$NON-NLS-1$
                 + parameterName
 <span class="fc" id="L36">                + renderJdbcType(column)</span>
-<span class="fc" id="L37">                + renderTypeHandler(column)</span>
+<span class="fc" id="L37">                + renderJavaType(column)</span>
+<span class="fc" id="L38">                + renderTypeHandler(column)</span>
                 + &quot;}&quot;; //$NON-NLS-1$
     }
 
     private String renderTypeHandler(BindableColumn&lt;?&gt; column) {
-<span class="fc" id="L42">        return column.typeHandler()</span>
-<span class="fc" id="L43">                .map(th -&gt; &quot;,typeHandler=&quot; + th) //$NON-NLS-1$</span>
-<span class="fc" id="L44">                .orElse(&quot;&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L43">        return column.typeHandler()</span>
+<span class="fc" id="L44">                .map(th -&gt; &quot;,typeHandler=&quot; + th) //$NON-NLS-1$</span>
+<span class="fc" id="L45">                .orElse(&quot;&quot;); //$NON-NLS-1$</span>
     }
 
     private String renderJdbcType(BindableColumn&lt;?&gt; column) {
-<span class="fc" id="L48">        return column.jdbcType()</span>
-<span class="fc" id="L49">                .map(jt -&gt; &quot;,jdbcType=&quot; + jt.getName()) //$NON-NLS-1$</span>
-<span class="fc" id="L50">                .orElse(&quot;&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L49">        return column.jdbcType()</span>
+<span class="fc" id="L50">                .map(jt -&gt; &quot;,jdbcType=&quot; + jt.getName()) //$NON-NLS-1$</span>
+<span class="fc" id="L51">                .orElse(&quot;&quot;); //$NON-NLS-1$</span>
+    }
+
+    private String renderJavaType(BindableColumn&lt;?&gt; column) {
+<span class="fc" id="L55">        return column.javaType()</span>
+<span class="fc" id="L56">                .map(jt -&gt; &quot;,javaType=&quot; + jt.getName()) //$NON-NLS-1$</span>
+<span class="fc" id="L57">                .orElse(&quot;&quot;); //$NON-NLS-1$</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

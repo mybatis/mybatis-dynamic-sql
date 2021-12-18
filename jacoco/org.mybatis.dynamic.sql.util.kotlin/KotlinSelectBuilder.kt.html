@@ -87,7 +87,7 @@ typealias SelectCompleter = KotlinSelectBuilder.() -&gt; Unit
 
     override fun getDsl(): QueryExpressionDSL&lt;SelectModel&gt; {
 <span class="fc" id="L89">        try {</span>
-<span class="fc" id="L90">            return dsl</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">            return dsl</span>
 <span class="fc" id="L91">        } catch (e: UninitializedPropertyAccessException) {</span>
 <span class="fc" id="L92">            throw UninitializedPropertyAccessException(</span>
 <span class="fc" id="L93">                &quot;You must specify a \&quot;from\&quot; clause before any other clauses in a select statement&quot;,</span>

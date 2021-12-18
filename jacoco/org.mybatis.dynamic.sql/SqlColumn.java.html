@@ -36,57 +36,64 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
     protected final RenderingStrategy renderingStrategy;
     protected final ParameterTypeConverter&lt;T, ?&gt; parameterTypeConverter;
     protected final BiFunction&lt;TableAliasCalculator, SqlTable, Optional&lt;String&gt;&gt; tableQualifierFunction;
+    protected final Class&lt;T&gt; javaType;
 
-<span class="fc" id="L40">    private SqlColumn(Builder&lt;T&gt; builder) {</span>
-<span class="fc" id="L41">        name = Objects.requireNonNull(builder.name);</span>
-<span class="fc" id="L42">        table = Objects.requireNonNull(builder.table);</span>
-<span class="fc" id="L43">        jdbcType = builder.jdbcType;</span>
-<span class="fc" id="L44">        isDescending = builder.isDescending;</span>
-<span class="fc" id="L45">        alias = builder.alias;</span>
-<span class="fc" id="L46">        typeHandler = builder.typeHandler;</span>
-<span class="fc" id="L47">        renderingStrategy = builder.renderingStrategy;</span>
-<span class="fc" id="L48">        parameterTypeConverter = builder.parameterTypeConverter;</span>
-<span class="fc" id="L49">        tableQualifierFunction = Objects.requireNonNull(builder.tableQualifierFunction);</span>
-<span class="fc" id="L50">    }</span>
+<span class="fc" id="L41">    private SqlColumn(Builder&lt;T&gt; builder) {</span>
+<span class="fc" id="L42">        name = Objects.requireNonNull(builder.name);</span>
+<span class="fc" id="L43">        table = Objects.requireNonNull(builder.table);</span>
+<span class="fc" id="L44">        jdbcType = builder.jdbcType;</span>
+<span class="fc" id="L45">        isDescending = builder.isDescending;</span>
+<span class="fc" id="L46">        alias = builder.alias;</span>
+<span class="fc" id="L47">        typeHandler = builder.typeHandler;</span>
+<span class="fc" id="L48">        renderingStrategy = builder.renderingStrategy;</span>
+<span class="fc" id="L49">        parameterTypeConverter = builder.parameterTypeConverter;</span>
+<span class="fc" id="L50">        tableQualifierFunction = Objects.requireNonNull(builder.tableQualifierFunction);</span>
+<span class="fc" id="L51">        javaType = builder.javaType;</span>
+<span class="fc" id="L52">    }</span>
 
     public String name() {
-<span class="fc" id="L53">        return name;</span>
+<span class="fc" id="L55">        return name;</span>
     }
 
     public SqlTable table() {
-<span class="fc" id="L57">        return table;</span>
+<span class="fc" id="L59">        return table;</span>
     }
 
     @Override
     public Optional&lt;JDBCType&gt; jdbcType() {
-<span class="fc" id="L62">        return Optional.ofNullable(jdbcType);</span>
+<span class="fc" id="L64">        return Optional.ofNullable(jdbcType);</span>
     }
 
     @Override
     public Optional&lt;String&gt; alias() {
-<span class="fc" id="L67">        return Optional.ofNullable(alias);</span>
+<span class="fc" id="L69">        return Optional.ofNullable(alias);</span>
     }
 
     @Override
     public Optional&lt;String&gt; typeHandler() {
-<span class="fc" id="L72">        return Optional.ofNullable(typeHandler);</span>
+<span class="fc" id="L74">        return Optional.ofNullable(typeHandler);</span>
+    }
+
+    @Override
+    public Optional&lt;Class&lt;T&gt;&gt; javaType() {
+<span class="fc" id="L79">        return Optional.ofNullable(javaType);</span>
     }
 
     @Override
     public Object convertParameterType(T value) {
-<span class="fc bfc" id="L77" title="All 2 branches covered.">        return parameterTypeConverter == null ? value : parameterTypeConverter.convert(value);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        return parameterTypeConverter == null ? value : parameterTypeConverter.convert(value);</span>
     }
 
     @Override
     public SortSpecification descending() {
-<span class="fc" id="L82">        Builder&lt;T&gt; b = copy();</span>
-<span class="fc" id="L83">        return b.withDescending(true).build();</span>
+<span class="fc" id="L89">        Builder&lt;T&gt; b = copy();</span>
+<span class="fc" id="L90">        return b.withDescending(true).build();</span>
     }
 
     @Override
     public SqlColumn&lt;T&gt; as(String alias) {
-<span class="fc" id="L88">        Builder&lt;T&gt; b = copy();</span>
-<span class="fc" id="L89">        return b.withAlias(alias).build();</span>
+<span class="fc" id="L95">        Builder&lt;T&gt; b = copy();</span>
+<span class="fc" id="L96">        return b.withAlias(alias).build();</span>
     }
 
     /**
@@ -97,9 +104,9 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
      * @return a new column that will be rendered with the specified table qualifier
      */
     public SqlColumn&lt;T&gt; qualifiedWith(String tableQualifier) {
-<span class="fc" id="L100">        Builder&lt;T&gt; b = copy();</span>
-<span class="fc" id="L101">        b.withTableQualifierFunction((tac, t) -&gt; Optional.of(tableQualifier));</span>
-<span class="fc" id="L102">        return b.build();</span>
+<span class="fc" id="L107">        Builder&lt;T&gt; b = copy();</span>
+<span class="fc" id="L108">        b.withTableQualifierFunction((tac, t) -&gt; Optional.of(tableQualifier));</span>
+<span class="fc" id="L109">        return b.build();</span>
     }
 
     /**
@@ -114,48 +121,54 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
      * @return a new column aliased with a camel case version of the column name
      */
     public SqlColumn&lt;T&gt; asCamelCase() {
-<span class="fc" id="L117">        Builder&lt;T&gt; b = copy();</span>
-<span class="fc" id="L118">        return b.withAlias(&quot;\&quot;&quot; + StringUtilities.toCamelCase(name) + &quot;\&quot;&quot;).build(); //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L124">        Builder&lt;T&gt; b = copy();</span>
+<span class="fc" id="L125">        return b.withAlias(&quot;\&quot;&quot; + StringUtilities.toCamelCase(name) + &quot;\&quot;&quot;).build(); //$NON-NLS-1$ //$NON-NLS-2$</span>
     }
 
     @Override
     public boolean isDescending() {
-<span class="fc" id="L123">        return isDescending;</span>
+<span class="fc" id="L130">        return isDescending;</span>
     }
 
     @Override
     public String orderByName() {
-<span class="fc" id="L128">        return alias().orElse(name);</span>
+<span class="fc" id="L135">        return alias().orElse(name);</span>
     }
 
     @Override
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L133">        return tableQualifierFunction.apply(tableAliasCalculator, table)</span>
-<span class="fc" id="L134">                .map(this::applyTableAlias)</span>
-<span class="fc" id="L135">                .orElseGet(this::name);</span>
+<span class="fc" id="L140">        return tableQualifierFunction.apply(tableAliasCalculator, table)</span>
+<span class="fc" id="L141">                .map(this::applyTableAlias)</span>
+<span class="fc" id="L142">                .orElseGet(this::name);</span>
     }
 
     @Override
     public Optional&lt;RenderingStrategy&gt; renderingStrategy() {
-<span class="fc" id="L140">        return Optional.ofNullable(renderingStrategy);</span>
+<span class="fc" id="L147">        return Optional.ofNullable(renderingStrategy);</span>
     }
 
     @NotNull
     public &lt;S&gt; SqlColumn&lt;S&gt; withTypeHandler(String typeHandler) {
-<span class="fc" id="L145">        Builder&lt;S&gt; b = copy();</span>
-<span class="fc" id="L146">        return b.withTypeHandler(typeHandler).build();</span>
+<span class="fc" id="L152">        Builder&lt;S&gt; b = copy();</span>
+<span class="fc" id="L153">        return b.withTypeHandler(typeHandler).build();</span>
     }
 
     @NotNull
     public &lt;S&gt; SqlColumn&lt;S&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L151">        Builder&lt;S&gt; b = copy();</span>
-<span class="fc" id="L152">        return b.withRenderingStrategy(renderingStrategy).build();</span>
+<span class="fc" id="L158">        Builder&lt;S&gt; b = copy();</span>
+<span class="fc" id="L159">        return b.withRenderingStrategy(renderingStrategy).build();</span>
     }
 
     @NotNull
     public &lt;S&gt; SqlColumn&lt;S&gt; withParameterTypeConverter(ParameterTypeConverter&lt;S, ?&gt; parameterTypeConverter) {
-<span class="fc" id="L157">        Builder&lt;S&gt; b = copy();</span>
-<span class="fc" id="L158">        return b.withParameterTypeConverter(parameterTypeConverter).build();</span>
+<span class="fc" id="L164">        Builder&lt;S&gt; b = copy();</span>
+<span class="fc" id="L165">        return b.withParameterTypeConverter(parameterTypeConverter).build();</span>
+    }
+
+    @NotNull
+    public &lt;S&gt; SqlColumn&lt;S&gt; withJavaType(Class&lt;S&gt; javaType) {
+<span class="fc" id="L170">        Builder&lt;S&gt; b = copy();</span>
+<span class="fc" id="L171">        return b.withJavaType(javaType).build();</span>
     }
 
     /**
@@ -169,95 +182,102 @@ public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecific
      */
     @SuppressWarnings(&quot;unchecked&quot;)
     private &lt;S&gt; Builder&lt;S&gt; copy() {
-<span class="fc" id="L172">        return new Builder&lt;S&gt;()</span>
-<span class="fc" id="L173">                .withName(this.name)</span>
-<span class="fc" id="L174">                .withTable(this.table)</span>
-<span class="fc" id="L175">                .withJdbcType(this.jdbcType)</span>
-<span class="fc" id="L176">                .withDescending(this.isDescending)</span>
-<span class="fc" id="L177">                .withAlias(this.alias)</span>
-<span class="fc" id="L178">                .withTypeHandler(this.typeHandler)</span>
-<span class="fc" id="L179">                .withRenderingStrategy(this.renderingStrategy)</span>
-<span class="fc" id="L180">                .withParameterTypeConverter((ParameterTypeConverter&lt;S, ?&gt;) this.parameterTypeConverter)</span>
-<span class="fc" id="L181">                .withTableQualifierFunction(this.tableQualifierFunction);</span>
+<span class="fc" id="L185">        return new Builder&lt;S&gt;()</span>
+<span class="fc" id="L186">                .withName(this.name)</span>
+<span class="fc" id="L187">                .withTable(this.table)</span>
+<span class="fc" id="L188">                .withJdbcType(this.jdbcType)</span>
+<span class="fc" id="L189">                .withDescending(this.isDescending)</span>
+<span class="fc" id="L190">                .withAlias(this.alias)</span>
+<span class="fc" id="L191">                .withTypeHandler(this.typeHandler)</span>
+<span class="fc" id="L192">                .withRenderingStrategy(this.renderingStrategy)</span>
+<span class="fc" id="L193">                .withParameterTypeConverter((ParameterTypeConverter&lt;S, ?&gt;) this.parameterTypeConverter)</span>
+<span class="fc" id="L194">                .withTableQualifierFunction(this.tableQualifierFunction)</span>
+<span class="fc" id="L195">                .withJavaType((Class&lt;S&gt;) this.javaType);</span>
     }
 
     private String applyTableAlias(String tableAlias) {
-<span class="fc" id="L185">        return tableAlias + &quot;.&quot; + name(); //$NON-NLS-1$</span>
+<span class="fc" id="L199">        return tableAlias + &quot;.&quot; + name(); //$NON-NLS-1$</span>
     }
 
     public static &lt;T&gt; SqlColumn&lt;T&gt; of(String name, SqlTable table) {
-<span class="fc" id="L189">        return new Builder&lt;T&gt;().withName(name)</span>
-<span class="fc" id="L190">                .withTable(table)</span>
-<span class="fc" id="L191">                .build();</span>
+<span class="fc" id="L203">        return new Builder&lt;T&gt;().withName(name)</span>
+<span class="fc" id="L204">                .withTable(table)</span>
+<span class="fc" id="L205">                .build();</span>
     }
 
     public static &lt;T&gt; SqlColumn&lt;T&gt; of(String name, SqlTable table, JDBCType jdbcType) {
-<span class="fc" id="L195">        return new Builder&lt;T&gt;().withName(name)</span>
-<span class="fc" id="L196">                .withTable(table)</span>
-<span class="fc" id="L197">                .withJdbcType(jdbcType)</span>
-<span class="fc" id="L198">                .build();</span>
+<span class="fc" id="L209">        return new Builder&lt;T&gt;().withName(name)</span>
+<span class="fc" id="L210">                .withTable(table)</span>
+<span class="fc" id="L211">                .withJdbcType(jdbcType)</span>
+<span class="fc" id="L212">                .build();</span>
     }
 
-<span class="fc" id="L201">    public static class Builder&lt;T&gt; {</span>
+<span class="fc" id="L215">    public static class Builder&lt;T&gt; {</span>
         protected String name;
         protected SqlTable table;
         protected JDBCType jdbcType;
-<span class="fc" id="L205">        protected boolean isDescending = false;</span>
+<span class="fc" id="L219">        protected boolean isDescending = false;</span>
         protected String alias;
         protected String typeHandler;
         protected RenderingStrategy renderingStrategy;
         protected ParameterTypeConverter&lt;T, ?&gt; parameterTypeConverter;
-<span class="fc" id="L210">        protected BiFunction&lt;TableAliasCalculator, SqlTable, Optional&lt;String&gt;&gt; tableQualifierFunction =</span>
+<span class="fc" id="L224">        protected BiFunction&lt;TableAliasCalculator, SqlTable, Optional&lt;String&gt;&gt; tableQualifierFunction =</span>
                 TableAliasCalculator::aliasForColumn;
+        protected Class&lt;T&gt; javaType;
 
         public Builder&lt;T&gt; withName(String name) {
-<span class="fc" id="L214">            this.name = name;</span>
-<span class="fc" id="L215">            return this;</span>
-        }
-
-        public Builder&lt;T&gt; withTable(SqlTable table) {
-<span class="fc" id="L219">            this.table = table;</span>
-<span class="fc" id="L220">            return this;</span>
-        }
-
-        public Builder&lt;T&gt; withJdbcType(JDBCType jdbcType) {
-<span class="fc" id="L224">            this.jdbcType = jdbcType;</span>
-<span class="fc" id="L225">            return this;</span>
-        }
-
-        public Builder&lt;T&gt; withDescending(boolean isDescending) {
-<span class="fc" id="L229">            this.isDescending = isDescending;</span>
+<span class="fc" id="L229">            this.name = name;</span>
 <span class="fc" id="L230">            return this;</span>
         }
 
-        public Builder&lt;T&gt; withAlias(String alias) {
-<span class="fc" id="L234">            this.alias = alias;</span>
+        public Builder&lt;T&gt; withTable(SqlTable table) {
+<span class="fc" id="L234">            this.table = table;</span>
 <span class="fc" id="L235">            return this;</span>
         }
 
-        public Builder&lt;T&gt; withTypeHandler(String typeHandler) {
-<span class="fc" id="L239">            this.typeHandler = typeHandler;</span>
+        public Builder&lt;T&gt; withJdbcType(JDBCType jdbcType) {
+<span class="fc" id="L239">            this.jdbcType = jdbcType;</span>
 <span class="fc" id="L240">            return this;</span>
         }
 
-        public Builder&lt;T&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L244">            this.renderingStrategy = renderingStrategy;</span>
+        public Builder&lt;T&gt; withDescending(boolean isDescending) {
+<span class="fc" id="L244">            this.isDescending = isDescending;</span>
 <span class="fc" id="L245">            return this;</span>
         }
 
-        public Builder&lt;T&gt; withParameterTypeConverter(ParameterTypeConverter&lt;T, ?&gt; parameterTypeConverter) {
-<span class="fc" id="L249">            this.parameterTypeConverter = parameterTypeConverter;</span>
+        public Builder&lt;T&gt; withAlias(String alias) {
+<span class="fc" id="L249">            this.alias = alias;</span>
 <span class="fc" id="L250">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; withTypeHandler(String typeHandler) {
+<span class="fc" id="L254">            this.typeHandler = typeHandler;</span>
+<span class="fc" id="L255">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L259">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L260">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; withParameterTypeConverter(ParameterTypeConverter&lt;T, ?&gt; parameterTypeConverter) {
+<span class="fc" id="L264">            this.parameterTypeConverter = parameterTypeConverter;</span>
+<span class="fc" id="L265">            return this;</span>
         }
 
         private Builder&lt;T&gt; withTableQualifierFunction(
                 BiFunction&lt;TableAliasCalculator, SqlTable, Optional&lt;String&gt;&gt; tableQualifierFunction) {
-<span class="fc" id="L255">            this.tableQualifierFunction = tableQualifierFunction;</span>
-<span class="fc" id="L256">            return this;</span>
+<span class="fc" id="L270">            this.tableQualifierFunction = tableQualifierFunction;</span>
+<span class="fc" id="L271">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; withJavaType(Class&lt;T&gt; javaType) {
+<span class="fc" id="L275">            this.javaType = javaType;</span>
+<span class="fc" id="L276">            return this;</span>
         }
 
         public SqlColumn&lt;T&gt; build() {
-<span class="fc" id="L260">            return new SqlColumn&lt;&gt;(this);</span>
+<span class="fc" id="L280">            return new SqlColumn&lt;&gt;(this);</span>
         }
     }
 }

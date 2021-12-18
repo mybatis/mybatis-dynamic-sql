@@ -39,7 +39,7 @@ typealias CountCompleter = KotlinCountBuilder.() -&gt; Unit
 
     override fun getDsl(): CountDSL&lt;SelectModel&gt; {
 <span class="fc" id="L41">        try {</span>
-<span class="fc" id="L42">            return dsl</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">            return dsl</span>
 <span class="fc" id="L43">        } catch (e: UninitializedPropertyAccessException) {</span>
 <span class="fc" id="L44">            throw UninitializedPropertyAccessException(</span>
 <span class="fc" id="L45">                &quot;You must specify a \&quot;from\&quot; clause before any other clauses in a count statement&quot;, e</span>

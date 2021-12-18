@@ -51,5 +51,9 @@ public interface BindableColumn&lt;T&gt; extends BasicColumn {
     default Object convertParameterType(T value) {
 <span class="fc" id="L52">        return value;</span>
     }
+
+    default Optional&lt;Class&lt;T&gt;&gt; javaType() {
+<span class="fc" id="L56">        return Optional.empty();</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

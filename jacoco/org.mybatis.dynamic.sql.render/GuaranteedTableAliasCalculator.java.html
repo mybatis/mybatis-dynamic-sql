@@ -35,13 +35,16 @@ public class GuaranteedTableAliasCalculator extends TableAliasCalculator {
 
     @Override
     public Optional&lt;String&gt; aliasForColumn(SqlTable table) {
-<span class="fc" id="L38">        return super.aliasForColumn(table)</span>
-<span class="fc" id="L39">                .map(Optional::of)</span>
-<span class="fc" id="L40">                .orElseGet(() -&gt; Optional.of(table.tableNameAtRuntime()));</span>
+<span class="fc" id="L38">        Optional&lt;String&gt; alias = super.aliasForColumn(table);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (alias.isPresent()) {</span>
+<span class="fc" id="L40">            return alias;</span>
+        } else {
+<span class="fc" id="L42">            return Optional.of(table.tableNameAtRuntime());</span>
+        }
     }
 
     public static TableAliasCalculator of(Map&lt;SqlTable, String&gt; aliases) {
-<span class="fc" id="L44">        return new GuaranteedTableAliasCalculator(aliases);</span>
+<span class="fc" id="L47">        return new GuaranteedTableAliasCalculator(aliases);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

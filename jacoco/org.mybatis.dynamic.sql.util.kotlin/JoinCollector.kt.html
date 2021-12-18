@@ -23,7 +23,7 @@ typealias JoinReceiver = JoinCollector.() -&gt; Unit
 
 <span class="fc" id="L24">@MyBatisDslMarker</span>
 <span class="fc" id="L25">class JoinCollector {</span>
-<span class="fc" id="L26">    val onJoinCriterion: JoinCriterion by lazy { internalOnCriterion }</span>
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">    val onJoinCriterion: JoinCriterion by lazy { internalOnCriterion }</span>
 <span class="fc" id="L27">    val andJoinCriteria = mutableListOf&lt;JoinCriterion&gt;()</span>
     private lateinit var internalOnCriterion: JoinCriterion
 

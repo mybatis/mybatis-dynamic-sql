@@ -25,8 +25,8 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.sql.JDBCType;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlColumn;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.AliasableSqlTable;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlColumn;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="UserDynamicSQLSupport" href="../../examples/joins/UserDynamicSQLSupport.html#UserDynamicSQLSupport">UserDynamicSQLSupport</a> {
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <a name="User" href="../../examples/joins/User.html#User">User</a> user = <strong class="jxr_keyword">new</strong> <a name="User" href="../../examples/joins/User.html#User">User</a>();
@@ -34,13 +34,13 @@
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;String&gt; userName = user.userName;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;Integer&gt; parentId = user.parentId;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="User" href="../../examples/joins/User.html#User">User</a> <strong class="jxr_keyword">extends</strong> SqlTable {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="User" href="../../examples/joins/User.html#User">User</a> <strong class="jxr_keyword">extends</strong> AliasableSqlTable&lt;User&gt; {
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>          <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;Integer&gt; userId = column(<span class="jxr_string">"user_id"</span>, JDBCType.INTEGER);
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>          <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;String&gt; userName = column(<span class="jxr_string">"user_name"</span>, JDBCType.VARCHAR);
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>          <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> SqlColumn&lt;Integer&gt; parentId = column(<span class="jxr_string">"parent_id"</span>, JDBCType.INTEGER);
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          <strong class="jxr_keyword">public</strong> <a name="User" href="../../examples/joins/User.html#User">User</a>() {
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>              <strong class="jxr_keyword">super</strong>(<span class="jxr_string">"User"</span>);
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>              <strong class="jxr_keyword">super</strong>(() -&gt; <span class="jxr_string">"User"</span>, User::<strong class="jxr_keyword">new</strong>);
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>          }
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  }

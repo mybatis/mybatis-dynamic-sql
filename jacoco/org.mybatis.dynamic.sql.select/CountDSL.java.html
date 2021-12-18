@@ -63,7 +63,7 @@ public class CountDSL&lt;R&gt; extends AbstractQueryExpressionDSL&lt;CountDSL&lt
 <span class="fc" id="L63">        QueryExpressionModel.Builder b = new QueryExpressionModel.Builder()</span>
 <span class="fc" id="L64">                .withSelectColumn(countColumn)</span>
 <span class="fc" id="L65">                .withTable(table())</span>
-<span class="fc" id="L66">                .withTableAliases(tableAliases)</span>
+<span class="fc" id="L66">                .withTableAliases(tableAliases())</span>
 <span class="fc" id="L67">                .withWhereModel(whereBuilder.buildWhereModel());</span>
 
 <span class="fc" id="L69">        buildJoinModel().ifPresent(b::withJoinModel);</span>

@@ -71,7 +71,7 @@
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          QueryExpressionModel.Builder b = <strong class="jxr_keyword">new</strong> QueryExpressionModel.Builder()
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>                  .withSelectColumn(countColumn)
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>                  .withTable(table())
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>                  .withTableAliases(tableAliases)
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>                  .withTableAliases(tableAliases())
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>                  .withWhereModel(whereBuilder.buildWhereModel());
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          buildJoinModel().ifPresent(b::withJoinModel);

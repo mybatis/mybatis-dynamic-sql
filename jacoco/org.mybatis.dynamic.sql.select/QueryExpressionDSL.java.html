@@ -56,7 +56,7 @@ public class QueryExpressionDSL&lt;R&gt;
 
     QueryExpressionDSL(FromGatherer&lt;R&gt; fromGatherer, SqlTable table, String tableAlias) {
 <span class="fc" id="L58">        this(fromGatherer, table);</span>
-<span class="fc" id="L59">        tableAliases.put(table, tableAlias);</span>
+<span class="fc" id="L59">        addTableAlias(table, tableAlias);</span>
 <span class="fc" id="L60">    }</span>
 
     @Override
@@ -75,7 +75,7 @@ public class QueryExpressionDSL&lt;R&gt;
     }
 
     public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L78">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L78">        addTableAlias(joinTable, tableAlias);</span>
 <span class="fc" id="L79">        return join(joinTable);</span>
     }
 
@@ -88,7 +88,7 @@ public class QueryExpressionDSL&lt;R&gt;
     }
 
     public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L91">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L91">        addTableAlias(joinTable, tableAlias);</span>
 <span class="fc" id="L92">        return leftJoin(joinTable);</span>
     }
 
@@ -101,7 +101,7 @@ public class QueryExpressionDSL&lt;R&gt;
     }
 
     public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L104">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L104">        addTableAlias(joinTable, tableAlias);</span>
 <span class="fc" id="L105">        return rightJoin(joinTable);</span>
     }
 
@@ -114,7 +114,7 @@ public class QueryExpressionDSL&lt;R&gt;
     }
 
     public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L117">        tableAliases.put(joinTable, tableAlias);</span>
+<span class="fc" id="L117">        addTableAlias(joinTable, tableAlias);</span>
 <span class="fc" id="L118">        return fullJoin(joinTable);</span>
     }
 
@@ -153,7 +153,7 @@ public class QueryExpressionDSL&lt;R&gt;
 <span class="fc" id="L153">                .withConnector(connector)</span>
 <span class="fc" id="L154">                .withTable(table())</span>
 <span class="fc" id="L155">                .isDistinct(isDistinct)</span>
-<span class="fc" id="L156">                .withTableAliases(tableAliases)</span>
+<span class="fc" id="L156">                .withTableAliases(tableAliases())</span>
 <span class="fc" id="L157">                .withWhereModel(whereBuilder.buildWhereModel())</span>
 <span class="fc" id="L158">                .withJoinModel(buildJoinModel().orElse(null))</span>
 <span class="fc" id="L159">                .withGroupByModel(groupByModel)</span>
@@ -251,38 +251,46 @@ public class QueryExpressionDSL&lt;R&gt;
         }
 
         public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
-<span class="fc" id="L254">            return QueryExpressionDSL.this.orderBy(columns);</span>
+<span class="fc" id="L254">            return orderBy(Arrays.asList(columns));</span>
+        }
+
+        public SelectDSL&lt;R&gt; orderBy(Collection&lt;SortSpecification&gt; columns) {
+<span class="fc" id="L258">            return QueryExpressionDSL.this.orderBy(columns);</span>
         }
 
         public GroupByFinisher groupBy(BasicColumn...columns) {
-<span class="fc" id="L258">            return QueryExpressionDSL.this.groupBy(columns);</span>
+<span class="fc" id="L262">            return groupBy(Arrays.asList(columns));</span>
+        }
+
+        public GroupByFinisher groupBy(Collection&lt;BasicColumn&gt; columns) {
+<span class="fc" id="L266">            return QueryExpressionDSL.this.groupBy(columns);</span>
         }
 
         public SelectDSL&lt;R&gt;.LimitFinisher limit(long limit) {
-<span class="fc" id="L262">            return QueryExpressionDSL.this.limit(limit);</span>
+<span class="fc" id="L270">            return QueryExpressionDSL.this.limit(limit);</span>
         }
 
         public SelectDSL&lt;R&gt;.OffsetFirstFinisher offset(long offset) {
-<span class="fc" id="L266">            return QueryExpressionDSL.this.offset(offset);</span>
+<span class="fc" id="L274">            return QueryExpressionDSL.this.offset(offset);</span>
         }
 
         public SelectDSL&lt;R&gt;.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-<span class="fc" id="L270">            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);</span>
+<span class="fc" id="L278">            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);</span>
         }
 
         @NotNull
         @Override
         public R build() {
-<span class="fc" id="L276">            return QueryExpressionDSL.this.build();</span>
+<span class="fc" id="L284">            return QueryExpressionDSL.this.build();</span>
         }
 
         @Override
         protected QueryExpressionWhereBuilder getThis() {
-<span class="fc" id="L281">            return this;</span>
+<span class="fc" id="L289">            return this;</span>
         }
 
         protected WhereModel buildWhereModel() {
-<span class="fc" id="L285">            return internalBuild();</span>
+<span class="fc" id="L293">            return internalBuild();</span>
         }
     }
 
@@ -290,18 +298,18 @@ public class QueryExpressionDSL&lt;R&gt;
         private final TableExpression joinTable;
         private final JoinType joinType;
 
-<span class="fc" id="L293">        public JoinSpecificationStarter(TableExpression joinTable, JoinType joinType) {</span>
-<span class="fc" id="L294">            this.joinTable = joinTable;</span>
-<span class="fc" id="L295">            this.joinType = joinType;</span>
-<span class="fc" id="L296">        }</span>
+<span class="fc" id="L301">        public JoinSpecificationStarter(TableExpression joinTable, JoinType joinType) {</span>
+<span class="fc" id="L302">            this.joinTable = joinTable;</span>
+<span class="fc" id="L303">            this.joinType = joinType;</span>
+<span class="fc" id="L304">        }</span>
 
         public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition joinCondition) {
-<span class="fc" id="L299">            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);</span>
+<span class="fc" id="L307">            return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);</span>
         }
 
         public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition onJoinCondition,
                 JoinCriterion...andJoinCriteria) {
-<span class="fc" id="L304">            return new JoinSpecificationFinisher(joinTable, joinColumn, onJoinCondition, joinType, andJoinCriteria);</span>
+<span class="fc" id="L312">            return new JoinSpecificationFinisher(joinTable, joinColumn, onJoinCondition, joinType, andJoinCriteria);</span>
         }
     }
 
@@ -310,196 +318,208 @@ public class QueryExpressionDSL&lt;R&gt;
         private final JoinSpecification.Builder joinSpecificationBuilder;
 
         public JoinSpecificationFinisher(TableExpression table, BasicColumn joinColumn,
-<span class="fc" id="L313">                JoinCondition joinCondition, JoinType joinType) {</span>
-<span class="fc" id="L314">            JoinCriterion joinCriterion = new JoinCriterion.Builder()</span>
-<span class="fc" id="L315">                    .withConnector(&quot;on&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L316">                    .withJoinColumn(joinColumn)</span>
-<span class="fc" id="L317">                    .withJoinCondition(joinCondition)</span>
-<span class="fc" id="L318">                    .build();</span>
+<span class="fc" id="L321">                JoinCondition joinCondition, JoinType joinType) {</span>
+<span class="fc" id="L322">            JoinCriterion joinCriterion = new JoinCriterion.Builder()</span>
+<span class="fc" id="L323">                    .withConnector(&quot;on&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L324">                    .withJoinColumn(joinColumn)</span>
+<span class="fc" id="L325">                    .withJoinCondition(joinCondition)</span>
+<span class="fc" id="L326">                    .build();</span>
 
-<span class="fc" id="L320">            joinSpecificationBuilder = JoinSpecification.withJoinTable(table)</span>
-<span class="fc" id="L321">                    .withJoinType(joinType)</span>
-<span class="fc" id="L322">                    .withJoinCriterion(joinCriterion);</span>
+<span class="fc" id="L328">            joinSpecificationBuilder = JoinSpecification.withJoinTable(table)</span>
+<span class="fc" id="L329">                    .withJoinType(joinType)</span>
+<span class="fc" id="L330">                    .withJoinCriterion(joinCriterion);</span>
 
-<span class="fc" id="L324">            addJoinSpecificationBuilder(joinSpecificationBuilder);</span>
-<span class="fc" id="L325">        }</span>
+<span class="fc" id="L332">            addJoinSpecificationBuilder(joinSpecificationBuilder);</span>
+<span class="fc" id="L333">        }</span>
 
         public JoinSpecificationFinisher(TableExpression table, BasicColumn joinColumn,
-<span class="fc" id="L328">                JoinCondition joinCondition, JoinType joinType, JoinCriterion...andJoinCriteria) {</span>
-<span class="fc" id="L329">            JoinCriterion onJoinCriterion = new JoinCriterion.Builder()</span>
-<span class="fc" id="L330">                    .withConnector(&quot;on&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L331">                    .withJoinColumn(joinColumn)</span>
-<span class="fc" id="L332">                    .withJoinCondition(joinCondition)</span>
-<span class="fc" id="L333">                    .build();</span>
+<span class="fc" id="L336">                JoinCondition joinCondition, JoinType joinType, JoinCriterion...andJoinCriteria) {</span>
+<span class="fc" id="L337">            JoinCriterion onJoinCriterion = new JoinCriterion.Builder()</span>
+<span class="fc" id="L338">                    .withConnector(&quot;on&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L339">                    .withJoinColumn(joinColumn)</span>
+<span class="fc" id="L340">                    .withJoinCondition(joinCondition)</span>
+<span class="fc" id="L341">                    .build();</span>
 
-<span class="fc" id="L335">            joinSpecificationBuilder = JoinSpecification.withJoinTable(table)</span>
-<span class="fc" id="L336">                    .withJoinType(joinType)</span>
-<span class="fc" id="L337">                    .withJoinCriterion(onJoinCriterion)</span>
-<span class="fc" id="L338">                    .withJoinCriteria(Arrays.asList(andJoinCriteria));</span>
+<span class="fc" id="L343">            joinSpecificationBuilder = JoinSpecification.withJoinTable(table)</span>
+<span class="fc" id="L344">                    .withJoinType(joinType)</span>
+<span class="fc" id="L345">                    .withJoinCriterion(onJoinCriterion)</span>
+<span class="fc" id="L346">                    .withJoinCriteria(Arrays.asList(andJoinCriteria));</span>
 
-<span class="fc" id="L340">            addJoinSpecificationBuilder(joinSpecificationBuilder);</span>
-<span class="fc" id="L341">        }</span>
+<span class="fc" id="L348">            addJoinSpecificationBuilder(joinSpecificationBuilder);</span>
+<span class="fc" id="L349">        }</span>
 
         @NotNull
         @Override
         public R build() {
-<span class="fc" id="L346">            return QueryExpressionDSL.this.build();</span>
+<span class="fc" id="L354">            return QueryExpressionDSL.this.build();</span>
         }
 
         @Override
         public QueryExpressionWhereBuilder where() {
-<span class="fc" id="L351">            return QueryExpressionDSL.this.where();</span>
+<span class="fc" id="L359">            return QueryExpressionDSL.this.where();</span>
         }
 
         public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
-<span class="fc" id="L355">            JoinCriterion joinCriterion = new JoinCriterion.Builder()</span>
-<span class="fc" id="L356">                    .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L357">                    .withJoinColumn(joinColumn)</span>
-<span class="fc" id="L358">                    .withJoinCondition(joinCondition)</span>
-<span class="fc" id="L359">                    .build();</span>
-<span class="fc" id="L360">            joinSpecificationBuilder.withJoinCriterion(joinCriterion);</span>
-<span class="fc" id="L361">            return this;</span>
+<span class="fc" id="L363">            JoinCriterion joinCriterion = new JoinCriterion.Builder()</span>
+<span class="fc" id="L364">                    .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L365">                    .withJoinColumn(joinColumn)</span>
+<span class="fc" id="L366">                    .withJoinCondition(joinCondition)</span>
+<span class="fc" id="L367">                    .build();</span>
+<span class="fc" id="L368">            joinSpecificationBuilder.withJoinCriterion(joinCriterion);</span>
+<span class="fc" id="L369">            return this;</span>
         }
 
         public JoinSpecificationStarter join(SqlTable joinTable) {
-<span class="fc" id="L365">            return QueryExpressionDSL.this.join(joinTable);</span>
+<span class="fc" id="L373">            return QueryExpressionDSL.this.join(joinTable);</span>
         }
 
         public JoinSpecificationStarter join(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L369">            return QueryExpressionDSL.this.join(joinTable, tableAlias);</span>
+<span class="fc" id="L377">            return QueryExpressionDSL.this.join(joinTable, tableAlias);</span>
         }
 
         public JoinSpecificationStarter join(Buildable&lt;SelectModel&gt; joinTable, String tableAlias) {
-<span class="fc" id="L373">            return QueryExpressionDSL.this.join(joinTable, tableAlias);</span>
+<span class="fc" id="L381">            return QueryExpressionDSL.this.join(joinTable, tableAlias);</span>
         }
 
         public JoinSpecificationStarter leftJoin(SqlTable joinTable) {
-<span class="fc" id="L377">            return QueryExpressionDSL.this.leftJoin(joinTable);</span>
+<span class="fc" id="L385">            return QueryExpressionDSL.this.leftJoin(joinTable);</span>
         }
 
         public JoinSpecificationStarter leftJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L381">            return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);</span>
+<span class="fc" id="L389">            return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);</span>
         }
 
         public JoinSpecificationStarter leftJoin(Buildable&lt;SelectModel&gt; joinTable, String tableAlias) {
-<span class="fc" id="L385">            return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);</span>
+<span class="fc" id="L393">            return QueryExpressionDSL.this.leftJoin(joinTable, tableAlias);</span>
         }
 
         public JoinSpecificationStarter rightJoin(SqlTable joinTable) {
-<span class="fc" id="L389">            return QueryExpressionDSL.this.rightJoin(joinTable);</span>
+<span class="fc" id="L397">            return QueryExpressionDSL.this.rightJoin(joinTable);</span>
         }
 
         public JoinSpecificationStarter rightJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L393">            return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);</span>
+<span class="fc" id="L401">            return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);</span>
         }
 
         public JoinSpecificationStarter rightJoin(Buildable&lt;SelectModel&gt; joinTable, String tableAlias) {
-<span class="fc" id="L397">            return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);</span>
+<span class="fc" id="L405">            return QueryExpressionDSL.this.rightJoin(joinTable, tableAlias);</span>
         }
 
         public JoinSpecificationStarter fullJoin(SqlTable joinTable) {
-<span class="fc" id="L401">            return QueryExpressionDSL.this.fullJoin(joinTable);</span>
+<span class="fc" id="L409">            return QueryExpressionDSL.this.fullJoin(joinTable);</span>
         }
 
         public JoinSpecificationStarter fullJoin(SqlTable joinTable, String tableAlias) {
-<span class="fc" id="L405">            return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);</span>
+<span class="fc" id="L413">            return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);</span>
         }
 
         public JoinSpecificationStarter fullJoin(Buildable&lt;SelectModel&gt; joinTable, String tableAlias) {
-<span class="fc" id="L409">            return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);</span>
+<span class="fc" id="L417">            return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);</span>
         }
 
         public GroupByFinisher groupBy(BasicColumn...columns) {
-<span class="fc" id="L413">            return QueryExpressionDSL.this.groupBy(columns);</span>
+<span class="fc" id="L421">            return groupBy(Arrays.asList(columns));</span>
+        }
+
+        public GroupByFinisher groupBy(Collection&lt;BasicColumn&gt; columns) {
+<span class="fc" id="L425">            return QueryExpressionDSL.this.groupBy(columns);</span>
         }
 
         public UnionBuilder union() {
-<span class="fc" id="L417">            return QueryExpressionDSL.this.union();</span>
+<span class="fc" id="L429">            return QueryExpressionDSL.this.union();</span>
         }
 
         public UnionBuilder unionAll() {
-<span class="fc" id="L421">            return QueryExpressionDSL.this.unionAll();</span>
+<span class="fc" id="L433">            return QueryExpressionDSL.this.unionAll();</span>
         }
 
         public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
-<span class="fc" id="L425">            return QueryExpressionDSL.this.orderBy(columns);</span>
+<span class="fc" id="L437">            return orderBy(Arrays.asList(columns));</span>
+        }
+
+        public SelectDSL&lt;R&gt; orderBy(Collection&lt;SortSpecification&gt; columns) {
+<span class="fc" id="L441">            return QueryExpressionDSL.this.orderBy(columns);</span>
         }
 
         public SelectDSL&lt;R&gt;.LimitFinisher limit(long limit) {
-<span class="fc" id="L429">            return QueryExpressionDSL.this.limit(limit);</span>
+<span class="fc" id="L445">            return QueryExpressionDSL.this.limit(limit);</span>
         }
 
         public SelectDSL&lt;R&gt;.OffsetFirstFinisher offset(long offset) {
-<span class="fc" id="L433">            return QueryExpressionDSL.this.offset(offset);</span>
+<span class="fc" id="L449">            return QueryExpressionDSL.this.offset(offset);</span>
         }
 
         public SelectDSL&lt;R&gt;.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-<span class="fc" id="L437">            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);</span>
+<span class="fc" id="L453">            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);</span>
         }
     }
 
-<span class="fc" id="L441">    public class GroupByFinisher implements Buildable&lt;R&gt; {</span>
+<span class="fc" id="L457">    public class GroupByFinisher implements Buildable&lt;R&gt; {</span>
         public SelectDSL&lt;R&gt; orderBy(SortSpecification...columns) {
-<span class="fc" id="L443">            return QueryExpressionDSL.this.orderBy(columns);</span>
+<span class="fc" id="L459">            return orderBy(Arrays.asList(columns));</span>
+        }
+
+        public SelectDSL&lt;R&gt; orderBy(Collection&lt;SortSpecification&gt; columns) {
+<span class="fc" id="L463">            return QueryExpressionDSL.this.orderBy(columns);</span>
         }
 
         @NotNull
         @Override
         public R build() {
-<span class="fc" id="L449">            return QueryExpressionDSL.this.build();</span>
+<span class="fc" id="L469">            return QueryExpressionDSL.this.build();</span>
         }
 
         public UnionBuilder union() {
-<span class="fc" id="L453">            return QueryExpressionDSL.this.union();</span>
+<span class="fc" id="L473">            return QueryExpressionDSL.this.union();</span>
         }
 
         public UnionBuilder unionAll() {
-<span class="fc" id="L457">            return QueryExpressionDSL.this.unionAll();</span>
+<span class="fc" id="L477">            return QueryExpressionDSL.this.unionAll();</span>
         }
 
         public SelectDSL&lt;R&gt;.LimitFinisher limit(long limit) {
-<span class="fc" id="L461">            return QueryExpressionDSL.this.limit(limit);</span>
+<span class="fc" id="L481">            return QueryExpressionDSL.this.limit(limit);</span>
         }
 
         public SelectDSL&lt;R&gt;.OffsetFirstFinisher offset(long offset) {
-<span class="fc" id="L465">            return QueryExpressionDSL.this.offset(offset);</span>
+<span class="fc" id="L485">            return QueryExpressionDSL.this.offset(offset);</span>
         }
 
         public SelectDSL&lt;R&gt;.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-<span class="fc" id="L469">            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);</span>
+<span class="fc" id="L489">            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);</span>
         }
     }
 
     public class UnionBuilder {
         protected final String connector;
 
-<span class="fc" id="L476">        public UnionBuilder(String connector) {</span>
-<span class="fc" id="L477">            this.connector = connector;</span>
-<span class="fc" id="L478">        }</span>
+<span class="fc" id="L496">        public UnionBuilder(String connector) {</span>
+<span class="fc" id="L497">            this.connector = connector;</span>
+<span class="fc" id="L498">        }</span>
 
         public FromGatherer&lt;R&gt; select(BasicColumn...selectList) {
-<span class="fc" id="L481">            return select(Arrays.asList(selectList));</span>
+<span class="fc" id="L501">            return select(Arrays.asList(selectList));</span>
         }
 
         public FromGatherer&lt;R&gt; select(List&lt;BasicColumn&gt; selectList) {
-<span class="fc" id="L485">            return new FromGatherer.Builder&lt;R&gt;()</span>
-<span class="fc" id="L486">                    .withConnector(connector)</span>
-<span class="fc" id="L487">                    .withSelectList(selectList)</span>
-<span class="fc" id="L488">                    .withSelectDSL(selectDSL)</span>
-<span class="fc" id="L489">                    .build();</span>
+<span class="fc" id="L505">            return new FromGatherer.Builder&lt;R&gt;()</span>
+<span class="fc" id="L506">                    .withConnector(connector)</span>
+<span class="fc" id="L507">                    .withSelectList(selectList)</span>
+<span class="fc" id="L508">                    .withSelectDSL(selectDSL)</span>
+<span class="fc" id="L509">                    .build();</span>
         }
 
         public FromGatherer&lt;R&gt; selectDistinct(BasicColumn...selectList) {
-<span class="fc" id="L493">            return selectDistinct(Arrays.asList(selectList));</span>
+<span class="fc" id="L513">            return selectDistinct(Arrays.asList(selectList));</span>
         }
 
         public FromGatherer&lt;R&gt; selectDistinct(List&lt;BasicColumn&gt; selectList) {
-<span class="fc" id="L497">            return new FromGatherer.Builder&lt;R&gt;()</span>
-<span class="fc" id="L498">                    .withConnector(connector)</span>
-<span class="fc" id="L499">                    .withSelectList(selectList)</span>
-<span class="fc" id="L500">                    .withSelectDSL(selectDSL)</span>
-<span class="fc" id="L501">                    .isDistinct()</span>
-<span class="fc" id="L502">                    .build();</span>
+<span class="fc" id="L517">            return new FromGatherer.Builder&lt;R&gt;()</span>
+<span class="fc" id="L518">                    .withConnector(connector)</span>
+<span class="fc" id="L519">                    .withSelectList(selectList)</span>
+<span class="fc" id="L520">                    .withSelectDSL(selectDSL)</span>
+<span class="fc" id="L521">                    .isDistinct()</span>
+<span class="fc" id="L522">                    .build();</span>
         }
     }
 }

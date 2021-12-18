@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 - 2021 MyBatis.org</copyright>
     <item>
-      <title>File: 205,
+      <title>File: 207,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -44,6 +44,20 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="https://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.exception.DuplicateTableAliasException.java">org/mybatis/dynamic/sql/exception/DuplicateTableAliasException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
                           <tr>
                 <td>
                   <a href="https://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.select.render.QueryExpressionRenderer.java">org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.java</a>
@@ -2231,6 +2245,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.TableExpressionVisitor.java">org/mybatis/dynamic/sql/TableExpressionVisitor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://www.mybatis.org/mybatis-dynamic-sql//checkstyle.html#org.mybatis.dynamic.sql.AliasableSqlTable.java">org/mybatis/dynamic/sql/AliasableSqlTable.java</a>
                 </td>
                 <td>
                   0

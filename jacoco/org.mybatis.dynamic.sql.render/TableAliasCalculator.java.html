@@ -32,25 +32,34 @@ public class TableAliasCalculator {
 <span class="fc" id="L32">    }</span>
 
     public Optional&lt;String&gt; aliasForColumn(SqlTable table) {
-<span class="fc" id="L35">        return Optional.ofNullable(aliases.get(table));</span>
+<span class="fc" id="L35">        return explicitAliasOrTableAlias(table);</span>
     }
 
     public Optional&lt;String&gt; aliasForTable(SqlTable table) {
-<span class="fc" id="L39">        return Optional.ofNullable(aliases.get(table));</span>
+<span class="fc" id="L39">        return explicitAliasOrTableAlias(table);</span>
+    }
+
+    private Optional&lt;String&gt; explicitAliasOrTableAlias(SqlTable table) {
+<span class="fc" id="L43">        String alias = aliases.get(table);</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (alias == null) {</span>
+<span class="fc" id="L45">            return table.tableAlias();</span>
+        } else {
+<span class="fc" id="L47">            return Optional.of(alias);</span>
+        }
     }
 
     public static TableAliasCalculator of(SqlTable table, String alias) {
-<span class="fc" id="L43">        Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L44">        tableAliases.put(table, alias);</span>
-<span class="fc" id="L45">        return of(tableAliases);</span>
+<span class="fc" id="L52">        Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L53">        tableAliases.put(table, alias);</span>
+<span class="fc" id="L54">        return of(tableAliases);</span>
     }
 
     public static TableAliasCalculator of(Map&lt;SqlTable, String&gt; aliases) {
-<span class="fc" id="L49">        return new TableAliasCalculator(aliases);</span>
+<span class="fc" id="L58">        return new TableAliasCalculator(aliases);</span>
     }
 
     public static TableAliasCalculator empty() {
-<span class="fc" id="L53">        return of(Collections.emptyMap());</span>
+<span class="fc" id="L62">        return of(Collections.emptyMap());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

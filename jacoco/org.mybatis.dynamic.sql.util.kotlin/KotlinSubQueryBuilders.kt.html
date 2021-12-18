@@ -43,7 +43,7 @@ sealed class KotlinBaseSubQueryBuilder&lt;T : KotlinBaseSubQueryBuilder&lt;T&gt;
 
     override fun build(): SelectModel =
 <span class="fc" id="L45">        try {</span>
-<span class="fc" id="L46">            selectBuilder.build()</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">            selectBuilder.build()</span>
 <span class="fc" id="L47">        } catch (e: UninitializedPropertyAccessException) {</span>
 <span class="fc" id="L48">            throw UninitializedPropertyAccessException(</span>
 <span class="fc" id="L49">                &quot;You must specify a select statement&quot;, e</span>
@@ -77,7 +77,7 @@ sealed class KotlinBaseSubQueryBuilder&lt;T : KotlinBaseSubQueryBuilder&lt;T&gt;
     val columnList: List&lt;SqlColumn&lt;*&gt;&gt;
         get(): List&lt;SqlColumn&lt;*&gt;&gt; =
 <span class="fc" id="L79">            try {</span>
-<span class="fc" id="L80">                lateColumnList</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">                lateColumnList</span>
 <span class="fc" id="L81">            } catch (e: UninitializedPropertyAccessException) {</span>
 <span class="fc" id="L82">                throw UninitializedPropertyAccessException(</span>
 <span class="fc" id="L83">                    &quot;You must specify a column list in an insert with select statement&quot;, e</span>
