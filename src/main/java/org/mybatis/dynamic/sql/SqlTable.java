@@ -58,7 +58,7 @@ public class SqlTable implements TableExpression {
     }
 
     private String compose(String catalog, Supplier<Optional<String>> schemaSupplier, String tableName) {
-        return schemaSupplier.get().map(s -> composeCatalogSchemaAndAndTable(catalog, s, tableName))
+        return schemaSupplier.get().map(s -> composeCatalogSchemaAndTable(catalog, s, tableName))
                 .orElseGet(() -> composeCatalogAndTable(catalog, tableName));
     }
 
@@ -75,7 +75,7 @@ public class SqlTable implements TableExpression {
         return schema + "." + tableName; //$NON-NLS-1$
     }
 
-    private String composeCatalogSchemaAndAndTable(String catalog, String schema, String tableName) {
+    private String composeCatalogSchemaAndTable(String catalog, String schema, String tableName) {
         return catalog + "." + schema + "." + tableName; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
